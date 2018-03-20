@@ -452,3 +452,40 @@ class TestValidStatementOrArgId(TestCaseWithConfig):
             response = discussion.valid_fuzzy_search_mode(request)
             self.assertTrue(response)
             self.assertIsInstance(response, bool)
+
+
+class TestValidReactionArguments(TestCaseWithConfig):
+    def test_valid_request_should_pass(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'arg_id_user': 4,
+            'relation': 'rebut',
+            'arg_id_sys': 5
+        })
+        response = discussion.valid_reaction_arguments(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+        self.assertIn('arg_user', request.validated)
+        self.assertIn('arg_sys', request.validated)
+
+    def test_invalid_arg_id_user_should_fail(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'arg_id_user': -1,
+            'relation': 'rebut',
+            'arg_id_sys': 5
+        })
+        response = discussion.valid_reaction_arguments(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+    def test_invalid_arg_id_sys_should_fail(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'arg_id_user': 4,
+            'relation': 'rebut',
+            'arg_id_sys': -1
+        })
+        response = discussion.valid_reaction_arguments(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
