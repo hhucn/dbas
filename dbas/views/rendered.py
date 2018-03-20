@@ -619,7 +619,7 @@ def discussion_justify_statement(request) -> dict:
     """
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
-    Path: /discuss/{slug}/justify/{statement_id}/{attitude}*relation
+    Path: /discuss/{slug}/justify/{statement_id:\d+}/{attitude}
 
     :param request: request of the web server
     :return: dict
@@ -648,7 +648,7 @@ def discussion_justify_argument(request) -> dict:
     """
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
-    Path: /discuss/{slug}/justify/{statement_or_arg_id}/{attitude}*relation
+    Path: /discuss/{slug}/justify/{argument_id:\d+}/{attitude}/{relation}
 
     :param request: request of the web server
     :return: dict
