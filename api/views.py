@@ -31,7 +31,7 @@ from dbas.strings.translator import Keywords as _
 from dbas.strings.translator import get_translation
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
-    valid_argument, valid_relation
+    valid_argument, valid_relation, valid_reaction_arguments
 from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
 from .references import (get_all_references_by_reference_text,
@@ -72,7 +72,7 @@ whoami = Service(name='whoami',
 
 # Argumentation stuff
 reaction = Service(name='api_reaction',
-                   path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
+                   path='/{slug}/reaction/{arg_id_user}/{relation}/{arg_id_sys}',
                    description="Discussion Reaction",
                    cors_policy=cors_policy)
 justify_statement = Service(name='api_justify_statement',
@@ -325,6 +325,34 @@ def discussion_justify_argument(request) -> dict:
     }
 
 
+@reaction.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_reaction_arguments, valid_relation)
+def discussion_reaction(request):
+    """
+    Return data from DBas discussion_reaction page.
+
+    Path: /{slug}/reaction/{arg_id_user}/{relation}/{arg_id_sys
+
+    :param request: request
+    :return: bubbles for information and items for the next step
+    """
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = dbas.discussion.reaction(db_issue, db_user,
+                                                   request.validated['arg_user'],
+                                                   request.validated['arg_sys'],
+                                                   request.validated['relation'],
+                                                   history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    return {
+        'bubbles': bubbles,
+        'items': items
+    }
+
+
 # -----------------------------------------------------------------------------
 
 def prepare_user_information(request):
@@ -399,19 +427,6 @@ def prepare_data_assign_reference(request, func: Callable[[bool, dict], Any]):
         refs_db = [store_reference(api_data, statement) for statement in statement_uids]
         return_dict["references"] = list(map(prepare_single_reference, refs_db))
     return return_dict
-
-
-@reaction.get(validators=validate_login)
-def discussion_reaction(request):
-    """
-    Return data from DBas discussion_reaction page.
-
-    :param request: request
-    :return: dbas.discussion_reaction(True)
-
-    """
-    request_dict = dbas.prepare_request_dict(request)
-    return dbas.discussion.reaction(request_dict)
 
 
 @support.get(validators=validate_login)
