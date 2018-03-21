@@ -30,9 +30,10 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
     header = 'X-Authentication'
 
     def test_valid_login_attempt(self):
-        request = construct_dummy_request()
-        request.json_body = {'nickname': 'Walter',
-                             'password': 'iamatestuser2016'}
+        request = construct_dummy_request({
+            'nickname': 'Walter',
+            'password': 'iamatestuser2016'
+        })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
@@ -53,9 +54,10 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
     def test_login_wrong_password(self, password: str):
         pwd = password.replace('\x00', '')
         pwd = pwd.replace('iamatestuser2016', '¯\_(ツ)_/¯')
-        request = construct_dummy_request()
-        request.json_body = {'nickname': 'Walter',
-                             'password': pwd}
+        request = construct_dummy_request({
+            'nickname': 'Walter',
+            'password': pwd
+        })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
@@ -63,8 +65,10 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_login_wrong_user(self):
-        request = construct_dummy_request({'nickname': '¯\_(ツ)_/¯',
-                                           'password': 'thankgoditsfriday'})
+        request = construct_dummy_request({
+            'nickname': '¯\_(ツ)_/¯',
+            'password': 'thankgoditsfriday'
+        })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
@@ -72,8 +76,10 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_login_empty_user_is_not_allowed_to_login(self):
-        request = construct_dummy_request({'nickname': '',
-                                           'password': 'thankgoditsfriday'})
+        request = construct_dummy_request({
+            'nickname': '',
+            'password': 'thankgoditsfriday'
+        })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
@@ -133,8 +139,10 @@ class TestIssues(unittest.TestCase):
 
 class TestDiscussionAttitude(TestCaseWithConfig):
     def test_successful_discussion_attitude(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'position_id': self.position_cat_or_dog.uid})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'position_id': self.position_cat_or_dog.uid
+        })
         response = apiviews.discussion_attitude(request)
         self.assertTrue(response)
         self.assertIsInstance(response, dict)
@@ -143,33 +151,41 @@ class TestDiscussionAttitude(TestCaseWithConfig):
         self.assertIn('user', request.validated)
 
     def test_wrong_slug_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': '',
-                                                      'position_id': 2})
+        request = construct_dummy_request(match_dict={
+            'slug': '',
+            'position_id': 2
+        })
         response = apiviews.discussion_attitude(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
-        request = construct_dummy_request(match_dict={'slug': 'this-is-not-a-valid-slug',
-                                                      'position_id': 2})
+        request = construct_dummy_request(match_dict={
+            'slug': 'this-is-not-a-valid-slug',
+            'position_id': 2
+        })
         response = apiviews.discussion_attitude(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_wrong_position_id_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'position_id': self.position_town.uid})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'position_id': self.position_town.uid})
         response = apiviews.discussion_attitude(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'position_id': -1})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'position_id': -1})
         response = apiviews.discussion_attitude(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
 
 class TestDiscussionJustifyStatement(TestCaseWithConfig):
     def test_successful_discussion_justify_statement(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'statement_id': self.statement_cat_or_dog.uid,
-                                                      'attitude': 'agree'})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'statement_id': self.statement_cat_or_dog.uid,
+            'attitude': 'agree'
+        })
         response = apiviews.discussion_justify_statement(request)
         self.assertTrue(response)
         self.assertIsInstance(response, dict)
@@ -179,33 +195,41 @@ class TestDiscussionJustifyStatement(TestCaseWithConfig):
         self.assertIn('attitude', request.validated)
 
     def test_wrong_slug_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_town.slug,
-                                                      'statement_id': self.statement_cat_or_dog.uid,
-                                                      'attitude': 'agree'})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_town.slug,
+            'statement_id': self.statement_cat_or_dog.uid,
+            'attitude': 'agree'
+        })
         response = apiviews.discussion_justify_statement(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_wrong_statement_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'statement_id': -1,
-                                                      'attitude': 'agree'})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'statement_id': -1,
+            'attitude': 'agree'
+        })
         response = apiviews.discussion_justify_statement(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_wrong_attitude_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'statement_id': self.statement_cat_or_dog.uid,
-                                                      'attitude': 'not-an-attitude'})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'statement_id': self.statement_cat_or_dog.uid,
+            'attitude': 'not-an-attitude'
+        })
         response = apiviews.discussion_justify_statement(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
 
 class TestDiscussionJustifyArgument(TestCaseWithConfig):
     def test_successful_discussion_justify_argument(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'argument_id': self.argument_cat_or_dog.uid,
-                                                      'attitude': 'agree',
-                                                      'relation': 'undermine'})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': self.argument_cat_or_dog.uid,
+            'attitude': 'agree',
+            'relation': 'undermine'
+        })
         response = apiviews.discussion_justify_argument(request)
         self.assertTrue(response)
         self.assertIsInstance(response, dict)
@@ -216,33 +240,83 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
         self.assertIn('relation', request.validated)
 
     def test_wrong_slug_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'argument_id': self.argument_town.uid,
-                                                      'attitude': 'agree',
-                                                      'relation': 'undermine'})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': self.argument_town.uid,
+            'attitude': 'agree',
+            'relation': 'undermine'
+        })
         response = apiviews.discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_wrong_statement_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'argument_id': -1,
-                                                      'attitude': 'agree',
-                                                      'relation': 'undermine'})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': -1,
+            'attitude': 'agree',
+            'relation': 'undermine'
+        })
         response = apiviews.discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_wrong_attitude_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'argument_id': self.argument_cat_or_dog.uid,
-                                                      'attitude': 'not-an-attitude',
-                                                      'relation': 'undermine'})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': self.argument_cat_or_dog.uid,
+            'attitude': 'not-an-attitude',
+            'relation': 'undermine'
+        })
         response = apiviews.discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_wrong_relation_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
-                                                      'argument_id': self.argument_cat_or_dog.uid,
-                                                      'attitude': 'agree',
-                                                      'relation': 'not-a-valid-relation'})
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': self.argument_cat_or_dog.uid,
+            'attitude': 'agree',
+            'relation': 'not-a-valid-relation'
+        })
         response = apiviews.discussion_justify_argument(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+
+class TestDiscussionReaction(TestCaseWithConfig):
+    def test_invalid_slug_returns_error(self):
+        request = construct_dummy_request(match_dict={
+            'slug': 'cat-or-doggy_dog',
+            'arg_id_user': 2,
+            'relation': 'undermine',
+            'arg_id_sys': 16,
+        })
+        response = apiviews.discussion_reaction(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    def test_user_argument_does_not_belong_to_issue_returns_error(self):
+        request = construct_dummy_request(match_dict={
+            'slug': 'cat-or-dog',
+            'arg_id_user': 45,
+            'relation': 'undermine',
+            'arg_id_sys': 16,
+        })
+        response = apiviews.discussion_reaction(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    def test_sys_argument_does_not_belong_to_issue_returns_error(self):
+        request = construct_dummy_request(match_dict={
+            'slug': 'cat-or-dog',
+            'arg_id_user': 2,
+            'relation': 'undermine',
+            'arg_id_sys': 45,
+        })
+        response = apiviews.discussion_reaction(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    def test_page_failure_mode(self):
+        request = construct_dummy_request(match_dict={
+            'slug': 'cat-or-dog',
+            'arg_id_user': 2,
+            'relation': 'invalid-relation',
+            'arg_id_sys': 16,
+        })
+        response = apiviews.discussion_reaction(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
