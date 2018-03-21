@@ -163,7 +163,6 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     logger('Core', 'Entering discussion.reaction')
 
     arg_id_user = db_arg_user.uid
-    attack = relation
     arg_id_sys = db_arg_sys.uid
 
     # set votes and reputation
@@ -173,17 +172,15 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     supportive = db_arg_user.is_supportive
     _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history, slug=db_issue.slug, broke_limit=broke_limit)
     _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=history)
-    discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, db_user)
-    item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
+    discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, relation, history, db_user)
+    item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, relation, discussion_dict['gender'])
 
-    prepared_discussion = {
+    return {
         'issues': issue_helper.prepare_json_of_issue(db_issue, db_user),
         'discussion': discussion_dict,
         'items': item_dict,
         'title': db_issue.title
     }
-
-    return prepared_discussion
 
 
 def support(request_dict: dict) -> Union[dict, None]:
