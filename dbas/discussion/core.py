@@ -161,19 +161,16 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     :return:
     """
     logger('Core', 'Entering discussion.reaction')
-
-    arg_id_user = db_arg_user.uid
-    arg_id_sys = db_arg_sys.uid
-
     # set votes and reputation
     add_rep, broke_limit = add_reputation_for(db_user, reason=rep_reason_first_argument_click)
     add_click_for_argument(db_arg_user, db_user)
 
-    supportive = db_arg_user.is_supportive
     _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history, slug=db_issue.slug, broke_limit=broke_limit)
     _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=history)
-    discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, relation, history, db_user)
-    item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, relation, discussion_dict['gender'])
+    discussion_dict = _ddh.get_dict_for_argumentation(db_arg_user.uid, db_arg_user.is_supportive, db_arg_sys.uid,
+                                                      relation, history, db_user)
+    item_dict = _idh.get_array_for_reaction(db_arg_sys.uid, db_arg_user.uid, db_arg_user.is_supportive, relation,
+                                            discussion_dict['gender'])
 
     return {
         'issues': issue_helper.prepare_json_of_issue(db_issue, db_user),

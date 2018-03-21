@@ -3,7 +3,7 @@ Provides helping function for dictionaries, which are used in discussions.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from typing import Union
+from typing import Union, List
 
 import dbas.handler.history as history_helper
 from dbas.database import DBDiscussionSession
@@ -75,6 +75,7 @@ class DiscussionDictHelper(object):
         where the user chooses her attitude.
 
         :param uid: Argument.uid
+        :param db_position: Statement
         :return: dict()
         """
         logger('DictionaryHelper', 'at_attitude')
@@ -263,7 +264,7 @@ class DiscussionDictHelper(object):
         }
 
     def __get_add_premise_text_for_justify_argument(self, confrontation, premise, attack, conclusion, db_argument,
-                                                    is_supportive, user_msg):
+                                                    is_supportive, user_msg) -> str:
         """
         Returns the text fot the add premise container during the justification for an argument
 
@@ -297,7 +298,7 @@ class DiscussionDictHelper(object):
 
         return add_premise_text
 
-    def get_dict_for_dont_know_reaction(self, uid, nickname):
+    def get_dict_for_dont_know_reaction(self, uid, nickname) -> dict:
         """
         Prepares the discussion dict with all bubbles for the third step,
         where an supportive argument will be presented.
@@ -346,42 +347,45 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_argumentation(self, uid: int, is_supportive: bool, additional_uid: Union[int, None],
+    def get_dict_for_argumentation(self, arg_user_id: int, is_supportive: bool, arg_sys_id: Union[int, None],
                                    attack: Union[str, None], history: str, db_user: User) -> dict:
         """
         Prepares the discussion dict with all bubbles for the argumentation window.
 
-        :param uid: Argument.uid
+        :param arg_user_id: Argument.uid
         :param is_supportive: Boolean
-        :param additional_uid: Argument.uid / not necessary if attack=end
+        :param arg_sys_id: Argument.uid / not necessary if attack=end
         :param attack: String (undermine, support, undercut, rebut, ...)
         :param history: History
-        :param nickname: Users nickname
+        :param db_user: User
         :return: dict()
         """
-        logger('DictionaryHelper', 'at_argumentation about ' + str(uid))
-        nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
+        logger('DictionaryHelper', 'at_argumentation about ' + str(arg_user_id))
+        nickname = db_user.nickname
+        if db_user.nickname == nick_of_anonymous_user:
+            db_user = None
+            nickname = None
+
         bubbles_array = history_helper.create_bubbles_from_history(self.history, nickname, self.lang, self.slug)
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
         bubble_mid = ''
         splitted_history = history_helper.get_splitted_history(self.history)
-        user_changed_opinion = splitted_history[-1].endswith(str(uid))
+        user_changed_opinion = splitted_history[-1].endswith(str(arg_user_id))
         statement_list = list()
-        db_argument = DBDiscussionSession.query(Argument).get(uid)
+        db_argument = DBDiscussionSession.query(Argument).get(arg_user_id)
         gender_of_counter_arg = ''
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         if not attack:
-            prep_dict = self.__get_dict_for_argumentation_end(uid, user_changed_opinion, db_user)
+            prep_dict = self.__get_dict_for_argumentation_end(arg_user_id, user_changed_opinion, db_user)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, message=prep_dict['sys'], omit_url=True,
                                                   lang=self.lang)
             bubble_mid = create_speechbubble_dict(BubbleTypes.INFO, message=prep_dict['mid'], omit_url=True,
                                                   lang=self.lang)
         else:
             prep_dict = self.__get_dict_for_argumentation(
-                db_argument, additional_uid, history, attack, nickname, is_supportive)
-            quid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
+                db_argument, arg_sys_id, history, attack, nickname, is_supportive)
+            quid = 'question-bubble-' + str(arg_sys_id) if int(arg_sys_id) > 0 else ''
             is_author = is_author_of_argument(db_user, prep_dict['confrontation'].uid)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, uid=quid, message=prep_dict['sys'], omit_url=True,
                                                   lang=self.lang, is_markable=True,
@@ -390,7 +394,7 @@ class DiscussionDictHelper(object):
             gender_of_counter_arg = prep_dict['gender']
 
         bubble_user = create_speechbubble_dict(BubbleTypes.USER, message=prep_dict['user'], omit_url=True,
-                                               argument_uid=uid, is_supportive=is_supportive, lang=self.lang,
+                                               argument_uid=arg_user_id, is_supportive=is_supportive, lang=self.lang,
                                                nickname=nickname)
 
         # dirty fixes
@@ -422,8 +426,7 @@ class DiscussionDictHelper(object):
 
         :param argument_uid: Argument.uid
         :param user_changed_opinion:  Boolean
-        :param nickname: User.nickname
-        :param attack: String
+        :param db_user: User
         :return: String, String, String
         """
         nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
@@ -455,7 +458,8 @@ class DiscussionDictHelper(object):
             'sys': sys_text
         }
 
-    def __get_dict_for_argumentation(self, user_arg, confrontation_arg_uid, history, attack, nickname, is_supportive):
+    def __get_dict_for_argumentation(self, user_arg, confrontation_arg_uid, history, attack, nickname,
+                                     is_supportive) -> dict:
         """
         Returns dict() for the reaction step
 
@@ -521,13 +525,11 @@ class DiscussionDictHelper(object):
             'confrontation': db_confrontation
         }
 
-    def get_dict_for_jump(self, uid):
+    def get_dict_for_jump(self, uid) -> dict:
         """
         Prepares the discussion dict with all bubbles for the jump step
 
         :param uid: Argument.uid
-        :param nickname: User.nickname
-        :param history: String
         :return: dict()
         """
         logger('DictionaryHelper', 'argument ' + str(uid))
@@ -569,7 +571,7 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_supporting_each_other(self, uid_system_arg, uid_user_arg, nickname):
+    def get_dict_for_supporting_each_other(self, uid_system_arg, uid_user_arg, nickname) -> dict:
         """
         Returns the dictionary during the supporting step
 
@@ -614,7 +616,7 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_jump_decision(self, uid):
+    def get_dict_for_jump_decision(self, uid) -> dict:
         """
         Prepares the discussion dict with all bubbles for the jump decision step
 
@@ -647,7 +649,7 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_choosing(self, uid, is_uid_argument, is_supportive):
+    def get_dict_for_choosing(self, uid, is_uid_argument, is_supportive) -> dict:
         """
         Prepares the discussion dict with all bubbles for the choosing an premise,
         when the user inserted more than one new premise.
@@ -696,7 +698,7 @@ class DiscussionDictHelper(object):
         }
 
     @staticmethod
-    def __get_all_statement_texts_by_argument(argument):
+    def __get_all_statement_texts_by_argument(argument) -> List[dict]:
         """
         Returns all statement texts for a given argument
 
@@ -731,7 +733,7 @@ class DiscussionDictHelper(object):
 
         return statement_list
 
-    def __append_now_bubble(self, bubbles_array):
+    def __append_now_bubble(self, bubbles_array) -> None:
         """
         Appends the "now" bubble to the bubble array
 
