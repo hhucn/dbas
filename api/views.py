@@ -89,10 +89,6 @@ attitude = Service(name='api_attitude',
                    path='/{slug}/attitude/{position_id}',
                    description="Discussion Attitude",
                    cors_policy=cors_policy)
-support = Service(name='api_support',
-                  path='/{slug}/support/{arg_user_uid}/{arg_system_uid}',
-                  description="Coming from one argument, support another one",
-                  cors_policy=cors_policy)
 
 # Prefix with 'z' so it is added as the last route
 zinit = Service(name='api_init',
@@ -331,7 +327,7 @@ def discussion_reaction(request):
     """
     Return data from DBas discussion_reaction page.
 
-    Path: /{slug}/reaction/{arg_id_user}/{relation}/{arg_id_sys
+    Path: /{slug}/reaction/{arg_id_user}/{relation}/{arg_id_sys}
 
     :param request: request
     :return: bubbles for information and items for the next step
@@ -347,9 +343,11 @@ def discussion_reaction(request):
                                                    history, request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
+    keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
+
     return {
         'bubbles': bubbles,
-        'items': items
+        'attacks': dict(zip(keys, items))
     }
 
 
@@ -427,25 +425,6 @@ def prepare_data_assign_reference(request, func: Callable[[bool, dict], Any]):
         refs_db = [store_reference(api_data, statement) for statement in statement_uids]
         return_dict["references"] = list(map(prepare_single_reference, refs_db))
     return return_dict
-
-
-@support.get(validators=validate_login)
-def discussion_support(request):
-    """
-    Return data from D-BAS discussion_support page.
-
-    :param request: request
-    :return: dbas.discussion_support(True)
-
-    """
-    api_data = prepare_user_information(request)
-    if not api_data:
-        api_data = dict()
-    api_data["slug"] = request.matchdict["slug"]
-    api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
-    api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
-    request_dict = dbas.prepare_request_dict(request)
-    return dbas.discussion.support(request_dict, api_data=api_data)
 
 
 @start_statement.post(validators=validate_login, require_csrf=False)
