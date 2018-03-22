@@ -9,6 +9,7 @@ import unittest
 import hypothesis.strategies as st
 from hypothesis import given, settings
 from pyramid import httpexceptions
+from pyramid.response import Response
 
 import api.views as apiviews
 from api.login import token_to_database
@@ -293,7 +294,7 @@ class TestDiscussionReaction(TestCaseWithConfig):
 
     def test_user_argument_does_not_belong_to_issue_returns_error(self):
         request = construct_dummy_request(match_dict={
-            'slug': 'cat-or-dog',
+            'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 45,
             'relation': 'undermine',
             'arg_id_sys': 16,
@@ -303,7 +304,7 @@ class TestDiscussionReaction(TestCaseWithConfig):
 
     def test_sys_argument_does_not_belong_to_issue_returns_error(self):
         request = construct_dummy_request(match_dict={
-            'slug': 'cat-or-dog',
+            'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 2,
             'relation': 'undermine',
             'arg_id_sys': 45,
@@ -313,10 +314,39 @@ class TestDiscussionReaction(TestCaseWithConfig):
 
     def test_page_failure_mode(self):
         request = construct_dummy_request(match_dict={
-            'slug': 'cat-or-dog',
+            'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 2,
             'relation': 'invalid-relation',
             'arg_id_sys': 16,
         })
         response = apiviews.discussion_reaction(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
+
+
+class TestDiscussionFinish(TestCaseWithConfig):
+    def test_valid_slug_and_issue_returns_bubbles(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': self.argument_cat_or_dog.uid
+        })
+        response = apiviews.discussion_finish(request)
+        self.assertIsInstance(response, dict)
+        self.assertIn('bubbles', response)
+
+    def test_argument_does_not_belong_to_issue(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': self.argument_town.uid
+        })
+        response = apiviews.discussion_finish(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+        self.assertEqual(response.status_code, 400)
+
+    def test_issue_is_disabled(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_disabled.slug,
+            'argument_id': self.argument_town.uid
+        })
+        response: Response = apiviews.discussion_finish(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+        self.assertEqual(response.status_code, 410)

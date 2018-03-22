@@ -721,9 +721,8 @@ def discussion_support(request):
     return prepared_discussion
 
 
-# finish page
 @view_config(route_name='discussion_finish', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
+@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def discussion_finish(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
@@ -733,16 +732,22 @@ def discussion_finish(request):
     """
     logger('discussion_finish', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.finish)
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
 
-    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = discussion.finish(db_issue,
+                                            db_user,
+                                            request.validated['argument'],
+                                            history)
+
+    __modify_discussion_url(prepared_discussion)
+    __append_extras_dict(prepared_discussion, prepare_request_dict(request), request.authenticated_userid, True)
 
     return prepared_discussion
 
 
-# exit page
 @view_config(route_name='discussion_exit', renderer='../templates/exit.pt', permission='use')
 @validate(check_authentication, invalid_user)
 def discussion_exit(request):
@@ -765,7 +770,6 @@ def discussion_exit(request):
     return prepared_discussion
 
 
-# choosing page
 @view_config(route_name='discussion_choose', renderer='../templates/discussion.pt', permission='everybody')
 @validate(check_authentication, invalid_user)
 def discussion_choose(request):
@@ -788,7 +792,6 @@ def discussion_choose(request):
     return prepared_discussion
 
 
-# jump page
 @view_config(route_name='discussion_jump', renderer='../templates/discussion.pt', permission='everybody')
 @validate(check_authentication, invalid_user)
 def discussion_jump(request):

@@ -11,7 +11,6 @@ from dbas.helper.views import handle_justification_statement, handle_justificati
 from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_premisegroups, \
     related_with_support
 from dbas.logger import logger
-from dbas.query_wrapper import get_not_disabled_arguments_as_query
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -167,8 +166,7 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
 
     _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history, slug=db_issue.slug, broke_limit=broke_limit)
     _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=history)
-    discussion_dict = _ddh.get_dict_for_argumentation(db_arg_user.uid, db_arg_user.is_supportive, db_arg_sys.uid,
-                                                      relation, history, db_user)
+    discussion_dict = _ddh.get_dict_for_argumentation(db_arg_user, db_arg_sys.uid, relation, history, db_user)
     item_dict = _idh.get_array_for_reaction(db_arg_sys.uid, db_arg_user.uid, db_arg_user.is_supportive, relation,
                                             discussion_dict['gender'])
 
@@ -317,26 +315,11 @@ def jump(request_dict: dict) -> Union[dict, None]:
     return prepared_discussion
 
 
-def finish(request_dict: dict) -> Union[dict, None]:
-    logger('Core', 'main')
-
-    db_issue = request_dict['issue']
-    history = request_dict['history']
-    slug = db_issue.slug
-    db_user = request_dict['user']
-
-    # get parameters
-    arg_id = request_dict['matchdict'].get('arg_id')
-    last_arg = get_not_disabled_arguments_as_query().filter_by(uid=arg_id).first()
-    if not last_arg:
-        logger('Core', 'no argument', error=True)
-        return None
-
+def finish(db_issue: Issue, db_user: User, db_argument: Argument, history: str) -> dict:
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-    disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
-    discussion_dict = _ddh.get_dict_for_argumentation(arg_id, last_arg.is_supportive, None, None, history, db_user)
+    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history, slug=db_issue.slug)
+    discussion_dict = _ddh.get_dict_for_argumentation(db_argument, None, None, history, db_user)
     item_dict = ItemDictHelper.get_empty_dict()
 
     return {
