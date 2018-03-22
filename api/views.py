@@ -31,7 +31,7 @@ from dbas.strings.translator import Keywords as _
 from dbas.strings.translator import get_translation
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
-    valid_argument, valid_relation
+    valid_argument, valid_relation, valid_reaction_arguments
 from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
 from .references import (get_all_references_by_reference_text,
@@ -72,27 +72,28 @@ whoami = Service(name='whoami',
 
 # Argumentation stuff
 reaction = Service(name='api_reaction',
-                   path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
-                   description="Discussion Reaction",
+                   path='/{slug}/reaction/{arg_id_user}/{relation}/{arg_id_sys}',
+                   description='Discussion Reaction',
                    cors_policy=cors_policy)
+
 justify_statement = Service(name='api_justify_statement',
                             path='/{slug}/justify/{statement_id}/{attitude}',
-                            description="Discussion Justify",
+                            description='Discussion Justify',
                             cors_policy=cors_policy)
 
 justify_argument = Service(name='api_justify_argument',
                            path='/{slug}/justify/{argument_id}/{attitude}/{relation}',
-                           description="Discussion Justify",
+                           description='Discussion Justify',
                            cors_policy=cors_policy)
 
 attitude = Service(name='api_attitude',
                    path='/{slug}/attitude/{position_id}',
-                   description="Discussion Attitude",
+                   description='Discussion Attitude',
                    cors_policy=cors_policy)
-support = Service(name='api_support',
-                  path='/{slug}/support/{arg_user_uid}/{arg_system_uid}',
-                  description="Coming from one argument, support another one",
-                  cors_policy=cors_policy)
+
+finish = Service(name='api_finish',
+                 path='/{slug}/finish/{argument_id}',
+                 description='End of a discussion')
 
 # Prefix with 'z' so it is added as the last route
 zinit = Service(name='api_init',
@@ -325,6 +326,49 @@ def discussion_justify_argument(request) -> dict:
     }
 
 
+@reaction.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_reaction_arguments, valid_relation)
+def discussion_reaction(request):
+    """
+    Return data from DBas discussion_reaction page.
+
+    Path: /{slug}/reaction/{arg_id_user}/{relation}/{arg_id_sys}
+
+    :param request: request
+    :return: bubbles for information and items for the next step
+    """
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = dbas.discussion.reaction(db_issue, db_user,
+                                                   request.validated['arg_user'],
+                                                   request.validated['arg_sys'],
+                                                   request.validated['relation'],
+                                                   history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
+
+    return {
+        'bubbles': bubbles,
+        'attacks': dict(zip(keys, items))
+    }
+
+
+@finish.get()
+@validate(valid_token_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
+def discussion_finish(request):
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = dbas.discussion.finish(db_issue, db_user,
+                                                 request.validated['argument'], history)
+
+    return {'bubbles': extract_items_and_bubbles(prepared_discussion)[0]}
+
+
 # -----------------------------------------------------------------------------
 
 def prepare_user_information(request):
@@ -399,38 +443,6 @@ def prepare_data_assign_reference(request, func: Callable[[bool, dict], Any]):
         refs_db = [store_reference(api_data, statement) for statement in statement_uids]
         return_dict["references"] = list(map(prepare_single_reference, refs_db))
     return return_dict
-
-
-@reaction.get(validators=validate_login)
-def discussion_reaction(request):
-    """
-    Return data from DBas discussion_reaction page.
-
-    :param request: request
-    :return: dbas.discussion_reaction(True)
-
-    """
-    request_dict = dbas.prepare_request_dict(request)
-    return dbas.discussion.reaction(request_dict)
-
-
-@support.get(validators=validate_login)
-def discussion_support(request):
-    """
-    Return data from D-BAS discussion_support page.
-
-    :param request: request
-    :return: dbas.discussion_support(True)
-
-    """
-    api_data = prepare_user_information(request)
-    if not api_data:
-        api_data = dict()
-    api_data["slug"] = request.matchdict["slug"]
-    api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
-    api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
-    request_dict = dbas.prepare_request_dict(request)
-    return dbas.discussion.support(request_dict, api_data=api_data)
 
 
 @start_statement.post(validators=validate_login, require_csrf=False)

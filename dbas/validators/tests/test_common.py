@@ -5,7 +5,8 @@ from hypothesis import given
 from pyramid.httpexceptions import HTTPFound
 
 from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
-from dbas.validators.common import valid_lang_cookie_fallback, valid_language, check_authentication
+from dbas.validators.common import valid_lang_cookie_fallback, valid_language, check_authentication, \
+    valid_fuzzy_search_mode
 
 
 class ValidLanguageTest(TestCaseWithConfig):
@@ -57,3 +58,30 @@ class CheckAuthenticationTest(TestCaseWithConfig):
         request = construct_dummy_request({'lang': 'en'})
         check_authentication(request)
         self.assertRaises(HTTPFound)
+
+
+class TestFuzzySearch(TestCaseWithConfig):
+    def test_none_type_is_false(self):
+        request = construct_dummy_request({'type': None})
+        response = valid_fuzzy_search_mode(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+    def test_empty_type_is_false(self):
+        request = construct_dummy_request({'type': ''})
+        response = valid_fuzzy_search_mode(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+    def test_invalid_mode_number_is_false(self):
+        request = construct_dummy_request({'type': -1})
+        response = valid_fuzzy_search_mode(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+    def test_valid_modes_returns_true(self):
+        for mode in [0, 1, 2, 3, 4, 5, 8, 9]:
+            request = construct_dummy_request({'type': mode})
+            response = valid_fuzzy_search_mode(request)
+            self.assertTrue(response)
+            self.assertIsInstance(response, bool)

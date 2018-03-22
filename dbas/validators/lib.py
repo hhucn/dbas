@@ -22,7 +22,7 @@ def add_error(request: Request, verbose_short: str, verbose_long: str = None, lo
     :param status_code: HTTP status code
     :return:
     """
-    error_msg = verbose_short if not verbose_long else verbose_short + ' , additional infos:' + verbose_long
+    error_msg = verbose_short if not verbose_long else verbose_short + ', additional infos:' + verbose_long
     logger('validation', _getframe(1).f_code.co_name + ': ' + error_msg, error=True)
     request.errors.add(location, verbose_short, verbose_long)
     request.errors.status = status_code

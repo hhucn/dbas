@@ -169,14 +169,14 @@ def main(global_config, **settings):
 
     # logic at the end, otherwise the * pattern will do shit
     config.add_route('discussion_support', '/discuss/{slug}/support/{arg_id_user:\d+}/{arg_id_sys:\d+}')
-    config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user:\d+}/{mode}/{arg_id_sys:\d+}')
+    config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user:\d+}/{relation}/{arg_id_sys:\d+}')
     config.add_route('discussion_justify_statement', '/discuss/{slug}/justify/{statement_id:\d+}/{attitude}')
     config.add_route('discussion_justify_argument', '/discuss/{slug}/justify/{argument_id:\d+}/{attitude}/{relation}')
 
     config.add_route('discussion_attitude', '/discuss/{slug}/attitude/{position_id:\d+}')
     config.add_route('discussion_choose', '/discuss/{slug}/choose/{is_argument}/{supportive}/{id:\d+}*pgroup_ids')
     config.add_route('discussion_jump', '/discuss/{slug}/jump/{arg_id:\d+}')
-    config.add_route('discussion_finish', '/discuss/{slug}/finish/{arg_id:\d+}')
+    config.add_route('discussion_finish', '/discuss/{slug}/finish/{argument_id:\d+}')
     config.add_route('discussion_exit', '/discuss/exit')
     config.add_route('discussion_start', '/discuss')
     config.add_route('discussion_start_with_slash', '/discuss/')

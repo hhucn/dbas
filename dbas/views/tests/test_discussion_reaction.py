@@ -1,7 +1,6 @@
 import unittest
 
-from pyramid import testing
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid import testing, httpexceptions
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, \
@@ -17,7 +16,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.default_request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
-            'mode': 'undermine',
+            'relation': 'undermine',
             'arg_id_sys': 16,
         })
         self.user_bjoern = DBDiscussionSession.query(User).get(4)
@@ -112,54 +111,42 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertEqual(len_db_reputation_after_first_visit, len_db_reputation_after_second_visit,
                          'No rep on second visit')
 
-    def test_page_failure_slug(self):
+    def test_invalid_slug_returns_error(self):
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-doggy_dog',
             'arg_id_user': 2,
-            'mode': 'undermine',
+            'relation': 'undermine',
             'arg_id_sys': 16,
         })
-        try:
-            response = discussion_reaction(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        response = discussion_reaction(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
-    def test_page_failure_argument1(self):
+    def test_user_argument_does_not_belong_to_issue_returns_error(self):
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 45,
-            'mode': 'undermine',
+            'relation': 'undermine',
             'arg_id_sys': 16,
         })
-        try:
-            response = discussion_reaction(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        response = discussion_reaction(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
-    def test_page_failure_argument2(self):
+    def test_sys_argument_does_not_belong_to_issue_returns_error(self):
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
-            'mode': 'undermine',
+            'relation': 'undermine',
             'arg_id_sys': 45,
         })
-        try:
-            response = discussion_reaction(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        response = discussion_reaction(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_page_failure_mode(self):
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
-            'mode': 'rebut',
+            'relation': 'invalid-relation',
             'arg_id_sys': 16,
         })
-        try:
-            response = discussion_reaction(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        response = discussion_reaction(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)

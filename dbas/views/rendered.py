@@ -40,7 +40,7 @@ from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_attitude, \
-    valid_relation, valid_argument, valid_statement
+    valid_relation, valid_argument, valid_statement, valid_reaction_arguments
 from dbas.validators.user import valid_user, invalid_user, valid_user_optional
 
 name = 'D-BAS'
@@ -619,7 +619,7 @@ def discussion_justify_statement(request) -> dict:
     """
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
-    Path: /discuss/{slug}/justify/{statement_id}/{attitude}*relation
+    Path: /discuss/{slug}/justify/{statement_id:\d+}/{attitude}
 
     :param request: request of the web server
     :return: dict
@@ -648,7 +648,7 @@ def discussion_justify_argument(request) -> dict:
     """
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
-    Path: /discuss/{slug}/justify/{statement_or_arg_id}/{attitude}*relation
+    Path: /discuss/{slug}/justify/{argument_id:\d+}/{attitude}/{relation}
 
     :param request: request of the web server
     :return: dict
@@ -672,28 +672,35 @@ def discussion_justify_argument(request) -> dict:
 
 
 @view_config(route_name='discussion_reaction', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional)
+@validate(check_authentication, valid_user_optional, valid_reaction_arguments, valid_relation)
 def discussion_reaction(request):
     """
     View configuration for discussion step, where we will ask the user for her reaction (support, undercut, rebut)...
 
-    Path: /discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys
+    Path: /discuss/{slug}/reaction/{arg_id_user:\d+}/{relation}/{arg_id_sys:\d+}
 
     :param request: request of the web server
     :return: dictionary
     """
-    logger('discussion_reaction', 'request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_reaction', 'request.validated: {}'.format(request.validated))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.reaction)
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
 
+    history = history_handler.handle_history(request, db_user, db_issue)
+    prepared_discussion = discussion.reaction(db_issue, db_user,
+                                              request.validated['arg_user'],
+                                              request.validated['arg_sys'],
+                                              request.validated['relation'],
+                                              history, request.path)
+    rdict = prepare_request_dict(request)
+
+    __modify_discussion_url(prepared_discussion)
     __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
 
     return prepared_discussion
 
 
-# support page
 @view_config(route_name='discussion_support', renderer='../templates/discussion.pt', permission='everybody')
 @validate(check_authentication, invalid_user)
 def discussion_support(request):
@@ -714,9 +721,8 @@ def discussion_support(request):
     return prepared_discussion
 
 
-# finish page
 @view_config(route_name='discussion_finish', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
+@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def discussion_finish(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
@@ -726,16 +732,22 @@ def discussion_finish(request):
     """
     logger('discussion_finish', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.finish)
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
 
-    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = discussion.finish(db_issue,
+                                            db_user,
+                                            request.validated['argument'],
+                                            history)
+
+    __modify_discussion_url(prepared_discussion)
+    __append_extras_dict(prepared_discussion, prepare_request_dict(request), request.authenticated_userid, True)
 
     return prepared_discussion
 
 
-# exit page
 @view_config(route_name='discussion_exit', renderer='../templates/exit.pt', permission='use')
 @validate(check_authentication, invalid_user)
 def discussion_exit(request):
@@ -758,7 +770,6 @@ def discussion_exit(request):
     return prepared_discussion
 
 
-# choosing page
 @view_config(route_name='discussion_choose', renderer='../templates/discussion.pt', permission='everybody')
 @validate(check_authentication, invalid_user)
 def discussion_choose(request):
@@ -781,7 +792,6 @@ def discussion_choose(request):
     return prepared_discussion
 
 
-# jump page
 @view_config(route_name='discussion_jump', renderer='../templates/discussion.pt', permission='everybody')
 @validate(check_authentication, invalid_user)
 def discussion_jump(request):

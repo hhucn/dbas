@@ -7,8 +7,6 @@ Collection of pyramids views components of D-BAS' core.
 from time import sleep
 
 from cornice.util import json_error
-
-from dbas.validators.lib import add_error
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
 from pyramid.security import forget
 from pyramid.view import view_config
@@ -43,12 +41,13 @@ from dbas.lib import escape_string, get_discussion_language
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.validators.common import valid_language, valid_lang_cookie_fallback
+from dbas.validators.common import valid_language, valid_lang_cookie_fallback, valid_fuzzy_search_mode
 from dbas.validators.core import has_keywords, has_maybe_keywords, validate
 from dbas.validators.database import valid_database_model
 from dbas.validators.discussion import valid_issue_by_id, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
     valid_statement, valid_argument, valid_premisegroup, valid_premisegroups, valid_statement_or_argument, \
-    valid_text_values, valid_text_length_of, valid_fuzzy_search_mode
+    valid_text_values, valid_text_length_of
+from dbas.validators.lib import add_error
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
 from dbas.validators.reviews import valid_review_reason, valid_not_executed_review, valid_uid_as_row_in_review_queue

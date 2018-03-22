@@ -2,7 +2,7 @@
 Discussion-related validators for statements, arguments, ...
 """
 from os import environ
-from typing import Union, Callable, Set
+from typing import Callable, Set, Union
 
 from pyramid.request import Request
 
@@ -242,50 +242,6 @@ def valid_relation(request):
     return True
 
 
-def __validate_enabled_entity(request: Request, db_issue: Union[Issue, None], entity, entity_id):
-    """
-    Get entity-id from path and query it in the database. Check if it belongs to the queried issue and if it is disabled.
-
-    :param request:
-    :param db_issue:
-    :param entity:
-    :param entity_id:
-    :return:
-    """
-    db_entity: entity = DBDiscussionSession.query(entity).get(entity_id)
-    if not db_entity:
-        add_error(request, 'Entity with id {} could not be found'.format(entity_id), location='path')
-        return None
-    if db_entity.is_disabled:
-        add_error(request, '{} no longer available'.format(db_entity.__class__.__name__), location='path',
-                  status_code=410)
-        return None
-    if db_issue and not db_entity.issue_uid == db_issue.uid:
-        add_error(request, '{} does not belong to issue'.format(db_entity.__class__.__name__), location='path')
-        return None
-    return db_entity
-
-
-def __valid_id_from_location(request, entity_name, location='path') -> int:
-    if location == 'path':
-        has_keywords_in_path((entity_name, int))(request)
-        return True
-    elif location == 'json_body':
-        if entity_name in request.json_body:
-            value = request.json_body.get(entity_name)
-            try:
-                request.validated[entity_name] = int(value)
-                return True
-            except ValueError:
-                add_error(request, '\'{}\' is not int parsable!'.format(value))
-                return False
-        else:
-            add_error(request, '{} is missing in json_body'.format(entity_name))
-            return False
-    else:
-        raise KeyError("location has to be one of: ('path', 'json_body')")
-
-
 def valid_statement(location, depends_on: Set[Callable[[Request], bool]] = set()) -> Callable[[Request], bool]:
     def inner(request):
         if depends_on and not all([dependence(request) for dependence in depends_on if depends_on]):
@@ -317,6 +273,27 @@ def valid_argument(location, depends_on: Set[Callable[[Request], bool]] = set())
         return False
 
     return inner
+
+
+def valid_reaction_arguments(request):
+    if not has_keywords_in_path(('arg_id_user', int), ('arg_id_sys', int))(request):
+        return False
+    if not valid_issue_by_slug(request):
+        return False
+
+    arg_id_user: int = request.validated['arg_id_user']
+    arg_id_sys: int = request.validated['arg_id_sys']
+    issue: Issue = request.validated['issue']
+
+    db_arg_user: Argument = __validate_enabled_entity(request, issue, Argument, arg_id_user)
+    db_arg_sys: Argument = __validate_enabled_entity(request, issue, Argument, arg_id_sys)
+
+    if not db_arg_sys or not db_arg_user:
+        return False
+
+    request.validated['arg_user'] = db_arg_user
+    request.validated['arg_sys'] = db_arg_sys
+    return True
 
 
 def valid_text_length_of(keyword):
@@ -430,18 +407,60 @@ def valid_text_values(request):
     return False
 
 
-def valid_fuzzy_search_mode(request):
-    mode = request.json_body['type']
-    if mode in [0, 1, 2, 3, 4, 5, 8, 9]:
-        request.validated['type'] = mode
-        return True
-    else:
-        add_error(request, 'invalid fuzzy mode')
-        return False
-
-
 # -----------------------------------------------------------------------------
 # Helper functions
+
+def __validate_enabled_entity(request: Request, db_issue: Union[Issue, None], entity, entity_id):
+    """
+    Get entity-id from path and query it in the database. Check if it belongs to the queried issue and if it is disabled.
+
+    :param request:
+    :param db_issue:
+    :param entity:
+    :param entity_id:
+    :return:
+    """
+    db_entity: entity = DBDiscussionSession.query(entity).get(entity_id)
+    if not db_entity:
+        add_error(request, 'Entity with id {} could not be found'.format(entity_id), location='path')
+        return None
+    if db_entity.is_disabled:
+        add_error(request, '{} no longer available'.format(db_entity.__class__.__name__), location='path',
+                  status_code=410)
+        return None
+    if db_issue and not db_entity.issue_uid == db_issue.uid:
+        add_error(request, '{} does not belong to issue'.format(db_entity.__class__.__name__), location='path')
+        return None
+    return db_entity
+
+
+def __valid_id_from_location(request, entity_name, location='path') -> int:
+    """
+    Find id in specified location.
+
+    :param request:
+    :param entity_name:
+    :param location:
+    :return:
+    """
+    if location == 'path':
+        has_keywords_in_path((entity_name, int))(request)
+        return True
+    elif location == 'json_body':
+        if entity_name in request.json_body:
+            value = request.json_body.get(entity_name)
+            try:
+                request.validated[entity_name] = int(value)
+                return True
+            except ValueError:
+                add_error(request, '\'{}\' is not int parsable!'.format(value))
+                return False
+        else:
+            add_error(request, '{} is missing in json_body'.format(entity_name))
+            return False
+    else:
+        raise KeyError("location has to be one of: ('path', 'json_body')")
+
 
 def __set_min_length_error(request, min_length):
     """

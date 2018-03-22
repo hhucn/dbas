@@ -7,6 +7,7 @@ Common, pure functions used by the API.
 
 import json
 import logging
+import warnings
 from functools import reduce
 from html import escape
 from typing import Tuple
@@ -23,6 +24,7 @@ def logger():
     """
     Create a logger.
     """
+    warnings.warn("Use DBAS-Logger instead", DeprecationWarning)
     log = logging.getLogger()
     log.setLevel(logging.DEBUG)
     return log
@@ -36,6 +38,7 @@ def escape_html(evil):
     :return: escaped string
     :rtype: str
     """
+    warnings.warn("There is escape_string() for it", DeprecationWarning)
     return escape(str(evil))
 
 
@@ -87,6 +90,7 @@ class HTTP204(exc.HTTPError):
 
     :return: JSON response
     """
+    warnings.warn("Use dbas.validators.lib/add_error instead", DeprecationWarning)
 
     def __init__(self, msg='No Content'):
         body = {'status': 204, 'message': msg}
@@ -101,6 +105,7 @@ class HTTP400(exc.HTTPError):
 
     :return: JSON response
     """
+    warnings.warn("Use dbas.validators.lib/add_error instead", DeprecationWarning)
 
     def __init__(self, msg='Bad Request'):
         body = {'status': 400, 'message': msg}
@@ -115,6 +120,7 @@ class HTTP401(exc.HTTPError):
 
     :return: JSON response
     """
+    warnings.warn("Use dbas.validators.lib/add_error instead", DeprecationWarning)
 
     def __init__(self, msg='Unauthorized'):
         body = {'status': 401, 'message': msg}
@@ -129,6 +135,7 @@ class HTTP501(exc.HTTPError):
 
     :return:
     """
+    warnings.warn("Use dbas.validators.lib/add_error instead", DeprecationWarning)
 
     def __init__(self, msg='Not Implemented'):
         body = {'status': 501, 'message': msg}

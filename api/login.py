@@ -8,6 +8,7 @@ import binascii
 import hashlib
 import json
 import os
+import warnings
 from datetime import datetime
 from typing import Union
 
@@ -32,12 +33,14 @@ def add_error(request, msg, status_code=400):
     :param status_code: http status code
     :return:
     """
+    warnings.warn("Use dbas.validators.lib/add_error instead.", DeprecationWarning)
     log.info("[API] " + msg)
     request.errors.add('body', msg)
     request.errors.status = status_code
 
 
 def __raise_401(msg):
+    warnings.warn("Use built-in Cornice functions instead.", DeprecationWarning)
     log.info("[API] " + msg)
     raise HTTP401(msg)
 
