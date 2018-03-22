@@ -407,16 +407,6 @@ def valid_text_values(request):
     return False
 
 
-def valid_fuzzy_search_mode(request):
-    mode = request.json_body['type']
-    if mode in [0, 1, 2, 3, 4, 5, 8, 9]:
-        request.validated['type'] = mode
-        return True
-    else:
-        add_error(request, 'invalid fuzzy mode')
-        return False
-
-
 # -----------------------------------------------------------------------------
 # Helper functions
 

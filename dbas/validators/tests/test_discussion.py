@@ -330,7 +330,7 @@ class TestValidIssueBySlug(TestCaseWithConfig):
         response = discussion.valid_issue_by_slug(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
-        self.assertIn('issue', request.validated)
+        self.assertIn('issue', request.validaﬂted)
 
     def test_disabled_slug_is_false(self):
         request = construct_dummy_request()
@@ -430,28 +430,6 @@ class TestValidStatementOrArgId(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
         self.assertIn('issue', request.validated)
         self.assertIn('stmt_or_arg', request.validated)
-
-    def test_valid_fuzzy_search_mode(self):
-        request = construct_dummy_request({'type': None})
-        response = discussion.valid_fuzzy_search_mode(request)
-        self.assertFalse(response)
-        self.assertIsInstance(response, bool)
-
-        request = construct_dummy_request({'type': ''})
-        response = discussion.valid_fuzzy_search_mode(request)
-        self.assertFalse(response)
-        self.assertIsInstance(response, bool)
-
-        request = construct_dummy_request({'type': -1})
-        response = discussion.valid_fuzzy_search_mode(request)
-        self.assertFalse(response)
-        self.assertIsInstance(response, bool)
-
-        for mode in [0, 1, 2, 3, 4, 5, 8, 9]:
-            request = construct_dummy_request({'type': mode})
-            response = discussion.valid_fuzzy_search_mode(request)
-            self.assertTrue(response)
-            self.assertIsInstance(response, bool)
 
 
 class TestValidReactionArguments(TestCaseWithConfig):

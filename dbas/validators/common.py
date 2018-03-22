@@ -66,3 +66,19 @@ def check_authentication(request):
             location=location,
             headers=headers
         )
+
+
+def valid_fuzzy_search_mode(request):
+    """
+    Validate fuzzy search modes.
+
+    :param request:
+    :return:
+    """
+    mode = request.json_body['type']
+    if mode in [0, 1, 2, 3, 4, 5, 8, 9]:
+        request.validated['type'] = mode
+        return True
+    else:
+        add_error(request, 'Invalid fuzzy mode')
+        return False
