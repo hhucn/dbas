@@ -490,7 +490,7 @@ def is_arguments_premise_in_edit_queue(db_argument: Argument, is_executed: bool 
     :param is_executed: Bool
     :return: Boolean
     """
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
     dbp_uid = [p.uid for p in db_premises]
     db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid.in_(dbp_uid),
                                                                          ReviewEdit.is_executed == is_executed).count()

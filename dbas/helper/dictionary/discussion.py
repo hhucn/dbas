@@ -706,7 +706,7 @@ class DiscussionDictHelper(object):
         :return: [dict()]
         """
         statement_list = list()
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=argument.premisegroup_uid).all()
 
         logger('DictionaryHelper', 'Argument ' + str(argument.uid) +
                ' conclusion: ' + str(argument.conclusion_uid) + '/' + str(argument.argument_uid) +
@@ -723,7 +723,7 @@ class DiscussionDictHelper(object):
         else:
             db_conclusion_argument = DBDiscussionSession.query(Argument).get(argument.argument_uid)
             db_conclusion_premises = DBDiscussionSession.query(Premise).filter_by(
-                premisesgroup_uid=db_conclusion_argument.premisesgroup_uid).all()
+                premisegroup_uid=db_conclusion_argument.premisegroup_uid).all()
             for conclusion_premise in db_conclusion_premises:
                 statement_list.append({'text': conclusion_premise.get_text(),
                                        'uid': conclusion_premise.statement_uid})

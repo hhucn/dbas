@@ -372,7 +372,7 @@ def __receive_urls_of_start_premises(new_argument_uids: list, db_conclusion: Sta
         url = _um.get_url_for_new_argument(new_argument_uids)
 
     else:
-        pgroups = [DBDiscussionSession.query(Argument).get(arg_uid).premisesgroup_uid for arg_uid in new_argument_uids]
+        pgroups = [DBDiscussionSession.query(Argument).get(arg_uid).premisegroup_uid for arg_uid in new_argument_uids]
         url = _um.get_url_for_choosing_premisegroup(False, supportive, db_conclusion.uid, pgroups)
 
     # send notifications and mails
@@ -445,16 +445,16 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
         if db_premise:
             # getting all groups, where the premise is member
             db_premisegroup = DBDiscussionSession.query(Premise).filter_by(
-                premisesgroup_uid=db_premise.premisesgroup_uid).all()
+                premisegroup_uid=db_premise.premisegroup_uid).all()
             groups = set()
             for group in db_premisegroup:
-                groups.add(group.premisesgroup_uid)
+                groups.add(group.premisegroup_uid)
             all_groups.append(groups)
     # if every set in this array has one common member, they are all in the same group
     if len(all_groups) > 0:
         intersec = set.intersection(*all_groups)
         for group in intersec:
-            db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group).all()
+            db_premise = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=group).all()
             if len(db_premise) == len(statements):
                 return DBDiscussionSession.query(PremiseGroup).get(group)
 
@@ -541,7 +541,7 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
            ', is_supportive: ' + str(is_supportive) +
            ', issue: ' + str(db_issue.uid))
 
-    new_argument = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == premisegroup_uid,
+    new_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == premisegroup_uid,
                                                               Argument.is_supportive == is_supportive,
                                                               Argument.conclusion_uid == conclusion_uid,
                                                               Argument.issue_uid == db_issue.uid).first()
@@ -554,7 +554,7 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
         DBDiscussionSession.flush()
 
         # TODO This should be redundant code! new_argument should be the new argument
-        new_argument = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == premisegroup_uid,
+        new_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == premisegroup_uid,
                                                                   Argument.is_supportive == is_supportive,
                                                                   Argument.author_uid == db_user.uid,
                                                                   Argument.conclusion_uid == conclusion_uid,

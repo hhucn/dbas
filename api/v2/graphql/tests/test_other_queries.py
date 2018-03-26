@@ -66,7 +66,7 @@ def test_query_premisegroups():
 def test_query_premises_by_premisegroup():
     query = """
         query {
-            premises (premisesgroupUid: 9) {
+            premises (premisegroupUid: 9) {
                 uid
             }
         }

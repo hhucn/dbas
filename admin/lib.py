@@ -19,7 +19,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate, \
     RevokedDuplicate, MarkedArgument, MarkedStatement, History, APIToken
-from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid, \
+from dbas.lib import get_text_for_premisegroup_uid, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -314,7 +314,7 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
     column_matcher = {
         'lang_uid': __resolve_lang_attribute,
         'password': __resolve_password_attribute,
-        'premisesgroup_uid': __resolve_premisesgroup_attribute,
+        'premisegroup_uid': __resolve_premisesgroup_attribute,
         'argument_uid': __resolve_argument_attribute,
         'textversion_uid': __resolve_textversion_attribute,
         'path': __resolve_path_attribute,
@@ -357,8 +357,8 @@ def __resolve_premisesgroup_attribute(attribute, main_page, db_languages, db_use
     text = ''
     uids = []
     if attribute is not None:
-        text = get_text_for_premisesgroup_uid(attribute)
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=attribute).join(Statement).all()
+        text = get_text_for_premisegroup_uid(attribute)
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=attribute).join(Statement).all()
         uids = [premise.statements.uid for premise in db_premises]
     tmp.append('{} - {} {}'.format(attribute, text, uids))
 
@@ -436,7 +436,7 @@ def delete_row(table_name, uids):
             uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
             DBDiscussionSession.query(table).filter_by(author_uid=uid).delete()
         elif table_name.lower() == 'premise':
-            DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
+            DBDiscussionSession.query(table).filter(Premise.premisegroup_uid == uids[0],
                                                     Premise.statement_uid == uids[1]).delete()
         else:
             print(table)
@@ -569,7 +569,7 @@ def __update_row(table, table_name, uids, update_dict):
         uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
         DBDiscussionSession.query(table).filter_by(author_uid=uid).update(update_dict)
     elif table_name.lower() == 'premise':
-        DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
+        DBDiscussionSession.query(table).filter(Premise.premisegroup_uid == uids[0],
                                                 Premise.statement_uid == uids[1]).update(update_dict)
     else:
         DBDiscussionSession.query(table).filter_by(uid=uids[0]).update(update_dict)

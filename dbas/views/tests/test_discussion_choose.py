@@ -59,7 +59,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
 
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
 
-        count = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=self.pgroup_uid).count()
+        count = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.pgroup_uid).count()
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
 
     def test_page_fail(self):

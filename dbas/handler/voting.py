@@ -70,7 +70,7 @@ def __add_click_for_argument(db_user, db_argument):
 
     # set vote for the argument (relation), its premisegroup and conclusion
     __click_argument(db_argument, db_user, True)
-    __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
+    __vote_premisesgroup(db_argument.premisegroup_uid, db_user, True)
     __click_statement(db_conclusion, db_user, db_argument.is_supportive)
 
     # add seen values
@@ -91,11 +91,11 @@ def __add_click_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_us
 
     # vote for the current argument
     __click_argument(db_argument, db_user, True)
-    __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
+    __vote_premisesgroup(db_argument.premisegroup_uid, db_user, True)
 
     # vote against the undercutted argument
     __click_argument(db_undercuted_arg_step_1, db_user, db_argument.is_supportive)
-    __vote_premisesgroup(db_undercuted_arg_step_1.premisesgroup_uid, db_user, True)
+    __vote_premisesgroup(db_undercuted_arg_step_1.premisegroup_uid, db_user, True)
     # if the conclusion of the undercutted argument was supported, we will attack it and vice versa
     __click_statement(db_undercuted_arg_step_1_concl, db_user, not db_argument.is_supportive)
 
@@ -118,12 +118,12 @@ def __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_us
     db_undercuted_arg_step_2 = DBDiscussionSession.query(Argument).get(db_undercuted_arg_step_1.argument_uid)
 
     # vote for the current argument
-    __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
+    __vote_premisesgroup(db_argument.premisegroup_uid, db_user, True)
     __click_argument(db_argument, db_user, True)
 
     # vote against the undercutted argument
     __click_argument(db_undercuted_arg_step_1, db_user, False)
-    __vote_premisesgroup(db_undercuted_arg_step_1.premisesgroup_uid, db_user, False)
+    __vote_premisesgroup(db_undercuted_arg_step_1.premisegroup_uid, db_user, False)
 
     # vote NOT for the undercutted undercut
 
@@ -189,7 +189,7 @@ def add_seen_argument(argument_uid, db_user):
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     __argument_seen_by_user(db_user, argument_uid)
 
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
     for p in db_premises:
         __statement_seen_by_user(db_user, p.statement_uid)
 
@@ -317,22 +317,22 @@ def __click_statement(statement, db_user, is_up_vote):
         DBDiscussionSession.flush()
 
 
-def __vote_premisesgroup(premisesgroup_uid, user, is_up_vote):
+def __vote_premisesgroup(premisegroup_uid, user, is_up_vote):
     """
     Calls statements-methods for every premise.
 
-    :param premisesgroup_uid: PremiseGroup.uid
+    :param premisegroup_uid: PremiseGroup.uid
     :param user: User
     :param is_up_vote: Boolean
     :return:
     """
-    if premisesgroup_uid is None or premisesgroup_uid == 0:
+    if premisegroup_uid is None or premisegroup_uid == 0:
         logger('VotingHelper', 'premisegroup_uid is None')
         return
 
-    logger('VotingHelper', 'premisegroup_uid {}, user {}'.format(premisesgroup_uid, user.nickname))
+    logger('VotingHelper', 'premisegroup_uid {}, user {}'.format(premisegroup_uid, user.nickname))
 
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
     for premise in db_premises:
         db_statement = DBDiscussionSession.query(Statement).get(premise.statement_uid)
         __click_statement(db_statement, user, is_up_vote)
@@ -379,15 +379,15 @@ def __statement_seen_by_user(db_user, statement_uid):
     return False
 
 
-def __premisegroup_seen_by_user(db_user, premisesgroup_uid):
+def __premisegroup_seen_by_user(db_user, premisegroup_uid):
     """
     Adds an reference for an seen premisesgroup
 
     :param db_user: current user
-    :param premisesgroup_uid: uid of the premisesgroup
+    :param premisegroup_uid: uid of the premisesgroup
     :return: True if the statement was not seen by the user (until now), false otherwise
     """
-    logger('VotingHelper', 'Check premises of group {}'.format(premisesgroup_uid))
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
+    logger('VotingHelper', 'Check premises of group {}'.format(premisegroup_uid))
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
     for premise in db_premises:
         __statement_seen_by_user(db_user, premise.statement_uid)

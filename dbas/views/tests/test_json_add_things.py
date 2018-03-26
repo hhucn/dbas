@@ -25,7 +25,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         db_new_arg = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=uid).order_by(
             Argument.uid.desc()).first()
         # delete content of premisegroup
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_new_arg.premisesgroup_uid).all()
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_new_arg.premisegroup_uid).all()
         for premise in db_premises:
             tmp = premise.statement_uid
             premise.statement_uid = 1
@@ -35,9 +35,9 @@ class AjaxAddThingsTest(unittest.TestCase):
             DBDiscussionSession.query(ClickedStatement).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=tmp).delete()
         # delete premisegroup
-        tmp = db_new_arg.premisesgroup_uid
-        db_new_arg.premisesgroup_uid = 1
-        DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=tmp).delete()
+        tmp = db_new_arg.premisegroup_uid
+        db_new_arg.premisegroup_uid = 1
+        DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=tmp).delete()
         DBDiscussionSession.query(PremiseGroup).filter_by(uid=tmp).delete()
         # delete argument
         DBDiscussionSession.query(MarkedArgument).filter_by(argument_uid=db_new_arg.uid).delete()

@@ -231,7 +231,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uid, db_user, lang, ma
     all_users = []
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     db_premises = DBDiscussionSession.query(Premise).filter_by(
-        premisesgroup_uid=db_argument.premisesgroup_uid).all()
+        premisegroup_uid=db_argument.premisegroup_uid).all()
     if not db_premises:
         statement_dict = {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
 
