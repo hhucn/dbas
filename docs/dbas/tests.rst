@@ -6,10 +6,10 @@ Test Documentation
 Requirements
 ============
 
-Ensure that the following tools are installed:
+Ensure that the following tools are installed (if you want to test locally, without docker:
 
 * Python >= 3.4
-* `pip <https://pip.pypa.io/en/stable/installing/>`_
+* `pipenv <https://pip.pypa.io/en/stable/installing/>`_
 * `splinter <https://splinter.readthedocs.org/en/latest/>`_
 
 
@@ -23,6 +23,11 @@ Webtests are end-to-end-full-stack tests.
 Execute these tests with::
 
     nosetests
+
+
+If you want to stay very clean on your machine, you could just run the tests in your container with::
+
+    docker exec dbas_web_1 nosetests
 
 
 Code
