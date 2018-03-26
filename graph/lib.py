@@ -181,7 +181,7 @@ def __get_statements_of_path_step(step):
     #         statements.append([int(splitted[2])])
     #     else:  # argument
     #         db_arg = DBDiscussionSession.query(Argument).get(splitted[2])
-    #         db_prems = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_arg.premisesgroup_uid)
+    #         db_prems = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_arg.premisegroup_uid)
     #         statements.append([premise.statement_uid for premise in db_prems])
 
     elif 'reaction' in step:
@@ -195,7 +195,7 @@ def __get_statements_of_path_step(step):
         target = db_argument.conclusion_uid
 
         for arg in collected_arguments:
-            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid)
+            db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=arg.premisegroup_uid)
             for premise in db_premises:
                 statements.append([premise.statement_uid, target])
                 logger('Graph.lib', 'append {} -> {}'.format(premise.statement_uid, target))
@@ -266,7 +266,7 @@ def __prepare_arguments_for_d3_data(db_arguments, edge_type):
         # we have an argument with:
         #  1) with one premise and no undercut is done on this argument
         #  2) with at least two premises  one conclusion or an undercut is done on this argument
-        db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisesgroup_uid == argument.premisesgroup_uid,
+        db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisegroup_uid == argument.premisegroup_uid,
                                                                 Premise.is_disabled == False).all()
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
         # target of the edge (case 1) or last edge (case 2)

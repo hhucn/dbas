@@ -38,26 +38,26 @@ class LibTests(unittest.TestCase):
 
         self.assertEqual(lib.python_datetime_pretty_print(ts='2016-01-01', lang=''), 'Jan. 01.')
 
-    def test_get_text_for_premisesgroup_uid(self):
+    def test_get_text_for_premisegroup_uid(self):
         # premise, which is in db_premises and premise_group contains only one premise
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=2), 'cats are very independent')
+        self.assertEqual(lib.get_text_for_premisegroup_uid(uid=2), 'cats are very independent')
 
         # premise_group with more than one premises
-        self.assertNotEqual(lib.get_text_for_premisesgroup_uid(uid=13), 'cats are fluffy und cats are small')
+        self.assertNotEqual(lib.get_text_for_premisegroup_uid(uid=13), 'cats are fluffy und cats are small')
 
-        val = lib.get_text_for_premisesgroup_uid(uid=12)
+        val = lib.get_text_for_premisegroup_uid(uid=12)
         sol1 = 'cats are fluffy and cats are small'
         sol2 = 'cats are small and cats are fluffy'
         self.assertIn(val, [sol1, sol2])
 
         # premise, which is not in db_premises
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), '')
+        self.assertEqual(lib.get_text_for_premisegroup_uid(uid=0), '')
 
         # negative uid
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=-1), '')
+        self.assertEqual(lib.get_text_for_premisegroup_uid(uid=-1), '')
 
         # language is empty string
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), '')
+        self.assertEqual(lib.get_text_for_premisegroup_uid(uid=0), '')
 
     def test_get_text_for_statement_uid(self):
         # id for no statement

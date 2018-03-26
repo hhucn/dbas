@@ -175,7 +175,7 @@ class ItemDictHelper(object):
 
             # get all premises in the premisegroup of this argument
             db_premises = DBDiscussionSession.query(Premise).filter_by(
-                premisesgroup_uid=argument.premisesgroup_uid).all()
+                premisegroup_uid=argument.premisegroup_uid).all()
             premise_array = []
             for premise in db_premises:
                 text = premise.get_text()
@@ -252,7 +252,7 @@ class ItemDictHelper(object):
                 add_seen_argument(argument_uid, db_user)
             # get all premises in this group
             db_premises = DBDiscussionSession.query(Premise).filter_by(
-                premisesgroup_uid=argument.premisesgroup_uid).all()
+                premisegroup_uid=argument.premisegroup_uid).all()
             premises_array = []
             for premise in db_premises:
                 text = premise.get_text()
@@ -320,7 +320,7 @@ class ItemDictHelper(object):
         db_arguments_not_disabled = get_not_disabled_arguments_as_query()
         if attack_type == 'undermine':
             db_premises = DBDiscussionSession.query(Premise).filter_by(
-                premisesgroup_uid=db_argument.premisesgroup_uid).all()
+                premisegroup_uid=db_argument.premisegroup_uid).all()
             for premise in db_premises:
                 arguments = db_arguments_not_disabled.filter(Argument.conclusion_uid == premise.statement_uid,
                                                              Argument.is_supportive == False,
@@ -456,11 +456,11 @@ class ItemDictHelper(object):
         :return: String
         """
         db_premises = DBDiscussionSession.query(Premise).filter_by(
-            premisesgroup_uid=db_argument.premisesgroup_uid).all()
+            premisegroup_uid=db_argument.premisegroup_uid).all()
         if len(db_premises) == 1:
             url = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, is_not_supportive)
         else:
-            uids = [db_argument.premisesgroup_uid]
+            uids = [db_argument.premisegroup_uid]
             if db_argument.conclusion_uid is not None:
                 url = _um.get_url_for_choosing_premisegroup(db_argument.is_supportive, db_argument.conclusion_uid, uids)
             else:
@@ -603,7 +603,7 @@ class ItemDictHelper(object):
                 url = _um.get_url_for_justifying_statement(db_user_argument.conclusion_uid, mode)
             else:
                 db_premises = DBDiscussionSession.query(Premise).filter_by(
-                    premisesgroup_uid=db_user_argument.premisesgroup_uid).all()
+                    premisegroup_uid=db_user_argument.premisegroup_uid).all()
                 db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: ELIMINATE RANDOM
                 url = _um.get_url_for_justifying_statement(db_premise.statement_uid, mode)
 
@@ -638,7 +638,7 @@ class ItemDictHelper(object):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for group_id in pgroup_ids:
-            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all()
+            db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=group_id).all()
             premise_array = []
             for premise in db_premises:
                 text = premise.get_text()
@@ -648,11 +648,11 @@ class ItemDictHelper(object):
 
             # get attack for each premise, so the urls will be unique
             logger('ItemDictHelper',
-                   'premisesgroup_uid: {}, concl_uid: {}, arg_uid: {}, is_supp: {}'.format(group_id,
-                                                                                           conclusion_uid,
-                                                                                           argument_uid,
-                                                                                           is_supportive))
-            db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == group_id,
+                   'premisegroup_uid: {}, concl_uid: {}, arg_uid: {}, is_supp: {}'.format(group_id,
+                                                                                          conclusion_uid,
+                                                                                          argument_uid,
+                                                                                          is_supportive))
+            db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == group_id,
                                                                      Argument.is_supportive == is_supportive)
             if conclusion_uid and not is_argument:
                 db_argument = db_argument.filter_by(conclusion_uid=conclusion_uid).first()
@@ -736,7 +736,7 @@ class ItemDictHelper(object):
         db_argument = DBDiscussionSession.query(Argument).get(arg_uid)
         _um = UrlManager(slug, history=self.path)
         db_premises = DBDiscussionSession.query(Premise).filter_by(
-            premisesgroup_uid=db_argument.premisesgroup_uid).all()
+            premisegroup_uid=db_argument.premisegroup_uid).all()
         forbidden_attacks = rs.get_forbidden_attacks_based_on_history(self.path)
 
         db_undercutted_arg = None

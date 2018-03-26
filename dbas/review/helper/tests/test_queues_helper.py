@@ -66,7 +66,7 @@ class ReviewQueuesHelperTest(unittest.TestCase):
         for review in db_review:
             db_p = DBDiscussionSession.query(Premise).filter_by(statement_uid=review.statement_uid).first()
             if db_p:
-                db_arg = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=db_p.premisesgroup_uid).first()
+                db_arg = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=db_p.premisegroup_uid).first()
                 self.assertTrue(rqh.is_arguments_premise_in_edit_queue(db_arg, False))
                 break
 

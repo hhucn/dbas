@@ -176,7 +176,7 @@ class PremiseGroupGraph(SQLAlchemyObjectType):
     statements = StatementGraph.plural()
 
     def resolve_statements(self, info, **kwargs):
-        premises = DBDiscussionSession.query(Premise).filter(Premise.premisesgroup_uid == self.uid).all()
+        premises = DBDiscussionSession.query(Premise).filter(Premise.premisegroup_uid == self.uid).all()
         uids = set([premise.statement_uid for premise in premises])
         query = StatementGraph.get_query(info)
 
@@ -211,7 +211,7 @@ class Query(graphene.ObjectType):
     issue = IssueGraph.singular()
     issues = IssueGraph.plural()
     premise = graphene.Field(PremiseGraph, uid=graphene.Int())
-    premises = graphene.List(PremiseGraph, premisesgroup_uid=graphene.Int())
+    premises = graphene.List(PremiseGraph, premisegroup_uid=graphene.Int())
     premisegroup = graphene.Field(PremiseGroupGraph, uid=graphene.Int())
     premisegroups = graphene.List(PremiseGroupGraph)
     user = graphene.Field(UserGraph)

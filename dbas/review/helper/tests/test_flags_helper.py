@@ -79,15 +79,15 @@ class TestReviewFlagHelper(unittest.TestCase):
         success, info, error = rf_helper.flag_statement_for_merge_or_split(keys[1], 11, ['value1', 'value2'], self.christian)
         self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
 
-        tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=11).first()
+        tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=11).first()
         if tmp:
             DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=tmp.uid).delete()
-            DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=11).delete()
+            DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=11).delete()
 
-        tmp = DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).first()
+        tmp = DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=11).first()
         if tmp:
             DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=tmp.uid).delete()
-            DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).delete()
+            DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=11).delete()
 
         DBDiscussionSession.flush()
         transaction.commit()
@@ -113,15 +113,15 @@ class TestReviewFlagHelper(unittest.TestCase):
         success, info, error = rf_helper.flag_pgroup_for_merge_or_split(keys[1], 11, self.christian)
         self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
 
-        tmp = DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).first()
+        tmp = DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=11).first()
         if tmp:
             DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=tmp.uid).delete()
-            DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).delete()
+            DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=11).delete()
 
-        tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=11).first()
+        tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=11).first()
         if tmp:
             DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=tmp.uid).delete()
-            DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=11).delete()
+            DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=11).delete()
         DBDiscussionSession.flush()
         transaction.commit()
 

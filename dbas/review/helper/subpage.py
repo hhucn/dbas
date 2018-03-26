@@ -14,7 +14,7 @@ from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimizatio
     LastReviewerSplit, Premise, ReviewMergeValues, ReviewSplitValues
 from dbas.lib import get_all_arguments_by_statement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, \
-    get_text_for_premisesgroup_uid, get_profile_picture
+    get_text_for_premisegroup_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.review.helper.queues import review_queues
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
@@ -486,8 +486,8 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
         }
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
-    premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=rnd_review.premisesgroup_uid).all()
-    text = get_text_for_premisesgroup_uid(rnd_review.premisesgroup_uid)
+    premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=rnd_review.premisegroup_uid).all()
+    text = get_text_for_premisegroup_uid(rnd_review.premisegroup_uid)
     db_review_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=rnd_review.uid).all()
     if db_review_values:
         splitted_text = [rsv.content for rsv in db_review_values]
@@ -556,7 +556,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
         }
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
-    premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=rnd_review.premisesgroup_uid).all()
+    premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=rnd_review.premisegroup_uid).all()
     text = [premise.get_text() for premise in premises]
     db_review_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=rnd_review.uid).all()
 
@@ -568,7 +568,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
         merged_text = ' {} '.format(aand).join([rsv.content for rsv in db_review_values])
         pgroup_only = False
     else:
-        merged_text = get_text_for_premisesgroup_uid(rnd_review.premisesgroup_uid)
+        merged_text = get_text_for_premisegroup_uid(rnd_review.premisegroup_uid)
         pgroup_only = True
     issue = DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseMerge)
@@ -641,7 +641,7 @@ def __get_text_parts_of_argument(argument):
     ret_list = list()
 
     # get premise of current argument
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=argument.premisegroup_uid).all()
     premises_uids = [premise.uid for premise in db_premises]
     for uid in premises_uids:
         logger('ReviewSubpagerHelper', 'add premise of argument ' + str(argument.uid))
@@ -658,7 +658,7 @@ def __get_text_parts_of_argument(argument):
         while db_conclusions_argument.argument_uid is not None:  # get further conclusions arguments
 
             # get premise of conclusions arguments
-            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+            db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=argument.premisegroup_uid).all()
             premises_uids = [premise.uid for premise in db_premises]
             for uid in premises_uids:
                 text = get_text_for_statement_uid(uid)

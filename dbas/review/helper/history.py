@@ -15,7 +15,7 @@ from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, Rev
     ReviewMergeValues, StatementReplacementsByPremiseGroupSplit, StatementReplacementsByPremiseGroupMerge, \
     ArgumentsAddedByPremiseGroupSplit
 from dbas.lib import get_text_for_argument_uid, get_profile_picture, get_text_for_statement_uid, \
-    get_text_for_premisesgroup_uid
+    get_text_for_premisegroup_uid
 from dbas.logger import logger
 from dbas.review.helper.main import en_or_disable_object_of_review
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
@@ -207,7 +207,7 @@ def __get_executed_review_element_of(table, main_page, review, last_review_type,
     if table == 'duplicates':
         full_text = get_text_for_statement_uid(review.duplicate_statement_uid)
     elif table in ['splits', 'merges']:
-        full_text = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
+        full_text = get_text_for_premisegroup_uid(review.premisegroup_uid)
     elif review.statement_uid is None:
         full_text = get_text_for_argument_uid(review.argument_uid)
     else:
@@ -339,7 +339,7 @@ def __handle_table_of_review_duplicate(review, length, entry):
 
 
 def __handle_table_of_review_split(review, length, entry):
-    oem_fulltext = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
+    oem_fulltext = get_text_for_premisegroup_uid(review.premisegroup_uid)
     full_text = oem_fulltext
     db_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=review.uid).all()
     if db_values:
@@ -352,7 +352,7 @@ def __handle_table_of_review_split(review, length, entry):
 
 
 def __handle_table_of_review_merge(review, length, entry):
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=review.premisesgroup_uid).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=review.premisegroup_uid).all()
     oem_fulltext = str([get_text_for_statement_uid(p.statement_uid) for p in db_premises])
     full_text = oem_fulltext
     db_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=review.uid).all()
@@ -550,7 +550,7 @@ def __undo_premisegroups(pgroups_splitted_or_merged, replacements):
         old_pgroup = element.old_premisegroup_uid
         new_pgroup = element.new_premisegroup_uid
 
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=new_pgroup).all()
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=new_pgroup).all()
         for argument in db_arguments:
             logger('review_history_helper',
                    'reset arguments {} pgroup from {} back to {}'.format(argument.uid, new_pgroup, old_pgroup))

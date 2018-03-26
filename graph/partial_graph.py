@@ -37,13 +37,13 @@ def get_partial_graph_for_statement(uid, issue, path):
     # special case - dont know branche
     if 'justify' in path and '/d' in path:
         db_argument = DBDiscussionSession.query(Argument).get(uid)
-        db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
+        db_premise = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).first()
         uid = db_premise.statement_uid
 
     # if there is no justify, we have an argument
     if 'justify' not in path and len(path) > 1:
         db_argument = DBDiscussionSession.query(Argument).get(uid)
-        db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
+        db_premise = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).first()
         uid = db_premise.statement_uid
     db_arguments = get_all_arguments_by_statement(uid)
 
@@ -237,7 +237,7 @@ def __append_todos_for_getting_argument_net_with_premises(uid, db_argument, list
     :param list_dones:
     :return:
     """
-    db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisesgroup_uid == db_argument.premisesgroup_uid,
+    db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisegroup_uid == db_argument.premisegroup_uid,
                                                             Premise.is_disabled == False).all()
     db_premise_args = []
     for premise in db_premises:
@@ -278,7 +278,7 @@ def __get_all_statements_for_args(graph_arg_list):
 
     for arg in graph_arg_list:
         # save all premises
-        db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisesgroup_uid == arg.premisesgroup_uid,
+        db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisegroup_uid == arg.premisegroup_uid,
                                                                 Premise.is_disabled == False).all()
 
         # save premises

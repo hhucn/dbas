@@ -170,7 +170,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     premises = premises.all()
 
     for p in premises:
-        return_array += __get_argument_of_premisegroup(p.premisesgroup_uid, include_disabled)
+        return_array += __get_argument_of_premisegroup(p.premisegroup_uid, include_disabled)
 
     db_undercuts = []
     for arg in return_array:
@@ -186,15 +186,15 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     return return_array if len(return_array) > 0 else None
 
 
-def __get_argument_of_premisegroup(premisesgroup_uid, include_disabled):
+def __get_argument_of_premisegroup(premisegroup_uid, include_disabled):
     """
     Returns all arguments with the given premisegroup
 
-    :param premisesgroup_uid: PremisgGroup.uid
+    :param premisegroup_uid: PremisgGroup.uid
     :param include_disabled: Boolean
     :return: list of Arguments
     """
-    db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premisesgroup_uid)
+    db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=premisegroup_uid)
     if not include_disabled:
         db_arguments = db_arguments.filter_by(is_disabled=False)
     return db_arguments.all() if db_arguments else []
@@ -332,7 +332,7 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
 
     if db_user:
         author_uid = db_user.uid
-        pgroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisesgroup_uid)
+        pgroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisegroup_uid)
         marked_argument = DBDiscussionSession.query(MarkedArgument).filter_by(
             argument_uid=uid,
             author_uid=db_user.uid).first()
@@ -632,16 +632,16 @@ def __build_nested_argument(arg_array: List[Argument], first_arg_by_user, user_c
     return ret_value.replace('  ', ' ')
 
 
-def get_text_for_premisesgroup_uid(uid):
+def get_text_for_premisegroup_uid(uid):
     """
     Returns joined text of the premise group and the premise ids
 
-    :param uid: premisesgroup_uid
+    :param uid: premisegroup_uid
     :return: text, uids
     """
     warnings.warn("Use PremiseGroup.get_text() instead.", DeprecationWarning)
 
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).join(Statement).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=uid).join(Statement).all()
     if len(db_premises) == 0:
         return ''
     texts = [premise.get_text() for premise in db_premises]
@@ -1036,7 +1036,7 @@ def __get_all_premises_of_argument(argument):
     :return: list()
     """
     ret_list = []
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).join(
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=argument.premisegroup_uid).join(
         Statement).all()
     for premise in db_premises:
         ret_list.append(premise)

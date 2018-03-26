@@ -175,8 +175,8 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
     # Query all recently stored premises (internally: statements) and collect their ids
     # This is a bad workaround, let's just think about it in future.
     for uid in new_argument_uids:
-        current_pgroup = DBDiscussionSession.query(Argument).get(uid).premisesgroup_uid
-        current_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_pgroup).all()
+        current_pgroup = DBDiscussionSession.query(Argument).get(uid).premisegroup_uid
+        current_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=current_pgroup).all()
         for premise in current_premises:
             statement_uids.append(premise.statement_uid)
 
@@ -229,13 +229,13 @@ def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_ar
     pgroups = []
     url = ''
     for uid in new_argument_uids:
-        pgroups.append(DBDiscussionSession.query(Argument).get(uid).premisesgroup_uid)
+        pgroups.append(DBDiscussionSession.query(Argument).get(uid).premisegroup_uid)
 
     current_argument = DBDiscussionSession.query(Argument).get(arg_id)
     # relation to the arguments premise group
     if attack_type == 'undermine' or attack_type == 'support':  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
         db_premise = DBDiscussionSession.query(Premise).filter_by(
-            premisesgroup_uid=current_argument.premisesgroup_uid).first()
+            premisegroup_uid=current_argument.premisegroup_uid).first()
         db_statement = DBDiscussionSession.query(Statement).get(db_premise.statement_uid)
         url = _um.get_url_for_choosing_premisegroup(False, supportive, db_statement.uid, pgroups)
 

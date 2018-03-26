@@ -14,7 +14,7 @@ from dbas.database.discussion_model import User, LastReviewerDelete, Argument, P
     ArgumentsAddedByPremiseGroupSplit, Issue
 from dbas.handler.statements import correct_statement
 from dbas.handler.statements import set_statement
-from dbas.lib import get_all_arguments_by_statement, get_text_for_premisesgroup_uid
+from dbas.lib import get_all_arguments_by_statement, get_text_for_premisegroup_uid
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag, \
     rep_reason_success_duplicate, rep_reason_bad_duplicate, rep_reason_success_edit, rep_reason_bad_edit
@@ -548,7 +548,7 @@ def __en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     db_argument = DBDiscussionSession.query(Argument).get(review.argument_uid)
     db_argument.set_disable(is_disabled)
     DBDiscussionSession.add(db_argument)
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
 
     for premise in db_premises:
         db_statement = DBDiscussionSession.query(Statement).get(premise.statement_uid)
@@ -608,7 +608,7 @@ def __bend_objects_of_duplicate_review(db_review):
             used = True
 
         # recalibrate premises
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=argument.premisegroup_uid).all()
         for premise in db_premises:
             if premise.statement_uid == db_review.duplicate_statement_uid:
                 tmp = '{}, bend premise {} from {} to {}'.format(text, premise.uid, premise.statement_uid,
@@ -649,7 +649,7 @@ def __merge_premisegroup(review):
     """
     db_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=review.uid).all()
     db_old_premises = DBDiscussionSession.query(Premise).filter_by(
-        premisesgroup_uid=review.premisesgroup_uid).all()
+        premisegroup_uid=review.premisegroup_uid).all()
     db_issue = DBDiscussionSession.query(Issue).get(db_old_premises[0].issue_uid)
     db_first_old_statement = DBDiscussionSession.query(Statement).get(db_old_premises[0].uid)
     discussion_lang = db_first_old_statement.lang
@@ -662,7 +662,7 @@ def __merge_premisegroup(review):
         new_text = ' {} '.format(translator_discussion.get(_.aand)).join(texts)
     else:
         logger('review_main_helper', 'just merge the premisegroup')
-        new_text = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
+        new_text = get_text_for_premisegroup_uid(review.premisegroup_uid)
 
     # now we have new text as a variable, let's set the statement
     new_statement, tmp = set_statement(new_text, db_user, db_first_old_statement.is_position, db_issue)
@@ -680,17 +680,17 @@ def __merge_premisegroup(review):
            'Added new premise {} with pgroup {}'.format(db_new_premise.uid, db_new_premisegroup.uid))
 
     # swap the premisegroup occurence in every argument
-    db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=review.premisesgroup_uid).all()
+    db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=review.premisegroup_uid).all()
     for argument in db_arguments:
         logger('review_main_helper',
-               'Reset argument {} from pgroup {} to new pgroup {}'.format(argument.uid, argument.premisesgroup_uid,
+               'Reset argument {} from pgroup {} to new pgroup {}'.format(argument.uid, argument.premisegroup_uid,
                                                                           db_new_premisegroup.uid))
         argument.set_premisegroup(db_new_premisegroup.uid)
         DBDiscussionSession.add(argument)
         DBDiscussionSession.flush()
 
     # add swap to database
-    DBDiscussionSession.add(PremiseGroupMerged(review.uid, review.premisesgroup_uid, db_new_premisegroup.uid))
+    DBDiscussionSession.add(PremiseGroupMerged(review.uid, review.premisegroup_uid, db_new_premisegroup.uid))
 
     # swap the conclusion in every argument
     old_statement_ids = [p.statement_uid for p in db_old_premises]
@@ -721,7 +721,7 @@ def __split_premisegroup(review):
     """
     db_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=review.uid).all()
     db_old_premises = DBDiscussionSession.query(Premise).filter_by(
-        premisesgroup_uid=review.premisesgroup_uid).all()
+        premisegroup_uid=review.premisegroup_uid).all()
     db_issue = DBDiscussionSession.query(Issue).get(db_old_premises[0].issue_uid)
     db_old_statement_ids = [p.statement_uid for p in db_old_premises]
     db_first_old_statement = DBDiscussionSession.query(Statement).get(db_old_premises[0].uid)
@@ -752,10 +752,10 @@ def __split_premisegroup(review):
         new_premise_ids.append(db_new_premise.uid)
 
         # note new added pgroup
-        DBDiscussionSession.add(PremiseGroupSplitted(review.uid, review.premisesgroup_uid, db_new_premisegroup.uid))
+        DBDiscussionSession.add(PremiseGroupSplitted(review.uid, review.premisegroup_uid, db_new_premisegroup.uid))
 
     # swap the premisegroup occurence in every argument and add new arguments for the new premises
-    db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=review.premisesgroup_uid).all()
+    db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=review.premisegroup_uid).all()
     for argument in db_arguments:
         argument.set_premisegroup(new_premisegroup_ids[0])
         DBDiscussionSession.add(argument)
@@ -779,7 +779,7 @@ def __split_premisegroup(review):
             DBDiscussionSession.flush()
 
             for statement_uid in new_statements_uids[1:]:
-                db_argument = Argument(argument.premisesgroup_uid, argument.is_supportive, argument.author_uid,
+                db_argument = Argument(argument.premisegroup_uid, argument.is_supportive, argument.author_uid,
                                        argument.issue_uid, statement_uid, argument.argument_uid, argument.is_disabled)
                 DBDiscussionSession.add(db_argument)
                 DBDiscussionSession.add(

@@ -147,8 +147,8 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
         return None
 
     for relation in db_related_arguments:
-        if relation.premisesgroup_uid not in given_relations:
-            given_relations.add(relation.premisesgroup_uid)
+        if relation.premisegroup_uid not in given_relations:
+            given_relations.add(relation.premisegroup_uid)
             tmp_dict = dict()
             tmp_dict['id'] = relation.uid
             tmp_dict['text'] = relation.get_premisegroup_text()

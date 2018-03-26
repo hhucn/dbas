@@ -113,7 +113,7 @@ def check_belonging_of_premisegroups(issue_uid, premisegroups):
     """
     all_premises = []
     for g in premisegroups:
-        all_premises += DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=g).all()
+        all_premises += DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=g).all()
     related = [premise.issue_uid == issue_uid for premise in all_premises]
     return all(related)
 
@@ -148,7 +148,7 @@ def related_with_undermine(attacked_arg_uid, attacking_arg_uid):
         return False
 
     attacked_args = DBDiscussionSession.query(Argument).filter_by(uid=attacked_arg_uid)
-    undermines = [attacked_args.filter_by(premisesgroup_uid=p.premisesgroup_uid).first() for p in db_attacked_premises]
+    undermines = [attacked_args.filter_by(premisegroup_uid=p.premisegroup_uid).first() for p in db_attacked_premises]
     return any(undermines)
 
 

@@ -735,7 +735,7 @@ class PremiseGroup(DiscussionBase):
         self.author_uid = author
 
     def get_text(self):
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=self.uid).join(Statement).all()
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()
         texts = [premise.get_text() for premise in db_premises]
         lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
         return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
@@ -748,7 +748,7 @@ class Premise(DiscussionBase):
     """
     __tablename__ = 'premises'
     uid = Column(Integer, primary_key=True)
-    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     statement_uid = Column(Integer, ForeignKey('statements.uid'))
     is_negated = Column(Boolean, nullable=False)
     author_uid = Column(Integer, ForeignKey('users.uid'))
@@ -756,7 +756,7 @@ class Premise(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
+    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
     statements = relationship('Statement', foreign_keys=[statement_uid])
     users = relationship('User', foreign_keys=[author_uid])
     issues = relationship('Issue', foreign_keys=[issue_uid])
@@ -773,7 +773,7 @@ class Premise(DiscussionBase):
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisesgroup_uid = premisesgroup
+        self.premisegroup_uid = premisesgroup
         self.statement_uid = statement
         self.is_negated = is_negated
         self.author_uid = author
@@ -806,7 +806,7 @@ class Premise(DiscussionBase):
         :param premisegroup: Premisegroup.uid
         :return: None
         """
-        self.premisesgroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup
 
     def get_text(self, html: bool = False) -> str:
         """
@@ -828,7 +828,7 @@ class Premise(DiscussionBase):
         :return: dict()
         """
         return {
-            'premisesgroup_uid': self.premisesgroup_uid,
+            'premisegroup_uid': self.premisegroup_uid,
             'statement_uid': self.statement_uid,
             'is_negated': self.is_negated,
             'author_uid': self.author_uid,
@@ -846,7 +846,7 @@ class Argument(DiscussionBase):
     """
     __tablename__ = 'arguments'
     uid = Column(Integer, primary_key=True)
-    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     conclusion_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
     argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
     is_supportive = Column(Boolean, nullable=False)
@@ -855,7 +855,7 @@ class Argument(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
+    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
     conclusion = relationship('Statement', foreign_keys=[conclusion_uid])
     users = relationship('User', foreign_keys=[author_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
@@ -875,7 +875,7 @@ class Argument(DiscussionBase):
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisesgroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup
         self.conclusion_uid = None if conclusion == 0 else conclusion
         self.argument_uid = None if argument == 0 else argument
         self.is_supportive = is_supportive
@@ -910,7 +910,7 @@ class Argument(DiscussionBase):
         :param premisegroup: PremiseGroup.uid
         :return: None
         """
-        self.premisesgroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup
 
     def set_disable(self, is_disabled):
         """
@@ -943,7 +943,7 @@ class Argument(DiscussionBase):
         return db_statement.get_text(html)
 
     def get_premisegroup_text(self) -> str:
-        db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisesgroup_uid)
+        db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisegroup_uid)
         return db_premisegroup.get_text()
 
     def to_dict(self):
@@ -954,7 +954,7 @@ class Argument(DiscussionBase):
         """
         return {
             'uid': self.uid,
-            'premisesgroup_uid': self.premisesgroup_uid,
+            'premisegroup_uid': self.premisegroup_uid,
             'conclusion_uid': self.conclusion_uid,
             'argument_uid': self.argument_uid,
             'is_supportive': self.is_supportive,
@@ -1513,13 +1513,13 @@ class ReviewMerge(DiscussionBase):
     __tablename__ = 'review_merge'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False, default=False)
     is_revoked = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
+    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
     def __init__(self, detector, premisegroup, is_executed=False, is_revoked=False):
         """
@@ -1531,7 +1531,7 @@ class ReviewMerge(DiscussionBase):
         :param is_revoked: Boolean
         """
         self.detector_uid = detector
-        self.premisesgroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked
@@ -1570,13 +1570,13 @@ class ReviewSplit(DiscussionBase):
     __tablename__ = 'review_split'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False, default=False)
     is_revoked = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
+    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
     def __init__(self, detector, premisegroup, is_executed=False, is_revoked=False):
         """
@@ -1588,7 +1588,7 @@ class ReviewSplit(DiscussionBase):
         :param is_revoked: Boolean
         """
         self.detector_uid = detector
-        self.premisesgroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked

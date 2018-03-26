@@ -263,7 +263,7 @@ def __is_argument_flagged_for_merge(pgroup_uid, is_executed=False, is_revoked=Fa
     :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewMerge).filter(
-        ReviewMerge.premisesgroup_uid == pgroup_uid,
+        ReviewMerge.premisegroup_uid == pgroup_uid,
         ReviewMerge.is_executed == is_executed,
         ReviewMerge.is_revoked == is_revoked).all()
     return len(db_review) > 0
@@ -280,7 +280,7 @@ def __is_argument_flagged_for_merge_by_user(pgroup_uid, user_uid, is_executed=Fa
     :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewMerge).filter(
-        ReviewMerge.premisesgroup_uid == pgroup_uid,
+        ReviewMerge.premisegroup_uid == pgroup_uid,
         ReviewMerge.is_executed == is_executed,
         ReviewMerge.detector_uid == user_uid,
         ReviewMerge.is_revoked == is_revoked).all()
@@ -297,7 +297,7 @@ def __is_argument_flagged_for_split(pgroup_uid, is_executed=False, is_revoked=Fa
     :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewSplit).filter(
-        ReviewSplit.premisesgroup_uid == pgroup_uid,
+        ReviewSplit.premisegroup_uid == pgroup_uid,
         ReviewSplit.is_executed == is_executed,
         ReviewSplit.is_revoked == is_revoked).all()
     return len(db_review) > 0
@@ -314,7 +314,7 @@ def __is_argument_flagged_for_split_by_user(pgroup_uid, user_uid, is_executed=Fa
     :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewSplit).filter(
-        ReviewSplit.premisesgroup_uid == pgroup_uid,
+        ReviewSplit.premisegroup_uid == pgroup_uid,
         ReviewSplit.is_executed == is_executed,
         ReviewSplit.detector_uid == user_uid,
         ReviewSplit.is_revoked == is_revoked).all()

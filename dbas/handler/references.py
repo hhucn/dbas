@@ -29,7 +29,7 @@ def get_references_for_argument(uid, main_page):
         return {}, {}
 
     db_premises = get_not_disabled_premises_as_query()
-    db_premises = db_premises.filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+    db_premises = db_premises.filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
 
     data = {}
     text = {}
