@@ -1,7 +1,6 @@
 """
 Core validation class for validators.
 """
-
 from typing import Tuple
 
 from cornice import Errors
@@ -141,7 +140,6 @@ class validate(object):
 
             if len(request.errors) > 0:
                 return json_error(request)
-
             return func(request)
 
         return inner

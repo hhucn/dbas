@@ -29,6 +29,8 @@ class TestCaseWithConfig(unittest.TestCase):
         self.statement_argument_town: Statement = DBDiscussionSession.query(Statement).get(39)
         self.argument_town: Argument = DBDiscussionSession.query(Argument).get(34)
         self.argument_cat_or_dog: Argument = DBDiscussionSession.query(Argument).get(2)
+        self.disabled_argument_for_cat_or_dog: Argument = DBDiscussionSession.query(Argument)\
+            .filter_by(issue_uid=self.issue_cat_or_dog.uid, is_disabled=True).first()
         self.user_anonymous = DBDiscussionSession.query(User).get(1)
         self.user_tobi = DBDiscussionSession.query(User).get(2)
         self.user_christian = DBDiscussionSession.query(User).get(3)

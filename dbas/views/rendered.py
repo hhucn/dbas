@@ -41,7 +41,7 @@ from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_attitude, \
     valid_relation, valid_argument, valid_statement, valid_reaction_arguments
-from dbas.validators.user import valid_user, valid_user_optional, valid_user_optional
+from dbas.validators.user import valid_user, valid_user_optional
 
 name = 'D-BAS'
 version = '1.6.0'

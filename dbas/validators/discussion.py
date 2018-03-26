@@ -166,39 +166,6 @@ def valid_position(request):
     return False
 
 
-def valid_statement_or_arg_id(request):
-    """
-    Check if given Statement or Argument belongs to the queried issue and return the Statement.
-
-    .. note:: Maybe we need to return the argument too? Currently it is only the statement which is returned.
-
-    :param request: Request
-    :return:
-    """
-    if not valid_issue_by_slug(request):
-        return False
-
-    db_issue: Issue = request.validated['issue']
-    if has_keywords_in_path(('statement_or_arg_id', int))(request):
-        statement_or_arg_id = request.validated['statement_or_arg_id']
-        db_statement: Statement = DBDiscussionSession.query(Statement).get(statement_or_arg_id)
-        if not db_statement.issue_uid == db_issue.uid:
-            add_error(request,
-                      'Statement / Argument with uid {} does not belong to the queried issue'.format(db_statement.uid),
-                      'db_issue.uid = {}, stmt = {}, issue = {}'.format(db_issue.uid,
-                                                                        db_statement.issue_uid,
-                                                                        db_issue.title),
-                      location='path')
-            return False
-        if db_statement.is_disabled:
-            add_error(request, 'Statement / Argument is disabled', location='path', status_code=410)
-            return False
-
-        request.validated['stmt_or_arg']: Statement = db_statement
-        return True
-    return False
-
-
 def valid_attitude(request):
     """
     Check if given statement is a position and belongs to the queried issue.
@@ -444,8 +411,8 @@ def __valid_id_from_location(request, entity_name, location='path') -> int:
     :return:
     """
     if location == 'path':
-        has_keywords_in_path((entity_name, int))(request)
-        return True
+        success = has_keywords_in_path((entity_name, int))(request)
+        return success
     elif location == 'json_body':
         if entity_name in request.json_body:
             value = request.json_body.get(entity_name)

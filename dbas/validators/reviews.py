@@ -68,11 +68,6 @@ def valid_uid_as_row_in_review_queue(request):
     queue = request.json_body.get('queue', '')
     model = model_mapping.get(queue)
 
-    from pprint import pprint
-    pprint(queue)
-    pprint(uid)
-    pprint(model)
-
     db_review = DBDiscussionSession.query(model).get(uid) if is_integer(uid) and model else None
     if db_review:
         request.validated['queue'] = queue
