@@ -51,7 +51,7 @@ from dbas.validators.lib import add_error
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
 from dbas.validators.reviews import valid_review_reason, valid_not_executed_review, valid_uid_as_row_in_review_queue
-from dbas.validators.user import valid_user, invalid_user, valid_user_as_author, \
+from dbas.validators.user import valid_user, valid_user_optional, valid_user_as_author, \
     valid_user_as_author_of_statement, valid_user_as_author_of_argument
 from websocket.lib import send_request_for_recent_reviewer_socketio
 
@@ -651,7 +651,7 @@ def get_news(request):
 
 # ajax - for getting argument infos
 @view_config(route_name='get_infos_about_argument', renderer='json')
-@validate(valid_issue_by_id, valid_language, valid_argument(location='json_body'), invalid_user)
+@validate(valid_issue_by_id, valid_language, valid_argument(location='json_body'), valid_user_optional)
 def get_infos_about_argument(request):
     """
     ajax interface for getting a dump
@@ -668,7 +668,7 @@ def get_infos_about_argument(request):
 
 # ajax - for getting all users with the same opinion
 @view_config(route_name='get_user_with_same_opinion', renderer='json')
-@validate(valid_language, invalid_user,
+@validate(valid_language, valid_user_optional,
           has_keywords(('uid', int), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool),
                        ('is_position', bool)))
 def get_users_with_opinion(request):
@@ -789,7 +789,7 @@ def send_news(request):
 
 # ajax - for fuzzy search
 @view_config(route_name='fuzzy_search', renderer='json')
-@validate(valid_issue_by_id, invalid_user, valid_fuzzy_search_mode, has_keywords(('value', str), ('statement_uid', int)))
+@validate(valid_issue_by_id, valid_user_optional, valid_fuzzy_search_mode, has_keywords(('value', str), ('statement_uid', int)))
 def fuzzy_search(request):
     """
     ajax interface for fuzzy string search

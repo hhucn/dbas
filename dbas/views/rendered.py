@@ -41,7 +41,7 @@ from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_attitude, \
     valid_relation, valid_argument, valid_statement, valid_reaction_arguments
-from dbas.validators.user import valid_user, invalid_user, valid_user_optional
+from dbas.validators.user import valid_user, valid_user_optional, valid_user_optional
 
 name = 'D-BAS'
 version = '1.6.0'
@@ -303,7 +303,7 @@ def main_notifications(request):
 
 # news page for everybody
 @view_config(route_name='main_news', renderer='../templates/news.pt', permission='everybody')
-@validate(invalid_user, check_authentication, prep_extras_dict)
+@validate(valid_user_optional, check_authentication, prep_extras_dict)
 def main_news(request):
     """
     View configuration for the news.
@@ -415,7 +415,7 @@ def main_experiment(request):
 
 # my discussions
 @view_config(route_name='main_discussions_overview', renderer='../templates/discussion-overview.pt', permission='use')
-@validate(check_authentication, prep_extras_dict, invalid_user)
+@validate(check_authentication, prep_extras_dict, valid_user_optional)
 def main_discussions_overview(request):
     """
     View configuration for FAQs.
@@ -526,7 +526,7 @@ def notfound(request):
 @view_config(route_name='discussion_start', renderer='../templates/discussion-start.pt', permission='everybody')
 @view_config(route_name='discussion_start_with_slash', renderer='../templates/discussion-start.pt',
              permission='everybody')
-@validate(check_authentication, invalid_user, prep_extras_dict)
+@validate(check_authentication, valid_user_optional, prep_extras_dict)
 def discussion_start(request):
     """
     View configuration for the initial discussion overview.
@@ -702,7 +702,7 @@ def discussion_reaction(request):
 
 
 @view_config(route_name='discussion_support', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
+@validate(check_authentication, valid_user_optional)
 def discussion_support(request):
     """
     View configuration for discussion step, where we will present another supportive argument.
@@ -749,7 +749,7 @@ def discussion_finish(request):
 
 
 @view_config(route_name='discussion_exit', renderer='../templates/exit.pt', permission='use')
-@validate(check_authentication, invalid_user)
+@validate(check_authentication, valid_user_optional)
 def discussion_exit(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
@@ -771,7 +771,7 @@ def discussion_exit(request):
 
 
 @view_config(route_name='discussion_choose', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
+@validate(check_authentication, valid_user_optional)
 def discussion_choose(request):
     """
     View configuration for discussion step, where the user has to choose between given statements.
@@ -793,7 +793,7 @@ def discussion_choose(request):
 
 
 @view_config(route_name='discussion_jump', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
+@validate(check_authentication, valid_user_optional)
 def discussion_jump(request):
     """
     View configuration for the jump view.
@@ -819,7 +819,7 @@ def discussion_jump(request):
 
 # index page for reviews
 @view_config(route_name='review_index', renderer='../templates/review.pt', permission='use')
-@validate(check_authentication, prep_extras_dict, invalid_user)
+@validate(check_authentication, prep_extras_dict, valid_user_optional)
 def main_review(request):
     """
     View configuration for the review index.

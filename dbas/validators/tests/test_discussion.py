@@ -422,6 +422,7 @@ class TestValidStatementOrArgId(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
         self.assertIn('issue', request.validated)
         self.assertNotIn('stmt_or_arg', request.validated)
+        self.assertNotEqual(1, len(request.errors))
 
     def test_statement_or_arg_id_does_not_belong_to_issue(self):
         request = construct_dummy_request(match_dict={
