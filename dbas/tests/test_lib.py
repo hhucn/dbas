@@ -189,18 +189,20 @@ class LibTests(unittest.TestCase):
         self.assertIn('120', lib.get_profile_picture(user, size=120))
 
     def test_get_author_data(self):
-        u, s, b = lib.get_author_data(0)
-        self.assertFalse(b)
-        self.assertIsNone(u)
+        db_user, author_string, some_boolean = lib.get_author_data(0)
+        self.assertFalse(some_boolean)
+        self.assertIsNone(db_user)
 
         user = DBDiscussionSession.query(User).get(1)
-        u, s, b = lib.get_author_data(1, gravatar_on_right_side=False)
-        self.assertTrue(b)
-        self.assertIn(' {}'.format(user.nickname), s)
+        _, author_string, some_boolean = lib.get_author_data(1, gravatar_on_right_side=False)
+        self.assertTrue(some_boolean)
+        self.assertIn('{}'.format(user.nickname), author_string)
+        self.assertIn('right', author_string)
 
-        u, s, b = lib.get_author_data(1, gravatar_on_right_side=True)
-        self.assertTrue(b)
-        self.assertIn('{} '.format(user.nickname), s)
+        _, author_string, some_boolean = lib.get_author_data(1, gravatar_on_right_side=True)
+        self.assertTrue(some_boolean)
+        self.assertIn('{}'.format(user.nickname), author_string)
+        self.assertIn('left', author_string)
 
     def test_bubbles_already_last_in_list(self):
         return True

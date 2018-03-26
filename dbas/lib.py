@@ -1109,22 +1109,21 @@ def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=Tru
     if not db_user:
         return None, 'Missing author with uid ' + str(uid), False
 
-    img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, profile_picture_size))
-
     nick = db_user.global_nickname
+    img_src = get_profile_picture(db_user, profile_picture_size)
     link_begin = ''
     link_end = ''
     if linked_with_users_page:
         link_begin = '<a href="/user/{}" title="{}">'.format(db_user.uid, nick)
         link_end = '</a>'
 
-    left = img
-    right = nick
-    if gravatar_on_right_side:
-        left = nick
-        right = img
+    side = 'left' if gravatar_on_right_side else 'right'
+    img = '<img class="img-circle" src="{}" style="padding-{}: 0.3em">'.format(img_src, side)
 
-    return db_user, '{}{} {}{}'.format(link_begin, left, right, link_end), True
+    if gravatar_on_right_side:
+        return db_user, '{}{}{}{}'.format(link_begin, nick, img, link_end), True
+    else:
+        return db_user, '{}{}{}{}'.format(link_begin, img, nick, link_end), True
 
 
 def bubbles_already_last_in_list(bubble_list, bubbles):
