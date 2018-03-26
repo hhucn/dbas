@@ -64,7 +64,7 @@ def set_positions_premise(data: Dict) -> dict:
 
     :param data: dict of requests data
     :rtype: dict
-    :return: Prepared collection with statement_uids of the new premises and next url or an error
+    :return: Prepared collection with statement_uids of the new premises and an url or an error
     """
     db_user = data['user']
     premisegroups = data['premisegroups']
@@ -77,20 +77,25 @@ def set_positions_premise(data: Dict) -> dict:
 
     user.update_last_action(db_user)
 
-    rdict = __process_input_of_start_premises(premisegroups, db_conclusion, supportive, db_issue, db_user)
-    if rdict['error']:
-        return {
-            'error': rdict['error'],
-            'statement_uids': rdict['stats']
-        }
-    url = __receive_urls_of_start_premises(rdict['args'], db_conclusion, supportive, db_issue, db_user, history, mailer)
+    prepared_dict = __process_input_of_start_premises(premisegroups, db_conclusion, supportive, db_issue, db_user)
+    if prepared_dict['error']:
+        return prepared_dict
 
-    prepared_dict = {
-        'error': rdict['error'],
-        'statement_uids': rdict['stats']
-    }
+    __set_url_of_start_premises(prepared_dict, db_conclusion, supportive, db_issue, db_user, history, mailer)
+    __add_reputation(db_user, db_issue, prepared_dict['url'], prepared_dict)
 
-    # add reputation
+    return prepared_dict
+
+
+def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: dict):
+    """
+
+    :param db_user:
+    :param db_issue:
+    :param url:
+    :param prepared_dict:
+    :return:
+    """
     add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_justification)
     if not add_rep:
         add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
@@ -99,9 +104,6 @@ def set_positions_premise(data: Dict) -> dict:
         _t = Translator(db_issue.lang)
         send_request_for_info_popup_to_socketio(db_user.nickname, _t.get(_.youAreAbleToReviewNow), '/review')
         prepared_dict['url'] = '{}{}'.format(url, '#access-review')
-
-    prepared_dict['url'] = url
-    return prepared_dict
 
 
 def set_correction_of_statement(elements, db_user, translator) -> dict:
@@ -332,8 +334,8 @@ def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, s
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
     if __is_conclusion_in_premisegroups(premisegroups, db_conclusion):
         return {
-            'args': new_argument_uids,
-            'stats': new_statement_uids,
+            'argument_uids': new_argument_uids,
+            'statement_uids': new_statement_uids,
             'error': _tn.get(_.premiseAndConclusionAreEqual)
         }
 
@@ -352,21 +354,22 @@ def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, s
         error = '{} ({}: {})'.format(a, b, c)
 
     return {
-        'args': new_argument_uids,
-        'stats': new_statement_uids,
+        'argument_uids': new_argument_uids,
+        'statement_uids': new_statement_uids,
         'error': error
     }
 
 
-def __receive_urls_of_start_premises(new_argument_uids: list, db_conclusion: Statement, supportive: bool,
-                                     db_issue: Issue, db_user: User, history, mailer):
-    logger('StatementsHelper', '__receive_urls_of_start_premises', 'def')
+def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, supportive: bool, db_issue: Issue,
+                                db_user: User, history, mailer):
+    logger('StatementsHelper', '__receive_urls_of_start_premises')
 
     # arguments=0: empty input
     # arguments=1: deliver new url
     # arguments>1: deliver url where the user has to choose between her inputs
     _um = UrlManager(db_issue.slug, history)
     _main_um = UrlManager(db_issue.slug, history=history)
+    new_argument_uids = prepared_dict['argument_uids']
 
     if len(new_argument_uids) == 1:
         url = _um.get_url_for_new_argument(new_argument_uids)
@@ -379,7 +382,7 @@ def __receive_urls_of_start_premises(new_argument_uids: list, db_conclusion: Sta
     email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, 'agree' if supportive else 'disagree')
     nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, mailer)
 
-    return url
+    prepared_dict['url'] = url
 
 
 def insert_new_premises_for_argument(premisegroup: List[str], current_attack, arg_uid, db_issue: Issue, db_user: User):
