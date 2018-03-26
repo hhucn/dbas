@@ -410,7 +410,6 @@ def get_text_for_confrontation(lang, nickname, premise, conclusion, sys_conclusi
     :param color_html: Boolean
     :return: String
     """
-    # TODO kick nickname
     my_start_argument = ''
     my_end_tag = ''
 
@@ -600,7 +599,7 @@ def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, c
             gender_think = __translation_based_on_gender(_t, _.heThinks, _.sheThinks, gender)
     else:
         intro = start_content + _t.get(_.otherParticipantsDontHaveOpinion)
-        gender_think = _t.get(_.participantsThink)
+        gender_think = _t.get(_.theyThinkThat)
         gender = ''
 
     if supportive:
