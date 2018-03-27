@@ -241,7 +241,7 @@ def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: boo
     }
 
 
-def jump(request_dict: dict) -> Union[dict, None]:
+def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: str, path: str) -> dict:
     """
     Initialize the jump step for an argument in a discussion. Creates helper and returns a dictionary containing
     several feedback options regarding this argument.
@@ -250,34 +250,22 @@ def jump(request_dict: dict) -> Union[dict, None]:
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
-    logger('Core', 'main')
-
-    arg_uid = request_dict.get('arg_uid', request_dict['matchdict'].get('arg_id'))
-    db_issue = request_dict.get('issue')
-    history = request_dict.get('history')
-    db_user = request_dict['user']
-    slug = db_issue.slug
-
-    if not check_belonging_of_argument(db_issue.uid, arg_uid):
-        logger('Core', 'no item dict', error=True)
-        return None
+    logger('Core', 'Entering discussion.jzmp')
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
-    discussion_dict = _ddh.get_dict_for_jump(arg_uid)
-    item_dict = _idh.get_array_for_jump(arg_uid, slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
+    discussion_dict = _ddh.get_dict_for_jump(db_argument.uid)
+    item_dict = _idh.get_array_for_jump(db_argument.uid, db_issue.slugslug)
 
-    prepared_discussion = {
+    return {
         'issues': issue_dict,
         'discussion': discussion_dict,
         'items': item_dict,
         'title': issue_dict['title']
     }
-
-    return prepared_discussion
 
 
 def finish(db_issue: Issue, db_user: User, db_argument: Argument, history: str) -> dict:

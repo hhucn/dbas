@@ -813,7 +813,7 @@ def discussion_choose(request):
 
 
 @view_config(route_name='discussion_jump', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional)
+@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def discussion_jump(request):
     """
     View configuration for the jump view.
@@ -822,13 +822,18 @@ def discussion_jump(request):
     :return: dictionary
     """
     # '/discuss/{slug}/jump/{arg_id}'
-    logger('discussion_jump', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.jump)
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
 
-    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = discussion.jump(db_issue, db_user, request.validated['argument'], history, request.path)
+
+    rdict = prepare_request_dict(request)
+
+    __modify_discussion_url(prepared_discussion)
+    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
 
