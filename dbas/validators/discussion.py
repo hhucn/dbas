@@ -10,7 +10,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGroup
 from dbas.handler import issue as issue_handler
 from dbas.handler.language import get_language_from_cookie
-from dbas.input_validator import is_integer, related_with_support
+from dbas.input_validator import is_integer, related_with_support, check_belonging_of_premisegroups
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.core import has_keywords, has_keywords_in_path
@@ -320,6 +320,17 @@ def valid_premisegroup(request):
         return False
 
 
+def valid_premisegroup_in_path(request):
+    """
+    Sets the premisegroup id from the path into the json_body and executes valid_premisegroup
+
+    :param request:
+    :return:
+    """
+    request.json_body['uid'] = request.matchdict.get('id')
+    return valid_premisegroup(request)
+
+
 def valid_premisegroups(request):
     """
     Validates the correct build of premisegroups
@@ -347,6 +358,30 @@ def valid_premisegroups(request):
                 return False
 
     request.validated['premisegroups'] = premisegroups
+    return True
+
+
+def valid_list_of_premisegroups_in_path(request):
+    """
+    Fetches the list of premisegroups and checks their validity
+
+    :param request:
+    :return:
+    """
+    pgroup_ids = request.matchdict.get('pgroup_ids')
+
+    if not pgroup_ids or not valid_issue_by_slug(request):
+        return False
+
+    for pgroup in pgroup_ids:
+        if not is_integer(pgroup):
+            return False
+
+    if not check_belonging_of_premisegroups(request.validated['issue'].uid, pgroup_ids):
+        return False
+
+    request.validated['pgroup_ids'] = [int(uid) for uid in pgroup_ids]
+
     return True
 
 

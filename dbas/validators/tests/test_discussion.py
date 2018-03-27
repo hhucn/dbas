@@ -226,6 +226,23 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
+    def test_valid_premisegroup_in_path(self):
+        request = construct_dummy_request()
+        response = discussion.valid_premisegroup_in_path(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        for uid in ['a', 0, 1000]:
+            request = construct_dummy_request(match_dict={'uid': uid})
+            response = discussion.valid_premisegroup_in_path(request)
+            self.assertFalse(response)
+            self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'id': 2})
+        response = discussion.valid_premisegroup_in_path(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
     def test_valid_premisegroups(self):
         request = construct_dummy_request()
         response = discussion.valid_premisegroups(request)
@@ -254,6 +271,37 @@ class TestDiscussionValidators(TestCaseWithConfig):
 
         request = construct_dummy_request({'premisegroups': [['random text', 'more text here'], ['not so short here']]})
         response = discussion.valid_premisegroups(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
+    def test_valid_list_of_premisegroups_in_path(self):
+        request = construct_dummy_request()
+        response = discussion.valid_list_of_premisegroups_in_path(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'pgroup_ids': 'a', 'slug': self.issue_cat_or_dog.slug})
+        response = discussion.valid_list_of_premisegroups_in_path(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'pgroup_ids': ['a'], 'slug': self.issue_cat_or_dog.slug})
+        response = discussion.valid_list_of_premisegroups_in_path(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'pgroup_ids': [], 'slug': self.issue_cat_or_dog.slug})
+        response = discussion.valid_list_of_premisegroups_in_path(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'pgroup_ids': [1], 'slug': self.issue_cat_or_dog.slug})
+        response = discussion.valid_list_of_premisegroups_in_path(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'pgroup_ids': [1, 2], 'slug': self.issue_cat_or_dog.slug})
+        response = discussion.valid_list_of_premisegroups_in_path(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 

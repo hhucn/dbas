@@ -334,7 +334,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     else:
         additional_uid = int(steps[2])
 
-    if not check_reaction(uid, additional_uid, attack, is_history=True):
+    if not check_reaction(uid, additional_uid, attack):
         logger('history_handler', 'wrong reaction')
         return None
 

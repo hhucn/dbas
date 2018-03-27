@@ -73,6 +73,8 @@ def has_keywords_in_path(*keywords: Tuple[str, type]):
                         continue
                     except ValueError:
                         pass
+                elif ktype is bool and keyword.lower() in ['true', 'false']:
+                    request.validated[keyword] = keyword.lower() == 'true'
 
                 add_error(request, 'Parameter {} has wrong type'.format(keyword),
                           '{} is {}, expected {}'.format(keyword, type(value), ktype))

@@ -647,11 +647,6 @@ class ItemDictHelper(object):
                     add_seen_statement(premise.statement_uid, db_user)
 
             # get attack for each premise, so the urls will be unique
-            logger('ItemDictHelper',
-                   'premisegroup_uid: {}, concl_uid: {}, arg_uid: {}, is_supp: {}'.format(group_id,
-                                                                                          conclusion_uid,
-                                                                                          argument_uid,
-                                                                                          is_supportive))
             db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == group_id,
                                                                      Argument.is_supportive == is_supportive)
             if conclusion_uid and not is_argument:
@@ -659,9 +654,6 @@ class ItemDictHelper(object):
             else:
                 db_argument = db_argument.filter_by(argument_uid=argument_uid).first()
 
-            if not db_argument:
-                logger('ItemDictHelper', 'No argument found', error=True)
-                return None
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
             arg_id_sys, attack = rs.get_attack_for_argument(db_argument.uid,
                                                             restriction_on_args=attacking_arg_uids)
