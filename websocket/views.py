@@ -7,7 +7,7 @@ from cornice import Service
 from pyramid_mailer import get_mailer
 from dbas.handler.language import get_language_from_cookie
 from dbas.logger import logger
-from dbas.validators.user import valid_user_as_admin, invalid_user
+from dbas.validators.user import valid_user_as_admin, valid_user_optional
 from dbas.views import validate
 from dbas.views import project_name
 from dbas.handler.email import send_mail
@@ -46,7 +46,7 @@ path = '/{url:.*}add',
 
 
 @debug_data.get()
-@validate(invalid_user)
+@validate(valid_user_optional)
 def debug_function(request):
     """
     Minimal debug interface for the websocket

@@ -124,9 +124,31 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response, 'uid 1 is disabled and should not be returned')
         self.assertIsInstance(response, bool)
 
+        request = construct_dummy_request({'statement_id': 'a'})
+        response = discussion.valid_statement(location='json_body')(request)
+        self.assertFalse(response, 'uid a is not parsable')
+        self.assertIsInstance(response, bool)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'statement_id': 'a'})
+        response = discussion.valid_statement(location='path')(request)
+        self.assertFalse(response, 'uid a is not parsable')
+        self.assertIsInstance(response, bool)
+
         request = construct_dummy_request({'statement_id': 2})
         response = discussion.valid_statement(location='json_body')(request)
         self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'statement_id': 2})
+        response = discussion.valid_statement(location='path')(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
+    def test_valid_argument_with_missing_issue_should_fail(self):
+        request = construct_dummy_request()
+        response = discussion.valid_argument(location='json_body', depends_on={discussion.valid_issue_by_slug})(request)
+        self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
     def test_valid_argument(self):
@@ -140,8 +162,23 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response, 'uid 1 should be disabled')
         self.assertIsInstance(response, bool)
 
+        request = construct_dummy_request({'argument_id': 'a'})
+        response = discussion.valid_argument(location='json_body')(request)
+        self.assertFalse(response, 'uid a is not parsable')
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'argument_id': 'a'})
+        response = discussion.valid_argument(location='json_body')(request)
+        self.assertFalse(response, 'uid a is not parsable')
+        self.assertIsInstance(response, bool)
+
         request = construct_dummy_request({'argument_id': 2})
         response = discussion.valid_argument(location='json_body')(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'argument_id': 2})
+        response = discussion.valid_argument(location='path')(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
@@ -206,6 +243,11 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
         request = construct_dummy_request({'premisegroups': [['random text', 'more text here'], ['shrt']]})
+        response = discussion.valid_premisegroups(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request({'premisegroups': [['random text', 'more text here'], [42]]})
         response = discussion.valid_premisegroups(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
@@ -402,50 +444,6 @@ class TestValidPosition(TestCaseWithConfig):
         self.assertIn('position', request.validated)
 
 
-class TestValidStatementOrArgId(TestCaseWithConfig):
-    def test_missing_slug(self):
-        request = construct_dummy_request(match_dict={
-            'slug': ''
-        })
-        response = discussion.valid_statement_or_arg_id(request)
-        self.assertFalse(response, 'Slug is missing')
-        self.assertIsInstance(response, bool)
-        self.assertNotIn('issue', request.validated)
-
-    def test_missing_statement_or_arg_id(self):
-        request = construct_dummy_request(match_dict={
-            'slug': self.issue_cat_or_dog.slug,
-            'statement_or_arg_id': None
-        })
-        response = discussion.valid_statement_or_arg_id(request)
-        self.assertFalse(response, 'statement_or_arg_id is missing')
-        self.assertIsInstance(response, bool)
-        self.assertIn('issue', request.validated)
-        self.assertNotIn('stmt_or_arg', request.validated)
-
-    def test_statement_or_arg_id_does_not_belong_to_issue(self):
-        request = construct_dummy_request(match_dict={
-            'slug': self.issue_cat_or_dog.slug,
-            'statement_or_arg_id': self.position_town.uid
-        })
-        response = discussion.valid_statement_or_arg_id(request)
-        self.assertFalse(response)
-        self.assertIsInstance(response, bool)
-        self.assertIn('issue', request.validated)
-        self.assertNotIn('stmt_or_arg', request.validated)
-
-    def test_valid_argument_belongs_to_issue(self):
-        request = construct_dummy_request(match_dict={
-            'slug': self.issue_cat_or_dog.slug,
-            'statement_or_arg_id': self.statement_cat_or_dog.uid
-        })
-        response = discussion.valid_statement_or_arg_id(request)
-        self.assertTrue(response)
-        self.assertIsInstance(response, bool)
-        self.assertIn('issue', request.validated)
-        self.assertIn('stmt_or_arg', request.validated)
-
-
 class TestValidReactionArguments(TestCaseWithConfig):
     def test_valid_request_should_pass(self):
         request = construct_dummy_request(match_dict={
@@ -464,6 +462,17 @@ class TestValidReactionArguments(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': -1,
+            'relation': 'rebut',
+            'arg_id_sys': 5
+        })
+        response = discussion.valid_reaction_arguments(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+    def test_missing_issue_should_fail(self):
+        request = construct_dummy_request(match_dict={
+            'slug': '',
+            'arg_id_user': 4,
             'relation': 'rebut',
             'arg_id_sys': 5
         })

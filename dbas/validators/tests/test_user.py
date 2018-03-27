@@ -2,6 +2,8 @@ from cornice import Errors
 from pyramid import testing
 
 import dbas.validators.user as user
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
 from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 
 
@@ -72,16 +74,21 @@ class Usertest(TestCaseWithConfig):
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
-    def test_invalid_user(self):
+    def test_optional_user(self):
+        db_user = DBDiscussionSession.query(User).get(1)
         request = construct_dummy_request()
-        response = user.invalid_user(request)
-        self.assertFalse(response)
-        self.assertIsInstance(response, bool)
-
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        response = user.invalid_user(request)
+        response = user.valid_user_optional(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
+        self.assertEqual(db_user, request.validated['user'])
+
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        request = construct_dummy_request()
+        response = user.valid_user_optional(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+        self.assertEqual(db_user, request.validated['user'])
 
 
 class TestValidUserAsAuthorOfStatement(TestCaseWithConfig):

@@ -6,7 +6,6 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Statement, Argument, TextVersion
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
-from dbas.lib import nick_of_anonymous_user
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.core import has_keywords
@@ -44,6 +43,7 @@ def valid_user_optional(request, **kwargs):
         db_user = DBDiscussionSession.query(User).get(1)
 
     request.validated['user'] = db_user
+    return True
 
 
 def valid_user_as_author_of_statement(request):
@@ -122,18 +122,3 @@ def valid_user_as_admin(request):
         else:
             add_error(request, 'Invalid user group', _tn.get(_.justLookDontTouch))
     return False
-
-
-def invalid_user(request):
-    """
-    Given a nickname of a (un)-authenticated user, return the object from the database.
-
-    :param request:
-    :return:
-    """
-    if request.authenticated_userid:
-        return valid_user(request)
-    else:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        request.validated['user'] = db_user
-        return False

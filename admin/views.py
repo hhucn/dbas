@@ -14,7 +14,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.logger import logger
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.database import valid_table_name
-from dbas.validators.user import valid_user_as_admin, invalid_user
+from dbas.validators.user import valid_user_as_admin, valid_user_optional
 from dbas.views import user_logout, project_name
 
 #
@@ -81,7 +81,7 @@ revoke_token = Service(name='revoke_token',
 
 
 @dashboard.get()
-@validate(invalid_user)
+@validate(valid_user_optional)
 def main_admin(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
