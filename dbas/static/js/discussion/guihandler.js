@@ -160,6 +160,7 @@ function GuiHandler() {
         if (nowBubble.length !== 0) {
             $('html, body').animate({scrollTop: nowBubble.offset().top - 75}, 500);
         }
+        
         if (height > maxHeight && maxHeight > 0) {
             if (maxHeight < maxHeightOfBubbleSpace) {
                 maxHeight = maxHeightOfBubbleSpace;
@@ -886,15 +887,15 @@ function GuiHandler() {
      * @returns {number}
      */
     this.getMaxSizeOfDiscussionViewContainer = function () {
-        var bar, innerHeight, list;
-        bar = $('#header-container');
-        list = $('#' + discussionSpaceListId);
-        innerHeight = this.getMaxSizeOfGraphViewContainer();
-        innerHeight -= bar.outerHeight(true);
+        var header = $('.big-header');
+        var list = $('#' + discussionSpaceListId);
+        var innerHeight = this.getMaxSizeOfGraphViewContainer();
+        innerHeight += parseInt($('.wrapper-container').css('top').replace('px'));
         innerHeight -= list.outerHeight(true);
-        innerHeight -= this.getPaddingOfElement(bar);
+        innerHeight -= this.getPaddingOfElement(header);
         innerHeight -= this.getPaddingOfElement(list);
-        return innerHeight - 10;
+        return innerHeight - emToPx(2);
+        
     };
 
     /**
