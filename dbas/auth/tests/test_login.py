@@ -98,8 +98,7 @@ class AuthLoginTest(unittest.TestCase):
             'mode': 'manually',
         }, mailer=DummyMailer)
         success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
-        print("success: " + success)
-        print("msg: " + msg)
+
         self.assertEqual(self._tn.get(_.mailIsTaken), msg)
         self.assertIsNone(db_new_user)
 

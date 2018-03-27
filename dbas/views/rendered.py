@@ -40,7 +40,7 @@ from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_attitude, \
-    valid_relation, valid_argument, valid_statement, valid_reaction_arguments
+    valid_relation, valid_argument, valid_statement, valid_reaction_arguments, valid_support
 from dbas.validators.user import valid_user, valid_user_optional
 
 name = 'D-BAS'
@@ -702,7 +702,7 @@ def discussion_reaction(request):
 
 
 @view_config(route_name='discussion_support', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional)
+@validate(check_authentication, valid_user_optional, valid_support)
 def discussion_support(request):
     """
     View configuration for discussion step, where we will present another supportive argument.
@@ -712,10 +712,17 @@ def discussion_support(request):
     """
     logger('discussion_support', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.support)
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
 
+    history = history_handler.handle_history(request, db_user, db_issue)
+    prepared_discussion = discussion.support(db_issue, db_user,
+                                             request.validated['arg_user'],
+                                             request.validated['arg_sys'],
+                                             history, request.path)
+    rdict = prepare_request_dict(request)
+
+    __modify_discussion_url(prepared_discussion)
     __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
