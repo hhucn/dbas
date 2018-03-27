@@ -1,3 +1,6 @@
+### 1.6.1 (2018-03-30)
+- Splitting compose files
+
 ### 1.6.0 (2018-03-02)
 - Cleaner code everywhere
 - Refactor complete software
