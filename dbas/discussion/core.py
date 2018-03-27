@@ -177,7 +177,8 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     }
 
 
-def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, history: str, path: str) -> dict:
+def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, history: str,
+            path: str) -> dict:
     """
     Initialize the support step for the end of a branch in a discussion. Creates helper and returns a dictionary
     containing the first elements needed for the discussion.
