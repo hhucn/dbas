@@ -33,9 +33,13 @@ Then follow these steps:
     docker-compose build
     docker-compose up
 
-Example for a fresh build
+Example for a fresh build:
 
     docker-compose up --build
+
+If you want to include the notification service as well as elastic search:
+
+    docker-compose -f docker-compose.yml -f docker-compose.notifications.yml -f docker-compose.search.yml up
 
 Production mode:
 

@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3.2"
 services:
   db:
     build: docker/db/
@@ -24,19 +24,3 @@ services:
     depends_on:
       - db
     tmpfs: /tmp
-
-  notifications:
-    image: hhucn/dbas-notifications
-    ports:
-      - "5222:5222"
-    tmpfs: /tmp
-
-  search:
-    image: hhucn/dbas-search:develop
-    ports:
-      - "9200:9200"
-      - "5000:5000"
-    env_file:
-      - development.env
-    depends_on:
-      - web
