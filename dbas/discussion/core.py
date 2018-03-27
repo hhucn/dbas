@@ -8,7 +8,6 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.views import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
-from dbas.input_validator import check_belonging_of_argument
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
 from dbas.strings.keywords import Keywords as _
@@ -258,7 +257,7 @@ def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: str, pa
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
     discussion_dict = _ddh.get_dict_for_jump(db_argument.uid)
-    item_dict = _idh.get_array_for_jump(db_argument.uid, db_issue.slugslug)
+    item_dict = _idh.get_array_for_jump(db_argument.uid, db_issue.slug)
 
     return {
         'issues': issue_dict,

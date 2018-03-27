@@ -141,10 +141,6 @@ class InputValidatorTests(unittest.TestCase):
         self.assertTrue(iv.check_belonging_of_statement(2, 3))
         self.assertFalse(iv.check_belonging_of_statement(2, 39))
 
-    def test_check_belonging_of_argument(self):
-        self.assertTrue(iv.check_belonging_of_argument(2, 3))
-        self.assertFalse(iv.check_belonging_of_argument(2, 39))
-
     def test_check_belonging_of_premisegroups(self):
         self.assertTrue(iv.check_belonging_of_premisegroups(2, [2, 3]))
         self.assertFalse(iv.check_belonging_of_premisegroups(2, [2, 39]))
