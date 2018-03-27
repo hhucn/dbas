@@ -1,7 +1,9 @@
 import unittest
 
+from dbas.views import discussion_jump
+
+from dbas.tests.utils import construct_dummy_request
 from pyramid import testing
-from pyramid.httpexceptions import HTTPNotFound
 
 from dbas.helper.test import verify_dictionary_of_view
 
@@ -15,26 +17,17 @@ class DiscussionJumpViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_page(self):
-        from dbas.views import discussion_jump as d
-
-        matchdict = {
+        request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
-            'arg_id': 12,
-        }
-        request = testing.DummyRequest(matchdict=matchdict)
-        response = d(request)
+            'argument_id': 12,
+        })
+        response = discussion_jump(request)
         verify_dictionary_of_view(response)
 
     def test_page_on_failure(self):
-        from dbas.views import discussion_jump as d
-
-        matchdict = {
+        request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
-            'arg_id': 35,
-        }
-        request = testing.DummyRequest(matchdict=matchdict)
-        try:
-            response = d(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+            'argument_id': 35,
+        })
+        response = discussion_jump(request)
+        self.assertEqual(400, response.status_code)

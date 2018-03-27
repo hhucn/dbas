@@ -99,7 +99,6 @@ class ItemDictHelper(object):
         shuffle_list_by_user(db_user, statements_array)
 
         if not self.issue_read_only:
-            logger('XX', db_user.nickname)
             if db_user.nickname == nick_of_anonymous_user:
                 statements_array.append(self.__create_answer_dict('login',
                                                                   [{'id': '0',
