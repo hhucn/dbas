@@ -1,5 +1,3 @@
-from typing import Union
-
 import dbas.handler.issue as issue_helper
 from dbas.database.discussion_model import Argument, User, Issue, Statement, PremiseGroup
 from dbas.handler import user
@@ -76,8 +74,7 @@ def attitude(db_issue: Issue, db_user: User, db_position: Statement, history: st
     }
 
 
-def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, attitude: str, history, path) -> \
-        Union[dict, None]:
+def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, attitude: str, history, path) -> dict:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
@@ -100,9 +97,6 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, a
         item_dict, discussion_dict = handle_justification_dontknow(db_issue, db_user, db_statement, attitude,
                                                                    history, path)
 
-    if not all([item_dict, discussion_dict]):
-        return None
-
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,
@@ -112,7 +106,7 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, a
 
 
 def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, attitude: str, relation: str, history: str,
-                     path: str) -> Union[dict, None]:
+                     path: str) -> dict:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
@@ -131,8 +125,6 @@ def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, atti
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     item_dict, discussion_dict = handle_justification_argument(db_issue, db_user, db_argument, attitude, relation,
                                                                history, path)
-    if not all([item_dict, discussion_dict]):
-        return None
 
     return {
         'issues': issue_dict,
@@ -282,7 +274,7 @@ def finish(db_issue: Issue, db_user: User, db_argument: Argument, history: str) 
     }
 
 
-def dexit(ui_locales: str, db_user: User) -> Union[dict, None]:
+def dexit(ui_locales: str, db_user: User) -> dict:
     """
     Exit the discussion. Creates helper and returns a dictionary containing the summary of today.
 

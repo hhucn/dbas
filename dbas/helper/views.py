@@ -10,7 +10,6 @@ from dbas.database.discussion_model import Statement, Issue, User, Argument
 from dbas.handler import user
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.lib import get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for
 from dbas.review.helper.reputation import rep_reason_first_confrontation
@@ -40,9 +39,6 @@ def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_ar
     """
     logger('ViewHelper', 'justify statement')
     supportive = attitude in ['agree', 'dontknow']
-
-    if not get_text_for_statement_uid(db_stmt_or_arg.uid):
-        return None, None
     item_dict, discussion_dict = preparation_for_justify_statement(history, db_user, path, db_issue, db_stmt_or_arg,
                                                                    supportive)
     return item_dict, discussion_dict
