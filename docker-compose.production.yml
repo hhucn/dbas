@@ -10,21 +10,6 @@ services:
       - ./docker/db/data:/var/lib/postgresql/data
     tmpfs: /tmp
 
-  notifications:
-    image: hhucn/dbas-notifications
-    restart: always
-    ports:
-      - "5222:5222"
-    volumes:
-      - /etc/letsencrypt:/cert:ro
-
-  docs:
-    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas:docs
-    restart: always
-    ports:
-      - "8000:8000"
-    tmpfs: /tmp
-
   web:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas
     command: bash -c "sleep 10 && uwsgi --ini-paste production.ini"
@@ -38,13 +23,3 @@ services:
     depends_on:
       - db
     tmpfs: /tmp
-
-  search:
-    image: hhucn/dbas-search:develop
-    ports:
-      - "9200:9200"
-      - "5000:5000"
-    env_file:
-      - production.env
-    depends_on:
-      - web
