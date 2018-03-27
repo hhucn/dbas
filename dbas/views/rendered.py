@@ -38,9 +38,10 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
-from dbas.validators.core import validate
+from dbas.validators.core import validate, has_keywords_in_path
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_attitude, \
-    valid_relation, valid_argument, valid_statement, valid_reaction_arguments, valid_support
+    valid_relation, valid_argument, valid_statement, valid_reaction_arguments, valid_support, \
+    valid_list_of_premisegroups_in_path, valid_premisegroup_in_path
 from dbas.validators.user import valid_user, valid_user_optional
 
 name = 'D-BAS'
@@ -778,7 +779,8 @@ def discussion_exit(request):
 
 
 @view_config(route_name='discussion_choose', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional)
+@validate(check_authentication, valid_user_optional, valid_issue_by_slug, valid_premisegroup_in_path,
+          valid_list_of_premisegroups_in_path, has_keywords_in_path(('is_argument', bool), ('is_supportive', bool)))
 def discussion_choose(request):
     """
     View configuration for discussion step, where the user has to choose between given statements.
@@ -790,10 +792,21 @@ def discussion_choose(request):
     match_dict = request.matchdict
     logger('discussion_choose', 'request.matchdict: {}'.format(match_dict))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.choose)
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
 
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = discussion.choose(db_issue, db_user,
+                                            request.validated['is_argument'],
+                                            request.validated['is_supportive'],
+                                            request.validated['pgroup_uid'],
+                                            request.validated['pgroup_uids'],
+                                            history, request.path)
+
+    rdict = prepare_request_dict(request)
+
+    __modify_discussion_url(prepared_discussion)
     __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion

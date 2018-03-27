@@ -1,14 +1,14 @@
 from typing import Union
 
 import dbas.handler.issue as issue_helper
-from dbas.database.discussion_model import Argument, User, Issue, Statement
+from dbas.database.discussion_model import Argument, User, Issue, Statement, PremiseGroup
 from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.views import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
-from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_premisegroups
+from dbas.input_validator import check_belonging_of_argument
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
 from dbas.strings.keywords import Keywords as _
@@ -177,7 +177,8 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     }
 
 
-def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, history: str, path: str) -> dict:
+def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, history: str,
+            path: str) -> dict:
     """
     Initialize the support step for the end of a branch in a discussion. Creates helper and returns a dictionary
     containing the first elements needed for the discussion.
@@ -207,60 +208,37 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     }
 
 
-def choose(request_dict: dict) -> Union[dict, None]:
+def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: bool, pgroup: PremiseGroup, pgroup_ids: list,
+           history: str, path: str) -> dict:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
     containing several feedback options regarding this argument.
 
-    :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :rtype: dict
-    :return: prepared collection matchdictfor the discussion
+    :param db_issue:
+    :param db_user:
+    :param is_argument:
+    :param is_supportive:
+    :param uid:
+    :param pgroup:
+    :param history:
+    :param path:
+    :return:
     """
-    logger('Core', 'main')
-
-    is_argument = request_dict['matchdict'].get('is_argument', '')
-    is_supportive = request_dict['matchdict'].get('supportive', '')
-    uid = request_dict['matchdict'].get('id', '')
-    pgroup_ids = request_dict['matchdict'].get('pgroup_ids', '')
-
-    db_issue = request_dict['issue']
-    ui_locales = request_dict['ui_locales']
-    history = request_dict['history']
-    db_user = request_dict['user']
-    slug = db_issue.slug
-
-    is_argument = True if isinstance(is_argument, bool) and is_argument or is_argument == 'true' else False
-    is_supportive = True if isinstance(is_supportive, bool) and is_supportive or is_supportive == 'true' else False
-
+    logger('Core', 'Entering discussion.choose')
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    for pgroup in pgroup_ids:
-        if not is_integer(pgroup):
-            logger('core', 'integer error', error=True)
-            return None
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
+    discussion_dict = _ddh.get_dict_for_choosing(pgroup.uid, is_argument, is_supportive)
+    item_dict = _idh.get_array_for_choosing(pgroup.uid, pgroup_ids, is_argument, is_supportive, db_user.nickname)
 
-    if not check_belonging_of_premisegroups(db_issue.uid, pgroup_ids) or not is_integer(uid):
-        logger('core', 'wrong belonging of pgroup', error=True)
-        return None
-
-    _ddh = DiscussionDictHelper(ui_locales, db_user.nickname, history, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
-    discussion_dict = _ddh.get_dict_for_choosing(uid, is_argument, is_supportive)
-    item_dict = _idh.get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, db_user.nickname)
-
-    if not item_dict:
-        logger('discussion_choose', 'no item dict', error=True)
-        return None
-
-    prepared_discussion = {
+    return {
         'issues': issue_dict,
         'discussion': discussion_dict,
         'items': item_dict,
         'title': issue_dict['title']
     }
-
-    return prepared_discussion
 
 
 def jump(request_dict: dict) -> Union[dict, None]:

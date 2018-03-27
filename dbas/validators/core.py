@@ -66,13 +66,16 @@ def has_keywords_in_path(*keywords: Tuple[str, type]):
             value = request.matchdict.get(keyword)
             if value is not None and isinstance(value, ktype):
                 request.validated[keyword] = value
-            elif value:
+            elif value is not None:
                 if ktype in [int, float]:
                     try:
                         request.validated[keyword] = ktype(value)
                         continue
                     except ValueError:
                         pass
+                elif ktype is bool and value.lower() in ['true', 'false']:
+                    request.validated[keyword] = value.lower() == 'true'
+                    continue
 
                 add_error(request, 'Parameter {} has wrong type'.format(keyword),
                           '{} is {}, expected {}'.format(keyword, type(value), ktype))

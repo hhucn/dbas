@@ -714,7 +714,7 @@ def get_arguments_by_statement_id(request):
     :return: json-dict()
     """
     logger('views', 'main: {}'.format(request.json_body))
-    return get_arguments_by_statement_uid(request.validated['statement'], request.application_url)
+    return get_arguments_by_statement_uid(request.validated['statement'])
 
 
 @view_config(route_name='get_references', renderer='json')

@@ -10,7 +10,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGroup
 from dbas.handler import issue as issue_handler
 from dbas.handler.language import get_language_from_cookie
-from dbas.input_validator import is_integer, related_with_support
+from dbas.input_validator import is_integer, related_with_support, check_belonging_of_premisegroups
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.core import has_keywords, has_keywords_in_path
@@ -287,7 +287,6 @@ def valid_text_length_of(keyword):
     def inner(request):
         min_length = int(environ.get('MIN_LENGTH_OF_STATEMENT', 10))
         text = escape_if_string(request.json_body, keyword)
-        print(text)
 
         if not text or text and len(text) < min_length:
             __set_min_length_error(request, min_length)
@@ -320,6 +319,27 @@ def valid_premisegroup(request):
         return False
 
 
+def valid_premisegroup_in_path(request):
+    """
+    Sets the premisegroup id from the path into the json_body and executes valid_premisegroup
+
+    :param request:
+    :return:
+    """
+    pgroup_uid = request.matchdict.get('id', [None])[0]
+    db_pgroup = None
+    if is_integer(pgroup_uid):
+        db_pgroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid)
+
+    if db_pgroup:
+        request.validated['pgroup_uid'] = db_pgroup
+        return True
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        add_error(request, 'PGroup uid is missing in path', _tn.get(_.internalError))
+        return False
+
+
 def valid_premisegroups(request):
     """
     Validates the correct build of premisegroups
@@ -347,6 +367,41 @@ def valid_premisegroups(request):
                 return False
 
     request.validated['premisegroups'] = premisegroups
+    return True
+
+
+def valid_list_of_premisegroups_in_path(request):
+    """
+    Fetches the list of premisegroups and checks their validity
+
+    :param request:
+    :return:
+    """
+    pgroup_uids = request.matchdict.get('pgroup_ids')
+
+    if not pgroup_uids or not valid_issue_by_slug(request):
+        _tn = Translator(get_language_from_cookie(request))
+        add_error(request, 'PGroup uids are missing in path', _tn.get(_.internalError))
+        return False
+
+    for pgroup in pgroup_uids:
+        if not is_integer(pgroup):
+            _tn = Translator(get_language_from_cookie(request))
+            add_error(request, 'One uid of the pgroups in path is malicious', _tn.get(_.internalError))
+            return False
+
+    if not check_belonging_of_premisegroups(request.validated['issue'].uid, pgroup_uids):
+        _tn = Translator(get_language_from_cookie(request))
+        add_error(request, 'One uid of the pgroups does not belong to the issue', _tn.get(_.internalError))
+        return False
+
+    for pgroup in pgroup_uids:
+        if not DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=pgroup).first():
+            _tn = Translator(get_language_from_cookie(request))
+            add_error(request, 'One uid of the pgroups argument is not supportive', _tn.get(_.internalError))
+            return False
+
+    request.validated['pgroup_uids'] = [int(uid) for uid in pgroup_uids]
     return True
 
 

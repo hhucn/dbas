@@ -28,14 +28,13 @@ def is_integer(variable, ignore_empty_case=False):
         return False
 
 
-def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=False):
+def check_reaction(attacked_arg_uid, attacking_arg_uid, relation):
     """
     Checks whether the attacked argument uid and the attacking argument uid are connected via the given relation
 
     :param attacked_arg_uid: Argument.uid
     :param attacking_arg_uid: Argument.uid
     :param relation: String
-    :param is_history: Boolean
     :return: Boolean
     """
     logger('Validator', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
@@ -112,8 +111,8 @@ def check_belonging_of_premisegroups(issue_uid, premisegroups):
     :return: Boolean
     """
     all_premises = []
-    for g in premisegroups:
-        all_premises += DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=g).all()
+    for pgroup in premisegroups:
+        all_premises += DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=pgroup).all()
     related = [premise.issue_uid == issue_uid for premise in all_premises]
     return all(related)
 
