@@ -1,7 +1,7 @@
 from typing import Union
 
 import dbas.handler.issue as issue_helper
-from dbas.database.discussion_model import Argument, User, Issue, Statement
+from dbas.database.discussion_model import Argument, User, Issue, Statement, PremiseGroup
 from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
@@ -208,7 +208,7 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     }
 
 
-def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: bool, uid: int, pgroup_ids: list,
+def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: bool, pgroup: PremiseGroup, pgroup_ids: list,
            history: str, path: str) -> dict:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
@@ -219,7 +219,7 @@ def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: boo
     :param is_argument:
     :param is_supportive:
     :param uid:
-    :param pgroup_ids:
+    :param pgroup:
     :param history:
     :param path:
     :return:
@@ -230,8 +230,8 @@ def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: boo
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
-    discussion_dict = _ddh.get_dict_for_choosing(uid, is_argument, is_supportive)
-    item_dict = _idh.get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, db_user.nickname)
+    discussion_dict = _ddh.get_dict_for_choosing(pgroup.uid, is_argument, is_supportive)
+    item_dict = _idh.get_array_for_choosing(pgroup.uid, pgroup_ids, is_argument, is_supportive, db_user.nickname)
 
     return {
         'issues': issue_dict,

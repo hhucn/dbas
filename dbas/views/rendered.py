@@ -780,7 +780,7 @@ def discussion_exit(request):
 
 @view_config(route_name='discussion_choose', renderer='../templates/discussion.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_issue_by_slug, valid_premisegroup_in_path,
-          valid_list_of_premisegroups_in_path, has_keywords_in_path(('is_argument', bool), ('supportive', bool)))
+          valid_list_of_premisegroups_in_path, has_keywords_in_path(('is_argument', bool), ('is_supportive', bool)))
 def discussion_choose(request):
     """
     View configuration for discussion step, where the user has to choose between given statements.
@@ -797,11 +797,11 @@ def discussion_choose(request):
 
     history = history_handler.handle_history(request, db_user, db_issue)
 
-    prepared_discussion = discussion.choose(db_user, db_issue,
+    prepared_discussion = discussion.choose(db_issue, db_user,
                                             request.validated['is_argument'],
                                             request.validated['is_supportive'],
-                                            request.validated['uid'],
-                                            request.validated['pgroup_ids'],
+                                            request.validated['pgroup_uid'],
+                                            request.validated['pgroup_uids'],
                                             history, request.path)
 
     rdict = prepare_request_dict(request)

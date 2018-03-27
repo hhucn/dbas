@@ -1,13 +1,14 @@
 import unittest
 
+import transaction
+
 from dbas.tests.utils import construct_dummy_request
 
 from dbas.views import discussion_choose
 from pyramid import testing
-from pyramid.httpexceptions import HTTPNotFound
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Premise, SeenStatement
+from dbas.database.discussion_model import Premise, SeenStatement, User
 from dbas.helper.test import verify_dictionary_of_view
 
 
@@ -16,7 +17,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         self.arg_uid = 15
-        self.pgroup_uid = 30
+        self.pgroup_uid = 28
         self.is_supportive = False
         self.is_argument = True
 
@@ -29,8 +30,8 @@ class DiscussionChoseViewTests(unittest.TestCase):
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
             'is_argument': self.is_argument,
-            'supportive': self.is_supportive,
-            'id': self.arg_uid,
+            'is_supportive': self.is_supportive,
+            'id': (self.arg_uid, ),
             'pgroup_ids': [self.pgroup_uid],
         })
         response = discussion_choose(request)
@@ -42,13 +43,15 @@ class DiscussionChoseViewTests(unittest.TestCase):
 
     def test_page_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        DBDiscussionSession.query(User).filter_by(nickname='Tobias').first().update_last_login()
+        transaction.commit()
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
 
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
             'is_argument': self.is_argument,
-            'supportive': self.is_supportive,
-            'id': self.arg_uid,
+            'is_supportive': self.is_supportive,
+            'id': (self.arg_uid, ),
             'pgroup_ids': [self.pgroup_uid],
         })
         response = discussion_choose(request)
@@ -63,38 +66,29 @@ class DiscussionChoseViewTests(unittest.TestCase):
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
             'is_argument': self.is_argument,
-            'supportive': self.is_supportive,
-            'id': self.arg_uid,
+            'is_supportive': self.is_supportive,
+            'id': (self.arg_uid, ),
             'pgroup_ids': [self.pgroup_uid, 'a'],
         })
-        try:
-            response = discussion_choose(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        response = discussion_choose(request)
+        self.assertEqual(400, response.status_code)
 
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-doggy-dog',
             'is_argument': self.is_argument,
-            'supportive': self.is_supportive,
-            'id': self.arg_uid,
+            'is_supportive': self.is_supportive,
+            'id': (self.arg_uid, ),
             'pgroup_ids': [self.pgroup_uid, 'a'],
         })
-        try:
-            response = discussion_choose(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        response = discussion_choose(request)
+        self.assertEqual(400, response.status_code)
 
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-doggy-dog',
             'is_argument': self.is_argument,
-            'supportive': self.is_supportive,
-            'id': self.arg_uid,
+            'is_supportive': self.is_supportive,
+            'id': (self.arg_uid, ),
             'pgroup_ids': [self.pgroup_uid, 55],
         })
-        try:
-            response = discussion_choose(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        response = discussion_choose(request)
+        self.assertEqual(400, response.status_code)

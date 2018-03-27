@@ -287,7 +287,6 @@ def valid_text_length_of(keyword):
     def inner(request):
         min_length = int(environ.get('MIN_LENGTH_OF_STATEMENT', 10))
         text = escape_if_string(request.json_body, keyword)
-        print(text)
 
         if not text or text and len(text) < min_length:
             __set_min_length_error(request, min_length)
@@ -327,8 +326,18 @@ def valid_premisegroup_in_path(request):
     :param request:
     :return:
     """
-    request.json_body['uid'] = request.matchdict.get('id')
-    return valid_premisegroup(request)
+    pgroup_uid = request.matchdict.get('id', [None])[0]
+    db_pgroup = None
+    if is_integer(pgroup_uid):
+        db_pgroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid)
+
+    if db_pgroup:
+        request.validated['pgroup_uid'] = db_pgroup
+        return True
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        add_error(request, 'PGroup uid is missing in path', _tn.get(_.internalError))
+        return False
 
 
 def valid_premisegroups(request):
@@ -368,20 +377,31 @@ def valid_list_of_premisegroups_in_path(request):
     :param request:
     :return:
     """
-    pgroup_ids = request.matchdict.get('pgroup_ids')
+    pgroup_uids = request.matchdict.get('pgroup_ids')
 
-    if not pgroup_ids or not valid_issue_by_slug(request):
+    if not pgroup_uids or not valid_issue_by_slug(request):
+        _tn = Translator(get_language_from_cookie(request))
+        add_error(request, 'PGroup uids are missing in path', _tn.get(_.internalError))
         return False
 
-    for pgroup in pgroup_ids:
+    for pgroup in pgroup_uids:
         if not is_integer(pgroup):
+            _tn = Translator(get_language_from_cookie(request))
+            add_error(request, 'One uid of the pgroups in path is malicious', _tn.get(_.internalError))
             return False
 
-    if not check_belonging_of_premisegroups(request.validated['issue'].uid, pgroup_ids):
+    if not check_belonging_of_premisegroups(request.validated['issue'].uid, pgroup_uids):
+        _tn = Translator(get_language_from_cookie(request))
+        add_error(request, 'One uid of the pgroups does not belong to the issue', _tn.get(_.internalError))
         return False
 
-    request.validated['pgroup_ids'] = [int(uid) for uid in pgroup_ids]
+    for pgroup in pgroup_uids:
+        if not DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=pgroup).first():
+            _tn = Translator(get_language_from_cookie(request))
+            add_error(request, 'One uid of the pgroups argument is not supportive', _tn.get(_.internalError))
+            return False
 
+    request.validated['pgroup_uids'] = [int(uid) for uid in pgroup_uids]
     return True
 
 

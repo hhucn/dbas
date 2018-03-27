@@ -238,7 +238,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
             self.assertFalse(response)
             self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'id': 2})
+        request = construct_dummy_request(match_dict={'id': (2, )})
         response = discussion.valid_premisegroup_in_path(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -295,12 +295,12 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'pgroup_ids': [1], 'slug': self.issue_cat_or_dog.slug})
+        request = construct_dummy_request(match_dict={'pgroup_ids': [2], 'slug': self.issue_cat_or_dog.slug})
         response = discussion.valid_list_of_premisegroups_in_path(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'pgroup_ids': [1, 2], 'slug': self.issue_cat_or_dog.slug})
+        request = construct_dummy_request(match_dict={'pgroup_ids': [2, 4], 'slug': self.issue_cat_or_dog.slug})
         response = discussion.valid_list_of_premisegroups_in_path(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)

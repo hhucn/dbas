@@ -114,12 +114,11 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
     return return_dict
 
 
-def get_arguments_by_statement_uid(db_statement, application_url) -> dict:
+def get_arguments_by_statement_uid(db_statement: Statement) -> dict:
     """
     Collects every argument which uses the given statement
 
     :param db_statement: Statement
-    :param application_url: url of the application
     :rtype: dict
     :return: prepared collection with several arguments
     """

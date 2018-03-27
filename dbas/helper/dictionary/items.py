@@ -654,6 +654,10 @@ class ItemDictHelper(object):
             else:
                 db_argument = db_argument.filter_by(argument_uid=argument_uid).first()
 
+            if not db_argument:
+                print(group_id)
+                return {'elements': statements_array, 'extras': {'cropped_list': False}}
+
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
             arg_id_sys, attack = rs.get_attack_for_argument(db_argument.uid,
                                                             restriction_on_args=attacking_arg_uids)
