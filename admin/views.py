@@ -164,10 +164,6 @@ def main_update(request):
     uids = request.validated['uids']
     keys = request.validated['keys']
     values = request.validated['values']
-    print(table)
-    print(uids)
-    print(keys)
-    print(values)
     return lib.update_row(table, uids, keys, values)
 
 

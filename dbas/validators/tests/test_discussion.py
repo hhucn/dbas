@@ -490,3 +490,57 @@ class TestValidReactionArguments(TestCaseWithConfig):
         response = discussion.valid_reaction_arguments(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
+
+
+class TestValidSupportReaction(TestCaseWithConfig):
+    def test_valid_request_should_pass(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'arg_id_user': 2,
+            'arg_id_sys': 11
+        })
+        response = discussion.valid_support(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+        self.assertIn('arg_user', request.validated)
+        self.assertIn('arg_sys', request.validated)
+
+    def test_invalid_arg_id_user_should_fail(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'arg_id_user': -2,
+            'arg_id_sys': 11
+        })
+        response = discussion.valid_support(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+    def test_missing_issue_should_fail(self):
+        request = construct_dummy_request(match_dict={
+            'slug': '',
+            'arg_id_user': 2,
+            'arg_id_sys': 11
+        })
+        response = discussion.valid_support(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+    def test_invalid_arg_id_sys_should_fail(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'arg_id_user': 2,
+            'arg_id_sys': -11
+        })
+        response = discussion.valid_support(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+    def test_invalid_relation_should_fail(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'arg_id_user': 2,
+            'arg_id_sys': 3
+        })
+        response = discussion.valid_support(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)

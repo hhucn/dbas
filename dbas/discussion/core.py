@@ -8,8 +8,7 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.views import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
-from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_premisegroups, \
-    related_with_support
+from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_premisegroups
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
 from dbas.strings.keywords import Keywords as _
@@ -178,46 +177,34 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     }
 
 
-def support(request_dict: dict) -> Union[dict, None]:
+def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, history: str, path: str) -> dict:
     """
     Initialize the support step for the end of a branch in a discussion. Creates helper and returns a dictionary
     containing the first elements needed for the discussion.
 
-    :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :rtype: dict
-    :return: prepared collection matchdictfor the discussion
+    :param db_issue:
+    :param db_user:
+    :param db_arg_user:
+    :param db_arg_sys:
+    :param history:
+    :param path:
+    :return:
     """
-    logger('Core', 'main')
-
-    db_issue = request_dict['issue']
-    history = request_dict['history']
-    db_user = request_dict['user']
-    slug = db_issue.slug
-    arg_user_uid = request_dict.get('arg_user_uid', request_dict['matchdict'].get('arg_id_user', ''))
-    arg_system_uid = request_dict.get('arg_system_uid', request_dict['matchdict'].get('arg_id_sys', ''))
-
+    logger('Core', 'Entering discussion.support')
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    if not check_belonging_of_argument(db_issue.uid, arg_user_uid) or \
-            not check_belonging_of_argument(db_issue.uid, arg_system_uid) or \
-            not related_with_support(arg_user_uid, arg_system_uid):
-        logger('Core', 'no item dict', error=True)
-        return None
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
+    discussion_dict = _ddh.get_dict_for_supporting_each_other(db_arg_sys.uid, db_arg_user.uid, db_user.nickname)
+    item_dict = _idh.get_array_for_support(db_arg_sys.uid, db_issue.slug)
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
-    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, db_user.nickname)
-    item_dict = _idh.get_array_for_support(arg_system_uid, slug)
-
-    prepared_discussion = {
+    return {
         'issues': issue_dict,
         'discussion': discussion_dict,
         'items': item_dict,
         'title': issue_dict['title']
     }
-
-    return prepared_discussion
 
 
 def choose(request_dict: dict) -> Union[dict, None]:

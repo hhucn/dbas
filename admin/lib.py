@@ -439,8 +439,6 @@ def delete_row(table_name, uids):
             DBDiscussionSession.query(table).filter(Premise.premisegroup_uid == uids[0],
                                                     Premise.statement_uid == uids[1]).delete()
         else:
-            print(table)
-            print(uids)
             DBDiscussionSession.query(table).filter_by(uid=uids[0]).delete()
 
     except IntegrityError as e:

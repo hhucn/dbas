@@ -10,7 +10,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGroup
 from dbas.handler import issue as issue_handler
 from dbas.handler.language import get_language_from_cookie
-from dbas.input_validator import is_integer
+from dbas.input_validator import is_integer, related_with_support
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.core import has_keywords, has_keywords_in_path
@@ -260,6 +260,19 @@ def valid_reaction_arguments(request):
 
     request.validated['arg_user'] = db_arg_user
     request.validated['arg_sys'] = db_arg_sys
+    return True
+
+
+def valid_support(request):
+    if not valid_reaction_arguments(request):
+        return False
+
+    db_arg_user = request.validated['arg_user']
+    db_arg_sys = request.validated['arg_sys']
+
+    if not related_with_support(db_arg_user.uid, db_arg_sys.uid):
+        return False
+
     return True
 
 
