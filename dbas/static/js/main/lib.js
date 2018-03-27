@@ -43,3 +43,15 @@ function levensthein(s1, s2) {
         }
     }
 }
+
+function pxToEm(px) {
+    'use strict';
+    var baseSize = parseInt($("body").css('font-size').replace('px', ''));
+    return px / parseInt(baseSize);
+}
+
+function emToPx(em) {
+    'use strict';
+    var baseSize = parseInt($("body").css('font-size').replace('px', ''));
+    return em * parseInt(baseSize);
+}
