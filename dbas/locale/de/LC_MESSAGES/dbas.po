@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-03-12 10:23+0100\n"
+"POT-Creation-Date: 2018-03-27 08:36+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Christian Meter <meter@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -2136,7 +2136,7 @@ msgstr "Dokumentation"
 #. Default: Where do I find it?
 #: templates/docs.pt:7
 msgid "where_do_i_find_it"
-msgstr "Wo kann ich es finden?"
+msgstr "Wo kann ich sie finden?"
 
 #. Default: Overview of the Discussions
 #: templates/discussion-overview.pt:7
