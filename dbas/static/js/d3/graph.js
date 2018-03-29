@@ -659,6 +659,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 id: function (d) {
                     return "marker_" + d.edge_type + d.id;
                 },
+                refX: function (d) {
+                    if (d.is_undercut === true) {
+                        return 6;
+                    }
+                    return 6 + calculateNodeSize(d.target) / 2;
+                },
                 refY: 0,
                 markerWidth: 10,
                 markerHeight: 10,
