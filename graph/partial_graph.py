@@ -11,18 +11,17 @@ from dbas.logger import logger
 from graph.lib import get_d3_data
 
 
-def get_partial_graph_for_statement(uid, issue, path):
+def get_partial_graph_for_statement(uid: int, db_issue: Issue, path: str):
     """
     Returns the partial graph where the statement is embedded
 
     :param uid: Statement.uid
-    :param issue: Issue.uid
+    :param db_issue: Issue
     :param path: Users history
     :return: dict()
     """
     logger('PartialGraph', 'main with uid {} and path {}'.format(uid, path.split('?')[0]))
     path = path.split('?')[0]
-    db_issue = DBDiscussionSession.query(Issue).get(issue)
     if db_issue and len(path) > 1:
         path = path.split(db_issue.slug)[1]
 
@@ -31,7 +30,7 @@ def get_partial_graph_for_statement(uid, issue, path):
         db_statement = DBDiscussionSession.query(Statement).get(uid)
         db_argument = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_statement.uid).first()
         if not db_argument:
-            return get_d3_data(issue)
+            return get_d3_data(db_issue)
         uid = db_argument.uid
 
     # special case - dont know branche
@@ -48,7 +47,7 @@ def get_partial_graph_for_statement(uid, issue, path):
     db_arguments = get_all_arguments_by_statement(uid)
 
     if db_arguments is None or len(db_arguments) == 0:
-        return get_d3_data(issue, [DBDiscussionSession.query(Statement).get(uid)], [])
+        return get_d3_data(db_issue, [DBDiscussionSession.query(Statement).get(uid)], [])
 
     current_arg = db_arguments[0]
     del db_arguments[0]
@@ -57,15 +56,15 @@ def get_partial_graph_for_statement(uid, issue, path):
     logger('PartialGraph', 'positions are: ' + str([pos.uid for pos in db_positions]))
     graph_arg_lists = __climb_graph_down(db_positions)
 
-    return __return_d3_data(graph_arg_lists, issue)
+    return __return_d3_data(graph_arg_lists, db_issue)
 
 
-def get_partial_graph_for_argument(uid, issue):
+def get_partial_graph_for_argument(uid: int, db_issue: Issue):
     """
     Returns the partial graph where the argument is embedded
 
     :param uid: Argument.uid
-    :param issue: Issue.uid
+    :param db_issue: Issue.uid
     :param request: Current request object
     :return: dict()
     """
@@ -79,14 +78,14 @@ def get_partial_graph_for_argument(uid, issue):
     graph_arg_lists = __climb_graph_down(db_positions)
     # return __get_all_nodes_for_pos_dict(graph_arg_lists)
 
-    return __return_d3_data(graph_arg_lists, issue)
+    return __return_d3_data(graph_arg_lists, db_issue)
 
 
-def __return_d3_data(graph_arg_lists, issue):
+def __return_d3_data(graph_arg_lists, db_issue: Issue):
     """
 
     :param graph_arg_lists:
-    :param issue:
+    :param db_issue:
     :param nickname:
     :return:
     """
@@ -101,7 +100,7 @@ def __return_d3_data(graph_arg_lists, issue):
 
     logger('PartialGraph', 'stat_list: {}'.format([stat.uid for stat in graph_stat_list]))
     logger('PartialGraph', 'arg_list: {}'.format([arg.uid for arg in graph_arg_list]))
-    return get_d3_data(issue, graph_stat_list, graph_arg_list)
+    return get_d3_data(db_issue, graph_stat_list, graph_arg_list)
 
 
 def __find_position_for_conclusion_of_argument(current_arg, list_todos, list_dones, positions):

@@ -35,14 +35,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         url = url.split('#')[0];
         var is_argument = null;
         var uid = null;
-        var tmp = url.split('/');
         isPartialGraphMode = override_cases;
+        console.log(override_cases)
         if (!override_cases) {
-            var keys = { // mapping of keyword and boolean for 'is_argumentÄ
+            var tmp = url.split('/');
+            var keys = {
                 'attitude': false,
                 'justify': false,
                 'reaction': true,
                 'support': true,
+                'finish': true,
                 'jump': true
             };
             $.each(keys, function (key, bool) {
