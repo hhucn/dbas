@@ -1,6 +1,6 @@
 # coding=utf-8
 from os import environ
-from typing import List, Tuple, Dict, Union
+from typing import List, Tuple, Dict, Union, Any
 
 import transaction
 from sqlalchemy import func
@@ -58,23 +58,21 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
     }
 
 
-def set_positions_premise(data: Dict) -> dict:
+def set_positions_premise(db_issue: Issue, db_user: User, db_conclusion: Statement, premisegroups: List[List[str]],
+                          supportive: bool, history: str, mailer) -> dict:
     """
     Set new premise for a given position and returns dictionary with url for the next step of the discussion
 
-    :param data: dict of requests data
+    :param mailer:
+    :param history:
+    :param supportive:
+    :param premisegroups:
+    :param db_conclusion:
+    :param db_user:
+    :param db_issue:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and an url or an error
     """
-    db_user = data['user']
-    premisegroups = data['premisegroups']
-    db_issue = data['issue']
-    db_conclusion = data['conclusion']
-    supportive = data['supportive']
-
-    history = data.get('history')
-    mailer = data.get('mailer')
-
     user.update_last_action(db_user)
 
     prepared_dict = __process_input_of_start_premises(premisegroups, db_conclusion, supportive, db_issue, db_user)
@@ -314,7 +312,8 @@ def __is_conclusion_in_premisegroups(premisegroups: list, db_conclusion: Stateme
     return False
 
 
-def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, supportive, db_issue: Issue, db_user: User):
+def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, supportive, db_issue: Issue,
+                                      db_user: User) -> Dict[str, Any]:
     """
     Inserts premises of groups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 

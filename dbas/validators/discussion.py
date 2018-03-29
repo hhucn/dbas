@@ -166,6 +166,27 @@ def valid_position(request):
     return False
 
 
+def valid_new_position_in_body(request):
+    long_error = "JSON Body has to look like this: {\"position\": \"my position\", \"reason\": \"My reason for the position\" "
+
+    if not valid_issue_by_slug(request):
+        return False
+
+    position = request.json_body.get('position')
+    reason = request.json_body.get('reason')
+
+    if not (position and isinstance(position, str)):
+        add_error(request, "Missing \'position\' in body.", long_error)
+
+    if not (reason and isinstance(reason, str)):
+        add_error(request, "Missing \'reason\' in body.", long_error)
+
+    request.validated["position-text"] = position
+    request.validated["reason-text"] = reason
+
+    return True
+
+
 def valid_attitude(request):
     """
     Check if given statement is a position and belongs to the queried issue.

@@ -403,26 +403,22 @@ def set_new_start_argument(request):
     """
     logger('views', 'request.params: {}'.format(request.json_body))
     reason = request.validated['reason']
-    data = {
-        'user': request.validated['user'],
-        'issue': request.validated['issue'],
-        'statement_text': request.validated['position'],
-        'default_locale_name': get_default_locale_name(request.registry),
-        'application_url': request.application_url,
-        'supportive': True,
-        'history': request.cookies.get('_HISTORY_'),
-        'mailer': request.mailer
-    }
 
     # set the new position
     logger('views', 'set conclusion/position')
     prepared_dict_pos = set_position(request.validated['user'], request.validated['issue'],
                                      request.validated['position'])
+
     if len(prepared_dict_pos['error']) is 0:
         logger('views', 'set premise/reason')
-        data['premisegroups'] = [[reason]]
-        data['conclusion'] = DBDiscussionSession.query(Statement).get(prepared_dict_pos['statement_uids'][0])
-        prepared_dict_pos = set_positions_premise(data)
+        prepared_dict_pos = set_positions_premise(request.validated['issue'],
+                                                  request.validated['user'],
+                                                  DBDiscussionSession.query(Statement).get(
+                                                      prepared_dict_pos['statement_uids'][0]),
+                                                  [[reason]],
+                                                  True,
+                                                  request.cookies.get('_HISTORY_'),
+                                                  request.mailer)
     __modifiy_discussion_url(prepared_dict_pos)
 
     return prepared_dict_pos
@@ -439,18 +435,13 @@ def set_new_start_premise(request):
     :return: json-dict()
     """
     logger('views', 'main: {}'.format(request.json_body))
-    data = {
-        'user': request.validated['user'],
-        'application_url': request.application_url,
-        'issue': request.validated['issue'],
-        'premisegroups': request.validated['premisegroups'],
-        'conclusion': request.validated['conclusion'],
-        'supportive': request.validated['supportive'],
-        'history': request.cookies.get('_HISTORY_'),
-        'default_locale_name': get_default_locale_name(request.registry),
-        'mailer': request.mailer
-    }
-    prepared_dict = set_positions_premise(data)
+    prepared_dict = set_positions_premise(request.validated['issue'],
+                                          request.validated['user'],
+                                          request.validated['conclusion'],
+                                          request.validated['premisegroups'],
+                                          request.validated['supportive'],
+                                          request.cookies.get('_HISTORY_'),
+                                          request.mailer)
     __modifiy_discussion_url(prepared_dict)
     return prepared_dict
 
@@ -789,7 +780,8 @@ def send_news(request):
 
 # ajax - for fuzzy search
 @view_config(route_name='fuzzy_search', renderer='json')
-@validate(valid_issue_by_id, valid_user_optional, valid_fuzzy_search_mode, has_keywords(('value', str), ('statement_uid', int)))
+@validate(valid_issue_by_id, valid_user_optional, valid_fuzzy_search_mode,
+          has_keywords(('value', str), ('statement_uid', int)))
 def fuzzy_search(request):
     """
     ajax interface for fuzzy string search

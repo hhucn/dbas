@@ -13,7 +13,7 @@ import json
 from typing import Callable, Any
 
 from cornice import Service
-from dbas.validators.lib import add_error
+from pyramid.httpexceptions import HTTPCreated
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
@@ -21,7 +21,7 @@ import dbas.views as dbas
 from api.lib import extract_items_and_bubbles
 from api.models import Item, Bubble
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement
+from dbas.database.discussion_model import Issue, Statement, User
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
@@ -31,7 +31,8 @@ from dbas.strings.translator import Keywords as _
 from dbas.strings.translator import get_translation
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
-    valid_argument, valid_relation, valid_reaction_arguments
+    valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_conclusion
+from dbas.validators.lib import add_error
 from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
 from .references import (get_all_references_by_reference_text,
@@ -94,6 +95,12 @@ attitude = Service(name='api_attitude',
 finish = Service(name='api_finish',
                  path='/{slug}/finish/{argument_id}',
                  description='End of a discussion')
+
+# add new stuff
+positions = Service(name='Positions',
+                    path='/{slug}/positions',
+                    description='Positions of a specific issue',
+                    cors_policy=cors_policy)
 
 # Prefix with 'z' so it is added as the last route
 zinit = Service(name='api_init',
@@ -198,9 +205,11 @@ def hello(_):
 
     :return: dbas.discussion_reaction(True)
     """
-    return {"status": "ok",
-            "message": "Connection established. \"Back when PHP had less than 100 functions and the function hashing "
-                       "mechanism was strlen()\" -- Author of PHP"}
+    return {
+        "status": "ok",
+        "message": "Connection established. \"Back when PHP had less than 100 functions and the function hashing "
+                   "mechanism was strlen()\" -- Author of PHP"
+    }
 
 
 @whoami.get()
@@ -212,15 +221,18 @@ def whoami_fn(request):
     :return: welcome-dict
     """
     nickname = request.validated["user"].nickname
-    return {"status": "ok",
-            "nickname": nickname,
-            "message": "Hello " + nickname + ", nice to meet you."}
+    return {
+        "status": "ok",
+        "nickname": nickname,
+        "message": "Hello " + nickname + ", nice to meet you."
+    }
 
 
 # =============================================================================
 # DISCUSSION-RELATED REQUESTS
 # =============================================================================
 
+@positions.get()
 @zinit.get()
 @validate(valid_issue_by_slug)
 def discussion_init(request):
@@ -244,8 +256,10 @@ def discussion_init(request):
     items = [Item([pos.get_textversion().content], "{}/attitude/{}".format(db_issue.slug, pos.uid))
              for pos in db_positions]
 
-    return {'bubbles': [Bubble(bubble) for bubble in bubbles],
-            'items': items}
+    return {
+        'bubbles': [Bubble(bubble) for bubble in bubbles],
+        'items': items
+    }
 
 
 @attitude.get()
@@ -380,10 +394,12 @@ def prepare_user_information(request):
     """
     val = request.validated
     try:
-        api_data = {"nickname": val["user"],
-                    "user": val["user"],
-                    "user_uid": val["user_uid"],
-                    "session_id": val["session_id"]}
+        api_data = {
+            "nickname": val["user"],
+            "user": val["user"],
+            "user_uid": val["user_uid"],
+            "session_id": val["session_id"]
+        }
     except KeyError:
         api_data = None
     return api_data
@@ -498,8 +514,10 @@ def get_references(request):
     if host and path:
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
-            return {"references": list(map(lambda ref:
-                                           prepare_single_reference(ref), refs_db))}
+            return {
+                "references": list(map(lambda ref:
+                                       prepare_single_reference(ref), refs_db))
+            }
         else:
             return error("Could not retrieve references", "API/Reference")
     return error("Could not parse your origin", "API/Reference")
@@ -538,8 +556,10 @@ def user_login(request):
     :param request:
     :return: token and nickname
     """
-    return {'nickname': request.validated['nickname'],
-            'token': request.validated['token']}
+    return {
+        'nickname': request.validated['nickname'],
+        'token': request.validated['token']
+    }
 
 
 @logout.get(require_csrf=False)
@@ -553,8 +573,10 @@ def user_logout(request):
     """
     request.session.invalidate()
     token_to_database(request.validated['user'], None)
-    return {'status': 'ok',
-            'message': 'Successfully logged out'}
+    return {
+        'status': 'ok',
+        'message': 'Successfully logged out'
+    }
 
 
 # =============================================================================
@@ -665,3 +687,19 @@ def get_issues(_request):
     """
     return DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
                                                    Issue.is_private == False).all()
+
+
+@positions.post()
+@validate(valid_token, valid_issue_by_slug, valid_new_position_in_body)
+def add_position(request):
+    db_user: User = request.validated['user']
+    db_issue: Issue = request.validated['issue']
+    new_position = set_position(db_user, db_issue, request.validated['position'])
+
+    request.json_body['conclusion_id'] = new_position['statement_uids'][0]
+
+    valid_conclusion(request)
+    set_positions_premise(db_issue, db_user, request.validated['conclusion'], [[request.validated['reason']]], True, "",
+                          request.mailer)
+
+    return HTTPCreated()
