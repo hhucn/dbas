@@ -23,7 +23,7 @@ class ViewTest(unittest.TestCase):
         ret_dict = get_d3_complete_dump(request)
         self.assertEqual(400, ret_dict.status_code)
 
-        request = construct_dummy_request({'issue': 2})
+        request = construct_dummy_request({'issue': 4})
         ret_dict = get_d3_complete_dump(request)
         self.assertEqual(0, len(ret_dict.get('error', '')))
 

@@ -8,7 +8,7 @@ from graph import lib
 class LibTest(unittest.TestCase):
 
     def test_get_d3_data(self):
-        db_issue = DBDiscussionSession.query(Issue).get(2)
+        db_issue = DBDiscussionSession.query(Issue).get(4)
         ret_dict, error = lib.get_d3_data(db_issue)
         self.assertFalse(error)
         self.assertIn('nodes', ret_dict)
@@ -19,11 +19,11 @@ class LibTest(unittest.TestCase):
         self.assertLess(0, len(ret_dict['extras']))
 
     def test_get_opinion_data(self):
-        db_issue = DBDiscussionSession.query(Issue).get(2)
+        db_issue = DBDiscussionSession.query(Issue).get(4)
         self.assertNotEqual(0, len(lib.get_opinion_data(db_issue)))
 
     def test_get_path_of_user(self):
-        db_issue = DBDiscussionSession.query(Issue).get(2)
+        db_issue = DBDiscussionSession.query(Issue).get(4)
         response = lib.get_path_of_user('http://localhost:4284/', '?history=/attitude/2', db_issue)
         self.assertEqual(0, len(response))
 

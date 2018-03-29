@@ -36,7 +36,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var is_argument = null;
         var uid = null;
         isPartialGraphMode = override_cases;
-        console.log(override_cases)
         if (!override_cases) {
             var tmp = url.split('/');
             var keys = {
