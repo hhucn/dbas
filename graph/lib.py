@@ -3,8 +3,6 @@
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
-import requests
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
     SeenStatement
@@ -17,11 +15,11 @@ red = '#F44336'
 grey = '#424242'
 
 
-def get_d3_data(issue, all_statements=None, all_arguments=None):
+def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
     """
     Given an issue, create an dictionary and return it
 
-    :param issue: Current uid of issue
+    :param db_issue: Current issue
     :param all_statements:
     :param all_arguments:
     :return: dictionary
@@ -33,18 +31,15 @@ def get_d3_data(issue, all_statements=None, all_arguments=None):
     nodes_array = []
     edges_array = []
     extras_dict = {}
-    db_issue = DBDiscussionSession.query(Issue).get(issue)
-    if not db_issue:
-        return {}
 
     logger('Graph.lib', 'title: ' + db_issue.title)
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     if all_statements is None:
-        all_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
+        all_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=db_issue.uid).all()
 
     if all_arguments is None:
-        all_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).all()
+        all_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=db_issue.uid).all()
 
     # issue
     node_dict = __get_node_dict(uid='issue',
@@ -76,13 +71,13 @@ def get_d3_data(issue, all_statements=None, all_arguments=None):
     return d3_dict, error
 
 
-def get_opinion_data(issue):
+def get_opinion_data(db_issue: Issue) -> dict:
     """
 
-    :param issue:
+    :param db_issue:
     :return:
     """
-    db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
+    db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=db_issue.uid).all()
     db_all_seen = DBDiscussionSession.query(SeenStatement)
     db_all_votes = DBDiscussionSession.query(ClickedStatement)
     ret_dict = dict()
@@ -96,43 +91,17 @@ def get_opinion_data(issue):
     return ret_dict
 
 
-def get_doj_data(issue):
-    """
-
-    :param issue:
-    :return:
-    """
-    logger('Graph.lib', 'main')
-    url = 'http://localhost:5101/evaluate/dojs?issue=' + str(issue)
-    try:
-        resp = requests.get(url)
-    except Exception as e:
-        logger('Graph.lib', 'Error: ' + str(e), error=True)
-        logger('Graph.lib', 'return empty doj')
-        return {}
-
-    if resp.status_code == 200:
-        import json
-        doj = json.loads(resp.text)
-        return doj['dojs'] if 'dojs' in doj else {}
-    else:
-        logger('Graph.lib', 'status ' + str(resp.status_code), error=True)
-        logger('Graph.lib', 'return empty doj')
-        return {}
-
-
-def get_path_of_user(base_url, path, issue):
+def get_path_of_user(base_url, path, db_issue):
     """
 
     :param base_url:
     :param path:
-    :param issue:
+    :param db_issue:
     :return:
     """
     logger('Graph.lib', 'main ' + path)
 
     # replace everything what we do not need
-    db_issue = DBDiscussionSession.query(Issue).get(issue)
     kill_it = [base_url, '/discuss/', '/discuss', db_issue.slug, '#graph', '#']
     for k in kill_it:
         path = path.replace(k, '')
@@ -423,39 +392,3 @@ def __get_edge_dict(uid, source, target, color, edge_type):
             'target': target,
             'color': color,
             'edge_type': edge_type}
-
-
-def __get_extras_dict(statement):
-    """
-
-    :param statement:
-    :return:
-    """
-    db_textversion_author = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid). \
-        order_by(TextVersion.uid.asc()).first()  # TODO #432
-    db_textversion_modifier = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid). \
-        order_by(TextVersion.uid.desc()).first()  # TODO #432
-
-    db_author = DBDiscussionSession.query(User).get(db_textversion_author.author_uid)
-    db_modifier = DBDiscussionSession.query(User).get(db_textversion_modifier.author_uid)
-
-    db_votes = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.statement_uid == statement.uid,
-                                                                  ClickedStatement.is_up_vote == True,
-                                                                  ClickedStatement.is_valid == True).all()
-
-    return_dict = {
-        'text': db_textversion_author.content,
-        'author': db_author.global_nickname,
-        'author_gravatar': get_profile_picture(db_author, 20),
-        'votes': len(db_votes),
-        'was_modified': 'false'
-    }
-
-    if db_modifier.uid != db_author.uid:
-        return_dict.update({
-            'modifier': db_modifier.global_nickname,
-            'modifier_gravatar': get_profile_picture(db_modifier, 20),
-            'was_modified': 'true'
-        })
-
-    return return_dict
