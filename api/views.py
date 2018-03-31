@@ -13,7 +13,7 @@ import json
 from typing import Callable, Any
 
 from cornice import Service
-from pyramid.httpexceptions import HTTPCreated
+from pyramid.response import Response
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
@@ -31,7 +31,7 @@ from dbas.strings.translator import Keywords as _
 from dbas.strings.translator import get_translation
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
-    valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_conclusion
+    valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body
 from dbas.validators.lib import add_error
 from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
@@ -689,17 +689,17 @@ def get_issues(_request):
                                                    Issue.is_private == False).all()
 
 
-@positions.post()
+@positions.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_new_position_in_body)
 def add_position(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
-    new_position = set_position(db_user, db_issue, request.validated['position'])
+    new_position = set_position(db_user, db_issue, request.validated['position-text'])
 
-    request.json_body['conclusion_id'] = new_position['statement_uids'][0]
+    conslusion_id: int = new_position['statement_uids'][0]
+    db_conclusion: Statement = DBDiscussionSession.query(Statement).get(conslusion_id)
 
-    valid_conclusion(request)
-    set_positions_premise(db_issue, db_user, request.validated['conclusion'], [[request.validated['reason']]], True, "",
+    set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, "",
                           request.mailer)
 
-    return HTTPCreated()
+    return Response(status=201)
