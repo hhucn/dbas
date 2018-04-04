@@ -20,16 +20,16 @@ from dbas.strings.translator import Translator
 
 
 # http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html
-def get_rnd_passwd():
+def get_rnd_passwd(pw_len: int = 10) -> str:
     """
     Generates a password with the length of 10 out of ([a-z][A-Z][+-*/#!*?])+
 
-    :return: String
+    :param pw_len:
+    :return:
     """
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     upperalphabet = alphabet.upper()
     symbols = '+-*/#!*?'
-    pw_len = 8
     pwlist = []
 
     for i in range(pw_len // 3):
@@ -37,10 +37,7 @@ def get_rnd_passwd():
         pwlist.append(upperalphabet[random.randrange(len(upperalphabet))])
         pwlist.append(str(random.randrange(10)))
     for i in range(pw_len - len(pwlist)):
-        pwlist.append(alphabet[random.randrange(len(alphabet))])
-
-    pwlist.append(symbols[random.randrange(len(symbols))])
-    pwlist.append(symbols[random.randrange(len(symbols))])
+        pwlist.append(alphabet[random.randrange(len(symbols))])
 
     random.shuffle(pwlist)
     pwstring = ''.join(pwlist)
@@ -55,8 +52,7 @@ def get_hashed_password(password):
     :param password: String
     :return: String
     """
-    manager = BCRYPTPasswordManager()
-    return manager.encode(password)
+    return BCRYPTPasswordManager().encode(password)
 
 
 def request_password(email: str, mailer: Mailer, _tn: Translator):
@@ -68,33 +64,32 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
     :param _tn: Translator
     :return: dict with info about mailing
     """
-    success = ''
-    error = ''
-    info = ''
 
     db_user = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
-    if db_user:
-        pwd = get_rnd_passwd()
-        hashedpwd = get_hashed_password(pwd)
-
-        # set the hashed one
-        db_user.password = hashedpwd
-        DBDiscussionSession.add(db_user)
-        transaction.commit()
-
-        db_language = DBDiscussionSession.query(Language).get(db_user.settings.lang_uid)
-
-        body = _tn.get(_.nicknameIs) + db_user.nickname + '\n'
-        body += _tn.get(_.newPwdIs) + pwd + '\n\n'
-        body += _tn.get(_.newPwdInfo)
-        subject = _tn.get(_.dbasPwdRequest)
-        reg_success, message = send_mail(mailer, subject, body, email, db_language.ui_locales)
-
-        if reg_success:
-            success = message
-        else:
-            error = message
-    else:
+    if not db_user:
         logger('user_password_request', 'Mail unknown')
-        info = _tn.get(_.emailUnknown)
-    return {'success': success, 'error': error, 'info': info}
+        return {
+            'success': False,
+            'message': _tn.get(_.emailUnknown)
+        }
+
+    rnd_pwd = get_rnd_passwd()
+    hashed_pwd = get_hashed_password(rnd_pwd)
+
+    # set the hashed one
+    db_user.password = hashed_pwd
+    DBDiscussionSession.add(db_user)
+    transaction.commit()
+
+    db_language = DBDiscussionSession.query(Language).get(db_user.settings.lang_uid)
+
+    body = _tn.get(_.nicknameIs) + db_user.nickname + '\n'
+    body += _tn.get(_.newPwdIs) + rnd_pwd + '\n\n'
+    body += _tn.get(_.newPwdInfo)
+    subject = _tn.get(_.dbasPwdRequest)
+    success, message = send_mail(mailer, subject, body, email, db_language.ui_locales)
+
+    return {
+        'success': success,
+        'message': message
+    }

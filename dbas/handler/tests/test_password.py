@@ -7,6 +7,7 @@ class PasswordHandlerTests(unittest.TestCase):
 
     def test_get_rnd_passwd(self):
         self.assertEqual(len(password.get_rnd_passwd()), 10)
+        self.assertEqual(len(password.get_rnd_passwd(8)), 8)
 
         # Test, whether 2 passwords are equal.
         self.assertNotEqual(password.get_rnd_passwd(), password.get_rnd_passwd())

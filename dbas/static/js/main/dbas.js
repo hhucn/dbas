@@ -599,19 +599,14 @@ function callbackIfDoneForPasswordRequest(data) {
     success.hide();
     failed.hide();
     info.hide();
-    if (data.success.length > 0) {
+    if (data.success) {
         $('#' + popupLoginForgotPasswordBody).hide();
         $('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
         success.show();
-        $('#' + popupLoginSuccess + '-message').text(data.success);
-    }
-    if (data.error.length > 0) {
-        failed.show();
-        $('#' + popupLoginFailed + '-message').text(data.error);
-    }
-    if (data.info.length > 0) {
+        $('#' + popupLoginSuccess + '-message').text(data.message);
+    } else {
         info.show();
-        $('#' + popupLoginInfo + '-message').text(data.info);
+        $('#' + popupLoginInfo + '-message').text(data.message);
     }
 }
 
