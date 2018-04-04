@@ -64,12 +64,6 @@ jshint:
     - bash -c "jshint ./websocket/static/js/*.js"
   allow_failure: true
 
-frontend:
-  <<: *add-services
-  stage: test
-  script:
-    - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
-
 unit:
   <<: *add-services
   stage: test
@@ -80,15 +74,6 @@ unit:
     paths:
       - coverage.xml
     expire_in: 10 mins
-
-search:
-  <<: *add-services
-  stage: test
-  script:
-    - apt-get install -yqq curl
-    - export DBAS_IP=$(ip a | grep 172. | awk '{print $2}' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
-    - "curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$DBAS_IP'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
-    - nosetests search
 
 sonar:
   image: hhucn/sonar-scanner
