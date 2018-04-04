@@ -69,9 +69,8 @@ class AjaxTest(unittest.TestCase):
         request = testing.DummyRequest(json_body={'email': 'penguinswillrule@theworld.com'}, mailer=DummyMailer)
         response = user_password_request(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['success']) == 0)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(len(response['info']) != 0)
+        self.assertFalse(response['success'])
+        self.assertTrue(len(response['message']) != 0)
 
     def test_user_password_request_failure_wrong_key(self):
         request = testing.DummyRequest(json_body={'emai': 'krauthoff@cs.uni-duesseldorf.de'}, mailer=DummyMailer)
