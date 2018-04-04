@@ -511,21 +511,3 @@ def __set_min_length_error(request, min_length):
     c = _tn.get(_.eachStatement)
     error_msg = '{} ({}: {} {})'.format(a, b, min_length, c)
     add_error(request, 'Text too short', error_msg)
-
-
-def __get_in_json_body_or_matchdict(request, field):
-    """
-    Look in path or matchdict for given field and return its value and location where it was found.
-
-    :param request:
-    :param field: e.g. 'uid'
-    :return: location ('body', 'path', ...) and field
-    """
-    if field in request.matchdict:
-        location = 'path'
-        value = request.matchdict.get(field)
-    else:
-        location = 'body'
-        value = request.json_body.get(field)
-
-    return location, value

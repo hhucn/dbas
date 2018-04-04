@@ -10,22 +10,6 @@ from pyramid.request import Request
 from dbas.validators.lib import add_error
 
 
-def __look_for_keyword(request, req_location, location, keywords):
-    error_occured = False
-    for (keyword, ktype) in keywords:
-        value = req_location.get(keyword)
-        if value is not None and isinstance(value, ktype):
-            request.validated[keyword] = value
-        elif value is None:
-            add_error(request, 'Parameter {} is missing in {}'.format(keyword, location))
-            error_occured = True
-        else:
-            add_error(request, 'Parameter {} has wrong type'.format(keyword),
-                      '{} is {}, expected {}'.format(keyword, type(value), ktype))
-            error_occured = True
-    return not error_occured
-
-
 def has_keywords(*keywords: Tuple[str, type]):
     """
     Verify that specified keywords exist in the request.json_body.
