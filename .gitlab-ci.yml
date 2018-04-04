@@ -64,12 +64,6 @@ jshint:
     - bash -c "jshint ./websocket/static/js/*.js"
   allow_failure: true
 
-frontend:
-  <<: *add-services
-  stage: test
-  script:
-    - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
-
 unit:
   <<: *add-services
   stage: test

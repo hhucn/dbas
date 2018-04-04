@@ -5,10 +5,10 @@ ENV locs /etc/locale.gen
 
 RUN apt-get update -qq && \
     apt-get install -yqq curl gnupg2 && \
-    curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+    curl -sL https://deb.nodesource.com/setup_9.x | bash - && \
     apt-get install -yqq ruby2.3-dev rubygems build-essential libfontconfig nodejs locales libsasl2-dev libldap2-dev libssl-dev gettext bzip2 autoconf libffi-dev gcc && \
     (yes | gem install sass) && \
-    npm install phantomjs-prebuilt@2.1.14 --ignore-scripts google-closure-compiler-js -g && \
+    npm install google-closure-compiler-js -g && \
     touch $locs && \
     echo "de_DE.UTF-8 UTF-8" >> $locs && \
     echo "en_US.UTF-8 UTF-8" >> $locs && \
