@@ -41,6 +41,8 @@ class ValidLangCookieFallbackTest(TestCaseWithConfig):
         valid_lang_cookie_fallback(request)
         self.assertIn('lang', request.validated)
 
+
+class CheckAuthenticationTest(TestCaseWithConfig):
     def test_check_authentication_not_logged_in(self):
         request = construct_dummy_request({'lang': 'en'})
         self.assertIsNone(check_authentication(request))
@@ -48,16 +50,8 @@ class ValidLangCookieFallbackTest(TestCaseWithConfig):
     def test_check_authentication_logged_in(self):
         self.config.testing_securitypolicy(userid='Christian', permissive=True)
         request = construct_dummy_request({'lang': 'en'})
-        check_authentication(request)
-        self.assertRaises(HTTPFound)
-
-
-class CheckAuthenticationTest(TestCaseWithConfig):
-    def test_check_authentication_logged_in(self):
-        self.config.testing_securitypolicy(userid='Christian', permissive=True)
-        request = construct_dummy_request({'lang': 'en'})
-        check_authentication(request)
-        self.assertRaises(HTTPFound)
+        with self.assertRaises(HTTPFound):
+            check_authentication(request)
 
 
 class TestFuzzySearch(TestCaseWithConfig):
