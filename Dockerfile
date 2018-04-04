@@ -37,4 +37,4 @@ COPY . /dbas/
 RUN ./build_assets.sh
 
 EXPOSE 4284
-CMD ["pserve", "development.ini", "--reload"]
+CMD sh -c "alembic upgrade head && pserve development.ini --reload"
