@@ -48,7 +48,7 @@ class CheckAuthenticationTest(TestCaseWithConfig):
         self.assertIsNone(check_authentication(request))
 
     def test_check_authentication_logged_in(self):
-        self.config.testing_securitypolicy(userid='Christian', permissive=True)
+        self.config.testing_securitypolicy(userid='Alwin', permissive=True)
         request = construct_dummy_request({'lang': 'en'})
         with self.assertRaises(HTTPFound):
             check_authentication(request)
