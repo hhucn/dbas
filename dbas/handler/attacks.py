@@ -8,7 +8,7 @@ import random
 from enum import Enum, auto
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, ClickedArgument
+from dbas.database.discussion_model import Argument
 from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for_argument_uid, \
     get_undercuts_for_argument_uid
 from dbas.logger import logger
@@ -212,11 +212,13 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
         new_attack_step = '{}/{}/{}'.format(argument_uid, attack_mapping[key], return_array[0]['id'])
 
         # kick all malicious steps
-        real_return_array = [item for item in return_array if item['id'] not in restriction_on_args and '/{}'.format(str(item['id'])) not in str(history)]
+        real_return_array = [item for item in return_array if
+                             item['id'] not in restriction_on_args and '/{}'.format(str(item['id'])) not in str(
+                                 history)]
         return_array = real_return_array
 
         if key not in restriction_on_attacks \
-                and len(return_array) > 0\
+                and len(return_array) > 0 \
                 and return_array[0]['id'] not in restriction_on_args \
                 and new_attack_step not in history:  # no duplicated attacks
             attack_found = True
@@ -254,48 +256,3 @@ def __get_attacks(attack, argument_uid, last_attack, is_supportive):
         attacks = get_undercuts_for_argument_uid(argument_uid)
 
     return attacks, is_supportive, key
-
-
-def __get_best_argument(argument_list):
-    """
-
-    :param argument_list: Argument[]
-    :return: Argument
-    """
-    logger('RS', 'main')
-    evaluations = []
-    for argument in argument_list:
-        evaluations.append(__evaluate_argument(argument.uid))
-
-    best = max(evaluations)
-    index = [i for i, j in enumerate(evaluations) if j == best]
-    return index[0]
-
-
-def __evaluate_argument(argument_uid):
-    """
-
-    :param argument_uid: Argument.uid Argument.uid
-    :return:
-    """
-    logger('RS', 'argument {}'.format(argument_uid))
-
-    db_votes = DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=argument_uid)
-    db_valid_votes = db_votes.filter(is_valid=True)
-    db_valid_upvotes = db_valid_votes.filter(is_up_vote=True)
-
-    votes = db_votes.count()
-    valid_votes = db_valid_votes.count()
-    valid_upvotes = db_valid_upvotes.count()
-    all_users = DBDiscussionSession.query(User).count()
-
-    if valid_votes == 0:
-        valid_votes = 1
-
-    if all_users == 0:
-        all_users = 1
-
-    index_up_vs_down = valid_upvotes / valid_votes
-    index_participation = votes / all_users
-
-    return index_participation, index_up_vs_down
