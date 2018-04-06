@@ -6,7 +6,7 @@ from dbas.database.discussion_model import Argument
 from dbas.handler import attacks
 
 
-class RecommenderSystemTests(unittest.TestCase):
+class AttackHandlerTests(unittest.TestCase):
 
     def test_get_attack_for_argument(self):
         results = {
@@ -87,14 +87,6 @@ class RecommenderSystemTests(unittest.TestCase):
                                                           history='42/undercut/43-42/undermine/44')
         self.assertIsNone(attack_uid)
         self.assertIsNone(key)
-
-    def get_argument_by_conclusion(self):
-        for i in range(0, 5):
-            argument = attacks.get_argument_by_conclusion(1, True)
-            self.assertTrue(argument in [1, 10, 11])
-
-        argument = attacks.get_argument_by_conclusion(1, False)
-        self.assertTrue(argument, 2)
 
     def get_arguments_by_conclusion(self):
         arguments = attacks.get_arguments_by_conclusion(1, True)

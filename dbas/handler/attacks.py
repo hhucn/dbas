@@ -64,8 +64,9 @@ def get_attack_for_argument(argument_uid, restrictive_attacks=None, restrictive_
     if is_current_arg_undercut and not redirected_from_jump:
         restrictive_attacks.append(Attacks.UNDERCUT)
 
-    logger('RS', 'arg: {}, restricts: {}, {}, from_jump: {}'.format(argument_uid, restrictive_attacks,
-                                                                    restrictive_arg_uids, redirected_from_jump))
+    logger('AttackHandler', 'arg: {}, restricts: {}, {}, from_jump: {}'.format(argument_uid, restrictive_attacks,
+                                                                               restrictive_arg_uids,
+                                                                               redirected_from_jump))
 
     attacks_array, key, no_new_attacks = __get_attack_for_argument(argument_uid, restrictive_attacks,
                                                                    restrictive_arg_uids, last_attack, history)
@@ -76,26 +77,9 @@ def get_attack_for_argument(argument_uid, restrictive_attacks=None, restrictive_
     attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
     attack_uid = attacks_array[attack_no]['id']
 
-    logger('RS', 'main return {} by {}'.format(key, attack_uid))
+    logger('AttackHandler', 'main return {} by {}'.format(key, attack_uid))
 
     return attack_uid, attack_mapping[key]
-
-
-def get_argument_by_conclusion(statement_uid, is_supportive):
-    """
-    Returns a random argument by its conclusion
-
-    :param statement_uid: Statement.uid
-    :param is_supportive: Boolean
-    :return: Argument
-    """
-    logger('RS', 'statement: {}, supportive: {}'.format(statement_uid, is_supportive))
-    db_arguments = get_arguments_by_conclusion(statement_uid, is_supportive)
-
-    if len(db_arguments) == 0:
-        return 0
-    rnd = random.randint(0, len(db_arguments) - 1)  # TODO fix random
-    return db_arguments[0 if len(db_arguments) == 1 else rnd].uid
 
 
 def get_arguments_by_conclusion(statement_uid: int, is_supportive: bool) -> List[Argument]:
@@ -147,7 +131,7 @@ def __get_attack_for_argument(argument_uid, restrictive_attacks, restrictive_arg
     complete_list_of_attacks = [attack for attack in Attacks]
     attacks = [attack for attack in Attacks]
 
-    logger('RS', 'attack_list: {}'.format(attacks))
+    logger('AttackHandler', 'list of current attacks: {}'.format(attacks))
     attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
     return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, attack_list,
                                                                                      complete_list_of_attacks,
@@ -197,7 +181,6 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
         # get attacks and kick all malicious steps
         return_array, is_supportive, attack_key = __get_attacks(attack, argument_uid, last_attack, is_supportive)
         return_array = list(__filter_malicious_steps(return_array, restrictive_arg_uids, history))
-
         if not return_array or len(return_array) == 0:
             continue
 
@@ -208,13 +191,17 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
             attack_found = True
             break
 
+        attack_key = ''  # reset, because maybe the while loop is not triggered again
+        return_array = []
+
     if not attack_found and len(left_attacks) > 0:
         return_array, attack_key, is_attack_in_history = __get_attack_for_argument_by_random_in_range(argument_uid,
                                                                                                       left_attacks,
                                                                                                       left_attacks,
                                                                                                       restrictive_attacks,
                                                                                                       restrictive_arg_uids,
-                                                                                                      last_attack, history)
+                                                                                                      last_attack,
+                                                                                                      history)
 
     return return_array, attack_key, new_attack_step in history
 
