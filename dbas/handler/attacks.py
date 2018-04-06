@@ -44,26 +44,9 @@ def get_attack_for_argument(argument_uid, restrictive_attacks=None, restrictive_
     :param redirected_from_jump: Boolean
     :return: Argument.uid, String, Boolean if no new attacks are found
     """
-    if not restrictive_arg_uids:
-        restrictive_arg_uids = []
-        restrictive_arg_uids = list(set(restrictive_arg_uids))
-
-    if history and not redirected_from_jump:
-        history = history.split('-')
-        index = -2 if len(history) > 1 else -1
-        redirected_from_jump = 'jump' in history[index] or redirected_from_jump
-    else:
-        history = str(history)
-
-    # COMMA16 Special Case (forbid: undercuts of undercuts)
-    # one URL for testing: /discuss/cat-or-dog/reaction/12/undercut/13?history=/attitude/2-/justify/2/t
-    if not restrictive_attacks:
-        restrictive_attacks = []
-
-    is_current_arg_undercut = DBDiscussionSession.query(Argument).get(argument_uid).argument_uid is not None
-    if is_current_arg_undercut and not redirected_from_jump:
-        restrictive_attacks.append(Attacks.UNDERCUT)
-
+    restrictive_arg_uids = __setup_restrictive_argument_uids(restrictive_arg_uids)
+    history, redirected_from_jump = __setup_history(history, redirected_from_jump)
+    restrictive_attacks = __setup_restrictive_attack_keys(argument_uid, restrictive_attacks, redirected_from_jump)
     logger('AttackHandler', 'arg: {}, restricts: {}, {}, from_jump: {}'.format(argument_uid, restrictive_attacks,
                                                                                restrictive_arg_uids,
                                                                                redirected_from_jump))
@@ -80,6 +63,34 @@ def get_attack_for_argument(argument_uid, restrictive_attacks=None, restrictive_
     logger('AttackHandler', 'main return {} by {}'.format(key, attack_uid))
 
     return attack_uid, attack_mapping[key]
+
+
+def __setup_restrictive_argument_uids(restrictive_arg_uids: List[int]) -> List[int]:
+    if not restrictive_arg_uids:
+        restrictive_arg_uids = []
+        restrictive_arg_uids = list(set(restrictive_arg_uids))
+    return restrictive_arg_uids
+
+
+def __setup_restrictive_attack_keys(argument_uid: int, restrictive_attacks: List[Attacks], redirected_from_jump: bool) -> List[Attacks]:
+    if not restrictive_attacks:
+        restrictive_attacks = []
+
+    is_current_arg_undercut = DBDiscussionSession.query(Argument).get(argument_uid).argument_uid is not None
+    if is_current_arg_undercut and not redirected_from_jump:
+        restrictive_attacks.append(Attacks.UNDERCUT)
+
+    return restrictive_attacks
+
+
+def __setup_history(history: str, redirected_from_jump: bool) -> Tuple[str, bool]:
+    if history and not redirected_from_jump:
+        history = history.split('-')
+        index = -2 if len(history) > 1 else -1
+        redirected_from_jump = 'jump' in history[index] or redirected_from_jump
+    else:
+        history = str(history)
+    return history, redirected_from_jump
 
 
 def get_arguments_by_conclusion(statement_uid: int, is_supportive: bool) -> List[Argument]:
