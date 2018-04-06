@@ -212,10 +212,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
         new_attack_step = '{}/{}/{}'.format(argument_uid, attack_mapping[key], return_array[0]['id'])
 
         # kick all malicious steps
-        real_return_array = [item for item in return_array if
-                             item['id'] not in restriction_on_args and '/{}'.format(str(item['id'])) not in str(
-                                 history)]
-        return_array = real_return_array
+        return_array = list(__filter_malicious_steps(return_array, restriction_on_args, history))
 
         if key not in restriction_on_attacks \
                 and len(return_array) > 0 \
@@ -236,6 +233,12 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
                                                                                                last_attack, history)
 
     return return_array, key, new_attack_step in history
+
+
+def __filter_malicious_steps(seq, restriction_on_args, history):
+    for el in seq:
+        if el['id'] not in restriction_on_args and '/{}'.format(el['id']) not in str(history):
+            yield el
 
 
 def __get_attacks(attack, argument_uid, last_attack, is_supportive):
