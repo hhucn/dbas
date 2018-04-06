@@ -33,6 +33,8 @@ class RecommenderSystemTests(unittest.TestCase):
             self.assertEqual(key, results[attack_uid])
             restriction_on_args.append(attack_uid)
 
+    def test_get_attack_for_argument_with_restrictive_arguments(self):
+
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
                                                           restrictive_attacks=None,
                                                           restrictive_arg_uids=[40],
@@ -57,6 +59,7 @@ class RecommenderSystemTests(unittest.TestCase):
         self.assertEqual(attack_uid, 39)
         self.assertEqual(key, 'rebut')
 
+    def test_get_attack_for_argument_with_undercut_restriction(self):
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
                                                           restrictive_attacks=[attacks.Attacks.UNDERCUT],
                                                           restrictive_arg_uids=[40],
@@ -65,6 +68,8 @@ class RecommenderSystemTests(unittest.TestCase):
         self.assertIsNone(attack_uid)
         self.assertIsNone(key)
 
+    def test_get_attack_for_argument_with_undermine_restriction(self):
+
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
                                                           restrictive_attacks=[attacks.Attacks.UNDERMINE],
                                                           restrictive_arg_uids=[40],
@@ -72,6 +77,8 @@ class RecommenderSystemTests(unittest.TestCase):
                                                           history='42/rebut/39-42/undercut/43')
         self.assertIsNone(attack_uid)
         self.assertIsNone(key)
+
+    def test_get_attack_for_argument_with_rebut_restriction(self):
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
                                                           restrictive_attacks=[attacks.Attacks.REBUT],
@@ -83,19 +90,19 @@ class RecommenderSystemTests(unittest.TestCase):
 
     def get_argument_by_conclusion(self):
         for i in range(0, 5):
-            argument = attacks.get_argument_by_conclusion('1', True)
+            argument = attacks.get_argument_by_conclusion(1, True)
             self.assertTrue(argument in [1, 10, 11])
 
-        argument = attacks.get_argument_by_conclusion('1', False)
+        argument = attacks.get_argument_by_conclusion(1, False)
         self.assertTrue(argument, 2)
 
     def get_arguments_by_conclusion(self):
-        arguments = attacks.get_arguments_by_conclusion('1', True)
+        arguments = attacks.get_arguments_by_conclusion(1, True)
         self.assertTrue(1 in arguments)
         self.assertTrue(10 in arguments)
         self.assertTrue(11 in arguments)
 
-        arguments = attacks.get_arguments_by_conclusion('1', False)
+        arguments = attacks.get_arguments_by_conclusion(1, False)
         self.assertTrue(2 in arguments)
 
     def test_get_forbidden_attacks_based_on_history(self):
