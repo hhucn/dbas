@@ -66,13 +66,26 @@ def get_attack_for_argument(argument_uid, restrictive_attacks=None, restrictive_
 
 
 def __setup_restrictive_argument_uids(restrictive_arg_uids: List[int]) -> List[int]:
+    """
+
+    :param restrictive_arg_uids:
+    :return:
+    """
     if not restrictive_arg_uids:
         restrictive_arg_uids = []
         restrictive_arg_uids = list(set(restrictive_arg_uids))
     return restrictive_arg_uids
 
 
-def __setup_restrictive_attack_keys(argument_uid: int, restrictive_attacks: List[Attacks], redirected_from_jump: bool) -> List[Attacks]:
+def __setup_restrictive_attack_keys(argument_uid: int, restrictive_attacks: List[Attacks],
+                                    redirected_from_jump: bool) -> List[Attacks]:
+    """
+
+    :param argument_uid:
+    :param restrictive_attacks:
+    :param redirected_from_jump:
+    :return:
+    """
     if not restrictive_attacks:
         restrictive_attacks = []
 
@@ -84,6 +97,12 @@ def __setup_restrictive_attack_keys(argument_uid: int, restrictive_attacks: List
 
 
 def __setup_history(history: str, redirected_from_jump: bool) -> Tuple[str, bool]:
+    """
+
+    :param history:
+    :param redirected_from_jump:
+    :return:
+    """
     if history and not redirected_from_jump:
         history = history.split('-')
         index = -2 if len(history) > 1 else -1
@@ -176,7 +195,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
     :param history: History
     :return: [Argument.uid], String, Boolean if no new attacks are found
     """
-    return_array = []
+    arg_uids = []
     attack_key = ''
     left_attacks = list(set(list_of_all_attacks) - set(attack_list))
     attack_found = False
@@ -190,34 +209,41 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
         attack_list.remove(attack)
 
         # get attacks and kick all malicious steps
-        return_array, is_supportive, attack_key = __get_attacks(attack, argument_uid, last_attack, is_supportive)
-        return_array = list(__filter_malicious_steps(return_array, restrictive_arg_uids, history))
-        if not return_array or len(return_array) == 0:
+        arg_uids, is_supportive, attack_key = __get_attacks(attack, argument_uid, last_attack, is_supportive)
+        arg_uids = list(__filter_malicious_steps(arg_uids, restrictive_arg_uids, history))
+        if not arg_uids or len(arg_uids) == 0:
             continue
 
         # check if the step is already in history
-        new_attack_step = '{}/{}/{}'.format(argument_uid, attack_mapping[attack_key], return_array[0]['id'])
+        new_attack_step = '{}/{}/{}'.format(argument_uid, attack_mapping[attack_key], arg_uids[0]['id'])
 
         if attack_key not in restrictive_attacks and new_attack_step not in history:  # no duplicated attacks
             attack_found = True
             break
 
         attack_key = ''  # reset, because maybe the while loop is not triggered again
-        return_array = []
+        arg_uids = []
 
     if not attack_found and len(left_attacks) > 0:
-        return_array, attack_key, is_attack_in_history = __get_attack_for_argument_by_random_in_range(argument_uid,
-                                                                                                      left_attacks,
-                                                                                                      left_attacks,
-                                                                                                      restrictive_attacks,
-                                                                                                      restrictive_arg_uids,
-                                                                                                      last_attack,
-                                                                                                      history)
+        arg_uids, attack_key, is_attack_in_history = __get_attack_for_argument_by_random_in_range(argument_uid,
+                                                                                                  left_attacks,
+                                                                                                  left_attacks,
+                                                                                                  restrictive_attacks,
+                                                                                                  restrictive_arg_uids,
+                                                                                                  last_attack,
+                                                                                                  history)
 
-    return return_array, attack_key, new_attack_step in history
+    return arg_uids, attack_key, new_attack_step in history
 
 
 def __filter_malicious_steps(seq, restriction_on_args, history):
+    """
+
+    :param seq:
+    :param restriction_on_args:
+    :param history:
+    :return:
+    """
     if not seq or len(seq) == 0:
         return []
 
@@ -227,6 +253,14 @@ def __filter_malicious_steps(seq, restriction_on_args, history):
 
 
 def __get_attacks(attack, argument_uid, last_attack, is_supportive):
+    """
+
+    :param attack:
+    :param argument_uid:
+    :param last_attack:
+    :param is_supportive:
+    :return:
+    """
     mod_attack = attack
 
     if attack == Attacks.UNDERMINE:

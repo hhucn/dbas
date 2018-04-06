@@ -20,8 +20,6 @@ class AttackHandlerTests(unittest.TestCase):
         db_all = DBDiscussionSession.query(Argument).all()
         for arg in db_all:
             arg.set_disable(False)
-            DBDiscussionSession.add(arg)
-        DBDiscussionSession.flush()
         transaction.commit()
 
         for i in range(0, 4):
