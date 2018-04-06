@@ -152,7 +152,7 @@ class UrlManager(object):
         new_argument_uid = random.choice(new_argument_uids)  # TODO eliminate random
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.history)
         arg_id_sys, attack = attacks.get_attack_for_argument(new_argument_uid,
-                                                             restriction_on_args=attacking_arg_uids)
+                                                             restrictive_arg_uids=attacking_arg_uids)
         if not arg_id_sys:
             url = self.__get_url_for_discussion_finish(new_argument_uid)
         else:

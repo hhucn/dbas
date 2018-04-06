@@ -185,7 +185,7 @@ class ItemDictHelper(object):
 
             # get attack for each premise, so the urls will be unique
             arg_id_sys, attack = attacks.get_attack_for_argument(argument.uid, history=self.path,
-                                                                 restriction_on_args=forbidden_attacks)
+                                                                 restrictive_arg_uids=forbidden_attacks)
             already_used = 'reaction/' + str(argument.uid) + '/' in self.path
             additional_text = '(' + _tn.get(_.youUsedThisEarlier) + ')'
 
@@ -263,7 +263,7 @@ class ItemDictHelper(object):
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
 
             arg_id_sys, attack = attacks.get_attack_for_argument(argument.uid, last_attack=is_undermine,
-                                                                 restriction_on_args=attacking_arg_uids,
+                                                                 restrictive_arg_uids=attacking_arg_uids,
                                                                  history=self.path)
             the_other_one = True
             url = ''
@@ -501,7 +501,7 @@ class ItemDictHelper(object):
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
         attacking_arg_uids.append(argument_uid_sys)
         arg_id_sys, new_attack = attacks.get_attack_for_argument(argument_uid_user,
-                                                                 restriction_on_args=attacking_arg_uids,
+                                                                 restrictive_arg_uids=attacking_arg_uids,
                                                                  history=self.path)
 
         if not new_attack:
@@ -554,8 +554,8 @@ class ItemDictHelper(object):
         history = '{}/rebut/{}'.format(db_sys_argument.uid, db_user_argument.uid) if attack == 'rebut' else ''
 
         arg_id_sys, sys_attack = attacks.get_attack_for_argument(db_sys_argument.uid,
-                                                                 restriction_on_args=attacking_arg_uids,
-                                                                 restriction_on_attacks=[restriction_on_attacks],
+                                                                 restrictive_arg_uids=attacking_arg_uids,
+                                                                 restrictive_attacks=[restriction_on_attacks],
                                                                  history=history)
 
         if sys_attack == 'rebut' and attack == 'undercut':
@@ -659,7 +659,7 @@ class ItemDictHelper(object):
 
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
             arg_id_sys, attack = attacks.get_attack_for_argument(db_argument.uid,
-                                                                 restriction_on_args=attacking_arg_uids)
+                                                                 restrictive_arg_uids=attacking_arg_uids)
             url = _um.get_url_for_reaction_on_argument(db_argument.uid, attack, arg_id_sys)
 
             if is_argument:
@@ -741,7 +741,7 @@ class ItemDictHelper(object):
             len_undercut = 1 if db_undercutted_arg.argument_uid is None else 2
 
         arg_id_sys, sys_attack = attacks.get_attack_for_argument(db_argument.uid, redirected_from_jump=True,
-                                                                 restriction_on_args=forbidden_attacks)
+                                                                 restrictive_arg_uids=forbidden_attacks)
         url0 = _um.get_url_for_reaction_on_argument(db_argument.uid, sys_attack, arg_id_sys)
 
         if len_undercut == 0:

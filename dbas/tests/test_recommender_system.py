@@ -26,56 +26,56 @@ class RecommenderSystemTests(unittest.TestCase):
 
         for i in range(0, 4):
             attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
-                                                              restriction_on_attacks=None,
-                                                              restriction_on_args=restriction_on_args,
+                                                              restrictive_attacks=None,
+                                                              restrictive_arg_uids=restriction_on_args,
                                                               last_attack=None,
                                                               history=None)
             self.assertEqual(key, results[attack_uid])
             restriction_on_args.append(attack_uid)
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
-                                                          restriction_on_attacks=None,
-                                                          restriction_on_args=[40],
+                                                          restrictive_attacks=None,
+                                                          restrictive_arg_uids=[40],
                                                           last_attack=None,
                                                           history='42/rebut/39-42/undermine/44')
         self.assertEqual(attack_uid, 43)
         self.assertEqual(key, 'undercut')
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
-                                                          restriction_on_attacks=None,
-                                                          restriction_on_args=[40],
+                                                          restrictive_attacks=None,
+                                                          restrictive_arg_uids=[40],
                                                           last_attack=None,
                                                           history='42/rebut/39-42/undercut/43')
         self.assertEqual(attack_uid, 44)
         self.assertEqual(key, 'undermine')
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
-                                                          restriction_on_attacks=None,
-                                                          restriction_on_args=[40],
+                                                          restrictive_attacks=None,
+                                                          restrictive_arg_uids=[40],
                                                           last_attack=None,
                                                           history='42/undercut/43-42/undermine/44')
         self.assertEqual(attack_uid, 39)
         self.assertEqual(key, 'rebut')
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
-                                                          restriction_on_attacks=[attacks.Attacks.UNDERCUT],
-                                                          restriction_on_args=[40],
+                                                          restrictive_attacks=[attacks.Attacks.UNDERCUT],
+                                                          restrictive_arg_uids=[40],
                                                           last_attack=None,
                                                           history='42/rebut/39-42/undermine/44')
         self.assertIsNone(attack_uid)
         self.assertIsNone(key)
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
-                                                          restriction_on_attacks=[attacks.Attacks.UNDERMINE],
-                                                          restriction_on_args=[40],
+                                                          restrictive_attacks=[attacks.Attacks.UNDERMINE],
+                                                          restrictive_arg_uids=[40],
                                                           last_attack=None,
                                                           history='42/rebut/39-42/undercut/43')
         self.assertIsNone(attack_uid)
         self.assertIsNone(key)
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
-                                                          restriction_on_attacks=[attacks.Attacks.REBUT],
-                                                          restriction_on_args=[40],
+                                                          restrictive_attacks=[attacks.Attacks.REBUT],
+                                                          restrictive_arg_uids=[40],
                                                           last_attack=None,
                                                           history='42/undercut/43-42/undermine/44')
         self.assertIsNone(attack_uid)
