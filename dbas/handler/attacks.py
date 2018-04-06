@@ -158,52 +158,33 @@ def __get_attack_for_argument(argument_uid, restrictive_attacks, restrictive_arg
     :param history: History
     :return: [Argument.uid], String, Boolean if no new attacks are found
     """
-    complete_list_of_attacks = [attack for attack in Attacks]
-    attacks = [attack for attack in Attacks]
-
-    logger('AttackHandler', 'list of current attacks: {}'.format(attacks))
-    attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
-    return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, attack_list,
-                                                                                     complete_list_of_attacks,
+    return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid,
                                                                                      restrictive_attacks,
                                                                                      restrictive_arg_uids,
                                                                                      last_attack, history)
 
-    # sanity check if we could not found an attack for a left attack in out set
-    if not return_array and len(attacks) > 0:
-        return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, [],
-                                                                                         complete_list_of_attacks,
-                                                                                         restrictive_attacks,
-                                                                                         restrictive_arg_uids,
-                                                                                         last_attack,
-                                                                                         history)
-
     return return_array, key, no_new_attacks
 
 
-def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list_of_all_attacks,
-                                                 restrictive_attacks, restrictive_arg_uids, last_attack,
-                                                 history) -> Tuple[List[int], str, bool]:
+def __get_attack_for_argument_by_random_in_range(argument_uid, restrictive_attacks, restrictive_arg_uids,
+                                                 last_attack, history) -> Tuple[List[int], str, bool]:
     """
 
     :param argument_uid: Argument.uid
     :param attack_list:
-    :param list_of_all_attacks:
     :param restrictive_attacks: String
     :param restrictive_arg_uids: Argument.uid
     :param last_attack: String
     :param history: History
     :return: [Argument.uid], String, Boolean if no new attacks are found
     """
-    arg_uids = []
-    attack_key = ''
-    left_attacks = list(set(list_of_all_attacks) - set(attack_list))
-    attack_found = False
+    complete_list_of_attacks = [attack for attack in Attacks]
+    attack_list = list(set(complete_list_of_attacks) - set(restrictive_attacks))
     is_supportive = False
     new_attack_step = ''
+    arg_uids = []
+    attack_key = ''
 
-    # randomize at least 1, maximal 3 times for getting an attack or
-    # if the attack type and the only attacking argument are the same as the restriction
     while len(attack_list) > 0:
         attack = random.choice(attack_list)
         attack_list.remove(attack)
@@ -213,25 +194,16 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
         arg_uids = list(__filter_malicious_steps(arg_uids, restrictive_arg_uids, history))
         if not arg_uids or len(arg_uids) == 0:
             continue
+        print('Found: {} {}'.format(arg_uids, attack_key))
 
         # check if the step is already in history
         new_attack_step = '{}/{}/{}'.format(argument_uid, attack_mapping[attack_key], arg_uids[0]['id'])
 
         if attack_key not in restrictive_attacks and new_attack_step not in history:  # no duplicated attacks
-            attack_found = True
             break
 
         attack_key = ''  # reset, because maybe the while loop is not triggered again
         arg_uids = []
-
-    if not attack_found and len(left_attacks) > 0:
-        arg_uids, attack_key, is_attack_in_history = __get_attack_for_argument_by_random_in_range(argument_uid,
-                                                                                                  left_attacks,
-                                                                                                  left_attacks,
-                                                                                                  restrictive_attacks,
-                                                                                                  restrictive_arg_uids,
-                                                                                                  last_attack,
-                                                                                                  history)
 
     return arg_uids, attack_key, new_attack_step in history
 
