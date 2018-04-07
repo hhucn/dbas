@@ -239,7 +239,7 @@ def __revoke_argument(db_user, db_argument):
         db_argument.author_uid = db_new_author.uid
     else:
         logger('QueryHelper', 'Disabling argument {}'.format(db_argument.uid))
-        db_argument.set_disable(True)
+        db_argument.set_disabled(True)
 
     DBDiscussionSession.add(db_argument)
     DBDiscussionSession.flush()
@@ -261,7 +261,7 @@ def __disable_textversions(statement_uid, author_uid):
                                                                    TextVersion.author_uid == author_uid).all()
     for textversion in db_textversion:
         logger('QueryHelper', str(textversion.uid))
-        textversion.set_disable(True)
+        textversion.set_disabled(True)
         DBDiscussionSession.add(textversion)
 
     DBDiscussionSession.flush()

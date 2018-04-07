@@ -5,7 +5,7 @@ from pyramid import testing, httpexceptions
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, \
-    ReputationHistory, User
+    ReputationHistory, User, Argument
 from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, refresh_user, \
     clear_reputation_of_user
 from dbas.tests.utils import construct_dummy_request
@@ -255,6 +255,9 @@ class TestJustifyArgument(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_justify_argument_page_count_clicked_once(self):
+        DBDiscussionSession.query(Argument).get(1).set_disabled(True)
+        transaction.commit()
+
         request = construct_dummy_request()
         request.matchdict = {
             'slug': 'cat-or-dog',

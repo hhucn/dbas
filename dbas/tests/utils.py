@@ -3,6 +3,7 @@ Namespace to re-use commonly used components for testing.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
+import transaction
 import unittest
 
 from cornice import Errors
@@ -35,8 +36,14 @@ class TestCaseWithConfig(unittest.TestCase):
         self.user_christian: User = DBDiscussionSession.query(User).get(3)
         self.user_bjoern: User = DBDiscussionSession.query(User).get(4)
 
+        DBDiscussionSession.query(Argument).get(1).set_disabled(True)
+        transaction.commit()
+
     def tearDown(self):
         testing.tearDown()
+
+        DBDiscussionSession.query(Argument).get(1).set_disabled(False)
+        transaction.commit()
 
 
 def construct_dummy_request(json_body: dict = None, match_dict: dict = None) -> DummyRequest:

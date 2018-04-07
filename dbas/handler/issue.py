@@ -341,7 +341,7 @@ def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty,
         return {'error': translator.get(_.noRights)}
 
     if iproperty == 'enable':
-        db_issue.set_disable(not value)
+        db_issue.set_disabled(not value)
     elif iproperty == 'public':
         db_issue.set_private(not value)
     elif iproperty == 'writable':

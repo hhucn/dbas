@@ -1,6 +1,7 @@
 import transaction
 import unittest
 
+from typing import List
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
 from dbas.handler import attacks
@@ -17,9 +18,9 @@ class AttackHandlerTests(unittest.TestCase):
         }
         restriction_on_args = [40]
 
-        db_all = DBDiscussionSession.query(Argument).all()
+        db_all: List[Argument] = DBDiscussionSession.query(Argument).all()
         for arg in db_all:
-            arg.set_disable(False)
+            arg.set_disabled(False)
         transaction.commit()
 
         for i in range(0, 4):
