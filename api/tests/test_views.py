@@ -366,7 +366,7 @@ class TestPosition(TestCaseWithConfig):
                                                    json_body=self.test_body)
 
         response: Response = apiviews.add_position(request)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 303)
 
         # Check if position was added
         response: dict = apiviews.discussion_init(

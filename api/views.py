@@ -13,7 +13,7 @@ import json
 from typing import Callable, Any
 
 from cornice import Service
-from pyramid.response import Response
+from pyramid.httpexceptions import HTTPSeeOther
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
@@ -699,7 +699,7 @@ def add_position(request):
     conslusion_id: int = new_position['statement_uids'][0]
     db_conclusion: Statement = DBDiscussionSession.query(Statement).get(conslusion_id)
 
-    set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, "",
-                          request.mailer)
+    pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, "",
+                               request.mailer)
 
-    return Response(status=201)
+    return HTTPSeeOther(location='/api' + pd['url'])
