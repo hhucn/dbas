@@ -28,7 +28,7 @@ class AttackHandlerTests(unittest.TestCase):
                                                               restrictive_attacks=None,
                                                               restrictive_arg_uids=restriction_on_args,
                                                               last_attack=None,
-                                                              history=None)
+                                                              history='')
             self.assertEqual(key, results[attack_uid])
             restriction_on_args.append(attack_uid)
 

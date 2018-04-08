@@ -1,12 +1,12 @@
 """
-TODO
+This script handles attacks for given arguments.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import random
 from enum import Enum, auto
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
@@ -31,8 +31,10 @@ attack_mapping = {
 }
 
 
-def get_attack_for_argument(argument_uid, restrictive_attacks=None, restrictive_arg_uids=None,
-                            last_attack=None, history=None, redirected_from_jump=False):
+def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Attacks]=None,
+                            restrictive_arg_uids: List[int]=None, last_attack: Attacks=None,
+                            history: str='', redirected_from_jump: bool=False) -> Tuple[Optional[int],
+                                                                                        Optional[Attacks]]:
     """
     Selects an attack out of the web of reasons.
 
@@ -44,37 +46,28 @@ def get_attack_for_argument(argument_uid, restrictive_attacks=None, restrictive_
     :param redirected_from_jump: Boolean
     :return: Argument.uid, String, Boolean if no new attacks are found
     """
-    restrictive_arg_uids = __setup_restrictive_argument_uids(restrictive_arg_uids)
+    restrictive_arg_uids = list(set(restrictive_arg_uids)) if restrictive_arg_uids else []
     history, redirected_from_jump = __setup_history(history, redirected_from_jump)
     restrictive_attacks = __setup_restrictive_attack_keys(argument_uid, restrictive_attacks, redirected_from_jump)
     logger('AttackHandler', 'arg: {}, restricts: {}, {}, from_jump: {}'.format(argument_uid, restrictive_attacks,
                                                                                restrictive_arg_uids,
                                                                                redirected_from_jump))
 
-    attacks_array, key, no_new_attacks = __get_attack_for_argument(argument_uid, restrictive_attacks,
-                                                                   restrictive_arg_uids, last_attack, history)
+    attacks_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid,
+                                                                                      restrictive_attacks,
+                                                                                      restrictive_arg_uids,
+                                                                                      last_attack, history)
 
     if not attacks_array or len(attacks_array) == 0:
         return None, None
 
     attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
     attack_uid = attacks_array[attack_no]['id']
+    attack_key: Attacks = attack_mapping[key]
 
-    logger('AttackHandler', 'main return {} by {}'.format(key, attack_uid))
+    logger('AttackHandler', 'return {} by {}'.format(key, attack_uid))
 
-    return attack_uid, attack_mapping[key]
-
-
-def __setup_restrictive_argument_uids(restrictive_arg_uids: List[int]) -> List[int]:
-    """
-
-    :param restrictive_arg_uids:
-    :return:
-    """
-    if not restrictive_arg_uids:
-        restrictive_arg_uids = []
-        restrictive_arg_uids = list(set(restrictive_arg_uids))
-    return restrictive_arg_uids
+    return attack_uid, attack_key
 
 
 def __setup_restrictive_attack_keys(argument_uid: int, restrictive_attacks: List[Attacks],
@@ -87,7 +80,7 @@ def __setup_restrictive_attack_keys(argument_uid: int, restrictive_attacks: List
     :return:
     """
     if not restrictive_attacks:
-        restrictive_attacks = []
+        return []
 
     is_current_arg_undercut = DBDiscussionSession.query(Argument).get(argument_uid).argument_uid is not None
     if is_current_arg_undercut and not redirected_from_jump:
@@ -103,12 +96,10 @@ def __setup_history(history: str, redirected_from_jump: bool) -> Tuple[str, bool
     :param redirected_from_jump:
     :return:
     """
-    if history and not redirected_from_jump:
+    if len(history) > 0 and not redirected_from_jump:
         history = history.split('-')
         index = -2 if len(history) > 1 else -1
         redirected_from_jump = 'jump' in history[index] or redirected_from_jump
-    else:
-        history = str(history)
     return history, redirected_from_jump
 
 
@@ -145,41 +136,21 @@ def get_forbidden_attacks_based_on_history(history: str) -> List[int]:
     return forbidden_uids
 
 
-def __get_attack_for_argument(argument_uid, restrictive_attacks, restrictive_arg_uids, last_attack, history):
+def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_attacks: List,
+                                                 restrictive_arg_uids: List, last_attack: Attacks,
+                                                 history: str) -> Tuple[List[int], str, bool]:
     """
     Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
     Additionally returns id's of premises groups with [key + str(index) + 'id']
 
     :param argument_uid: Argument.uid
-
-    :param restrictive_attacks: String
-    :param restrictive_arg_uids: Argument.uid
-    :param last_attack: String
-    :param history: History
+    :param restrictive_attacks: List of attacks which are forbidden
+    :param restrictive_arg_uids: List of Arguments.uids which are forbidden
+    :param last_attack: last attack of the user/system
+    :param history: Users history
     :return: [Argument.uid], String, Boolean if no new attacks are found
     """
-    return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid,
-                                                                                     restrictive_attacks,
-                                                                                     restrictive_arg_uids,
-                                                                                     last_attack, history)
-
-    return return_array, key, no_new_attacks
-
-
-def __get_attack_for_argument_by_random_in_range(argument_uid, restrictive_attacks, restrictive_arg_uids,
-                                                 last_attack, history) -> Tuple[List[int], str, bool]:
-    """
-
-    :param argument_uid: Argument.uid
-    :param attack_list:
-    :param restrictive_attacks: String
-    :param restrictive_arg_uids: Argument.uid
-    :param last_attack: String
-    :param history: History
-    :return: [Argument.uid], String, Boolean if no new attacks are found
-    """
-    complete_list_of_attacks = [attack for attack in Attacks]
-    attack_list = list(set(complete_list_of_attacks) - set(restrictive_attacks))
+    attack_list = list(set(list(Attacks)) - set(restrictive_attacks))
     is_supportive = False
     new_attack_step = ''
     arg_uids = []
@@ -194,13 +165,16 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, restrictive_attac
         arg_uids = list(__filter_malicious_steps(arg_uids, restrictive_arg_uids, history))
         if not arg_uids or len(arg_uids) == 0:
             continue
-        print('Found: {} {}'.format(arg_uids, attack_key))
 
         # check if the step is already in history
         new_attack_step = '{}/{}/{}'.format(argument_uid, attack_mapping[attack_key], arg_uids[0]['id'])
+        print(attack_key)
+        print(restrictive_attacks)
+        print(new_attack_step)
+        print(history)
 
         if attack_key not in restrictive_attacks and new_attack_step not in history:  # no duplicated attacks
-            break
+            break  # found an attack
 
         attack_key = ''  # reset, because maybe the while loop is not triggered again
         arg_uids = []
@@ -208,13 +182,14 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, restrictive_attac
     return arg_uids, attack_key, new_attack_step in history
 
 
-def __filter_malicious_steps(seq, restriction_on_args, history):
+def __filter_malicious_steps(seq: List[dict], restriction_on_args: List[Attacks], history) -> List[dict]:
     """
+    Filters every step which was already shown based on the users history or which is restricted
 
-    :param seq:
-    :param restriction_on_args:
-    :param history:
-    :return:
+    :param seq: List of dicts with id and text as field, which maybe the current attack step
+    :param restriction_on_args: list of forbidden attacks
+    :param history: users history as string
+    :return: List of dicts with id and text as field
     """
     if not seq or len(seq) == 0:
         return []
@@ -224,14 +199,17 @@ def __filter_malicious_steps(seq, restriction_on_args, history):
             yield el
 
 
-def __get_attacks(attack, argument_uid, last_attack, is_supportive):
+def __get_attacks(attack: Attacks, argument_uid: int, last_attack: Attacks, is_supportive: bool) -> Tuple[List[dict],
+                                                                                                          bool,
+                                                                                                          Attacks]:
     """
+    Returns a list of all attacking arguments based on input...
 
     :param attack:
     :param argument_uid:
     :param last_attack:
     :param is_supportive:
-    :return:
+    :return: List of dicts with id and text as field
     """
     mod_attack = attack
 
