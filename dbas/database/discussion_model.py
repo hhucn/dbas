@@ -96,7 +96,7 @@ class Issue(DiscussionBase):
         """
         return DBDiscussionSession.query(Language).get(self.lang_uid).ui_locales
 
-    def set_disable(self, is_disabled):
+    def set_disabled(self, is_disabled):
         """
         Disabled current issue
 
@@ -446,7 +446,7 @@ class Statement(DiscussionBase):
         self.issue_uid = issue
         self.is_disabled = is_disabled
 
-    def set_disable(self, is_disabled):
+    def set_disabled(self, is_disabled):
         """
         Disables current Statement
 
@@ -689,7 +689,7 @@ class TextVersion(DiscussionBase):
         """
         self.statement_uid = statement_uid
 
-    def set_disable(self, is_disabled):
+    def set_disabled(self, is_disabled):
         """
         Disables current textversion
 
@@ -781,7 +781,7 @@ class Premise(DiscussionBase):
         self.issue_uid = issue
         self.is_disabled = is_disabled
 
-    def set_disable(self, is_disabled):
+    def set_disabled(self, is_disabled):
         """
         Disables current premise
 
@@ -912,7 +912,7 @@ class Argument(DiscussionBase):
         """
         self.premisegroup_uid = premisegroup
 
-    def set_disable(self, is_disabled):
+    def set_disabled(self, is_disabled):
         """
         Disables current argument
 

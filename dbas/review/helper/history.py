@@ -530,7 +530,7 @@ def __disable_arguments_by_id(argument_uids):
     """
     for uid in argument_uids:
         db_arg = DBDiscussionSession.query(Argument).get(uid)
-        db_arg.set_disable(True)
+        db_arg.set_disabled(True)
         DBDiscussionSession.add(db_arg)
         DBDiscussionSession.flush()
 
@@ -739,7 +739,7 @@ def __rebend_objects_of_duplicate_review(db_review):
     logger('review_history_helper', 'review: ' + str(db_review.uid))
 
     db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
-    db_statement.set_disable(False)   # TODO reset more than this ?
+    db_statement.set_disabled(False)   # TODO reset more than this ?
     DBDiscussionSession.add(db_statement)
 
     db_revoked_elements = DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).all()

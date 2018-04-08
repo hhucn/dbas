@@ -3,6 +3,7 @@ Namespace to re-use commonly used components for testing.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
+import transaction
 import unittest
 
 from cornice import Errors
@@ -18,6 +19,7 @@ class TestCaseWithConfig(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
+
         self.issue_disabled: Issue = DBDiscussionSession.query(Issue).get(6)
         self.issue_read_only: Issue = DBDiscussionSession.query(Issue).get(7)
         self.issue_cat_or_dog: Issue = DBDiscussionSession.query(Issue).get(2)
@@ -29,18 +31,22 @@ class TestCaseWithConfig(unittest.TestCase):
         self.statement_argument_town: Statement = DBDiscussionSession.query(Statement).get(39)
         self.argument_town: Argument = DBDiscussionSession.query(Argument).get(34)
         self.argument_cat_or_dog: Argument = DBDiscussionSession.query(Argument).get(2)
-        self.disabled_argument_for_cat_or_dog: Argument = DBDiscussionSession.query(Argument)\
-            .filter_by(issue_uid=self.issue_cat_or_dog.uid, is_disabled=True).first()
-        self.user_anonymous = DBDiscussionSession.query(User).get(1)
-        self.user_tobi = DBDiscussionSession.query(User).get(2)
-        self.user_christian = DBDiscussionSession.query(User).get(3)
-        self.user_bjoern = DBDiscussionSession.query(User).get(4)
+        self.user_anonymous: User = DBDiscussionSession.query(User).get(1)
+        self.user_tobi: User = DBDiscussionSession.query(User).get(2)
+        self.user_christian: User = DBDiscussionSession.query(User).get(3)
+        self.user_bjoern: User = DBDiscussionSession.query(User).get(4)
+
+        DBDiscussionSession.query(Argument).get(1).set_disabled(True)
+        transaction.commit()
 
     def tearDown(self):
         testing.tearDown()
 
+        DBDiscussionSession.query(Argument).get(1).set_disabled(False)
+        transaction.commit()
 
-def construct_dummy_request(json_body: dict=None, match_dict: dict=None) -> DummyRequest:
+
+def construct_dummy_request(json_body: dict = None, match_dict: dict = None) -> DummyRequest:
     """
     Creates a Dummy-Request. Optionally takes a json_body, which can directly be injected into the request.
 

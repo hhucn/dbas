@@ -524,12 +524,12 @@ def __en_or_disable_statement_and_premise_of_review(review, is_disabled):
     """
     logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
     db_statement = DBDiscussionSession.query(Statement).get(review.statement_uid)
-    db_statement.set_disable(is_disabled)
+    db_statement.set_disabled(is_disabled)
     DBDiscussionSession.add(db_statement)
     db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=review.statement_uid).all()
 
     for premise in db_premises:
-        premise.set_disable(is_disabled)
+        premise.set_disabled(is_disabled)
         DBDiscussionSession.add(premise)
 
     DBDiscussionSession.flush()
@@ -546,19 +546,19 @@ def __en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     """
     logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
     db_argument = DBDiscussionSession.query(Argument).get(review.argument_uid)
-    db_argument.set_disable(is_disabled)
+    db_argument.set_disabled(is_disabled)
     DBDiscussionSession.add(db_argument)
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
 
     for premise in db_premises:
         db_statement = DBDiscussionSession.query(Statement).get(premise.statement_uid)
-        db_statement.set_disable(is_disabled)
-        premise.set_disable(is_disabled)
+        db_statement.set_disabled(is_disabled)
+        premise.set_disabled(is_disabled)
         DBDiscussionSession.add(premise)
 
     if db_argument.conclusion_uid is not None:
         db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
-        db_statement.set_disable(is_disabled)
+        db_statement.set_disabled(is_disabled)
         DBDiscussionSession.add(db_statement)
 
     DBDiscussionSession.flush()
@@ -577,7 +577,7 @@ def __bend_objects_of_duplicate_review(db_review):
                                                      db_review.original_statement_uid)
     logger('review_main_helper', msg)
     db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
-    db_statement.set_disable(True)
+    db_statement.set_disabled(True)
     DBDiscussionSession.add(db_statement)
 
     # TODO   SINGLE STATEMENT SET DISABLE

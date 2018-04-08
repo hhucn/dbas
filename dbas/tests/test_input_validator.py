@@ -1,6 +1,9 @@
+import transaction
 import unittest
 
 import dbas.input_validator as iv
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument
 
 
 class InputValidatorTests(unittest.TestCase):
@@ -37,6 +40,8 @@ class InputValidatorTests(unittest.TestCase):
         self.assertFalse(input_array_false)
 
     def test_check_reaction_undermine(self):
+        DBDiscussionSession.query(Argument).get(1).set_disabled(True)
+        transaction.commit()
         # undermine
         undermine_true = iv.check_reaction(attacked_arg_uid=3, attacking_arg_uid=20, relation='undermine')
         self.assertTrue(undermine_true, True)
@@ -174,5 +179,7 @@ class InputValidatorTests(unittest.TestCase):
         self.assertIsNone(iv.get_relation_between_arguments(11, 28))
 
     def test_is_argument_forbidden(self):
+        DBDiscussionSession.query(Argument).get(1).set_disabled(True)
+        transaction.commit()
         self.assertTrue(iv.is_argument_forbidden(1))
         self.assertFalse(iv.is_argument_forbidden(9))
