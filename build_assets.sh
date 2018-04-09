@@ -4,6 +4,9 @@
 echo ":: Build D-BAS"
 python setup.py --quiet develop
 
+echo ":: Install JS libs"
+yarn install
+
 echo ":: Compile and compress JS"
 google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,d3,discussion,review}/*.js > dbas/static/js/dbas.min.js
 google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/libs/cookie.js > dbas/static/js/libs/cookie.min.js
