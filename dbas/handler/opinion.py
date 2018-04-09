@@ -9,7 +9,7 @@ from dbas.database.discussion_model import Argument, Statement, User, ClickedArg
     SeenArgument, SeenStatement, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, \
     get_undermines_for_argument_uid, get_supports_for_argument_uid
-from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid, get_profile_picture
+from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid, get_profile_picture, relations_mapping
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, \
@@ -71,7 +71,7 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user, _
     :return: List of dict()
     """
     # getting the text of all reactions
-    relation = ['undermine', 'support', 'undercut', 'rebut']
+    relation = list(relations_mapping.values())
 
     ret_list = []
     user_query = DBDiscussionSession.query(User)

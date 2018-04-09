@@ -5,7 +5,6 @@ This script handles attacks for given arguments.
 """
 
 import random
-from enum import Enum, auto
 from typing import List, Tuple, Optional
 
 from dbas.database import DBDiscussionSession
@@ -13,38 +12,25 @@ from dbas.database.discussion_model import Argument
 from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for_argument_uid, \
     get_undercuts_for_argument_uid
 from dbas.input_validator import is_integer
+from dbas.lib import Relations, relations_mapping
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 
 
-class Attacks(Enum):
-    UNDERMINE = auto()
-    UNDERCUT = auto()
-    REBUT = auto()
-
-
-attack_mapping = {
-    Attacks.UNDERMINE: 'undermine',
-    Attacks.UNDERCUT: 'undercut',
-    Attacks.REBUT: 'rebut',
-    '': ''
-}
-
-
-def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Attacks]=None,
-                            restrictive_arg_uids: List[int]=None, last_attack: Attacks=None,
-                            history: str='', redirected_from_jump: bool=False) -> Tuple[Optional[int],
-                                                                                        Optional[Attacks]]:
+def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relations] = None,
+                            restrictive_arg_uids: List[int] = None, last_attack: Relations = None,
+                            history: str = '', redirected_from_jump: bool = False) -> Tuple[Optional[int],
+                                                                                            Optional[str]]:
     """
     Selects an attack out of the web of reasons.
 
     :param argument_uid: Argument.uid
-    :param restrictive_attacks: Array of Attacks or None
+    :param restrictive_attacks: Array of Relations or None
     :param restrictive_arg_uids: Argument.uid
     :param last_attack: String
     :param history: History
     :param redirected_from_jump: Boolean
-    :return: Argument.uid, String, Boolean if no new attacks are found
+    :return: Retrusn a tuple with an attacking Argument.uid as well as the type of attack as str
     """
     restrictive_arg_uids = list(set(restrictive_arg_uids)) if restrictive_arg_uids else []
     history, redirected_from_jump = __setup_history(history, redirected_from_jump)
@@ -53,25 +39,21 @@ def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Attacks
                                                                                restrictive_arg_uids,
                                                                                redirected_from_jump))
 
-    attacks_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid,
-                                                                                      restrictive_attacks,
-                                                                                      restrictive_arg_uids,
-                                                                                      last_attack, history)
+    attack_uids, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, restrictive_attacks,
+                                                                                    restrictive_arg_uids, last_attack,
+                                                                                    history)
 
-    if not attacks_array or len(attacks_array) == 0:
+    if len(attack_uids) == 0 or key not in relations_mapping:
         return None, None
 
-    attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
-    attack_uid = attacks_array[attack_no]['id']
-    attack_key: Attacks = attack_mapping[key]
-
+    attack_uid = random.choice(attack_uids)['id']
+    attack_key: Relations = relations_mapping[key]
     logger('AttackHandler', 'return {} by {}'.format(key, attack_uid))
-
     return attack_uid, attack_key
 
 
-def __setup_restrictive_attack_keys(argument_uid: int, restrictive_attacks: List[Attacks],
-                                    redirected_from_jump: bool) -> List[Attacks]:
+def __setup_restrictive_attack_keys(argument_uid: int, restrictive_attacks: List[Relations],
+                                    redirected_from_jump: bool) -> List[Relations]:
     """
 
     :param argument_uid:
@@ -84,7 +66,7 @@ def __setup_restrictive_attack_keys(argument_uid: int, restrictive_attacks: List
 
     is_current_arg_undercut = DBDiscussionSession.query(Argument).get(argument_uid).argument_uid is not None
     if is_current_arg_undercut and not redirected_from_jump:
-        restrictive_attacks.append(Attacks.UNDERCUT)
+        restrictive_attacks.append(Relations.UNDERCUT)
 
     return restrictive_attacks
 
@@ -137,7 +119,7 @@ def get_forbidden_attacks_based_on_history(history: str) -> List[int]:
 
 
 def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_attacks: List,
-                                                 restrictive_arg_uids: List, last_attack: Attacks,
+                                                 restrictive_arg_uids: List, last_attack: Relations,
                                                  history: str) -> Tuple[List[int], str, bool]:
     """
     Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
@@ -150,7 +132,8 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
     :param history: Users history
     :return: [Argument.uid], String, Boolean if no new attacks are found
     """
-    attack_list = list(set(list(Attacks)) - set(restrictive_attacks))
+    list_of_attacks = [relation for relation in list(Relations) if relation is not Relations.SUPPORT]
+    attack_list = list(set(list_of_attacks) - set(restrictive_attacks))
     is_supportive = False
     new_attack_step = ''
     arg_uids = []
@@ -167,7 +150,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
             continue
 
         # check if the step is already in history
-        new_attack_step = '{}/{}/{}'.format(argument_uid, attack_mapping[attack_key], arg_uids[0]['id'])
+        new_attack_step = '{}/{}/{}'.format(argument_uid, relations_mapping[attack_key], arg_uids[0]['id'])
         print(attack_key)
         print(restrictive_attacks)
         print(new_attack_step)
@@ -182,7 +165,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
     return arg_uids, attack_key, new_attack_step in history
 
 
-def __filter_malicious_steps(seq: List[dict], restriction_on_args: List[Attacks], history) -> List[dict]:
+def __filter_malicious_steps(seq: List[dict], restriction_on_args: List[Relations], history) -> List[dict]:
     """
     Filters every step which was already shown based on the users history or which is restricted
 
@@ -199,9 +182,9 @@ def __filter_malicious_steps(seq: List[dict], restriction_on_args: List[Attacks]
             yield el
 
 
-def __get_attacks(attack: Attacks, argument_uid: int, last_attack: Attacks, is_supportive: bool) -> Tuple[List[dict],
-                                                                                                          bool,
-                                                                                                          Attacks]:
+def __get_attacks(attack: Relations, argument_uid: int, last_attack: Relations, is_supportive: bool) -> Tuple[List[dict],
+                                                                                                              bool,
+                                                                                                              Relations]:
     """
     Returns a list of all attacking arguments based on input...
 
@@ -213,15 +196,15 @@ def __get_attacks(attack: Attacks, argument_uid: int, last_attack: Attacks, is_s
     """
     mod_attack = attack
 
-    if attack == Attacks.UNDERMINE:
+    if attack == Relations.UNDERMINE:
         attacks = get_undermines_for_argument_uid(argument_uid, is_supportive)
         # special case when undermining an undermine (docs/dbas/logic.html?highlight=undermine#dialog-sequence)
-        is_supportive = last_attack == 'undermine'
+        is_supportive = last_attack == relations_mapping[Relations.UNDERMINE]
 
-    elif attack == Attacks.REBUT:
+    elif attack == Relations.REBUT:
         db_arg = DBDiscussionSession.query(Argument).get(argument_uid)
         if not (db_arg and db_arg.argument_uid is None):
-            mod_attack = Attacks.UNDERCUT
+            mod_attack = Relations.UNDERCUT
         attacks = get_rebuts_for_argument_uid(argument_uid)
 
     else:

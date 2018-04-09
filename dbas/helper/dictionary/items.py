@@ -8,6 +8,7 @@ import hashlib
 import random
 from typing import List
 
+import dbas.lib
 from dbas.handler import attacks
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
@@ -15,7 +16,7 @@ from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.url import UrlManager
 from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_statement, \
-    is_author_of_argument
+    is_author_of_argument, relations_mapping
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
@@ -490,7 +491,7 @@ class ItemDictHelper(object):
         mode = 'agree' if is_supportive else 'disagree'
         _um = UrlManager(slug, history=self.path)
 
-        relations = ['undermine', 'support', 'undercut', 'rebut']
+        relations = list(relations_mapping.values())
         for relation in relations:
             url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument)
             d = {'title': rel_dict[relation + '_text'], 'id': relation}
@@ -549,7 +550,7 @@ class ItemDictHelper(object):
         :return: String
         """
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-        restriction_on_attacks = attacks.Attacks.REBUT if attack == 'undercut' else None
+        restriction_on_attacks = dbas.lib.Relations.REBUT if attack == 'undercut' else None
         # if the user did rebutted A with B, the system shall not rebut B with A
         history = '{}/rebut/{}'.format(db_sys_argument.uid, db_user_argument.uid) if attack == 'rebut' else ''
 

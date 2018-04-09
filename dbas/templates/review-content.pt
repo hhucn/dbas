@@ -423,7 +423,7 @@
                     <td>${subpage.elements.reviewed_element.stats.viewed}</td>
                   </tr>
                   <tr>
-                    <td i18n:translate="attacks">Attacks</td>
+                    <td i18n:translate="attacks">Relations</td>
                     <td>${subpage.elements.reviewed_element.stats.attacks}</td>
                   </tr>
                   <tr>

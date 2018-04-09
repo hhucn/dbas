@@ -12,19 +12,24 @@ from dbas.helper.url import UrlManager
 class LibTests(unittest.TestCase):
 
     def test_escape_string(self):
-        self.assertEqual(lib.escape_string(text=''), '')
+        self.assertEqual('', lib.escape_string(text=''))
 
         # normal string
-        self.assertEqual(lib.escape_string(text='str'), 'str')
+        self.assertEqual('str', lib.escape_string(text='str'))
 
         # strings with html special chars
-        self.assertEqual(lib.escape_string(text='&'), '&amp;')
+        self.assertEqual('&amp;', lib.escape_string(text='&'))
 
-        self.assertEqual(lib.escape_string(text='" str & str2'), '&quot; str &amp; str2')
+        self.assertEqual('&quot; str &amp; str2', lib.escape_string(text='" str & str2'))
 
         long_str_with_special_char = 'str' + '"' * 1000
         long_str_without_special_char = 'str' + '&quot;' * 1000
-        self.assertEqual(lib.escape_string(long_str_with_special_char), long_str_without_special_char)
+        self.assertEqual(long_str_without_special_char, lib.escape_string(long_str_with_special_char))
+
+    def test_unhtmlify(self):
+        self.assertEqual('', lib.unhtmlify(''))
+        self.assertEqual('str', lib.unhtmlify('str'))
+        self.assertEqual('<strong>str</strong>', lib.unhtmlify('str'))
 
     def test_python_datetime_pretty_print(self):
         # datetime corresponding to Gregorian ordinal
