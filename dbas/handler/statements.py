@@ -16,7 +16,8 @@ from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_ne
     set_new_rebut
 from dbas.helper.url import UrlManager
 from dbas.input_validator import is_integer
-from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_string, get_text_for_argument_uid
+from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_string, get_text_for_argument_uid, \
+    Relations
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
     rep_reason_first_justification, rep_reason_new_statement
@@ -408,17 +409,17 @@ def insert_new_premises_for_argument(premisegroup: List[str], current_attack, ar
     current_argument = DBDiscussionSession.query(Argument).get(arg_uid)
 
     new_argument = None
-    if current_attack == 'undermine':
+    if current_attack == Relations.UNDERMINE:
         new_argument = set_new_undermine_or_support_for_pgroup(new_pgroup.uid, current_argument, False, db_user,
                                                                db_issue)
 
-    elif current_attack == 'support':
+    elif current_attack == Relations.SUPPORT:
         new_argument, duplicate = set_new_support(new_pgroup.uid, current_argument, db_user, db_issue)
 
-    elif current_attack == 'undercut':
+    elif current_attack == Relations.UNDERCUT:
         new_argument, duplicate = set_new_undercut(new_pgroup.uid, current_argument, db_user, db_issue)
 
-    elif current_attack == 'rebut':
+    elif current_attack == Relations.REBUT:
         new_argument, duplicate = set_new_rebut(new_pgroup.uid, current_argument, db_user, db_issue)
 
     if not new_argument:

@@ -12,7 +12,8 @@ from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_stat
     get_system_bubble_text_for_justify_statement
 from dbas.helper.url import UrlManager
 from dbas.lib import get_text_for_argument_uid, get_text_for_conclusion, create_speechbubble_dict, \
-    is_author_of_argument, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, get_text_for_statement_uid
+    is_author_of_argument, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, \
+    get_text_for_statement_uid, Relations
 from dbas.logger import logger
 from dbas.review.helper.queues import get_complete_review_count
 from dbas.strings.keywords import Keywords as _
@@ -235,12 +236,12 @@ class DiscussionDictHelper(object):
         con_tag = '<{} class="text-danger">'.format(tag_type)
         end_tag = '</{}>'.format(tag_type)
 
-        if attack == 'undercut':
+        if attack == Relations.UNDERCUT:
             sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument).rstrip().format(pro_tag, end_tag) + ': '
             dot = '.'
         else:
             dot = '?'
-            if attack == 'undermine':
+            if attack == Relations.UNDERMINE:
                 sys_msg = _tn.get(_.whatIsYourMostImportantReasonAgainstStatement).rstrip().format(con_tag, end_tag)
                 sys_msg += ', ' if self.lang == 'de' else ' '
             else:
@@ -277,19 +278,19 @@ class DiscussionDictHelper(object):
         :param user_msg: String
         :return: String
         """
-        if attack == 'undermine':
+        if attack == Relations.UNDERMINE:
             add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack,
                                                                   conclusion, db_argument.is_supportive)
             add_premise_text = add_premise_text[0:1].upper() + add_premise_text[1:]
 
-        elif attack == 'support':
+        elif attack == Relations.SUPPORT:
             is_supportive = not is_supportive
             # when the user rebuts a system confrontation, he attacks his own negated premise, therefore he supports
             # is own premise. so his premise is the conclusion and we need new premises ;-)
             add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack,
                                                                   conclusion, is_supportive)
 
-        elif attack == 'undercut':
+        elif attack == Relations.UNDERCUT:
             add_premise_text = user_msg.format('', '') + ', ' + '...'
 
         else:
@@ -476,7 +477,7 @@ class DiscussionDictHelper(object):
         db_confrontation = DBDiscussionSession.query(Argument).get(confrontation_arg_uid)
         confr = db_confrontation.get_premisegroup_text()
         sys_conclusion = (db_confrontation.get_conclusion_text())
-        if attack == 'undermine':
+        if attack == Relations.UNDERMINE:
             if db_confrontation.conclusion_uid != 0:
                 premise = db_confrontation.get_conclusion_text()
             else:

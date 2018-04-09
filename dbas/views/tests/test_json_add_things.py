@@ -9,6 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup, \
     ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument, \
     ClickedStatement, SeenStatement, SeenArgument
+from dbas.lib import Relations
 
 
 class AjaxAddThingsTest(unittest.TestCase):
@@ -104,7 +105,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(json_body={
             'premisegroups': [['some new reason for an argument']],
             'arg_uid': 2,
-            'attack_type': 'support',
+            'attack_type': Relations.SUPPORT,
             'issue': 2
         }, mailer=DummyMailer)
         response = ajax(request)

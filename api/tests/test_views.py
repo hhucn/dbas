@@ -16,7 +16,7 @@ from api.login import token_to_database
 # ------------------------------------------------------------------------------
 # Tests
 from dbas.database.discussion_model import Issue
-from dbas.lib import get_user_by_case_insensitive_nickname
+from dbas.lib import get_user_by_case_insensitive_nickname, Relations
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
 
@@ -229,7 +229,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_cat_or_dog.uid,
             'attitude': 'agree',
-            'relation': 'undermine'
+            'relation': Relations.UNDERMINE
         })
         response = apiviews.discussion_justify_argument(request)
         self.assertTrue(response)
@@ -245,7 +245,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_town.uid,
             'attitude': 'agree',
-            'relation': 'undermine'
+            'relation': Relations.UNDERMINE
         })
         response = apiviews.discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -255,7 +255,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': -1,
             'attitude': 'agree',
-            'relation': 'undermine'
+            'relation': Relations.UNDERMINE
         })
         response = apiviews.discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -265,7 +265,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_cat_or_dog.uid,
             'attitude': 'not-an-attitude',
-            'relation': 'undermine'
+            'relation': Relations.UNDERMINE
         })
         response = apiviews.discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -286,7 +286,7 @@ class TestDiscussionReaction(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-doggy_dog',
             'arg_id_user': 2,
-            'relation': 'undermine',
+            'relation': Relations.UNDERMINE,
             'arg_id_sys': 16,
         })
         response = apiviews.discussion_reaction(request)
@@ -296,7 +296,7 @@ class TestDiscussionReaction(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 45,
-            'relation': 'undermine',
+            'relation': Relations.UNDERMINE,
             'arg_id_sys': 16,
         })
         response = apiviews.discussion_reaction(request)
@@ -306,7 +306,7 @@ class TestDiscussionReaction(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 2,
-            'relation': 'undermine',
+            'relation': Relations.UNDERMINE,
             'arg_id_sys': 45,
         })
         response = apiviews.discussion_reaction(request)

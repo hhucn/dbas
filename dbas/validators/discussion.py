@@ -11,7 +11,7 @@ from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGr
 from dbas.handler import issue as issue_handler
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer, related_with_support, check_belonging_of_premisegroups
-from dbas.lib import Relations, relations_mapping
+from dbas.lib import Relations
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.core import has_keywords, has_keywords_in_path
@@ -199,8 +199,7 @@ def valid_relation(request):
         add_error(request, 'Relation is missing in path', location='path')
         return False
 
-    list_of_attacks = list(relations_mapping.values())
-    list_of_attacks.remove(relations_mapping[Relations.SUPPORT])
+    list_of_attacks = [relation for relation in list(Relations) if relation is not Relations.SUPPORT]
     if relation not in list_of_attacks:
         add_error(request,
                   'Your relation is not correct. Received \'{}\', expected one of {}'.format(relation, list_of_attacks),

@@ -3,7 +3,7 @@ import unittest
 
 from typing import List
 
-from dbas.lib import relations_mapping, Relations
+from dbas.lib import Relations
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
 from dbas.handler import attacks
@@ -14,9 +14,9 @@ class AttackHandlerTests(unittest.TestCase):
     def test_get_attack_for_argument(self):
         results = {
             None: None,
-            39: relations_mapping[Relations.REBUT],
-            44: relations_mapping[Relations.UNDERMINE],
-            43: relations_mapping[Relations.UNDERCUT]
+            39: Relations.REBUT,
+            44: Relations.UNDERMINE,
+            43: Relations.UNDERCUT
         }
 
         restriction_on_args = [40]
@@ -43,7 +43,7 @@ class AttackHandlerTests(unittest.TestCase):
                                                           last_attack=None,
                                                           history='42/rebut/39-42/undermine/44')
         self.assertEqual(attack_uid, 43)
-        self.assertEqual(key, relations_mapping[Relations.UNDERCUT])
+        self.assertEqual(key, Relations.UNDERCUT)
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
                                                           restrictive_attacks=None,
@@ -51,7 +51,7 @@ class AttackHandlerTests(unittest.TestCase):
                                                           last_attack=None,
                                                           history='42/rebut/39-42/undercut/43')
         self.assertEqual(attack_uid, 44)
-        self.assertEqual(key, relations_mapping[Relations.UNDERMINE])
+        self.assertEqual(key, Relations.UNDERMINE)
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
                                                           restrictive_attacks=None,
@@ -59,7 +59,7 @@ class AttackHandlerTests(unittest.TestCase):
                                                           last_attack=None,
                                                           history='42/undercut/43-42/undermine/44')
         self.assertEqual(attack_uid, 39)
-        self.assertEqual(key, relations_mapping[Relations.REBUT])
+        self.assertEqual(key, Relations.REBUT)
 
     def test_get_attack_for_argument_with_undercut_restriction(self):
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,

@@ -205,7 +205,7 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid: int, current_argum
 def set_new_undercut(premisegroup_uid, current_argument: Argument, db_user: User, issue: Issue) \
         -> Tuple[Argument, bool]:
     """
-    Inserts a new undercut or overbid with the given parameters.
+    Inserts a new undercut with the given parameters.
 
     :param premisegroup_uid: premisegroup_uid
     :param current_argument: Argument

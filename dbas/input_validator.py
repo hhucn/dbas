@@ -51,10 +51,10 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation):
         return False
 
     relation_mapper = {
-        'undermine': related_with_undermine,
-        'undercut': related_with_undercut,
-        'rebut': related_with_rebut,
-        'support': related_with_support
+        Relations.UNDERMINE: related_with_undermine,
+        Relations.UNDERCUT: related_with_undercut,
+        Relations.REBUT: related_with_rebut,
+        Relations.SUPPORT: related_with_support
     }
 
     if relation in relation_mapper:

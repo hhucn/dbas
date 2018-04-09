@@ -48,18 +48,16 @@ class BubbleTypes(Enum):
 
 
 class Relations(Enum):
-    UNDERMINE = 1
-    UNDERCUT = 2
-    REBUT = 3
-    SUPPORT = 4
+    UNDERMINE = 'undermine'
+    UNDERCUT = 'undercut'
+    REBUT = 'rebut'
+    SUPPORT = 'support'
 
 
-relations_mapping = {
-    Relations.UNDERMINE: 'undermine',
-    Relations.UNDERCUT: 'undercut',
-    Relations.REBUT: 'rebut',
-    Relations.SUPPORT: 'support',
-}
+class Attitudes(Enum):
+    AGREE = 'agree'
+    DISAGREE = 'disagree'
+    DONNT_KNOW = 'dontknow'
 
 
 def get_global_url():
@@ -524,7 +522,7 @@ def __get_tags_for_building_single_argument(with_html_tag, attack_type, colored_
         if colored_position:
             sb = start_position if with_html_tag else ''
 
-        if attack_type == 'undermine':
+        if attack_type == Relations.UNDERMINE:
             premises = sb + premises + se
         else:
             conclusion = sb + conclusion + se

@@ -1,6 +1,7 @@
 from nose.tools import assert_in
 
 import dbas.validators.discussion as discussion
+from dbas.lib import Relations
 from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 
 
@@ -383,7 +384,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        relations = ['undermine', 'undercut', 'rebut']
+        relations = [Relations.UNDERMINE, Relations.UNDERCUT, Relations.REBUT]
         for relation in relations:
             request = construct_dummy_request(match_dict={'relation': relation})
             response = discussion.valid_relation(request)
@@ -497,7 +498,7 @@ class TestValidReactionArguments(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 4,
-            'relation': 'rebut',
+            'relation': Relations.REBUT,
             'arg_id_sys': 5
         })
         response = discussion.valid_reaction_arguments(request)
@@ -510,7 +511,7 @@ class TestValidReactionArguments(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': -1,
-            'relation': 'rebut',
+            'relation': Relations.REBUT,
             'arg_id_sys': 5
         })
         response = discussion.valid_reaction_arguments(request)
@@ -521,7 +522,7 @@ class TestValidReactionArguments(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': '',
             'arg_id_user': 4,
-            'relation': 'rebut',
+            'relation': Relations.REBUT,
             'arg_id_sys': 5
         })
         response = discussion.valid_reaction_arguments(request)
@@ -532,7 +533,7 @@ class TestValidReactionArguments(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 4,
-            'relation': 'rebut',
+            'relation': Relations.REBUT,
             'arg_id_sys': -1
         })
         response = discussion.valid_reaction_arguments(request)

@@ -6,6 +6,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, \
     ReputationHistory, User
 from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, clear_reputation_of_user
+from dbas.lib import Relations
 from dbas.views import discussion_reaction
 
 
@@ -16,7 +17,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.default_request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
-            'relation': 'undermine',
+            'relation': Relations.UNDERMINE,
             'arg_id_sys': 16,
         })
         self.user_bjoern = DBDiscussionSession.query(User).get(4)
@@ -115,7 +116,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-doggy_dog',
             'arg_id_user': 2,
-            'relation': 'undermine',
+            'relation': Relations.UNDERMINE,
             'arg_id_sys': 16,
         })
         response = discussion_reaction(request)
@@ -125,7 +126,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 45,
-            'relation': 'undermine',
+            'relation': Relations.UNDERMINE,
             'arg_id_sys': 16,
         })
         response = discussion_reaction(request)
@@ -135,7 +136,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
-            'relation': 'undermine',
+            'relation': Relations.UNDERMINE,
             'arg_id_sys': 45,
         })
         response = discussion_reaction(request)

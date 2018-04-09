@@ -44,74 +44,74 @@ class InputValidatorTests(unittest.TestCase):
         DBDiscussionSession.query(Argument).get(1).set_disabled(True)
         transaction.commit()
         # undermine
-        undermine_true = iv.check_reaction(attacked_arg_uid=3, attacking_arg_uid=20, relation='undermine')
+        undermine_true = iv.check_reaction(attacked_arg_uid=3, attacking_arg_uid=20, relation=Relations.UNDERMINE)
         self.assertTrue(undermine_true, True)
 
         undermine_uid_array_false = iv.check_reaction(attacked_arg_uid=[2, 3, 4], attacking_arg_uid=[2, 3, 4],
-                                                      relation='undermine')
+                                                      relation=Relations.UNDERMINE)
         self.assertFalse(undermine_uid_array_false)
 
         undermine_negative_uid_false = iv.check_reaction(attacked_arg_uid=-2, attacking_arg_uid=-19,
-                                                         relation='undermine')
+                                                         relation=Relations.UNDERMINE)
         self.assertFalse(undermine_negative_uid_false)
 
         # relation_conditions_response
         undermine_not_db_attacking_arg_false = iv.check_reaction(attacked_arg_uid=2, attacking_arg_uid=1,
-                                                                 relation='undermine')
+                                                                 relation=Relations.UNDERMINE)
         self.assertFalse(undermine_not_db_attacking_arg_false)
 
         undermine_db_attacked_arg_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=19,
-                                                            relation='undermine')
+                                                            relation=Relations.UNDERMINE)
         self.assertFalse(undermine_db_attacked_arg_false)
 
-        undermine_false = iv.check_reaction(attacked_arg_uid=0, attacking_arg_uid=0, relation='undermine')
+        undermine_false = iv.check_reaction(attacked_arg_uid=0, attacking_arg_uid=0, relation=Relations.UNDERMINE)
         self.assertFalse(undermine_false)
 
         undermine_empty_string_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='',
-                                                         relation='undermine')
+                                                         relation=Relations.UNDERMINE)
         self.assertFalse(undermine_empty_string_false)
 
         undermine_string_false = iv.check_reaction(attacked_arg_uid='2str/', attacking_arg_uid='19str',
-                                                   relation='undermine')
+                                                   relation=Relations.UNDERMINE)
         self.assertFalse(undermine_string_false)
 
     def test_check_reaction_undercut(self):
         # undercut
-        undercut_true = iv.check_reaction(attacked_arg_uid=42, attacking_arg_uid=43, relation='undercut')
+        undercut_true = iv.check_reaction(attacked_arg_uid=42, attacking_arg_uid=43, relation=Relations.UNDERCUT)
         self.assertTrue(undercut_true)
 
-        undercut_false = iv.check_reaction(attacked_arg_uid=0, attacking_arg_uid=0, relation='undercut')
+        undercut_false = iv.check_reaction(attacked_arg_uid=0, attacking_arg_uid=0, relation=Relations.UNDERCUT)
         self.assertFalse(undercut_false)
 
-        undercut_empty_string_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='', relation='undercut')
+        undercut_empty_string_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='', relation=Relations.UNDERCUT)
         self.assertFalse(undercut_empty_string_false)
 
         undercut_string_false = iv.check_reaction(attacked_arg_uid='1str/', attacking_arg_uid='17str',
-                                                  relation='undercut')
+                                                  relation=Relations.UNDERCUT)
         self.assertFalse(undercut_string_false)
 
     def test_check_reaction_rebut(self):
         # rebut
-        rebut_true = iv.check_reaction(attacked_arg_uid=58, attacking_arg_uid=51, relation='rebut')
+        rebut_true = iv.check_reaction(attacked_arg_uid=58, attacking_arg_uid=51, relation=Relations.REBUT)
         self.assertTrue(rebut_true)
 
-        rebut_not_db_attacked_arg_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=35, relation='rebut')
+        rebut_not_db_attacked_arg_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=35, relation=Relations.REBUT)
         self.assertFalse(rebut_not_db_attacked_arg_false)
 
-        rebut_not_db_attacking_arg_false = iv.check_reaction(attacked_arg_uid=31, attacking_arg_uid=1, relation='rebut')
+        rebut_not_db_attacking_arg_false = iv.check_reaction(attacked_arg_uid=31, attacking_arg_uid=1, relation=Relations.REBUT)
         self.assertFalse(rebut_not_db_attacking_arg_false)
 
-        rebut_not_db_attacked_arg_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=35, relation='rebut')
+        rebut_not_db_attacked_arg_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=35, relation=Relations.REBUT)
         self.assertFalse(rebut_not_db_attacked_arg_false)
 
         # db_attacked_arg and db_attacking_arg are False
-        rebut_false = iv.check_reaction(attacked_arg_uid=0, attacking_arg_uid=0, relation='rebut')
+        rebut_false = iv.check_reaction(attacked_arg_uid=0, attacking_arg_uid=0, relation=Relations.REBUT)
         self.assertFalse(rebut_false)
 
-        rebut_empty_string_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='', relation='rebut')
+        rebut_empty_string_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='', relation=Relations.REBUT)
         self.assertFalse(rebut_empty_string_false)
 
-        rebut_string_false = iv.check_reaction(attacked_arg_uid='31str/', attacking_arg_uid='35str', relation='rebut')
+        rebut_string_false = iv.check_reaction(attacked_arg_uid='31str/', attacking_arg_uid='35str', relation=Relations.REBUT)
         self.assertFalse(rebut_string_false)
 
     def test_check_reaction_end(self):
