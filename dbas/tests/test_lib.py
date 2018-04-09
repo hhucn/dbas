@@ -29,7 +29,7 @@ class LibTests(unittest.TestCase):
     def test_unhtmlify(self):
         self.assertEqual('', lib.unhtmlify(''))
         self.assertEqual('str', lib.unhtmlify('str'))
-        self.assertEqual('<strong>str</strong>', lib.unhtmlify('str'))
+        self.assertEqual('str', lib.unhtmlify('str'))
 
     def test_python_datetime_pretty_print(self):
         # datetime corresponding to Gregorian ordinal
