@@ -1,0 +1,9 @@
+{
+  "name": "D-BAS",
+  "version": "1.6.1",
+  "description": "system for dialog-based online argumentation",
+  "main": "app.js",
+  "repository": "https://github.com/hhucn/dbas",
+  "author": "Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>",
+  "license": "MIT"
+}
