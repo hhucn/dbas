@@ -13,6 +13,18 @@ our docker container. You can verify the installation with::
 
     $ docker exec -i -t dbas_web_1 yarn --version
 
+To add a new dependency, simply type::
 
+    $ yarn add [package]
+    $ yarn add [package]@[version]
+    $ yarn add [package]@[tag]
 
+To upgrade any dependency, simply type::
 
+    $ yarn upgrade [package]
+    $ yarn upgrade [package]@[version]
+    $ yarn upgrade [package]@[tag]
+
+And removing is easy with::
+
+    $ yarn remove [package]
