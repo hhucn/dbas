@@ -76,17 +76,17 @@
 
 <div class="eupopup eupopup-bottomright"></div>
 <script src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
-<script src="${request.static_url('dbas:static/js/libs/bootstrap-slider.min.js')}"></script>
-<script src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>
-<script src="${request.static_url('dbas:static/js/libs/bootstrap-tour.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/node_modules/bootstrap-slider.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/node_modules/bootstrap-toggle.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/node_modules/bootstrap-tour.js')}"></script>
 
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="${request.static_url('dbas:static/js/libs/jquery.slimscroll.min.js')}"></script>
-<script src="${request.static_url('dbas:static/js/libs/cookie.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/libs/cookie.min.js')}" tal:condition="not:extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/libs/socket.io.js')}"></script>
-<script src="${request.static_url('dbas:static/js/libs/chart.min.js')}"></script>
-<script src="${request.static_url('dbas:static/js/libs/d3.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/node_modules/jquery.slimscroll.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/node_modules/cookie.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/libs/node_modules/cookie.min.js')}" tal:condition="not:extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/libs/node_modules/socket.io.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/node_modules/chart.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/node_modules/d3.min.js')}"></script>
 <script src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}" tal:condition="not:extras.development_mode"></script>
 
