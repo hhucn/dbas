@@ -8,6 +8,7 @@ from dbas.database.discussion_model import SeenStatement, ClickedStatement, Seen
     ReputationHistory, User, Argument
 from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, refresh_user, \
     clear_reputation_of_user
+from dbas.lib import Relations, Attitudes
 from dbas.tests.utils import construct_dummy_request
 from dbas.views import discussion_justify_argument, discussion_justify_statement
 
@@ -46,7 +47,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_id': 2,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE.value,
         }
         response = discussion_justify_statement(request)
         self.assertNotIsInstance(response, httpexceptions.HTTPError)
@@ -63,7 +64,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_id': 2,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE.value,
         }
         response = discussion_justify_statement(request)
         transaction.commit()
@@ -88,7 +89,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_id': 2,
-            'attitude': 'disagree',
+            'attitude': Attitudes.DISAGREE.value,
         }
         response = discussion_justify_statement(request)
         self.assertNotIsInstance(response, httpexceptions.HTTPError)
@@ -111,7 +112,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_id': 2,
-            'attitude': 'dontknow',
+            'attitude': Attitudes.DONT_KNOW.value,
         }
         response = discussion_justify_statement(request)
         self.assertNotIsInstance(response, httpexceptions.HTTPError)
@@ -133,7 +134,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'kitty-or-doggy-is-a-wrong-slug',
             'statement_id': 2,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE.value,
         }
         response = discussion_justify_statement(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -143,7 +144,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_id': 40,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE.value,
         }
         response = discussion_justify_statement(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -170,8 +171,8 @@ class TestJustifyArgument(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'argument_id': 15,
-            'attitude': 'disagree',
-            'relation': 'undercut',
+            'attitude': Attitudes.DISAGREE.value,
+            'relation': Relations.UNDERCUT.value,
         }
         seen_arguments_before = DBDiscussionSession.query(SeenArgument).count()
         clicked_arguments_before = DBDiscussionSession.query(ClickedArgument).count()
@@ -190,8 +191,8 @@ class TestJustifyArgument(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'argument_id': 4,
-            'attitude': 'agree',
-            'relation': 'undermine',
+            'attitude': Attitudes.AGREE.value,
+            'relation': Relations.UNDERMINE.value,
         }
         response = discussion_justify_argument(request)
         self.assertNotIsInstance(response, httpexceptions.HTTPError)
@@ -248,7 +249,7 @@ class TestJustifyArgument(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'argument_id': 4,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE.value,
             'relation': 'i am groot',
         }
         response = discussion_justify_argument(request)
@@ -262,8 +263,8 @@ class TestJustifyArgument(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'argument_id': 1,
-            'attitude': 'agree',
-            'relation': 'undermine',
+            'attitude': Attitudes.AGREE.value,
+            'relation': Relations.UNDERMINE.value,
         }
         response = discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)

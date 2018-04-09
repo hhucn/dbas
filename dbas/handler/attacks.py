@@ -12,7 +12,7 @@ from dbas.database.discussion_model import Argument
 from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for_argument_uid, \
     get_undercuts_for_argument_uid
 from dbas.input_validator import is_integer
-from dbas.lib import Relations, relations_mapping
+from dbas.lib import Relations
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 
@@ -39,16 +39,16 @@ def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relatio
                                                                                restrictive_arg_uids,
                                                                                redirected_from_jump))
 
-    attack_uids, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, restrictive_attacks,
-                                                                                    restrictive_arg_uids, last_attack,
-                                                                                    history)
+    attack_uids, attack_key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid,
+                                                                                           restrictive_attacks,
+                                                                                           restrictive_arg_uids,
+                                                                                           last_attack, history)
 
-    if len(attack_uids) == 0 or key not in relations_mapping:
+    if len(attack_uids) == 0 or attack_key not in Relations:
         return None, None
 
     attack_uid = random.choice(attack_uids)['id']
-    attack_key: Relations = relations_mapping[key]
-    logger('AttackHandler', 'return {} by {}'.format(key, attack_uid))
+    logger('AttackHandler', 'return {} by {}'.format(attack_key, attack_uid))
     return attack_uid, attack_key
 
 
@@ -146,15 +146,12 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
         # get attacks and kick all malicious steps
         arg_uids, is_supportive, attack_key = __get_attacks(attack, argument_uid, last_attack, is_supportive)
         arg_uids = list(__filter_malicious_steps(arg_uids, restrictive_arg_uids, history))
+        print('  1) {}: {} {}'.format(attack, arg_uids, attack_key))
         if not arg_uids or len(arg_uids) == 0:
             continue
 
         # check if the step is already in history
-        new_attack_step = '{}/{}/{}'.format(argument_uid, relations_mapping[attack_key], arg_uids[0]['id'])
-        print(attack_key)
-        print(restrictive_attacks)
-        print(new_attack_step)
-        print(history)
+        new_attack_step = '{}/{}/{}'.format(argument_uid, attack_key, arg_uids[0]['id'])
 
         if attack_key not in restrictive_attacks and new_attack_step not in history:  # no duplicated attacks
             break  # found an attack
@@ -199,7 +196,7 @@ def __get_attacks(attack: Relations, argument_uid: int, last_attack: Relations, 
     if attack == Relations.UNDERMINE:
         attacks = get_undermines_for_argument_uid(argument_uid, is_supportive)
         # special case when undermining an undermine (docs/dbas/logic.html?highlight=undermine#dialog-sequence)
-        is_supportive = last_attack == relations_mapping[Relations.UNDERMINE]
+        is_supportive = last_attack == Relations.UNDERMINE
 
     elif attack == Relations.REBUT:
         db_arg = DBDiscussionSession.query(Argument).get(argument_uid)

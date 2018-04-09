@@ -1,7 +1,6 @@
 import random
-from os import environ
-
 import transaction
+from os import environ
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Argument, Premise, MarkedArgument, ClickedArgument, \
@@ -10,8 +9,8 @@ from dbas.handler import user, notification as nh
 from dbas.handler.statements import insert_new_premises_for_argument
 from dbas.helper.url import UrlManager
 from dbas.input_validator import get_relation_between_arguments
-from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, \
-    get_profile_picture, get_text_for_argument_uid, resolve_issue_uid_to_slug, relations_mapping
+from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, get_profile_picture, Relations, \
+    get_text_for_argument_uid, resolve_issue_uid_to_slug
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_new_statement, rep_reason_first_new_argument
 from dbas.strings.keywords import Keywords as _
@@ -127,7 +126,8 @@ def get_arguments_by_statement_uid(db_statement: Statement) -> dict:
     return {'arguments': get_all_arguments_with_text_and_url_by_statement_id(db_statement, _um, True, is_jump=True)}
 
 
-def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_infos: dict, db_issue: Issue, db_user: User, mailer):
+def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_infos: dict, db_issue: Issue, db_user: User,
+                                                           mailer):
     """
     Inserts given text in premisegroups as new arguments in dependence of the parameters and returns a URL
 
@@ -193,7 +193,8 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
 
     else:
         url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type,
-                                                                                    arg_id, _um, attack_type == 'support')
+                                                                                    arg_id, _um,
+                                                                                    attack_type == Relations.SUPPORT)
 
     # send notifications and mails
     if len(new_argument_uids) > 0:
@@ -205,7 +206,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
         new_uid = random.choice(new_argument_uids)  # TODO eliminate random
         attack = get_relation_between_arguments(arg_id, new_uid)
 
-        tmp_url = _um.get_url_for_reaction_on_argument(arg_id, relations_mapping[attack], new_uid)
+        tmp_url = _um.get_url_for_reaction_on_argument(arg_id, attack, new_uid)
 
         nh.send_add_argument_notification(tmp_url, arg_id, db_user.nickname, mailer)
 
@@ -231,18 +232,18 @@ def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_ar
 
     current_argument = DBDiscussionSession.query(Argument).get(arg_id)
     # relation to the arguments premise group
-    if attack_type == 'undermine' or attack_type == 'support':  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
+    if attack_type == Relations.UNDERMINE or attack_type == Relations.SUPPORT:  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
         db_premise = DBDiscussionSession.query(Premise).filter_by(
             premisegroup_uid=current_argument.premisegroup_uid).first()
         db_statement = DBDiscussionSession.query(Statement).get(db_premise.statement_uid)
         url = _um.get_url_for_choosing_premisegroup(False, supportive, db_statement.uid, pgroups)
 
     # relation to the arguments relation
-    elif attack_type == 'undercut' or attack_type == 'overbid':
+    elif attack_type == Relations.UNDERCUT:
         url = _um.get_url_for_choosing_premisegroup(True, supportive, arg_id, pgroups)
 
     # relation to the arguments conclusion
-    elif attack_type == 'rebut':
+    elif attack_type == Relations.REBUT:
         # TODO WHAT IS WITH ARGUMENT AS CONCLUSION?
         is_argument = current_argument.conclusion_uid is not None
         uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid

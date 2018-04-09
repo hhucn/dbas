@@ -9,7 +9,7 @@ from dbas.database.discussion_model import Argument, Statement, User, ClickedArg
     SeenArgument, SeenStatement, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, \
     get_undermines_for_argument_uid, get_supports_for_argument_uid
-from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid, get_profile_picture, relations_mapping
+from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid, get_profile_picture, Relations
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, \
@@ -71,7 +71,7 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user, _
     :return: List of dict()
     """
     # getting the text of all reactions
-    relation = list(relations_mapping.values())
+    relations = [relation.value for relation in Relations]
 
     ret_list = []
     user_query = DBDiscussionSession.query(User)
@@ -80,8 +80,8 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user, _
     else:
         msg = _t.get(_.voteCountTextMayBeFirst) + '.'
 
-    for rel in relation:
-        d = __build_reaction_dict_by_relation(relation, rel, relation_text, msg, arg_uids_for_reactions, db_user,
+    for relation in relations:
+        d = __build_reaction_dict_by_relation(relation, relation, relation_text, msg, arg_uids_for_reactions, db_user,
                                               main_page, _t, user_query)
         ret_list.append(d)
     return ret_list

@@ -17,8 +17,7 @@ Let us assume the user states an supportive argument *arg1*: *A --(+)-> B*. Then
 2. *undercut*: The system disagrees that this leads to accepting the conclusion. He attacks the relation with *arg2ii* *D --(-)-> (A --(+)-> B)*
 3. *rebut*: The system disagrees that B holds. He states an attack against the conclusion with *arg2iii* *D --(-)-> B*
 
-Now the system presents the users opinion and the systems attack. Additionally D-BAS offers five different feedback possibilities,
-where we currently do not know, which overbid will be taken.
+Now the system presents the users opinion and the systems attack.
 
 ====================  ===============  ================  ==================
 user    /    system   undermine        undercut          rebut
@@ -26,8 +25,6 @@ user    /    system   undermine        undercut          rebut
 *undermine*           D --(-)-> C      D --(-)-> C       D --(-)-> C
 *support*             next             next              next
 *undercut*            D --(-)-> arg2i  D --(-)-> arg2ii  D --(-)-> arg2iii
-*overbid as attack*   D --(-)-> A      D --(-)-> arg1    D --(-)-> B
-*overbid as overbid*  D --(+)-> arg2i  D --(+)-> arg2ii  D --(+)-> arg2iii
 *rebut*               D --(+)-> A      D --(-)-> arg1    D --(+)-> B
 ====================  ===============  ================  ==================
 

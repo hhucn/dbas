@@ -8,7 +8,7 @@ import hashlib
 import random
 from typing import List
 
-import dbas.lib
+from dbas.lib import Relations, Attitudes
 from dbas.handler import attacks
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
@@ -16,7 +16,7 @@ from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.url import UrlManager
 from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_statement, \
-    is_author_of_argument, relations_mapping
+    is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
@@ -138,12 +138,12 @@ class ItemDictHelper(object):
         title_t = _tn.get(_.iAgreeWithInColor) + '.'
         title_f = _tn.get(_.iDisagreeWithInColor) + '.'
         title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'
-        url_t = _um.get_url_for_justifying_statement(statement_uid, 'agree')
-        url_f = _um.get_url_for_justifying_statement(statement_uid, 'disagree')
-        url_d = _um.get_url_for_justifying_statement(uid, 'dontknow')
-        d_t = self.__create_answer_dict('agree', [{'title': title_t, 'id': 'agree'}], 'agree', url_t)
-        d_f = self.__create_answer_dict('disagree', [{'title': title_f, 'id': 'disagree'}], 'disagree', url_f)
-        d_d = self.__create_answer_dict('dontknow', [{'title': title_d, 'id': 'dontknow'}], 'dontknow', url_d)
+        url_t = _um.get_url_for_justifying_statement(statement_uid, Attitudes.AGREE.value)
+        url_f = _um.get_url_for_justifying_statement(statement_uid, Attitudes.DISAGREE.value)
+        url_d = _um.get_url_for_justifying_statement(uid, Attitudes.DONT_KNOW.value)
+        d_t = self.__create_answer_dict(Attitudes.AGREE.value, [{'title': title_t, 'id': Attitudes.AGREE.value}], Attitudes.AGREE.value, url_t)
+        d_f = self.__create_answer_dict(Attitudes.DISAGREE.value, [{'title': title_f, 'id': Attitudes.DISAGREE.value}], Attitudes.DISAGREE.value, url_f)
+        d_d = self.__create_answer_dict(Attitudes.DONT_KNOW.value, [{'title': title_d, 'id': Attitudes.DONT_KNOW.value}], Attitudes.DONT_KNOW.value, url_d)
         statements_array.append(d_t)
         statements_array.append(d_f)
         statements_array.append(d_d)
@@ -260,7 +260,7 @@ class ItemDictHelper(object):
                                        'title': text})
 
             # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
-            is_undermine = 'undermine' if attack_type == 'undermine' else None
+            is_undermine = Relations.UNDERMINE if attack_type == Relations.UNDERMINE else None
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
 
             arg_id_sys, attack = attacks.get_attack_for_argument(argument.uid, last_attack=is_undermine,
@@ -318,7 +318,7 @@ class ItemDictHelper(object):
 
         db_arguments = []
         db_arguments_not_disabled = get_not_disabled_arguments_as_query()
-        if attack_type == 'undermine':
+        if attack_type == Relations.UNDERMINE:
             db_premises = DBDiscussionSession.query(Premise).filter_by(
                 premisegroup_uid=db_argument.premisegroup_uid).all()
             for premise in db_premises:
@@ -327,18 +327,18 @@ class ItemDictHelper(object):
                                                              Argument.issue_uid == self.db_issue.uid).all()
                 db_arguments = db_arguments + arguments
 
-        elif attack_type == 'undercut':
+        elif attack_type == Relations.UNDERCUT:
             db_arguments = db_arguments_not_disabled.filter(Argument.argument_uid == argument_uid,
                                                             Argument.is_supportive == False,
                                                             Argument.issue_uid == self.db_issue.uid).all()
 
-        elif attack_type == 'rebut':
+        elif attack_type == Relations.REBUT:
             db_arguments = db_arguments_not_disabled.filter(Argument.conclusion_uid == db_argument.conclusion_uid,
                                                             Argument.argument_uid == db_argument.argument_uid,
                                                             Argument.is_supportive == False,
                                                             Argument.issue_uid == self.db_issue.uid).all()
 
-        elif attack_type == 'support':
+        elif attack_type == Relations.SUPPORT:
             db_arguments = db_arguments_not_disabled.filter(Argument.conclusion_uid == db_argument.conclusion_uid,
                                                             Argument.argument_uid == db_argument.argument_uid,
                                                             Argument.is_supportive == db_argument.is_supportive,
@@ -373,28 +373,28 @@ class ItemDictHelper(object):
             add_seen_argument(argument_uid, db_user)
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, False, is_dont_know=True, gender=gender)
-        current_mode = 'agree' if is_supportive else 'disagree'
-        not_current_mode = 'disagree' if is_supportive else 'agree'
+        current_mode = Attitudes.AGREE if is_supportive else Attitudes.DISAGREE
+        not_current_mode = Attitudes.DISAGREE if is_supportive else Attitudes.AGREE
 
-        relation = 'undermine'
+        relation = Relations.UNDERMINE.value
         url = self.__get_dont_know_item_for_undermine(db_argument, not_current_mode, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)
         statements_array.append(d)
 
-        relation = 'support'
+        relation = Relations.SUPPORT.value
         url = self.__get_dont_know_item_for_support(argument_uid, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)
         statements_array.append(d)
 
-        relation = 'undercut'
+        relation = Relations.UNDERCUT.value
         url = self.__get_dont_know_item_for_undercut(argument_uid, current_mode, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)
         statements_array.append(d)
 
-        relation = 'rebut'
+        relation = Relations.REBUT.value
         url = self.__get_dont_know_item_for_rebut(db_argument, not_current_mode, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)
@@ -415,7 +415,7 @@ class ItemDictHelper(object):
         if db_argument.conclusion_uid is not None:
             url = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, is_not_supportive)
         else:
-            url = _um.get_url_for_justifying_argument(db_argument.argument_uid, is_not_supportive, 'undermine')
+            url = _um.get_url_for_justifying_argument(db_argument.argument_uid, is_not_supportive, Relations.UNDERMINE)
         return url
 
     @staticmethod
@@ -442,7 +442,7 @@ class ItemDictHelper(object):
         :param _um: UrlManager
         :return: String
         """
-        url = _um.get_url_for_justifying_argument(argument_uid, current_mode, 'undercut')
+        url = _um.get_url_for_justifying_argument(argument_uid, current_mode, Relations.UNDERCUT)
         return url
 
     @staticmethod
@@ -488,10 +488,10 @@ class ItemDictHelper(object):
             return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, True, attack_type=attack, gender=gender)
-        mode = 'agree' if is_supportive else 'disagree'
+        mode = Attitudes.AGREE if is_supportive else Attitudes.DISAGREE
         _um = UrlManager(slug, history=self.path)
 
-        relations = list(relations_mapping.values())
+        relations = [relation.value for relation in Relations]
         for relation in relations:
             url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument)
             d = {'title': rel_dict[relation + '_text'], 'id': relation}
@@ -530,11 +530,11 @@ class ItemDictHelper(object):
         :return:
         """
         # special case, when the user selects the support, because this does not need to be justified!
-        if relation == 'support':
+        if relation == Relations.SUPPORT:
             return self.__get_url_for_support(attack, _um, db_user_argument, db_sys_argument)
-        elif relation == 'undermine' or relation == 'undercut':  # easy cases
+        elif relation == Relations.UNDERMINE or relation == Relations.UNDERCUT:  # easy cases
             return self.__get_url_for_undermine(relation, _um, db_sys_argument.uid, mode)
-        elif relation == 'rebut':  # if we are having an rebut, everything seems different
+        elif relation == Relations.REBUT:  # if we are having an rebut, everything seems different
             return self.__get_url_for_rebut(attack, _um, mode, db_user_argument, db_sys_argument)
         else:  # undercut
             return _um.get_url_for_justifying_argument(db_sys_argument.uid, mode, relation)
@@ -550,16 +550,16 @@ class ItemDictHelper(object):
         :return: String
         """
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-        restriction_on_attacks = dbas.lib.Relations.REBUT if attack == 'undercut' else None
+        restriction_on_attacks = Relations.REBUT if attack == Relations.UNDERCUT else None
         # if the user did rebutted A with B, the system shall not rebut B with A
-        history = '{}/rebut/{}'.format(db_sys_argument.uid, db_user_argument.uid) if attack == 'rebut' else ''
+        history = '{}/rebut/{}'.format(db_sys_argument.uid, db_user_argument.uid) if attack == Relations.REBUT else ''
 
         arg_id_sys, sys_attack = attacks.get_attack_for_argument(db_sys_argument.uid,
                                                                  restrictive_arg_uids=attacking_arg_uids,
                                                                  restrictive_attacks=[restriction_on_attacks],
                                                                  history=history)
 
-        if sys_attack == 'rebut' and attack == 'undercut':
+        if sys_attack == Relations.REBUT and attack == Relations.UNDERCUT:
             # case: system makes an undercut and the user supports this new attack can be an rebut, so another
             # undercut for the users argument therefore now the users opinion is the new undercut (e.g. rebut)
             # because he supported it!
@@ -595,10 +595,10 @@ class ItemDictHelper(object):
         :return: String
         """
         url = ''
-        if attack == 'undermine':  # rebutting an undermine will be a support for the initial argument
+        if attack == Relations.UNDERMINE:  # rebutting an undermine will be a support for the initial argument
             url = _um.get_url_for_justifying_statement(db_sys_argument.conclusion_uid, mode)
 
-        elif attack == 'undercut':  # rebutting an undercut will be a overbid for the initial argument
+        elif attack == Relations.UNDERCUT:  # rebutting an undercut will be a overbid for the initial argument
             if db_user_argument.argument_uid is None:
                 url = _um.get_url_for_justifying_statement(db_user_argument.conclusion_uid, mode)
             else:
@@ -608,7 +608,7 @@ class ItemDictHelper(object):
                 url = _um.get_url_for_justifying_statement(db_premise.statement_uid, mode)
 
         # rebutting an rebut will be a justify for the initial argument
-        elif attack == 'rebut':
+        elif attack == Relations.REBUT:
             current_user_argument = db_user_argument
             conclusion_uid = current_user_argument.conclusion_uid
             while conclusion_uid is None:
@@ -746,31 +746,31 @@ class ItemDictHelper(object):
         url0 = _um.get_url_for_reaction_on_argument(db_argument.uid, sys_attack, arg_id_sys)
 
         if len_undercut == 0:
-            url1 = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, 'agree')
-            url2 = _um.get_url_for_justifying_argument(db_argument.uid, 'agree', 'undercut')
-            url3 = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, 'disagree')
+            url1 = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, Attitudes.AGREE)
+            url2 = _um.get_url_for_justifying_argument(db_argument.uid, Attitudes.AGREE, Relations.UNDERCUT)
+            url3 = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, Attitudes.DISAGREE)
             if len(db_premises) == 1:
-                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'disagree')
+                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, Attitudes.DISAGREE)
             else:
-                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'disagree', 'undermine')
+                url4 = _um.get_url_for_justifying_argument(db_argument.uid, Attitudes.DISAGREE, Relations.UNDERMINE)
 
         elif len_undercut == 1:
             url1 = None
-            url2 = _um.get_url_for_justifying_argument(db_argument.uid, 'agree', 'undercut')
+            url2 = _um.get_url_for_justifying_argument(db_argument.uid, Attitudes.AGREE, Relations.UNDERCUT)
             url3 = _um.get_url_for_jump(db_undercutted_arg.uid)
             if len(db_premises) == 1:
-                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'disagree')
+                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, Attitudes.DISAGREE)
             else:
-                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'disagree', 'undermine')
+                url4 = _um.get_url_for_justifying_argument(db_argument.uid, Attitudes.DISAGREE, Relations.UNDERMINE)
 
         else:
             url1 = None
             url2 = None
             url3 = _um.get_url_for_jump(db_undercutted_arg.uid)
             if len(db_premises) == 1:
-                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'disagree')
+                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, Attitudes.DISAGREE)
             else:
-                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'disagree', 'undermine')
+                url4 = _um.get_url_for_justifying_argument(db_argument.uid, Attitudes.DISAGREE, Relations.UNDERMINE)
 
         return [url0, url1, url2, url3, url4]
 

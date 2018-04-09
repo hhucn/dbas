@@ -673,7 +673,7 @@ function Main() {
                 }
             });
             var url = window.location.href.split('?')[0];
-            var add = url.indexOf('support') === -1 ? 0 : 1;
+            var add = url.indexOf(Relations.SUPPORT) === -1 ? 0 : 1;
             arg = splits[splits.length - 3 - add];
             supportive = splits[splits.length - 2 - add] === 'agree';
             relation = splits[splits.length - 1 - add];

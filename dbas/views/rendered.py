@@ -33,7 +33,7 @@ from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user
+from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user, Attitudes
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -192,14 +192,14 @@ def __append_extras_dict_during_justification_argument(request: Request, db_user
 
 def __append_extras_dict_during_justification_statement(request: Request, db_user: User, db_issue: Issue,
                                                         db_statement: Statement,
-                                                        pdict: dict, attitude: str):
+                                                        pdict: dict, attitude: Attitudes):
     system_lang = get_language_from_cookie(request)
-    supportive = attitude in ['agree', 'dontknow']
+    supportive = attitude in [Attitudes.AGREE, Attitudes.DONT_KNOW]
     item_len = len(pdict['items']['elements'])
     _dh = DictionaryHelper(system_lang, db_issue.lang)
     logged_in = (db_user and db_user.nickname != nick_of_anonymous_user) is not None
 
-    if attitude in ('agree', 'disagree'):
+    if attitude in (Attitudes.AGREE, Attitudes.DISAGREE):
         extras_dict = _dh.prepare_extras_dict(db_issue.slug, False, True, True, request.registry,
                                               request.application_url, request.path, db_user)
         if item_len == 0 or item_len == 1 and logged_in:

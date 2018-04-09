@@ -3,7 +3,7 @@
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement
-from dbas.lib import get_author_data
+from dbas.lib import get_author_data, Relations
 from .keywords import Keywords as _
 from .translator import Translator
 
@@ -44,10 +44,10 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
     confrontation = confrontation[0:1].upper() + confrontation[1:]
 
     # different cases
-    if attack_type == 'undermine':
+    if attack_type == Relations.UNDERMINE:
         return '{} {} ...'.format(_t.get(_.itIsFalseThat), premise)
 
-    elif attack_type == 'support':
+    elif attack_type == Relations.SUPPORT:
         intro = _t.get(_.itIsFalseThat)
         outro = _t.get(_.doesNotHold)
         if is_supportive:
@@ -55,13 +55,10 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
             outro = _t.get(_.hold)
         return '{} {} {} ...'.format(intro, conclusion, outro)
 
-    elif attack_type == 'undercut':
+    elif attack_type == Relations.UNDERCUT:
         return '{}, {} ...'.format(confrontation, _t.get(_.butIDoNotBelieveCounterFor).format(conclusion))
 
-    elif attack_type == 'overbid':
-        return '{}, {} ...'.format(confrontation, _t.get(_.andIDoBelieveCounterFor).format(conclusion))
-
-    elif attack_type == 'rebut':
+    elif attack_type == Relations.REBUT:
         mid = _t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat)
         return '{} {} {} ...'.format(confrontation, mid, conclusion)
 
@@ -144,16 +141,16 @@ def __get_user_msg_for_users_confrontation_response(db_argument, attack_type, pr
     :return: String
     """
     # different cases
-    if attack_type == 'undermine':
+    if attack_type == Relations.UNDERMINE:
         return __get_user_msg_for_users_undermine_response(premise, _t.get(_.that))
 
-    if attack_type == 'support':
+    if attack_type == Relations.SUPPORT:
         return __get_user_msg_for_users_support_response(conclusion, itistruethat, itisfalsethat, is_supportive, _t)
 
-    if attack_type == 'undercut':
+    if attack_type == Relations.UNDERCUT:
         return __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, right, _t)
 
-    if attack_type == 'rebut':
+    if attack_type == Relations.REBUT:
         return __get_user_msg_for_users_rebut_response(premise, conclusion, right, is_supportive, _t)
 
 
@@ -294,7 +291,7 @@ def get_relation_text_dict_with_substitution(lang, with_no_opinion_text, is_dont
     else:
         conclusion = opinion
         if not is_dont_know:
-            if attack_type == 'undermine' or attack_type == 'rebut':
+            if attack_type == Relations.UNDERMINE or attack_type == Relations.REBUT:
                 conclusion = position
             else:
                 conclusion = _t.get(_.myArgument)
@@ -419,22 +416,22 @@ def get_text_for_confrontation(lang, nickname, premise, conclusion, sys_conclusi
         my_end_tag = end_tag
         confrontation = my_start_attack + confrontation + my_end_tag
         conclusion = my_start_argument + conclusion + my_end_tag
-        if attack == 'undermine':
+        if attack == Relations.UNDERMINE:
             premise = my_start_argument + premise + my_end_tag
         sys_conclusion = my_start_argument + sys_conclusion + my_end_tag
 
     # build some confrontation text
-    if attack == 'undermine':
+    if attack == Relations.UNDERMINE:
         confrontation_text, gender = __get_confrontation_text_for_undermine(nickname, premise, lang, sys_arg,
                                                                             my_start_argument, my_end_tag,
                                                                             confrontation)
 
-    elif attack == 'undercut':
+    elif attack == Relations.UNDERCUT:
         confrontation_text, gender = __get_confrontation_text_for_undercut(nickname, lang,
                                                                            premise, conclusion, confrontation,
                                                                            supportive, sys_arg)
 
-    elif attack == 'rebut':
+    elif attack == Relations.REBUT:
         confrontation_text, gender = __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument,
                                                                         user_arg, user_is_attacking, sys_conclusion,
                                                                         confrontation, premise, conclusion,

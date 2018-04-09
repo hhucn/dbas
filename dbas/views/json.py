@@ -37,7 +37,7 @@ from dbas.handler.statements import set_correction_of_statement, set_position, s
 from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url, revoke_author_of_argument_content, revoke_author_of_statement_content
-from dbas.lib import escape_string, get_discussion_language
+from dbas.lib import escape_string, get_discussion_language, relation_mapper
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -462,7 +462,7 @@ def set_new_premises_for_argument(request):
         'issue': request.validated['issue'],
         'premisegroups': request.validated['premisegroups'],
         'arg_uid': request.validated['arg_uid'],
-        'attack_type': request.validated['attack_type'],
+        'attack_type': relation_mapper[request.validated['attack_type']],
         'history': request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
         'default_locale_name': get_default_locale_name(request.registry),
         'mailer': request.mailer

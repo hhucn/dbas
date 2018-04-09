@@ -3,6 +3,8 @@ import transaction
 import itertools
 
 from pyramid import testing
+
+from dbas.lib import Relations
 from dbas.strings import text_generator as tg
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -40,10 +42,10 @@ class TextGeneratorText(unittest.TestCase):
             rebut += ' ' + self.conclusion
 
             results = {
-                'undermine': undermine + ' ...',
-                'support': support + ' ...',
-                'undercut': undercut + ' ...',
-                'rebut': rebut + ' ...',
+                Relations.UNDERMINE: undermine + ' ...',
+                Relations.SUPPORT: support + ' ...',
+                Relations.UNDERCUT: undercut + ' ...',
+                Relations.REBUT: rebut + ' ...',
                 '': '',
             }
 
@@ -58,10 +60,10 @@ class TextGeneratorText(unittest.TestCase):
         is_supportive = True
         redirect_from_jump = False
         results = {
-            'undermine': 'that {}some premise text{}',
-            'support': '{}it is true that some conclusion text hold{}.',
-            'undercut': 'right, some premise text. {}But I do not believe that this is a argument for some conclusion text{}',
-            'rebut': '{}right, some premise text, and I do accept that this is a counter-argument for some conclusion text. However, I have a much stronger argument for reject that some conclusion text.{}',
+            Relations.UNDERMINE: 'that {}some premise text{}',
+            Relations.SUPPORT: '{}it is true that some conclusion text hold{}.',
+            Relations.UNDERCUT: 'right, some premise text. {}But I do not believe that this is a argument for some conclusion text{}',
+            Relations.REBUT: '{}right, some premise text, and I do accept that this is a counter-argument for some conclusion text. However, I have a much stronger argument for reject that some conclusion text.{}',
             '': ''
         }
         for r in results:
@@ -73,8 +75,8 @@ class TextGeneratorText(unittest.TestCase):
 
         is_supportive = False
         results.update({
-            'support': '{}it is false that some conclusion text does not hold{}.',
-            'rebut': '{}right, some premise text, and I do accept that this is an argument for some conclusion text. However, I have a much stronger argument for accept that some conclusion text.{}',
+            Relations.SUPPORT: '{}it is false that some conclusion text does not hold{}.',
+            Relations.REBUT: '{}right, some premise text, and I do accept that this is an argument for some conclusion text. However, I have a much stronger argument for accept that some conclusion text.{}',
         })
         for r in results:
             user_msg, system_msg = tg.get_header_for_users_confrontation_response(arg, 'en', self.premise, r,
@@ -85,8 +87,8 @@ class TextGeneratorText(unittest.TestCase):
 
         redirect_from_jump = True
         results.update({
-            'undercut': 'Maybe it is true that some premise text. {}But I do not believe that this is a argument for some conclusion text{}',
-            'rebut': '{}Maybe it is true that some premise text, and I do accept that this is an argument for some conclusion text. However, I have a much stronger argument for accept that some conclusion text.{}',
+            Relations.UNDERCUT: 'Maybe it is true that some premise text. {}But I do not believe that this is a argument for some conclusion text{}',
+            Relations.REBUT: '{}Maybe it is true that some premise text, and I do accept that this is an argument for some conclusion text. However, I have a much stronger argument for accept that some conclusion text.{}',
         })
         for r in results:
             user_msg, system_msg = tg.get_header_for_users_confrontation_response(arg, 'en', self.premise, r,
@@ -97,8 +99,8 @@ class TextGeneratorText(unittest.TestCase):
 
         is_supportive = True
         results.update({
-            'support': '{}it is true that some conclusion text hold{}.',
-            'rebut': '{}Maybe it is true that some premise text, and I do accept that this is a counter-argument for some conclusion text. However, I have a much stronger argument for reject that some conclusion text.{}',
+            Relations.SUPPORT: '{}it is true that some conclusion text hold{}.',
+            Relations.REBUT: '{}Maybe it is true that some premise text, and I do accept that this is a counter-argument for some conclusion text. However, I have a much stronger argument for reject that some conclusion text.{}',
         })
         for r in results:
             user_msg, system_msg = tg.get_header_for_users_confrontation_response(arg, 'en', self.premise, r,
@@ -179,23 +181,23 @@ class TextGeneratorText(unittest.TestCase):
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
-        attack_type = 'undercut'
+        attack_type = Relations.UNDERCUT
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
-        attack_type = 'undermine'
+        attack_type = Relations.UNDERMINE
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
-        attack_type = 'rebut'
+        attack_type = Relations.REBUT
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
         is_dont_know = False
-        attack_type = 'undercut'
+        attack_type = Relations.UNDERCUT
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         results.update({
@@ -204,7 +206,7 @@ class TextGeneratorText(unittest.TestCase):
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
-        attack_type = 'undermine'
+        attack_type = Relations.UNDERMINE
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         results.update({
@@ -213,7 +215,7 @@ class TextGeneratorText(unittest.TestCase):
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
-        attack_type = 'rebut'
+        attack_type = Relations.REBUT
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
@@ -339,7 +341,7 @@ class TextGeneratorText(unittest.TestCase):
     def test_get_text_for_confrontation_with_undermine_for_en(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
-        attack = 'undermine'
+        attack = Relations.UNDERMINE
 
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
@@ -361,7 +363,7 @@ class TextGeneratorText(unittest.TestCase):
     def test_get_text_for_confrontation_with_undercut_for_en(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
-        attack = 'undercut'
+        attack = Relations.UNDERCUT
 
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
@@ -387,7 +389,7 @@ class TextGeneratorText(unittest.TestCase):
     def test_get_text_for_confrontation_with_rebut_for_en(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
-        attack = 'rebut'
+        attack = Relations.REBUT
 
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
@@ -438,7 +440,7 @@ class TextGeneratorText(unittest.TestCase):
     def test_get_text_for_confrontation_with_undermine_for_de(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
-        attack = 'undermine'
+        attack = Relations.UNDERMINE
 
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
@@ -461,7 +463,7 @@ class TextGeneratorText(unittest.TestCase):
     def test_get_text_for_confrontation_with_undercut_for_de(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
-        attack = 'undercut'
+        attack = Relations.UNDERCUT
 
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
@@ -487,7 +489,7 @@ class TextGeneratorText(unittest.TestCase):
     def test_get_text_for_confrontation_with_rebut_for_de(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
-        attack = 'rebut'
+        attack = Relations.REBUT
 
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
