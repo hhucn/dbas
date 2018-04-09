@@ -12,7 +12,7 @@ import warnings
 from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
-from html import escape
+from html import escape, unescape
 from typing import List
 from urllib import parse
 from uuid import uuid4
@@ -45,6 +45,21 @@ class BubbleTypes(Enum):
     SYSTEM = auto()
     STATUS = auto()
     INFO = auto()
+
+
+class Relations(Enum):
+    UNDERMINE = 1
+    UNDERCUT = 2
+    REBUT = 3
+    SUPPORT = 4
+
+
+relations_mapping = {
+    Relations.UNDERMINE: 'undermine',
+    Relations.UNDERCUT: 'undercut',
+    Relations.REBUT: 'rebut',
+    Relations.SUPPORT: 'support',
+}
 
 
 def get_global_url():
@@ -1155,21 +1170,19 @@ def bubbles_already_last_in_list(bubble_list, bubbles):
         if 'message' not in last or 'message' not in bubble:
             return False
 
-        text1 = __clean_html(last['message'].lower()).strip()
-        text2 = __clean_html(bubble['message'].lower()).strip()
+        text1 = unhtmlify(last['message'].lower()).strip()
+        text2 = unhtmlify(bubble['message'].lower()).strip()
         is_already_in = is_already_in or (text1 == text2)
         start_index += 1
 
     return is_already_in
 
 
-def __clean_html(raw_html):
+def unhtmlify(html):
     """
-    Strip out html code
+    Remove html-tags and unescape encoded html-entities.
 
-    :param raw_html: String
-    :return: String
+    :param html: Evil-string containing html
+    :return:
     """
-    cleanr = re.compile('<.*?>')
-    cleantext = re.sub(cleanr, '', raw_html)
-    return cleantext
+    return unescape(re.sub(r'<.*?>', '', html))

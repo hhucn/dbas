@@ -1,16 +1,6 @@
-import re
-from html import unescape
 from typing import List
 
-
-def unhtmlify(html):
-    """
-    Remove html-tags and unescape encoded html-entities.
-
-    :param html: Evil-string containing html
-    :return:
-    """
-    return unescape(re.sub(r'<.*?>', '', html))
+from dbas.lib import unhtmlify
 
 
 class Item:

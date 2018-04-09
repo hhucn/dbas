@@ -2,6 +2,8 @@ import transaction
 import unittest
 
 from typing import List
+
+from dbas.lib import relations_mapping, Relations
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
 from dbas.handler import attacks
@@ -12,10 +14,11 @@ class AttackHandlerTests(unittest.TestCase):
     def test_get_attack_for_argument(self):
         results = {
             None: None,
-            39: 'rebut',
-            44: 'undermine',
-            43: 'undercut'
+            39: relations_mapping[Relations.REBUT],
+            44: relations_mapping[Relations.UNDERMINE],
+            43: relations_mapping[Relations.UNDERCUT]
         }
+
         restriction_on_args = [40]
 
         db_all: List[Argument] = DBDiscussionSession.query(Argument).all()
@@ -40,7 +43,7 @@ class AttackHandlerTests(unittest.TestCase):
                                                           last_attack=None,
                                                           history='42/rebut/39-42/undermine/44')
         self.assertEqual(attack_uid, 43)
-        self.assertEqual(key, 'undercut')
+        self.assertEqual(key, relations_mapping[Relations.UNDERCUT])
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
                                                           restrictive_attacks=None,
@@ -48,7 +51,7 @@ class AttackHandlerTests(unittest.TestCase):
                                                           last_attack=None,
                                                           history='42/rebut/39-42/undercut/43')
         self.assertEqual(attack_uid, 44)
-        self.assertEqual(key, 'undermine')
+        self.assertEqual(key, relations_mapping[Relations.UNDERMINE])
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
                                                           restrictive_attacks=None,
@@ -56,11 +59,11 @@ class AttackHandlerTests(unittest.TestCase):
                                                           last_attack=None,
                                                           history='42/undercut/43-42/undermine/44')
         self.assertEqual(attack_uid, 39)
-        self.assertEqual(key, 'rebut')
+        self.assertEqual(key, relations_mapping[Relations.REBUT])
 
     def test_get_attack_for_argument_with_undercut_restriction(self):
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
-                                                          restrictive_attacks=[attacks.Attacks.UNDERCUT],
+                                                          restrictive_attacks=[Relations.UNDERCUT],
                                                           restrictive_arg_uids=[40],
                                                           last_attack=None,
                                                           history='42/rebut/39-42/undermine/44')
@@ -70,7 +73,7 @@ class AttackHandlerTests(unittest.TestCase):
     def test_get_attack_for_argument_with_undermine_restriction(self):
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
-                                                          restrictive_attacks=[attacks.Attacks.UNDERMINE],
+                                                          restrictive_attacks=[Relations.UNDERMINE],
                                                           restrictive_arg_uids=[40],
                                                           last_attack=None,
                                                           history='42/rebut/39-42/undercut/43')
@@ -80,7 +83,7 @@ class AttackHandlerTests(unittest.TestCase):
     def test_get_attack_for_argument_with_rebut_restriction(self):
 
         attack_uid, key = attacks.get_attack_for_argument(argument_uid=42,
-                                                          restrictive_attacks=[attacks.Attacks.REBUT],
+                                                          restrictive_attacks=[Relations.REBUT],
                                                           restrictive_arg_uids=[40],
                                                           last_attack=None,
                                                           history='42/undercut/43-42/undermine/44')

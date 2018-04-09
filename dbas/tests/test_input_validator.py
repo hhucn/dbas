@@ -4,6 +4,7 @@ import unittest
 import dbas.input_validator as iv
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
+from dbas.lib import Relations
 
 
 class InputValidatorTests(unittest.TestCase):
@@ -172,10 +173,10 @@ class InputValidatorTests(unittest.TestCase):
         self.assertFalse(iv.related_with_support(11, 13))
 
     def test_get_relation_between_arguments(self):
-        self.assertEqual(iv.get_relation_between_arguments(3, 20), 'undermine')
-        self.assertEqual(iv.get_relation_between_arguments(42, 43), 'undercut')
-        self.assertEqual(iv.get_relation_between_arguments(58, 51), 'rebut')
-        self.assertEqual(iv.get_relation_between_arguments(11, 12), 'support')
+        self.assertEqual(iv.get_relation_between_arguments(3, 20), Relations.UNDERMINE)
+        self.assertEqual(iv.get_relation_between_arguments(42, 43), Relations.UNDERCUT)
+        self.assertEqual(iv.get_relation_between_arguments(58, 51), Relations.REBUT)
+        self.assertEqual(iv.get_relation_between_arguments(11, 12), Relations.SUPPORT)
         self.assertIsNone(iv.get_relation_between_arguments(11, 28))
 
     def test_is_argument_forbidden(self):

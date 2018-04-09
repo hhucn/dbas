@@ -75,7 +75,7 @@ en_lang = {
     _.myStatements: 'My statements',
     _.myDiscussions: 'My Discussions',
     _.supportsOnMyStatements: 'Supports',
-    _.attacksOnMyStatements: 'Attacks',
+    _.attacksOnMyStatements: 'Relations',
     _.addATopic: 'Add a topic',
     _.editIssueViewChangelog: 'Edit Issues / View Changelog',
     _.editTitleHere: 'Please, edit the selected Title here:',

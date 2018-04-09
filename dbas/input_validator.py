@@ -3,7 +3,8 @@ Methods for validating input params given via url or ajax
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-
+from typing import Optional
+from dbas.lib import Relations
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, Premise
 from .logger import logger
@@ -192,7 +193,7 @@ def related_with_support(attacked_arg_uid, attacking_arg_uid):
     return same_conclusion and not_none and supportive
 
 
-def get_relation_between_arguments(arg1_uid, arg2_uid):
+def get_relation_between_arguments(arg1_uid: int, arg2_uid: int) -> Optional[Relations]:
     """
     Get the relation between given arguments
 
@@ -202,20 +203,16 @@ def get_relation_between_arguments(arg1_uid, arg2_uid):
     """
 
     if related_with_undermine(arg1_uid, arg2_uid):
-        logger('InputValidator', str(arg1_uid) + ' undermine ' + str(arg2_uid))
-        return 'undermine'
+        return Relations.UNDERMINE
 
     if related_with_undercut(arg1_uid, arg2_uid):
-        logger('InputValidator', str(arg1_uid) + ' undermine ' + str(arg2_uid))
-        return 'undercut'
+        return Relations.UNDERCUT
 
     if related_with_rebut(arg1_uid, arg2_uid):
-        logger('InputValidator', str(arg1_uid) + ' undermine ' + str(arg2_uid))
-        return 'rebut'
+        return Relations.REBUT
 
     if related_with_support(arg1_uid, arg2_uid):
-        logger('InputValidator', str(arg1_uid) + ' support ' + str(arg2_uid))
-        return 'support'
+        return Relations.SUPPORT
 
     logger('InputValidator', str(arg1_uid) + ' NONE ' + str(arg2_uid))
     return None

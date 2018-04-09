@@ -255,7 +255,7 @@
             <li id="attacks-on-my-statements" tal:condition="extras.logged_in"
                 class="hidden indented-button reset-slider">
               <i class="fa fa-square-o" aria-hidden="true"></i>
-              <span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span>
+              <span class="sidebar-element" i18n:translate="attacks_on_my_statements">Relations</span>
             </li>
           </ul>
 

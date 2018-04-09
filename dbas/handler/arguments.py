@@ -11,7 +11,7 @@ from dbas.handler.statements import insert_new_premises_for_argument
 from dbas.helper.url import UrlManager
 from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, \
-    get_profile_picture, get_text_for_argument_uid, resolve_issue_uid_to_slug
+    get_profile_picture, get_text_for_argument_uid, resolve_issue_uid_to_slug, relations_mapping
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_new_statement, rep_reason_first_new_argument
 from dbas.strings.keywords import Keywords as _
@@ -127,7 +127,7 @@ def get_arguments_by_statement_uid(db_statement: Statement) -> dict:
     return {'arguments': get_all_arguments_with_text_and_url_by_statement_id(db_statement, _um, True, is_jump=True)}
 
 
-def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, db_user: User, mailer):
+def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_infos: dict, db_issue: Issue, db_user: User, mailer):
     """
     Inserts given text in premisegroups as new arguments in dependence of the parameters and returns a URL
 
@@ -139,8 +139,8 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
     :return: URL, [Statement.uids], String
     """
     discussion_lang = langs['discussion_lang']
-    arg_id = arg_infos['arg_id']
-    attack_type = arg_infos['attack_type']
+    arg_id: int = arg_infos['arg_id']
+    attack_type: str = arg_infos['attack_type']
     premisegroups = arg_infos['premisegroups']
     history = arg_infos['history']
 
@@ -149,7 +149,6 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
 
     slug = db_issue.slug
     error = ''
-    supportive = attack_type == 'support' or attack_type == 'overbid'
 
     # insert all premise groups into our database
     # all new arguments are collected in a list
@@ -194,7 +193,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
 
     else:
         url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type,
-                                                                                    arg_id, _um, supportive)
+                                                                                    arg_id, _um, attack_type == 'support')
 
     # send notifications and mails
     if len(new_argument_uids) > 0:
@@ -206,7 +205,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
         new_uid = random.choice(new_argument_uids)  # TODO eliminate random
         attack = get_relation_between_arguments(arg_id, new_uid)
 
-        tmp_url = _um.get_url_for_reaction_on_argument(arg_id, attack, new_uid)
+        tmp_url = _um.get_url_for_reaction_on_argument(arg_id, relations_mapping[attack], new_uid)
 
         nh.send_add_argument_notification(tmp_url, arg_id, db_user.nickname, mailer)
 
