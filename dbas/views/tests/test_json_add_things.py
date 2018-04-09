@@ -105,7 +105,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(json_body={
             'premisegroups': [['some new reason for an argument']],
             'arg_uid': 2,
-            'attack_type': Relations.SUPPORT,
+            'attack_type': Relations.SUPPORT.value,
             'issue': 2
         }, mailer=DummyMailer)
         response = ajax(request)

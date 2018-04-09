@@ -3,7 +3,8 @@ Methods for validating input params given via url or ajax
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from typing import Optional
+from typing import Optional, Union
+
 from dbas.lib import Relations
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, Premise
@@ -29,16 +30,16 @@ def is_integer(variable, ignore_empty_case=False):
         return False
 
 
-def check_reaction(attacked_arg_uid, attacking_arg_uid, relation):
+def check_reaction(attacked_arg_uid: Union[int, str], attacking_arg_uid: Union[int, str], relation: Relations):
     """
     Checks whether the attacked argument uid and the attacking argument uid are connected via the given relation
 
     :param attacked_arg_uid: Argument.uid
     :param attacking_arg_uid: Argument.uid
-    :param relation: String
+    :param relation: Relations
     :return: Boolean
     """
-    logger('Validator', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
+    logger('Validator', relation.value + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
 
     malicious_val = [
         not is_integer(attacked_arg_uid),
@@ -130,7 +131,8 @@ def related_with_undermine(attacked_arg_uid, attacking_arg_uid):
         return False
 
     # which pgroups has the conclusion as premise
-    db_attacked_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=db_attacking_arg.conclusion_uid).all()
+    db_attacked_premises = DBDiscussionSession.query(Premise).filter_by(
+        statement_uid=db_attacking_arg.conclusion_uid).all()
     if not db_attacked_premises:
         return False
 

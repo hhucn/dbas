@@ -229,7 +229,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_cat_or_dog.uid,
             'attitude': Attitudes.AGREE.value,
-            'relation': Relations.UNDERMINE
+            'relation': Relations.UNDERMINE.value
         })
         response = apiviews.discussion_justify_argument(request)
         self.assertTrue(response)
@@ -245,7 +245,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_town.uid,
             'attitude': Attitudes.AGREE.value,
-            'relation': Relations.UNDERMINE
+            'relation': Relations.UNDERMINE.value
         })
         response = apiviews.discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -255,7 +255,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': -1,
             'attitude': Attitudes.AGREE.value,
-            'relation': Relations.UNDERMINE
+            'relation': Relations.UNDERMINE.value
         })
         response = apiviews.discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -265,7 +265,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_cat_or_dog.uid,
             'attitude': 'not-an-attitude',
-            'relation': Relations.UNDERMINE
+            'relation': Relations.UNDERMINE.value
         })
         response = apiviews.discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -286,7 +286,7 @@ class TestDiscussionReaction(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-doggy_dog',
             'arg_id_user': 2,
-            'relation': Relations.UNDERMINE,
+            'relation': Relations.UNDERMINE.value,
             'arg_id_sys': 16,
         })
         response = apiviews.discussion_reaction(request)
@@ -296,7 +296,7 @@ class TestDiscussionReaction(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 45,
-            'relation': Relations.UNDERMINE,
+            'relation': Relations.UNDERMINE.value,
             'arg_id_sys': 16,
         })
         response = apiviews.discussion_reaction(request)
@@ -306,7 +306,7 @@ class TestDiscussionReaction(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 2,
-            'relation': Relations.UNDERMINE,
+            'relation': Relations.UNDERMINE.value,
             'arg_id_sys': 45,
         })
         response = apiviews.discussion_reaction(request)

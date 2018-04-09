@@ -11,7 +11,7 @@ from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGr
 from dbas.handler import issue as issue_handler
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer, related_with_support, check_belonging_of_premisegroups
-from dbas.lib import Relations, Attitudes
+from dbas.lib import Relations, Attitudes, attitude_mapper, relation_mapper
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.core import has_keywords, has_keywords_in_path
@@ -175,7 +175,6 @@ def valid_attitude(request):
     :return:
     """
     attitudes = [attitude.value for attitude in Attitudes]
-    mapper = {attitude.value: attitude for attitude in Attitudes}
 
     if has_keywords_in_path(('attitude', str))(request):
         attitude = request.validated['attitude']
@@ -184,7 +183,7 @@ def valid_attitude(request):
                       'Your attitude is not correct. Received \'{}\', expected one of {}'.format(attitude, attitudes),
                       location='path')
             return False
-        request.validated['attitude'] = mapper[attitude]
+        request.validated['attitude'] = attitude_mapper[attitude]
         return True
     return False
 
@@ -208,7 +207,7 @@ def valid_relation(request):
                   location='path')
         return False
 
-    request.validated['relation'] = relation
+    request.validated['relation'] = relation_mapper[relation]
     return True
 
 

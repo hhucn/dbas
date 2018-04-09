@@ -132,7 +132,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
     :param history: Users history
     :return: [Argument.uid], String, Boolean if no new attacks are found
     """
-    list_of_attacks = [relation.value for relation in list(Relations) if relation is not Relations.SUPPORT]
+    list_of_attacks = [relation for relation in list(Relations) if relation is not Relations.SUPPORT]
     attack_list = list(set(list_of_attacks) - set(restrictive_attacks))
     is_supportive = False
     new_attack_step = ''
@@ -146,6 +146,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
         # get attacks and kick all malicious steps
         arg_uids, is_supportive, attack_key = __get_attacks(attack, argument_uid, last_attack, is_supportive)
         arg_uids = list(__filter_malicious_steps(arg_uids, restrictive_arg_uids, history))
+        print('  1) {}: {} {}'.format(attack, arg_uids, attack_key))
         if not arg_uids or len(arg_uids) == 0:
             continue
 

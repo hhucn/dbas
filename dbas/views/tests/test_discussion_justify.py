@@ -172,7 +172,7 @@ class TestJustifyArgument(unittest.TestCase):
             'slug': 'cat-or-dog',
             'argument_id': 15,
             'attitude': Attitudes.DISAGREE.value,
-            'relation': Relations.UNDERCUT,
+            'relation': Relations.UNDERCUT.value,
         }
         seen_arguments_before = DBDiscussionSession.query(SeenArgument).count()
         clicked_arguments_before = DBDiscussionSession.query(ClickedArgument).count()
@@ -192,7 +192,7 @@ class TestJustifyArgument(unittest.TestCase):
             'slug': 'cat-or-dog',
             'argument_id': 4,
             'attitude': Attitudes.AGREE.value,
-            'relation': Relations.UNDERMINE,
+            'relation': Relations.UNDERMINE.value,
         }
         response = discussion_justify_argument(request)
         self.assertNotIsInstance(response, httpexceptions.HTTPError)
@@ -264,7 +264,7 @@ class TestJustifyArgument(unittest.TestCase):
             'slug': 'cat-or-dog',
             'argument_id': 1,
             'attitude': Attitudes.AGREE.value,
-            'relation': Relations.UNDERMINE,
+            'relation': Relations.UNDERMINE.value,
         }
         response = discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)

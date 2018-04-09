@@ -6,7 +6,7 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.views import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
-from dbas.lib import Attitudes
+from dbas.lib import Attitudes, Relations
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
 from dbas.strings.keywords import Keywords as _
@@ -135,7 +135,7 @@ def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, atti
     }
 
 
-def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, relation: str, history,
+def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, relation: Relations, history,
              path) -> dict:
     """
     Initialize the reaction step for a position in a discussion. Creates helper and returns a dictionary containing

@@ -376,25 +376,25 @@ class ItemDictHelper(object):
         current_mode = Attitudes.AGREE if is_supportive else Attitudes.DISAGREE
         not_current_mode = Attitudes.DISAGREE if is_supportive else Attitudes.AGREE
 
-        relation = Relations.UNDERMINE
+        relation = Relations.UNDERMINE.value
         url = self.__get_dont_know_item_for_undermine(db_argument, not_current_mode, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)
         statements_array.append(d)
 
-        relation = Relations.SUPPORT
+        relation = Relations.SUPPORT.value
         url = self.__get_dont_know_item_for_support(argument_uid, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)
         statements_array.append(d)
 
-        relation = Relations.UNDERCUT
+        relation = Relations.UNDERCUT.value
         url = self.__get_dont_know_item_for_undercut(argument_uid, current_mode, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)
         statements_array.append(d)
 
-        relation = Relations.REBUT
+        relation = Relations.REBUT.value
         url = self.__get_dont_know_item_for_rebut(db_argument, not_current_mode, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)

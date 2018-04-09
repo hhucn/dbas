@@ -12,7 +12,8 @@ from dbas.database.discussion_model import Argument, Statement, User, History, s
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid, \
-    get_text_for_conclusion, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, Relations, Attitudes
+    get_text_for_conclusion, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, Relations, Attitudes, \
+    relation_mapper
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
@@ -330,7 +331,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     attack = Relations.SUPPORT
     if 'reaction' in step:
         additional_uid = int(steps[3])
-        attack = steps[2]
+        attack = relation_mapper[steps[2]]
     else:
         additional_uid = int(steps[2])
 

@@ -349,7 +349,7 @@ class DiscussionDictHelper(object):
         }
 
     def get_dict_for_argumentation(self, db_user_argument: Argument, arg_sys_id: Union[int, None],
-                                   attack: Union[str, None], history: str, db_user: User) -> dict:
+                                   attack: Union[Relations, None], history: str, db_user: User) -> dict:
         """
         Prepares the discussion dict with all bubbles for the argumentation window.
 
@@ -459,8 +459,8 @@ class DiscussionDictHelper(object):
             'sys': sys_text
         }
 
-    def __get_dict_for_argumentation(self, user_arg, confrontation_arg_uid, history, attack, nickname,
-                                     is_supportive) -> dict:
+    def __get_dict_for_argumentation(self, user_arg: Argument, confrontation_arg_uid: int, history: str,
+                                     attack: Relations, nickname: str, is_supportive: bool) -> dict:
         """
         Returns dict() for the reaction step
 

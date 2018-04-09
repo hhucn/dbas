@@ -82,7 +82,7 @@ class UrlManagerTests(unittest.TestCase):
         url = self.__make_one(slug='cat-or-dog')
 
         response_as_location_href_true = url.get_url_for_reaction_on_argument(argument_uid=123,
-                                                                              mode=Relations.REBUT,
+                                                                              mode=Relations.REBUT.value,
                                                                               confrontation_argument=35)
         # Verify that, if 'as_location_href' is 'True',
         # '{discussion_url}/{slug}/reaction/{argument_uid}/{mode}/{confrontation_argument}' is returned.
@@ -90,7 +90,7 @@ class UrlManagerTests(unittest.TestCase):
                          '/cat-or-dog/reaction/123/rebut/35')
 
         response_as_location_href_false = url.get_url_for_reaction_on_argument(argument_uid=0,
-                                                                               mode=Relations.UNDERCUT,
+                                                                               mode=Relations.UNDERCUT.value,
                                                                                confrontation_argument=0)
         # Verify that, if 'as_location_href' is 'False',
         # '{discussion_url}/{slug}/reaction/{argument_uid}/{mode}/{confrontation_argument}' is returned.

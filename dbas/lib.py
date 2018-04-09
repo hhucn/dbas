@@ -60,6 +60,10 @@ class Attitudes(Enum):
     DONT_KNOW = 'dontknow'
 
 
+relation_mapper = {relation.value: relation for relation in Relations}
+attitude_mapper = {attitude.value: attitude for attitude in Attitudes}
+
+
 def get_global_url():
     """
     Returns the global url of the project.

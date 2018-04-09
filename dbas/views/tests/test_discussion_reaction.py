@@ -17,7 +17,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.default_request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
-            'relation': Relations.UNDERMINE,
+            'relation': Relations.UNDERMINE.value,
             'arg_id_sys': 16,
         })
         self.user_bjoern = DBDiscussionSession.query(User).get(4)
@@ -116,7 +116,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-doggy_dog',
             'arg_id_user': 2,
-            'relation': Relations.UNDERMINE,
+            'relation': Relations.UNDERMINE.value,
             'arg_id_sys': 16,
         })
         response = discussion_reaction(request)
@@ -126,7 +126,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 45,
-            'relation': Relations.UNDERMINE,
+            'relation': Relations.UNDERMINE.value,
             'arg_id_sys': 16,
         })
         response = discussion_reaction(request)
@@ -136,7 +136,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
-            'relation': Relations.UNDERMINE,
+            'relation': Relations.UNDERMINE.value,
             'arg_id_sys': 45,
         })
         response = discussion_reaction(request)

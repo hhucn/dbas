@@ -114,35 +114,6 @@ class InputValidatorTests(unittest.TestCase):
         rebut_string_false = iv.check_reaction(attacked_arg_uid='31str/', attacking_arg_uid='35str', relation=Relations.REBUT)
         self.assertFalse(rebut_string_false)
 
-    def test_check_reaction_end(self):
-        # end
-        end_attacking_arg_uid_not_zero_true = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=0, relation='end')
-        self.assertFalse(end_attacking_arg_uid_not_zero_true)
-
-        end_attacking_arg_uid_not_zero_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=1,
-                                                                 relation='end')
-        self.assertFalse(end_attacking_arg_uid_not_zero_false)
-
-        end_not_is_history_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=0, relation='end')
-        self.assertFalse(end_not_is_history_false)
-
-        end_empty_string_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='', relation='end')
-        self.assertFalse(end_empty_string_false)
-
-        end_string_false = iv.check_reaction(attacked_arg_uid='1str/', attacking_arg_uid='str', relation='end')
-        self.assertFalse(end_string_false)
-
-        end_string_long_false = iv.check_reaction(attacked_arg_uid=',' * 1000 + '30' + 'str' * 1000,
-                                                  attacking_arg_uid=',' * 1000 + '30' + 'str' * 1000, relation='end')
-        self.assertFalse(end_string_long_false)
-
-        # no relation
-        no_relation_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='3', relation='')
-        self.assertFalse(no_relation_false)
-
-        no_relation_uid_none_false = iv.check_reaction(attacked_arg_uid=None, attacking_arg_uid=None, relation='')
-        self.assertFalse(no_relation_uid_none_false)
-
     def test_check_belonging_of_statement(self):
         self.assertTrue(iv.check_belonging_of_statement(2, 3))
         self.assertFalse(iv.check_belonging_of_statement(2, 39))
