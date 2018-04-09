@@ -140,12 +140,12 @@ def __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, u
     mode = steps[2]
     relation = steps[3] if len(steps) > 3 else ''
 
-    if [c for c in (Attitudes.AGREE, Attitudes.DISAGREE) if c in mode] and relation == '':
+    if [c for c in (Attitudes.AGREE.value, Attitudes.DISAGREE.value) if c in mode] and relation == '':
         bubble = __get_bubble_from_justify_statement_step(step, db_user, lang, url)
         if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
             bubble_array += bubble
 
-    elif Attitudes.DONT_KNOW in mode and relation == '':
+    elif Attitudes.DONT_KNOW.value in mode and relation == '':
         bubbles = __get_bubble_from_dont_know_step(step, db_user, lang)
         if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
             bubble_array += bubbles

@@ -138,12 +138,12 @@ class ItemDictHelper(object):
         title_t = _tn.get(_.iAgreeWithInColor) + '.'
         title_f = _tn.get(_.iDisagreeWithInColor) + '.'
         title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'
-        url_t = _um.get_url_for_justifying_statement(statement_uid, Attitudes.AGREE)
-        url_f = _um.get_url_for_justifying_statement(statement_uid, Attitudes.DISAGREE)
-        url_d = _um.get_url_for_justifying_statement(uid, Attitudes.DONT_KNOW)
-        d_t = self.__create_answer_dict(Attitudes.AGREE, [{'title': title_t, 'id': Attitudes.AGREE}], Attitudes.AGREE, url_t)
-        d_f = self.__create_answer_dict(Attitudes.DISAGREE, [{'title': title_f, 'id': Attitudes.DISAGREE}], Attitudes.DISAGREE, url_f)
-        d_d = self.__create_answer_dict(Attitudes.DONT_KNOW, [{'title': title_d, 'id': Attitudes.DONT_KNOW}], Attitudes.DONT_KNOW, url_d)
+        url_t = _um.get_url_for_justifying_statement(statement_uid, Attitudes.AGREE.value)
+        url_f = _um.get_url_for_justifying_statement(statement_uid, Attitudes.DISAGREE.value)
+        url_d = _um.get_url_for_justifying_statement(uid, Attitudes.DONT_KNOW.value)
+        d_t = self.__create_answer_dict(Attitudes.AGREE.value, [{'title': title_t, 'id': Attitudes.AGREE.value}], Attitudes.AGREE.value, url_t)
+        d_f = self.__create_answer_dict(Attitudes.DISAGREE.value, [{'title': title_f, 'id': Attitudes.DISAGREE.value}], Attitudes.DISAGREE.value, url_f)
+        d_d = self.__create_answer_dict(Attitudes.DONT_KNOW.value, [{'title': title_d, 'id': Attitudes.DONT_KNOW.value}], Attitudes.DONT_KNOW.value, url_d)
         statements_array.append(d_t)
         statements_array.append(d_f)
         statements_array.append(d_d)
@@ -491,7 +491,7 @@ class ItemDictHelper(object):
         mode = Attitudes.AGREE if is_supportive else Attitudes.DISAGREE
         _um = UrlManager(slug, history=self.path)
 
-        relations = list(Relations)
+        relations = [relation.value for relation in Relations]
         for relation in relations:
             url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument)
             d = {'title': rel_dict[relation + '_text'], 'id': relation}

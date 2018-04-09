@@ -132,7 +132,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
     :param history: Users history
     :return: [Argument.uid], String, Boolean if no new attacks are found
     """
-    list_of_attacks = [relation for relation in list(Relations) if relation is not Relations.SUPPORT]
+    list_of_attacks = [relation.value for relation in list(Relations) if relation is not Relations.SUPPORT]
     attack_list = list(set(list_of_attacks) - set(restrictive_attacks))
     is_supportive = False
     new_attack_step = ''

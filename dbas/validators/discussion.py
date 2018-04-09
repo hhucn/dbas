@@ -174,7 +174,8 @@ def valid_attitude(request):
     :param request: Request
     :return:
     """
-    attitudes = list(Attitudes)
+    attitudes = [attitude.value for attitude in Attitudes]
+    mapper = {attitude.value: attitude for attitude in Attitudes}
 
     if has_keywords_in_path(('attitude', str))(request):
         attitude = request.validated['attitude']
@@ -183,6 +184,7 @@ def valid_attitude(request):
                       'Your attitude is not correct. Received \'{}\', expected one of {}'.format(attitude, attitudes),
                       location='path')
             return False
+        request.validated['attitude'] = mapper[attitude]
         return True
     return False
 
@@ -199,7 +201,7 @@ def valid_relation(request):
         add_error(request, 'Relation is missing in path', location='path')
         return False
 
-    list_of_attacks = [relation for relation in list(Relations) if relation is not Relations.SUPPORT]
+    list_of_attacks = [relation.value for relation in list(Relations) if relation is not Relations.SUPPORT]
     if relation not in list_of_attacks:
         add_error(request,
                   'Your relation is not correct. Received \'{}\', expected one of {}'.format(relation, list_of_attacks),

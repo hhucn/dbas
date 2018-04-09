@@ -71,7 +71,7 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user, _
     :return: List of dict()
     """
     # getting the text of all reactions
-    relation = list(Relations)
+    relations = [relation.value for relation in Relations]
 
     ret_list = []
     user_query = DBDiscussionSession.query(User)
@@ -80,8 +80,8 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user, _
     else:
         msg = _t.get(_.voteCountTextMayBeFirst) + '.'
 
-    for rel in relation:
-        d = __build_reaction_dict_by_relation(relation, rel, relation_text, msg, arg_uids_for_reactions, db_user,
+    for relation in relations:
+        d = __build_reaction_dict_by_relation(relation, relation, relation_text, msg, arg_uids_for_reactions, db_user,
                                               main_page, _t, user_query)
         ret_list.append(d)
     return ret_list

@@ -185,7 +185,7 @@ class TestDiscussionJustifyStatement(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'statement_id': self.statement_cat_or_dog.uid,
-            'attitude': Attitudes.AGREE
+            'attitude': Attitudes.AGREE.value
         })
         response = apiviews.discussion_justify_statement(request)
         self.assertTrue(response)
@@ -199,7 +199,7 @@ class TestDiscussionJustifyStatement(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_town.slug,
             'statement_id': self.statement_cat_or_dog.uid,
-            'attitude': Attitudes.AGREE
+            'attitude': Attitudes.AGREE.value
         })
         response = apiviews.discussion_justify_statement(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -208,7 +208,7 @@ class TestDiscussionJustifyStatement(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'statement_id': -1,
-            'attitude': Attitudes.AGREE
+            'attitude': Attitudes.AGREE.value
         })
         response = apiviews.discussion_justify_statement(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -228,7 +228,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_cat_or_dog.uid,
-            'attitude': Attitudes.AGREE,
+            'attitude': Attitudes.AGREE.value,
             'relation': Relations.UNDERMINE
         })
         response = apiviews.discussion_justify_argument(request)
@@ -244,7 +244,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_town.uid,
-            'attitude': Attitudes.AGREE,
+            'attitude': Attitudes.AGREE.value,
             'relation': Relations.UNDERMINE
         })
         response = apiviews.discussion_justify_argument(request)
@@ -254,7 +254,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': -1,
-            'attitude': Attitudes.AGREE,
+            'attitude': Attitudes.AGREE.value,
             'relation': Relations.UNDERMINE
         })
         response = apiviews.discussion_justify_argument(request)
@@ -274,7 +274,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_cat_or_dog.uid,
-            'attitude': Attitudes.AGREE,
+            'attitude': Attitudes.AGREE.value,
             'relation': 'not-a-valid-relation'
         })
         response = apiviews.discussion_justify_argument(request)

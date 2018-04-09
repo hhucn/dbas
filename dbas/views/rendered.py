@@ -192,7 +192,7 @@ def __append_extras_dict_during_justification_argument(request: Request, db_user
 
 def __append_extras_dict_during_justification_statement(request: Request, db_user: User, db_issue: Issue,
                                                         db_statement: Statement,
-                                                        pdict: dict, attitude: str):
+                                                        pdict: dict, attitude: Attitude):
     system_lang = get_language_from_cookie(request)
     supportive = attitude in [Attitudes.AGREE, Attitudes.DONT_KNOW]
     item_len = len(pdict['items']['elements'])
