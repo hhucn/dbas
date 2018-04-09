@@ -55,8 +55,6 @@ def attitude(db_issue: Issue, db_user: User, db_position: Statement, history: st
     """
     logger('Core', 'attitude')
 
-    position_uid = db_position.uid
-
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = db_issue.lang
 
@@ -64,7 +62,7 @@ def attitude(db_issue: Issue, db_user: User, db_position: Statement, history: st
     discussion_dict = _ddh.get_dict_for_attitude(db_position)
 
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
-    item_dict = _idh.prepare_item_dict_for_attitude(position_uid)
+    item_dict = _idh.prepare_item_dict_for_attitude(db_position.uid)
 
     return {
         'issues': issue_dict,
@@ -87,7 +85,7 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, a
     :param path:
     :return:
     """
-    logger('Justify discussion', 'main')
+    logger('Justify statement discussion', 'main')
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     if attitude in ['agree', 'disagree']:
@@ -120,7 +118,7 @@ def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, atti
     :param path:
     :return:
     """
-    logger('Justify discussion', 'main')
+    logger('Justify argument discussion', 'main')
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     item_dict, discussion_dict = handle_justification_argument(db_issue, db_user, db_argument, attitude, relation,
@@ -199,8 +197,8 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     }
 
 
-def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: bool, pgroup: PremiseGroup, pgroup_ids: list,
-           history: str, path: str) -> dict:
+def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: bool, pgroup: PremiseGroup,
+           pgroup_ids: list, history: str, path: str) -> dict:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
     containing several feedback options regarding this argument.
@@ -274,7 +272,7 @@ def finish(db_issue: Issue, db_user: User, db_argument: Argument, history: str) 
     }
 
 
-def dexit(ui_locales: str, db_user: User) -> dict:
+def exit(ui_locales: str, db_user: User) -> dict:
     """
     Exit the discussion. Creates helper and returns a dictionary containing the summary of today.
 
