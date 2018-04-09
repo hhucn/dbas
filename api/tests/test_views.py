@@ -20,9 +20,9 @@ from dbas.lib import get_user_by_case_insensitive_nickname
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
 
-def create_request_with_token_header(nickname='Walter', token='mytoken'):
+def create_request_with_token_header(json_body=None, match_dict=None, nickname='Walter', token='mytoken'):
     token_to_database(get_user_by_case_insensitive_nickname(nickname), token)
-    request = construct_dummy_request()
+    request = construct_dummy_request(json_body=json_body, match_dict=match_dict)
     request.headers['X-Authentication'] = json.dumps({'nickname': nickname, 'token': token})
     return request
 
@@ -169,13 +169,15 @@ class TestDiscussionAttitude(TestCaseWithConfig):
     def test_wrong_position_id_returns_error(self):
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
-            'position_id': self.position_town.uid})
+            'position_id': self.position_town.uid
+        })
         response = apiviews.discussion_attitude(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
         request = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
-            'position_id': -1})
+            'position_id': -1
+        })
         response = apiviews.discussion_attitude(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
@@ -350,3 +352,41 @@ class TestDiscussionFinish(TestCaseWithConfig):
         response: Response = apiviews.discussion_finish(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
         self.assertEqual(response.status_code, 410)
+
+
+class TestPosition(TestCaseWithConfig):
+    test_body = {
+        "position": "we should do something entirely else",
+        "reason": "because i need to"
+    }
+
+    def test_add_valid_position(self):
+        # Add position
+        request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug},
+                                                   json_body=self.test_body)
+
+        response: Response = apiviews.add_position(request)
+        self.assertEqual(response.status_code, 303)
+
+        # Check if position was added
+        response: dict = apiviews.discussion_init(
+            construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug}))
+
+        positions = [position.texts[0] for position in response['items']]
+        self.assertIn(self.test_body["position"], positions)
+
+    def test_invalid_body(self):
+        request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug})
+
+        request.json_body = {"position": "we should do something entirely else"}
+
+        response: Response = apiviews.add_position(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_without_authentication(self):
+        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug})
+
+        request.json_body = self.test_body
+
+        response: Response = apiviews.add_position(request)
+        self.assertEqual(response.status_code, 401)

@@ -19,24 +19,10 @@ from dbas.auth.login import login_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.lib import get_user_by_case_insensitive_nickname
+from dbas.validators.lib import add_error
 from .lib import HTTP401, json_to_dict, logger
 
 log = logger()
-
-
-def add_error(request, msg, status_code=400):
-    """
-    Log and add errors to the request object.
-
-    :param request:
-    :param msg: error msg
-    :param status_code: http status code
-    :return:
-    """
-    warnings.warn("Use dbas.validators.lib/add_error instead.", DeprecationWarning)
-    log.info("[API] " + msg)
-    request.errors.add('body', msg)
-    request.errors.status = status_code
 
 
 def __raise_401(msg):
@@ -85,7 +71,7 @@ def __process_user_token(request, nickname, token):
     db_user = get_user_by_case_insensitive_nickname(nickname)
 
     if not db_user.token or not db_user.token == token and not check_token(token):
-        add_error(request, "Invalid token", 401)
+        add_error(request, "Invalid token", status_code=401, location="header")
         return
     request.validated['user'] = db_user
 
@@ -123,12 +109,14 @@ def valid_token(request, **_kwargs):
     header = 'X-Authentication'
     htoken = request.headers.get(header)
     if not htoken or htoken == "null":
-        add_error(request, "Received invalid or empty authentication token")
+        add_error(request, "Received invalid or empty authentication token",
+                  verbose_long="Please provide the authentication token in the X-Authentication field!",
+                  location="header", status_code=401)
         return
 
     try:
         payload = json_to_dict(htoken)
-        __process_user_token(request, payload['nickname'], payload['token'])
+        __process_user_token(request, payload.get('nickname'), payload.get('token'))
     except json.decoder.JSONDecodeError:
         add_error(request, "Invalid JSON in token")
 
@@ -157,4 +145,4 @@ def validate_credentials(request, **kwargs):
         request.validated['user'] = db_user
         request.validated['token'] = token
     else:
-        add_error(request, 'Could not login user', 401)
+        add_error(request, 'Could not login user', location="header", status_code=401)
