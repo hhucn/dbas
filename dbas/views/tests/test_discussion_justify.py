@@ -8,7 +8,7 @@ from dbas.database.discussion_model import SeenStatement, ClickedStatement, Seen
     ReputationHistory, User, Argument
 from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, refresh_user, \
     clear_reputation_of_user
-from dbas.lib import Relations
+from dbas.lib import Relations, Attitudes
 from dbas.tests.utils import construct_dummy_request
 from dbas.views import discussion_justify_argument, discussion_justify_statement
 
@@ -47,7 +47,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_id': 2,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE,
         }
         response = discussion_justify_statement(request)
         self.assertNotIsInstance(response, httpexceptions.HTTPError)
@@ -64,7 +64,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_id': 2,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE,
         }
         response = discussion_justify_statement(request)
         transaction.commit()
@@ -89,7 +89,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_id': 2,
-            'attitude': 'disagree',
+            'attitude': Attitudes.DISAGREE,
         }
         response = discussion_justify_statement(request)
         self.assertNotIsInstance(response, httpexceptions.HTTPError)
@@ -112,7 +112,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_id': 2,
-            'attitude': 'dontknow',
+            'attitude': Attitudes.DONT_KNOW,
         }
         response = discussion_justify_statement(request)
         self.assertNotIsInstance(response, httpexceptions.HTTPError)
@@ -134,7 +134,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'kitty-or-doggy-is-a-wrong-slug',
             'statement_id': 2,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE,
         }
         response = discussion_justify_statement(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -144,7 +144,7 @@ class TestJustifyStatement(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_id': 40,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE,
         }
         response = discussion_justify_statement(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
@@ -171,7 +171,7 @@ class TestJustifyArgument(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'argument_id': 15,
-            'attitude': 'disagree',
+            'attitude': Attitudes.DISAGREE,
             'relation': Relations.UNDERCUT,
         }
         seen_arguments_before = DBDiscussionSession.query(SeenArgument).count()
@@ -191,7 +191,7 @@ class TestJustifyArgument(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'argument_id': 4,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE,
             'relation': Relations.UNDERMINE,
         }
         response = discussion_justify_argument(request)
@@ -249,7 +249,7 @@ class TestJustifyArgument(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'argument_id': 4,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE,
             'relation': 'i am groot',
         }
         response = discussion_justify_argument(request)
@@ -263,7 +263,7 @@ class TestJustifyArgument(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'argument_id': 1,
-            'attitude': 'agree',
+            'attitude': Attitudes.AGREE,
             'relation': Relations.UNDERMINE,
         }
         response = discussion_justify_argument(request)

@@ -11,7 +11,7 @@ from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGr
 from dbas.handler import issue as issue_handler
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer, related_with_support, check_belonging_of_premisegroups
-from dbas.lib import Relations
+from dbas.lib import Relations, Attitudes
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.core import has_keywords, has_keywords_in_path
@@ -174,7 +174,7 @@ def valid_attitude(request):
     :param request: Request
     :return:
     """
-    attitudes = ['agree', 'disagree', 'dontknow']
+    attitudes = list(Attitudes)
 
     if has_keywords_in_path(('attitude', str))(request):
         attitude = request.validated['attitude']

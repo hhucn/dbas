@@ -57,7 +57,7 @@ class Relations(Enum):
 class Attitudes(Enum):
     AGREE = 'agree'
     DISAGREE = 'disagree'
-    DONNT_KNOW = 'dontknow'
+    DONT_KNOW = 'dontknow'
 
 
 def get_global_url():

@@ -6,6 +6,7 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.views import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
+from dbas.lib import Attitudes
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
 from dbas.strings.keywords import Keywords as _
@@ -90,7 +91,7 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, a
     logger('Justify discussion', 'main')
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-    if attitude in ['agree', 'disagree']:
+    if attitude in [Attitudes.AGREE, Attitudes.DISAGREE]:
         item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, attitude,
                                                                     history, path)
     else:

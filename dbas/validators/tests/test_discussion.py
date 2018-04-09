@@ -1,7 +1,7 @@
 from nose.tools import assert_in
 
 import dbas.validators.discussion as discussion
-from dbas.lib import Relations
+from dbas.lib import Relations, Attitudes
 from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 
 
@@ -366,7 +366,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        attitudes = ['agree', 'disagree', 'dontknow']
+        attitudes = list(Attitudes)
         for attitude in attitudes:
             request = construct_dummy_request(match_dict={'attitude': attitude})
             response = discussion.valid_attitude(request)
