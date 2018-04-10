@@ -46,6 +46,9 @@ class BubbleTypes(Enum):
     STATUS = auto()
     INFO = auto()
 
+    def __str__(self):
+        return str(self.value)
+
 
 class Relations(Enum):
     UNDERMINE = 'undermine'
@@ -53,11 +56,17 @@ class Relations(Enum):
     REBUT = 'rebut'
     SUPPORT = 'support'
 
+    def __str__(self):
+        return str(self.value)
+
 
 class Attitudes(Enum):
     AGREE = 'agree'
     DISAGREE = 'disagree'
     DONT_KNOW = 'dontknow'
+
+    def __str__(self):
+        return str(self.value)
 
 
 relation_mapper = {relation.value: relation for relation in Relations}
