@@ -131,7 +131,7 @@ def __build_reaction_dict_by_relation(relations, current_relation, relation_text
     }
 
 
-def get_user_with_same_opinion_for_statements(statement_uid, is_supportive, db_user, lang, main_page):
+def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, db_user, lang, main_page):
     """
     Returns nested dictionary with all kinds of information about the votes of the statements.
 
@@ -142,14 +142,15 @@ def get_user_with_same_opinion_for_statements(statement_uid, is_supportive, db_u
     :param main_page: url
     :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
     """
-    logger('OpinionHandler', 'Statement {} ({})'.format(statement_uid, is_supportive))
+    logger('OpinionHandler', 'Statement {} ({})'.format(statement_uids, is_supportive))
 
     opinions = []
     _t = Translator(lang)
     title = _t.get(_.relativePopularityOfStatements)
 
-    statement_dict = __get_opinions_for_uid(statement_uid, is_supportive, db_user, lang, _t, main_page)
-    opinions.append(statement_dict)
+    for statement_uid in statement_uids:
+        statement_dict = __get_opinions_for_uid(statement_uid, is_supportive, db_user, lang, _t, main_page)
+        opinions.append(statement_dict)
 
     return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
@@ -182,14 +183,14 @@ def __get_opinions_for_uid(uid, is_supportive, db_user, lang, _t, main_page):
         users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
         all_users.append(users_dict)
     statement_dict['users'] = all_users
-    statement_dict['message'] = __get_genered_text_for_clickcount(len(db_votes), db_user.uid, _t)
+    statement_dict['message'] = __get_text_for_clickcount(len(db_votes), db_user.uid, _t)
 
     db_seen_by = DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=int(uid)).all()
     statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
     return statement_dict
 
 
-def __get_genered_text_for_clickcount(len_db_votes, db_user_uid, _t):
+def __get_text_for_clickcount(len_db_votes, db_user_uid, _t):
     """
     Generate text for current click counter
 
@@ -211,7 +212,7 @@ def __get_genered_text_for_clickcount(len_db_votes, db_user_uid, _t):
         return str(len_db_votes) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
 
-def get_user_with_same_opinion_for_premisegroups(argument_uid, db_user, lang, main_page):
+def get_user_with_same_opinion_for_premisegroups_of_arg(argument_uid, db_user, lang, main_page):
     """
     Returns nested dictionary with all kinds of information about the votes of the premisegroups.
 
@@ -230,8 +231,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uid, db_user, lang, ma
     statement_dict = dict()
     all_users = []
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
-    db_premises = DBDiscussionSession.query(Premise).filter_by(
-        premisegroup_uid=db_argument.premisegroup_uid).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
     if not db_premises:
         statement_dict = {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
 
@@ -252,10 +252,10 @@ def get_user_with_same_opinion_for_premisegroups(argument_uid, db_user, lang, ma
         click_user = DBDiscussionSession.query(User).get(click.author_uid)
         users_dict = create_users_dict(click_user, click.timestamp, main_page, lang)
         all_users.append(users_dict)
-        statement_dict['users'] = all_users
-        statement_dict['message'] = __get_genered_text_for_clickcount(len(db_clicks), db_user.uid, _t)
-        statement_dict['seen_by'] = len(db_seens)
-        opinions.append(statement_dict)
+    statement_dict['users'] = all_users
+    statement_dict['message'] = __get_text_for_clickcount(len(db_clicks), db_user.uid, _t)
+    statement_dict['seen_by'] = len(db_seens)
+    opinions.append(statement_dict)
 
     return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
@@ -302,7 +302,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, db_user, lang, main_pa
         users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
         all_users.append(users_dict)
     opinions['users'] = all_users
-    opinions['message'] = __get_genered_text_for_clickcount(len(db_clicks), db_user.uid, _t)
+    opinions['message'] = __get_text_for_clickcount(len(db_clicks), db_user.uid, _t)
 
     db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(argument_uid)).all()
     opinions['seen_by'] = len(db_seen_by) if db_seen_by else 0
@@ -325,12 +325,14 @@ def get_user_with_opinions_for_attitude(statement_uid, db_user, lang, main_page)
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid) if statement_uid else None
     _t = Translator(lang)
     title = _t.get(_.agreeVsDisagree)
+    logger('X', str(statement_uid))
+    logger('X', str(db_statement))
 
     if not db_statement:
         empty_dict = {'users': [], 'text': None, 'message': ''}
         return {'text': None, 'agree': empty_dict, 'disagree': empty_dict, 'title': title}
 
-    text = db_statement.get_text() if statement_uid else None
+    text = db_statement.get_text()
     title += ' ' + text
 
     ret_dict = dict()
@@ -346,7 +348,7 @@ def get_user_with_opinions_for_attitude(statement_uid, db_user, lang, main_page)
 
     db_seen_by = DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=int(statement_uid)).all()
     ret_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
-
+    logger('X', str(ret_dict))
     return ret_dict
 
 

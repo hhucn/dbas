@@ -198,7 +198,7 @@ class ItemDictHelper(object):
                     url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
 
             if attack or new_arg is None or url is None:
-                url = _um.get_url_for_reaction_on_argument(argument.uid, attack, arg_id_sys)
+                url = _um.get_url_for_reaction_on_argument(argument.uid, attack.value, arg_id_sys)
 
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
                                                               already_used=already_used,

@@ -7,16 +7,16 @@ function AjaxGraphHandler() {
 
     /**
      * Requests JSON-Object
-     * @param uid: current id in url
+     * @param uid_array: current id in url
      * @param address: keyword in url
      */
-    this.getUserGraphData = function (uid, address) {
+    this.getUserGraphData = function (uid_array, address) {
         var data = {
             is_argument: false,
             is_attitude: false,
             is_reaction: false,
             is_position: false,
-            uid: uid,
+            uids: uid_array,
             lang: getDiscussionLanguage()
         };
 
@@ -38,6 +38,7 @@ function AjaxGraphHandler() {
                 setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
                 return;
         }
+        console.log(data);
 
         var url = 'get_user_with_same_opinion';
 

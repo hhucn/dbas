@@ -476,7 +476,6 @@ def is_statement_in_edit_queue(uid: int, is_executed: bool = False) -> bool:
     :param is_executed: Bool
     :return: Boolean
     """
-    logger('ReviewQueues', 'current element: {}'.format(uid))
     db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
                                                                          ReviewEdit.is_executed == is_executed).count()
     return db_already_edit_count > 0

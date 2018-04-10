@@ -21,7 +21,7 @@ from dbas.handler.email import send_mail
 from dbas.handler.notification import send_welcome_notification
 from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
-    get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
+    get_user_with_same_opinion_for_premisegroups_of_arg, get_user_and_opinions_for_argument
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture, nick_of_anonymous_user
 from dbas.logger import logger
@@ -787,7 +787,7 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, uid, provid
     }
 
 
-def get_users_with_same_opinion(uid: int, app_url: str, path: str, db_user: User, is_argument: bool,
+def get_users_with_same_opinion(uids: list, app_url: str, path: str, db_user: User, is_argument: bool,
                                 is_attitude: bool, is_reaction: bool, is_position: bool, db_lang: Language) -> dict:
     """
     Based on current discussion step information about other users will be given
@@ -807,15 +807,15 @@ def get_users_with_same_opinion(uid: int, app_url: str, path: str, db_user: User
     prepared_dict = dict()
 
     if is_argument and is_reaction:
-        prepared_dict = get_user_and_opinions_for_argument(uid, db_user, db_lang.ui_locales, app_url, path)
+        prepared_dict = get_user_and_opinions_for_argument(uids[0], db_user, db_lang.ui_locales, app_url, path)
     elif is_argument and not is_reaction:
-        prepared_dict = get_user_with_same_opinion_for_argument(uid, db_user, db_lang.ui_locales, app_url)
+        prepared_dict = get_user_with_same_opinion_for_argument(uids, db_user, db_lang.ui_locales, app_url)
     elif is_position:
-        prepared_dict = get_user_with_same_opinion_for_statements(uid, True, db_user, db_lang.ui_locales, app_url)
+        prepared_dict = get_user_with_same_opinion_for_statements(uids, True, db_user, db_lang.ui_locales, app_url)
     elif is_attitude:
-        prepared_dict = get_user_with_opinions_for_attitude(uid, db_user, db_lang.ui_locales, app_url)
+        prepared_dict = get_user_with_opinions_for_attitude(uids[0], db_user, db_lang.ui_locales, app_url)
     elif not is_attitude:
-        prepared_dict = get_user_with_same_opinion_for_premisegroups(uid, db_user, db_lang.ui_locales, app_url)
+        prepared_dict = get_user_with_same_opinion_for_premisegroups_of_arg(uids[0], db_user, db_lang.ui_locales, app_url)
     prepared_dict['info'] = ''
 
     return prepared_dict
