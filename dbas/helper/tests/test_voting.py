@@ -7,7 +7,6 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ClickedArgument, ClickedStatement, SeenStatement, SeenArgument, \
     Statement, Argument
 from dbas.handler.voting import add_seen_argument, add_seen_statement, add_click_for_argument, add_click_for_statement
-from dbas.lib import nick_of_anonymous_user
 
 
 class VotingHelperTest(unittest.TestCase):
