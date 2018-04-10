@@ -25,15 +25,6 @@ def add_click_for_argument(db_argument: Argument, db_user: User) -> bool:
     :param db_user: User
     :return:
     """
-    if isinstance(db_argument, int):
-        db_argument = DBDiscussionSession.query(Argument).get(db_argument)
-        if not db_argument:
-            return False
-    if isinstance(db_user, str):
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=db_user).first()
-        if not db_user:
-            return False
-
     if db_user.nickname == nick_of_anonymous_user:
         logger('VotingHelper', 'User is anonymous, don\'t counting clicks')
         return False

@@ -179,28 +179,28 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     """
     logger('DBAS.LIB', 'main {}, include_disabled {}'.format(statement_uid, include_disabled))
     db_arguments = __get_arguments_of_conclusion(statement_uid, include_disabled)
-    return_array = [arg for arg in db_arguments] if db_arguments else []
+    arg_array = [arg for arg in db_arguments] if db_arguments else []
 
     premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement_uid)
     if not include_disabled:
         premises = premises.filter_by(is_disabled=False)
     premises = premises.all()
 
-    for p in premises:
-        return_array += __get_argument_of_premisegroup(p.premisegroup_uid, include_disabled)
+    for premise in premises:
+        arg_array += __get_argument_of_premisegroup(premise.premisegroup_uid, include_disabled)
 
     db_undercuts = []
-    for arg in return_array:
+    for arg in arg_array:
         db_undercuts += __get_undercuts_of_argument(arg.uid, include_disabled)
 
     db_undercutted_undercuts = []
     for arg in db_undercuts:
         db_undercutted_undercuts += __get_undercuts_of_argument(arg.uid, include_disabled)
 
-    return_array = list(set(return_array + db_undercuts + db_undercutted_undercuts))
+    arg_array = list(set(arg_array + db_undercuts + db_undercutted_undercuts))
 
-    logger('DBAS.LIB', 'returning arguments {}'.format([arg.uid for arg in return_array]))
-    return return_array if len(return_array) > 0 else None
+    logger('DBAS.LIB', 'returning arguments {}'.format([arg.uid for arg in arg_array]))
+    return arg_array if len(arg_array) > 0 else None
 
 
 def __get_argument_of_premisegroup(premisegroup_uid, include_disabled):
