@@ -3,7 +3,7 @@ import unittest
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.handler.opinion import get_user_and_opinions_for_argument, get_user_with_same_opinion_for_statements, \
-    get_user_with_same_opinion_for_premisegroups, get_user_with_same_opinion_for_argument, \
+    get_user_with_same_opinion_for_premisegroups_of_arg, get_user_with_same_opinion_for_argument, \
     get_user_with_opinions_for_attitude
 
 
@@ -40,10 +40,10 @@ class OpinionHandlerTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         for uid in [1, 2, 61, 62]:
-            response = get_user_with_same_opinion_for_premisegroups(argument_uid=uid,
-                                                                    db_user=db_user,
-                                                                    lang=lang,
-                                                                    main_page=main_page)
+            response = get_user_with_same_opinion_for_premisegroups_of_arg(argument_uid=uid,
+                                                                           db_user=db_user,
+                                                                           lang=lang,
+                                                                           main_page=main_page)
             self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response))
 
     def test_get_user_with_same_opinion_for_argument(self):

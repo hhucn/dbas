@@ -53,12 +53,13 @@ function DiscussionBarometer() {
         if (url.indexOf('/attitude/') !== -1) {
             _address = 'attitude';
             uid = parseInt(splitted[splitted.length - 1]);
-            new AjaxGraphHandler().getUserGraphData(uid, _address);
+            new AjaxGraphHandler().getUserGraphData([uid], _address);
+        
         } else if (url.indexOf('/justify/') !== -1 || url.indexOf('/choose/') !== -1) {
             _address = 'justify';
             // dont know step
-            var tmp = url.split('/');
-            if (tmp[tmp.length - 1] === 'd') {
+            var tmp = url.split('?')[0].split('/');
+            if (tmp[tmp.length - 1] === 'dontknow') {
                 _address = 'dont_know';
                 uid_array.push(parseInt(tmp[tmp.length - 2]));
             } else {
@@ -67,11 +68,13 @@ function DiscussionBarometer() {
                 });
             }
             new AjaxGraphHandler().getUserGraphData(uid_array, _address);
+        
         } else if (url.indexOf('/reaction/') !== -1) {
             _address = 'argument';
             uid_array.push(parseInt(splitted[splitted.length - 3]));
             uid_array.push(parseInt(splitted[splitted.length - 1]));
             new AjaxGraphHandler().getUserGraphData(uid_array, _address);
+        
         } else {
             _address = 'position';
             inputs.each(function () {
