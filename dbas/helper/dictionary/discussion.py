@@ -126,7 +126,7 @@ class DiscussionDictHelper(object):
         if not text:
             return None
 
-        tag_start = '<{}data-argumentation-type="position">'.format(tag_type)
+        tag_start = '<{} data-argumentation-type="position">'.format(tag_type)
         tag_end = '</{}>'.format(tag_type)
 
         # system bubble
