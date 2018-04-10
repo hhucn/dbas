@@ -225,6 +225,29 @@ class TestDiscussionJustifyStatement(TestCaseWithConfig):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
 
+class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
+
+    def test_add_valid_reason(self):
+        # Add position
+        request = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'statement_id': "2",
+            'attitude': 'disagree'
+        },
+            json_body={'reason': "because i need to"})
+
+        response: Response = apiviews.add_premise_to_statement(request)
+        self.assertEqual(response.status_code, 303, response.body)
+
+    def test_invalid_body(self):
+        request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug})
+
+        request.json_body = {"position": "we should do something entirely else"}
+
+        response: Response = apiviews.add_premise_to_statement(request)
+        self.assertEqual(response.status_code, 400)
+
+
 class TestDiscussionJustifyArgument(TestCaseWithConfig):
     def test_successful_discussion_justify_argument(self):
         request = construct_dummy_request(match_dict={
@@ -365,7 +388,7 @@ class TestPosition(TestCaseWithConfig):
         request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug},
                                                    json_body=self.test_body)
 
-        response: Response = apiviews.add_position(request)
+        response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 303)
 
         # Check if position was added
@@ -380,7 +403,7 @@ class TestPosition(TestCaseWithConfig):
 
         request.json_body = {"position": "we should do something entirely else"}
 
-        response: Response = apiviews.add_position(request)
+        response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 400)
 
     def test_without_authentication(self):
@@ -388,5 +411,5 @@ class TestPosition(TestCaseWithConfig):
 
         request.json_body = self.test_body
 
-        response: Response = apiviews.add_position(request)
+        response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 401)

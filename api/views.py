@@ -26,12 +26,12 @@ from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
-                      get_text_for_argument_uid, resolve_issue_uid_to_slug, create_speechbubble_dict, BubbleTypes)
-from dbas.strings.translator import Keywords as _
-from dbas.strings.translator import get_translation
+                      get_text_for_argument_uid, resolve_issue_uid_to_slug, create_speechbubble_dict, BubbleTypes,
+                      Attitudes)
+from dbas.strings.translator import Keywords as _, get_translation
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
-    valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body
+    valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
 from dbas.validators.lib import add_error
 from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
@@ -78,22 +78,22 @@ reaction = Service(name='api_reaction',
                    cors_policy=cors_policy)
 
 justify_statement = Service(name='api_justify_statement',
-                            path='/{slug}/justify/{statement_id}/{attitude}',
+                            path='/{slug}/justify/{statement_id:\d+}/{attitude}',
                             description='Discussion Justify',
                             cors_policy=cors_policy)
 
 justify_argument = Service(name='api_justify_argument',
-                           path='/{slug}/justify/{argument_id}/{attitude}/{relation}',
+                           path='/{slug}/justify/{argument_id:\d+}/{attitude:(agree|disagree|dontknow)}/{relation:(undermine|undercut|rebut)}',
                            description='Discussion Justify',
                            cors_policy=cors_policy)
 
 attitude = Service(name='api_attitude',
-                   path='/{slug}/attitude/{position_id}',
+                   path='/{slug}/attitude/{position_id:\d+}',
                    description='Discussion Attitude',
                    cors_policy=cors_policy)
 
 finish = Service(name='api_finish',
-                 path='/{slug}/finish/{argument_id}',
+                 path='/{slug}/finish/{argument_id:\d+}',
                  description='End of a discussion')
 
 # add new stuff
@@ -690,16 +690,35 @@ def get_issues(_request):
 
 
 @positions.post(require_csrf=False)
-@validate(valid_token, valid_issue_by_slug, valid_new_position_in_body)
-def add_position(request):
+@validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body)
+def add_position_with_premise(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
 
     conslusion_id: int = new_position['statement_uids'][0]
     db_conclusion: Statement = DBDiscussionSession.query(Statement).get(conslusion_id)
 
-    pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, "",
+    pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
+                               request.mailer)
+
+    return HTTPSeeOther(location='/api' + pd['url'])
+
+
+@justify_statement.post(require_csrf=False)
+@validate(valid_token, valid_issue_by_slug, valid_reason_in_body, valid_statement(location="path"),
+          valid_attitude)
+def add_premise_to_statement(request):
+    db_user: User = request.validated['user']
+    db_issue: Issue = request.validated['issue']
+    db_statement: Statement = request.validated['statement']
+    is_supportive = request.validated['attitude'] == Attitudes.AGREE
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
+                               history,
                                request.mailer)
 
     return HTTPSeeOther(location='/api' + pd['url'])
