@@ -45,7 +45,7 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_position, vali
 from dbas.validators.user import valid_user, valid_user_optional
 
 name = 'D-BAS'
-version = '1.6.1'
+version = '1.6.2'
 full_version = version
 project_name = name + ' ' + full_version
 
