@@ -325,8 +325,6 @@ def get_user_with_opinions_for_attitude(statement_uid, db_user, lang, main_page)
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid) if statement_uid else None
     _t = Translator(lang)
     title = _t.get(_.agreeVsDisagree)
-    logger('X', str(statement_uid))
-    logger('X', str(db_statement))
 
     if not db_statement:
         empty_dict = {'users': [], 'text': None, 'message': ''}
@@ -348,7 +346,6 @@ def get_user_with_opinions_for_attitude(statement_uid, db_user, lang, main_page)
 
     db_seen_by = DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=int(statement_uid)).all()
     ret_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
-    logger('X', str(ret_dict))
     return ret_dict
 
 
