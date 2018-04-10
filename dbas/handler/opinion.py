@@ -239,8 +239,6 @@ def get_user_with_same_opinion_for_premisegroups_of_arg(argument_uid, db_user, l
     text = db_argument.get_premisegroup_text()
     statement_dict['text'] = '... {} {}'.format(_t.get(_.because).lower(), text)
 
-    logger('X', text)
-
     premise_statement_uids = [p.statement_uid for p in db_premises]
     db_clicks = DBDiscussionSession.query(ClickedStatement).filter(
         ClickedStatement.statement_uid.in_(premise_statement_uids),
@@ -254,10 +252,10 @@ def get_user_with_same_opinion_for_premisegroups_of_arg(argument_uid, db_user, l
         click_user = DBDiscussionSession.query(User).get(click.author_uid)
         users_dict = create_users_dict(click_user, click.timestamp, main_page, lang)
         all_users.append(users_dict)
-        statement_dict['users'] = all_users
-        statement_dict['message'] = __get_text_for_clickcount(len(db_clicks), db_user.uid, _t)
-        statement_dict['seen_by'] = len(db_seens)
-        opinions.append(statement_dict)
+    statement_dict['users'] = all_users
+    statement_dict['message'] = __get_text_for_clickcount(len(db_clicks), db_user.uid, _t)
+    statement_dict['seen_by'] = len(db_seens)
+    opinions.append(statement_dict)
 
     return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 

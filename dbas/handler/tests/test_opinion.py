@@ -27,7 +27,7 @@ class OpinionHandlerTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         for uid in [1, 2, 3]:
-            response = get_user_with_same_opinion_for_statements(statement_uid=uid,
+            response = get_user_with_same_opinion_for_statements(statement_uids=[uid],
                                                                  is_supportive=True,
                                                                  db_user=db_user,
                                                                  lang=lang,
