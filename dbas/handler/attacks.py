@@ -146,7 +146,10 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
         # get attacks and kick all malicious steps
         arg_uids, is_supportive, attack_key = __get_attacks(attack, argument_uid, last_attack, is_supportive)
         arg_uids = list(__filter_malicious_steps(arg_uids, restrictive_arg_uids, history))
-        print('  1) {}: {} {}'.format(attack, arg_uids, attack_key))
+
+        if len(arg_uids) > 0 and isinstance(arg_uids[0], list):
+            arg_uids = []
+
         if not arg_uids or len(arg_uids) == 0:
             continue
 
@@ -172,11 +175,11 @@ def __filter_malicious_steps(seq: List[dict], restriction_on_args: List[Relation
     :return: List of dicts with id and text as field
     """
     if not seq or len(seq) == 0:
-        return []
-
-    for el in seq:
-        if el['id'] not in restriction_on_args and '/{}'.format(el['id']) not in str(history):
-            yield el
+        yield []
+    else:
+        for el in seq:
+            if el['id'] not in restriction_on_args and '/{}'.format(el['id']) not in str(history):
+                yield el
 
 
 def __get_attacks(attack: Relations, argument_uid: int, last_attack: Relations, is_supportive: bool) -> Tuple[List[dict],
