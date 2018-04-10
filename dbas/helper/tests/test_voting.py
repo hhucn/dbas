@@ -5,7 +5,7 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ClickedArgument, ClickedStatement, SeenStatement, SeenArgument, \
-    Statement
+    Statement, Argument
 from dbas.handler.voting import add_seen_argument, add_seen_statement, add_click_for_argument, add_click_for_statement
 
 
@@ -96,18 +96,22 @@ class VotingHelperTest(unittest.TestCase):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_click_for_argument(1, self.user.nickname + '#')
+        db_arg_1 = DBDiscussionSession.query(Argument).get(1)
+        db_arg_2 = DBDiscussionSession.query(Argument).get(2)
+        db_arg_18 = DBDiscussionSession.query(Argument).get(18)
+
+        val = add_click_for_argument(db_arg_1, DBDiscussionSession.query(User).get(1))
         self.assertFalse(val)
 
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_click_for_argument(1, self.user.nickname)
+        val = add_click_for_argument(db_arg_1, self.user)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 2, 1, 0, 1)
 
         # double it
         for i in range(0, 2):
-            val = add_click_for_argument(2, self.user.nickname)
+            val = add_click_for_argument(db_arg_2, self.user)
             self.assertTrue(val)
             self.check_tables_of_user_for_n_rows(self.user, 4, 2, 0, 2)
 
@@ -115,13 +119,13 @@ class VotingHelperTest(unittest.TestCase):
             db_votes_arg_con = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == False).all()
             db_votes_sta_pro = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == True).all()
             db_votes_sta_con = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == False).all()
-            self.assertEquals(len(db_votes_arg_pro), 2)
-            self.assertEquals(len(db_votes_arg_con), 0)
-            self.assertEquals(len(db_votes_sta_pro), 3)
-            self.assertEquals(len(db_votes_sta_con), 1)
+            self.assertEquals(2, len(db_votes_arg_pro))
+            self.assertEquals(0, len(db_votes_arg_con))
+            self.assertEquals(3, len(db_votes_sta_pro))
+            self.assertEquals(1, len(db_votes_sta_con))
 
         # vote for undercut
-        val = add_click_for_argument(18, self.user.nickname)
+        val = add_click_for_argument(db_arg_18, self.user)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 5, 4, 0, 3)
 
@@ -131,12 +135,12 @@ class VotingHelperTest(unittest.TestCase):
         db_votes_arg_nva = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_valid == False).all()
         db_votes_sta_pro = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == True).all()
         db_votes_sta_con = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == False).all()
-        self.assertEquals(len(db_votes_arg_pro), 3)
-        self.assertEquals(len(db_votes_arg_con), 1)
-        self.assertEquals(len(db_votes_sta_pro), 4)
-        self.assertEquals(len(db_votes_sta_con), 1)
-        self.assertEquals(len(db_votes_arg_val), 2)
-        self.assertEquals(len(db_votes_arg_nva), 2)
+        self.assertEquals(3, len(db_votes_arg_pro))
+        self.assertEquals(1, len(db_votes_arg_con))
+        self.assertEquals(4, len(db_votes_sta_pro))
+        self.assertEquals(1, len(db_votes_sta_con))
+        self.assertEquals(2, len(db_votes_arg_val))
+        self.assertEquals(2, len(db_votes_arg_nva))
 
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)

@@ -317,7 +317,7 @@ function AjaxDiscussionHandler() {
      * @param is_argument
      */
     this.revokeContent = function (uid, is_argument) {
-        var url = is_argument ? 'argument_revoke_content' : 'statement_revoke_content';
+        var url = is_argument ? 'revoke_argument_content' : 'revoke_statement_content';
         var d = {uid: parseInt(uid)};
         var done = function ajaxRevokeContentDone(data) {
             if (data.success) {
