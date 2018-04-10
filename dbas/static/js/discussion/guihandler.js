@@ -889,8 +889,9 @@ function GuiHandler() {
     this.getMaxSizeOfDiscussionViewContainer = function () {
         var header = $('.big-header');
         var list = $('#' + discussionSpaceListId);
+        var wrapper = $('.wrapper-container');
         var innerHeight = this.getMaxSizeOfGraphViewContainer();
-        innerHeight += parseInt($('.wrapper-container').css('top').replace('px'));
+        innerHeight += wrapper.css('top') ? parseInt(wrapper.css('top').replace('px')) : 0;
         innerHeight -= list.outerHeight(true);
         innerHeight -= this.getPaddingOfElement(header);
         innerHeight -= this.getPaddingOfElement(list);

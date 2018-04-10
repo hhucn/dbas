@@ -45,7 +45,7 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_position, vali
 from dbas.validators.user import valid_user, valid_user_optional
 
 name = 'D-BAS'
-version = '1.6.0'
+version = '1.6.2'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -770,7 +770,7 @@ def discussion_exit(request):
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     dh = DictionaryHelper(get_language_from_cookie(request))
-    prepared_discussion = discussion.dexit(get_language_from_cookie(request), db_user)
+    prepared_discussion = discussion.exit(get_language_from_cookie(request), db_user)
     prepared_discussion['extras'] = dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url,
                                                                            request.path, db_user)
     prepared_discussion['language'] = str(get_language_from_cookie(request))

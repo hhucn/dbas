@@ -53,8 +53,5 @@
       </div>
     </div>
 
-    <script src="${request.static_url('dbas:static/js/libs/jquery.dataTables.min.js')}"></script>
-    <script src="${request.static_url('dbas:static/js/libs/dataTables.bootstrap.min.js')}"></script>
-
   </tal:block>
 </tal:block>

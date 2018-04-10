@@ -1,3 +1,6 @@
+### 1.6.2 (2018-04-10)
+- Upgrading JS libs
+
 ### 1.6.1 (2018-03-30)
 - Splitting compose files
 
