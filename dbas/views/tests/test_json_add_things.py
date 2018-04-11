@@ -97,7 +97,7 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_new_premises_for_argument(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        db_arg1 = DBDiscussionSession.query(Argument).filter_by(uid=2).count()
+        db_arg1 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
         db_pgroups1 = DBDiscussionSession.query(PremiseGroup).count()
         request = testing.DummyRequest(json_body={
             'premisegroups': [['some new reason for an argument']],
@@ -106,7 +106,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'issue': 2
         }, mailer=DummyMailer)
         response = set_new_premises_for_argument(request)
-        db_arg2 = DBDiscussionSession.query(Argument).filter_by(uid=2).count()
+        db_arg2 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
         db_pgroups2 = DBDiscussionSession.query(PremiseGroup).count()
         self.assertIsNotNone(response)
         self.assertNotIsInstance(response, HTTPError, response)
