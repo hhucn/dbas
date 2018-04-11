@@ -3,6 +3,7 @@ import unittest
 
 import transaction
 from pyramid import testing
+from pyramid.httpexceptions import HTTPError
 from pyramid_mailer.mailer import DummyMailer
 
 from dbas.database import DBDiscussionSession
@@ -10,6 +11,7 @@ from dbas.database.discussion_model import Issue, Statement, TextVersion, Argume
     ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument, \
     ClickedStatement, SeenStatement, SeenArgument
 from dbas.lib import Relations
+from dbas.views import set_new_premises_for_argument, set_new_start_premise
 
 
 class AjaxAddThingsTest(unittest.TestCase):
@@ -73,58 +75,52 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_new_start_premise(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        from dbas.views import set_new_start_premise as view
-        self.__set_multiple_start_premises(view)
+        self.__set_multiple_start_premises(set_new_start_premise)
 
     def test_set_new_start_premise_twice(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        from dbas.views import set_new_start_premise as view
-        self.__set_multiple_start_premises(view)
+        self.__set_multiple_start_premises(set_new_start_premise)
 
     def test_set_new_start_premise_failure1(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
-        from dbas.views import set_new_start_premise as ajax
         request = testing.DummyRequest(json_body={'issue': 2}, mailer=DummyMailer)
-        response = ajax(request)
+        response = set_new_start_premise(request)
         self.assertIsNotNone(response)
-        self.assertTrue(400, response.status_code)
+        self.assertEqual(response.status_code, 400)
 
     def test_set_new_start_premise_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_new_start_premise as ajax
         request = testing.DummyRequest(json_body={'issue': 2}, mailer=DummyMailer)
-        response = ajax(request)
+        response = set_new_start_premise(request)
         self.assertIsNotNone(response)
-        self.assertTrue(400, response.status_code)
+        self.assertEqual(response.status_code, 400)
 
     def test_set_new_premises_for_argument(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_new_premises_for_argument as ajax
-        db_arg1 = DBDiscussionSession.query(Argument).filter_by(uid=2).count()
+        db_arg1 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
         db_pgroups1 = DBDiscussionSession.query(PremiseGroup).count()
         request = testing.DummyRequest(json_body={
             'premisegroups': [['some new reason for an argument']],
-            'arg_uid': 2,
+            'argument_id': 2,
             'attack_type': Relations.SUPPORT.value,
             'issue': 2
         }, mailer=DummyMailer)
-        response = ajax(request)
-        db_arg2 = DBDiscussionSession.query(Argument).filter_by(uid=2).count()
+        response = set_new_premises_for_argument(request)
+        db_arg2 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
         db_pgroups2 = DBDiscussionSession.query(PremiseGroup).count()
         self.assertIsNotNone(response)
-        self.assertEqual(len(response['error']), 0)
-        self.assertTrue(db_arg1 + 1, db_arg2)
-        self.assertTrue(db_pgroups1 + 1, db_pgroups2)
+        self.assertNotIsInstance(response, HTTPError, response)
+        self.assertEqual(db_arg1 + 1, db_arg2)
+        self.assertEqual(db_pgroups1 + 1, db_pgroups2)
         self.delete_last_argument_by_conclusion_uid(2)
 
     def test_set_new_premises_for_argument_failure(self):
         # author error
         self.config.testing_securitypolicy(userid='', permissive=True)
-        from dbas.views import set_new_premises_for_argument as ajax
         request = testing.DummyRequest(json_body={'issue': 2})
-        response = ajax(request)
+        response = set_new_premises_for_argument(request)
         self.assertIsNotNone(response)
-        self.assertTrue(400, response.status_code)
+        self.assertEqual(response.status_code, 400)
 
     def test_set_correction_of_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -140,8 +136,8 @@ class AjaxAddThingsTest(unittest.TestCase):
         db_value2 = DBDiscussionSession.query(ReviewEditValue).count()
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_review1 + 1, db_review2)
-        self.assertTrue(db_value1 + 1, db_value2)
+        self.assertEqual(db_review1 + 1, db_review2)
+        self.assertEqual(db_value1 + 1, db_value2)
         tmp = DBDiscussionSession.query(ReviewEditValue).order_by(ReviewEditValue.uid.desc()).first()
         DBDiscussionSession.query(ReviewEditValue).filter_by(uid=tmp.uid).delete()
         tmp = DBDiscussionSession.query(ReviewEdit).order_by(ReviewEdit.uid.desc()).first()
@@ -156,8 +152,8 @@ class AjaxAddThingsTest(unittest.TestCase):
         }, )
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(400, response.status_code)
-        self.assertTrue(len(json.loads(response.body.decode('utf-8'))['errors']) > 0)
+        self.assertEqual(response.status_code, 400)
+        self.assertGreater(len(json.loads(response.body.decode('utf-8'))['errors']), 0)
 
     def __get_dummy_request_for_new_issue(self):
         return testing.DummyRequest(json_body={

@@ -21,8 +21,7 @@ import dbas.review.helper.queues as review_queue_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_json_data, __refresh_headers_and_url
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
-from dbas.database.discussion_model import Statement, ReviewEdit, ReviewMerge, ReviewSplit, ReviewOptimization, \
+from dbas.database.discussion_model import Issue, Statement, ReviewEdit, ReviewMerge, ReviewSplit, ReviewOptimization, \
     ReviewDuplicate, ReviewDelete
 from dbas.handler import user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
@@ -35,7 +34,7 @@ from dbas.handler.settings import set_settings
 from dbas.handler.statements import set_correction_of_statement, set_position, set_positions_premise, \
     set_seen_statements, get_logfile_for_statements
 from dbas.handler.voting import clear_vote_and_seen_values_of_user
-from dbas.helper.query import get_default_locale_name, set_user_language, \
+from dbas.helper.query import set_user_language, \
     mark_statement_or_argument, get_short_url, revoke_author_of_argument_content, revoke_author_of_statement_content
 from dbas.lib import escape_string, get_discussion_language, relation_mapper
 from dbas.logger import logger
@@ -447,8 +446,8 @@ def set_new_start_premise(request):
 
 
 @view_config(route_name='set_new_premises_for_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, valid_premisegroups,
-          has_keywords(('arg_uid', int), ('attack_type', str)))
+@validate(valid_user, valid_premisegroups, valid_argument(location='json_body', depends_on={valid_issue_not_readonly}),
+          has_keywords(('attack_type', str)))
 def set_new_premises_for_argument(request):
     """
     Sets a new premise for an argument
@@ -457,17 +456,13 @@ def set_new_premises_for_argument(request):
     :return: json-dict()
     """
     logger('views', 'main: {}'.format(request.json_body))
-    data = {
-        'user': request.validated['user'],
-        'issue': request.validated['issue'],
-        'premisegroups': request.validated['premisegroups'],
-        'arg_uid': request.validated['arg_uid'],
-        'attack_type': relation_mapper[request.validated['attack_type']],
-        'history': request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
-        'default_locale_name': get_default_locale_name(request.registry),
-        'mailer': request.mailer
-    }
-    prepared_dict = set_arguments_premises(data)
+    prepared_dict = set_arguments_premises(request.validated['issue'],
+                                           request.validated['user'],
+                                           request.validated['argument'],
+                                           request.validated['premisegroups'],
+                                           relation_mapper[request.validated['attack_type']],
+                                           request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
+                                           request.mailer)
     __modifiy_discussion_url(prepared_dict)
     return prepared_dict
 

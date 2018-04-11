@@ -1,6 +1,8 @@
 import random
-import transaction
 from os import environ
+from typing import List
+
+import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Argument, Premise, MarkedArgument, ClickedArgument, \
@@ -17,7 +19,8 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def set_arguments_premises(data) -> dict:
+def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument, premisegroups: List[List[str]],
+                           attack_type: Relations, history, mailer) -> dict:
     """
     Set new premise for a given conclusion and returns dictionary with url for the next step of the discussion
 
@@ -25,21 +28,14 @@ def set_arguments_premises(data) -> dict:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
-    db_user = data['user']
-    db_issue = data['issue']
-    premisegroups = data['premisegroups']
-    arg_uid = data['arg_uid']
-    attack_type = data['attack_type']
-
-    history = data.get('_HISTORY_')
-    mailer = data.get('mailer')
-
-    discussion_lang = db_issue.lang
-    default_locale_name = data.get('default_locale_name', discussion_lang)
-
     # escaping will be done in QueryHelper().set_statement(...)
-    langs = {'default_locale_name': default_locale_name, 'discussion_lang': discussion_lang}
-    arg_infos = {'arg_id': arg_uid, 'attack_type': attack_type, 'premisegroups': premisegroups, 'history': history}
+    langs = {'default_locale_name': db_issue.lang, 'discussion_lang': db_issue.lang}
+    arg_infos = {
+        'arg_id': db_argument.uid,
+        'attack_type': attack_type,
+        'premisegroups': premisegroups,
+        'history': history
+    }
     url, statement_uids, error = __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue,
                                                                                         db_user, mailer)
     user.update_last_action(db_user)
