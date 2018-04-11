@@ -3,7 +3,6 @@ Collection of pyramids views components of D-BAS' core.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
-
 from typing import Callable, Any
 
 import graphene
@@ -63,6 +62,8 @@ def __modify_discussion_url(prep_dict: dict):
         for i, el in enumerate(prep_dict[x][y]):
             if '/' in el.get('url', ''):
                 prep_dict[x][y][i]['url'] = '/discuss' + prep_dict[x][y][i]['url']
+            if '/' in el.get('attack_url', ''):
+                prep_dict[x][y][i]['attack_url'] = '/discuss' + prep_dict[x][y][i]['attack_url']
 
     # modify urls for topic switch
     for i, el in enumerate(prep_dict['issues']['all']):
