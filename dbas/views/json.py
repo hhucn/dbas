@@ -446,8 +446,8 @@ def set_new_start_premise(request):
 
 
 @view_config(route_name='set_new_premises_for_argument', renderer='json')
-@validate(valid_user, valid_premisegroups, valid_argument(location='path', depends_on={valid_issue_not_readonly}),
-          has_keywords(('arg_uid', int), ('attack_type', str)))
+@validate(valid_user, valid_premisegroups, valid_argument(location='json_body', depends_on={valid_issue_not_readonly}),
+          has_keywords(('attack_type', str)))
 def set_new_premises_for_argument(request):
     """
     Sets a new premise for an argument

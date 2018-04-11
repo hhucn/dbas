@@ -78,12 +78,15 @@ reaction = Service(name='api_reaction',
                    cors_policy=cors_policy)
 
 justify_statement = Service(name='api_justify_statement',
-                            path='/{slug}/justify/{statement_id:\d+}/{attitude}',
+                            path='/{slug}/justify/{statement_id:\d+}/{attitude:(' + '|'.join(
+                                map(str, Attitudes)) + ')}',
                             description='Discussion Justify',
                             cors_policy=cors_policy)
 
 justify_argument = Service(name='api_justify_argument',
-                           path='/{slug}/justify/{argument_id:\d+}/{attitude:(agree|disagree|dontknow)}/{relation:(undermine|undercut|rebut)}',
+                           path='/{slug}/justify/{argument_id:\d+}' +
+                                '/{attitude:(' + '|'.join(map(str, Attitudes)) + ')}' +
+                                '/{relation:(' + '|'.join(map(str, Relations)) + ')}',
                            description='Discussion Justify',
                            cors_policy=cors_policy)
 
