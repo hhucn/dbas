@@ -4,8 +4,6 @@
 
 // https://www.google.com/design/spec/style/color.html#color-color-palette
 var fillColorSet = ['rgba(200,230,201,0.4)', 'rgba(255,205,210,0.4)', 'rgba(187,222,251,0.4)', 'rgba(187,222,251,0.4)']; //100
-var strokeColorSet = ['#4CAF50', '#F44336', '#2196F3', '#795548']; // 500
-var pointStrokeColorSet = ['#2E7D32', '#C62828', '#1565C0', '#4E342E']; // 800
 
 $(document).ready(function () {
     'use strict';
@@ -19,9 +17,11 @@ $(document).ready(function () {
     var collectedAbsoluteData = collected[1];
     var collectedRelativeData = collected[2];
 
-    createChart(_t('repuationChartSum'), collectedLabels, collectedAbsoluteData, $('#reputation_absolute_graph_summary'), 'absolute_graph_summary', 0);
-    createChart(_t('repuationChartDay'), collectedLabels, collectedRelativeData, $('#reputation_relative_graph_summary'), 'relative_graph_summary', 2);
-    setLegendCSS();
+    if (window.location.href.indexOf('review/reputation') !== -1) {
+        createChart(_t('repuationChartSum'), collectedLabels, collectedAbsoluteData, $('#reputation_absolute_graph_summary'), 'absolute_graph_summary', 0);
+        createChart(_t('repuationChartDay'), collectedLabels, collectedRelativeData, $('#reputation_relative_graph_summary'), 'relative_graph_summary', 2);
+        setLegendCSS();
+    }
 
 });
 
@@ -107,25 +107,44 @@ function collectDates(labels, absoluteDataset, relativeDataset) {
  */
 function createChart(label, labels, displaydata, space, id, count) {
     'use strict';
-
-    space.append('<canvas id="' + id + '" width="' + space.width() + 'px" height="300" style= "display: block; margin: 0 auto;"></canvas>');
-    var data = {
-        labels: labels,
-        datasets: [{
-            label: label,
-            fillColor: fillColorSet[count],
-            strokeColor: strokeColorSet[count],
-            pointStrokeColor: pointStrokeColorSet[count],
-            pointColor: "#fff",
-            steppedLine: true,
-            data: displaydata,
-            hover: {mode: 'single'}
-        }]
+    var canvas = $('<canvas>').attr({
+        'id': id,
+        'width': space.width(),
+        'height': 300,
+        'style': 'display: block; margin: 0 auto;'
+    });
+    space.append(canvas);
+    
+    var colors = new Colors();
+    var color_100_rgba = colors.getAllAsRGB(100, 0.4);
+    var color_500_hex = colors.getAllAsHEX(500);
+    
+    var ctx = document.getElementById(id).getContext('2d');
+    var chart_data = {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: label,
+                data: displaydata,
+                fillColor:fillColorSet[count],
+                borderColor: color_500_hex[count],
+                backgroundColor: color_100_rgba[count],
+                pointColor: "#fff",
+                steppedLine: true,
+                hover: {
+                    mode: 'single'
+                }
+            }]
+        },
     };
     if (typeof($('#' + id)) !== 'undefined' && document.getElementById(id) !== null) {
-        var chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
-        var divLegend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
-        space.prepend(divLegend);
+        try {
+            var chart = new Chart(ctx, chart_data);
+            var divLegend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
+            space.prepend(divLegend);
+        } catch (err) {
+        }
     }
 }
 
