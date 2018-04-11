@@ -796,7 +796,10 @@ def fuzzy_search(request):
     db_issue = request.validated['issue']
     statement_uid = request.validated['statement_uid']
     db_user = request.validated['user']
-    return fuzzy_string_matcher.get_prediction(db_user, db_issue, value, mode, statement_uid)
+    prepared_dict = fuzzy_string_matcher.get_prediction(db_user, db_issue, value, mode, statement_uid)
+    for part_dict in prepared_dict['values']:
+        __modifiy_discussion_url(part_dict)
+    return prepared_dict
 
 
 # ajax - for fuzzy search of nickname

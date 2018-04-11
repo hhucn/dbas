@@ -41,14 +41,14 @@ def init(db_issue: Issue, db_user: User) -> dict:
     }
 
 
-def attitude(db_issue: Issue, db_user: User, db_position: Statement, history: str, path: str) -> dict:
+def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: str, path: str) -> dict:
     """
     Initialize the attitude step for a position in a discussion. Creates helper and returns a dictionary containing
     the first elements needed for the discussion.
 
     :param db_issue: Issue
     :param db_user: User
-    :param db_position: Statement with is_position == True
+    :param db_statement: Statement with is_position == True
     :param history: Current history
     :param path:
     :return: prepared collection dict for the discussion
@@ -60,10 +60,10 @@ def attitude(db_issue: Issue, db_user: User, db_position: Statement, history: st
     disc_ui_locales = db_issue.lang
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, slug=db_issue.slug)
-    discussion_dict = _ddh.get_dict_for_attitude(db_position)
+    discussion_dict = _ddh.get_dict_for_attitude(db_statement)
 
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
-    item_dict = _idh.prepare_item_dict_for_attitude(db_position.uid)
+    item_dict = _idh.prepare_item_dict_for_attitude(db_statement.uid)
 
     return {
         'issues': issue_dict,

@@ -38,7 +38,6 @@ function AjaxGraphHandler() {
                 setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
                 return;
         }
-        console.log(data);
 
         var url = 'get_user_with_same_opinion';
 

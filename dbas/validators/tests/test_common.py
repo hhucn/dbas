@@ -79,9 +79,3 @@ class TestFuzzySearch(TestCaseWithConfig):
             response = valid_fuzzy_search_mode(request)
             self.assertTrue(response)
             self.assertIsInstance(response, bool)
-
-    def test_valid_mode_5_returns_true(self):
-        request = construct_dummy_request({'type': 5})
-        response = valid_fuzzy_search_mode(request)
-        self.assertTrue(response)
-        self.assertIsInstance(response, bool)

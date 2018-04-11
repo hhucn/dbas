@@ -39,7 +39,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate, has_keywords_in_path
-from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_attitude, \
+from dbas.validators.discussion import valid_issue_by_slug, valid_attitude, \
     valid_relation, valid_argument, valid_statement, valid_reaction_arguments, valid_support, \
     valid_list_of_premisegroups_in_path, valid_premisegroup_in_path
 from dbas.validators.user import valid_user, valid_user_optional
@@ -587,7 +587,7 @@ def discussion_init(request):
 
 # attitude page
 @view_config(route_name='discussion_attitude', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional, valid_position)
+@validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}))
 def discussion_attitude(request):
     """
     View configuration for discussion step, where we will ask the user for her attitude towards a statement.
@@ -598,12 +598,12 @@ def discussion_attitude(request):
     """
     logger('discussion_attitude', 'request.matchdict: {}'.format(request.matchdict))
 
-    db_position = request.validated['position']
+    db_statement = request.validated['statement']
     db_issue = request.validated['issue']
     db_user = request.validated['user']
 
     history = history_handler.handle_history(request, db_user, db_issue)
-    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
+    prepared_discussion = discussion.attitude(db_issue, db_user, db_statement, history, request.path)
     __modify_discussion_url(prepared_discussion)
 
     rdict = prepare_request_dict(request)

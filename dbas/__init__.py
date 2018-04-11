@@ -174,7 +174,7 @@ def main(global_config, **settings):
     config.add_route('discussion_justify_statement', '/discuss/{slug}/justify/{statement_id:\d+}/{attitude}')
     config.add_route('discussion_justify_argument', '/discuss/{slug}/justify/{argument_id:\d+}/{attitude}/{relation}')
 
-    config.add_route('discussion_attitude', '/discuss/{slug}/attitude/{position_id:\d+}')
+    config.add_route('discussion_attitude', '/discuss/{slug}/attitude/{statement_id:\d+}')
     config.add_route('discussion_choose', '/discuss/{slug}/choose/{is_argument}/{is_supportive}/{id:\d+}*pgroup_ids')
     config.add_route('discussion_jump', '/discuss/{slug}/jump/{argument_id:\d+}')
     config.add_route('discussion_finish', '/discuss/{slug}/finish/{argument_id:\d+}')
