@@ -20,6 +20,7 @@ image: docker
     SEARCH_NAME: search
 
     AUTHN_SECRET: "89#s3cr3t_15"
+    URL: "https://dbas.cs.uni-duesseldorf.de"
   before_script:
     - alembic upgrade head && pserve development.ini --reload &
 
