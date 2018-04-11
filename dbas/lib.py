@@ -75,15 +75,11 @@ attitude_mapper = {attitude.value: attitude for attitude in Attitudes}
 
 def get_global_url():
     """
-    Returns the global url of the project.
-    Important: the global url has to be in setup.py like "url='http://foo.bar'"
+    Returns the global url of the project, based on the ENV
 
     :return: String
     """
-    path = str(os.path.realpath(__file__ + '/../../setup.py'))
-    lines = [line.rstrip('\n').strip() for line in open(path)]
-
-    return str([l[l.index('htt'):-2] for l in lines if 'url=' in l][0])
+    return os.environ.get('URL', '')
 
 
 def get_changelog(no):
