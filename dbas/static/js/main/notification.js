@@ -8,7 +8,7 @@ $(function () {
     'use strict';
     
     // execute only in the notifications page
-    if (window.location.href.indexOf(mainpage + 'notifications/') === -1) {
+    if (window.location.href.indexOf(mainpage + 'notifications') === -1) {
         return;
     }
 
