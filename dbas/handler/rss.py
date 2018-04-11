@@ -15,7 +15,7 @@ from dbas.database import DBDiscussionSession as Session
 from dbas.database.discussion_model import Issue, RSS, User, News
 from dbas.lib import get_global_url
 from dbas.logger import logger
-from dbas.query_wrapper import get_not_disabled_issues_as_query
+from dbas.query_wrapper import get_enabled_issues_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -65,7 +65,7 @@ def create_initial_issue_rss(main_page: str, ui_locale: str) -> bool:
     if not os.path.exists('dbas{}'.format(rss_path)):
         os.makedirs('dbas{}'.format(rss_path))
 
-    db_issues = get_not_disabled_issues_as_query().all()
+    db_issues = get_enabled_issues_as_query().all()
     db_authors = {u.uid: u for u in Session.query(User).all()}
     for issue in db_issues:
         db_rss = Session.query(RSS).filter(RSS.issue_uid == issue.uid,
@@ -144,7 +144,7 @@ def get_list_of_all_feeds(ui_locale: str) -> list:
     feeds.append(feed)
 
     _tn = Translator(ui_locale)
-    db_issues = get_not_disabled_issues_as_query().all()
+    db_issues = get_enabled_issues_as_query().all()
     for issue in db_issues:
         feed = {
             'title': issue.title,

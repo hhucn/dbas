@@ -12,7 +12,7 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User, Issue
 from dbas.input_validator import is_integer
-from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
+from dbas.query_wrapper import get_enabled_arguments_as_query, get_enabled_premises_as_query
 
 
 def get_undermines_for_argument_uid(argument_uid, is_supportive=False):
@@ -30,12 +30,12 @@ def get_undermines_for_argument_uid(argument_uid, is_supportive=False):
     if int(argument_uid) < 1:
         return None
 
-    db_arguments = get_not_disabled_arguments_as_query()
+    db_arguments = get_enabled_arguments_as_query()
     db_attacked_argument = db_arguments.filter_by(uid=argument_uid).first()
     if not db_attacked_argument:
         return []
 
-    db_premises = get_not_disabled_premises_as_query()
+    db_premises = get_enabled_premises_as_query()
     db_attacked_premises = db_premises \
         .filter_by(premisegroup_uid=db_attacked_argument.premisegroup_uid) \
         .order_by(Premise.premisegroup_uid.desc()).all()
@@ -81,7 +81,7 @@ def get_rebuts_for_argument_uid(argument_uid):
         return None
 
     # logger('RelationHelper', 'get_rebuts_for_argument_uid', 'main ' + str(self.argument_uid))
-    db_arguments = get_not_disabled_arguments_as_query()
+    db_arguments = get_enabled_arguments_as_query()
     db_argument = db_arguments.filter_by(uid=int(argument_uid)).first()
     if not db_argument:
         return None
@@ -102,7 +102,7 @@ def __get_rebuts_for_arguments_conclusion_uid(db_argument):
     """
     return_array = []
     given_rebuts = set()
-    db_arguments = get_not_disabled_arguments_as_query()
+    db_arguments = get_enabled_arguments_as_query()
     db_rebuts = db_arguments.filter(Argument.is_supportive == (not db_argument.is_supportive),
                                     Argument.conclusion_uid == db_argument.conclusion_uid).all()
     for rebut in db_rebuts:
@@ -132,7 +132,7 @@ def get_supports_for_argument_uid(argument_uid):
 
     return_array = []
     given_supports = set()
-    db_arguments = get_not_disabled_arguments_as_query()
+    db_arguments = get_enabled_arguments_as_query()
     db_argument = db_arguments.filter_by(uid=argument_uid).join(PremiseGroup).first()
     if not db_argument:
         return []
@@ -141,7 +141,7 @@ def get_supports_for_argument_uid(argument_uid):
         premisegroup_uid=db_argument.premisegroup_uid).all()
 
     for arguments_premises in db_arguments_premises:
-        db_arguments = get_not_disabled_arguments_as_query()
+        db_arguments = get_enabled_arguments_as_query()
         db_supports = db_arguments.filter(Argument.conclusion_uid == arguments_premises.statement_uid,
                                           Argument.is_supportive == True).join(PremiseGroup).all()
         if not db_supports:
@@ -176,7 +176,7 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid: int, current_argum
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=current_argument.premisegroup_uid).all()
     for premise in db_premises:
         new_arguments = []
-        db_arguments = get_not_disabled_arguments_as_query()
+        db_arguments = get_enabled_arguments_as_query()
         db_argument = db_arguments.filter(Argument.premisegroup_uid == premisegroup_uid,
                                           Argument.is_supportive == True,
                                           Argument.conclusion_uid == premise.statement_uid).first()
@@ -260,7 +260,7 @@ def set_new_support(premisegroup_uid: int, current_argument: Argument, db_user: 
 
 def __set_rebut_or_support(premisegroup_uid: int, current_argument: Argument, db_user: User, db_issue: Issue,
                            is_supportive: bool) -> Tuple[Union[Argument, bool], bool]:
-    db_arguments = get_not_disabled_arguments_as_query()
+    db_arguments = get_enabled_arguments_as_query()
     db_argument = db_arguments.filter(Argument.premisegroup_uid == premisegroup_uid,
                                       Argument.is_supportive == True,
                                       Argument.conclusion_uid == current_argument.conclusion_uid).first()
@@ -290,7 +290,7 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     :return: [{id, text}] or 0
     """
     return_array = []
-    db_arguments = get_not_disabled_arguments_as_query()
+    db_arguments = get_enabled_arguments_as_query()
     db_related_arguments = db_arguments.filter(Argument.is_supportive == is_supportive,
                                                Argument.argument_uid == argument_uid).all()
     given_relations = set()
@@ -314,7 +314,7 @@ def __get_undermines_for_premises(premises_as_statements_uid, is_supportive=Fals
     return_array = []
     given_undermines = set()
     for s_uid in premises_as_statements_uid:
-        db_arguments = get_not_disabled_arguments_as_query()
+        db_arguments = get_enabled_arguments_as_query()
         db_undermines = db_arguments.filter(Argument.is_supportive == is_supportive,
                                             Argument.conclusion_uid == s_uid).all()
         __add_to_return_array(return_array, db_undermines, given_undermines)

@@ -46,7 +46,7 @@ from dbas.validators.core import has_keywords, has_maybe_keywords, validate
 from dbas.validators.database import valid_database_model
 from dbas.validators.discussion import valid_issue_by_id, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
     valid_statement, valid_argument, valid_premisegroup, valid_premisegroups, valid_statement_or_argument, \
-    valid_text_values, valid_text_length_of
+    valid_text_values, valid_text_length_of, valid_any_issue_by_id
 from dbas.validators.lib import add_error
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
@@ -370,7 +370,7 @@ def set_user_lang(request):
 
 
 @view_config(route_name='set_discussion_properties', renderer='json')
-@validate(valid_user, valid_issue_by_id, has_keywords(('property', bool), ('value', str)))
+@validate(valid_user, valid_any_issue_by_id, has_keywords(('property', bool), ('value', str)))
 def set_discussion_properties(request):
     """
     Set availability, read-only, ... flags in the admin panel.

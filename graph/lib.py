@@ -8,7 +8,7 @@ from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue
     SeenStatement
 from dbas.lib import get_profile_picture
 from dbas.logger import logger
-from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
+from dbas.query_wrapper import get_enabled_arguments_as_query, get_enabled_statement_as_query
 
 green = '#64DD17'
 red = '#F44336'
@@ -36,10 +36,10 @@ def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     if all_statements is None:
-        all_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=db_issue.uid).all()
+        all_statements = get_enabled_statement_as_query().filter_by(issue_uid=db_issue.uid).all()
 
     if all_arguments is None:
-        all_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=db_issue.uid).all()
+        all_arguments = get_enabled_arguments_as_query().filter_by(issue_uid=db_issue.uid).all()
 
     # issue
     node_dict = __get_node_dict(uid='issue',

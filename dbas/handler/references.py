@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User
-from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
+from dbas.query_wrapper import get_enabled_arguments_as_query, get_enabled_premises_as_query
 from dbas.lib import get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.input_validator import is_integer
@@ -23,12 +23,12 @@ def get_references_for_argument(uid, main_page):
     if not is_integer(uid):
         return {}, {}
 
-    db_arguments = get_not_disabled_arguments_as_query()
+    db_arguments = get_enabled_arguments_as_query()
     db_argument = db_arguments.filter_by(uid=uid).first()
     if not db_argument:
         return {}, {}
 
-    db_premises = get_not_disabled_premises_as_query()
+    db_premises = get_enabled_premises_as_query()
     db_premises = db_premises.filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
 
     data = {}

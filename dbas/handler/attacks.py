@@ -14,7 +14,7 @@ from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for
 from dbas.input_validator import is_integer
 from dbas.lib import Relations
 from dbas.logger import logger
-from dbas.query_wrapper import get_not_disabled_arguments_as_query
+from dbas.query_wrapper import get_enabled_arguments_as_query
 
 
 def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relations] = None,
@@ -93,7 +93,7 @@ def get_arguments_by_conclusion(statement_uid: int, is_supportive: bool) -> List
     :param is_supportive: Boolean
     :return: [Argument]
     """
-    db_arguments = get_not_disabled_arguments_as_query()
+    db_arguments = get_enabled_arguments_as_query()
     db_arguments = db_arguments.filter(Argument.is_supportive == is_supportive,
                                        Argument.conclusion_uid == statement_uid).all()
     if not db_arguments:

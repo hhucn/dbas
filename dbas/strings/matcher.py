@@ -17,7 +17,7 @@ from dbas.database.discussion_model import Statement, User, TextVersion, Issue
 from dbas.helper.url import UrlManager
 from dbas.lib import get_public_profile_picture, nick_of_anonymous_user
 from dbas.logger import logger
-from dbas.query_wrapper import get_not_disabled_statement_as_query
+from dbas.query_wrapper import get_enabled_statement_as_query
 from search.requester import elastic_search
 
 list_length = 5
@@ -89,7 +89,7 @@ def get_all_statements_with_value(search_value: str, issue_uid: int) -> list:
     :return: statements matching the given search value in the given issue, uses levensthein.
 
     """
-    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
+    db_statements = get_enabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
     slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
     _um = UrlManager(slug=slug)
@@ -115,8 +115,8 @@ def get_suggestions_for_positions(search_value: str, issue_uid: int, position: b
     :param position: position of the statement
     :return: suggestions for statements with a certain position matching the search_value
     """
-    db_statements = get_not_disabled_statement_as_query().filter(Statement.is_position == position,
-                                                                 Statement.issue_uid == issue_uid).all()
+    db_statements = get_enabled_statement_as_query().filter(Statement.is_position == position,
+                                                            Statement.issue_uid == issue_uid).all()
     return_array = []
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
@@ -164,7 +164,7 @@ def get_strings_for_duplicates_or_reasons(search_value: str, issue_uid: int, sta
     :param statement_uid: integer
     :return: dict()
     """
-    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
+    db_statements = get_enabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
 
     for stat in db_statements:
@@ -210,8 +210,8 @@ def get_strings_for_search(search_value: str) -> dict:
     :return: dict() with Statements.uid as key and 'text', 'distance' as well as 'arguments' as values
     """
     tmp_dict = OrderedDict()
-    db_statements = get_not_disabled_statement_as_query().join(TextVersion,
-                                                               Statement.textversion_uid == TextVersion.uid).all()
+    db_statements = get_enabled_statement_as_query().join(TextVersion,
+                                                          Statement.textversion_uid == TextVersion.uid).all()
     for stat in db_statements:
         if search_value.lower() in stat.textversions.content.lower():
             # get distance between input value and saved value

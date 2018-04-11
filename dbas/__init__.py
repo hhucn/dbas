@@ -23,7 +23,7 @@ from sqlalchemy import engine_from_config
 from dbas.database import get_db_environs
 from dbas.handler.rss import rewrite_issue_rss, create_news_rss
 from dbas.lib import get_global_url
-from dbas.query_wrapper import get_not_disabled_issues_as_query
+from dbas.query_wrapper import get_enabled_issues_as_query
 from .database import load_discussion_database
 from .security import groupfinder
 
@@ -198,7 +198,7 @@ def main(global_config, **settings):
 
 
 def __write_rss_feeds():
-    issues = get_not_disabled_issues_as_query().all()
+    issues = get_enabled_issues_as_query().all()
     for issue in issues:
         rewrite_issue_rss(issue.uid, get_global_url())
     create_news_rss(get_global_url(), 'en')
