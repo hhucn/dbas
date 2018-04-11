@@ -43,14 +43,4 @@ $(document).ready(function () {
     $.each($('.fa-clipboard'), function () {
         md.set_clipboard(this);
     });
-
-    // ajax loading animation
-    $(document).on({
-        ajaxStart: function () {
-            setTimeout("$('body').addClass('loading');", 0);
-        },
-        ajaxStop: function () {
-            setTimeout("$('body').removeClass('loading');", 0);
-        }
-    });
 });
