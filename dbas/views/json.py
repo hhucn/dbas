@@ -876,7 +876,7 @@ def review_delete_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.params))
+    logger('views', 'main: {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']

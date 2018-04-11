@@ -873,7 +873,7 @@ def main_review(request):
 
 
 # content page for reviews
-@view_config(route_name='review_content', renderer='../templates/review-discussion.pt', permission='use')
+@view_config(route_name='review_content', renderer='../templates/review-content.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
 def review_content(request):
     """
@@ -898,7 +898,7 @@ def review_content(request):
 
     title = _tn.get(_.review)
     if subpage_name in review_queue_helper.title_mapping:
-        title = review_queue_helper.title_mapping[subpage_name]
+        title = _tn.get(review_queue_helper.title_mapping[subpage_name])
 
     prep_dict = __main_dict(request, title)
     prep_dict.update({
