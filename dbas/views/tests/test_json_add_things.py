@@ -10,6 +10,7 @@ from dbas.database.discussion_model import Issue, Statement, TextVersion, Argume
     ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument, \
     ClickedStatement, SeenStatement, SeenArgument
 from dbas.lib import Relations
+from dbas.views import set_new_premises_for_argument
 
 
 class AjaxAddThingsTest(unittest.TestCase):
@@ -99,20 +100,19 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_new_premises_for_argument(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_new_premises_for_argument as ajax
         db_arg1 = DBDiscussionSession.query(Argument).filter_by(uid=2).count()
         db_pgroups1 = DBDiscussionSession.query(PremiseGroup).count()
         request = testing.DummyRequest(json_body={
             'premisegroups': [['some new reason for an argument']],
-            'arg_uid': 2,
+            'argument_id': 2,
             'attack_type': Relations.SUPPORT.value,
             'issue': 2
         }, mailer=DummyMailer)
-        response = ajax(request)
+        response = set_new_premises_for_argument(request)
         db_arg2 = DBDiscussionSession.query(Argument).filter_by(uid=2).count()
         db_pgroups2 = DBDiscussionSession.query(PremiseGroup).count()
         self.assertIsNotNone(response)
-        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(response['error'], None)
         self.assertTrue(db_arg1 + 1, db_arg2)
         self.assertTrue(db_pgroups1 + 1, db_pgroups2)
         self.delete_last_argument_by_conclusion_uid(2)
@@ -120,9 +120,8 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_premises_for_argument_failure(self):
         # author error
         self.config.testing_securitypolicy(userid='', permissive=True)
-        from dbas.views import set_new_premises_for_argument as ajax
         request = testing.DummyRequest(json_body={'issue': 2})
-        response = ajax(request)
+        response = set_new_premises_for_argument(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
 

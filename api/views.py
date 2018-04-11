@@ -21,13 +21,13 @@ import dbas.views as dbas
 from api.lib import extract_items_and_bubbles
 from api.models import Item, Bubble
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, User
+from dbas.database.discussion_model import Issue, Statement, User, Argument
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug, create_speechbubble_dict, BubbleTypes,
-                      Attitudes)
+                      Attitudes, Relations)
 from dbas.strings.translator import Keywords as _, get_translation
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
@@ -720,5 +720,22 @@ def add_premise_to_statement(request):
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
                                history,
                                request.mailer)
+
+    return HTTPSeeOther(location='/api' + pd['url'])
+
+
+@justify_argument.post(require_csrf=False)
+@validate(valid_token, valid_issue_by_slug, valid_reason_in_body, valid_argument(location="path"), valid_relation,
+          valid_attitude)
+def add_premise_to_argument(request):
+    db_user: User = request.validated['user']
+    db_issue: Issue = request.validated['issue']
+    db_argument: Argument = request.validated['argument']
+    relation: Relations = request.validated['relation']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
+                                history,
+                                request.mailer)
 
     return HTTPSeeOther(location='/api' + pd['url'])
