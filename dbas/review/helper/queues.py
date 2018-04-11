@@ -4,6 +4,7 @@ Provides helping function for displaying the review queues and locking entries.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 from enum import Enum, auto
+from typing import Tuple
 
 import transaction
 
@@ -57,7 +58,7 @@ model_mapping = {
 }
 
 
-class _Code(Enum):
+class Code(Enum):
     DOESNT_EXISTS = auto()
     DUPLICATE = auto()
     SUCCESS = auto()
@@ -147,7 +148,8 @@ def __get_delete_dict(main_page, translator, db_user, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_deletes] or all_rights,
                 'is_allowed_text': translator.get(_.visitDeleteQueue),
-                'is_not_allowed_text': translator.get(_.visitDeleteQueueLimitation).format(str(reputation_borders[key_deletes])),
+                'is_not_allowed_text': translator.get(_.visitDeleteQueueLimitation).format(
+                    str(reputation_borders[key_deletes])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDelete, main_page)
                 }
     return tmp_dict
@@ -172,7 +174,8 @@ def __get_optimization_dict(main_page, translator, db_user, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_optimizations] or all_rights,
                 'is_allowed_text': translator.get(_.visitOptimizationQueue),
-                'is_not_allowed_text': translator.get(_.visitOptimizationQueueLimitation).format(str(reputation_borders[key_optimizations])),
+                'is_not_allowed_text': translator.get(_.visitOptimizationQueueLimitation).format(
+                    str(reputation_borders[key_optimizations])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, main_page)
                 }
     return tmp_dict
@@ -197,7 +200,8 @@ def __get_edit_dict(main_page, translator, db_user, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_edits] or all_rights,
                 'is_allowed_text': translator.get(_.visitEditQueue),
-                'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).format(str(reputation_borders[key_edits])),
+                'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).format(
+                    str(reputation_borders[key_edits])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerEdit, main_page)
                 }
     return tmp_dict
@@ -222,7 +226,8 @@ def __get_duplicates_dict(main_page, translator, db_user, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_duplicates] or all_rights,
                 'is_allowed_text': translator.get(_.visitDuplicateQueue),
-                'is_not_allowed_text': translator.get(_.visitDuplicateQueueLimitation).format(str(reputation_borders[key_duplicates])),
+                'is_not_allowed_text': translator.get(_.visitDuplicateQueueLimitation).format(
+                    str(reputation_borders[key_duplicates])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDuplicate, main_page)
                 }
     return tmp_dict
@@ -247,7 +252,8 @@ def __get_split_dict(main_page, translator, db_user, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_split] or all_rights,
                 'is_allowed_text': translator.get(_.visitSplitQueue),
-                'is_not_allowed_text': translator.get(_.visitSplitQueueLimitation).format(str(reputation_borders[key_split])),
+                'is_not_allowed_text': translator.get(_.visitSplitQueueLimitation).format(
+                    str(reputation_borders[key_split])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerSplit, main_page)
                 }
     return tmp_dict
@@ -272,7 +278,8 @@ def __get_merge_dict(main_page, translator, db_user, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_merge] or all_rights,
                 'is_allowed_text': translator.get(_.visitMergeQueue),
-                'is_not_allowed_text': translator.get(_.visitMergeQueueLimitation).format(str(reputation_borders[key_merge])),
+                'is_not_allowed_text': translator.get(_.visitMergeQueueLimitation).format(
+                    str(reputation_borders[key_merge])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerMerge, main_page)
                 }
     return tmp_dict
@@ -294,7 +301,8 @@ def __get_history_dict(main_page, translator, count, all_rights):
                 'task_count': __get_review_count_for_history(True),
                 'is_allowed': count >= reputation_borders[key_history] or all_rights,
                 'is_allowed_text': translator.get(_.visitHistoryQueue),
-                'is_not_allowed_text': translator.get(_.visitHistoryQueueLimitation).format(str(reputation_borders[key_history])),
+                'is_not_allowed_text': translator.get(_.visitHistoryQueueLimitation).format(
+                    str(reputation_borders[key_history])),
                 'last_reviews': list()
                 }
     return tmp_dict
@@ -399,7 +407,7 @@ def __get_last_reviewer_of(reviewer_type, main_page):
     return users_array
 
 
-def add_proposals_for_statement_corrections(elements, db_user, _tn):
+def add_proposals_for_statement_corrections(elements, db_user, _tn) -> Tuple[str, bool]:
     """
     Add a proposal to correct a statement
 
@@ -413,11 +421,11 @@ def add_proposals_for_statement_corrections(elements, db_user, _tn):
     review_count = len(elements)
     added_reviews = [__add_edit_reviews(el, db_user) for el in elements]
 
-    if added_reviews.count(_Code.SUCCESS) == 0:  # no edits set
-        if added_reviews.count(_Code.DOESNT_EXISTS) > 0:
+    if added_reviews.count(Code.SUCCESS) == 0:  # no edits set
+        if added_reviews.count(Code.DOESNT_EXISTS) > 0:
             logger('ReviewQueues', 'internal key error')
             return _tn.get(_.internalKeyError), True
-        if added_reviews.count(_Code.DUPLICATE) > 0:
+        if added_reviews.count(Code.DUPLICATE) > 0:
             logger('ReviewQueues', 'already edit proposals')
             return _tn.get(_.alreadyEditProposals), True
         logger('ReviewQueues', 'no corrections given')
@@ -433,7 +441,8 @@ def add_proposals_for_statement_corrections(elements, db_user, _tn):
     transaction.commit()
 
     msg = ''
-    if review_count > added_values.count(1) or added_reviews.count(1) != added_values.count(1):
+    if review_count > added_values.count(Code.SUCCESS) \
+            or added_reviews.count(Code.SUCCESS) != added_values.count(Code.SUCCESS):
         msg = _tn.get(_.alreadyEditProposals)
 
     return msg, False
@@ -451,21 +460,21 @@ def __add_edit_reviews(element, db_user):
     db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
     if not db_statement:
         logger('ReviewQueues', 'statement {} not found (return -1)'.format(element['uid']))
-        return _Code.DOESNT_EXISTS
+        return Code.DOESNT_EXISTS
 
     # already set an correction for this?
     if is_statement_in_edit_queue(element['uid']):  # if we already have an edit, skip this
         logger('ReviewQueues', '{} already got an edit (return -2)'.format(element['uid']))
-        return _Code.DUPLICATE
+        return Code.DUPLICATE
 
     # is text different?
     db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
     if len(element['text']) > 0 and db_tv.content.lower().strip() != element['text'].lower().strip():
         logger('ReviewQueues', 'added review element for {}  (return 1)'.format(element['uid']))
         DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=element['uid']))
-        return _Code.SUCCESS
+        return Code.SUCCESS
 
-    return _Code.ERROR
+    return Code.ERROR
 
 
 def is_statement_in_edit_queue(uid: int, is_executed: bool = False) -> bool:
@@ -508,19 +517,21 @@ def __add_edit_values_review(element, db_user):
     db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
     if not db_statement:
         logger('ReviewQueues', str(element['uid']) + ' not found')
-        return 0
+        return Code.ERROR
 
     db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
 
     if len(element['text']) > 0 and db_textversion.content.lower().strip() != element['text'].lower().strip():
         db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
-                                                                      ReviewEdit.statement_uid == element['uid']).order_by(ReviewEdit.uid.desc()).first()
+                                                                      ReviewEdit.statement_uid == element[
+                                                                          'uid']).order_by(
+            ReviewEdit.uid.desc()).first()
         DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, element['uid'], 'statement', element['text']))
         logger('ReviewQueues', '{} - \'{}\' accepted'.format(element['uid'], element['text']))
-        return 1
+        return Code.SUCCESS
     else:
         logger('ReviewQueues', '{} - \'{}\' malicious edit'.format(element['uid'], element['text']))
-        return 0
+        return Code.ERROR
 
 
 def lock_optimization_review(db_user: User, db_review: ReviewOptimization, translator: Translator):
@@ -582,9 +593,9 @@ def unlock_optimization_review(db_review: ReviewOptimization, translator: Transl
     DBDiscussionSession.flush()
     transaction.commit()
     return {
-        'is_locked':  False,
-        'success':  translator.get(_.dataUnlocked),
-        'info':  ''
+        'is_locked': False,
+        'success': translator.get(_.dataUnlocked),
+        'info': ''
     }
 
 
@@ -613,4 +624,5 @@ def tidy_up_optimization_locks():
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).all()
     for lock in db_locks:
         if (get_now() - lock.locked_since).seconds >= max_lock_time_in_sec:
-            DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=lock.review_optimization_uid).delete()
+            DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
+                review_optimization_uid=lock.review_optimization_uid).delete()
