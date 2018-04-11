@@ -574,7 +574,7 @@ function GuiHandler() {
 
     /**
      *
-     * @param parsedData
+     * @param data
      * @param callbackId
      * @param type
      * @param reason
@@ -585,20 +585,20 @@ function GuiHandler() {
      *  Method to interact with the suggestions of a specific search.
      *
      */
-    this.setStatementsAsProposal = function (parsedData, callbackId, type, reason) {
+    this.setStatementsAsProposal = function (data, callbackId, type, reason) {
         var callbackElement = $('#' + callbackId);
         var _this = this;
         this.clearProposalSpace(callbackId);
 
         // do we have values ?
-        if (parsedData.length === 0) {
+        if (data.length === 0) {
             return;
         }
 
         var button, spanText, index, img;
         callbackElement.focus();
-
-        $.each(parsedData.values, function (key, val) {
+        
+        $.each(data.values, function (key, val) {
             index = val.index;
 
             button = $('<button>')

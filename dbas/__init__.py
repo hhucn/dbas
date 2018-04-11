@@ -126,6 +126,7 @@ def main(global_config, **settings):
     config.add_route('user_registration', '/{url:.*}user_registration')
     config.add_route('user_password_request', '/{url:.*}user_password_request')
     config.add_route('fuzzy_search', '/{url:.*}fuzzy_search')
+    config.add_route('fuzzy_nickname_search', '/{url:.*}fuzzy_nickname_search')
     config.add_route('switch_language', '{url:.*}switch_language{params:.*}')
     config.add_route('send_notification', '{url:.*}send_notification')
     config.add_route('get_infos_about_argument', '/{url:.*}get_infos_about_argument')

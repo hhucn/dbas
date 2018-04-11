@@ -142,13 +142,14 @@ function Notifications() {
         var uids = [];
         var inbox = $(selector);
         inbox.find('.msg-checkbox:checked').each(function () {
-            uids.push($(this).data('id'));
+            uids.push($(this).attr('id'));
         });
         if (uids.length === 0) {
             inbox.find('.msg-checkbox').each(function () {
-                uids.push($(this).data('id'));
+                uids.push($(this).attr('id'));
             });
         }
+        console.log(uids);
         return uids;
     }
 

@@ -799,6 +799,20 @@ def fuzzy_search(request):
     return fuzzy_string_matcher.get_prediction(db_user, db_issue, value, mode, statement_uid)
 
 
+# ajax - for fuzzy search of nickname
+@view_config(route_name='fuzzy_nickname_search', renderer='json')
+@validate(valid_user_optional, has_keywords(('value', str)))
+def fuzzy_nickname_search(request):
+    """
+    ajax interface for fuzzy string search
+
+    :param request: request of the web server
+    :return: json-set with all matched strings
+    """
+    logger('views', 'main: {}'.format(request.json_body))
+    return fuzzy_string_matcher.get_nicknames(request.validated['user'], request.validated['value'])
+
+
 # #######################################
 # ADDITIONAL AJAX STUFF # REVIEW THINGS #
 # #######################################

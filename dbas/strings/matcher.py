@@ -5,6 +5,7 @@ Provides methods for comparing strings.
 """
 
 import difflib
+import re
 from collections import OrderedDict
 from itertools import islice
 
@@ -26,6 +27,18 @@ return_count = 10  # same number as in googles suggest list (16.12.2015)
 mechanism = 'Levensthein'
 
 
+def get_nicknames(db_user: User, value: str):
+    """
+
+    :param value:
+    :return:
+    """
+    return {
+        'distance_name': mechanism,
+        'values': get_strings_for_public_nickname(value, db_user.global_nickname)
+    }
+
+
 def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
     """
     Get dictionary with matching words, based on the given mode
@@ -39,12 +52,7 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
     """
 
     try:
-        if mode == 5:
-            logger('Matcher', 'Mode 5 is active', error=False)
-            return __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
-
         return elastic_search(db_issue, search_value, mode, statement_uid)
-
     except Exception as ex:
         logger('Matcher', 'An error occurred while requesting elasticsearch: {}'.format(ex), error=True)
 
@@ -251,11 +259,13 @@ def get_strings_for_public_nickname(search_value: str, nickname: str) -> list:
 
     for index, user in enumerate(db_user):
         dist = get_distance(search_value, user.public_nickname)
-        return_array.append({'index': index,
-                             'distance': dist,
-                             'text': user.public_nickname,
-                             'html': __highlight_fuzzy_string(nickname, search_value),
-                             'avatar': get_public_profile_picture(user)})
+        return_array.append({
+            'index': index,
+            'distance': dist,
+            'text': user.public_nickname,
+            'html': __highlight_fuzzy_string(user.public_nickname, search_value),
+            'avatar': get_public_profile_picture(user)
+        })
 
     return_array = __sort_array(return_array)
     return return_array[:list_length]
@@ -349,4 +359,5 @@ def __highlight_fuzzy_string(target: str, search_value: str) -> str:
     :param search_value: the needle to search for target
     :return: a highlighted html string
     """
-    return target.replace(search_value, "<em>" + search_value + "</em>")
+    res = re.compile(re.escape(search_value), re.IGNORECASE)
+    return res.sub('<em>{}</em>'.format(search_value), target)

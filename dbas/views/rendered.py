@@ -299,7 +299,8 @@ def main_notifications(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_notifications', 'main')
-    return __main_dict(request, 'Message')
+    _tn = Translator(get_language_from_cookie(request))
+    return __main_dict(request, _tn.get(_.message))
 
 
 # news page for everybody
