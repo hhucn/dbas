@@ -123,7 +123,7 @@ class AjaxTest(unittest.TestCase):
         self.assertIn('values', response)
 
     def test_fuzzy_search_mode_5(self):
-        from dbas.views import fuzzy_search as ajax
+        from dbas.views import fuzzy_nickname_search as ajax
         request = testing.DummyRequest(json_body={'value': 'cat', 'type': 5, 'statement_uid': 0, 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
