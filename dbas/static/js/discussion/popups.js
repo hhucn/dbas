@@ -744,6 +744,7 @@ function PopupHandler() {
             var uid = $(this).data('id');
             var reference = referenceText.val();
             var refSource = referenceSource.val();
+            
             new AjaxReferenceHandler().setReference(uid, reference, refSource);
         });
 
@@ -786,6 +787,11 @@ function PopupHandler() {
 
         // data is an dictionary with all statement uid's as key
         // the value of every key is an array with dictionaries for every reference
+        if ('uids' in data){
+            if (data.uids.length === 1){
+                sendButton.attr('data-id', data.uids[0]);
+            }
+        }
         $.each(data.data, function (statement_uid, array) {
             var statementsDiv = $('<div>');
             var text = '';

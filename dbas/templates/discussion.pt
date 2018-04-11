@@ -77,10 +77,6 @@
                     <i class="fa fa-flag" aria-hidden="true"
                        title="${extras.title.report_statement}"></i>
                   </span>
-                  <span class="triangle-reference pull-right" tal:condition="bubble.is_markable and extras.logged_in" >
-                    <i class="fa fa-link" aria-hidden="true"
-                       title="${extras.title.reference}"></i>
-                  </span>
                 </p>
               </div>
               <div tal:condition="bubble.is_status" class="line-wrapper-m">

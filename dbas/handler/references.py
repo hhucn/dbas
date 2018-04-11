@@ -119,11 +119,10 @@ def set_reference(reference, url, db_user, db_statement, issue_uid):
     :return: Boolean
     """
     parsed_url = urlparse(url)
-    host = parsed_url.scheme + '://' + parsed_url.netloc
-    path = parsed_url.path
-    author_uid = db_user.uid
+    host = '{}://{}'.format(parsed_url.scheme, parsed_url.netloc)
+    path = '{}?{}'.format(parsed_url.path, parsed_url.query)
 
-    DBDiscussionSession.add(StatementReferences(reference, host, path, author_uid, db_statement.uid, issue_uid))
+    DBDiscussionSession.add(StatementReferences(reference, host, path, db_user.uid, db_statement.uid, issue_uid))
     DBDiscussionSession.flush()
     transaction.commit()
 

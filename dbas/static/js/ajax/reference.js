@@ -14,7 +14,7 @@ function AjaxReferenceHandler() {
     this.setReference = function (uid, reference, ref_source) {
         var url = 'set_references';
         var d = {
-            uid: uid,
+            statement_id: uid,
             ref_source: ref_source,
             reference: reference
         };
@@ -39,7 +39,7 @@ function AjaxReferenceHandler() {
             'uids': uids,
             'is_argument': is_argument
         };
-        var done = function () {
+        var done = function (data) {
             new PopupHandler().showReferencesPopup(data);
         };
         var fail = function (data) {

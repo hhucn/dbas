@@ -149,7 +149,6 @@ function Notifications() {
                 uids.push($(this).attr('id'));
             });
         }
-        console.log(uids);
         return uids;
     }
 
