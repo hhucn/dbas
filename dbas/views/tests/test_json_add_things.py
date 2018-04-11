@@ -139,7 +139,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         db_review2 = DBDiscussionSession.query(ReviewEdit).count()
         db_value2 = DBDiscussionSession.query(ReviewEditValue).count()
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
+        self.assertFalse(response['error'])
         self.assertTrue(db_review1 + 1, db_review2)
         self.assertTrue(db_value1 + 1, db_value2)
         tmp = DBDiscussionSession.query(ReviewEditValue).order_by(ReviewEditValue.uid.desc()).first()

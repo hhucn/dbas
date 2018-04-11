@@ -3,6 +3,7 @@ import requests
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue
 from dbas.helper.url import UrlManager
+from dbas.logger import logger
 from search.routes import get_statements_with_value_path, get_duplicates_or_reasons_path, \
     get_edits_path, get_suggestions_path
 
@@ -16,7 +17,8 @@ def response_as_dict(query: str) -> dict:
     :param query: path to search at
     :return: return results as a dict
     """
-    return requests.get(query).json()
+    logger('ElasticRequester', 'Call {}'.format(query))
+    return requests.get(query, timeout=1.0).json()
 
 
 def get_suggestions(issue_uid: int, position: bool, search_value: str = '') -> dict:
