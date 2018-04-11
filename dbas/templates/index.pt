@@ -426,7 +426,7 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="${request.static_url('dbas:static/node_modules/jquery-slimscroll/jquery.slimscroll.min.js')}"></script>
 <script src="${request.static_url('dbas:static/node_modules/jquery-waypoints/waypoints.min.js')}"></script>
-<script src="${request.static_url('dbas:static/js/libs/socket.io.js')}"></script>
+<script src="${request.static_url('dbas:static/node_modules/socket.io-client/dist/socket.io.js')}"></script>
 <script src="${request.static_url('dbas:static/js/libs/cookie.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/libs/cookie.min.js')}" tal:condition="not:extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="extras.development_mode"></script>
