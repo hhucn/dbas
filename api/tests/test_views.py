@@ -306,6 +306,30 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
 
+class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
+
+    def test_add_valid_reason(self):
+        # Add position
+        request = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': '18',
+            'attitude': 'agree',
+            'relation': 'undercut'
+        },
+            json_body={'reason': "because i need to"})
+
+        response: Response = apiviews.add_premise_to_argument(request)
+        self.assertEqual(response.status_code, 303, response.body)
+
+    def test_invalid_body(self):
+        request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug})
+
+        request.json_body = {"position": "we should do something entirely else"}
+
+        response: Response = apiviews.add_premise_to_argument(request)
+        self.assertEqual(response.status_code, 400)
+
+
 class TestDiscussionReaction(TestCaseWithConfig):
     def test_invalid_slug_returns_error(self):
         request = construct_dummy_request(match_dict={
