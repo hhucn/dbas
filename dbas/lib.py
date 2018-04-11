@@ -1090,13 +1090,11 @@ def get_public_profile_picture(user: User, size: int = 80):
     :param size: Integer, default 80
     :return: String
     """
-    additional_id = 'y'
-    if user and isinstance(user, User):
-        additional_id = ''
-        if user.settings.should_show_public_nickname:
-            additional_id = 'x'
-        if len(str(user.oauth_provider)) > 0:
-            additional_id = '{}{}'.format(user.oauth_provider, user.oauth_provider_id)
+    additional_id = ''
+    if user.settings.should_show_public_nickname:
+        additional_id = 'x'
+    if len(str(user.oauth_provider)) > 0:
+        additional_id = '{}{}'.format(user.oauth_provider, user.oauth_provider_id)
 
     return __get_gravatar(user, additional_id, size)
 
