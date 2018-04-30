@@ -185,23 +185,29 @@ def valid_position(request):
     return False
 
 
-def valid_new_position_in_body(request):
-    long_error = "JSON Body has to look like this: {\"position\": \"my position\", \"reason\": \"My reason for the position\" "
-
-    if not valid_issue_by_slug(request):
-        return False
-
-    position = request.json_body.get('position')
+def valid_reason_in_body(request):
+    long_error = "JSON Body has to contain the key \'reason\'"
     reason = request.json_body.get('reason')
-
-    if not (position and isinstance(position, str)):
-        add_error(request, "Missing \'position\' in body.", long_error)
 
     if not (reason and isinstance(reason, str)):
         add_error(request, "Missing \'reason\' in body.", long_error)
+        return False
+
+    request.validated["reason-text"] = reason
+
+    return True
+
+
+def valid_new_position_in_body(request):
+    long_error = "JSON Body has to look like this: {\"position\": \"my position\", \"reason\": \"My reason for the position\" "
+
+    position = request.json_body.get('position')
+
+    if not (position and isinstance(position, str)):
+        add_error(request, "Missing \'position\' in body.", long_error)
+        return False
 
     request.validated["position-text"] = position
-    request.validated["reason-text"] = reason
 
     return True
 

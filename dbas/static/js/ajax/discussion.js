@@ -16,7 +16,7 @@ function AjaxDiscussionHandler() {
         $('#' + addPremiseErrorMsg).text('');
         var url = 'set_new_premises_for_argument';
         var d = {
-            arg_uid: arg_uid,
+            argument_id: arg_uid,
             attack_type: relation,
             premisegroups: premisegroups
         };
