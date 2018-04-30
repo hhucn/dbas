@@ -60,6 +60,7 @@ createUser.py
 *.min.js
 production.env
 development.env
+clean.sh
 
 # node
 node_modules/
