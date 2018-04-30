@@ -21,7 +21,7 @@ from dbas.helper.query import get_short_url
 from dbas.helper.url import UrlManager
 from dbas.lib import nick_of_anonymous_user
 from dbas.lib import python_datetime_pretty_print
-from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
+from dbas.query_wrapper import get_enabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -161,7 +161,7 @@ def get_id_of_slug(slug: str):
     :param slug: slug
     :return: uid
     """
-    return get_not_disabled_issues_as_query().filter_by(slug=slug).first()
+    return get_enabled_issues_as_query().filter_by(slug=slug).first()
 
 
 def save_issue_id_in_session(issue_uid: int, request: Request):
@@ -182,8 +182,6 @@ def get_issue_id(request):
     :param request: self.request
     :return: uid
     """
-    # logger('IssueHelper', 'get_issue_id', 'def')
-    # first matchdict, then params, then session
     issue_uid = None
     try:
         issue_uid = request.json_body.get('issue')
@@ -199,7 +197,6 @@ def get_issue_id(request):
     # no issue found
     if not issue_uid:
         return None
-        # issue_uid = get_issue_based_on_header(request)
 
     # save issue in session
     request.session['issue'] = issue_uid
@@ -214,7 +211,7 @@ def get_issue_based_on_header(request):
     """
     # logger('IssueHelper', 'get_issue_based_on_header', 'no saved issue found')
     ui_locales = get_language_from_header(request)
-    db_issues = get_not_disabled_issues_as_query()
+    db_issues = get_enabled_issues_as_query()
     db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
     db_issue = db_issues.filter_by(lang_uid=db_lang.uid).first()
     if not db_issue:

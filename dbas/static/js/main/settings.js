@@ -353,16 +353,6 @@ $(function () {
         });
     });
 
-    // ajax loading animation
-    $(document).on({
-        ajaxStart: function () {
-            setTimeout("$('body').addClass('loading');", 0);
-        },
-        ajaxStop: function () {
-            setTimeout("$('body').removeClass('loading');", 0);
-        }
-    });
-
     /**
      * main function
      */

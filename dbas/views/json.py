@@ -45,7 +45,7 @@ from dbas.validators.core import has_keywords, has_maybe_keywords, validate
 from dbas.validators.database import valid_database_model
 from dbas.validators.discussion import valid_issue_by_id, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
     valid_statement, valid_argument, valid_premisegroup, valid_premisegroups, valid_statement_or_argument, \
-    valid_text_values, valid_text_length_of
+    valid_text_values, valid_text_length_of, valid_any_issue_by_id
 from dbas.validators.lib import add_error
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
@@ -369,7 +369,7 @@ def set_user_lang(request):
 
 
 @view_config(route_name='set_discussion_properties', renderer='json')
-@validate(valid_user, valid_issue_by_id, has_keywords(('property', bool), ('value', str)))
+@validate(valid_user, valid_any_issue_by_id, has_keywords(('property', bool), ('value', str)))
 def set_discussion_properties(request):
     """
     Set availability, read-only, ... flags in the admin panel.
@@ -791,7 +791,24 @@ def fuzzy_search(request):
     db_issue = request.validated['issue']
     statement_uid = request.validated['statement_uid']
     db_user = request.validated['user']
-    return fuzzy_string_matcher.get_prediction(db_user, db_issue, value, mode, statement_uid)
+    prepared_dict = fuzzy_string_matcher.get_prediction(db_user, db_issue, value, mode, statement_uid)
+    for part_dict in prepared_dict['values']:
+        __modifiy_discussion_url(part_dict)
+    return prepared_dict
+
+
+# ajax - for fuzzy search of nickname
+@view_config(route_name='fuzzy_nickname_search', renderer='json')
+@validate(valid_user_optional, has_keywords(('value', str)))
+def fuzzy_nickname_search(request):
+    """
+    ajax interface for fuzzy string search
+
+    :param request: request of the web server
+    :return: json-set with all matched strings
+    """
+    logger('views', 'main: {}'.format(request.json_body))
+    return fuzzy_string_matcher.get_nicknames(request.validated['user'], request.validated['value'])
 
 
 # #######################################
@@ -871,7 +888,7 @@ def review_delete_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.params))
+    logger('views', 'main: {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']

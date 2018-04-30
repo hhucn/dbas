@@ -35,12 +35,23 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
-    def test_valid_issue_by_id_disabled_issue(self):
+    def test_valid_disabled_issue(self):
         request = construct_dummy_request()
         request.session = {'issue': self.issue_disabled.uid}
         response = discussion.valid_issue_by_id(request)
         self.assertFalse(response,
                          'The field-experiment-issue is disabled in the development-seed and can\'t be queried')
+        self.assertIsInstance(response, bool)
+
+    def test_valid_any_issue_by_id(self):
+        request = construct_dummy_request()
+        response = discussion.valid_any_issue_by_id(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request({'issue': self.issue_disabled.uid})
+        response = discussion.valid_any_issue_by_id(request)
+        self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
     def test_valid_issue_not_readonly(self):

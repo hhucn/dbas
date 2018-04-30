@@ -52,7 +52,7 @@ function AjaxSettingsHandler() {
         var fail = function setUserSettingFail() {
             new SettingsHandler().callbackFail(toggle_element, settings_value, service);
         };
-        ajaxSkeleton(url, 'GET', data, done, fail);
+        ajaxSkeleton(url, 'POST', data, done, fail);
     };
 
     /**

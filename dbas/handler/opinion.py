@@ -3,6 +3,7 @@ Provides helping function for getting some opinions.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from typing import List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, ClickedArgument, ClickedStatement, Premise, \
@@ -212,32 +213,45 @@ def __get_text_for_clickcount(len_db_votes, db_user_uid, _t):
         return str(len_db_votes) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
 
-def get_user_with_same_opinion_for_premisegroups_of_arg(argument_uid, db_user, lang, main_page):
+def get_user_with_same_opinion_for_premisegroups_of_args(argument_uids, db_user, lang, main_page):
     """
     Returns nested dictionary with all kinds of information about the votes of the premisegroups.
 
-    :param argument_uid: Argument.uid
+    :param argument_uids: [Argument.uid]
     :param db_user: User
     :param lang: language
     :param main_page: url
     :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
     """
-    logger('OpinionHandler', 'Arguments ' + str(argument_uid))
+    logger('OpinionHandler', 'Arguments ' + str(argument_uids))
 
     opinions = []
     _t = Translator(lang)
     title = _t.get(_.relativePopularityOfStatements)
+    for arg_uid in argument_uids:
+        db_argument = DBDiscussionSession.query(Argument).get(arg_uid)
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
+        if db_premises:
+            opinions.append(get_user_with_same_opinion_for_premisegroups_of_arg(db_argument, db_premises, db_user, lang, main_page))
 
-    statement_dict = dict()
+    return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
+
+
+def get_user_with_same_opinion_for_premisegroups_of_arg(db_argument: Argument, db_premises: List[Premise],
+                                                        db_user: User, lang: str, main_page: str):
+    """
+    Returns nested dictionary with all kinds of information about the votes of the premisegroups.
+
+    :param db_argument:
+    :param db_premises:
+    :param db_user: User
+    :param lang: language
+    :param main_page: url
+    :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
+    """
+    _t = Translator(lang)
     all_users = []
-    db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
-    if not db_premises:
-        statement_dict = {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
-
-    statement_dict['uid'] = str(argument_uid)
     text = db_argument.get_premisegroup_text()
-    statement_dict['text'] = '... {} {}'.format(_t.get(_.because).lower(), text)
 
     premise_statement_uids = [p.statement_uid for p in db_premises]
     db_clicks = DBDiscussionSession.query(ClickedStatement).filter(
@@ -252,12 +266,14 @@ def get_user_with_same_opinion_for_premisegroups_of_arg(argument_uid, db_user, l
         click_user = DBDiscussionSession.query(User).get(click.author_uid)
         users_dict = create_users_dict(click_user, click.timestamp, main_page, lang)
         all_users.append(users_dict)
-    statement_dict['users'] = all_users
-    statement_dict['message'] = __get_text_for_clickcount(len(db_clicks), db_user.uid, _t)
-    statement_dict['seen_by'] = len(db_seens)
-    opinions.append(statement_dict)
 
-    return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
+    return {
+        'uid': str(db_argument.uid),
+        'text': '... {} {}'.format(_t.get(_.because).lower(), text),
+        'users': all_users,
+        'message': __get_text_for_clickcount(len(db_clicks), db_user.uid, _t),
+        'seen_by': len(db_seens)
+    }
 
 
 def get_user_with_same_opinion_for_argument(argument_uid, db_user, lang, main_page):

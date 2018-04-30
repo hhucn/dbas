@@ -233,6 +233,10 @@ var tourStartHeaderTitle = 'tourStartHeaderTitle';
 var tourStartHeaderContent = 'tourStartHeaderContent';
 var tourLoginTitle = 'tourLoginTitle';
 var tourLoginContent = 'tourLoginContent';
+var tourOverviewTitle = 'tourOverviewTitle';
+var tourOverviewContent = 'tourOverviewContent';
+var tourInfosTitle = 'tourInfosTitle';
+var tourInfosContent = 'tourInfosContent';
 var tourIssueTitle = 'tourIssueTitle';
 var tourIssueContent = 'tourIssueContent';
 var tourStartDiscussionTitle = 'tourStartDiscussionTitle';
@@ -331,8 +335,7 @@ var dbas_en = {
     'have done.',
     'euCookiePopupTitle': 'This website uses cookies.',
     'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll ' +
-    'assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose. ' +
-    'All tracked data are saved anonymously with reduced masked IP-adresses.',
+    'assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose.',
     'euCookiePopoupButton1': 'Okay',
     'euCookiePopoupButton2': 'Learn&nbsp;more',
     'empty_news_input': 'News title or text is empty or too short!',
@@ -511,6 +514,10 @@ var dbas_en = {
     'tourStartHeaderContent': '.. or here!',
     'tourLoginTitle': 'Login',
     'tourLoginContent': 'In every case you should register yourself for enter your own statements.',
+    'tourOverviewTitle': 'Issue Overview',
+    'tourOverviewContent': 'This table contains the available topics.',
+    'tourInfosTitle': 'Information',
+    'tourInfosContent': 'Each row displays more information about the topic, whereby the titel opens the discussion.',
     'tourIssueTitle': 'Topic',
     'tourIssueContent': 'Here you can see the topic about current discussion.',
     'tourStartDiscussionTitle': 'First steps',
@@ -587,8 +594,7 @@ var dbas_de = {
     'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
     'euCookiePopupTitle': 'Diese Seite nutzt Cookies.',
     'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen,' +
-    ' nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und ' +
-    'speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
+    ' nehmen Sie alle Cookies unserer Seite an und sind glücklich damit.',
     'euCookiePopoupButton1': 'Okay',
     'euCookiePopoupButton2': 'Mehr&nbsp;Infos',
     'empty_news_input': 'Nachrichten-Titel oder Text ist leer oder zu kurz!',
@@ -769,6 +775,10 @@ var dbas_de = {
     'tourStartHeaderContent': '... oder auch hier.',
     'tourLoginTitle': 'Anmeldung',
     'tourLoginContent': 'Sie sollten sich aber anmelden, um Beiträge verfassen zu können.',
+    'tourOverviewTitle': 'Themenübersicht',
+    'tourOverviewContent': 'Hier sehen Sie alle verfügbaren Diskussionsthemen.',
+    'tourInfosTitle': 'Informationen',
+    'tourInfosContent': 'Jede Reihe enthält weitere Informationen. Wenn Sie den Titel anklicken, rufen Sie die Diskussion auf.',
     'tourIssueTitle': 'Thema',
     'tourIssueContent': 'Hier sehen Sie das aktuelle Diskussionsthema.',
     'tourStartDiscussionTitle': 'Erste Schritte',

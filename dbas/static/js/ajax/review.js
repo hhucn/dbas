@@ -101,7 +101,7 @@ function AjaxReviewHandler() {
         };
         var done = function reviewDeleteArgumentDone() {
             if (window.location.href.indexOf('/review/')) {
-                new Review().reloadPageAndUnlockData(false);
+                new Review().reloadPage();
             }
         };
         var fail = function reviewDeleteArgumentFail(data) {
@@ -121,12 +121,12 @@ function AjaxReviewHandler() {
             is_edit_okay: is_edit_okay,
             review_uid: parseInt(review_uid)
         };
-        var done = function reviewDeleteArgumentDone() {
+        var done = function reviewEditArgumentDone() {
             if (window.location.href.indexOf('/review/')) {
-                new Review().reloadPageAndUnlockData(false);
+                new Review().reloadPage();
             }
         };
-        var fail = function reviewDeleteArgumentFail(data) {
+        var fail = function reviewEditArgumentFail(data) {
             setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
         };
         ajaxSkeleton(url, 'POST', data, done, fail);
@@ -145,7 +145,7 @@ function AjaxReviewHandler() {
         };
         var done = function reviewDuplicateStatementDone() {
             if (window.location.href.indexOf('/review/')) {
-                new Review().reloadPageAndUnlockData(false);
+                new Review().reloadPage();
             }
         };
         var fail = function reviewDuplicateStatementFail(data) {
@@ -167,12 +167,12 @@ function AjaxReviewHandler() {
             review_uid: parseInt(review_uid),
             new_data: new_data
         };
-        var done = function reviewDeleteArgumentDone() {
+        var done = function reviewOptimizationArgumentDone() {
             if (window.location.href.indexOf('/review/')) {
-                new Review().reloadPageAndUnlockData(false);
+                new Review().reloadPageAndUnlockData();
             }
         };
-        var fail = function reviewDeleteArgumentFail(data) {
+        var fail = function reviewOptimizationArgumentFail(data) {
             setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
         };
         ajaxSkeleton(url, 'POST', data, done, fail);
@@ -191,7 +191,7 @@ function AjaxReviewHandler() {
         };
         var done = function reviewDuplicateStatementDone() {
             if (window.location.href.indexOf('/review/')) {
-                new Review().reloadPageAndUnlockData(false);
+                new Review().reloadPage();
             }
         };
         var fail = function reviewDuplicateStatementFail(data) {
@@ -213,7 +213,7 @@ function AjaxReviewHandler() {
         };
         var done = function reviewDuplicateStatementDone() {
             if (window.location.href.indexOf('/review/')) {
-                new Review().reloadPageAndUnlockData(false);
+                new Review().reloadPage();
             }
         };
         var fail = function reviewDuplicateStatementFail(data) {

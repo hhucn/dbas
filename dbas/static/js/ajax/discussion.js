@@ -294,7 +294,7 @@ function AjaxDiscussionHandler() {
             gh.setMaxHeightForDiscussionContainer(resize);
         }
 
-        var url = 'fuzzy_search';
+        var url = type === fuzzy_find_user ? 'fuzzy_nickname_search' : 'fuzzy_search';
         var d = {
             value: value,
             type: type,

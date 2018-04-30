@@ -44,7 +44,7 @@ $(document).ready(function () {
     });
 
     optimizationSkip.click(function () {
-        new Review().reloadPageAndUnlockData(false);
+        new Review().reloadPageAndUnlockData();
     });
 
     sendEdit.click(function () {
@@ -63,7 +63,7 @@ $(document).ready(function () {
     });
 
     deleteSkip.click(function () {
-        new Review().reloadPageAndUnlockData(false);
+        new Review().reloadPage();
     });
 
     /**
@@ -78,7 +78,7 @@ $(document).ready(function () {
     });
 
     editSkip.click(function () {
-        new Review().reloadPageAndUnlockData(false);
+        new Review().reloadPage();
     });
 
     /**
@@ -93,7 +93,7 @@ $(document).ready(function () {
     });
 
     duplicateSkip.click(function () {
-        new Review().reloadPageAndUnlockData(false);
+        new Review().reloadPage();
     });
 
     /**
@@ -108,7 +108,7 @@ $(document).ready(function () {
     });
 
     mergeSkip.click(function () {
-        new Review().reloadPageAndUnlockData(false);
+        new Review().reloadPage();
     });
 
     /**
@@ -123,7 +123,7 @@ $(document).ready(function () {
     });
 
     splitSkip.click(function () {
-        new Review().reloadPageAndUnlockData(false);
+        new Review().reloadPage();
     });
 
     /**

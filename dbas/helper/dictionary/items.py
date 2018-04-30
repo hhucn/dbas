@@ -18,7 +18,7 @@ from dbas.helper.url import UrlManager
 from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_statement, \
     is_author_of_argument
 from dbas.logger import logger
-from dbas.query_wrapper import get_not_disabled_arguments_as_query
+from dbas.query_wrapper import get_enabled_arguments_as_query
 from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \
@@ -314,10 +314,10 @@ class ItemDictHelper(object):
         :param argument_uid: argument.uid
         :return: [Argument]
         """
-        db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
+        db_argument = get_enabled_arguments_as_query().filter_by(uid=argument_uid).first()
 
         db_arguments = []
-        db_arguments_not_disabled = get_not_disabled_arguments_as_query()
+        db_arguments_not_disabled = get_enabled_arguments_as_query()
         if attack_type == Relations.UNDERMINE:
             db_premises = DBDiscussionSession.query(Premise).filter_by(
                 premisegroup_uid=db_argument.premisegroup_uid).all()
@@ -359,7 +359,7 @@ class ItemDictHelper(object):
         slug = self.db_issue.slug
         statements_array = []
 
-        db_arguments = get_not_disabled_arguments_as_query()
+        db_arguments = get_enabled_arguments_as_query()
         db_argument = db_arguments.filter_by(uid=argument_uid).first()
         if not db_argument:
             return {'elements': statements_array, 'extras': {'cropped_list': False}}
@@ -462,9 +462,9 @@ class ItemDictHelper(object):
         else:
             uids = [db_argument.premisegroup_uid]
             if db_argument.conclusion_uid is not None:
-                url = _um.get_url_for_choosing_premisegroup(db_argument.is_supportive, db_argument.conclusion_uid, uids)
+                url = _um.get_url_for_choosing_premisegroup(False, db_argument.is_supportive, db_argument.conclusion_uid, uids)
             else:
-                url = _um.get_url_for_choosing_premisegroup(db_argument.is_supportive, db_argument.argument_uid, uids)
+                url = _um.get_url_for_choosing_premisegroup(True, db_argument.is_supportive, db_argument.argument_uid, uids)
         return url
 
     def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack, gender):

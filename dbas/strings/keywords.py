@@ -534,6 +534,7 @@ class Keywords(Enum):
     priv_access_splits_queue = 'priv_access_splits_queue'
     priv_access_merges_queue = 'priv_access_merges_queue'
     priv_history_queue = 'priv_history_queue'
+    privacy_policy = 'privacy_policy'
     publications = 'publications'
     premiseAndConclusionAreEqual = 'premiseAndConclusionAreEqual'
     queueDelete = 'queueDelete'

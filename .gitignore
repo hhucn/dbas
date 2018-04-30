@@ -39,6 +39,7 @@ getMails.py
 addEnglischDiscussion.py
 pserve.ini
 analyzer/
+clean.sh
 
 # Pycharm
 .idea/

@@ -227,7 +227,7 @@ function Main() {
         });
 
         trianglel.find('.triangle-reference').click(function () {
-            var uid = $(this).parent().parent().attr('id').replace(questionBubbleId + '-', '');
+            var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
             new AjaxReferenceHandler().getReferences([parseInt(uid)], true);
         });
 
@@ -267,7 +267,7 @@ function Main() {
         list.find('.item-reference').click(function () {
             var uids = [];
             $(this).parent().find('label:nth-child(even)').each(function () {
-                uids.push(parseInt(uid)($(this).attr('id')));
+                uids.push(parseInt($(this).attr('id')));
             });
             new AjaxReferenceHandler().getReferences(uids, false);
         });
@@ -673,7 +673,7 @@ function Main() {
                 }
             });
             var url = window.location.href.split('?')[0];
-            var add = url.indexOf(Relations.SUPPORT) === -1 ? 0 : 1;
+            var add = url.indexOf('support') === -1 ? 0 : 1;
             arg = splits[splits.length - 3 - add];
             supportive = splits[splits.length - 2 - add] === 'agree';
             relation = splits[splits.length - 1 - add];

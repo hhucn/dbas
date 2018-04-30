@@ -3,7 +3,6 @@ Collection of pyramids views components of D-BAS' core.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
-
 from typing import Callable, Any
 
 import graphene
@@ -39,7 +38,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate, has_keywords_in_path
-from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_attitude, \
+from dbas.validators.discussion import valid_issue_by_slug, valid_attitude, \
     valid_relation, valid_argument, valid_statement, valid_reaction_arguments, valid_support, \
     valid_list_of_premisegroups_in_path, valid_premisegroup_in_path
 from dbas.validators.user import valid_user, valid_user_optional
@@ -63,6 +62,8 @@ def __modify_discussion_url(prep_dict: dict):
         for i, el in enumerate(prep_dict[x][y]):
             if '/' in el.get('url', ''):
                 prep_dict[x][y][i]['url'] = '/discuss' + prep_dict[x][y][i]['url']
+            if '/' in el.get('attack_url', ''):
+                prep_dict[x][y][i]['attack_url'] = '/discuss' + prep_dict[x][y][i]['attack_url']
 
     # modify urls for topic switch
     for i, el in enumerate(prep_dict['issues']['all']):
@@ -299,7 +300,8 @@ def main_notifications(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_notifications', 'main')
-    return __main_dict(request, 'Message')
+    _tn = Translator(get_language_from_cookie(request))
+    return __main_dict(request, _tn.get(_.message))
 
 
 # news page for everybody
@@ -383,6 +385,20 @@ def main_imprint(request):
     prep_dict = __main_dict(request, Translator(get_language_from_cookie(request)).get(_.imprint))
     prep_dict.update({'imprint': get_changelog(5)})
     return prep_dict
+
+
+# privacy policy
+@view_config(route_name='main_privacy', renderer='../templates/privacy.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
+def main_privacy(request):
+    """
+    View configuration for the privacy.
+
+    :param request: current request of the server
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('main_privacy', 'main')
+    return __main_dict(request, Translator(get_language_from_cookie(request)).get(_.privacy_policy))
 
 
 # faq
@@ -586,7 +602,7 @@ def discussion_init(request):
 
 # attitude page
 @view_config(route_name='discussion_attitude', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional, valid_position)
+@validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}))
 def discussion_attitude(request):
     """
     View configuration for discussion step, where we will ask the user for her attitude towards a statement.
@@ -597,12 +613,12 @@ def discussion_attitude(request):
     """
     logger('discussion_attitude', 'request.matchdict: {}'.format(request.matchdict))
 
-    db_position = request.validated['position']
+    db_statement = request.validated['statement']
     db_issue = request.validated['issue']
     db_user = request.validated['user']
 
     history = history_handler.handle_history(request, db_user, db_issue)
-    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
+    prepared_discussion = discussion.attitude(db_issue, db_user, db_statement, history, request.path)
     __modify_discussion_url(prepared_discussion)
 
     rdict = prepare_request_dict(request)
@@ -873,7 +889,7 @@ def main_review(request):
 
 
 # content page for reviews
-@view_config(route_name='review_content', renderer='../templates/review-discussion.pt', permission='use')
+@view_config(route_name='review_content', renderer='../templates/review-content.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
 def review_content(request):
     """
@@ -898,7 +914,7 @@ def review_content(request):
 
     title = _tn.get(_.review)
     if subpage_name in review_queue_helper.title_mapping:
-        title = review_queue_helper.title_mapping[subpage_name]
+        title = _tn.get(review_queue_helper.title_mapping[subpage_name])
 
     prep_dict = __main_dict(request, title)
     prep_dict.update({

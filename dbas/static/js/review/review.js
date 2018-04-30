@@ -196,12 +196,16 @@ function Review() {
 
     /**
      *
-     * @param only_unlock
      */
-    this.reloadPageAndUnlockData = function (only_unlock) {
+    this.reloadPageAndUnlockData = function () {
         new AjaxReviewHandler().un_lockOptimizationReview($('#review-id').data('id'), false, undefined);
-        if (!only_unlock) {
-            location.reload(true);
-        }
+        location.reload(true);
+    };
+
+    /**
+     *
+     */
+    this.reloadPage = function () {
+        location.reload(true);
     };
 }

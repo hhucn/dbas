@@ -28,15 +28,18 @@ function InteractionHandler() {
      * @param statements_uids
      */
     this.callbackIfDoneForSendCorrectureOfStatement = function (data, statements_uids) {
-        if (data.info.length === 0) {
+        console.log(data);
+        if (!data.error && data.info.length === 0) {
             setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));
             new PopupHandler().hideAndClearEditStatementsPopup();
             // find the list element and manipulate the edit buttons
             var parentStatement = $('#' + statements_uids[0]).parent();
             parentStatement.find('#item-edit-disabled-hidden-wrapper').show();
             parentStatement.find('.item-edit').remove();
-        } else {
+        } else if (!data.error && data.info.length !== 0) {
             setGlobalInfoHandler('Ohh!', data.info);
+        } else {
+            setGlobalErrorHandler('Ohh!', data.info);
         }
     };
 

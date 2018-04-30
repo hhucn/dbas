@@ -28,13 +28,12 @@ def get_partial_graph_for_statement(uid: int, db_issue: Issue, path: str):
     # if we have a attitude, we are asking for supporting/attacking a conclusion
     if 'attitude' in path:
         db_statement = DBDiscussionSession.query(Statement).get(uid)
-        db_argument = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_statement.uid).first()
-        if not db_argument:
+        if not db_statement:
             return get_d3_data(db_issue)
-        uid = db_argument.uid
+        uid = db_statement.uid
 
     # special case - dont know branche
-    if 'justify' in path and '/d' in path:
+    if 'justify' in path and '/dontknow' in path:
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         db_premise = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).first()
         uid = db_premise.statement_uid

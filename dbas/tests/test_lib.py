@@ -124,7 +124,7 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_all_arguments_by_statement(-1), None)
 
     def test_get_global_url(self):
-        self.assertIn('dbas.cs.uni-duesseldorf.de', lib.get_global_url())
+        self.assertIn('https://dbas.cs.uni-duesseldorf.de', lib.get_global_url())
 
     def test_get_user_by_private_or_public_nickname(self):
         self.assertIsNotNone(lib.get_user_by_case_insensitive_nickname('tobias'))

@@ -8,7 +8,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Argument, Premise, Issue, ClickedStatement
 
 
-def get_not_disabled_statement_as_query():
+def get_enabled_statement_as_query():
     """
     Returns query with all statements, which are not disabled
 
@@ -17,7 +17,7 @@ def get_not_disabled_statement_as_query():
     return DBDiscussionSession.query(Statement).filter_by(is_disabled=False)
 
 
-def get_not_disabled_arguments_as_query():
+def get_enabled_arguments_as_query():
     """
     Returns query with all arguments, which are not disabled
 
@@ -26,7 +26,7 @@ def get_not_disabled_arguments_as_query():
     return DBDiscussionSession.query(Argument).filter_by(is_disabled=False)
 
 
-def get_not_disabled_premises_as_query():
+def get_enabled_premises_as_query():
     """
     Returns query with all premises, which are not disabled
 
@@ -35,7 +35,7 @@ def get_not_disabled_premises_as_query():
     return DBDiscussionSession.query(Premise).filter_by(is_disabled=False)
 
 
-def get_not_disabled_issues_as_query():
+def get_enabled_issues_as_query():
     """
     Returns query with all issues, which are not disabled
 

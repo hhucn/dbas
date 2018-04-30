@@ -516,7 +516,7 @@ function DiscussionBarometer() {
      */
     function getRectColor(i, selector) {
         if (selector === 'inner-rect') {
-            return getNormalColorFor(i);
+            return getBaseColorFor(i);
         }
         return getLightColorFor(i);
     }
@@ -671,7 +671,7 @@ function DiscussionBarometer() {
             .enter().append("path")
             .attr({
                 'fill': function (d, i) {
-                    return getNormalColorFor(i);
+                    return getBaseColorFor(i);
                 },
                 'stroke': "gray", d: innerCircle,
                 'transform': "translate(240,230)",
@@ -829,7 +829,7 @@ function DiscussionBarometer() {
             el = 'rect'; // highlight sector on hover
         }
         d3.select('#inner-' + el + '-' + index).attr('fill', getDarkColorFor(index));
-        d3.select('#outer-' + el + '-' + index).attr('fill', google_colors[index % google_colors.length][3]);
+        d3.select('#outer-' + el + '-' + index).attr('fill', getNormalColorFor(index));
         $('#legendLi_' + index).css('background', '#CFD8DC');
     }
 
@@ -855,7 +855,7 @@ function DiscussionBarometer() {
         } else {
             el = 'rect'; // fill chart element with originally color
         }
-        d3.select('#inner-' + el + '-' + index).attr('fill', getNormalColorFor(index));
+        d3.select('#inner-' + el + '-' + index).attr('fill', getBaseColorFor(index));
         d3.select('#outer-' + el + '-' + index).attr('fill', getLightColorFor(index));
     }
 
@@ -924,14 +924,14 @@ function DiscussionBarometer() {
         var div, label, ul;
         ul = $('<ul>').attr({'class': 'legendUl', 'style': 'padding-left: 0em; list-style-type: none;'});
         $.each(usersDict, function (key, value) {
-            div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getNormalColorFor(key)).css('border-radius', '0.2em');
+            div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getBaseColorFor(key)).css('border-radius', '0.2em');
             label = $('<label>').attr('class', 'legendLabel').html(value.text);
             ul.append($('<li>').attr('id', 'legendLi_' + key).css('border-radius', '0.2em').append(div).append(label));
         });
         _global_dialog.find('.col-md-5').append(ul);
     }
 
-    function getNormalColorFor(index) {
+    function getBaseColorFor(index) {
         return google_colors[index % google_colors.length][0];
     }
 
@@ -941,6 +941,10 @@ function DiscussionBarometer() {
 
     function getLightColorFor(index) {
         return google_colors[index % google_colors.length][2];
+    }
+
+    function getNormalColorFor(index) {
+        return google_colors[index % google_colors.length][3];
     }
 
     function getDarkColorFor(index) {

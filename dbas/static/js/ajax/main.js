@@ -13,20 +13,19 @@
  */
 function ajaxSkeleton(url, method, data, ajaxDone, ajaxFail) {
     'use strict';
-    var csrf_token = $('#' + hiddenCSRFTokenId).val();
     $.ajax({
         url: url,
         method: method,
         dataType: 'json',
         contentType: 'application/json',
         data: JSON.stringify(data),
-        headers: {'X-CSRF-Token': csrf_token}
+        headers: {'X-CSRF-Token': $('#' + hiddenCSRFTokenId).val()}
     }).done(function (data) {
         ajaxDone(data);
     }).fail(function (data) {
         if (data.status === 200) {
             location.reload(true);
-        } else if (data.statusText === 'Bad CSRF Token' || !('errors' in data.responseJSON)) {
+        } else if (data.statusText === 'Bad CSRF Token' || data.responseJSON && !('errors' in data.responseJSON)) {
             setGlobalErrorHandler(_t(ohsnap), _t(requestFailedBadToken));
         } else {
             ajaxFail(data);

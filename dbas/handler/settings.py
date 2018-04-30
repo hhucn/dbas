@@ -2,7 +2,7 @@ import transaction
 
 from dbas.database.discussion_model import User
 from dbas.handler import user
-from dbas.lib import get_public_profile_picture
+from dbas.lib import get_profile_picture
 from dbas.strings.keywords import Keywords as _
 
 
@@ -18,7 +18,7 @@ def set_settings(url, db_user: User, service, settings_value, _tn):
     :return: public_nick, public_page_url, gravatar_url, error
     """
     error = ''
-    public_nick = db_user.public_nickname
+    public_nick = db_user.global_nickname
     db_setting = db_user.settings
 
     if service == 'mail':
@@ -31,13 +31,13 @@ def set_settings(url, db_user: User, service, settings_value, _tn):
             db_user.set_public_nickname(db_user.nickname)
         elif db_user.nickname == db_user.public_nickname:
             user.refresh_public_nickname(db_user)
-        public_nick = db_user.public_nickname
+        public_nick = db_user.global_nickname
     else:
         error = _tn.get(_.keyword)
 
     transaction.commit()
     public_page_url = '{}/user/{}'.format(url, db_user.uid)
-    gravatar_url = get_public_profile_picture(db_user, 80)
+    gravatar_url = get_profile_picture(db_user, 80)
 
     return {
         'error': error,

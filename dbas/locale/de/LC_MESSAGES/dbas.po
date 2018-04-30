@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-03-27 08:36+0200\n"
+"POT-Creation-Date: 2018-04-30 13:21+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Christian Meter <meter@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -248,40 +248,40 @@ msgid "go_back_to_the_discussion"
 msgstr "Zurück zur Diskussion!"
 
 #. Default: About
-#: templates/index.pt:40
+#: templates/index.pt:42
 msgid "about"
 msgstr "Über"
 
 #. Default: Services
-#: templates/index.pt:43
+#: templates/index.pt:45
 msgid "services"
 msgstr "Service"
 
 #. Default: Github
-#: templates/index.pt:46
+#: templates/index.pt:48
 msgid "github"
 msgstr "Github"
 
 #. Default: News
-#: templates/index.pt:52 templates/snippet-footer.pt:42 templates/news.pt:6
+#: templates/index.pt:54 templates/snippet-footer.pt:47 templates/news.pt:6
 msgid "news"
 msgstr "Neuigkeiten"
 
 #. Default: Contact
 #. Default: Kontakt:
-#: templates/index.pt:55 templates/imprint.pt:23 templates/snippet-footer.pt:15
+#: templates/index.pt:57 templates/imprint.pt:22 templates/snippet-footer.pt:20
 msgid "contact"
 msgstr "Kontakt"
 
 #. Default: The solution for every Large Scale Online-Discussion
-#: templates/index.pt:83
+#: templates/index.pt:85
 msgid "landing-page-heading"
 msgstr "Die Lösung für alle Online-Diskussionen"
 
 #. Default: Welcome to D-BAS! This is our Dialog-Based Argumentation System. It
 #. offers a clear discussion structure, a modern web interface, a decentralized
 #. moderation system and is easy to use for everyone!
-#: templates/index.pt:87
+#: templates/index.pt:89
 msgid "welcome_to_dbas"
 msgstr ""
 "Willkommen bei D-BAS - dem dialogbasierten Argumentationssystem. Es ist klar "
@@ -289,17 +289,17 @@ msgstr ""
 "Moderationsstruktur und ist für jeden schnell und einfach zu nutzen!"
 
 #. Default: Find Out More
-#: templates/index.pt:94
+#: templates/index.pt:96
 msgid "find_out_more"
 msgstr "Mehr lesen"
 
 #. Default: or start directly
-#: templates/index.pt:99
+#: templates/index.pt:101
 msgid "start_directly"
 msgstr "direkt starten"
 
 #. Default: We've got what you need!
-#: templates/index.pt:110
+#: templates/index.pt:112
 msgid "we_have_you_need"
 msgstr "Wir haben, was Sie brauchen: Strukturierte Diskussionen!"
 
@@ -310,7 +310,7 @@ msgstr "Wir haben, was Sie brauchen: Strukturierte Diskussionen!"
 #. the potential to strengthen the acceptance and the quality of them. We offer
 #. a novel approach for large scale online-discussion. Feel free to try it out
 #. now!
-#: templates/index.pt:114
+#: templates/index.pt:116
 msgid "landing_page_intro"
 msgstr ""
 "Mit dem Internet haben wir eine technische Möglichkeit, mit der Teilnehmer/"
@@ -322,216 +322,227 @@ msgstr ""
 "Teilnehmer/innen problemfrei miteinander diskutieren kann."
 
 #. Default: Get Started
-#: templates/index.pt:122
+#: templates/index.pt:124
 msgid "get_started"
 msgstr "Gleich loslegen"
 
 #. Default: At Your Service
-#: templates/index.pt:134
+#: templates/index.pt:136
 msgid "at_your_service"
 msgstr "Zu Ihren Diensten"
 
 #. Default: Easy to Use
-#: templates/index.pt:144
+#: templates/index.pt:146
 msgid "easy_to_use"
 msgstr "Einfach zu nutzen"
 
 #. Default: No complicated argumentation! Step-by-step dialogs!
-#: templates/index.pt:145
+#: templates/index.pt:147
 msgid "easy_to_use_text"
 msgstr ""
 "Keine komplizierte Argumentation. Einfache Schritt-für-Schritt Dialoge."
 
 #. Default: Clear Structure
-#: templates/index.pt:152
+#: templates/index.pt:154
 msgid "clear_structure"
 msgstr "Klare Strukturen"
 
 #. Default: Argument-maps are to messy! Let's use a modern chat-interface!
-#: templates/index.pt:153
+#: templates/index.pt:155
 msgid "clear_structure_text"
 msgstr ""
 "Argumentkarten sind echt hässlich. Nutzen wir doch moderne Chat-Strukturen."
 
 #. Default: Decentralized Mods
-#: templates/index.pt:160
+#: templates/index.pt:162
 msgid "dec_mods"
 msgstr "Verteilte Moderation"
 
 #. Default: Give the power to the crowd! They know how to use it!
-#: templates/index.pt:161
+#: templates/index.pt:163
 msgid "dec_mods_text"
 msgstr "Die User haben die Macht. Sie wissen, was man damit macht."
 
 #. Default: Proved Scientifically
-#: templates/index.pt:169
+#: templates/index.pt:171
 msgid "developed_at_uni"
 msgstr "Wissenschaftlich Belegt"
 
 #. Default: D-BAS was developed at the university in cooperation with city
 #. councils.
-#: templates/index.pt:170
+#: templates/index.pt:172
 msgid "developed_at_uni_text"
 msgstr "D-BAS wurde an einer Uni in Zusammenarbeit mit Kommunen entwickelt."
 
 #. Default: Tested by a Crowd
-#: templates/index.pt:180
+#: templates/index.pt:182
 msgid "tested_by_crowd"
 msgstr "Von allen getestet"
 
 #. Default: D-BAS was test by many students and citizens!
-#: templates/index.pt:181
+#: templates/index.pt:183
 msgid "tested_by_crowd_text"
 msgstr "D-BAS wurde wissenschaftlich evaluiert und von Vielen getestet."
 
 #. Default: Ready to Ship
-#: templates/index.pt:189
+#: templates/index.pt:191
 msgid "ready_to_ship"
 msgstr "Direkt einsatzbereit"
 
 #. Default: Easy to deploy and maintain, because it is shipped in Docker
 #. Containers!
-#: templates/index.pt:190
+#: templates/index.pt:192
 msgid "ready_to_ship_text"
 msgstr "Einfach aufzusetzen und zu warten, denn wir nutzen Docker."
 
 #. Default: Up to Date
-#: templates/index.pt:198
+#: templates/index.pt:200
 msgid "up_to_date"
 msgstr "Immer Aktuell"
 
 #. Default: We update dependencies to keep things fresh.
-#: templates/index.pt:199
+#: templates/index.pt:201
 msgid "up_to_date_text"
 msgstr "Wir halten alles aktuell und frisch."
 
 #. Default: Made with Love
-#: templates/index.pt:207
+#: templates/index.pt:209
 msgid "made_with_love"
 msgstr "Mit Liebe gemacht"
 
 #. Default: You have to make your software with love these days!
-#: templates/index.pt:208
+#: templates/index.pt:210
 msgid "made_with_love_text"
 msgstr "Von Wissenschaftlern in Düsseldorf gemacht."
 
 #. Default: Free Download at Github!
-#: templates/index.pt:219
+#: templates/index.pt:221
 msgid "free_at_github"
 msgstr "Direkter Download auf GitHub"
 
 #. Default: Download Now
-#: templates/index.pt:222
+#: templates/index.pt:224
 msgid "download_now"
 msgstr "Jetzt laden"
 
 #. Default: From the University into Practice
-#: templates/index.pt:231
+#: templates/index.pt:233
 msgid "from_uni_to_pratice"
 msgstr "Von der Universität in die Praxis"
 
 #. Default: This work is part of the graduate school on
-#: templates/index.pt:233
+#: templates/index.pt:235
 msgid "work_based_on"
 msgstr "Dieses Projekt ist Teil des Graduierten-Kollegs"
 
 #. Default: Online-Participation
-#: templates/index.pt:236 templates/index.pt:241
+#: templates/index.pt:238 templates/index.pt:243
 msgid "online_participation"
 msgstr "Online-Partizipation"
 
 #. Default: It is funded by the
-#: templates/index.pt:244
+#: templates/index.pt:246
 msgid "funded_by"
 msgstr "Es wird finanziert vom"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: templates/index.pt:247
+#: templates/index.pt:249
 msgid "ministry_of_innovation"
 msgstr ""
 "Ministerium für Innovation, Wissenschaft und Forschung des Landes Nordrhein-"
 "Westfalen"
 
 #. Default: Heinrich-Heine-University Duesseldorf
-#: templates/index.pt:261
+#: templates/index.pt:263
 msgid "hhu"
 msgstr "Heinrich-Heine-Universität Düsseldorf"
 
 #. Default: Graduation School on Online Participation
-#: templates/index.pt:269
+#: templates/index.pt:271
 msgid "graduate_school_online_participation"
 msgstr "Fortschrittskolleg Online-Partizipation"
 
 #. Default: University of Applied Sciences for Public Administration and
 #. management of North Rhine-Westphalia
-#: templates/index.pt:278
+#: templates/index.pt:280
 msgid "fhoev"
 msgstr "Fachhochschule für öffentliche Verwaltung NRW"
 
 #. Default: Duesseldorf Institut of Internet and Democracy
-#: templates/index.pt:288
+#: templates/index.pt:290
 msgid "diid"
 msgstr "Düsseldorfer Institut für Internet und Demokratie"
 
 #. Default: Latest News
-#: templates/index.pt:299
+#: templates/index.pt:301
 msgid "latest_news"
 msgstr "Aktuelle Nachrichten"
 
 #. Default: Previous
-#: templates/index.pt:329
+#: templates/index.pt:331
 msgid "previous"
 msgstr "Zurück"
 
 #. Default: Next
-#: templates/index.pt:333
+#: templates/index.pt:335
 msgid "next"
 msgstr "Vor"
 
 #. Default: Go to the news
-#: templates/index.pt:342
+#: templates/index.pt:344
 msgid "go_to_news"
 msgstr "Zu den News"
 
 #. Default: Statistics
-#: templates/index.pt:353
+#: templates/index.pt:355
 msgid "statistics"
 msgstr "Statistiken"
 
 #. Default: Arguments
-#: templates/index.pt:361
+#: templates/index.pt:363
 msgid "arguments"
 msgstr "Argumente"
 
 #. Default: Discussions
-#: templates/index.pt:367
+#: templates/index.pt:369
 msgid "discussions"
 msgstr "Diskussionen"
 
 #. Default: Users
-#: templates/index.pt:374
+#: templates/index.pt:376
 msgid "users"
 msgstr "Benutzer"
 
 #. Default: Reviews
-#: templates/index.pt:381
+#: templates/index.pt:383
 msgid "reviews"
 msgstr "Überprüfungen"
 
 #. Default: Let's Get In Touch!
-#: templates/index.pt:392
+#: templates/index.pt:394
 msgid "get_in_touch"
 msgstr "Treten Sie mit uns in Kontakt"
 
 #. Default: Ready to start your next discussion with us? That's great! Give us
 #. a call or send us an email and we will get back to you as soon as possible!
-#: templates/index.pt:394
+#: templates/index.pt:396
 msgid "ready_to_start_with_us"
 msgstr ""
 "Sie möchten Ihre nächste Diskussion mit uns starten? Das ist super! Rufen "
 "Sie uns einfach an oder schreiben Sie uns eine E-Mail. Wir werden uns "
 "schnellstmöglich bei Ihnen melden!"
+
+#. Default: Privacy Policy
+#. Default: privacy_policy
+#: templates/privacy.pt:6 templates/snippet-footer.pt:15
+msgid "privacy_policy"
+msgstr "Datenschutzrichtlinien"
+
+#. Default: This is our privacy policy according to the DSVGO
+#: templates/privacy.pt:7
+msgid "privacy_policy_text"
+msgstr "Unsere Datenschutzrichtlinien gemäß der DSVGO"
 
 #. Default: Frequent Questions
 #: templates/faq.pt:6
@@ -999,7 +1010,7 @@ msgstr "Von"
 msgid "viewed"
 msgstr "Gesehen von"
 
-#. Default: Attacks
+#. Default: Relations
 #: templates/review-content.pt:426
 msgid "attacks"
 msgstr "Attackiert von"
@@ -1065,58 +1076,58 @@ msgid "success"
 msgstr "Erfolg:"
 
 #. Default: Start
-#: templates/discussion.pt:199
+#: templates/discussion.pt:195
 msgid "start"
 msgstr "Start"
 
 #. Default: Now
-#: templates/discussion.pt:204
+#: templates/discussion.pt:200
 msgid "now"
 msgstr "Jetzt"
 
 #. Default: Complete View
-#: templates/discussion.pt:220
+#: templates/discussion.pt:216
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Default View
-#: templates/discussion.pt:224
+#: templates/discussion.pt:220
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/discussion.pt:228
+#: templates/discussion.pt:224
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/discussion.pt:232
+#: templates/discussion.pt:228
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: Statements
-#: templates/discussion.pt:236 templates/discussion-overview.pt:31
+#: templates/discussion.pt:232 templates/discussion-overview.pt:31
 #: templates/discussion-overview.pt:120 templates/discussion-start.pt:23
 msgid "statements"
 msgstr "Aussagen"
 
 #. Default: My path
-#: templates/discussion.pt:240 templates/discussion.pt:244
+#: templates/discussion.pt:236 templates/discussion.pt:240
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/discussion.pt:248
+#: templates/discussion.pt:244
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/discussion.pt:253
+#: templates/discussion.pt:249
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
-#. Default: Attacks
-#: templates/discussion.pt:258
+#. Default: Relations
+#: templates/discussion.pt:254
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
 
@@ -1184,97 +1195,60 @@ msgstr "Admin"
 msgid "logout"
 msgstr "Abmelden"
 
-#. Default: Imprint, Copyrights and Used Software
-#: templates/imprint.pt:6
-msgid "imprint_copyrights_software_privacy"
-msgstr "Impressum, Urheberrecht, Software und Datenschutz"
-
-#. Default: Our imprint, a list of used software and the latest changelog
-#: templates/imprint.pt:8
-msgid "imprint_list_of_software_and_changelog"
-msgstr ""
-"Unser Impressum, die verwendete Software, die letzten Änderungen und unsere "
-"Datenschutzrichtlinien"
-
+#. Default: Imprint
 #. Default: Impressum
-#: templates/imprint.pt:21
+#: templates/imprint.pt:6 templates/imprint.pt:20
+#: templates/snippet-footer.pt:10
 msgid "imprint"
 msgstr "Impressum"
 
+#. Default: Our imprint, a list of used software and the latest changelog
+#: templates/imprint.pt:7
+msgid "imprint_list_of_software_and_changelog"
+msgstr "Unser Impressum, die verwendete Software und die letzten Änderungen"
+
 #. Default: Angaben gemäß § 5 TMG
-#: templates/imprint.pt:22
+#: templates/imprint.pt:21
 msgid "data_tmg"
 msgstr "Angaben gemäß § 5 TMG"
 
 #. Default: Institut für Informatik
-#: templates/imprint.pt:30
+#: templates/imprint.pt:29
 msgid "department"
 msgstr "Institut für Informatik"
 
 #. Default: Telefon:
-#: templates/imprint.pt:34
+#: templates/imprint.pt:33
 msgid "phone"
 msgstr "Telefonnr.:"
 
 #. Default: Weiteres im
-#: templates/imprint.pt:38
+#: templates/imprint.pt:37
 msgid "weiteres im"
 msgstr "Weiteres im"
 
 #. Default: Impressum der HHU
-#: templates/imprint.pt:39
+#: templates/imprint.pt:38
 msgid "imprint_hhu"
 msgstr "Impressum der Heinrich-Heine-Universität Düsseldorf"
 
 #. Default: or checkout the
-#: templates/imprint.pt:40
+#: templates/imprint.pt:39
 msgid "or_checkout_the"
 msgstr "oder weiteres in der"
 
 #. Default: license of D-BAS (MIT)
-#: templates/imprint.pt:42
+#: templates/imprint.pt:41
 msgid "licence_dbas"
 msgstr "Lizenz von (D-BAS)"
 
-#. Default: Matomo
-#: templates/imprint.pt:45
-msgid "disclaimer_analytics"
-msgstr "Matomo Analytics"
-
-#. Default: Dieses Angebot benutzt Matomo.org, eine Open-Source-Software zur
-#. statistischen Auswertung der Nutzerzugriffe. Matomo verwendet sog.
-#. “Cookies”, Textdateien, die auf dem Computer der Nutzer gespeichert werden
-#. und die eine Analyse der Benutzung der Website durch die Nutzer ermöglichen.
-#. Die durch den Cookie erzeugten Informationen über die Benutzung dieses
-#. Agebotes werden auf dem Server des Anbieters in Deutschland gespeichert. Die
-#. IP-Adresse wird sofort nach der Verarbeitung und vor deren Speicherung
-#. anonymisiert. Nutzer können die Installation der Cookies durch eine
-#. entsprechende Einstellung Ihrer Browser-Software verhindern; Der Anbieter
-#. weisen die Nutzer jedoch darauf hin, dass sie in diesem Fall gegebenenfalls
-#. nicht sämtliche Funktionen dieser Website vollumfänglich nutzen können.
-#: templates/imprint.pt:46
-msgid "disclaimer_analytics_content"
-msgstr ""
-"Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte "
-"wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch "
-"keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der "
-"jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten "
-"Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße "
-"überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht "
-"erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist "
-"jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. "
-"Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend "
-"entfernen. Die Oberfläche von D-BAS ist einfach und klar struktuert. An "
-"jeder Stelle sind die Auswahlen für den Benutzer begrenzt, aber niemals "
-"einschränkend."
-
 #. Default: Copyrights and used Software
-#: templates/imprint.pt:67
+#: templates/imprint.pt:45
 msgid "copyright_and_used_software"
 msgstr "Verwendete Software"
 
 #. Default: Changes
-#: templates/imprint.pt:133
+#: templates/imprint.pt:122
 msgid "changes"
 msgstr "Versionsänderungen"
 
@@ -1499,33 +1473,28 @@ msgstr "Rückgängig machen"
 msgid "cancel"
 msgstr "Abbrechen"
 
-#. Default: Imprint, Copyrights and Privacy
-#: templates/snippet-footer.pt:10
-msgid "imprint_copyright_privacy"
-msgstr "Impressum, Urheberrecht und Datenschutz"
-
 #. Default: RSS
-#: templates/snippet-footer.pt:27
+#: templates/snippet-footer.pt:32
 msgid "rss"
 msgstr "RSS"
 
 #. Default: Help
-#: templates/snippet-footer.pt:32
+#: templates/snippet-footer.pt:37
 msgid "Help"
 msgstr "Hilfe"
 
 #. Default: Docs
-#: templates/snippet-footer.pt:37
+#: templates/snippet-footer.pt:42
 msgid "Documentation"
 msgstr "Dokumentation"
 
 #. Default: Github
-#: templates/snippet-footer.pt:47
+#: templates/snippet-footer.pt:52
 msgid "Github"
 msgstr "Github"
 
 #. Default: Field Experiment
-#: templates/snippet-footer.pt:52
+#: templates/snippet-footer.pt:57
 msgid "field_experiment"
 msgstr "Feldstudie"
 
@@ -2445,6 +2414,27 @@ msgstr "Die Seite enthält eine Übersicht aller Diskussionen:"
 #: templates/discussion-start.pt:24
 msgid "activity_last_30_days"
 msgstr "Aktivität in den letzten 30 Tagen"
+
+#~ msgid "disclaimer_analytics"
+#~ msgstr "Matomo Analytics"
+
+#~ msgid "disclaimer_analytics_content"
+#~ msgstr ""
+#~ "Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren "
+#~ "Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden "
+#~ "Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten "
+#~ "Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten "
+#~ "verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung "
+#~ "auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum "
+#~ "Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche "
+#~ "Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte "
+#~ "einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von "
+#~ "Rechtsverletzungen werden wir derartige Links umgehend entfernen. Die "
+#~ "Oberfläche von D-BAS ist einfach und klar struktuert. An jeder Stelle "
+#~ "sind die Auswahlen für den Benutzer begrenzt, aber niemals einschränkend."
+
+#~ msgid "imprinty"
+#~ msgstr "Impressum"
 
 #~ msgid "involved_users"
 #~ msgstr "Involvierte Nutzende"
@@ -3448,9 +3438,6 @@ msgstr "Aktivität in den letzten 30 Tagen"
 
 #~ msgid "news_intro"
 #~ msgstr "Dies, wird so etwas wie die Nachrichten-Seite"
-
-#~ msgid "privacy_policy"
-#~ msgstr "Datenschutzrichtlinien"
 
 #~ msgid "special_rights"
 #~ msgstr "Besondere Recht"

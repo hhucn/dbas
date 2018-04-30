@@ -27,6 +27,7 @@ def valid_issue_by_id(request):
     """
 
     issue_id = issue_handler.get_issue_id(request)
+
     if issue_id:
         db_issue: Issue = DBDiscussionSession.query(Issue).get(issue_id)
 
@@ -38,6 +39,24 @@ def valid_issue_by_id(request):
             return True
 
     add_error(request, 'Invalid issue')
+    return False
+
+
+def valid_any_issue_by_id(request):
+    """
+    Query issue from database and put it into the request, even if it is disabled
+
+    :param request:
+    :return:
+    """
+
+    issue_id = issue_handler.get_issue_id(request)
+    if issue_id:
+        db_issue: Issue = DBDiscussionSession.query(Issue).get(issue_id)
+        request.validated['issue'] = db_issue
+        return True
+
+    add_error(request, 'Invalid issue {}'.format(issue_id))
     return False
 
 

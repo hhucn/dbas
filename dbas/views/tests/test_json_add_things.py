@@ -11,7 +11,8 @@ from dbas.database.discussion_model import Issue, Statement, TextVersion, Argume
     ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument, \
     ClickedStatement, SeenStatement, SeenArgument
 from dbas.lib import Relations
-from dbas.views import set_new_premises_for_argument, set_new_start_premise
+from dbas.views import set_new_premises_for_argument, set_new_start_premise, set_correction_of_some_statements, \
+    set_new_issue, set_statements_as_seen
 
 
 class AjaxAddThingsTest(unittest.TestCase):
@@ -124,18 +125,17 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_correction_of_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_correction_of_some_statements as ajax
         db_review1 = DBDiscussionSession.query(ReviewEdit).count()
         db_value1 = DBDiscussionSession.query(ReviewEditValue).count()
         elements = [{'text': 'some new text for a correction', 'uid': 19}]
         request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'}, params={}, json_body={
             'elements': elements
         })
-        response = ajax(request)
+        response = set_correction_of_some_statements(request)
         db_review2 = DBDiscussionSession.query(ReviewEdit).count()
         db_value2 = DBDiscussionSession.query(ReviewEditValue).count()
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
+        self.assertFalse(response['error'])
         self.assertEqual(db_review1 + 1, db_review2)
         self.assertEqual(db_value1 + 1, db_value2)
         tmp = DBDiscussionSession.query(ReviewEditValue).order_by(ReviewEditValue.uid.desc()).first()
@@ -146,11 +146,10 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_correction_of_statement_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
-        from dbas.views import set_correction_of_some_statements as ajax
         request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'}, params={}, json_body={
             'elements': [{}]
         }, )
-        response = ajax(request)
+        response = set_correction_of_some_statements(request)
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
         self.assertGreater(len(json.loads(response.body.decode('utf-8'))['errors']), 0)
@@ -167,10 +166,9 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_new_issue(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_new_issue as ajax
 
         request = self.__get_dummy_request_for_new_issue()
-        response = ajax(request)
+        response = set_new_issue(request)
 
         self.assertIsNotNone(response)
         self.assertEqual(DBDiscussionSession.query(Issue).filter_by(title=request.json_body['title']).count(), 1)
@@ -179,9 +177,8 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_new_issue_failure1(self):
         # no author
-        from dbas.views import set_new_issue as ajax
         request = self.__get_dummy_request_for_new_issue()
-        response = ajax(request)
+        response = set_new_issue(request)
 
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -189,12 +186,11 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_issue_failure2(self):
         # duplicated title
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_new_issue as ajax
 
         request = self.__get_dummy_request_for_new_issue()
         db_issue = DBDiscussionSession.query(Issue).get(1)
         request.json_body['title'] = db_issue.title
-        response = ajax(request)
+        response = set_new_issue(request)
 
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -202,12 +198,11 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_issue_failure3(self):
         # duplicated info
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_new_issue as ajax
 
         request = self.__get_dummy_request_for_new_issue()
         db_issue = DBDiscussionSession.query(Issue).get(1)
         request.json_body['info'] = db_issue.info
-        response = ajax(request)
+        response = set_new_issue(request)
 
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -215,27 +210,24 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_issue_failure4(self):
         # wrong language
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_new_issue as ajax
 
         request = self.__get_dummy_request_for_new_issue()
         request.json_body['lang'] = 'sw'
-        response = ajax(request)
+        response = set_new_issue(request)
 
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
 
     def test_set_seen_statements(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_statements_as_seen as ajax
         request = testing.DummyRequest(json_body={'uids': [40, 41]})
-        response = ajax(request)
+        response = set_statements_as_seen(request)
 
         self.assertIsNotNone(response)
 
     def test_set_seen_statements_failure1(self):
-        from dbas.views import set_statements_as_seen as ajax
         request = testing.DummyRequest(json_body={})
-        response = ajax(request)
+        response = set_statements_as_seen(request)
 
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)

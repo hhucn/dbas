@@ -23,7 +23,7 @@ from sqlalchemy import engine_from_config
 from dbas.database import get_db_environs
 from dbas.handler.rss import rewrite_issue_rss, create_news_rss
 from dbas.lib import get_global_url
-from dbas.query_wrapper import get_not_disabled_issues_as_query
+from dbas.query_wrapper import get_enabled_issues_as_query
 from .database import load_discussion_database
 from .security import groupfinder
 
@@ -103,6 +103,7 @@ def main(global_config, **settings):
     config.add_route('main_notification', '/notifications')
     config.add_route('main_news', '/news')
     config.add_route('main_imprint', '/imprint')
+    config.add_route('main_privacy', '/privacy_policy')
     config.add_route('main_rss', '/rss')
     config.add_route('main_faq', '/faq')
     config.add_route('main_docs', '/docs')
@@ -126,6 +127,7 @@ def main(global_config, **settings):
     config.add_route('user_registration', '/{url:.*}user_registration')
     config.add_route('user_password_request', '/{url:.*}user_password_request')
     config.add_route('fuzzy_search', '/{url:.*}fuzzy_search')
+    config.add_route('fuzzy_nickname_search', '/{url:.*}fuzzy_nickname_search')
     config.add_route('switch_language', '{url:.*}switch_language{params:.*}')
     config.add_route('send_notification', '{url:.*}send_notification')
     config.add_route('get_infos_about_argument', '/{url:.*}get_infos_about_argument')
@@ -173,7 +175,7 @@ def main(global_config, **settings):
     config.add_route('discussion_justify_statement', '/discuss/{slug}/justify/{statement_id:\d+}/{attitude}')
     config.add_route('discussion_justify_argument', '/discuss/{slug}/justify/{argument_id:\d+}/{attitude}/{relation}')
 
-    config.add_route('discussion_attitude', '/discuss/{slug}/attitude/{position_id:\d+}')
+    config.add_route('discussion_attitude', '/discuss/{slug}/attitude/{statement_id:\d+}')
     config.add_route('discussion_choose', '/discuss/{slug}/choose/{is_argument}/{is_supportive}/{id:\d+}*pgroup_ids')
     config.add_route('discussion_jump', '/discuss/{slug}/jump/{argument_id:\d+}')
     config.add_route('discussion_finish', '/discuss/{slug}/finish/{argument_id:\d+}')
@@ -197,7 +199,7 @@ def main(global_config, **settings):
 
 
 def __write_rss_feeds():
-    issues = get_not_disabled_issues_as_query().all()
+    issues = get_enabled_issues_as_query().all()
     for issue in issues:
         rewrite_issue_rss(issue.uid, get_global_url())
     create_news_rss(get_global_url(), 'en')

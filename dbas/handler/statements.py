@@ -115,14 +115,12 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     :rtype: dict
     :return: Dictionary with info and/or error
     """
-    prepared_dict = dict()
     db_user.update_last_action()
-
     msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, db_user, translator)
-    prepared_dict['error'] = msg if error else ''
-    prepared_dict['info'] = msg if len(msg) > 0 else ''
-
-    return prepared_dict
+    return {
+        'error': error,
+        'info': msg
+    }
 
 
 def set_seen_statements(uids, path, db_user) -> dict:

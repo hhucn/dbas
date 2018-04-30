@@ -75,15 +75,11 @@ attitude_mapper = {attitude.value: attitude for attitude in Attitudes}
 
 def get_global_url():
     """
-    Returns the global url of the project.
-    Important: the global url has to be in setup.py like "url='http://foo.bar'"
+    Returns the global url of the project, based on the ENV
 
     :return: String
     """
-    path = str(os.path.realpath(__file__ + '/../../setup.py'))
-    lines = [line.rstrip('\n').strip() for line in open(path)]
-
-    return str([l[l.index('htt'):-2] for l in lines if 'url=' in l][0])
+    return os.environ.get('URL', '')
 
 
 def get_changelog(no):
@@ -1094,13 +1090,11 @@ def get_public_profile_picture(user: User, size: int = 80):
     :param size: Integer, default 80
     :return: String
     """
-    additional_id = 'y'
-    if user and isinstance(user, User):
-        additional_id = ''
-        if user.settings.should_show_public_nickname:
-            additional_id = 'x'
-        if len(str(user.oauth_provider)) > 0:
-            additional_id = '{}{}'.format(user.oauth_provider, user.oauth_provider_id)
+    additional_id = ''
+    if user.settings.should_show_public_nickname:
+        additional_id = 'x'
+    if len(str(user.oauth_provider)) > 0:
+        additional_id = '{}{}'.format(user.oauth_provider, user.oauth_provider_id)
 
     return __get_gravatar(user, additional_id, size)
 
