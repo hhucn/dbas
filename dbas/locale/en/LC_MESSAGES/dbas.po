@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-04-30 07:22+0000\n"
+"POT-Creation-Date: 2018-04-30 13:21+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -261,13 +261,13 @@ msgid "github"
 msgstr "Github"
 
 #. Default: News
-#: templates/index.pt:54 templates/snippet-footer.pt:42 templates/news.pt:6
+#: templates/index.pt:54 templates/snippet-footer.pt:47 templates/news.pt:6
 msgid "news"
 msgstr "News"
 
 #. Default: Contact
 #. Default: Kontakt:
-#: templates/index.pt:57 templates/imprint.pt:23 templates/snippet-footer.pt:15
+#: templates/index.pt:57 templates/imprint.pt:22 templates/snippet-footer.pt:20
 msgid "contact"
 msgstr "Contact"
 
@@ -527,6 +527,17 @@ msgid "ready_to_start_with_us"
 msgstr ""
 "Ready to start your next discussion with us? That's great! Give us a call or "
 "send us an email and we will get back to you as soon as possible!"
+
+#. Default: Privacy Policy
+#. Default: privacy_policy
+#: templates/privacy.pt:6 templates/snippet-footer.pt:15
+msgid "privacy_policy"
+msgstr "Privacy Policy"
+
+#. Default: This is our privacy policy according to the DSVGO
+#: templates/privacy.pt:7
+msgid "privacy_policy_text"
+msgstr "This is our privacy policy according to the DSVGO"
 
 #. Default: Frequent Questions
 #: templates/faq.pt:6
@@ -1182,95 +1193,60 @@ msgstr "Admin"
 msgid "logout"
 msgstr "Logout"
 
-#. Default: Imprint, Copyrights and Used Software
-#: templates/imprint.pt:6
-msgid "imprint_copyrights_software_privacy"
-msgstr "Imprint, Copyrights, Privacy and Used Software"
-
-#. Default: Our imprint, a list of used software and the latest changelog
-#: templates/imprint.pt:8
-msgid "imprint_list_of_software_and_changelog"
-msgstr ""
-"Our imprint, a list of used software, the latest changelogs and our privacy "
-"policy"
-
+#. Default: Imprint
 #. Default: Impressum
-#: templates/imprint.pt:21
+#: templates/imprint.pt:6 templates/imprint.pt:20
+#: templates/snippet-footer.pt:10
 msgid "imprint"
 msgstr "Imprint"
 
+#. Default: Our imprint, a list of used software and the latest changelog
+#: templates/imprint.pt:7
+msgid "imprint_list_of_software_and_changelog"
+msgstr "Our imprint, a list of used software and our latest changes"
+
 #. Default: Angaben gemäß § 5 TMG
-#: templates/imprint.pt:22
+#: templates/imprint.pt:21
 msgid "data_tmg"
 msgstr "Information according to § 5 TMG "
 
 #. Default: Institut für Informatik
-#: templates/imprint.pt:30
+#: templates/imprint.pt:29
 msgid "department"
 msgstr "Department of Computer Science"
 
 #. Default: Telefon:
-#: templates/imprint.pt:34
+#: templates/imprint.pt:33
 msgid "phone"
 msgstr "Phone Number:"
 
 #. Default: Weiteres im
-#: templates/imprint.pt:38
+#: templates/imprint.pt:37
 msgid "weiteres im"
 msgstr "More on the"
 
 #. Default: Impressum der HHU
-#: templates/imprint.pt:39
+#: templates/imprint.pt:38
 msgid "imprint_hhu"
 msgstr "imprint of the Heinrich-Heine-University Düsseldorf"
 
 #. Default: or checkout the
-#: templates/imprint.pt:40
+#: templates/imprint.pt:39
 msgid "or_checkout_the"
 msgstr "or checkout the"
 
 #. Default: license of D-BAS (MIT)
-#: templates/imprint.pt:42
+#: templates/imprint.pt:41
 msgid "licence_dbas"
 msgstr "license of D-BAS (MIT)"
 
-#. Default: Matomo
-#: templates/imprint.pt:45
-msgid "disclaimer_analytics"
-msgstr "Matomo"
-
-#. Default: Dieses Angebot benutzt Matomo.org, eine Open-Source-Software zur
-#. statistischen Auswertung der Nutzerzugriffe. Matomo verwendet sog.
-#. “Cookies”, Textdateien, die auf dem Computer der Nutzer gespeichert werden
-#. und die eine Analyse der Benutzung der Website durch die Nutzer ermöglichen.
-#. Die durch den Cookie erzeugten Informationen über die Benutzung dieses
-#. Agebotes werden auf dem Server des Anbieters in Deutschland gespeichert. Die
-#. IP-Adresse wird sofort nach der Verarbeitung und vor deren Speicherung
-#. anonymisiert. Nutzer können die Installation der Cookies durch eine
-#. entsprechende Einstellung Ihrer Browser-Software verhindern; Der Anbieter
-#. weisen die Nutzer jedoch darauf hin, dass sie in diesem Fall gegebenenfalls
-#. nicht sämtliche Funktionen dieser Website vollumfänglich nutzen können.
-#: templates/imprint.pt:46
-msgid "disclaimer_analytics_content"
-msgstr ""
-"Our offer contains links to external websites of third parties on the "
-"contents of which we do not have any influence. Therefore, we cannot be held "
-"responsible for any foreign contents linked or referred to. It is always the "
-"respective author or operator of the pages who is responsible for the "
-"contents of the linked pages. At the time of linking the linked pages were "
-"checked for possible infringements of law. Unlawful contents could not be "
-"recognized at the time of linking. A permanent control as regards content of "
-"the linked pages without a definite indication for an infringement of law "
-"is, however, not reasonable. If any infringements of law become known, such "
-"links will immediately be removed."
-
 #. Default: Copyrights and used Software
-#: templates/imprint.pt:67
+#: templates/imprint.pt:45
 msgid "copyright_and_used_software"
 msgstr "Used Software"
 
 #. Default: Changes
-#: templates/imprint.pt:133
+#: templates/imprint.pt:122
 msgid "changes"
 msgstr "Changelog"
 
@@ -1493,33 +1469,28 @@ msgstr "Undo"
 msgid "cancel"
 msgstr "Cancel"
 
-#. Default: Imprint, Copyrights and Privacy
-#: templates/snippet-footer.pt:10
-msgid "imprint_copyright_privacy"
-msgstr "Imprint, Copyrights and Privacy"
-
 #. Default: RSS
-#: templates/snippet-footer.pt:27
+#: templates/snippet-footer.pt:32
 msgid "rss"
 msgstr "RSS"
 
 #. Default: Help
-#: templates/snippet-footer.pt:32
+#: templates/snippet-footer.pt:37
 msgid "Help"
 msgstr "Help"
 
 #. Default: Docs
-#: templates/snippet-footer.pt:37
+#: templates/snippet-footer.pt:42
 msgid "Documentation"
 msgstr "Documentation"
 
 #. Default: Github
-#: templates/snippet-footer.pt:47
+#: templates/snippet-footer.pt:52
 msgid "Github"
 msgstr "Github"
 
 #. Default: Field Experiment
-#: templates/snippet-footer.pt:52
+#: templates/snippet-footer.pt:57
 msgid "field_experiment"
 msgstr "Field Experiment"
 
@@ -2432,6 +2403,25 @@ msgstr "This page contains an overview of discussions:"
 #: templates/discussion-start.pt:24
 msgid "activity_last_30_days"
 msgstr "Activity (Last 30 days)"
+
+#~ msgid "imprint_copyrights_software_privacy"
+#~ msgstr "Imprint, Copyrights, Privacy and Used Software"
+
+#~ msgid "disclaimer_analytics"
+#~ msgstr "Matomo"
+
+#~ msgid "disclaimer_analytics_content"
+#~ msgstr ""
+#~ "Our offer contains links to external websites of third parties on the "
+#~ "contents of which we do not have any influence. Therefore, we cannot be "
+#~ "held responsible for any foreign contents linked or referred to. It is "
+#~ "always the respective author or operator of the pages who is responsible "
+#~ "for the contents of the linked pages. At the time of linking the linked "
+#~ "pages were checked for possible infringements of law. Unlawful contents "
+#~ "could not be recognized at the time of linking. A permanent control as "
+#~ "regards content of the linked pages without a definite indication for an "
+#~ "infringement of law is, however, not reasonable. If any infringements of "
+#~ "law become known, such links will immediately be removed."
 
 #~ msgid "involved_users"
 #~ msgstr "Involved User"

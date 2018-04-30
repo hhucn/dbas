@@ -186,8 +186,6 @@
             
             // INITIALIZE EU COOKIE LAW POPUP /////////////////////////////////////////////////////////
             init: function (settings) {
-                console.log("init " + userAlreadyAcceptedCookies());
-                
                 parseParameters(
                     $(".eupopup").first(),
                     $(".eupopup-markup").html(), settings);

@@ -687,7 +687,9 @@ $(document).ready(function () {
     }
 
     // start guided tour, if the cookie is not set
-    if (!Cookies.get(GUIDED_TOUR) && window.location.href.indexOf('/discuss') !== -1) {
+    var href = window.location.href;
+    var index = href.indexOf('/discuss/');
+    if (!Cookies.get(GUIDED_TOUR) && index !== -1 && href.length > index + '/discuss/'.length + 1) {
         new GuidedTour().start();
     }
 

@@ -387,6 +387,20 @@ def main_imprint(request):
     return prep_dict
 
 
+# privacy policy
+@view_config(route_name='main_privacy', renderer='../templates/privacy.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
+def main_privacy(request):
+    """
+    View configuration for the privacy.
+
+    :param request: current request of the server
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('main_privacy', 'main')
+    return __main_dict(request, Translator(get_language_from_cookie(request)).get(_.privacy_policy))
+
+
 # faq
 @view_config(route_name='main_faq', renderer='../templates/faq.pt', permission='everybody')
 @validate(check_authentication, prep_extras_dict)

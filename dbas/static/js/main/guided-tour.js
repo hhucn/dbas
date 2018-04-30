@@ -76,12 +76,23 @@ function GuidedTour() {
         }
 
         // steps
+        var overview = {
+            element: '.colored-container table',
+            title: _t(tourOverviewTitle) + langSwitcher,
+            content: _t(tourOverviewContent),
+            placement: 'bottom',
+        };
+        var infos = {
+            element: '.colored-container table tbody tr:first',
+            title: _t(tourInfosTitle) + langSwitcher,
+            content: _t(tourInfosContent),
+            placement: 'bottom',
+        };
         var issue = {
             element: '#header-container',
             title: _t(tourIssueTitle) + langSwitcher,
             content: _t(tourIssueContent),
             placement: 'bottom',
-            path: '/discuss'
         };
         var startDiscussion = {
             element: '#dialog-speech-bubbles-space',
@@ -145,13 +156,15 @@ function GuidedTour() {
         };
 
         stepList = [
-            issue,             // 0
-            startDiscussion,   // 1
-            markOpinion,       // 2
-            chooseAnswer,      // 3
-            setInput,          // 4
-            statementAction,   // 5
-            haveFun            // 6
+            // overview,
+            // infos,
+            issue,
+            startDiscussion,
+            markOpinion,
+            chooseAnswer,
+            setInput,
+            statementAction,
+            haveFun
         ];
 
         //data-placement="bottom"

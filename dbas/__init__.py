@@ -103,6 +103,7 @@ def main(global_config, **settings):
     config.add_route('main_notification', '/notifications')
     config.add_route('main_news', '/news')
     config.add_route('main_imprint', '/imprint')
+    config.add_route('main_privacy', '/privacy_policy')
     config.add_route('main_rss', '/rss')
     config.add_route('main_faq', '/faq')
     config.add_route('main_docs', '/docs')

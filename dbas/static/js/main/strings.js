@@ -233,6 +233,10 @@ var tourStartHeaderTitle = 'tourStartHeaderTitle';
 var tourStartHeaderContent = 'tourStartHeaderContent';
 var tourLoginTitle = 'tourLoginTitle';
 var tourLoginContent = 'tourLoginContent';
+var tourOverviewTitle = 'tourOverviewTitle';
+var tourOverviewContent = 'tourOverviewContent';
+var tourInfosTitle = 'tourInfosTitle';
+var tourInfosContent = 'tourInfosContent';
 var tourIssueTitle = 'tourIssueTitle';
 var tourIssueContent = 'tourIssueContent';
 var tourStartDiscussionTitle = 'tourStartDiscussionTitle';
@@ -510,6 +514,10 @@ var dbas_en = {
     'tourStartHeaderContent': '.. or here!',
     'tourLoginTitle': 'Login',
     'tourLoginContent': 'In every case you should register yourself for enter your own statements.',
+    'tourOverviewTitle': 'Issue Overview',
+    'tourOverviewContent': 'This table contains the available topics.',
+    'tourInfosTitle': 'Information',
+    'tourInfosContent': 'Each row displays more information about the topic, whereby the titel opens the discussion.',
     'tourIssueTitle': 'Topic',
     'tourIssueContent': 'Here you can see the topic about current discussion.',
     'tourStartDiscussionTitle': 'First steps',
@@ -767,6 +775,10 @@ var dbas_de = {
     'tourStartHeaderContent': '... oder auch hier.',
     'tourLoginTitle': 'Anmeldung',
     'tourLoginContent': 'Sie sollten sich aber anmelden, um Beiträge verfassen zu können.',
+    'tourOverviewTitle': 'Themenübersicht',
+    'tourOverviewContent': 'Hier sehen Sie alle verfügbaren Diskussionsthemen.',
+    'tourInfosTitle': 'Informationen',
+    'tourInfosContent': 'Jede Reihe enthält weitere Informationen. Wenn Sie den Titel anklicken, rufen Sie die Diskussion auf.',
     'tourIssueTitle': 'Thema',
     'tourIssueContent': 'Hier sehen Sie das aktuelle Diskussionsthema.',
     'tourStartDiscussionTitle': 'Erste Schritte',
