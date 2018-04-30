@@ -3,7 +3,7 @@ import unittest
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.handler.opinion import get_user_and_opinions_for_argument, get_user_with_same_opinion_for_statements, \
-    get_user_with_same_opinion_for_premisegroups_of_arg, get_user_with_same_opinion_for_argument, \
+    get_user_with_same_opinion_for_premisegroups_of_args, get_user_with_same_opinion_for_argument, \
     get_user_with_opinions_for_attitude
 
 
@@ -19,7 +19,7 @@ class OpinionHandlerTests(unittest.TestCase):
                                                           lang=lang,
                                                           main_page=main_page,
                                                           path='')
-            self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response))
+            verify_structure_of_statement_premisgroup_argument_dictionary(self, response)
 
     def test_get_user_with_same_opinion_for_statements(self):
         lang = 'en'
@@ -32,7 +32,7 @@ class OpinionHandlerTests(unittest.TestCase):
                                                                  db_user=db_user,
                                                                  lang=lang,
                                                                  main_page=main_page)
-            self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response))
+            verify_structure_of_statement_premisgroup_argument_dictionary(self, response)
 
     def test_get_user_with_same_opinion_for_premisegroups(self):
         lang = 'en'
@@ -40,11 +40,11 @@ class OpinionHandlerTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         for uid in [1, 2, 61, 62]:
-            response = get_user_with_same_opinion_for_premisegroups_of_arg(argument_uid=uid,
-                                                                           db_user=db_user,
-                                                                           lang=lang,
-                                                                           main_page=main_page)
-            self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response))
+            response = get_user_with_same_opinion_for_premisegroups_of_args(argument_uids=[uid],
+                                                                            db_user=db_user,
+                                                                            lang=lang,
+                                                                            main_page=main_page)
+            verify_structure_of_statement_premisgroup_argument_dictionary(self, response)
 
     def test_get_user_with_same_opinion_for_argument(self):
         lang = 'en'
@@ -54,11 +54,11 @@ class OpinionHandlerTests(unittest.TestCase):
         # correct argument id
         response_correct_id = get_user_with_same_opinion_for_argument(argument_uid=1, db_user=db_user,
                                                                       lang=lang, main_page=main_page)
-        self.assertTrue(verify_structure_of_user_dictionary_for_argument(self, response_correct_id))
+        verify_structure_of_user_dictionary_for_argument(self, response_correct_id)
 
         response_correct_id2 = get_user_with_same_opinion_for_argument(argument_uid=62, db_user=db_user,
                                                                        lang=lang, main_page=main_page)
-        self.assertTrue(verify_structure_of_user_dictionary_for_argument(self, response_correct_id2))
+        verify_structure_of_user_dictionary_for_argument(self, response_correct_id2)
 
         # wrong id
         response_wrong_id = get_user_with_same_opinion_for_argument(argument_uid=0, db_user=db_user,
@@ -77,10 +77,10 @@ class OpinionHandlerTests(unittest.TestCase):
         # correct statement id
         response_correct_id = get_user_with_opinions_for_attitude(statement_uid=1, db_user=db_user,
                                                                   lang=lang, main_page=main_page)
-        self.assertTrue(verify_structure_of_attitude_dictionary(self, response_correct_id))
+        verify_structure_of_attitude_dictionary(self, response_correct_id)
         response_correct_id2 = get_user_with_opinions_for_attitude(statement_uid=74, db_user=db_user,
                                                                    lang=lang, main_page=main_page)
-        self.assertTrue(verify_structure_of_attitude_dictionary(self, response_correct_id2))
+        verify_structure_of_attitude_dictionary(self, response_correct_id2)
 
         # wrong id
         response_wrong_id = get_user_with_opinions_for_attitude(statement_uid=0, db_user=db_user, lang=lang,
@@ -148,8 +148,6 @@ def verify_structure_of_statement_premisgroup_argument_dictionary(self, response
     self.assertTrue('uid' not in response)
     self.assertTrue(None not in response)
 
-    return True
-
 
 def verify_structure_of_user_dictionary_for_argument(self, response):
     self.assertTrue('opinions' in response)
@@ -166,8 +164,6 @@ def verify_structure_of_user_dictionary_for_argument(self, response):
     self.assertTrue('' not in response)
     self.assertTrue('uid' not in response)
     self.assertTrue(None not in response)
-
-    return True
 
 
 def verify_structure_of_attitude_dictionary(self, response):
@@ -186,5 +182,3 @@ def verify_structure_of_attitude_dictionary(self, response):
     self.assertTrue('' not in response)
     self.assertTrue('text ' not in response)
     self.assertTrue(None not in response)
-
-    return True

@@ -788,8 +788,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     .attr(attr);
             }
             // set position of label
-            var height = $("#label-" + d.id).height();
-            d3.select(this).attr({'id': 'label-' + d.id, 'y': -height + 45});
+            var height = $("#label-" + d.id).length > 0 ? 45 - $("#label-" + d.id).height() : - 20;
+            d3.select(this).attr({'id': 'label-' + d.id, 'y': height });
         });
     }
 

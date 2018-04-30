@@ -21,7 +21,7 @@ from dbas.handler.email import send_mail
 from dbas.handler.notification import send_welcome_notification
 from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
-    get_user_with_same_opinion_for_premisegroups_of_arg, get_user_and_opinions_for_argument
+    get_user_with_same_opinion_for_premisegroups_of_args, get_user_and_opinions_for_argument
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture, nick_of_anonymous_user
 from dbas.logger import logger
@@ -815,7 +815,7 @@ def get_users_with_same_opinion(uids: list, app_url: str, path: str, db_user: Us
     elif is_attitude:
         prepared_dict = get_user_with_opinions_for_attitude(uids[0], db_user, db_lang.ui_locales, app_url)
     elif not is_attitude:
-        prepared_dict = get_user_with_same_opinion_for_premisegroups_of_arg(uids[0], db_user, db_lang.ui_locales, app_url)
+        prepared_dict = get_user_with_same_opinion_for_premisegroups_of_args(uids, db_user, db_lang.ui_locales, app_url)
     prepared_dict['info'] = ''
 
     return prepared_dict

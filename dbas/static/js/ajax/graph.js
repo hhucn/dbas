@@ -61,7 +61,8 @@ function AjaxGraphHandler() {
      */
     this.getDiscussionGraphData = function (context, uid, is_argument, show_partial_graph) {
         var inputdata = {
-            'path': window.location.href
+            'path': window.location.href,
+            'issue': $('#issue_info').data('issue')
         };
         var request_for_complete = uid === null || !show_partial_graph;
         var url;

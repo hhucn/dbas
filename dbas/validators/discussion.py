@@ -27,6 +27,7 @@ def valid_issue_by_id(request):
     """
 
     issue_id = issue_handler.get_issue_id(request)
+
     if issue_id:
         db_issue: Issue = DBDiscussionSession.query(Issue).get(issue_id)
 
