@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-04-11 11:43+0000\n"
+"POT-Creation-Date: 2018-04-30 07:22+0000\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Christian Meter <meter@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1065,58 +1065,58 @@ msgid "success"
 msgstr "Erfolg:"
 
 #. Default: Start
-#: templates/discussion.pt:199
+#: templates/discussion.pt:195
 msgid "start"
 msgstr "Start"
 
 #. Default: Now
-#: templates/discussion.pt:204
+#: templates/discussion.pt:200
 msgid "now"
 msgstr "Jetzt"
 
 #. Default: Complete View
-#: templates/discussion.pt:220
+#: templates/discussion.pt:216
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Default View
-#: templates/discussion.pt:224
+#: templates/discussion.pt:220
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/discussion.pt:228
+#: templates/discussion.pt:224
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/discussion.pt:232
+#: templates/discussion.pt:228
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: Statements
-#: templates/discussion.pt:236 templates/discussion-overview.pt:31
+#: templates/discussion.pt:232 templates/discussion-overview.pt:31
 #: templates/discussion-overview.pt:120 templates/discussion-start.pt:23
 msgid "statements"
 msgstr "Aussagen"
 
 #. Default: My path
-#: templates/discussion.pt:240 templates/discussion.pt:244
+#: templates/discussion.pt:236 templates/discussion.pt:240
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/discussion.pt:248
+#: templates/discussion.pt:244
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/discussion.pt:253
+#: templates/discussion.pt:249
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
 #. Default: Relations
-#: templates/discussion.pt:258
+#: templates/discussion.pt:254
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
 

@@ -331,8 +331,7 @@ var dbas_en = {
     'have done.',
     'euCookiePopupTitle': 'This website uses cookies.',
     'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll ' +
-    'assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose. ' +
-    'All tracked data are saved anonymously with reduced masked IP-adresses.',
+    'assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose.',
     'euCookiePopoupButton1': 'Okay',
     'euCookiePopoupButton2': 'Learn&nbsp;more',
     'empty_news_input': 'News title or text is empty or too short!',
@@ -587,8 +586,7 @@ var dbas_de = {
     'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
     'euCookiePopupTitle': 'Diese Seite nutzt Cookies.',
     'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen,' +
-    ' nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und ' +
-    'speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
+    ' nehmen Sie alle Cookies unserer Seite an und sind glücklich damit.',
     'euCookiePopoupButton1': 'Okay',
     'euCookiePopoupButton2': 'Mehr&nbsp;Infos',
     'empty_news_input': 'Nachrichten-Titel oder Text ist leer oder zu kurz!',

@@ -117,8 +117,6 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     """
     db_user.update_last_action()
     msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, db_user, translator)
-    print(error)
-    print(msg)
     return {
         'error': error,
         'info': msg
