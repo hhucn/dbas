@@ -1,57 +1,57 @@
-<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
-	<tal:block metal:fill-slot="content_page">
+<tal:block metal:use-macro="load: basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
+  <tal:block metal:fill-slot="content_page">
 
-        <section>
-            <div class="text-center big-header">
-                <h3 i18n:translate="your_reputation" class="text-center">Your Reputation</h3>
-                <p class="lead text-center">
-                    <span tal:condition="reputation.all_rights" i18n:translate="unlimited_right_based_on_group">Based on your user group, you have all rights!</span>
-                    <span i18n:translate="reputation_count">Reputation count</span>: <span class="text-info">${reputation.count}</span>
-                </p>
-            </div>
-        </section>
-        
-        <div class="wrapper-container">
+    <section>
+      <div class="text-center big-header">
+        <h3 i18n:translate="your_reputation" class="text-center">Your Reputation</h3>
+        <p class="lead text-center">
+          <span tal:condition="reputation.all_rights" i18n:translate="unlimited_right_based_on_group">Based on your user group, you have all rights!</span>
+          <span i18n:translate="reputation_count">
+            Reputation count
+          </span>:
+          <span class="text-info">${reputation.count}</span>
+        </p>
+      </div>
+    </section>
 
-            <div class="container colored-container">
-                <div class="row">
-                    <div class="col-md-12" id="reputation_table">
-                        <table class="table table-condensed table-striped table-hover" id="review-table">
-                        <thead>
-                            <tr class="review-table-row">
-                                <td i18n:translate="date" class="center">Date</td>
-                                <td i18n:translate="action">Action</td>
-                                <td i18n:translate="reputation" class="center">Reputation</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="review-table-row" tal:repeat="rep reputation.history">
-                                <td class="rep_date center">${rep.date}</td>
-                                <td class="rep_action">${rep.action}</td>
-                                <td tal:condition="rep.points < 0" class="points center text-danger">${rep.points_data}</td>
-                                <td tal:condition="rep.points > 0" class="points center text-success">${rep.points_data}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    </div>
-                </div>
-            </div>
+    <div class="wrapper-container">
 
-            <div class="container colored-container">
-                <div class="row">
-                    <div id="reputation_absolute_graph_summary" class="col-md-6"></div>
-                    <div id="reputation_relative_graph_summary" class="col-md-6"></div>
-                </div>
-                <br>
-                <div class="row">
-                    <div id="reputation_absolute_graph" class="col-md-6"></div>
-                    <div id="reputation_relative_graph" class="col-md-6"></div>
-                </div>
-            </div>
+      <div class="container colored-container">
+        <div class="row">
+          <div class="col-md-12" id="reputation_table">
+            <table class="table table-condensed table-striped table-hover" id="review-table">
+              <thead>
+              <tr class="review-table-row">
+                <td i18n:translate="date" class="center">Date</td>
+                <td i18n:translate="action">Action</td>
+                <td i18n:translate="reputation" class="center">Reputation</td>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="review-table-row" tal:repeat="rep reputation.history">
+                <td class="rep_date center">${rep.date}</td>
+                <td class="rep_action">${rep.action}</td>
+                <td tal:condition="rep.points < 0" class="points center text-danger">${rep.points_data}</td>
+                <td tal:condition="rep.points > 0" class="points center text-success">${rep.points_data}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
 
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.dataTables.min.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/dataTables.bootstrap.min.js')}"></script>
+      <div class="container colored-container">
+        <div class="row">
+          <div id="reputation_absolute_graph_summary" class="col-md-6"></div>
+          <div id="reputation_relative_graph_summary" class="col-md-6"></div>
+        </div>
+        <br>
+        <div class="row">
+          <div id="reputation_absolute_graph" class="col-md-6"></div>
+          <div id="reputation_relative_graph" class="col-md-6"></div>
+        </div>
+      </div>
+    </div>
 
-	</tal:block>
+  </tal:block>
 </tal:block>

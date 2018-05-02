@@ -1,27 +1,35 @@
 import unittest
 from datetime import date
 
+import transaction
+
 from dbas import lib
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Statement, Issue, TextVersion
+from dbas.helper.url import UrlManager
 
 
 class LibTests(unittest.TestCase):
 
     def test_escape_string(self):
-        self.assertEqual(lib.escape_string(text=''), '')
+        self.assertEqual('', lib.escape_string(text=''))
 
         # normal string
-        self.assertEqual(lib.escape_string(text='str'), 'str')
+        self.assertEqual('str', lib.escape_string(text='str'))
 
         # strings with html special chars
-        self.assertEqual(lib.escape_string(text='&'), '&amp;')
+        self.assertEqual('&amp;', lib.escape_string(text='&'))
 
-        self.assertEqual(lib.escape_string(text='" str & str2'), '&quot; str &amp; str2')
+        self.assertEqual('&quot; str &amp; str2', lib.escape_string(text='" str & str2'))
 
         long_str_with_special_char = 'str' + '"' * 1000
         long_str_without_special_char = 'str' + '&quot;' * 1000
-        self.assertEqual(lib.escape_string(long_str_with_special_char), long_str_without_special_char)
+        self.assertEqual(long_str_without_special_char, lib.escape_string(long_str_with_special_char))
+
+    def test_unhtmlify(self):
+        self.assertEqual('', lib.unhtmlify(''))
+        self.assertEqual('str', lib.unhtmlify('str'))
+        self.assertEqual('str', lib.unhtmlify('str'))
 
     def test_python_datetime_pretty_print(self):
         # datetime corresponding to Gregorian ordinal
@@ -35,36 +43,30 @@ class LibTests(unittest.TestCase):
 
         self.assertEqual(lib.python_datetime_pretty_print(ts='2016-01-01', lang=''), 'Jan. 01.')
 
-    def test_get_text_for_premisesgroup_uid(self):
+    def test_get_text_for_premisegroup_uid(self):
         # premise, which is in db_premises and premise_group contains only one premise
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=2), ('cats are very independent', ['5']))
+        self.assertEqual(lib.get_text_for_premisegroup_uid(uid=2), 'cats are very independent')
 
         # premise_group with more than one premises
-        self.assertNotEqual(lib.get_text_for_premisesgroup_uid(uid=13), ('cats are fluffy und cats are small', ['14', '15']))
+        self.assertNotEqual(lib.get_text_for_premisegroup_uid(uid=13), 'cats are fluffy und cats are small')
 
-        values = lib.get_text_for_premisesgroup_uid(uid=12)
-        solution1 = 'cats are fluffy and cats are small', ['15', '16']
-        solution2 = 'cats are small and cats are fluffy', ['16', '15']
-        if values[1] == solution1[1]:
-            self.assertEqual(values, solution1)
-        else:
-            self.assertEqual(values, solution2)
+        val = lib.get_text_for_premisegroup_uid(uid=12)
+        sol1 = 'cats are fluffy and cats are small'
+        sol2 = 'cats are small and cats are fluffy'
+        self.assertIn(val, [sol1, sol2])
 
         # premise, which is not in db_premises
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), ('', []))
+        self.assertEqual(lib.get_text_for_premisegroup_uid(uid=0), '')
 
         # negative uid
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=-1), ('', []))
+        self.assertEqual(lib.get_text_for_premisegroup_uid(uid=-1), '')
 
         # language is empty string
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), ('', []))
+        self.assertEqual(lib.get_text_for_premisegroup_uid(uid=0), '')
 
     def test_get_text_for_statement_uid(self):
         # id for no statement
         self.assertIsNone(lib.get_text_for_statement_uid(uid=0))
-
-        self.assertIsNone(lib.get_text_for_statement_uid(uid='22222222'))
-        self.assertIsNone(lib.get_text_for_statement_uid(uid="str"))
 
         # id for statement, which ends with '.'
         self.assertEqual(lib.get_text_for_statement_uid(uid=3), 'we should get a dog')
@@ -76,23 +78,23 @@ class LibTests(unittest.TestCase):
         self.assertIsNone(lib.get_text_for_statement_uid(uid=-30))
 
     def test_get_text_for_conclusion(self):
-        argument1 = Argument(premisegroup=4, issupportive=True, author=1, conclusion=3, issue=1)
+        argument1 = Argument(premisegroup=4, is_supportive=True, author=1, issue=1, conclusion=3)
         # 'argument' is an argument
         self.assertEqual(lib.get_text_for_conclusion(argument=argument1,
                                                      start_with_intro=False,
                                                      rearrange_intro=False), 'we should get a dog')
 
-        argument2 = Argument(premisegroup=1, issupportive=False, author=1, issue=1)
+        argument2 = Argument(premisegroup=1, is_supportive=False, author=1, issue=1)
         # 'argument' is a statement
         self.assertEqual(lib.get_text_for_conclusion(argument=argument2,
                                                      start_with_intro=True,
-                                                     rearrange_intro=True), None)
+                                                     rearrange_intro=True), '')
 
         # unknown conclusion id
-        argument3 = Argument(premisegroup=0, issupportive=True, author=0, conclusion=0, issue=0)
+        argument3 = Argument(premisegroup=0, is_supportive=True, author=0, issue=0, conclusion=0)
         self.assertEqual(lib.get_text_for_conclusion(argument=argument3,
                                                      start_with_intro=False,
-                                                     rearrange_intro=True), None)
+                                                     rearrange_intro=True), '')
 
     def test_resolve_issue_uid_to_slug(self):
         # id for issue
@@ -106,8 +108,8 @@ class LibTests(unittest.TestCase):
 
     def test_get_all_attacking_arg_uids_from_history(self):
         none_history = None
-        correct_history = "/attitude/60-/justify/60/t-/reaction/52/rebut/53"
-        broken_history = "/attitude/60/justify/60/t/broooken/52/rebut/53"
+        correct_history = "/attitude/60-/justify/60/agree-/reaction/52/rebut/53"
+        broken_history = "/attitude/60/justify/60/agree/broooken/52/rebut/53"
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(correct_history), ['53'], "Missing element")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(broken_history), [], "Should match nothing")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [], "No history has no elements in list")
@@ -122,7 +124,7 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_all_arguments_by_statement(-1), None)
 
     def test_get_global_url(self):
-        self.assertIn('dbas.cs.uni-duesseldorf.de', lib.get_global_url())
+        self.assertIn('https://dbas.cs.uni-duesseldorf.de', lib.get_global_url())
 
     def test_get_user_by_private_or_public_nickname(self):
         self.assertIsNotNone(lib.get_user_by_case_insensitive_nickname('tobias'))
@@ -148,27 +150,34 @@ class LibTests(unittest.TestCase):
         self.assertTrue('Hallo.', lib.pretty_print_options('<bla>hallo</bla>'))
 
     def test_is_user_author_or_admin(self):
-        self.assertTrue(lib.is_user_admin('Tobias'))
-        self.assertFalse(lib.is_user_admin('Pascal'))
+        db_user1 = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        db_user2 = DBDiscussionSession.query(User).filter_by(nickname='Pascal').first()
+        self.assertTrue(db_user1.is_admin() or db_user1.is_author())
+        self.assertFalse(db_user2.is_admin() or db_user2.is_author())
 
     def test_is_user_admin(self):
-        self.assertTrue(lib.is_user_admin('Tobias'))
-        self.assertFalse(lib.is_user_admin('Pascal'))
+        self.assertTrue(DBDiscussionSession.query(User).filter_by(nickname='Tobias').first().is_admin())
+        self.assertFalse(DBDiscussionSession.query(User).filter_by(nickname='Pascal').first().is_admin())
 
     def test_is_author_of_statement(self):
-        user = DBDiscussionSession.query(User).get(DBDiscussionSession.query(TextVersion).get(36).author_uid)
-        self.assertTrue(lib.is_author_of_statement(user.nickname, 36))
-        self.assertFalse(lib.is_author_of_statement(user.nickname, 2))
-        self.assertFalse(lib.is_author_of_statement(user.nickname[:3], 36))
-        self.assertFalse(lib.is_author_of_statement(user.nickname, 0))
-        self.assertFalse(lib.is_author_of_statement(user.nickname[:3], 0))
+        tv = DBDiscussionSession.query(TextVersion).get(35)
+        tv.author_uid = 2
+        DBDiscussionSession.add(tv)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        user36 = DBDiscussionSession.query(User).get(tv.author_uid)
+        self.assertTrue(lib.is_author_of_statement(user36, tv.statement_uid))
+        self.assertFalse(lib.is_author_of_statement(user36, 3))
 
     def test_is_author_of_argument(self):
-        user = DBDiscussionSession.query(User).get(DBDiscussionSession.query(Argument).get(36).author_uid)
-        self.assertTrue(lib.is_author_of_argument(user.nickname, 36))
-        self.assertFalse(lib.is_author_of_argument(user.nickname[:3], 34))
-        self.assertFalse(lib.is_author_of_argument(user.nickname, 0))
-        self.assertFalse(lib.is_author_of_argument(user.nickname[:3], 0))
+        arg = DBDiscussionSession.query(Argument).get(36)
+        arg.author_uid = 2
+        DBDiscussionSession.add(arg)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        user36 = DBDiscussionSession.query(User).get(arg.author_uid)
+        self.assertTrue(lib.is_author_of_argument(user36, 36))
+        self.assertFalse(lib.is_author_of_argument(user36, 2))
 
     def test_get_profile_picture(self):
         user = DBDiscussionSession.query(User).get(1)
@@ -185,18 +194,20 @@ class LibTests(unittest.TestCase):
         self.assertIn('120', lib.get_profile_picture(user, size=120))
 
     def test_get_author_data(self):
-        u, s, b = lib.get_author_data('main_page', 0)
-        self.assertFalse(b)
-        self.assertIsNone(u)
+        db_user, author_string, some_boolean = lib.get_author_data(0)
+        self.assertFalse(some_boolean)
+        self.assertIsNone(db_user)
 
         user = DBDiscussionSession.query(User).get(1)
-        u, s, b = lib.get_author_data('main_page', 1, gravatar_on_right_side=False)
-        self.assertTrue(b)
-        self.assertIn(' {}'.format(user.nickname), s)
+        _, author_string, some_boolean = lib.get_author_data(1, gravatar_on_right_side=False)
+        self.assertTrue(some_boolean)
+        self.assertIn('{}'.format(user.nickname), author_string)
+        self.assertIn('right', author_string)
 
-        u, s, b = lib.get_author_data('main_page', 1, gravatar_on_right_side=True)
-        self.assertTrue(b)
-        self.assertIn('{} '.format(user.nickname), s)
+        _, author_string, some_boolean = lib.get_author_data(1, gravatar_on_right_side=True)
+        self.assertTrue(some_boolean)
+        self.assertIn('{}'.format(user.nickname), author_string)
+        self.assertIn('left', author_string)
 
     def test_bubbles_already_last_in_list(self):
         return True
@@ -258,11 +269,7 @@ class LibTests(unittest.TestCase):
             self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id(self):
-        from dbas.url_manager import UrlManager
-        um = UrlManager(application_url='', slug='slug', for_api=True)
-
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(0, um)
-        self.assertEqual([], res)
+        um = UrlManager(slug='slug')
 
         results = {
             47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
@@ -270,15 +277,15 @@ class LibTests(unittest.TestCase):
             49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
 
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um)
+        db_statement = DBDiscussionSession.query(Statement).get(38)
+        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um)
         self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)
             self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id_with_color(self):
-        from dbas.url_manager import UrlManager
-        um = UrlManager(application_url='', slug='slug', for_api=True)
+        um = UrlManager(slug='slug')
 
         results = {
             47: '<span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them',
@@ -286,15 +293,15 @@ class LibTests(unittest.TestCase):
             49: '<span data-argumentation-type="position">we should close public swimming pools</span> does not hold, because the rate of non-swimmers is too high'
         }
 
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um, color_statement=True)
+        db_statement = DBDiscussionSession.query(Statement).get(38)
+        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True)
         self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)
             self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id_with_color_and_jump(self):
-        from dbas.url_manager import UrlManager
-        um = UrlManager(application_url='', slug='slug', for_api=True)
+        um = UrlManager(slug='slug')
 
         results = {
             47: '<span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them.',
@@ -302,7 +309,8 @@ class LibTests(unittest.TestCase):
             49: '<span data-argumentation-type="position">we should close public swimming pools</span> <span data-attitude="con">does not hold</span> because the rate of non-swimmers is too high.'
         }
 
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um, color_statement=True, is_jump=True)
+        db_statement = DBDiscussionSession.query(Statement).get(38)
+        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True, is_jump=True)
         self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)

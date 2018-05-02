@@ -22,4 +22,4 @@ def includeme(config):
 
 
 if __name__ == "__main__":
-    logger("i", "want", "in too")
+    logger("i", "in too")

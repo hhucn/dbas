@@ -1,0 +1,7 @@
+version: "3.2"
+services:
+  notifications:
+    image: hhucn/dbas-notifications
+    ports:
+      - "5222:5222"
+    tmpfs: /tmp

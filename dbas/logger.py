@@ -7,15 +7,15 @@ Common python logging.
 # -*- coding: utf-8 -*-
 
 import logging
+from sys import _getframe
 logging.getLogger('sqlalchemy.dialects.postgresql').setLevel(logging.INFO)
 
 
-def logger(who, when, what, warning=False, error=False, debug=False):
+def logger(who: str, what: str, warning: bool=False, error: bool=False, info: bool=False):
     """
-    Log for the console and logfile on disk. Logged format: [who.upper()] when <what>
+    Logs giving strings as debug in the format of: [who.upper()] when <what>
 
     :param who: which class
-    :param when: which method
     :param what: what message
     :param warning: Boolean, default False
     :param error: Boolean, default False
@@ -23,16 +23,18 @@ def logger(who, when, what, warning=False, error=False, debug=False):
     :return: None
     """
 
-    info = not(warning or error or debug)
+    debug = not(warning or error or info)
     logger = logging.getLogger(__name__)
     try:
+        msg = '[{}] {}: {}'.format(who.upper(), _getframe(1).f_code.co_name, what)
+
         if info:
-            logger.info('[{}] {}: {}'.format(who.upper(), when, what))
+            logger.info(msg)
         if warning:
-            logger.warning('[{}] {}: {}'.format(who.upper(), when, what))
+            logger.warning(msg)
         if error:
-            logger.error('[{}] {}: {}'.format(who.upper(), when, what))
+            logger.error(msg)
         if debug:
-            logger.debug('[{}] {}: {}'.format(who.upper(), when, what))
+            logger.debug(msg)
     except Exception as e:
         logger.error('[LOGGER] LOGGER ERROR: ' + repr(e))

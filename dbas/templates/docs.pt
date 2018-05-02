@@ -1,13 +1,13 @@
-<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
-	<tal:block metal:fill-slot="content_page">
+<tal:block metal:use-macro="load: basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
+  <tal:block metal:fill-slot="content_page">
 
-        <section>
-            <div class="text-center big-header">
-                <h3 class="text-center"><span i18n:translate="docs">Documentation</span></h3>
-                <p i18n:translate="where_do_i_find_it" class="lead text-center">Where do I find it?</p>
-                        <p class="lead center">Docs are available via /docs/_build/html/index.pt or in production mode.</p>
-            </div>
-        </section>
-		
-	</tal:block>
+    <section>
+      <div class="text-center big-header">
+        <h3 class="text-center"><span i18n:translate="docs">Documentation</span></h3>
+        <p i18n:translate="where_do_i_find_it" class="lead text-center">Where do I find it?</p>
+        <p class="lead center">Docs are available via /docs/_build/html/index.pt on your file system, <a href="//localhost:8000/docs">localhost:8000/docs</a> if you started the service or in production mode.</p>
+      </div>
+    </section>
+
+  </tal:block>
 </tal:block>

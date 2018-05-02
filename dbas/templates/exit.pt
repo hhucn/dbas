@@ -1,0 +1,102 @@
+<tal:block metal:use-macro="load: basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
+  <tal:block metal:fill-slot="content_page">
+
+    <section>
+      <div class="text-center big-header">
+        <h3 class="text-center"><span
+                class="text-center" i18n:translate="thank_you">Thank you</span><span tal:condition="show_summary">, ${summary.firstname}</span>!
+        </h3>
+        <p class="lead text-center" style="color: white;">
+          <span class="lead" i18n:translate="finish_text">Your participation in this discussion was saved and will be used for evaluation later. If you have any questions, please do not hesitate to</span>
+          <span class="lead">
+            <a href="mailto:dbas@cs.uni-duesseldorf.de" i18n:translate="contact_us">contact us</a>.</span>
+        </p>
+      </div>
+    </section>
+
+    <div class="wrapper-container">
+
+      <div class="container center">
+        <div class="row">
+          <div class="col-md-7 center colored-container" style="float: none">
+            <div class="row" style="margin-top: 2em" tal:condition="show_summary">
+              <div class="col-md-4 text-center">
+                <i class="fa fa-flag-checkered" aria-hidden="true" style="font-size: 140px; margin-top: 0.4em"></i>
+              </div>
+
+              <div class="col-md-8">
+                <h5 i18n:translate="todays_summary">Today's Summary</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <table class="table table-condensed table-collapsed finish-summary-table">
+                      <tr>
+                        <td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
+                        <td>${summary.statements_posted}</td>
+                      </tr>
+                      <tr>
+                        <td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
+                        <td>${summary.edits_done}</td>
+                      </tr>
+                      <tr>
+                        <td><span class="lead" i18n:translate="statements_reported">Statements reported</span></td>
+                        <td>${summary.statements_reported}</td>
+                      </tr>
+                      <tr>
+                        <td><span class="lead" i18n:translate="reputation_colltected">Collected reputation</span></td>
+                        <td>${summary.reputation_collected}</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="col-md-6">
+                    <table class="table table-condensed table-collapsed finish-summary-table">
+                      <tr>
+                        <td>
+                          <span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span>
+                        </td>
+                        <td>${summary.discussion_arg_votes}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span>
+                        </td>
+                        <td>${summary.discussion_stat_votes}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <span class="lead" i18n:translate="discussion_clicked_statements">Clicks for Arguments</span>
+                        </td>
+                        <td>${summary.discussion_arg_clicks}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <span class="lead" i18n:translate="discussion_clicked_arguments">Clicks for Statements</span>
+                        </td>
+                        <td>${summary.discussion_stat_clicks}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center" style="margin: 3em" tal:condition="not:show_summary">
+              <img class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}"/>
+            </div>
+
+            <div class="text-center btn-group">
+
+              <a id="home-button" class="button button-block btn-lg btn btn-primary" href="${request.application_url}">
+                <span i18n:translate="lets_go_home">Let's go home!</span>
+              </a>
+              <a id="back-to-discuss-button" class="button button-block btn-lg btn btn-success"
+                 href="javascript:window.history.back();">
+                <span i18n:translate="back_to_the_discussion">Back to the discussion!</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </tal:block>
+</tal:block>

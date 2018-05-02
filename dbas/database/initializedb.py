@@ -20,7 +20,7 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
     ReviewCanceled, RSS, OptimizationReviewLocks, History, News
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
-from dbas.lib import get_global_url
+from dbas.lib import get_global_url, nick_of_anonymous_user
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.handler.password import get_hashed_password
@@ -28,7 +28,7 @@ from dbas.handler.password import get_hashed_password
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
                'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
-nick_of_anonymous_user = 'anonymous'
+
 nick_of_admin = 'Tobias'
 
 
@@ -58,6 +58,7 @@ def main_discussion(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
     NewsBase.metadata.create_all(discussion_engine)
@@ -92,6 +93,7 @@ def main_field_test(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -121,6 +123,7 @@ def drop_it(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -186,6 +189,7 @@ def blank_file(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -257,6 +261,7 @@ def init_dummy_votes(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -857,9 +862,9 @@ def __setup_dummy_seen_by(session):
     session.add_all(elements)
     session.flush()
 
-    logger('INIT_DB', 'Dummy Seen By',
+    logger('INIT_DB',
            'Created ' + str(argument_count) + ' seen-by entries for ' + str(len(db_arguments)) + ' arguments')
-    logger('INIT_DB', 'Dummy Seen By',
+    logger('INIT_DB',
            'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
 
 
@@ -884,7 +889,7 @@ def __setup_dummy_clicks(session):
     statement_count = len(db_statements)
 
     if argument_count <= 0 or statement_count <= 0:
-        logger('INIT_DB', 'Dummy Votes', 'No arguments or statements! Do you forget to init discussions?', warning=True)
+        logger('INIT_DB', 'No arguments or statements! Do you forget to init discussions?', warning=True)
         return
 
     rat_arg_up = arg_up / argument_count
@@ -892,15 +897,15 @@ def __setup_dummy_clicks(session):
     rat_stat_up = stat_up / statement_count
     rat_stat_down = stat_down / statement_count
 
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} up clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_up, argument_count, rat_arg_up))
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} down clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_down, argument_count,
                                                                                      rat_arg_down))
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} up clicks for {} statements ({:.2f} clicks/statement)'.format(stat_up, statement_count,
                                                                                      rat_stat_up))
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} down clicks for {} statements ({:.2f} clicks/statement)'.format(stat_down, statement_count,
                                                                                        rat_stat_down))
 
@@ -930,7 +935,7 @@ def __add_clicks_for_arguments(db_arguments, users):
     arg_down = 0
     new_clicks_for_arguments = list()
     for argument in db_arguments:
-        max_interval = len(DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=argument.uid).all())
+        max_interval = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=argument.uid).count()
         up_votes = random.randint(1, max_interval - 1)
         down_votes = random.randint(1, max_interval - 1)
         arg_up += up_votes
@@ -975,7 +980,7 @@ def __add_clicks_for_statements(db_statements, users):
     stat_down = 0
     new_clicks_for_statement = list()
     for statement in db_statements:
-        max_interval = len(DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=statement.uid).all())
+        max_interval = DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=statement.uid).count()
         up_votes = random.randint(1, max_interval - 1)
         down_votes = random.randint(1, max_interval - 1)
         stat_up += up_votes
@@ -1102,14 +1107,22 @@ def __setup_fieltests_de_discussion_database(session, db_issue):
     session.flush()
 
     # adding all arguments and set the adjacency list
-    argument1 = Argument(premisegroup=premisegroup1.uid, issupportive=True, author=db_user.uid, conclusion=statement0.uid, issue=db_issue.uid)
-    argument2 = Argument(premisegroup=premisegroup2.uid, issupportive=True, author=db_user.uid, conclusion=statement0.uid, issue=db_issue.uid)
-    argument3 = Argument(premisegroup=premisegroup3.uid, issupportive=False, author=db_user.uid, conclusion=statement0.uid, issue=db_issue.uid)
-    argument4 = Argument(premisegroup=premisegroup4.uid, issupportive=False, author=db_user.uid, conclusion=statement0.uid, issue=db_issue.uid)
-    argument6 = Argument(premisegroup=premisegroup6.uid, issupportive=True, author=db_user.uid, conclusion=statement5.uid, issue=db_issue.uid)
-    argument7 = Argument(premisegroup=premisegroup7.uid, issupportive=True, author=db_user.uid, conclusion=statement5.uid, issue=db_issue.uid)
-    argument8 = Argument(premisegroup=premisegroup8.uid, issupportive=False, author=db_user.uid, conclusion=statement5.uid, issue=db_issue.uid)
-    argument9 = Argument(premisegroup=premisegroup9.uid, issupportive=False, author=db_user.uid, conclusion=statement5.uid, issue=db_issue.uid)
+    argument1 = Argument(premisegroup=premisegroup1.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                         conclusion=statement0.uid)
+    argument2 = Argument(premisegroup=premisegroup2.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                         conclusion=statement0.uid)
+    argument3 = Argument(premisegroup=premisegroup3.uid, is_supportive=False, author=db_user.uid, issue=db_issue.uid,
+                         conclusion=statement0.uid)
+    argument4 = Argument(premisegroup=premisegroup4.uid, is_supportive=False, author=db_user.uid, issue=db_issue.uid,
+                         conclusion=statement0.uid)
+    argument6 = Argument(premisegroup=premisegroup6.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                         conclusion=statement5.uid)
+    argument7 = Argument(premisegroup=premisegroup7.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                         conclusion=statement5.uid)
+    argument8 = Argument(premisegroup=premisegroup8.uid, is_supportive=False, author=db_user.uid, issue=db_issue.uid,
+                         conclusion=statement5.uid)
+    argument9 = Argument(premisegroup=premisegroup9.uid, is_supportive=False, author=db_user.uid, issue=db_issue.uid,
+                         conclusion=statement5.uid)
     session.add_all([argument1, argument2, argument3, argument4, argument6, argument7, argument8, argument9])
     session.flush()
 
@@ -1280,25 +1293,44 @@ def __setup_fieltests_en_discussion_database(session, db_issue):
     session.flush()
 
     # adding all arguments and set the adjacency list
-    argument101 = Argument(premisegroup=premisegroup105.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement101.uid)
-    argument102 = Argument(premisegroup=premisegroup106.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument103 = Argument(premisegroup=premisegroup107.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement105.uid)
-    argument104 = Argument(premisegroup=premisegroup108.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement107.uid)
-    argument105 = Argument(premisegroup=premisegroup109.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement101.uid)
-    argument106 = Argument(premisegroup=premisegroup110.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument107 = Argument(premisegroup=premisegroup111.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument108 = Argument(premisegroup=premisegroup112.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement102.uid)
-    argument109 = Argument(premisegroup=premisegroup113.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement102.uid)
-    argument110 = Argument(premisegroup=premisegroup115.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement112.uid)
-    argument111 = Argument(premisegroup=premisegroup114.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument112 = Argument(premisegroup=premisegroup116.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement102.uid)
-    argument113 = Argument(premisegroup=premisegroup117.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument114 = Argument(premisegroup=premisegroup118.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement116.uid)
-    argument115 = Argument(premisegroup=premisegroup119.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement116.uid)
-    argument116 = Argument(premisegroup=premisegroup120.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement103.uid)
-    argument117 = Argument(premisegroup=premisegroup121.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument118 = Argument(premisegroup=premisegroup122.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement103.uid)
-    argument119 = Argument(premisegroup=premisegroup123.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement115.uid)
+    argument101 = Argument(premisegroup=premisegroup105.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement101.uid)
+    argument102 = Argument(premisegroup=premisegroup106.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid)
+    argument103 = Argument(premisegroup=premisegroup107.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement105.uid)
+    argument104 = Argument(premisegroup=premisegroup108.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement107.uid)
+    argument105 = Argument(premisegroup=premisegroup109.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid, conclusion=statement101.uid)
+    argument106 = Argument(premisegroup=premisegroup110.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid)
+    argument107 = Argument(premisegroup=premisegroup111.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid)
+    argument108 = Argument(premisegroup=premisegroup112.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement102.uid)
+    argument109 = Argument(premisegroup=premisegroup113.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement102.uid)
+    argument110 = Argument(premisegroup=premisegroup115.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid, conclusion=statement112.uid)
+    argument111 = Argument(premisegroup=premisegroup114.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid)
+    argument112 = Argument(premisegroup=premisegroup116.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid, conclusion=statement102.uid)
+    argument113 = Argument(premisegroup=premisegroup117.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid)
+    argument114 = Argument(premisegroup=premisegroup118.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid, conclusion=statement116.uid)
+    argument115 = Argument(premisegroup=premisegroup119.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement116.uid)
+    argument116 = Argument(premisegroup=premisegroup120.uid, is_supportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement103.uid)
+    argument117 = Argument(premisegroup=premisegroup121.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid)
+    argument118 = Argument(premisegroup=premisegroup122.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid, conclusion=statement103.uid)
+    argument119 = Argument(premisegroup=premisegroup123.uid, is_supportive=False, author=db_user.uid,
+                           issue=db_issue.uid, conclusion=statement115.uid)
     session.add_all([argument101, argument102, argument103, argument104, argument105, argument106, argument107])
     session.add_all([argument108, argument109, argument110, argument112, argument113, argument114, argument111])
     session.add_all([argument115, argument116, argument117, argument118, argument119])
@@ -1909,131 +1941,131 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
     session.flush()
 
     # adding all arguments and set the adjacency list
-    argument0 = Argument(premisegroup=premisegroup0.uid, issupportive=False, author=user.uid, conclusion=statement1.uid,
-                         issue=issue2.uid, is_disabled=True)
-    argument1 = Argument(premisegroup=premisegroup1.uid, issupportive=True, author=user.uid, conclusion=statement1.uid,
-                         issue=issue2.uid)
-    argument2 = Argument(premisegroup=premisegroup2.uid, issupportive=False, author=user.uid, conclusion=statement1.uid,
-                         issue=issue2.uid)
-    argument3 = Argument(premisegroup=premisegroup3.uid, issupportive=True, author=user.uid, conclusion=statement2.uid,
-                         issue=issue2.uid)
-    argument4 = Argument(premisegroup=premisegroup4.uid, issupportive=False, author=user.uid, conclusion=statement2.uid,
-                         issue=issue2.uid)
-    argument5 = Argument(premisegroup=premisegroup5.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument6 = Argument(premisegroup=premisegroup6.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument7 = Argument(premisegroup=premisegroup7.uid, issupportive=True, author=user.uid, conclusion=statement3.uid,
-                         issue=issue2.uid)
-    argument8 = Argument(premisegroup=premisegroup8.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument9 = Argument(premisegroup=premisegroup9.uid, issupportive=False, author=user.uid,
-                         conclusion=statement10.uid, issue=issue2.uid)
-    argument10 = Argument(premisegroup=premisegroup10.uid, issupportive=True, author=user.uid,
-                          conclusion=statement1.uid, issue=issue2.uid)
-    argument11 = Argument(premisegroup=premisegroup11.uid, issupportive=True, author=user.uid,
-                          conclusion=statement1.uid, issue=issue2.uid)
-    argument12 = Argument(premisegroup=premisegroup12.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument13 = Argument(premisegroup=premisegroup13.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument14 = Argument(premisegroup=premisegroup14.uid, issupportive=True, author=user.uid,
-                          conclusion=statement4.uid, issue=issue2.uid)
-    argument15 = Argument(premisegroup=premisegroup15.uid, issupportive=False, author=user.uid,
-                          conclusion=statement4.uid, issue=issue2.uid)
-    argument16 = Argument(premisegroup=premisegroup16.uid, issupportive=True, author=user.uid,
-                          conclusion=statement4.uid, issue=issue2.uid)
-    argument17 = Argument(premisegroup=premisegroup17.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument18 = Argument(premisegroup=premisegroup18.uid, issupportive=True, author=user.uid,
-                          conclusion=statement5.uid, issue=issue2.uid)
-    argument19 = Argument(premisegroup=premisegroup19.uid, issupportive=False, author=user.uid,
-                          conclusion=statement5.uid, issue=issue2.uid)
-    argument20 = Argument(premisegroup=premisegroup20.uid, issupportive=False, author=user.uid,
-                          conclusion=statement5.uid, issue=issue2.uid)
-    argument21 = Argument(premisegroup=premisegroup21.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument22 = Argument(premisegroup=premisegroup22.uid, issupportive=False, author=user.uid,
-                          conclusion=statement13.uid, issue=issue2.uid)
-    argument23 = Argument(premisegroup=premisegroup23.uid, issupportive=True, author=user.uid,
-                          conclusion=statement13.uid, issue=issue2.uid)
-    argument24 = Argument(premisegroup=premisegroup24.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument25 = Argument(premisegroup=premisegroup25.uid, issupportive=True, author=user.uid,
-                          conclusion=statement13.uid, issue=issue2.uid)
-    argument26 = Argument(premisegroup=premisegroup26.uid, issupportive=True, author=user.uid,
-                          conclusion=statement14.uid, issue=issue2.uid)
-    argument27 = Argument(premisegroup=premisegroup26.uid, issupportive=True, author=user.uid,
-                          conclusion=statement15.uid, issue=issue2.uid)
-    argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid,
-                          conclusion=statement14.uid, issue=issue2.uid)
-    argument29 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid,
-                          conclusion=statement14.uid, issue=issue2.uid)
-    argument31 = Argument(premisegroup=premisegroup29.uid, issupportive=False, author=user.uid, issue=issue2.uid)
+    argument0 = Argument(premisegroup=premisegroup0.uid, is_supportive=False, author=user.uid, issue=issue2.uid,
+                         conclusion=statement1.uid, is_disabled=True)
+    argument1 = Argument(premisegroup=premisegroup1.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                         conclusion=statement1.uid)
+    argument2 = Argument(premisegroup=premisegroup2.uid, is_supportive=False, author=user.uid, issue=issue2.uid,
+                         conclusion=statement1.uid)
+    argument3 = Argument(premisegroup=premisegroup3.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                         conclusion=statement2.uid)
+    argument4 = Argument(premisegroup=premisegroup4.uid, is_supportive=False, author=user.uid, issue=issue2.uid,
+                         conclusion=statement2.uid)
+    argument5 = Argument(premisegroup=premisegroup5.uid, is_supportive=False, author=user.uid, issue=issue2.uid)
+    argument6 = Argument(premisegroup=premisegroup6.uid, is_supportive=False, author=user.uid, issue=issue2.uid)
+    argument7 = Argument(premisegroup=premisegroup7.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                         conclusion=statement3.uid)
+    argument8 = Argument(premisegroup=premisegroup8.uid, is_supportive=False, author=user.uid, issue=issue2.uid)
+    argument9 = Argument(premisegroup=premisegroup9.uid, is_supportive=False, author=user.uid, issue=issue2.uid,
+                         conclusion=statement10.uid)
+    argument10 = Argument(premisegroup=premisegroup10.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                          conclusion=statement1.uid)
+    argument11 = Argument(premisegroup=premisegroup11.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                          conclusion=statement1.uid)
+    argument12 = Argument(premisegroup=premisegroup12.uid, is_supportive=False, author=user.uid, issue=issue2.uid)
+    argument13 = Argument(premisegroup=premisegroup13.uid, is_supportive=False, author=user.uid, issue=issue2.uid)
+    argument14 = Argument(premisegroup=premisegroup14.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                          conclusion=statement4.uid)
+    argument15 = Argument(premisegroup=premisegroup15.uid, is_supportive=False, author=user.uid, issue=issue2.uid,
+                          conclusion=statement4.uid)
+    argument16 = Argument(premisegroup=premisegroup16.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                          conclusion=statement4.uid)
+    argument17 = Argument(premisegroup=premisegroup17.uid, is_supportive=False, author=user.uid, issue=issue2.uid)
+    argument18 = Argument(premisegroup=premisegroup18.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                          conclusion=statement5.uid)
+    argument19 = Argument(premisegroup=premisegroup19.uid, is_supportive=False, author=user.uid, issue=issue2.uid,
+                          conclusion=statement5.uid)
+    argument20 = Argument(premisegroup=premisegroup20.uid, is_supportive=False, author=user.uid, issue=issue2.uid,
+                          conclusion=statement5.uid)
+    argument21 = Argument(premisegroup=premisegroup21.uid, is_supportive=False, author=user.uid, issue=issue2.uid)
+    argument22 = Argument(premisegroup=premisegroup22.uid, is_supportive=False, author=user.uid, issue=issue2.uid,
+                          conclusion=statement13.uid)
+    argument23 = Argument(premisegroup=premisegroup23.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                          conclusion=statement13.uid)
+    argument24 = Argument(premisegroup=premisegroup24.uid, is_supportive=False, author=user.uid, issue=issue2.uid)
+    argument25 = Argument(premisegroup=premisegroup25.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                          conclusion=statement13.uid)
+    argument26 = Argument(premisegroup=premisegroup26.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                          conclusion=statement14.uid)
+    argument27 = Argument(premisegroup=premisegroup26.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                          conclusion=statement15.uid)
+    argument28 = Argument(premisegroup=premisegroup27.uid, is_supportive=True, author=user.uid, issue=issue2.uid,
+                          conclusion=statement14.uid)
+    argument29 = Argument(premisegroup=premisegroup28.uid, is_supportive=False, author=user.uid, issue=issue2.uid,
+                          conclusion=statement14.uid)
+    argument31 = Argument(premisegroup=premisegroup29.uid, is_supportive=False, author=user.uid, issue=issue2.uid)
     ####
-    argument101 = Argument(premisegroup=premisegroup105.uid, issupportive=True, author=3, issue=issue1.uid,
+    argument101 = Argument(premisegroup=premisegroup105.uid, is_supportive=True, author=3, issue=issue1.uid,
                            conclusion=statement101.uid)
-    argument102 = Argument(premisegroup=premisegroup106.uid, issupportive=False, author=3, issue=issue1.uid)
-    argument103 = Argument(premisegroup=premisegroup107.uid, issupportive=True, author=3, issue=issue1.uid,
+    argument102 = Argument(premisegroup=premisegroup106.uid, is_supportive=False, author=3, issue=issue1.uid)
+    argument103 = Argument(premisegroup=premisegroup107.uid, is_supportive=True, author=3, issue=issue1.uid,
                            conclusion=statement105.uid)
-    argument104 = Argument(premisegroup=premisegroup108.uid, issupportive=True, author=user.uid, issue=issue1.uid,
+    argument104 = Argument(premisegroup=premisegroup108.uid, is_supportive=True, author=user.uid, issue=issue1.uid,
                            conclusion=statement107.uid)
-    argument105 = Argument(premisegroup=premisegroup109.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+    argument105 = Argument(premisegroup=premisegroup109.uid, is_supportive=False, author=user.uid, issue=issue1.uid,
                            conclusion=statement101.uid)
-    argument106 = Argument(premisegroup=premisegroup110.uid, issupportive=False, author=user.uid, issue=issue1.uid)
-    argument107 = Argument(premisegroup=premisegroup111.uid, issupportive=False, author=user.uid, issue=issue1.uid)
-    argument108 = Argument(premisegroup=premisegroup112.uid, issupportive=True, author=user.uid, issue=issue1.uid,
+    argument106 = Argument(premisegroup=premisegroup110.uid, is_supportive=False, author=user.uid, issue=issue1.uid)
+    argument107 = Argument(premisegroup=premisegroup111.uid, is_supportive=False, author=user.uid, issue=issue1.uid)
+    argument108 = Argument(premisegroup=premisegroup112.uid, is_supportive=True, author=user.uid, issue=issue1.uid,
                            conclusion=statement102.uid)
-    argument109 = Argument(premisegroup=premisegroup113.uid, issupportive=True, author=user.uid, issue=issue1.uid,
+    argument109 = Argument(premisegroup=premisegroup113.uid, is_supportive=True, author=user.uid, issue=issue1.uid,
                            conclusion=statement102.uid)
-    argument110 = Argument(premisegroup=premisegroup115.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+    argument110 = Argument(premisegroup=premisegroup115.uid, is_supportive=False, author=user.uid, issue=issue1.uid,
                            conclusion=statement112.uid)
-    argument111 = Argument(premisegroup=premisegroup114.uid, issupportive=False, author=user.uid, issue=issue1.uid)
-    argument112 = Argument(premisegroup=premisegroup116.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+    argument111 = Argument(premisegroup=premisegroup114.uid, is_supportive=False, author=user.uid, issue=issue1.uid)
+    argument112 = Argument(premisegroup=premisegroup116.uid, is_supportive=False, author=user.uid, issue=issue1.uid,
                            conclusion=statement102.uid)
-    argument113 = Argument(premisegroup=premisegroup117.uid, issupportive=False, author=user.uid, issue=issue1.uid)
-    argument114 = Argument(premisegroup=premisegroup118.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+    argument113 = Argument(premisegroup=premisegroup117.uid, is_supportive=False, author=user.uid, issue=issue1.uid)
+    argument114 = Argument(premisegroup=premisegroup118.uid, is_supportive=False, author=user.uid, issue=issue1.uid,
                            conclusion=statement116.uid)
-    argument115 = Argument(premisegroup=premisegroup119.uid, issupportive=True, author=user.uid, issue=issue1.uid,
+    argument115 = Argument(premisegroup=premisegroup119.uid, is_supportive=True, author=user.uid, issue=issue1.uid,
                            conclusion=statement116.uid)
-    argument116 = Argument(premisegroup=premisegroup120.uid, issupportive=True, author=user.uid, issue=issue1.uid,
+    argument116 = Argument(premisegroup=premisegroup120.uid, is_supportive=True, author=user.uid, issue=issue1.uid,
                            conclusion=statement103.uid)
-    argument117 = Argument(premisegroup=premisegroup121.uid, issupportive=False, author=user.uid, issue=issue1.uid)
-    argument118 = Argument(premisegroup=premisegroup122.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+    argument117 = Argument(premisegroup=premisegroup121.uid, is_supportive=False, author=user.uid, issue=issue1.uid)
+    argument118 = Argument(premisegroup=premisegroup122.uid, is_supportive=False, author=user.uid, issue=issue1.uid,
                            conclusion=statement103.uid)
-    argument119 = Argument(premisegroup=premisegroup123.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+    argument119 = Argument(premisegroup=premisegroup123.uid, is_supportive=False, author=user.uid, issue=issue1.uid,
                            conclusion=statement115.uid)
     ####
-    argument200 = Argument(premisegroup=premisegroup201.uid, issupportive=True, author=user.uid, issue=issue4.uid,
+    argument200 = Argument(premisegroup=premisegroup201.uid, is_supportive=True, author=user.uid, issue=issue4.uid,
                            conclusion=statement200.uid)
-    argument201 = Argument(premisegroup=premisegroup202.uid, issupportive=False, author=user.uid, issue=issue4.uid,
+    argument201 = Argument(premisegroup=premisegroup202.uid, is_supportive=False, author=user.uid, issue=issue4.uid,
                            conclusion=statement200.uid)
-    argument202 = Argument(premisegroup=premisegroup203.uid, issupportive=False, author=user.uid, issue=issue4.uid)
-    argument203 = Argument(premisegroup=premisegroup204.uid, issupportive=False, author=user.uid, issue=issue4.uid)
-    argument204 = Argument(premisegroup=premisegroup205.uid, issupportive=True, author=user.uid, issue=issue4.uid,
+    argument202 = Argument(premisegroup=premisegroup203.uid, is_supportive=False, author=user.uid, issue=issue4.uid)
+    argument203 = Argument(premisegroup=premisegroup204.uid, is_supportive=False, author=user.uid, issue=issue4.uid)
+    argument204 = Argument(premisegroup=premisegroup205.uid, is_supportive=True, author=user.uid, issue=issue4.uid,
                            conclusion=statement201.uid)
-    argument205 = Argument(premisegroup=premisegroup206.uid, issupportive=False, author=user.uid, issue=issue4.uid,
+    argument205 = Argument(premisegroup=premisegroup206.uid, is_supportive=False, author=user.uid, issue=issue4.uid,
                            conclusion=statement201.uid)
-    argument206 = Argument(premisegroup=premisegroup207.uid, issupportive=True, author=user.uid, issue=issue4.uid,
+    argument206 = Argument(premisegroup=premisegroup207.uid, is_supportive=True, author=user.uid, issue=issue4.uid,
                            conclusion=statement202.uid)
-    argument207 = Argument(premisegroup=premisegroup208.uid, issupportive=False, author=user.uid, issue=issue4.uid,
+    argument207 = Argument(premisegroup=premisegroup208.uid, is_supportive=False, author=user.uid, issue=issue4.uid,
                            conclusion=statement202.uid)
 
-    argument210 = Argument(premisegroup=premisegroup213.uid, issupportive=True, author=user.uid, issue=issue4.uid,
+    argument210 = Argument(premisegroup=premisegroup213.uid, is_supportive=True, author=user.uid, issue=issue4.uid,
                            conclusion=statement212.uid)
     ####
-    argument303 = Argument(premisegroup=premisegroup303.uid, issupportive=True, author=user.uid, issue=issue5.uid,
+    argument303 = Argument(premisegroup=premisegroup303.uid, is_supportive=True, author=user.uid, issue=issue5.uid,
                            conclusion=statement301.uid)
-    argument304 = Argument(premisegroup=premisegroup304.uid, issupportive=True, author=user.uid, issue=issue5.uid,
+    argument304 = Argument(premisegroup=premisegroup304.uid, is_supportive=True, author=user.uid, issue=issue5.uid,
                            conclusion=statement301.uid)
-    argument305 = Argument(premisegroup=premisegroup305.uid, issupportive=False, author=user.uid, issue=issue5.uid,
+    argument305 = Argument(premisegroup=premisegroup305.uid, is_supportive=False, author=user.uid, issue=issue5.uid,
                            conclusion=statement301.uid)
-    argument306 = Argument(premisegroup=premisegroup306.uid, issupportive=False, author=user.uid, issue=issue5.uid,
+    argument306 = Argument(premisegroup=premisegroup306.uid, is_supportive=False, author=user.uid, issue=issue5.uid,
                            conclusion=statement302.uid)
-    argument307 = Argument(premisegroup=premisegroup307.uid, issupportive=False, author=user.uid, issue=issue5.uid,
+    argument307 = Argument(premisegroup=premisegroup307.uid, is_supportive=False, author=user.uid, issue=issue5.uid,
                            conclusion=statement302.uid)
 
-    argument402 = Argument(premisegroup=premisegroup402.uid, issupportive=True, author=user.uid, issue=issue7.uid,
+    argument402 = Argument(premisegroup=premisegroup402.uid, is_supportive=True, author=user.uid, issue=issue7.uid,
                            conclusion=statement401.uid)
-    argument403 = Argument(premisegroup=premisegroup403.uid, issupportive=False, author=user.uid, issue=issue7.uid,
+    argument403 = Argument(premisegroup=premisegroup403.uid, is_supportive=False, author=user.uid, issue=issue7.uid,
                            conclusion=statement401.uid)
-    argument404 = Argument(premisegroup=premisegroup404.uid, issupportive=False, author=user.uid, issue=issue7.uid,
+    argument404 = Argument(premisegroup=premisegroup404.uid, is_supportive=False, author=user.uid, issue=issue7.uid,
                            conclusion=statement401.uid)
-    argument405 = Argument(premisegroup=premisegroup405.uid, issupportive=False, author=user.uid, issue=issue7.uid,
+    argument405 = Argument(premisegroup=premisegroup405.uid, is_supportive=False, author=user.uid, issue=issue7.uid,
                            conclusion=statement404.uid)
-    argument407 = Argument(premisegroup=premisegroup407.uid, issupportive=False, author=user.uid, issue=issue7.uid)
+    argument407 = Argument(premisegroup=premisegroup407.uid, is_supportive=False, author=user.uid, issue=issue7.uid)
 
     session.add_all([argument0, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
     session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])

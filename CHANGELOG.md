@@ -1,3 +1,18 @@
+### 1.6.3 (2018-05-02)
+- Revival of our API
+
+### 1.6.2 (2018-04-10)
+- Upgrading JS libs
+- Including bumpversion
+
+### 1.6.1 (2018-03-30)
+- Splitting compose files
+
+### 1.6.0 (2018-03-02)
+- Cleaner code everywhere
+- Refactor complete software
+- Usage of validators
+
 ### 1.5.5 (2018-01-26)
 - Add GraphiQL
 
@@ -225,6 +240,15 @@ Improvements and bugfix during a second experiment
   - Using Chameleon and TAL
   - Reduced loading time
 
+### 0.4.8 (2016-01-12)
+- Improved weighting helper, also called voting helper
+- Moved many string building functions to the server side
+
+### 0.4.7 (2016-01-06)
+- Island View
+- Profile Picture based on the MD5-value of the user's mail
+- Improved weighting helper
+
 ### 0.4.6 (2015-12-16)
 - Collecting weights for arguments and statements
 - Smaller design improvements like badges for the issues
@@ -233,15 +257,6 @@ Improvements and bugfix during a second experiment
 - Improved session management
 - Improved anti-spam-questions
 - Fixes in the GUI for registration
-
-### 0.4.7 (2016-01-06)
-- Island View
-- Profile Picture based on the MD5-value of the user's mail
-- Improved weighting helper
-
-### 0.4.8 (2016-01-12)
-- Improved weighting helper, also called voting helper
-- Moved many string building functions to the server side
 
 ### 0.4.4 (2015-11-30)
 - Breadcrumbs hover vs. title

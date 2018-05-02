@@ -56,7 +56,7 @@ You may want to configure options as environment variables instead of config ent
 D-BAS
 -----
 You can configure all entries in the ``app:main`` section of the ini-file in environment variables.
-By default D-BAS takes all environment variables with prefix ``DBAS_`` and adds them to the configuration, after parsing the .ini file itself.
+By default D-BAS takes all environment variables with prefix ```` and adds them to the configuration, after parsing the .ini file itself.
 The name of the environment variable will be the key of the new configuration entry, after some transformations.
 
 1. The prefix will be stripped.
@@ -66,7 +66,7 @@ The name of the environment variable will be the key of the new configuration en
 
 Example::
 
-    export DBAS_FOO_BAR__BAZ=fizz
+    export FOO_BAR__BAZ=fizz
     => foo.bar_baz = fizz
 
 
@@ -74,16 +74,16 @@ Special Variables
 -----------------
 
 There are some special variables for the database connection.
-These **have** to be set, otherwise an error will be raised explaning which variables aren't configured.
+These **have** to be set, otherwise an error will be raised explaining which variables aren't configured.
 
 +--------------+------------------------------------------------------------------+
-| DBAS_DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
+| DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
 +--------------+------------------------------------------------------------------+
-| DBAS_DB_PORT | The port of the database (example: 5432).                        |
+| DB_PORT | The port of the database (example: 5432).                        |
 +--------------+------------------------------------------------------------------+
-| DBAS_DB_USER | The database username. (example: dbas)                           |
+| DB_USER | The database username. (example: dbas)                           |
 +--------------+------------------------------------------------------------------+
-| DBAS_DB_PW   | The passwort of the DBAS_DB_USER (example: passw0rt123)          |
+| DB_PW   | The passwort of the DB_USER (example: passw0rt123)               |
 +--------------+------------------------------------------------------------------+
 
 These variables are accessible like any other via the normal substitutions (DB.HOST, ...)
@@ -92,7 +92,7 @@ OAuth
 -----
 
 D-BAS offers the possibility to use the open authentication protocoll implemented by Google, Facebook,
-Github and Twitter. Please add the variables ``DBAS_OAUTH_service_CLIENTID`` and ``DBAS_OAUTH_service_CLIENTKEY``
+Github and Twitter. Please add the variables ``OAUTH_service_CLIENTID`` and ``OAUTH_service_CLIENTKEY``
 for each service you want to use, wherey you have to replace **service** with e.g. GOOGLE (important: uppercase).
 
 The login buttons will be displayed automatically. For mroe information, have a look `on this site <dbas/oauth.html>`_.
@@ -119,62 +119,3 @@ are checking the syntax of the python and javascript code with::
 
     jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js
     flake8
-
-
-Manual Installation
-===================
-
-.. note::
-
-   No longer maintained. We are now using Docker. Check the Dockerfiles if
-   you want to install it directly on your machine.
-
-Ensure that the following tools are installed:
-
-* Python >= 3.4
-* `pip <https://pip.pypa.io/en/stable/installing/>`_
-* `virtualenv <http://virtualenv.readthedocs.org/en/latest/installation.html>`_
-* `virtualenvwrapper <http://virtualenvwrapper.readthedocs.org/en/latest/install.html>`_
-* PostgreSQL and libpq-dev
-
-Then follow these steps:
-
-1. Create virtualenv with python3::
-
-    $ mkvirtualenv "--python=$(which python3)" dbas
-
-2. Install PostgreSQL and configure it::
-
-    $ apt-get install libpq-dev python-dev postgresql
-
-3. Install all requirements::
-
-    $ pip install -r requirements.txt
-
-4. Develop application::
-
-    $ python setup.py develop
-
-5. Create database::
-
-    $ make init
-    $ make all
-
-6. Deploy Sass::
-
-    $ sass static/css/main.sass  static/css/main.css --style compressed --no-cache
-
-7. Start development web server::
-
-    $ pserve development.ini --reload
-
-8. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
-
-
-Mac OS specifc installation problems
-====================================
-
-psycopg2 install fails with ``library not found for -lssl with on install``
----------------------------------------------------------------------------
-
-    $ env LDFLAGS="-I/usr/local/opt/openssl/include -L/usr/local/opt/openssl/lib" pip install psycopg2

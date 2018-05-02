@@ -22,16 +22,24 @@ Ensure that the following tools are installed:
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
 Then copy the `skeleton.env` to `development.env` and fill out the fields you need.
-At least `DBAS_DB_*` and maybe `DBAS_MAIL_*` should be set.
+At least the following field should be set:
+ - `DB_*` ; Please fill out every value of your used database.
+ - `MAIL_*`; Please fill out every value of your mail server.
+ - `WEBSOCKET_PORT` with the port of the small node.js server. Default is 5222. On modification, please set the new port on `websocket/static/js/websocket.js` too. 
+ - `MIN_LENGTH_OF_STATEMENT` is the minimal length of any statement in D-BAS. We think, that `10` is a good default value.
 
 Then follow these steps:
 
     docker-compose build
     docker-compose up
 
-Example for a fresh build
+Example for a fresh build:
 
     docker-compose up --build
+
+If you want to include the notification service as well as elastic search:
+
+    docker-compose -f docker-compose.yml -f docker-compose.notifications.yml -f docker-compose.search.yml up
 
 Production mode:
 
@@ -48,8 +56,8 @@ Afterwards everything should be fine.
 
 ## Maintainers and Main Contributors
 
-* Tobias Krauthoff
-* Christian Meter
+* [Tobias Krauthoff](mailto:krauthoff@cs.uni-duesseldorf.de)
+* [Christian Meter](mailto:meter@cs.uni-duesseldorf.de)
 
 
 ## Contributors

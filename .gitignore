@@ -1,13 +1,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
 *.mo
 *.pot
 
 # Distribution / packaging
 build/
 dist/
-*.egg
 *.egg-info/
 source/
 
@@ -39,17 +37,22 @@ db.txt
 mergeDatabase.py
 getMails.py
 addEnglischDiscussion.py
-.#*
 pserve.ini
 analyzer/
+clean.sh
 
 # Pycharm
 .idea/
-data/
+
+# Database
+docker/db/data/
+!dbas/static/data
 
 # Deployment
 dbas/static/css/main.css
 dbas/static/css/main.css.map
+dbas/static/css/creative.css
+dbas/static/css/creative.css.map
 dbas/static/rss/*
 .sass-cache/
 .babelrc
@@ -57,6 +60,7 @@ createUser.py
 *.min.js
 production.env
 development.env
+clean.sh
 
 # node
 node_modules/
@@ -64,10 +68,12 @@ node_modules/
 restorePostgres.sh
 
 # DB Files
-docker/db/data/
 docker/db/entrypoint/.*.sql
 
 .scannerwork/
 
 # Emacs temp-files
 .#*
+
+.hypothesis/
+cover/

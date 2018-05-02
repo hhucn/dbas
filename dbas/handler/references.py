@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User
-from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
+from dbas.query_wrapper import get_enabled_arguments_as_query, get_enabled_premises_as_query
 from dbas.lib import get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.input_validator import is_integer
@@ -18,18 +18,18 @@ def get_references_for_argument(uid, main_page):
     :param main_page: current main page
     :return: dict
     """
-    logger('ReferenceHelper', 'get_references_for_argument', str(uid))
+    logger('ReferenceHelper', str(uid))
 
     if not is_integer(uid):
         return {}, {}
 
-    db_arguments = get_not_disabled_arguments_as_query()
+    db_arguments = get_enabled_arguments_as_query()
     db_argument = db_arguments.filter_by(uid=uid).first()
     if not db_argument:
         return {}, {}
 
-    db_premises = get_not_disabled_premises_as_query()
-    db_premises = db_premises.filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+    db_premises = get_enabled_premises_as_query()
+    db_premises = db_premises.filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
 
     data = {}
     text = {}
@@ -37,7 +37,7 @@ def get_references_for_argument(uid, main_page):
         tmp_uid = premise.statement_uid
         references_array = __get_references_for_statement(tmp_uid, main_page)[tmp_uid]
         data[premise.statement_uid] = references_array
-        text[premise.statement_uid] = get_text_for_statement_uid(premise.statement_uid)
+        text[premise.statement_uid] = premise.get_text()
 
     if db_argument.conclusion_uid is not None:
         tmp_uid = db_argument.conclusion_uid
@@ -77,13 +77,13 @@ def __get_references_for_statement(uid, main_page):
     :param main_page: current main page
     :return: dict
     """
-    logger('ReferenceHelper', '__get_references_for_statement', str(uid))
+    logger('ReferenceHelper', str(uid))
     db_references = DBDiscussionSession.query(StatementReferences).filter_by(statement_uid=uid).all()
     references_array = [__get_values_of_reference(ref, main_page) for ref in db_references]
     return {uid: references_array}
 
 
-def __get_values_of_reference(reference, main_page):
+def __get_values_of_reference(reference: StatementReferences, main_page):
     """
     Creates dictionary with all values of the column
 
@@ -94,7 +94,7 @@ def __get_values_of_reference(reference, main_page):
     db_user = DBDiscussionSession.query(User).get(int(reference.author_uid))
 
     img = get_profile_picture(db_user, 20, True)
-    name = db_user.get_global_nickname()
+    name = db_user.global_nickname
     link = main_page + '/user/' + str(db_user.uid)
 
     return {'uid': reference.uid,
@@ -105,29 +105,24 @@ def __get_values_of_reference(reference, main_page):
                        'name': name,
                        'link': link},
             'created': str(reference.created.humanize),
-            'statement_text': get_text_for_statement_uid(reference.statement_uid)}
+            'statement_text': reference.get_statement_text()}
 
 
-def set_reference(reference, url, nickname, statement_uid, issue_uid):
+def set_reference(reference, url, db_user, db_statement, issue_uid):
     """
     Creates a new reference
 
     :param reference: Text of the reference
-    :param nickname: nickname of the user
-    :param statement_uid: statement uid of the linked statement
+    :param db_user: User
+    :param db_statement: Statement
     :param issue_uid: current issue uid
     :return: Boolean
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    if not db_user:
-        return False
-
     parsed_url = urlparse(url)
-    host = parsed_url.scheme + '://' + parsed_url.netloc
-    path = parsed_url.path
-    author_uid = db_user.uid
+    host = '{}://{}'.format(parsed_url.scheme, parsed_url.netloc)
+    path = '{}?{}'.format(parsed_url.path, parsed_url.query)
 
-    DBDiscussionSession.add(StatementReferences(reference, host, path, author_uid, statement_uid, issue_uid))
+    DBDiscussionSession.add(StatementReferences(reference, host, path, db_user.uid, db_statement.uid, issue_uid))
     DBDiscussionSession.flush()
     transaction.commit()
 
@@ -149,10 +144,7 @@ def get_references(uids, is_argument, application_url) -> dict:
     else:
         data, text = get_references_for_statements(uids, application_url)
 
-    prepared_dict = {
-        'error': '',
+    return {
         'data': data,
         'text': text
     }
-
-    return prepared_dict

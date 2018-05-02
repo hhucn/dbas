@@ -3,19 +3,21 @@ Provides helping function for displaying the review queues and locking entries.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from enum import Enum, auto
+from typing import Tuple
 
 import transaction
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, TextVersion, \
     LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now, \
     Statement, ReviewDuplicate, LastReviewerDuplicate, Argument, Premise, ReviewMerge, ReviewSplit, \
     LastReviewerMerge, LastReviewerSplit
-from dbas.lib import get_profile_picture, is_user_author_or_admin
+from dbas.lib import get_profile_picture
 from dbas.logger import logger
-from dbas.review.helper.reputation import get_reputation_of, reputation_icons
-from dbas.review.helper.subpage import reputation_borders
+from dbas.review.helper.reputation import get_reputation_of, reputation_icons, reputation_borders
 from dbas.strings.keywords import Keywords as _
-from sqlalchemy import and_
+from dbas.strings.translator import Translator
 
 max_lock_time_in_sec = 180
 
@@ -28,6 +30,15 @@ key_split = 'splits'
 key_history = 'history'
 key_ongoing = 'ongoing'
 
+review_queues = [
+    key_deletes,
+    key_optimizations,
+    key_edits,
+    key_duplicates,
+    key_merge,
+    key_split
+]
+
 title_mapping = {
     key_deletes: _.queueDelete,
     key_optimizations: _.queueOptimization,
@@ -36,6 +47,22 @@ title_mapping = {
     key_split: _.queueSplit,
     key_merge: _.queueMerge
 }
+
+model_mapping = {
+    key_deletes: ReviewDelete,
+    key_optimizations: ReviewOptimization,
+    key_edits: ReviewEdit,
+    key_duplicates: ReviewDuplicate,
+    key_split: ReviewSplit,
+    key_merge: ReviewMerge
+}
+
+
+class Code(Enum):
+    DOESNT_EXISTS = auto()
+    DUPLICATE = auto()
+    SUCCESS = auto()
+    ERROR = auto()
 
 
 def get_review_queues_as_lists(main_page, translator, nickname):
@@ -47,21 +74,22 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     :param nickname: Users nickname
     :return: Array
     """
-    logger('ReviewQueues', 'get_review_queues_as_lists', 'main')
+    logger('ReviewQueues', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         return None
     count, all_rights = get_reputation_of(nickname)
 
     review_list = list()
-    review_list.append(__get_delete_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_optimization_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_edit_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_duplicates_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_split_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_merge_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_delete_dict(main_page, translator, db_user, count, all_rights))
+    review_list.append(__get_optimization_dict(main_page, translator, db_user, count, all_rights))
+    review_list.append(__get_edit_dict(main_page, translator, db_user, count, all_rights))
+    review_list.append(__get_duplicates_dict(main_page, translator, db_user, count, all_rights))
+    review_list.append(__get_split_dict(main_page, translator, db_user, count, all_rights))
+    review_list.append(__get_merge_dict(main_page, translator, db_user, count, all_rights))
     review_list.append(__get_history_dict(main_page, translator, count, all_rights))
-    if is_user_author_or_admin(nickname):
+
+    if db_user.is_author() or db_user.is_admin():
         review_list.append(__get_ongoing_dict(main_page, translator))
 
     return review_list
@@ -69,18 +97,18 @@ def get_review_queues_as_lists(main_page, translator, nickname):
 
 def get_count_of_all():
     reviews = [ReviewDelete, ReviewOptimization, ReviewEdit, ReviewDuplicate, ReviewSplit, ReviewMerge]
-    count = [len(DBDiscussionSession.query(r).all()) for r in reviews]
+    count = [DBDiscussionSession.query(r).count() for r in reviews]
     return sum(count)
 
 
-def get_complete_review_count(nickname):
+def get_complete_review_count(db_user: User) -> int:
     """
     Sums up the review points of the user
 
-    :param nickname: User.nickname
+    :param db_user: User
     :return: int
     """
-    count, all_rights = get_reputation_of(nickname)
+    count, all_rights = get_reputation_of(db_user)
 
     rights1 = count >= reputation_borders[key_deletes] or all_rights
     rights2 = count >= reputation_borders[key_optimizations] or all_rights
@@ -90,28 +118,28 @@ def get_complete_review_count(nickname):
     rights6 = count >= reputation_borders[key_merge] or all_rights
 
     count = [
-        __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname) if rights1 else 0,
-        __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname) if rights2 else 0,
-        __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname) if rights3 else 0,
-        __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, nickname) if rights4 else 0,
-        __get_review_count_for(ReviewSplit, LastReviewerSplit, nickname) if rights5 else 0,
-        __get_review_count_for(ReviewMerge, LastReviewerMerge, nickname) if rights6 else 0,
+        __get_review_count_for(ReviewDelete, LastReviewerDelete, db_user) if rights1 else 0,
+        __get_review_count_for(ReviewOptimization, LastReviewerOptimization, db_user) if rights2 else 0,
+        __get_review_count_for(ReviewEdit, LastReviewerEdit, db_user) if rights3 else 0,
+        __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, db_user) if rights4 else 0,
+        __get_review_count_for(ReviewSplit, LastReviewerSplit, db_user) if rights5 else 0,
+        __get_review_count_for(ReviewMerge, LastReviewerMerge, db_user) if rights6 else 0,
     ]
 
     return sum(count)
 
 
-def __get_delete_dict(main_page, translator, nickname, count, all_rights):
+def __get_delete_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: Users
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_delete_dict', 'main')
-    task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname)
+    task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueDelete),
                 'id': 'deletes',
@@ -120,23 +148,24 @@ def __get_delete_dict(main_page, translator, nickname, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_deletes] or all_rights,
                 'is_allowed_text': translator.get(_.visitDeleteQueue),
-                'is_not_allowed_text': translator.get(_.visitDeleteQueueLimitation).format(str(reputation_borders[key_deletes])),
+                'is_not_allowed_text': translator.get(_.visitDeleteQueueLimitation).format(
+                    str(reputation_borders[key_deletes])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDelete, main_page)
                 }
     return tmp_dict
 
 
-def __get_optimization_dict(main_page, translator, nickname, count, all_rights):
+def __get_optimization_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_optimization_dict', 'main')
-    task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname)
+    task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueOptimization),
                 'id': 'optimizations',
@@ -145,23 +174,24 @@ def __get_optimization_dict(main_page, translator, nickname, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_optimizations] or all_rights,
                 'is_allowed_text': translator.get(_.visitOptimizationQueue),
-                'is_not_allowed_text': translator.get(_.visitOptimizationQueueLimitation).format(str(reputation_borders[key_optimizations])),
+                'is_not_allowed_text': translator.get(_.visitOptimizationQueueLimitation).format(
+                    str(reputation_borders[key_optimizations])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, main_page)
                 }
     return tmp_dict
 
 
-def __get_edit_dict(main_page, translator, nickname, count, all_rights):
+def __get_edit_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_edit_dict', 'main')
-    task_count = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname)
+    task_count = __get_review_count_for(ReviewEdit, LastReviewerEdit, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueEdit),
                 'id': 'edits',
@@ -170,23 +200,24 @@ def __get_edit_dict(main_page, translator, nickname, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_edits] or all_rights,
                 'is_allowed_text': translator.get(_.visitEditQueue),
-                'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).format(str(reputation_borders[key_edits])),
+                'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).format(
+                    str(reputation_borders[key_edits])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerEdit, main_page)
                 }
     return tmp_dict
 
 
-def __get_duplicates_dict(main_page, translator, nickname, count, all_rights):
+def __get_duplicates_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section. Queue should be added iff the user is author!
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_duplicates_dict', 'main')
-    task_count = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, nickname)
+    task_count = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueDuplicates),
                 'id': 'duplicates',
@@ -195,23 +226,24 @@ def __get_duplicates_dict(main_page, translator, nickname, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_duplicates] or all_rights,
                 'is_allowed_text': translator.get(_.visitDuplicateQueue),
-                'is_not_allowed_text': translator.get(_.visitDuplicateQueueLimitation).format(str(reputation_borders[key_duplicates])),
+                'is_not_allowed_text': translator.get(_.visitDuplicateQueueLimitation).format(
+                    str(reputation_borders[key_duplicates])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDuplicate, main_page)
                 }
     return tmp_dict
 
 
-def __get_split_dict(main_page, translator, nickname, count, all_rights):
+def __get_split_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_delete_dict', 'main')
-    task_count = __get_review_count_for(ReviewSplit, LastReviewerSplit, nickname)
+    task_count = __get_review_count_for(ReviewSplit, LastReviewerSplit, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueSplit),
                 'id': 'splits',
@@ -220,23 +252,24 @@ def __get_split_dict(main_page, translator, nickname, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_split] or all_rights,
                 'is_allowed_text': translator.get(_.visitSplitQueue),
-                'is_not_allowed_text': translator.get(_.visitSplitQueueLimitation).format(str(reputation_borders[key_split])),
+                'is_not_allowed_text': translator.get(_.visitSplitQueueLimitation).format(
+                    str(reputation_borders[key_split])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerSplit, main_page)
                 }
     return tmp_dict
 
 
-def __get_merge_dict(main_page, translator, nickname, count, all_rights):
+def __get_merge_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_delete_dict', 'main')
-    task_count = __get_review_count_for(ReviewMerge, LastReviewerMerge, nickname)
+    task_count = __get_review_count_for(ReviewMerge, LastReviewerMerge, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueMerge),
                 'id': 'merges',
@@ -245,7 +278,8 @@ def __get_merge_dict(main_page, translator, nickname, count, all_rights):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_merge] or all_rights,
                 'is_allowed_text': translator.get(_.visitMergeQueue),
-                'is_not_allowed_text': translator.get(_.visitMergeQueueLimitation).format(str(reputation_borders[key_merge])),
+                'is_not_allowed_text': translator.get(_.visitMergeQueueLimitation).format(
+                    str(reputation_borders[key_merge])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerMerge, main_page)
                 }
     return tmp_dict
@@ -267,7 +301,8 @@ def __get_history_dict(main_page, translator, count, all_rights):
                 'task_count': __get_review_count_for_history(True),
                 'is_allowed': count >= reputation_borders[key_history] or all_rights,
                 'is_allowed_text': translator.get(_.visitHistoryQueue),
-                'is_not_allowed_text': translator.get(_.visitHistoryQueueLimitation).format(str(reputation_borders[key_history])),
+                'is_not_allowed_text': translator.get(_.visitHistoryQueueLimitation).format(
+                    str(reputation_borders[key_history])),
                 'last_reviews': list()
                 }
     return tmp_dict
@@ -296,18 +331,17 @@ def __get_ongoing_dict(main_page, translator):
     return tmp_dict
 
 
-def __get_review_count_for(review_type, last_reviewer_type, nickname):
+def __get_review_count_for(review_type, last_reviewer_type, db_user):
     """
     Returns the count of reviews of *review_type* for the user with *nickname*, whereby all reviewed data
-    of *last_reviewer_type* is not observed
+    of *last_reviewer_type* are not observed
 
     :param review_type: ReviewEdit, ReviewOptimization or ...
     :param last_reviewer_type: LastReviewerEdit, LastReviewer...
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Integer
     """
     #  logger('ReviewQueues', '__get_review_count_for', 'main')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
         return len(db_reviews)
@@ -319,8 +353,8 @@ def __get_review_count_for(review_type, last_reviewer_type, nickname):
     already_reviewed = []
     for last_review in db_last_reviews_of_user:
         already_reviewed.append(last_review.review_uid)
-    db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
-                                                                    review_type.detector_uid != db_user.uid))
+    db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
+                                                               review_type.detector_uid != db_user.uid)
 
     if len(already_reviewed) > 0:
         db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
@@ -361,7 +395,7 @@ def __get_last_reviewer_of(reviewer_type, main_page):
             tmp_dict = dict()
             tmp_dict['img_src'] = get_profile_picture(db_user, 40)
             tmp_dict['url'] = main_page + '/user/' + str(db_user.uid)
-            tmp_dict['name'] = db_user.get_global_nickname()
+            tmp_dict['name'] = db_user.global_nickname
             # skip it, if it is already in
             if tmp_dict in users_array:
                 limit += 1 if len(db_reviews) > limit else 0
@@ -373,45 +407,43 @@ def __get_last_reviewer_of(reviewer_type, main_page):
     return users_array
 
 
-def add_proposals_for_statement_corrections(elements, nickname, translator):
+def add_proposals_for_statement_corrections(elements, db_user, _tn) -> Tuple[str, bool]:
     """
     Add a proposal to correct a statement
 
     :param elements: [Strings]
-    :param nickname: User.nickname
-    :param translator: Translator
-    :return: String, Boolean
+    :param db_user: User
+    :param _tn: Translator
+    :return: String, Boolean for Error
     """
-    logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'main')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return translator.get(_.noRights), True
+    logger('ReviewQueues', 'main')
 
     review_count = len(elements)
-    added_reviews = [__add_edit_reviews(element, db_user) for element in elements]
+    added_reviews = [__add_edit_reviews(el, db_user) for el in elements]
 
-    if added_reviews.count(1) == 0:  # no edits set
-        if added_reviews.count(-1) > 0:
-            logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'internal key error')
-            return translator.get(_.internalKeyError), True
-        if added_reviews.count(-2) > 0:
-            logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'already edit proposals')
-            return translator.get(_.alreadyEditProposals), True
-        logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'no corrections given')
-        return translator.get(_.noCorrections), True
+    if added_reviews.count(Code.SUCCESS) == 0:  # no edits set
+        if added_reviews.count(Code.DOESNT_EXISTS) > 0:
+            logger('ReviewQueues', 'internal key error')
+            return _tn.get(_.internalKeyError), True
+        if added_reviews.count(Code.DUPLICATE) > 0:
+            logger('ReviewQueues', 'already edit proposals')
+            return _tn.get(_.alreadyEditProposals), True
+        logger('ReviewQueues', 'no corrections given')
+        return _tn.get(_.noCorrections), True
 
     DBDiscussionSession.flush()
     transaction.commit()
 
     added_values = [__add_edit_values_review(element, db_user) for element in elements]
     if added_values == 0:
-        return translator.get(_.alreadyEditProposals), True
+        return _tn.get(_.alreadyEditProposals), True
     DBDiscussionSession.flush()
     transaction.commit()
 
     msg = ''
-    if review_count > added_values.count(1) or added_reviews.count(1) != added_values.count(1):
-        msg = translator.get(_.alreadyEditProposals)
+    if review_count > added_values.count(Code.SUCCESS) \
+            or added_reviews.count(Code.SUCCESS) != added_values.count(Code.SUCCESS):
+        msg = _tn.get(_.alreadyEditProposals)
 
     return msg, False
 
@@ -424,56 +456,53 @@ def __add_edit_reviews(element, db_user):
     :param db_user: User
     :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success, 0 otherwise
     """
-    logger('ReviewQueues', '__add_edit_reviews', 'current element: {}'.format(element))
+    logger('ReviewQueues', 'current element: {}'.format(element))
     db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
     if not db_statement:
-        logger('ReviewQueues', '__add_edit_reviews', 'statement {} not found (return -1)'.format(element['uid']))
-        return -1
+        logger('ReviewQueues', 'statement {} not found (return -1)'.format(element['uid']))
+        return Code.DOESNT_EXISTS
 
     # already set an correction for this?
     if is_statement_in_edit_queue(element['uid']):  # if we already have an edit, skip this
-        logger('ReviewQueues', '__add_edit_reviews', '{} already got an edit (return -2)'.format(element['uid']))
-        return -2
+        logger('ReviewQueues', '{} already got an edit (return -2)'.format(element['uid']))
+        return Code.DUPLICATE
 
-    db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-    if len(element['text']) > 0 and db_textversion.content.lower().strip() != element['text'].lower().strip():
-        logger('ReviewQueues', '__add_edit_reviews', 'added review element for {}  (return 1)'.format(element['uid']))
+    # is text different?
+    db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+    if len(element['text']) > 0 and db_tv.content.lower().strip() != element['text'].lower().strip():
+        logger('ReviewQueues', 'added review element for {}  (return 1)'.format(element['uid']))
         DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=element['uid']))
-        return 1
+        return Code.SUCCESS
 
-    return 0
+    return Code.ERROR
 
 
-def is_statement_in_edit_queue(uid, is_executed=False):
+def is_statement_in_edit_queue(uid: int, is_executed: bool = False) -> bool:
     """
     Returns true if the statement is not in the edit queue
 
     :param uid: Statement.uid
+    :param is_executed: Bool
     :return: Boolean
     """
-    logger('ReviewQueues', 'is_statement_in_edit_queue', 'current element: {}'.format(uid))
-    db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == uid,
-                                                                        ReviewEdit.is_executed == is_executed)).all()
-    if db_already_edit:
-        return len(db_already_edit) > 0
-    else:
-        return False
+    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
+                                                                         ReviewEdit.is_executed == is_executed).count()
+    return db_already_edit_count > 0
 
 
-def is_arguments_premise_in_edit_queue(uid):
+def is_arguments_premise_in_edit_queue(db_argument: Argument, is_executed: bool = False) -> bool:
     """
     Returns true if the premises of an argument are not in the edit queue
 
-    :param uid: Argument.uid
+    :param db_argument: Argument
+    :param is_executed: Bool
     :return: Boolean
     """
-    db_argument = DBDiscussionSession.query(Argument).get(uid)
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-    db_already_edit = []
-    for premise in db_premises:
-        db_already_edit += DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == premise.statement_uid,
-                                                                             ReviewEdit.is_executed == False)).all()
-    return len(db_already_edit) > 0
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
+    dbp_uid = [p.uid for p in db_premises]
+    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid.in_(dbp_uid),
+                                                                         ReviewEdit.is_executed == is_executed).count()
+    return db_already_edit_count > 0
 
 
 def __add_edit_values_review(element, db_user):
@@ -484,91 +513,90 @@ def __add_edit_values_review(element, db_user):
     :param db_user: User
     :return: 1 on success, 0 otherwise
     """
-    logger('ReviewQueues', '__add_edit_values_review', 'current element: ' + str(element))
+    logger('ReviewQueues', 'current element: ' + str(element))
     db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
     if not db_statement:
-        logger('ReviewQueues', '__add_edit_values_review', str(element['uid']) + ' not found')
-        return 0
+        logger('ReviewQueues', str(element['uid']) + ' not found')
+        return Code.ERROR
 
     db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
 
     if len(element['text']) > 0 and db_textversion.content.lower().strip() != element['text'].lower().strip():
-        db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
-                                                                           ReviewEdit.statement_uid == element['uid'])).order_by(ReviewEdit.uid.desc()).first()
+        db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
+                                                                      ReviewEdit.statement_uid == element[
+                                                                          'uid']).order_by(
+            ReviewEdit.uid.desc()).first()
         DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, element['uid'], 'statement', element['text']))
-        logger('ReviewQueues', '__add_edit_values_review', '{} - \'{}\' accepted'.format(element['uid'], element['text']))
-        return 1
+        logger('ReviewQueues', '{} - \'{}\' accepted'.format(element['uid'], element['text']))
+        return Code.SUCCESS
     else:
-        logger('ReviewQueues', '__add_edit_values_review', '{} - \'{}\' malicious edit'.format(element['uid'], element['text']))
-        return 0
+        logger('ReviewQueues', '{} - \'{}\' malicious edit'.format(element['uid'], element['text']))
+        return Code.ERROR
 
 
-def lock_optimization_review(nickname, review_uid, translator):
+def lock_optimization_review(db_user: User, db_review: ReviewOptimization, translator: Translator):
     """
     Locks a ReviewOptimization
 
-    :param nickname: User.nickname
-    :param review_uid: ReviewOptimization.uid
-    :param translator: Translator
-    :return: success, info, error, is_locked
-    :rtype: String, String, String, Boolean
+    :param db_user:
+    :param db_review:
+    :param translator:
+    :return:
     """
-    logger('ReviewQueues', 'lock_optimization_review', 'main')
-    success = ''
-    info = ''
-    error = ''
-    is_locked = False
-
-    # has user already locked an item?
-    db_user  = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_lock = DBDiscussionSession.query(ReviewOptimization).get(review_uid)
-
-    if not db_user or int(review_uid) < 1 or not db_lock:
-        logger('ReviewQueues', 'lock_optimization_review', 'no user or no review (' + str(not db_user) + ',' + str(not db_lock) + ')', error=True)
-        error = translator.get(_.internalKeyError)
-        return success, info, error, is_locked
-
+    logger('ReviewQueues', 'main')
     # check if author locked an item and maybe tidy up old locks
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
     if db_locks:
         if is_review_locked(db_locks.review_optimization_uid):
-            info = translator.get(_.dataAlreadyLockedByYou)
-            is_locked = True
-            logger('ReviewQueues', 'lock_optimization_review', 'review already locked')
-            return success, info, error, is_locked
+            logger('ReviewQueues', 'review already locked')
+            return {
+                'success': '',
+                'info': translator.get(_.dataAlreadyLockedByYou),
+                'is_locked': True
+            }
         else:
             DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).delete()
 
     # is already locked?
-    if is_review_locked(review_uid):
-        logger('ReviewQueues', 'lock_optimization_review', 'already locked', warning=True)
-        info = translator.get(_.dataAlreadyLockedByOthers)
-        is_locked = True
-        return success, info, error, is_locked
+    if is_review_locked(db_review.uid):
+        logger('ReviewQueues', 'already locked', warning=True)
+        return {
+            'success': '',
+            'info': translator.get(_.dataAlreadyLockedByOthers),
+            'is_locked': True
+        }
 
-    DBDiscussionSession.add(OptimizationReviewLocks(db_user.uid, review_uid))
+    DBDiscussionSession.add(OptimizationReviewLocks(db_user.uid, db_review.uid))
     DBDiscussionSession.flush()
     transaction.commit()
-    is_locked = True
     success = translator.get(_.dataAlreadyLockedByYou)
 
-    logger('ReviewQueues', 'lock_optimization_review', 'review locked')
-    return success, info, error, is_locked
+    logger('ReviewQueues', 'review locked')
+    return {
+        'success': success,
+        'info': '',
+        'is_locked': True
+    }
 
 
-def unlock_optimization_review(review_uid):
+def unlock_optimization_review(db_review: ReviewOptimization, translator: Translator):
     """
     Unlock the OptimizationReviewLocks
 
-    :param review_uid: OptimizationReviewLocks.uid
-    :return: True
+    :param db_review:
+    :param translator:
+    :return:
     """
     tidy_up_optimization_locks()
-    logger('ReviewQueues', 'unlock_optimization_review', 'main')
-    DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).delete()
+    logger('ReviewQueues', 'main')
+    DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=db_review.uid).delete()
     DBDiscussionSession.flush()
     transaction.commit()
-    return True
+    return {
+        'is_locked': False,
+        'success': translator.get(_.dataUnlocked),
+        'info': ''
+    }
 
 
 def is_review_locked(review_uid):
@@ -579,7 +607,7 @@ def is_review_locked(review_uid):
     :return: Boolean
     """
     tidy_up_optimization_locks()
-    logger('ReviewQueues', 'is_review_locked', 'main')
+    logger('ReviewQueues', 'main')
     db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).first()
     if not db_lock:
         return False
@@ -592,8 +620,9 @@ def tidy_up_optimization_locks():
 
     :return: None
     """
-    logger('ReviewQueues', 'tidy_up_optimization_locks', 'main')
+    logger('ReviewQueues', 'main')
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).all()
     for lock in db_locks:
         if (get_now() - lock.locked_since).seconds >= max_lock_time_in_sec:
-            DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=lock.review_optimization_uid).delete()
+            DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
+                review_optimization_uid=lock.review_optimization_uid).delete()

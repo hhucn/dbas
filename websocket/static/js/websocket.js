@@ -215,17 +215,16 @@ function enableTesting(){
 	});
 
 	$('#test_mail_btn').click(function(){
-		$.ajax({
-			url: 'debug_mail',
-			dataType: 'json',
-			data: {
-				'text': $('#test-input').val()
-			},
-			async: true
-		}).done(function (data) {
+		var url = 'debug_mail';
+		var d = {
+			'text': $('#test-input').val()
+			};
+		var done = function (data) {
 			console.log(data);
-		}).fail(function () {
+		};
+		var fail = function () {
 			console.log('fail');
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	});
 }

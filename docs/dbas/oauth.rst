@@ -12,8 +12,8 @@ General
 
 D-BAS offers the possibility to use the open authentication protocoll implemented by Google, Facebook,
 Github and Twitter. The shared information of the given providers will be copied and set as new user in D-BAS.
-To use this authentications, please add the variables ``DBAS_OAUTH_**service**_CLIENTID`` and
-``DBAS_OAUTH_**service**_CLIENTKEY`` for each service you want to use, wherey you have to replace **service** with
+To use this authentications, please add the variables ``OAUTH_**service**_CLIENTID`` and
+``OAUTH_**service**_CLIENTKEY`` for each service you want to use, wherey you have to replace **service** with
 GOOGLE, GITHUB, TWITTER or FACEBOOK (important: uppercase).
 
 You can set up your id's and keys on these sites:

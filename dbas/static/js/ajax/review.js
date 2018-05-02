@@ -2,283 +2,273 @@
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
-function AjaxReviewHandler(){
-	'use strict';
+function AjaxReviewHandler() {
+    'use strict';
 
-	/**
-	 *
-	 * @param uid
-	 * @param reason
-	 * @param is_argument
-	 * @param extra_uid
-	 */
-	this.flagArgumentOrStatement = function(uid, reason, is_argument, extra_uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_flag_argument_or_statement',
-			method: 'POST',
-			data: {
-				uid: uid,
-				reason: reason,
-				extra_uid: extra_uid,
-				is_argument: is_argument
-			},
-			global: false,
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxFlagArgumentDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length !== 0){
-				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-			} else if (parsedData.info.length !== 0) {
-				setGlobalInfoHandler('Ohh!', parsedData.info);
-				$('#popup-duplicate-statement').modal('hide');
-			} else {
-				setGlobalSuccessHandler('Yeah!', parsedData.success);
-				$('#popup-duplicate-statement').modal('hide');
-			}
+    /**
+     *
+     * @param uid
+     * @param reason
+     * @param is_argument
+     * @param extra_uid
+     */
+    this.flagArgumentOrStatement = function (uid, reason, is_argument, extra_uid) {
+        var url = 'flag_argument_or_statement';
+        var data = {
+            uid: uid,
+            reason: reason,
+            extra_uid: extra_uid,
+            is_argument: is_argument
+        };
+        var done = function ajaxFlagArgumentOrStatementDone(data) {
+            if (data.info.length !== 0) {
+                setGlobalInfoHandler('Ohh!', data.info);
+            } else {
+                setGlobalSuccessHandler('Yeah!', data.success);
+            }
+            $('#popup-duplicate-statement').modal('hide');
+        };
+        var fail = function ajaxFlagArgumentOrStatementFail(data) {
+            setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 
-		}).fail(function ajaxFlagArgumentFail() {
-			setGlobalErrorHandler('', _t_discussion(requestFailed));
-		});
-	};
+    /**
+     *
+     * @param pgroup_uid
+     * @param key
+     * @param text_values
+     */
+    this.splitOrMerge = function (pgroup_uid, key, text_values) {
+        var is_premisegroup = typeof text_values === "undefined";
+        var url = 'split_or_merge_' + (is_premisegroup ? 'premisegroup' : 'statement');
+        var data = {
+            uid: parseInt(pgroup_uid),
+            key: key,
+            text_values: text_values
+        };
+        var done = function ajaxSplitOrMergeStatementsDone(data) {
+            if (data.info.length !== 0) {
+                setGlobalInfoHandler('Ohh!', data.info);
+            } else {
+                setGlobalSuccessHandler('Yeah!', data.success);
+            }
+        };
+        var fail = function ajaxSplitOrMergeStatementsFail(data) {
+            setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 
-	/**
-	 *
-	 * @param pgroup_uid
-	 * @param key
-	 * @param text_values
-	 */
-	this.splitOrMerge = function(pgroup_uid, key, text_values){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		var is_premisegroup = typeof text_values === "undefined";
-		var url = 'ajax_split_or_merge_' + (is_premisegroup? 'premisegroup' : 'statement');
-		$.ajax({
-			url: url,
-			method: 'POST',
-			data: {
-				pgroup_uid: pgroup_uid,
-				key: key,
-				text_values: JSON.stringify(text_values)
-			},
-			global: false,
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxSplitOrMergeStatementsDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length !== 0){
-				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-			} else if (parsedData.info.length !== 0) {
-				setGlobalInfoHandler('Ohh!', parsedData.info);
-			} else {
-				setGlobalSuccessHandler('Yeah!', parsedData.success);
-			}
+    /**
+     *
+     * @param review_uid
+     * @param should_lock is true, when the review should be locked and false otherwise
+     * @param review_instance
+     */
+    this.un_lockOptimizationReview = function (review_uid, should_lock, review_instance) {
+        var url = 'review_lock';
+        var data = {
+            'review_uid': parseInt(review_uid),
+            'lock': should_lock
+        };
+        var done = function un_lockOptimizationReviewDone(data) {
+            if (should_lock) {
+                new ReviewCallbacks().forReviewLock(data, review_instance);
+            } else {
+                new ReviewCallbacks().forReviewUnlock(data);
+            }
+        };
+        var fail = function un_lockOptimizationReviewFail(data) {
+            if (should_lock) {
+                setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+            }
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 
-		}).fail(function ajaxSplitOrMergeStatementsFail() {
-			setGlobalErrorHandler('', _t_discussion(requestFailed));
-		});
-	};
+    /**
+     *
+     * @param should_delete
+     * @param review_uid
+     */
+    this.reviewDeleteArgument = function (should_delete, review_uid) {
+        var url = 'review_delete_argument';
+        var data = {
+            should_delete: should_delete,
+            review_uid: parseInt(review_uid)
+        };
+        var done = function reviewDeleteArgumentDone() {
+            if (window.location.href.indexOf('/review/')) {
+                new Review().reloadPage();
+            }
+        };
+        var fail = function reviewDeleteArgumentFail(data) {
+            setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 
-	/**
-	 *
-	 * @param review_uid
-	 * @param should_lock is true, when the review should be locked and false otherwise
-	 * @param review_instance
-	 */
-	this.un_lockOptimizationReview = function (review_uid, should_lock, review_instance) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_review_lock',
-			method: 'POST',
-			data:{ 'review_uid': review_uid, 'lock': should_lock },
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDeleteArgumentDone(data) {
-			if (should_lock) {
-				new ReviewCallbacks().forReviewLock(data, review_instance);
-			} else {
-				new ReviewCallbacks().forReviewUnlock(data);
-			}
-		}).fail(function reviewDeleteArgumentFail() {
-			if (should_lock) {
-				setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			}
-		});
-	};
+    /**
+     *
+     * @param is_edit_okay
+     * @param review_uid
+     */
+    this.reviewEditArgument = function (is_edit_okay, review_uid) {
+        var url = 'review_edit_argument';
+        var data = {
+            is_edit_okay: is_edit_okay,
+            review_uid: parseInt(review_uid)
+        };
+        var done = function reviewEditArgumentDone() {
+            if (window.location.href.indexOf('/review/')) {
+                new Review().reloadPage();
+            }
+        };
+        var fail = function reviewEditArgumentFail(data) {
+            setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 
-	/**
-	 *
-	 * @param should_delete
-	 * @param review_uid
-	 */
-	this.reviewDeleteArgument = function(should_delete, review_uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_review_delete_argument',
-			method: 'POST',
-			data:{ 'should_delete': should_delete, 'review_uid': review_uid },
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDeleteArgumentDone(data) {
-			new ReviewCallbacks().forReviewArgumentOrStatement(data);
-		}).fail(function reviewDeleteArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
-	};
+    /**
+     *
+     * @param is_duplicate
+     * @param review_uid
+     */
+    this.reviewDuplicateStatement = function (is_duplicate, review_uid) {
+        var url = 'review_duplicate_statement';
+        var data = {
+            is_duplicate: is_duplicate,
+            review_uid: parseInt(review_uid)
+        };
+        var done = function reviewDuplicateStatementDone() {
+            if (window.location.href.indexOf('/review/')) {
+                new Review().reloadPage();
+            }
+        };
+        var fail = function reviewDuplicateStatementFail(data) {
+            setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 
-	/**
-	 *
-	 * @param is_edit_okay
-	 * @param review_uid
-	 */
-	this.reviewEditArgument = function(is_edit_okay, review_uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_review_edit_argument',
-			method: 'POST',
-			data:{ 'is_edit_okay': is_edit_okay, 'review_uid': review_uid },
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDeleteArgumentDone(data) {
-			new ReviewCallbacks().forReviewArgumentOrStatement(data);
-		}).fail(function reviewDeleteArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
-	};
+    /**
+     *
+     * @param should_optimized
+     * @param review_uid
+     * @param new_data (Important: must be JSON.stringify(...))
+     */
+    this.reviewOptimizationArgument = function (should_optimized, review_uid, new_data) {
+        var url = 'review_optimization_argument';
+        var data = {
+            should_optimized: should_optimized,
+            review_uid: parseInt(review_uid),
+            new_data: new_data
+        };
+        var done = function reviewOptimizationArgumentDone() {
+            if (window.location.href.indexOf('/review/')) {
+                new Review().reloadPageAndUnlockData();
+            }
+        };
+        var fail = function reviewOptimizationArgumentFail(data) {
+            setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 
-	/**
-	 *
-	 * @param is_duplicate
-	 * @param review_uid
-	 */
-	this.reviewDuplicateStatement = function(is_duplicate, review_uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_review_duplicate_statement',
-			method: 'POST',
-			data:{ 'is_duplicate': is_duplicate, 'review_uid': review_uid },
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDuplicateStatementDone(data) {
-			new ReviewCallbacks().forReviewArgumentOrStatement(data);
-		}).fail(function reviewDuplicateStatementFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
-	};
+    /**
+     *
+     * @param should_merged
+     * @param review_uid
+     */
+    this.reviewMergeStatement = function (should_merged, review_uid) {
+        var url = 'review_merged_premisegroup';
+        var data = {
+            should_merge: should_merge,
+            review_uid: parseInt(review_uid)
+        };
+        var done = function reviewDuplicateStatementDone() {
+            if (window.location.href.indexOf('/review/')) {
+                new Review().reloadPage();
+            }
+        };
+        var fail = function reviewDuplicateStatementFail(data) {
+            setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 
-	/**
-	 *
-	 * @param should_optimized
-	 * @param review_uid
-	 * @param new_data (Important: must be JSON.stringify(...))
-	 */
-	this.reviewOptimizationArgument = function(should_optimized, review_uid, new_data){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_review_optimization_argument',
-			type: 'POST',
-			data:{
-				'should_optimized': should_optimized,
-				'review_uid': review_uid,
-				'new_data': JSON.stringify(new_data) },
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDeleteArgumentDone(data) {
-			new ReviewCallbacks().forReviewArgumentOrStatement(data);
-		}).fail(function reviewDeleteArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
-	};
+    /**
+     *
+     * @param should_split
+     * @param review_uid
+     */
+    this.reviewSplitStatement = function (should_split, review_uid) {
+        var url = 'review_split_premisegroup';
+        var data = {
+            should_split: should_split,
+            review_uid: parseInt(review_uid)
+        };
+        var done = function reviewDuplicateStatementDone() {
+            if (window.location.href.indexOf('/review/')) {
+                new Review().reloadPage();
+            }
+        };
+        var fail = function reviewDuplicateStatementFail(data) {
+            setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 
-	/**
-	 *
-	 * @param should_merged
-	 * @param review_uid
-	 */
-	this.reviewMergeStatement = function(should_merged, review_uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_review_merged_premisegroup',
-			method: 'POST',
-			data:{ 'should_merge': should_merge, 'review_uid': review_uid },
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDuplicateStatementDone(data) {
-			new ReviewCallbacks().forReviewArgumentOrStatement(data);
-		}).fail(function reviewDuplicateStatementFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
-	};
+    /**
+     *
+     * @param queue
+     * @param uid
+     */
+    this.undoReview = function (queue, uid) {
+        var url = 'undo_review';
+        var data = {
+            queue: queue,
+            uid: parseInt(uid)
+        };
+        var done = function reviewUndoDone(data) {
+            if (data.info.length !== 0) {
+                setGlobalInfoHandler(_t(ohsnap), data.info);
+            } else {
+                setGlobalSuccessHandler('Yep!', data.success);
+                $('#' + queue + uid).remove();
+            }
+        };
+        var fail = function reviewUndoFail(data) {
+            setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 
-	/**
-	 *
-	 * @param should_split
-	 * @param review_uid
-	 */
-	this.reviewSplitStatement = function(should_split, review_uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_review_split_premisegroup',
-			method: 'POST',
-			data:{ 'should_split': should_split, 'review_uid': review_uid },
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDuplicateStatementDone(data) {
-			new ReviewCallbacks().forReviewArgumentOrStatement(data);
-		}).fail(function reviewDuplicateStatementFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
-
-	};
-
-	/**
-	 *
-	 * @param queue
-	 * @param uid
-	 */
-	this.undoReview = function(queue, uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_undo_review',
-			method: 'GET',
-			data:{ 'queue': queue, uid: uid },
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewUndoDone(data) {
-			new ReviewHistoryCallbacks().forUndoReview(data, queue, uid);
-		}).fail(function reviewUndoFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
-	};
-
-	/**
-	 *
-	 * @param queue
-	 * @param uid
-	 */
-	this.cancelReview = function(queue, uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_cancel_review',
-			method: 'GET',
-			data:{ 'queue': queue, uid: uid },
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewCancelDone(data) {
-			new ReviewHistoryCallbacks().forUndoReview(data, queue, uid);
-		}).fail(function reviewCancelFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
-	};
+    /**
+     *
+     * @param queue
+     * @param uid
+     */
+    this.cancelReview = function (queue, uid) {
+        var url = 'cancel_review';
+        var data = {
+            queue: queue,
+            uid: parseInt(uid)
+        };
+        var done = function reviewCancelDone(data) {
+            if (data.info.length !== 0) {
+                setGlobalInfoHandler(_t(ohsnap), data.info);
+            } else {
+                setGlobalSuccessHandler('Yep!', data.success);
+                $('#' + queue + uid).remove();
+            }
+        };
+        var fail = function reviewCancelFail(data) {
+            setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', data, done, fail);
+    };
 }

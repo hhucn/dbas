@@ -5,165 +5,165 @@
 $(document).ready(function () {
     'use strict';
 
-	// buttons
-	var optimization_ack = $('#opti_ack');
-	var optimization_nack = $('#opti_nack');
-	var optimization_skip = $('#opti_skip');
-	var delete_ack = $('#del_ack');
-	var delete_nack = $('#del_nack');
-	var delete_skip = $('#del_skip');
-	var edit_ack = $('#edit_ack');
-	var edit_nack = $('#edit_nack');
-	var edit_skip = $('#edit_skip');
-	var duplicate_ack = $('#duplicate_ack');
-	var duplicate_nack = $('#duplicate_nack');
-	var duplicate_skip = $('#duplicate_skip');
-	var merge_ack = $('#merge_ack');
-	var merge_nack = $('#merge_nack');
-	var merge_skip = $('#merge_skip');
-	var split_ack = $('#split_ack');
-	var split_nack = $('#split_nack');
-	var split_skip = $('#split_skip');
-	var request_lock = $('#request-lock');
-	var send_edit  = $('#send_edit');
+    // buttons
+    var optimizationAck = $('#opti_ack');
+    var optimizationNack = $('#opti_nack');
+    var optimizationSkip = $('#opti_skip');
+    var deleteAck = $('#del_ack');
+    var deleteNack = $('#del_nack');
+    var deleteSkip = $('#del_skip');
+    var editAck = $('#edit_ack');
+    var editNack = $('#edit_nack');
+    var editSkip = $('#edit_skip');
+    var duplicateAck = $('#duplicate_ack');
+    var duplicateNack = $('#duplicate_nack');
+    var duplicateSkip = $('#duplicate_skip');
+    var mergeAck = $('#merge_ack');
+    var mergeNack = $('#merge_nack');
+    var mergeSkip = $('#merge_skip');
+    var splitAck = $('#split_ack');
+    var splitNack = $('#split_nack');
+    var splitSkip = $('#split_skip');
+    var requestLock = $('#request-lock');
+    var sendEdit = $('#send_edit');
 
-	// text
-	var more_about_reason = $('#more_about_reason');
-	var less_about_reason = $('#less_about_reason');
-	var more_about_reason_content = $('#more_about_reason_content');
+    // text
+    var moreAboutReason = $('#more_about_reason');
+    var lessAboutReason = $('#less_about_reason');
+    var moreAboutReasonContent = $('#more_about_reason_content');
 
-	/**
-	 * OPTIMIZATION
-	 */
-	optimization_ack.click(function(){
-		new Review().doOptimizationAck($(this).data('id'));
-	});
+    /**
+     * OPTIMIZATION
+     */
+    optimizationAck.click(function () {
+        new Review().doOptimizationAck($(this).data('id'));
+    });
 
-	optimization_nack.click(function(){
-		new AjaxReviewHandler().reviewOptimizationArgument(false, $(this).data('id'), '');
-	});
+    optimizationNack.click(function () {
+        new AjaxReviewHandler().reviewOptimizationArgument(false, $(this).data('id'), []);
+    });
 
-	optimization_skip.click(function(){
-		new Review().reloadPageAndUnlockData(false);
-	});
+    optimizationSkip.click(function () {
+        new Review().reloadPageAndUnlockData();
+    });
 
-	send_edit.click(function(){
-		new Review().sendOptimization();
-	});
+    sendEdit.click(function () {
+        new Review().sendOptimization();
+    });
 
-	/**
-	 * DELETE
-	 */
-	delete_ack.click(function(){
-		new Review().doDeleteAck($(this).data('id'));
-	});
+    /**
+     * DELETE
+     */
+    deleteAck.click(function () {
+        new Review().doDeleteAck($(this).data('id'));
+    });
 
-	delete_nack.click(function(){
-		new Review().doDeleteNack($(this).data('id'));
-	});
+    deleteNack.click(function () {
+        new Review().doDeleteNack($(this).data('id'));
+    });
 
-	delete_skip.click(function(){
-		new Review().reloadPageAndUnlockData(false);
-	});
+    deleteSkip.click(function () {
+        new Review().reloadPage();
+    });
 
-	/**
-	 * Edit
-	 */
-	edit_ack.click(function(){
-		new Review().doEditAck($(this).data('id'));
-	});
+    /**
+     * Edit
+     */
+    editAck.click(function () {
+        new Review().doEditAck($(this).data('id'));
+    });
 
-	edit_nack.click(function(){
-		new Review().doEditNack($(this).data('id'));
-	});
+    editNack.click(function () {
+        new Review().doEditNack($(this).data('id'));
+    });
 
-	edit_skip.click(function(){
-		new Review().reloadPageAndUnlockData(false);
-	});
+    editSkip.click(function () {
+        new Review().reloadPage();
+    });
 
-	/**
-	 * Duplicate
-	 */
-	duplicate_ack.click(function(){
-		new Review().doDuplicateAck($(this).data('id'));
-	});
+    /**
+     * Duplicate
+     */
+    duplicateAck.click(function () {
+        new Review().doDuplicateAck($(this).data('id'));
+    });
 
-	duplicate_nack.click(function(){
-		new Review().doDuplicateNack($(this).data('id'));
-	});
+    duplicateNack.click(function () {
+        new Review().doDuplicateNack($(this).data('id'));
+    });
 
-	duplicate_skip.click(function(){
-		new Review().reloadPageAndUnlockData(false);
-	});
+    duplicateSkip.click(function () {
+        new Review().reloadPage();
+    });
 
-	/**
-	 * Merge
-	 */
-	merge_ack.click(function(){
-		new Review().doMergeAck($(this).data('id'));
-	});
+    /**
+     * Merge
+     */
+    mergeAck.click(function () {
+        new Review().doMergeAck($(this).data('id'));
+    });
 
-	merge_nack.click(function(){
-		new Review().doMergeNack($(this).data('id'));
-	});
+    mergeNack.click(function () {
+        new Review().doMergeNack($(this).data('id'));
+    });
 
-	merge_skip.click(function(){
-		new Review().reloadPageAndUnlockData(false);
-	});
+    mergeSkip.click(function () {
+        new Review().reloadPage();
+    });
 
-	/**
-	 * Split
-	 */
-	split_ack.click(function(){
-		new Review().doSplitAck($(this).data('id'));
-	});
+    /**
+     * Split
+     */
+    splitAck.click(function () {
+        new Review().doSplitAck($(this).data('id'));
+    });
 
-	split_nack.click(function(){
-		new Review().doSplitNack($(this).data('id'));
-	});
+    splitNack.click(function () {
+        new Review().doSplitNack($(this).data('id'));
+    });
 
-	split_skip.click(function(){
-		new Review().reloadPageAndUnlockData(false);
-	});
+    splitSkip.click(function () {
+        new Review().reloadPage();
+    });
 
-	/**
-	 * MORE
-	 */
-	more_about_reason.click(function() {
-		$(this).hide();
-		less_about_reason.show();
-		more_about_reason_content.show();
-	});
+    /**
+     * MORE
+     */
+    moreAboutReason.click(function () {
+        $(this).hide();
+        lessAboutReason.show();
+        moreAboutReasonContent.show();
+    });
 
-	less_about_reason.click(function() {
-		$(this).hide();
-		more_about_reason.show();
-		more_about_reason_content.hide();
-	});
+    lessAboutReason.click(function () {
+        $(this).hide();
+        moreAboutReason.show();
+        moreAboutReasonContent.hide();
+    });
 
-	request_lock.click(function(){
-		new Review().doOptimizationAck($(this).data('id'));
-	});
+    requestLock.click(function () {
+        new Review().doOptimizationAck($(this).data('id'));
+    });
 
-	// align buttons
-	var max = 0;
-	var elements = $("*[class^='review-btn-']");
-	elements.each(function(){
-		max = $(this).outerWidth() > max ? $(this).outerWidth() : max;
-	});
-	elements.each(function(){
-		$(this).css('width', max + 'px');
-	});
+    // align buttons
+    var max = 0;
+    var elements = $("*[class^='review-btn-']");
+    elements.each(function () {
+        max = $(this).outerWidth() > max ? $(this).outerWidth() : max;
+    });
+    elements.each(function () {
+        $(this).css('width', max + 'px');
+    });
 
-	// extra info when user has already seen the complete queue
-	if ($('#stats-table').data('extra-info') === 'already_seen'){
-		setGlobalInfoHandler('Info', _t(queueCompleteSeen));
-	}
+    // extra info when user has already seen the complete queue
+    if ($('#stats-table').data('extra-info') === 'already_seen') {
+        setGlobalInfoHandler('Info', _t(queueCompleteSeen));
+    }
 
-	// unlock data on tab close/reload/...
-	$(window).bind('beforeunload',function(){
-		if (window.location.href.indexOf('review/optimiz') !== -1) {
-			new Review().reloadPageAndUnlockData(true);
-		}
-	});
+    // unlock data on tab close/reload/...
+    $(window).bind('beforeunload', function () {
+        if (window.location.href.indexOf('review/optimiz') !== -1) {
+            new Review().reloadPageAndUnlockData(true);
+        }
+    });
 });

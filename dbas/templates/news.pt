@@ -1,72 +1,75 @@
-<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
-	<tal:block metal:fill-slot="content_page">
+<tal:block metal:use-macro="load: basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
+  <tal:block metal:fill-slot="content_page">
 
-        <section>
-            <div class="text-center big-header">
-                <h3 class="text-center"><span i18n:translate="news">News</span></h3>
-                <p i18n:translate="latest_news_of_dbas" class="lead text-center">Latest news of D-BAS</p>
+    <section>
+      <div class="text-center big-header">
+        <h3 class="text-center" i18n:translate="news">
+          News
+        </h3>
+        <p i18n:translate="latest_news_of_dbas" class="lead text-center">
+          Latest news of D-BAS
+        </p>
+      </div>
+    </section>
+
+    <div class="wrapper-container">
+
+      <div id="news-body">
+        <div id="dummy-news" class="container">
+          <div class="row">
+            <div metal:use-macro="load: dummy-news.pt"></div>
+            <div metal:use-macro="load: dummy-news.pt"></div>
+            <div metal:use-macro="load: dummy-news.pt"></div>
+          </div>
+          <div class="row">
+            <div metal:use-macro="load: dummy-news.pt"></div>
+            <div metal:use-macro="load: dummy-news.pt"></div>
+            <div metal:use-macro="load: dummy-news.pt"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="raw-elements" style="display: none">
+
+        <div class="col-md-4" tal:repeat="n news">
+          <div class="panel panel-default">
+            <div id="${n.uid}" class="panel-heading">
+              <a class="social-wrapper share-mail" title="Mail"><i class="social-em fa fa-envelope social"></i></a>
+              <a class="social-wrapper share-twitter" title="Twitter"><i class="social-tw fa fa-twitter social"></i></a>
+              <a class="social-wrapper share-google" title="Google+"><i class="social-gp fa fa-google-plus social"></i></a>
+              <a class="social-wrapper share-facebook" title="Facebook"><i class="social-fb fa fa-facebook social"></i></a>
+              <h5>
+                <span id="${n.title_id}" class="font-semi-bold"> ${n.title} </span>
+              </h5>
             </div>
-        </section>
-
-        <div class="wrapper-container">
-
-            <div id="news-body">
-                <div id="dummy-news" class="container">
-                    <div class="row">
-                        <div metal:use-macro="load: dummy-news.pt"></div>
-                        <div metal:use-macro="load: dummy-news.pt"></div>
-                        <div metal:use-macro="load: dummy-news.pt"></div>
-                    </div>
-                    <div class="row">
-                        <div metal:use-macro="load: dummy-news.pt"></div>
-                        <div metal:use-macro="load: dummy-news.pt"></div>
-                        <div metal:use-macro="load: dummy-news.pt"></div>
-                    </div>
-                </div>
+            <div class="panel-body" style="text-align: justify;">
+              <h6>
+                <span id="${n.author_id}">${n.author}</span>,
+                <span id="${n.date_id}">${n.date}</span>
+              </h6>
+              <span style="margin-top: 1em;">${structure:n.news}</span>
             </div>
-
-            <div id="raw-elements" style="display: none">
-
-                <div class="col-md-4" tal:repeat="n news">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" tal:attributes="id n.uid">
-
-                            <a class="social-wrapper share-mail" title="Mail"><i class="social-em fa fa-envelope social"></i></a>
-                            <a class="social-wrapper share-twitter" title="Twitter"><i class="social-tw fa fa-twitter social"></i></a>
-                            <a class="social-wrapper share-google" title="Google+"><i class="social-gp fa fa-google-plus social"></i></a>
-                            <a class="social-wrapper share-facebook" title="Facebook"><i class="social-fb fa fa-facebook social"></i></a>
-                            <h5>
-                                <span class="font-semi-bold" tal:attributes="id n.title_id"> ${n.title} </span>
-                            </h5>
-                        </div>
-                        <div class="panel-body" style="text-align: justify;">
-                            <h6>
-                                <span tal:attributes="id n.author_id">${n.author}</span>, <span tal:attributes="id n.date_id">${n.date}</span>
-                            </h6>
-                            <span style="margin-top: 1em;">${structure:n.news}</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div style="display:none;" id="news-navigation-container" class="container">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-
-                        <nav id="news-navigation">
-                            <ul class="pagination">
-                                <li class="active"><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                            </ul>
-                        </nav>
-
-                    </div>
-                </div>
-            </div>
-
-            <span tal:condition="is_author" class="icon-badge blue-button bottom-right" id="icon-add-news">+</span>
+          </div>
         </div>
 
-	</tal:block>
+      </div>
+
+      <div style="display:none;" id="news-navigation-container" class="container">
+        <div class="row">
+          <div class="col-md-12 text-center">
+
+            <nav id="news-navigation">
+              <ul class="pagination">
+                <li class="active"><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+              </ul>
+            </nav>
+
+          </div>
+        </div>
+      </div>
+      <span tal:condition="is_author" class="icon-badge blue-button bottom-right" id="icon-add-news">+</span>
+    </div>
+
+  </tal:block>
 </tal:block>

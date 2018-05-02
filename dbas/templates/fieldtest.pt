@@ -1,80 +1,111 @@
-<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
-	<tal:block metal:fill-slot="content_page">
+<tal:block metal:use-macro="load: basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
+  <tal:block metal:fill-slot="content_page">
 
-        <section>
-            <div class="text-center big-header">
-                <h3 class="text-center"><span i18n:translate="field_experiment_2017">Field Experiment 2017</span></h3>
-                <p i18n:translate="most_important_information_about_field_experiment" class="lead text-center">Most important information about our field experiment in May 2017</p>
+    <section>
+      <div class="text-center big-header">
+        <h3 class="text-center">
+          <span i18n:translate="field_experiment_2017">Field Experiment 2017</span>
+        </h3>
+        <p i18n:translate="most_important_information_about_field_experiment" class="lead text-center">
+          Most important information about our field experiment in May 2017
+        </p>
+      </div>
+    </section>
+
+    <div class="wrapper-container">
+
+      <div class="container colored-container">
+        <div class="row" style="margin: 1em">
+          <div class="col-md-12">
+            <div class="row" style="margin-bottom: 1em">
+              <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="when_where">When/Where?</p>
+              <div class=" col-md-10"><span i18n:translate="may_2017_hhu">May 2017 at the University of Düsseldorf, Germany.</span>
+              </div>
             </div>
-        </section>
-
-        <div class="wrapper-container">
-
-            <div class="container colored-container">
-                <div class="row" style="margin: 1em">
-                    <div class="col-md-12">
-                        <div class="row" style="margin-bottom: 1em">
-                            <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="when_where">When/Where?</p>
-                            <div class=" col-md-10"><span i18n:translate="may_2017_hhu">May 2017 at the University of Düsseldorf, Germany.</span></div>
-                        </div>
-                        <div class="row" style="margin-bottom: 1em">
-                            <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="setting">Setting?</p>
-                            <div class="col-md-10">
-                                <span i18n:translate="setting_description">We invited all computer science students of our university via mail to talk about the question: How can the studies of computer-science be improved and the problems caused by the large number of students be solved?</span></div>
-                        </div>
-                        <div class="row" style="margin-bottom: 1em">
-                            <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="key_fact">Key Facts?</p>
-                            <div class="col-md-10">
-                                <span i18n:translate="key_facts">Our key facts in short</span>:
-                                <ul>
-                                    <li><span i18n:translate="key_fact1">318 visitor, 137 returned at least once</span></li>
-                                    <li><span i18n:translate="key_fact2">47 registrations, 35 contributed at least once</span></li>
-                                    <li><span i18n:translate="key_fact3">235 contributed arguments</span></li>
-                                    <li><span i18n:translate="key_fact4">47 flagged statements</span></li>
-                                </ul>
-                                <span i18n:translate="discussion_can_be_seen">The discussion can be seen</span>
-                                    <a href="${request.application_url}/discuss/verbesserung-des-informatik-studiengangs" target="_blank" i18n:translate="here">here</a>
-                                <span i18n:translate="and_a_translated">and a translated, english version is available</span>
-                                <a target="_blank" href="${request.application_url}/discuss/improve-the-course-of-computer-science-studies" i18n:translate="here">here</a><span>.</span>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-bottom: 1em">
-                            <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="why">Why?</p>
-                            <div class="col-md-10">
-                                <span i18n:translate="key_questions">We were primarily focused on two question</span>:
-                                <ul>
-                                    <li i18n:translate="key_question1">Does the dialog-based approach works for untrained users in a real-world setting?</li>
-                                    <li i18n:translate="key_question2">Does a decentralized moderation system works for a dialog-based argumentation system?</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-bottom: 1em">
-                            <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="findings">Findings?</p>
-                            <div class="col-md-10">
-                                <span i18n:translate="findings1">We had many findings from our field experiment. The main results are summarized in</span>
-                                <a href="https://www.researchgate.net/publication/320065783_Dialog-Based_Online_Argumentation_Findings_from_a_Field_Experiment" target="_blank" i18n:translate="this_paper">this paper</a><span>.</span>
-                                <span i18n:translate="findings2">Next to this, our colleague developed a tool to translate real world argumentation of D-BAS into abstract argumentation frameworks. This paper can be read</span> <a href="http://ceur-ws.org/Vol-2012/AI3-2017_paper_11.pdf" i18n:translate="here">here</a><span>.</span>
-                                <br>
-                                <span i18n:translate="findings3">The resulting dump of our PostgreSQL database can be downloaded from our</span>
-                                <a href="${request.application_url}/static/data/fieldtest_05_2017.tar.bz2" i18n:translate="server">server</a> (<span i18n:translate="license_cc_by_nc_sa">License CC BY-NC-SA</span>).
-                                <span i18n:translate="the archive contains">The archive contains three versions: the originaldataset of the discussion in German, a dataset which includes some corrections and a translated one.</span>
-                                <span i18n:translate="findings4">The translation into an abstract AF can be</span> <a href="${request.application_url}/static/data/fieldtest_05_2017.apx" i18n:translate="fetched to">fetched to</a><span>.</span>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-bottom: 0">
-                            <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="ope-Source">Open Source?</p>
-                            <div class="col-md-10">
-                                <span i18n:translate="of_course_it_is_open_source">Of course! Every used tool is published under the MIT licencese and hostes on GitHub</span>:
-                                <ul>
-                                    <li><a href="https://github.com/hhucn/dbas" target="_blank">D-BAS: The Dialog-Based Argumentation System</a></li>
-                                    <li><a href="https://github.com/hhucn/dabasco" target="_blank">dabasco: Putting the spice into D-BAS</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="row" style="margin-bottom: 1em">
+              <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="setting">Setting?</p>
+              <div class="col-md-10">
+                <span i18n:translate="setting_description">We invited all computer science students of our university via mail to talk about the question: How can the studies of computer-science be improved and the problems caused by the large number of students be solved?</span>
+              </div>
             </div>
+            <div class="row" style="margin-bottom: 1em">
+              <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="key_fact">Key Facts?</p>
+              <div class="col-md-10">
+                <span i18n:translate="key_facts">Our key facts in short</span>:
+                <ul>
+                  <li><span i18n:translate="key_fact1">318 visitor, 137 returned at least once</span></li>
+                  <li><span i18n:translate="key_fact2">47 registrations, 35 contributed at least once</span></li>
+                  <li><span i18n:translate="key_fact3">235 contributed arguments</span></li>
+                  <li><span i18n:translate="key_fact4">47 flagged statements</span></li>
+                </ul>
+                <span i18n:translate="discussion_can_be_seen">The discussion can be seen</span>
+                <a href="${request.application_url}/discuss/verbesserung-des-informatik-studiengangs"
+                   target="_blank" i18n:translate="here">here</a>
+                <span i18n:translate="and_a_translated">and a translated, english version is available</span>
+                <a target="_blank"
+                   href="${request.application_url}/discuss/improve-the-course-of-computer-science-studies" i18n:translate="here">here</a>.
+              </div>
+            </div>
+            <div class="row" style="margin-bottom: 1em">
+              <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="why">Why?</p>
+              <div class="col-md-10">
+                <span i18n:translate="key_questions">We were primarily focused on two question</span>:
+                <ul>
+                  <li i18n:translate="key_question1">
+                    Does the dialog-based approach works for untrained users in a real-world setting?
+                  </li>
+                  <li i18n:translate="key_question2">
+                    Does a decentralized moderation system works for a dialog-based argumentation system?
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="row" style="margin-bottom: 1em">
+              <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="findings">Findings?</p>
+              <div class="col-md-10">
+                <span i18n:translate="findings1">We had many findings from our field experiment. The main results are summarized in</span>
+                <a href="https://www.researchgate.net/publication/320065783_Dialog-Based_Online_Argumentation_Findings_from_a_Field_Experiment"
+                   target="_blank" i18n:translate="this_paper">this paper</a>.
+                <span i18n:translate="findings2">Next to this, our colleague developed a tool to translate real world argumentation of D-BAS into abstract argumentation frameworks. This paper can be read</span>
+                <a href="http://ceur-ws.org/Vol-2012/AI3-2017_paper_11.pdf" i18n:translate="here">here</a>.
+                <br>
+                <span i18n:translate="findings3">The resulting dump of our PostgreSQL database can be downloaded from our</span>
+                <a href="${request.application_url}/static/data/fieldtest_05_2017.tar.bz2" i18n:translate="server">server</a>
+                (<span i18n:translate="license_cc_by_nc_sa">License CC BY-NC-SA</span>).
+                <span i18n:translate="the archive contains">The archive contains three versions: the originaldataset of the discussion in German, a dataset which includes some corrections and a translated one.</span>
+                <span i18n:translate="findings4">The translation into an abstract AF can be</span>
+                <a href="${request.application_url}/static/data/fieldtest_05_2017.apx" i18n:translate="fetched to">
+                  fetched to
+                </a>.
+              </div>
+            </div>
+            <div class="row" style="margin-bottom: 0">
+              <p class="col-md-2 lead" style="margin-bottom: 0" i18n:translate="ope-Source">Open Source?</p>
+              <div class="col-md-10">
+                <span i18n:translate="of_course_it_is_open_source">Of course! Every used tool is published under the MIT licence and hosted on GitHub</span>:
+                <ul>
+                  <li>
+                    <a href="https://github.com/hhucn/dbas" target="_blank">
+                      D-BAS: The Dialog-Based Argumentation System
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/hhucn/discuss" target="_blank">
+                      discuss: Embedding dialog-based discussions into arbitrary web-contexts
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/hhucn/dabasco" target="_blank">
+                      dabasco: Putting the spice into D-BAS
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
 
-	</tal:block>
+  </tal:block>
 </tal:block>

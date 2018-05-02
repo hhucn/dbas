@@ -1,59 +1,94 @@
-<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
-	<tal:block metal:fill-slot="content_page">
+<tal:block metal:use-macro="load: basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
+  <tal:block metal:fill-slot="content_page">
 
-        <section>
-            <div class="text-center big-header">
-                <h3 class="text-center"><span i18n:translate="faq">Frequent Questions</span></h3>
-                <p i18n:translate="simple_answers" class="lead text-center">Simple answers to your most common questions</p>
-            </div>
-        </section>
+    <section>
+      <div class="text-center big-header">
+        <h3 class="text-center"><span i18n:translate="faq">Frequent Questions</span></h3>
+        <p i18n:translate="simple_answers" class="lead text-center">Simple answers to your most common questions</p>
+      </div>
+    </section>
 
-        <div class="wrapper-container">
+    <style>
+      p, ul {
+        padding-bottom: 0.5em;
+      }
 
-            <div class="container colored-container">
-                <div class="row">
-                    <div class="col-md-offset-2 col-md-8">
-                        <div>
-                            <h5><span i18n:translate="faq_question_ldap">How do we handle your login data?</span></h5>
-                            <span i18n:translate="faq_answer_ldap">If you are using the LDAP login, we are using the name information service of the University Düsseldorf. Your password is send from your computer, to our server (which is placed at the University) and then towards the service of the ZIM. Each transmission is secured and encrypted. Additionally we will never save, log or display your password anywhere!</span>
-                        </div>
-                        <br>
-                        <div>
-                            <h5><span i18n:translate="faq_question_interest_opinion">What is the difference between interest and opinion?</span></h5>
-                            <span i18n:translate="faq_answer_interest_opinion">If you select any answer in D-BAS, you will be interested in this statement/reaction/... but we will never think, that this is your personal opinion. Only if you mark an statement or argument as your opinion, we will know, that you have the same opinion like the given text.</span>
-                        </div>
-                        <br>
-                        <div>
-                            <h5><span i18n:translate="faq_question_mark_opinion">Can I mark an statement or argument as my opinion?</span></h5>
-                            <span i18n:translate="faq_answer_mark_opinion">Yes, you can! Please press the yellow star at the beginning of a green bubble to mark a statement or an argument as your opinon. For this you have to be logged in.</span>
-                        </div>
-                        <br>
-                        <div>
-                            <h5><span i18n:translate="faq_question_graph">Is there any overview about all given arguments and statements?</span></h5>
-                            <span i18n:translate="faq_answer_graph">Yes, we have a graphical representation. Simply open the little sidebar in the discussion window and click on 'graph view'</span> <i class="fa fa-sitemap" aria-hidden="true"></i>.
-                        </div>
-                        <br>
-                        <div>
-                            <h5><span i18n:translate="faq_question_buttons_next_to_statement">What are these little icons next to the statements?</span></h5>
-                            <span i18n:translate="faq_answer_buttons_next_to_statement">These little icons will appear on each set of statements in the answer field, if you are logged in.</span>
-                            <ul>
-                                <li><i style="width: 16px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>: <span i18n:translate="faq_answer_pencil_next_to_statement">The pencil allows you to submit proposals for edits.</span></li>
-                                <li><i style="width: 16px;" class="fa fa-flag" aria-hidden="true"></i>: <span i18n:translate="faq_answer_flag_next_to_statement">With the help of the flag you can report statements, if there is something wrong.</span></li>
-                                <li><i style="width: 16px;" class="fa fa-trash-o" aria-hidden="true"></i>: <span i18n:translate="faq_answer_trash_next_to_statement">You made an statement on your own and not happy with it? Let's unsubscribe yourself as author.</span></li>
-                                <li><i style="width: 16px;" class="fa fa-bomb" aria-hidden="true"></i>: <span i18n:translate="faq_answer_bomb_next_to_statement">You are reading an statement, which should be supporting your conclusion, but it is nonsense? Let's attack this one!</span></li>
-                                <li><i style="width: 16px;" class="fa fa-link" aria-hidden="true"></i>: <span i18n:translate="faq_answer_link_next_to_statement">There is this specific website with facts about an statement? With the link-icon you can add references for a statement / argument.</span></li>
-                            </ul>
-                        </div>
-                        <br>
-                        <div>
-                            <h5><span i18n:translate="faq_question_bug">What do I do if I found a bug or have other questions about D-BAS?</span></h5>
-                            <span i18n:translate="faq_answer_bug1">If you think you've found an issue or have any other questions not covered above, please email us via </span> <a href="mailto:dbas@cs.uni-duesseldorf.de">dbas@cs.uni-duesseldorf.de</a>.
-                            <span i18n:translate="faq_answer_bug2">Please keep in mind that our current team is quite small and we'll do our very best to get back to you ASAP.</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <div class="wrapper-container">
+
+      <div class="container colored-container">
+        <div class="row">
+          <div class="col-md-offset-2 col-md-8">
+            <h5>
+              <span i18n:translate="faq_question_ldap">How do we handle your login data?</span>
+            </h5>
+            <p>
+              <span i18n:translate="faq_answer_ldap">If you are using the LDAP login, we are using the name information service of the University Düsseldorf. Your password is send from your computer, to our server (which is placed at the University) and then towards the service of the ZIM. Each transmission is secured and encrypted. Additionally we will never save, log or display your password anywhere!</span>
+            </p>
+
+            <h5>
+              <span i18n:translate="faq_question_interest_opinion">What is the difference between interest and opinion?</span>
+            </h5>
+            <p>
+              <span i18n:translate="faq_answer_interest_opinion">If you select any answer in D-BAS, you will be interested in this statement/reaction/... but we will never think, that this is your personal opinion. Only if you mark an statement or argument as your opinion, we will know, that you have the same opinion like the given text.</span>
+            </p>
+
+            <h5>
+              <span i18n:translate="faq_question_mark_opinion">Can I mark an statement or argument as my opinion?</span>
+            </h5>
+            <p>
+              <span i18n:translate="faq_answer_mark_opinion">Yes, you can! Please press the yellow star at the beginning of a green bubble to mark a statement or an argument as your opinon. For this you have to be logged in.</span>
+            </p>
+
+            <h5>
+              <span i18n:translate="faq_question_graph">Is there any overview about all given arguments and statements?</span>
+            </h5>
+            <p>
+              <span i18n:translate="faq_answer_graph">Yes, we have a graphical representation. Simply open the little sidebar in the discussion window and click on 'graph view'</span>
+              <i class="fa fa-sitemap" aria-hidden="true"></i>.
+            </p>
+
+            <h5>
+              <span i18n:translate="faq_question_buttons_next_to_statement">What are these little icons next to the statements?</span>
+            </h5>
+            <p>
+              <span i18n:translate="faq_answer_buttons_next_to_statement">These little icons will appear on each set of statements in the answer field, if you are logged in.</span>
+            </p>
+
+            <ul>
+              <li><i class="fa fa-pencil-square-o" aria-hidden="true"></i> :
+                <span i18n:translate="faq_answer_pencil_next_to_statement">The pencil allows you to submit proposals for edits.</span>
+              </li>
+              <li><i class="fa fa-flag" aria-hidden="true"></i> :
+                <span i18n:translate="faq_answer_flag_next_to_statement">With the help of the flag you can report statements, if there is something wrong.</span>
+              </li>
+              <li><i class="fa fa-trash-o" aria-hidden="true"></i> :
+                <span i18n:translate="faq_answer_trash_next_to_statement">You made an statement on your own and not happy with it? Let's unsubscribe yourself as author.</span>
+              </li>
+              <li><i class="fa fa-bomb" aria-hidden="true"></i> :
+                <span i18n:translate="faq_answer_bomb_next_to_statement">You are reading an statement, which should be supporting your conclusion, but it is nonsense? Let's attack this one!</span>
+              </li>
+              <li><i class="fa fa-link" aria-hidden="true"></i> :
+                <span i18n:translate="faq_answer_link_next_to_statement">There is this specific website with facts about an statement? With the link-icon you can add references for a statement / argument.</span>
+              </li>
+            </ul>
+
+            <h5>
+              <span i18n:translate="faq_question_bug">What do I do if I found a bug or have other questions about D-BAS?</span>
+            </h5>
+            <p>
+              <span i18n:translate="faq_answer_bug1">If you think you've found an issue or have any other questions not covered above, please email us via </span>
+              <a href="mailto:dbas@cs.uni-duesseldorf.de">dbas@cs.uni-duesseldorf.de</a>.
+              <span i18n:translate="faq_answer_bug2">Please keep in mind that our current team is quite small and we'll do our very best to get back to you ASAP.</span>
+            </p>
+          </div>
         </div>
+      </div>
+    </div>
 
-	</tal:block>
+  </tal:block>
 </tal:block>

@@ -6,10 +6,10 @@ Test Documentation
 Requirements
 ============
 
-Ensure that the following tools are installed:
+Ensure that the following tools are installed (if you want to test locally, without docker:
 
 * Python >= 3.4
-* `pip <https://pip.pypa.io/en/stable/installing/>`_
+* `pipenv <https://pip.pypa.io/en/stable/installing/>`_
 * `splinter <https://splinter.readthedocs.org/en/latest/>`_
 
 
@@ -25,6 +25,11 @@ Execute these tests with::
     nosetests
 
 
+If you want to stay very clean on your machine, you could just run the tests in your container with::
+
+    docker exec dbas_web_1 nosetests
+
+
 Code
 ----
 
@@ -34,6 +39,8 @@ Code
 
 Frontend with Splinter
 ======================
+**DEPRECATED**
+
 Frontend tests are done by *Splinter* and are regardless of DBAS/Pyramid. Splinter is an open source tool for testing web
 applications using Python. It lets you automate browser actions, such as visiting URLs and interacting with their items.
 If you want to use splinter, please install the latest version of `chromedriver <https://sites.google.com/a/chromium.org/chromedriver/downloads>`_

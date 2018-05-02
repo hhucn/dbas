@@ -1,12 +1,11 @@
-<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="load: basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
     <tal:block metal:fill-slot="content_page">
 
         <section>
             <div class="text-center big-header">
-                <h3 i18n:translate="imprint_copyrights_software_privacy" class="text-center">Imprint, Copyrights and Used
-                    Software</h3>
+                <h3 i18n:translate="imprint" class="text-center">Imprint</h3>
                 <p i18n:translate="imprint_list_of_software_and_changelog" class="lead text-center">Our imprint, a list
-                    of used software and the latest changelogs</p>
+                    of used software and the latest changelog</p>
             </div>
         </section>
 
@@ -37,29 +36,9 @@
                             <br>
                             <span i18n:translate="weiteres im">Weiteres im </span>
                             <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html"><span i18n:translate="imprint_hhu">Impressum der HHU</span></a>
-                            <span i18n:translate="or_checkout_the">or checkout the</span> <a href="https://github.com/hhucn/dbas/blob/master/LICENSE"
-                                                            target="_blank" i18n:translate="licence_dbas">license of D-BAS (MIT)</a>.
-                            <div tal:omit-tag="" tal:condition="not:extras.development_mode">
-                                <br>
-                                <h5><span i18n:translate="disclaimer_analytics">Matomo</span></h5>
-                                <span i18n:translate="disclaimer_analytics_content">
-                                Dieses Angebot benutzt Matomo.org, eine Open-Source-Software zur statistischen Auswertung der
-                                Nutzerzugriffe. Matomo verwendet sog. “Cookies”, Textdateien, die auf dem Computer der Nutzer
-                                gespeichert werden und die eine Analyse der Benutzung der Website durch die Nutzer ermöglichen.
-                                Die durch den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden auf dem
-                                Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird sofort nach der Verarbeitung
-                                und vor deren Speicherung anonymisiert. Nutzer können die Installation der Cookies durch eine
-                                entsprechende Einstellung Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
-                                darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website
-                                vollumfänglich nutzen können.
-                            </span>
-                                <br>
-                                <br>
-                                <br>
-                                <h5><span>Matomo Opt-Out</span></h5>
-                                <iframe id="analytics-opt-out-iframe" style="border: 0; height: 200px; width: 600px;"
-                                        src="https://dbas.cs.uni-duesseldorf.de/analytics/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
-                            </div>
+                            <span i18n:translate="or_checkout_the">or checkout the</span> <a
+                                href="https://github.com/hhucn/dbas/blob/master/LICENSE"
+                                target="_blank" i18n:translate="licence_dbas">license of D-BAS (MIT)</a>.
                         </div>
 
                         <div class="colored-container" style="margin-bottom: 1em">
@@ -68,49 +47,80 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <ul>
-                                        <li><a target="_blank" href="http://pylonsproject.org">Pyramid
-                                            Framework ${extras.pyramid_version}</a></li>
-                                        <li><a target="_blank"
-                                               href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie
-                                            Popup</a></li>
-                                        <li><a target="_blank" href="http://www.getbootstrap.com/">Bootstrap</a></li>
-                                        <li><a target="_blank" href="http://www.bootstraptoggle.com/">BootstrapsToogle
-                                            Button</a></li>
-                                        <li><a target="_blank" href="https://bootswatch.com/paper/">Bootswatch Paper
-                                            Theme</a></li>
-                                        <li><a target="_blank" href="http://bootstraptour.com/">Bootstrap Tour</a></li>
-                                        <li><a target="_blank" href="https://github.com/seiyria/bootstrap-slider">Bootstrap
-                                            Slider</a>
-                                        <li><a target="_blank" href="http://fontawesome.io/icons/">Font Awesome Icon</a>
+                                        <li>
+                                            <a target="_blank" href="http://pylonsproject.org">
+                                                Pyramid Framework ${extras.pyramid_version}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank"
+                                               href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">
+                                                EU Cookie Popup
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank" href="http://www.getbootstrap.com/">Bootstrap</a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank" href="http://www.bootstraptoggle.com/">BootstrapsToogle
+                                                Button</a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank" href="https://bootswatch.com/paper/">Bootswatch Paper
+                                                Theme</a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank" href="http://bootstraptour.com/">Bootstrap Tour</a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank" href="https://github.com/seiyria/bootstrap-slider">Bootstrap
+                                                Slider</a>
+                                        <li>
+                                            <a target="_blank" href="http://fontawesome.io/icons/">Font Awesome Icon</a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="col-md-6">
                                     <ul>
-                                        <li><a target="_blank" href="http://matomo.org/">Matomo Open-Source Analytics</a>
+                                        <li>
+                                            <a target="_blank" href="http://matomo.org/">Matomo Open-Source
+                                                Analytics</a>
                                         </li>
-                                        <li><a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
-                                        <li><a target="_blank" href="http://d3js.org">D3.js</a></li>
-                                        <li><a target="_blank"
+                                        <li>
+                                            <a target="_blank" href="http://www.gravatar.com/">Gravatar </a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank" href="http://d3js.org">D3.js</a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank"
                                                href="http://theoatmeal.com/comics/state_web_summer#tumblr">404-Tumbeasts</a>
                                         </li>
-                                        <li><a target="_blank"
-                                               href="https://github.com/js-cookie/js-cookie">js-cookie</a></li>
-                                        <li><a target="_blank" href="https://www.google.com/recaptcha">Google
-                                            reCAPTCHAs</a></li>
-                                        <li><a target="_blank" href="http://codepen.io/imshubhamsingh/pen/dNQzmG">CSS
-                                            Batman</a></li>
-                                        <li><a target="_blank"
-                                               href="http://startbootstrap.com/template-overviews/creative">Creative
-                                            Template</a>
+                                        <li>
+                                            <a target="_blank"
+                                               href="https://github.com/js-cookie/js-cookie">js-cookie</a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank" href="http://codepen.io/imshubhamsingh/pen/dNQzmG">CSS
+                                                Batman</a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank"
+                                               href="http://startbootstrap.com/template-overviews/creative">
+                                                Creative Template
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="col-md-6">
                         <div class="colored-container" style="margin-bottom: 1em">
-                            <h4><span i18n:translate="changes">Changes</span></h4>
-
+                            <h4>
+                                <span i18n:translate="changes">Changes</span>
+                            </h4>
                             <div tal:omit-tag="" tal:repeat="imp imprint">
                                 <span class="project lead">${imp.title}</span>
                                 <ul>
@@ -120,94 +130,29 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="colored-container" style="margin-bottom: 1em">
-                            <h4>Datenschutzerklärung</h4>
-                            <p>
-                                Sie erhalten als Nutzer unserer Internetseite in dieser Datenschutzerklärung alle
-                                notwendigen Informationen darüber, wie, in welchem Umfang sowie zu welchem Zweck wir
-                                oder Drittanbieter Daten von Ihnen erheben und diese verwenden. Die Erhebung und Nutzung
-                                Ihrer Daten erfolgt streng nach den Vorgaben des Bundesdatenschutzgesetzes (BDSG) und
-                                des Telemediengesetzes (TMG). Wir fühlen uns der Vertraulichkeit Ihrer personenbezogenen
-                                Daten besonders verpflichtet und arbeiten deshalb streng innerhalb der Grenzen, die die
-                                gesetzlichen Vorgaben uns setzen. Die Erhebung dieser personenbezogenen Daten erfolgt
-                                auf freiwilliger Basis, wenn uns das möglich ist. Auch geben wir diese Daten nur mit
-                                Ihrer ausdrücklichen Zustimmung an Dritte weiter. Wir sorgen bei besonders vertraulichen
-                                Daten wie im Zahlungsverkehr oder im Hinblick auf Ihre Anfragen an uns durch Einsatz
-                                einer SSL-Verschlüsselung für hohe Sicherheit. Wir möchten es aber an dieser Stelle
-                                nicht versäumen, auf die allgemeinen Gefahren der Internetnutzung hinzuweisen, auf die
-                                wir keinen Einfluss haben. Besonders im E-Mail-Verkehr sind Ihre Daten ohne weitere
-                                Vorkehrungen nicht sicher und können unter Umständen von Dritten erfasst werden.
-                            </p>
-                            <h5>Auskunft, Löschung, Sperrung</h5>
-                            <p>
-                                Sie erhalten jederzeit unentgeltlich Auskunft über die von uns gespeicherten
-                                personenbezogenen Daten zu Ihrer Person sowie zur Herkunft, dem Empfänger und dem Zweck
-                                von Datenerhebung sowie Datenverarbeitung. Außerdem haben Sie das Recht, die
-                                Berichtigung, die Sperrung oder Löschung Ihrer Daten zu verlangen. Ausgenommen davon
-                                sind Daten, die aufgrund gesetzlicher Vorschriften aufbewahrt oder zur ordnungsgemäßen
-                                Geschäftsabwicklung benötigt werden. Damit eine Datensperre jederzeit realisiert werden
-                                kann, werden Daten zu Kontrollzwecken in einer Sperrdatei vorgehalten. Werden Daten
-                                nicht von einer gesetzlichen Archivierungspflicht erfasst, löschen wir Ihre Daten auf
-                                Ihren Wunsch. Greift die Archivierungspflicht, sperren wir Ihre Daten. Für alle Fragen
-                                und Anliegen zur Berichtigung, Sperrung oder Löschung von personenbezogenen Daten wenden
-                                Sie sich bitte an unseren Datenschutzbeauftragten unter den Kontaktdaten in dieser
-                                Datenschutzerklärung bzw. an die im Impressum genannte Adresse.
-                            </p>
-                            <h5>Cookies</h5>
-                            <p>
-                                Wir verwenden auf unserer Webseite Cookies. Diese kleinen Textdateien werden von unserem
-                                Server aus auf Ihrem PC gespeichert. Sie unterstützen die Darstellung unserer Webseite
-                                und helfen Ihnen, sich auf unserer Webseite zu bewegen.
-                                Cookies erfassen Daten zu Ihrer IP-Adresse, zu Ihrem Browser, Ihrem Betriebssystem und
-                                Ihrer Internetverbindung. Diese Informationen verbinden wir nicht mit personenbezogenen
-                                Daten und geben sie nicht an Dritte weiter. Keinesfalls werden Cookies von uns dazu
-                                benutzt, Schad- oder Spionageprogramme auf Ihren Rechner zu bringen.
-                                Sie können unsere Webseite auch ohne den Einsatz von Cookies nutzen, wodurch
-                                möglicherweise einige Darstellungen und Funktionen unseres Angebots nur eingeschränkt
-                                arbeiten. Wenn Sie die Cookies deaktivieren möchten, können Sie das über spezielle
-                                Einstellungen Ihres Browsers erreichen. Nutzen Sie bitte dessen Hilfsfunktion, um die
-                                entsprechenden Änderungen vornehmen zu können.
-                                Online-Anzeigen-Cookies können Sie über folgende Links verwalten:
-                                http://www.aboutads.info/choices für die USA
-                                http://www.youronlinechoices.com/uk/your-ad-choices für Europa
-                            </p>
-                            <h5>Server Logfiles</h5>
-                            <p>
-                                Bei den Server Logfiles handelt es sich um anonymisierte Daten, die bei Ihrem Zugriff
-                                auf unsere Webseite erfasst werden. Diese Informationen ermöglichen keine Rückschlüsse
-                                auf Sie persönlich, sind aber aus technischen Gründen für die Auslieferung und
-                                Darstellung unserer Inhalte unverzichtbar. Weiterhin dienen Sie unserer Statistik und
-                                der ständigen Optimierung unserer Inhalte. Typische Logfiles sind das Datum und die Zeit
-                                des Zugriffs, die Datenmenge, der für den Zugriff benutzte Browser und seine Version,
-                                das eingesetzte Betriebssystem, der Domainname des von Ihnen beauftragten Providers, die
-                                Seite, von der Sie zu unserem Angebot gekommen sind (Referrer-URL) und Ihre IP-Adresse.
-                                Logfiles ermöglichen außerdem eine genaue Prüfung bei Verdacht auf eine rechtswidrige
-                                Nutzung unserer Webseite.
-                            </p>
-                            <h5>SSL-Verschlüsselung</h5>
-                            <p>
-                                Unsere Webseite bedient sich einer SSL-Verschlüsselung, wenn es um die Übermittlung
-                                vertraulicher oder persönlicher Inhalte unserer Nutzer geht. Diese Verschlüsslung wird
-                                zum Beispiel bei der Abwicklung des Zahlungsverkehrs sowie bei Anfragen aktiviert, die
-                                Sie an uns über unsere Webseite stellen. Achten Sie bitte darauf, dass die
-                                SSL-Verschlüsselung bei entsprechenden Aktivitäten von Ihrer Seite her aktiviert ist.
-                                Der Einsatz der Verschlüsselung ist leicht zu erkennen: Die Anzeige in Ihrer
-                                Browserzeile wechselt von „http://“ zu „https://“. Über SSL verschlüsselte Daten sind
-                                nicht von Dritten lesbar. Übermitteln Sie Ihre vertraulichen Informationen nur bei
-                                aktivierter SSL-Verschlüsselung und wenden Sie sich im Zweifel an uns.
-                            </p>
-                            <p>
-                                Diese Datenschutzerklärung wurde erstellt durch <a
-                                    href="https://www.datenschutzexperte.de/">www.datenschutzexperte.de</a>
-                            </p>
+                </div>
 
+                <div class="row" tal:omit-tag="" tal:condition="not:extras.development_mode">
+                    <div class="col-lg-6">
+                        <div class="colored-container" style="margin-bottom: 1em">
+                            <br>
+                            <h5>Reichweitenmessung mit Matomo</h5>
+                            <span> Im Rahmen der Reichweitenanalyse von Matomo werden auf Grundlage unserer berechtigten Interessen (d.h. Interesse an der Analyse, Optimierung und wirtschaftlichem Betrieb unseres Onlineangebotes im Sinne des Art. 6 Abs. 1 lit. f. DSGVO) die folgenden Daten verarbeittet: der von Ihnen verwendete Browsertyp und die Browserversion, das von Ihnen verwendete Betriebssystem, Ihr Herkunftsland, Datum und Uhrzeit der Serveranfrage, die Anzahl der Besuche, Ihre Verweildauer auf der Website sowie die von Ihnen betätigten externen Links. Die IP-Adresse der Nutzer wird anonymisiert, bevor sie gespeichert wird.
+                                <br>
+                                Matomo verwendet Cookies, die auf dem Computer der Nutzer gespeichert werden und die eine Analyse der Benutzung unseres Onlineangebotes durch die Nutzer ermöglichen. Dabei können aus den verarbeiteten Daten pseudonyme Nutzungsprofile der Nutzer erstellt werden. Die Cookies haben eine Speicherdauer von einer Woche. Die durch das Cookie erzeugten Informationen über Ihre Benutzung dieser Webseite werden nur auf unserem Server gespeichert und nicht an Dritte weitergegeben.
+                                <br>
+                                Nutzer können der anonymisierten Datenerhebung durch das Programm Matomo jederzeit mit Wirkung für die Zukunft widersprechen, indem sie auf den untenstehenden Link klicken. In diesem Fall wird in ihrem Browser ein sog. Opt-Out-Cookie abgelegt, was zur Folge hat, dass Matomo keinerlei Sitzungsdaten mehr erhebt. Wenn Nutzer ihre Cookies löschen, so hat dies jedoch zur Folge, dass auch das Opt-Out-Cookie gelöscht wird und daher von den Nutzern erneut aktiviert werden muss.
+                            </span></div></div>
+                    <div class="col-lg-6">
+                        <div class="colored-container" style="margin-bottom: 1em">
+                            <h5><span>Matomo Opt-Out</span></h5>
+                            <iframe id="analytics-opt-out-iframe" style="border: 0; height: 250px; width: 600px;"
+                                    src="https://dbas.cs.uni-duesseldorf.de/analytics/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
 
     </tal:block>
 </tal:block>

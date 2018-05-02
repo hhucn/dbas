@@ -3,11 +3,12 @@ Methods for validating input params given via url or ajax
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from typing import Optional, Union
 
+from dbas.lib import Relations
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, Premise
 from .logger import logger
-from sqlalchemy import and_
 
 
 def is_integer(variable, ignore_empty_case=False):
@@ -29,17 +30,16 @@ def is_integer(variable, ignore_empty_case=False):
         return False
 
 
-def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=False):
+def check_reaction(attacked_arg_uid: Union[int, str], attacking_arg_uid: Union[int, str], relation: Relations):
     """
     Checks whether the attacked argument uid and the attacking argument uid are connected via the given relation
 
     :param attacked_arg_uid: Argument.uid
     :param attacking_arg_uid: Argument.uid
-    :param relation: String
-    :param is_history: Boolean
+    :param relation: Relations
     :return: Boolean
     """
-    logger('Validator', 'check_reaction', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
+    logger('Validator', relation.value + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
 
     malicious_val = [
         not is_integer(attacked_arg_uid),
@@ -52,21 +52,16 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=Fal
         return False
 
     relation_mapper = {
-        'undermine': related_with_undermine,
-        'undercut': related_with_undercut,
-        'rebut': related_with_rebut,
-        'support': related_with_support
+        Relations.UNDERMINE: related_with_undermine,
+        Relations.UNDERCUT: related_with_undercut,
+        Relations.REBUT: related_with_rebut,
+        Relations.SUPPORT: related_with_support
     }
 
     if relation in relation_mapper:
         return relation_mapper[relation](attacked_arg_uid, attacking_arg_uid)
 
-    if relation.startswith('end') and not is_history:
-        if str(attacking_arg_uid) != '0':
-            return False
-        return True
-
-    logger('Validator', 'check_reaction', 'else-case')
+    logger('Validator', 'else-case')
     return False
 
 
@@ -78,12 +73,12 @@ def check_belonging_of_statement(issue_uid, statement_uid):
     :param statement_uid: Statement.uid
     :return:
     """
-    db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_uid,
-                                                                    Statement.issue_uid == issue_uid)).first()
+    db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == statement_uid,
+                                                               Statement.issue_uid == issue_uid).first()
     return db_statement is not None
 
 
-def check_belonging_of_argument(issue_uid, argument_uid):
+def check_belonging_of_arguments(issue_uid: int, argument_uids: list) -> bool:
     """
     Check whether current Argument.uid belongs to the given Issue
 
@@ -91,9 +86,9 @@ def check_belonging_of_argument(issue_uid, argument_uid):
     :param argument_uid: Argument.uid
     :return: Boolean
     """
-    db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == argument_uid,
-                                                                  Argument.issue_uid == issue_uid)).first()
-    return db_argument is not None
+    db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid.in_(argument_uids),
+                                                             Argument.issue_uid == issue_uid).all()
+    return len(db_argument) == len(argument_uids)
 
 
 def check_belonging_of_premisegroups(issue_uid, premisegroups):
@@ -105,8 +100,8 @@ def check_belonging_of_premisegroups(issue_uid, premisegroups):
     :return: Boolean
     """
     all_premises = []
-    for g in premisegroups:
-        all_premises += DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=g).all()
+    for pgroup in premisegroups:
+        all_premises += DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=pgroup).all()
     related = [premise.issue_uid == issue_uid for premise in all_premises]
     return all(related)
 
@@ -119,7 +114,7 @@ def is_position(statement_uid):
     :return: Boolean
     """
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
-    return db_statement.is_startpoint
+    return db_statement.is_position
 
 
 def related_with_undermine(attacked_arg_uid, attacking_arg_uid):
@@ -136,12 +131,13 @@ def related_with_undermine(attacked_arg_uid, attacking_arg_uid):
         return False
 
     # which pgroups has the conclusion as premise
-    db_attacked_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=db_attacking_arg.conclusion_uid).all()
+    db_attacked_premises = DBDiscussionSession.query(Premise).filter_by(
+        statement_uid=db_attacking_arg.conclusion_uid).all()
     if not db_attacked_premises:
         return False
 
     attacked_args = DBDiscussionSession.query(Argument).filter_by(uid=attacked_arg_uid)
-    undermines = [attacked_args.filter_by(premisesgroup_uid=p.premisesgroup_uid).first() for p in db_attacked_premises]
+    undermines = [attacked_args.filter_by(premisegroup_uid=p.premisegroup_uid).first() for p in db_attacked_premises]
     return any(undermines)
 
 
@@ -153,8 +149,8 @@ def related_with_undercut(attacked_arg_uid, attacking_arg_uid):
     :param attacking_arg_uid: Argument.uid
     :return: Boolean
     """
-    db_attacking_arg = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == attacking_arg_uid,
-                                                                       Argument.argument_uid == attacked_arg_uid)).first()
+    db_attacking_arg = DBDiscussionSession.query(Argument).filter(Argument.uid == attacking_arg_uid,
+                                                                  Argument.argument_uid == attacked_arg_uid).first()
     return db_attacking_arg is not None
 
 
@@ -199,7 +195,7 @@ def related_with_support(attacked_arg_uid, attacking_arg_uid):
     return same_conclusion and not_none and supportive
 
 
-def get_relation_between_arguments(arg1_uid, arg2_uid):
+def get_relation_between_arguments(arg1_uid: int, arg2_uid: int) -> Optional[Relations]:
     """
     Get the relation between given arguments
 
@@ -209,22 +205,18 @@ def get_relation_between_arguments(arg1_uid, arg2_uid):
     """
 
     if related_with_undermine(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
-        return 'undermine'
+        return Relations.UNDERMINE
 
     if related_with_undercut(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
-        return 'undercut'
+        return Relations.UNDERCUT
 
     if related_with_rebut(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
-        return 'rebut'
+        return Relations.REBUT
 
     if related_with_support(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' support ' + str(arg2_uid))
-        return 'support'
+        return Relations.SUPPORT
 
-    logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' NONE ' + str(arg2_uid))
+    logger('InputValidator', str(arg1_uid) + ' NONE ' + str(arg2_uid))
     return None
 
 
@@ -242,19 +234,3 @@ def is_argument_forbidden(uid):
     if not db_argument:
         return False
     return db_argument.is_disabled
-
-
-def is_statement_forbidden(uid):
-    """
-    Is the given statement disabled?
-
-    :param uid: Statement.uid
-    :return: Boolean
-    """
-    if not is_integer(uid):
-        return False
-
-    db_statement = DBDiscussionSession.query(Statement).get(uid)
-    if not db_statement:
-        return False
-    return db_statement.is_disabled

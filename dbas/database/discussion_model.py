@@ -13,6 +13,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
 
 from dbas.database import DBDiscussionSession, DiscussionBase
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 
 def sql_timestamp_pretty_print(ts, lang='en', humanize=True, with_exact_time=False):
@@ -85,15 +87,6 @@ class Issue(DiscussionBase):
         self.is_read_only = is_read_only
         self.date = get_now()
 
-    @classmethod
-    def by_text(cls):
-        """
-        Return a query of positions sorted by text.
-
-        :return: Query
-        """
-        return DBDiscussionSession.query(Issue).order_by(Issue.text)
-
     @hybrid_property
     def lang(self):
         """
@@ -103,7 +96,7 @@ class Issue(DiscussionBase):
         """
         return DBDiscussionSession.query(Language).get(self.lang_uid).ui_locales
 
-    def set_disable(self, is_disabled):
+    def set_disabled(self, is_disabled):
         """
         Disabled current issue
 
@@ -129,6 +122,17 @@ class Issue(DiscussionBase):
         :return: None
         """
         self.is_read_only = is_read_only
+
+    def __json__(self, _request):
+        return {
+            "title": self.title,
+            "slug": self.slug,
+            "summary": self.info,
+            "description": self.long_info,
+            "url": "/" + self.slug,
+            "language": self.lang,
+            "date": self.date.format(),
+        }
 
 
 class Language(DiscussionBase):
@@ -274,10 +278,14 @@ class User(DiscussionBase):
         """
         self.public_nickname = nick
 
-    def get_global_nickname(self):
-        # TODO CHANGE THIS IF YOU WANT TO SEE OTHER NAMES
-        db_settings = DBDiscussionSession.query(Settings).get(self.uid)
-        return self.firstname if db_settings.should_show_public_nickname else self.public_nickname
+    @hybrid_property
+    def global_nickname(self):
+        """
+        Return the first name if the user set this in his settings, otherwise the public nickname
+
+        :return:
+        """
+        return self.firstname if self.settings.should_show_public_nickname else self.public_nickname
 
     def to_small_dict(self):
         """
@@ -289,6 +297,31 @@ class User(DiscussionBase):
             'uid': self.uid,
             'nickname': self.nickname
         }
+
+    def is_admin(self):
+        """
+        Check, if the user is member of the admin group
+
+        :return: True, if the user is member of the admin group
+        """
+        return DBDiscussionSession.query(Group).filter_by(name='admins').first().uid == self.group_uid
+
+    def is_author(self):
+        """
+        Check, if the user is member of the authors group
+
+        :return: True, if the user is member of the authors group
+        """
+        return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
+
+    @hybrid_property
+    def settings(self):
+        """
+        Check, if the user is member of the admin group
+
+        :return: True, if the user is member of the admin group
+        """
+        return DBDiscussionSession.query(Settings).filter_by(author_uid=self.uid).first()
 
 
 class Settings(DiscussionBase):
@@ -374,6 +407,10 @@ class Settings(DiscussionBase):
         """
         self.lang_uid = lang_uid
 
+    @hybrid_property
+    def lang(self) -> str:
+        return self.languages.ui_locales
+
     def should_hold_the_login(self, keep_logged_in):
         """
         Should we hold the login?
@@ -391,7 +428,7 @@ class Statement(DiscussionBase):
     """
     __tablename__ = 'statements'
     uid = Column(Integer, primary_key=True)
-    is_startpoint = Column(Boolean, nullable=False)
+    is_position = Column(Boolean)
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
@@ -405,11 +442,11 @@ class Statement(DiscussionBase):
         :param issue: Issue.uid
         :param is_disabled: Boolean
         """
-        self.is_startpoint = is_position
+        self.is_position = is_position
         self.issue_uid = issue
         self.is_disabled = is_disabled
 
-    def set_disable(self, is_disabled):
+    def set_disabled(self, is_disabled):
         """
         Disables current Statement
 
@@ -425,7 +462,7 @@ class Statement(DiscussionBase):
         :param is_position: boolean
         :return: None
         """
-        self.is_startpoint = is_position
+        self.is_position = is_position
 
     def get_timestamp(self):
         """
@@ -480,7 +517,7 @@ class Statement(DiscussionBase):
         return {
             'uid': self.uid,
             'textversion_uid': self.textversion_uid,
-            'is_startpoint': self.is_startpoint,
+            'is_position': self.is_position,
             'issue_uid': self.issue_uid,
             'is_disabled': self.is_disabled
         }
@@ -496,6 +533,25 @@ class Statement(DiscussionBase):
         :return: TextVersion object
         """
         return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
+
+    def get_text(self, html: bool = False) -> str:
+        """
+        Gets the current text from the statement, without trailing punctuation.
+
+        :param html: If True, returns a html span for coloring.
+        :return:
+        """
+        text = self.get_textversion().content
+        while text.endswith(('.', '?', '!')):
+            text = text[:-1]
+
+        if html:
+            return '<span data-argumentation-type="position">{}</span>'.format(text)
+        else:
+            return text
+
+    def get_html(self) -> str:
+        return self.get_text(html=True)
 
 
 class StatementReferences(DiscussionBase):
@@ -534,6 +590,16 @@ class StatementReferences(DiscussionBase):
         self.author_uid = author_uid
         self.statement_uid = statement_uid
         self.issue_uid = issue_uid
+
+    def get_statement_text(self, html: bool = False) -> str:
+        """
+        Gets the current references text from the statement, without trailing punctuation.
+
+        :param html: If True, returns a html span for coloring.
+        :return:
+        """
+        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
+        return db_statement.get_text(html)
 
 
 class SeenStatement(DiscussionBase):
@@ -623,7 +689,7 @@ class TextVersion(DiscussionBase):
         """
         self.statement_uid = statement_uid
 
-    def set_disable(self, is_disabled):
+    def set_disabled(self, is_disabled):
         """
         Disables current textversion
 
@@ -668,6 +734,12 @@ class PremiseGroup(DiscussionBase):
         """
         self.author_uid = author
 
+    def get_text(self):
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()
+        texts = [premise.get_text() for premise in db_premises]
+        lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
+        return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
+
 
 class Premise(DiscussionBase):
     """
@@ -676,7 +748,7 @@ class Premise(DiscussionBase):
     """
     __tablename__ = 'premises'
     uid = Column(Integer, primary_key=True)
-    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     statement_uid = Column(Integer, ForeignKey('statements.uid'))
     is_negated = Column(Boolean, nullable=False)
     author_uid = Column(Integer, ForeignKey('users.uid'))
@@ -684,7 +756,7 @@ class Premise(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
+    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
     statements = relationship('Statement', foreign_keys=[statement_uid])
     users = relationship('User', foreign_keys=[author_uid])
     issues = relationship('Issue', foreign_keys=[issue_uid])
@@ -701,7 +773,7 @@ class Premise(DiscussionBase):
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisesgroup_uid = premisesgroup
+        self.premisegroup_uid = premisesgroup
         self.statement_uid = statement
         self.is_negated = is_negated
         self.author_uid = author
@@ -709,7 +781,7 @@ class Premise(DiscussionBase):
         self.issue_uid = issue
         self.is_disabled = is_disabled
 
-    def set_disable(self, is_disabled):
+    def set_disabled(self, is_disabled):
         """
         Disables current premise
 
@@ -734,7 +806,20 @@ class Premise(DiscussionBase):
         :param premisegroup: Premisegroup.uid
         :return: None
         """
-        self.premisesgroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup
+
+    def get_text(self, html: bool = False) -> str:
+        """
+        Gets the current premise text from the statement, without trailing punctuation.
+
+        :param html: If True, returns a html span for coloring.
+        :return:
+        """
+        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
+        return db_statement.get_text(html)
+
+    def get_html(self) -> str:
+        return self.get_text(html=True)
 
     def to_dict(self):
         """
@@ -743,7 +828,7 @@ class Premise(DiscussionBase):
         :return: dict()
         """
         return {
-            'premisesgroup_uid': self.premisesgroup_uid,
+            'premisegroup_uid': self.premisegroup_uid,
             'statement_uid': self.statement_uid,
             'is_negated': self.is_negated,
             'author_uid': self.author_uid,
@@ -761,7 +846,7 @@ class Argument(DiscussionBase):
     """
     __tablename__ = 'arguments'
     uid = Column(Integer, primary_key=True)
-    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     conclusion_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
     argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
     is_supportive = Column(Boolean, nullable=False)
@@ -770,18 +855,19 @@ class Argument(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
+    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
     conclusion = relationship('Statement', foreign_keys=[conclusion_uid])
     users = relationship('User', foreign_keys=[author_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, premisegroup, issupportive, author, issue, conclusion=None, argument=None, is_disabled=False):
+    def __init__(self, premisegroup, is_supportive, author, issue: int, conclusion=None, argument=None,
+                 is_disabled=False):
         """
         Initializes a row in current argument-table
 
         :param premisegroup: PremiseGroup.uid
-        :param issupportive: Boolean
+        :param is_supportive: Boolean
         :param author: User.uid
         :param issue: Issue.uid
         :param conclusion: Default 0, which will be None
@@ -789,10 +875,10 @@ class Argument(DiscussionBase):
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisesgroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup
         self.conclusion_uid = None if conclusion == 0 else conclusion
         self.argument_uid = None if argument == 0 else argument
-        self.is_supportive = issupportive
+        self.is_supportive = is_supportive
         self.author_uid = author
         self.argument_uid = argument
         self.issue_uid = issue
@@ -824,9 +910,9 @@ class Argument(DiscussionBase):
         :param premisegroup: PremiseGroup.uid
         :return: None
         """
-        self.premisesgroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup
 
-    def set_disable(self, is_disabled):
+    def set_disabled(self, is_disabled):
         """
         Disables current argument
 
@@ -842,7 +928,23 @@ class Argument(DiscussionBase):
 
         :return: String
         """
-        return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
+        return self.issues.lang
+
+    def get_conclusion_text(self, html: bool = False) -> str:
+        """
+        Gets the current conclusion text from the argument, without trailing punctuation.
+
+        :param html: If True, returns a html span for coloring.
+        :return:
+        """
+        if not self.conclusion_uid:
+            return ''
+        db_statement = DBDiscussionSession.query(Statement).get(self.conclusion_uid)
+        return db_statement.get_text(html)
+
+    def get_premisegroup_text(self) -> str:
+        db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisegroup_uid)
+        return db_premisegroup.get_text()
 
     def to_dict(self):
         """
@@ -852,7 +954,7 @@ class Argument(DiscussionBase):
         """
         return {
             'uid': self.uid,
-            'premisesgroup_uid': self.premisesgroup_uid,
+            'premisegroup_uid': self.premisegroup_uid,
             'conclusion_uid': self.conclusion_uid,
             'argument_uid': self.argument_uid,
             'is_supportive': self.is_supportive,
@@ -1411,13 +1513,13 @@ class ReviewMerge(DiscussionBase):
     __tablename__ = 'review_merge'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False, default=False)
     is_revoked = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
+    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
     def __init__(self, detector, premisegroup, is_executed=False, is_revoked=False):
         """
@@ -1429,7 +1531,7 @@ class ReviewMerge(DiscussionBase):
         :param is_revoked: Boolean
         """
         self.detector_uid = detector
-        self.premisesgroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked
@@ -1468,13 +1570,13 @@ class ReviewSplit(DiscussionBase):
     __tablename__ = 'review_split'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False, default=False)
     is_revoked = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
+    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
     def __init__(self, detector, premisegroup, is_executed=False, is_revoked=False):
         """
@@ -1486,7 +1588,7 @@ class ReviewSplit(DiscussionBase):
         :param is_revoked: Boolean
         """
         self.detector_uid = detector
-        self.premisesgroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked
@@ -1857,21 +1959,21 @@ class ReviewCanceled(DiscussionBase):
     merges = relationship('ReviewMerge', foreign_keys=[review_merge_uid])
     plits = relationship('ReviewSplit', foreign_keys=[review_split_uid])
 
-    def __init__(self, author, reviews, was_ongoing=False):
+    def __init__(self, author, review_data, was_ongoing=False):
         """
         Inits a row in current review locks table
 
         :param author: User.uid
-        :param reviews: dict with possible review uids
+        :param review_data: dict with possible review uids
         :param was_ongoing: Boolean
         """
         self.author_uid = author
-        self.review_edit_uid = reviews.get('edit')
-        self.review_delete_uid = reviews.get('delete')
-        self.review_optimization_uid = reviews.get('optimization')
-        self.review_duplicate_uid = reviews.get('duplicate')
-        self.review_merge_uid = reviews.get('merge')
-        self.review_split_uid = reviews.get('split')
+        self.review_edit_uid = review_data.get('edit')
+        self.review_delete_uid = review_data.get('delete')
+        self.review_optimization_uid = review_data.get('optimization')
+        self.review_duplicate_uid = review_data.get('duplicate')
+        self.review_merge_uid = review_data.get('merge')
+        self.review_split_uid = review_data.get('split')
         self.was_ongoing = was_ongoing
         self.timestamp = get_now()
 

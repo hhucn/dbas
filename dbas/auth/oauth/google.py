@@ -28,22 +28,21 @@ def start_flow(redirect_uri):
     :param redirect_uri:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_GOOGLE_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_GOOGLE_CLIENTKEY', None)
 
     if 'service=google' not in redirect_uri:
         bind = '#' if '?' in redirect_uri else '?'
         redirect_uri = '{}{}{}'.format(redirect_uri, bind, 'service=google')
 
-    logger('Google OAuth', 'start_flow',
-           'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
+    logger('Google OAuth', 'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
 
     # OAuth endpoints given in the Google API documentation
     google = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
 
     authorization_url, state = google.authorization_url(authorization_base_url, access_type='offline', prompt='select_account')
 
-    logger('Google OAuth', 'start_flow', 'Please go to {} and authorize access'.format(authorization_url))
+    logger('Google OAuth', 'Please go to {} and authorize access'.format(authorization_url))
     return {'authorization_url': authorization_url, 'error': ''}
 
 
@@ -55,11 +54,10 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     :param ui_locales:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_GOOGLE_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_GOOGLE_CLIENTKEY', None)
 
-    logger('Google OAuth', 'continue_flow',
-           'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
+    logger('Google OAuth', 'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
 
     if 'service=google' not in redirect_uri:
         bind = '#' if '?' in redirect_uri else '?'
@@ -70,22 +68,22 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     try:
         token = google.fetch_token(token_url, authorization_response=authorization_response, client_secret=client_secret)
     except InsecureTransportError:
-        logger('Google OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
+        logger('Google OAuth', 'OAuth 2 MUST utilize https', error=True)
         _tn = Translator(ui_locales)
         return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
     except InvalidClientError:
-        logger('Google OAuth', 'continue_flow', 'InvalidClientError', error=True)
+        logger('Google OAuth', 'InvalidClientError', error=True)
         _tn = Translator(ui_locales)
         return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
     except MissingTokenError:
-        logger('Google OAuth', 'continue_flow', 'MissingTokenError', error=True)
+        logger('Google OAuth', 'MissingTokenError', error=True)
         _tn = Translator(ui_locales)
         return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
 
-    logger('Google OAuth', 'continue_flow', 'Token: {}'.format(token))
+    logger('Google OAuth', 'Token: {}'.format(token))
 
     resp = google.get('https://www.googleapis.com/oauth2/v2/userinfo?alt=json')
-    logger('Google OAuth', 'continue_flow', str(resp.text))
+    logger('Google OAuth', str(resp.text))
     parsed_resp = json.loads(resp.text)
 
     # example response
@@ -107,8 +105,8 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     user_data = __prepare_data(parsed_resp, gender, ui_locales)
     missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
 
-    logger('Google OAuth', 'continue_flow', 'user_data: ' + str(user_data))
-    logger('Google OAuth', 'continue_flow', 'missing_data: ' + str(missing_data))
+    logger('Google OAuth', 'user_data: ' + str(user_data))
+    logger('Google OAuth', 'missing_data: ' + str(missing_data))
 
     return {
         'user': user_data,
@@ -120,11 +118,10 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
 def __prepare_data(parsed_resp, gender, ui_locales):
     return {
         'id': parsed_resp['id'],
-        'firstname': parsed_resp['given_name'] if 'given_name' in parsed_resp else '',
-        'lastname': parsed_resp['family_name'] if 'family_name' in parsed_resp else '',
-        'nickname': parsed_resp['name'].replace(' ', '') if 'name' in parsed_resp else '',
+        'firstname': parsed_resp.get('given_name', ''),
+        'lastname': parsed_resp.get('family_name', ''),
+        'nickname': str(parsed_resp.get('email')).split('@')[0],
         'gender': gender,
-        'email': str(parsed_resp['email']) if 'email' in parsed_resp else 'None',
-        'password': '',
+        'email': str(parsed_resp.get('email')),
         'ui_locales': 'de' if parsed_resp['locale'] == 'de' else ui_locales
     }
