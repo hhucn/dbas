@@ -30,14 +30,14 @@ COPY --from=python-base /dbas/ /dbas/
 WORKDIR /dbas/
 
 RUN apk update && \
-    apk add --no-cache yarn gettext libldap nodejs bash musl-dev postgresql-dev&& \
+    apk add --no-cache yarn gettext libldap nodejs bash musl-dev postgresql-dev && \
     npm install -g sass google-closure-compiler-js
 
 RUN apk update && \
-    apk add --virtual .build-deps gcc &&\
-    python3 -m pip install --upgrade --no-deps --force-reinstall  -r requirements.txt &&\
-    ./build_assets.sh &&\
-    rm -r /root/.cache &&\
+    apk add --virtual .build-deps gcc && \
+    python3 -m pip install --upgrade --no-deps --force-reinstall  -r requirements.txt && \
+    ./build_assets.sh && \
+    rm -r /root/.cache && \
     apk del .build-deps
 
 EXPOSE 4284
