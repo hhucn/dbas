@@ -2,7 +2,7 @@
 # Build CSS, JS and Python assets
 
 echo ":: Build D-BAS"
-python setup.py --quiet develop
+python3 setup.py --quiet develop
 
 echo ":: Install JS libs"
 yarn install
@@ -15,9 +15,8 @@ google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./websock
 google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./admin/static/js/main/*.js > admin/static/js/admin.min.js
 
 echo ":: Compile and compress SASS"
-sass -t compressed dbas/static/css/main.sass dbas/static/css/main.css
-sass -t compressed dbas/static/css/creative.sass dbas/static/css/creative.css
-rm -r .sass-cache
+sass dbas/static/css/main.sass dbas/static/css/main.css
+sass dbas/static/css/creative.sass dbas/static/css/creative.css
 
 echo ":: Build translations"
 cd dbas && ./i18n.sh
