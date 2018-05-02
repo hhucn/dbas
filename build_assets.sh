@@ -15,8 +15,8 @@ google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./websock
 google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./admin/static/js/main/*.js > admin/static/js/admin.min.js
 
 echo ":: Compile and compress SASS"
-sass dbas/static/css/main.sass dbas/static/css/main.css
-sass dbas/static/css/creative.sass dbas/static/css/creative.css
+sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed
+sass dbas/static/css/creative.sass dbas/static/css/creative.css --style compressed
 
 echo ":: Build translations"
 cd dbas && ./i18n.sh
