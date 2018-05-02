@@ -15,27 +15,23 @@ RUN touch $locs && \
 
 COPY requirements.txt .
 
-RUN python3 -m pip install --upgrade  -r requirements.txt
-COPY . /dbas/
-
+RUN python3 -m pip install -U pip && \
+    python3 -m pip install --upgrade -r requirements.txt
 
 FROM python:3.6-alpine3.7
 
 COPY --from=python-base /usr/local/lib/python3.6/site-packages/ /usr/local/lib/python3.6/site-packages/
 COPY --from=python-base /root/.cache/ /root/.cache/
-
 COPY --from=python-base /etc/timezone /etc/timezone
-COPY --from=python-base /dbas/ /dbas/
+
+COPY . /dbas/
 
 WORKDIR /dbas/
 
-RUN apk update && \
-    apk add --no-cache yarn gettext libldap nodejs bash musl-dev postgresql-dev && \
-    npm install -g sass google-closure-compiler-js
-
-RUN apk update && \
-    apk add --virtual .build-deps gcc && \
-    python3 -m pip install --upgrade --no-deps --force-reinstall  -r requirements.txt && \
+RUN apk add --no-cache yarn gettext libldap nodejs bash musl-dev postgresql-dev && \
+    apk add --no-cache --virtual .build-deps gcc && \
+    npm install -g sass google-closure-compiler-js && \
+    python3 -m pip install --upgrade --no-deps --force-reinstall -r requirements.txt && \
     ./build_assets.sh && \
     rm -r /root/.cache && \
     apk del .build-deps
