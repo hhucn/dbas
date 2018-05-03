@@ -3,7 +3,6 @@ alembic==0.9.6
 antiorm==1.2.1
 appdirs==1.4.3
 arrow==0.12.0
-Babel==2.5.1
 cornice==3.1.0
 colander==1.4
 coverage==4.4.2
