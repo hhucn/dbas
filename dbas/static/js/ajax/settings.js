@@ -189,4 +189,28 @@ function AjaxSettingsHandler() {
         };
         ajaxSkeleton(url, 'GET', {}, done, fail);
     };
+    
+    /**
+     *
+     */
+    this.deleteAccount = function (){
+        var url = mainpage + 'user_delete';
+        var done = function ajaxLogoutDone() {
+            location.reload(true);
+        };
+        var fail = function ajaxLogoutFail(xhr) {
+            if (xhr.status === 200) {
+                if (window.location.href.indexOf('settings') !== 0) {
+                    window.location.href = mainpage + 'discuss';
+                } else {
+                    location.reload(true);
+                }
+            } else if (xhr.status === 403) {
+                window.location.href = mainpage + 'discuss';
+            } else {
+                location.reload(true);
+            }
+        };
+        ajaxSkeleton(url, 'POST', {}, done, fail);
+    };
 }

@@ -1,3 +1,6 @@
+### 1.6.4 (2018-05-xx)
+ - Function to delete an account
+
 ### 1.6.3 (2018-05-02)
 - Revival of our API
 
