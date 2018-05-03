@@ -55,6 +55,7 @@ var duplicateDialog = 'duplicateDialog';
 var doNotHesitateToContact = 'doNotHesitateToContact';
 var date = 'date';
 var deleteTrack = 'deleteTrack';
+var deleteAccount = 'deleteAccount';
 var deleteHistory = 'deleteHistory';
 var deleteEverything = 'deleteEverything';
 var deleteMarked = 'deleteMarked';
@@ -112,6 +113,7 @@ var letsGo = 'letsGo';
 var listOfDoneEdits = 'listOfDoneEdits';
 var listOfPostedStatements = 'listOfPostedStatements';
 var listOfGivenVotes = 'listOfGivenVotes';
+var mayTakeAWhile = 'mayTakeAWhile';
 var medium = 'medium';
 var messageInfoTitle = 'messageInfoTitle';
 var messageInfoStatementCreatedBy = 'messageInfoStatementCreatedBy';
@@ -188,6 +190,7 @@ var showAllUsers = 'showAllUsers';
 var showAllArguments = 'showAllArguments';
 var showMeAnArgumentFor = 'showMeAnArgumentFor';
 var strength = 'strength';
+var stepCannotBeUndone = 'stepCannotBeUndone';
 var strong = 'strong';
 var shortenedBy = 'shortenedBy';
 var statement = 'statement';
@@ -318,6 +321,7 @@ var dbas_en = {
     'changelogHide': 'hide changelog',
     'clickedOnThis': 'clicked on this',
     'deleteTrack': 'Delete track',
+    'deleteAccount': 'Delete Account',
     'deleteHistory': 'Delete history',
     'deleteEverything': 'Delete everything',
     'deleteMarked': 'Delete marked elements',
@@ -386,6 +390,7 @@ var dbas_en = {
     'listOfPostedStatements': 'This is a list of all posted statements:',
     'listOfDoneEdits': 'This is a list of all edits:',
     'listOfGivenVotes': 'This is a list of all votes:',
+    'mayTakeAWhile': 'This may take a while',
     'medium': 'medium',
     'messageInfoTitle': 'Infos about an argument',
     'messageInfoStatementCreatedBy': 'This was created by',
@@ -467,6 +472,7 @@ var dbas_en = {
     'showAllUsersTitle': 'Show all users, which are registered',
     'supportPosition': 'support position',
     'strength': 'Strength',
+    'stepCannotBeUndone': 'This step cannot be undone.',
     'strong': 'strong',
     'statement': 'Statement',
     'statisticsDeleted': 'Statistics were deleted.',
@@ -584,6 +590,7 @@ var dbas_de = {
     'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version ' +
     'dennoch als die aktuellste markieren?',
     'deleteTrack': 'Track löschen',
+    'deleteAccount': 'Account löschen',
     'deleteHistory': 'History löschen',
     'deleteEverything': 'Alle löschen',
     'deleteMarked': 'Ausgewählte Elemente löschen',
@@ -645,6 +652,7 @@ var dbas_de = {
     'listOfPostedStatements': 'Dies ist eine Liste von allen gemachten Aussagen:',
     'listOfDoneEdits': 'Dies ist eine Liste von allen Änderungen:',
     'listOfGivenVotes': 'Dies ist eine Liste von allen Stimmen:',
+    'mayTakeAWhile': 'Dies kann einen Momeent dauern.',
     'medium': 'mittel',
     'messageInfoTitle': 'Informationen über ein Argument',
     'messageInfoStatementCreatedBy': 'Dieses Argument stammt von',
@@ -729,6 +737,7 @@ var dbas_de = {
     'statisticsNotFetched': 'Statistiken konnten nicht angefordert werden.',
     'statisticsNotThere': 'Sie haben keine Statistiken für diesen Punkt.',
     'strength': 'Stärke',
+    'stepCannotBeUndone': 'Dieser Schritt kann nicht rückgängig gemacht werden.',
     'strong': 'stark',
     'statement': 'Aussage',
     'shortenedBy': 'gekürzt mit',
