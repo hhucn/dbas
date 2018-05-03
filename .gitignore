@@ -47,6 +47,7 @@ clean.sh
 # Database
 docker/db/data/
 !dbas/static/data
+postgres_db/
 
 # Deployment
 dbas/static/css/main.css
