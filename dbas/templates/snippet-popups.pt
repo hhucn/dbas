@@ -643,7 +643,6 @@
     </div>
   </div>
 
-
   <!-- WRITE NEWS -->
   <div class="modal fade" id="popup-writing-news" tabindex="-1" role="dialog" aria-labelledby="myModalLabelNews"
        aria-hidden="true">

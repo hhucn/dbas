@@ -5,3 +5,5 @@ services:
     ports:
       - "5222:5222"
     tmpfs: /tmp
+    volumes:
+      - /etc/letsencrypt:/cert:ro

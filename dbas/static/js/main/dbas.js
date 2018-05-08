@@ -111,11 +111,11 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
         dialog.find('.modal-dialog').addClass('modal-sm');
     }
     dialog.modal('show');
-    $('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
+    $('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
     $('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
     $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
         $('#' + popupConfirmDialogId).modal('hide');
-        if (functionForRefuse) {
+        if (functionForAccept) {
             functionForAccept();
         }
     });

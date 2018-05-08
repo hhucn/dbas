@@ -300,6 +300,26 @@ def user_logout(request, redirect_to_main=False):
     )
 
 
+@view_config(route_name='user_delete', renderer='json')
+@validate(valid_user)
+def user_delete(request):
+    """
+    Will delete the user
+
+    :param request: request of the web server
+    :param redirect_to_main: Boolean
+    :return: HTTPFound with forgotten headers
+    """
+    logger('views', 'user_delete')
+    db_user = request.validated['user']
+    user.delete(db_user)
+    request.session.invalidate()
+    return HTTPFound(
+        location=request.application_url + '/discuss',
+        headers=forget(request)
+    )
+
+
 @view_config(route_name='user_registration', renderer='json')
 @validate(valid_lang_cookie_fallback,
           has_keywords(('nickname', str), ('email', str), ('gender', str), ('password', str), ('passwordconfirm', str)),
