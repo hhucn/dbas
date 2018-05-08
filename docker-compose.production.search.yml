@@ -6,6 +6,6 @@ services:
       - "9200:9200"
       - "5000:5000"
     env_file:
-      - development.env
+      - production.env
     depends_on:
       - web
