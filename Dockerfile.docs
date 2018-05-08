@@ -4,8 +4,7 @@ MAINTAINER Tobias Krauhoff <krauthoff@cs.uni-duesseldorf.de>
 
 WORKDIR /dbas/docs
 
-RUN apt-get update && \
-    apt-get install make && \
+RUN apk add --no-cache make && \
     make html
 
 WORKDIR /dbas/docs/_build/html/
@@ -14,4 +13,4 @@ RUN mkdir -p docs && \
     mv * docs || true
 
 EXPOSE 8000
-CMD ["python2", "-m", "SimpleHTTPServer", "8000"]
+CMD ["python", "-m", "http.server", "8000"]
