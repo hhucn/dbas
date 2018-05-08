@@ -21,6 +21,7 @@ RUN python3 -m pip install -U pip && \
 FROM python:3.6-alpine3.7
 
 COPY --from=python-base /usr/local/lib/python3.6/site-packages/ /usr/local/lib/python3.6/site-packages/
+COPY --from=python-base /usr/local/bin/uwsgi /usr/local/bin/uwsgi
 COPY --from=python-base /root/.cache/ /root/.cache/
 COPY --from=python-base /etc/timezone /etc/timezone
 
@@ -28,10 +29,11 @@ COPY . /dbas/
 
 WORKDIR /dbas/
 
-RUN apk add --no-cache yarn gettext libldap nodejs bash musl-dev postgresql-dev && \
-    apk add --no-cache --virtual .build-deps gcc && \
+RUN apk add --no-cache yarn gettext libldap nodejs bash musl-dev postgresql-dev pcre-dev && \
+    apk add --no-cache --virtual .build-deps gcc build-base linux-headers && \
     npm install -g sass google-closure-compiler-js && \
     python3 -m pip install --upgrade --no-deps --force-reinstall -r requirements.txt && \
+    python3 -m pip install -U uwsgi && \
     ./build_assets.sh && \
     rm -r /root/.cache && \
     apk del .build-deps
