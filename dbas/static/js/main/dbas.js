@@ -276,17 +276,11 @@ function prepareLoginRegistrationPopup() {
 
     $('#' + popupLoginButtonLogin).show().click(function () {
         new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
-        Cookies.set(DATA_DISCLAIMER, true, {expires: 180});
     }).keypress(function (e) {
         if (e.which === 13) {
             new AjaxMainHandler().registration();
         }
     });
-
-    // data disclaimer
-    if (Cookies.get(DATA_DISCLAIMER) === 'true') {
-        $('#dbas-login-data-disclaimer').hide();
-    }
 
     $('#' + popupLoginForgotPasswordText).click(function () {
         var body = $('#' + popupLoginForgotPasswordBody);
