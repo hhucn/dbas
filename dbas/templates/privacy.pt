@@ -15,7 +15,70 @@
 
         <div class="row">
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10">
+            <div class="colored-container" style="margin-bottom: 1em">
+              <h4>Name und Anschrift</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <h5>Des Verantwortlichen</h5>
+                  <span>Heinrich-Heine-Universität Düsseldorf</span><br>
+                  <span>Institut für Informatik</span><br>
+                  <span>Lehrstuhl für Rechnernetze</span><br>
+                  <span>402255 Düsseldorf, Deutschland</span><br>
+                  <span>Tel.: +49 211 81-11312</span><br>
+                  <span>E-Mail: <a href="mailto: dbas@cs.uni-duesseldorf.de">dbas@cs.uni-duesseldorf.de</a></span><br>
+                  <span>Website: ${extras.url}</span><br>
+                </div>
+                <div class="col-md-6">
+                  <h5>Des Datenschutzbeauftragten</h5>
+                  <span>Kurt Finkbeiner</span><br>
+                  <span>Universitätsstr. 1</span><br>
+                  <span>Gebäude: 16.11</span><br>
+                  <span>Etage/Raum: 01.81</span><br>
+                  <span>40225 Düsseldorf, Deutschland</span><br>
+                  <span>Tel.: +49 211 81-13214</span><br>
+                  <span>E-Mail: <a
+                          href="mailto: Datenschutzbeauftragter@hhu.de">Datenschutzbeauftragter@hhu.de</a></span><br>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-offset-1 col-md-10">
+            <div class="colored-container" style="margin-bottom: 1em">
+              <h4>Inhalt</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <ul>
+                    <li><a class="js-scroll-trigger" href="#begrifflichkeiten">Verwendete Begrifflichkeiten</a></li>
+                    <li><a class="js-scroll-trigger" href="#rechtsgrundlagen">Maßgebliche Rechtsgrundlagen</a></li>
+                    <li><a class="js-scroll-trigger" href="#zusammenarbeit">Zusammenarbeit mit Auftragsverarbeitern und
+                      Dritten</a></li>
+                    <li><a class="js-scroll-trigger" href="#übermittlungen">Übermittlungen in Drittländer</a></li>
+                    <li><a class="js-scroll-trigger" href="#rechte">Rechte der betroffenen Personen</a></li>
+                    <li><a class="js-scroll-trigger" href="#widerrufsrecht">Widerrufsrecht</a></li>
+                    <li><a class="js-scroll-trigger" href="#widerspruchsrecht">Widerspruchsrecht</a></li>
+                    <li><a class="js-scroll-trigger" href="#cookies">Cookies und Widerspruchsrecht</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-md-6">
+                  <ul>
+                    <li><a class="js-scroll-trigger" href="#löschung">Löschung von Daten</a></li>
+                    <li><a class="js-scroll-trigger" href="#erhebung">Erhebung von Zugriffsdaten und Logfiles</a></li>
+                    <li><a class="js-scroll-trigger" href="#registrierfunktion">Registrierfunktion</a></li>
+                    <li><a class="js-scroll-trigger" href="#kontaktaufnahme">Kontaktaufnahme</a></li>
+                    <li><a class="js-scroll-trigger" href="#kommentare">Kommentare und Beiträge</a></li>
+                    <li><a class="js-scroll-trigger" href="#abruf">Abruf von Profilbildern bei Gravatar</a></li>
+                    <li><a class="js-scroll-trigger" href="#reichweitenmessung">Reichweitenmessung mit Matomo</a></li>
+                    <li><a class="js-scroll-trigger" href="#google">Google Fonts</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-offset-1 col-md-10" id="begrifflichkeiten">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Verwendete Begrifflichkeiten</h4>
               <p>„Personenbezogene Daten“ sind alle Informationen, die
@@ -42,7 +105,7 @@
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="rechtsgrundlagen">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Maßgebliche Rechtsgrundlagen</h4>
               <p>Nach Maßgabe des Art. 13 DSGVO teilen wir Ihnen die Rechtsgrundlagen
@@ -63,9 +126,9 @@
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="zusammenarbeit">
             <div class="colored-container" style="margin-bottom: 1em">
-              <h4></h4><h4>Zusammenarbeit mit Auftragsverarbeitern und Dritten</h4>
+              <h4>Zusammenarbeit mit Auftragsverarbeitern und Dritten</h4>
               <p>Sofern wir im Rahmen unserer Verarbeitung Daten
                 gegenüber anderen Personen und Unternehmen (Auftragsverarbeitern oder Dritten)
                 offenbaren,
@@ -85,7 +148,7 @@
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="übermittlungen">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Übermittlungen in Drittländer</h4>
               <p>Sofern wir Daten in einem Drittland (d.h.
@@ -108,10 +171,9 @@
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="rechte">
             <div class="colored-container" style="margin-bottom: 1em">
-              <h4>Rechte
-                der betroffenen Personen</h4>
+              <h4>Rechte der betroffenen Personen</h4>
               <p>Sie haben das Recht, eine Bestätigung darüber zu verlangen, ob
                 betreffende Daten verarbeitet werden und auf Auskunft über diese Daten sowie auf weitere
                 Informationen und Kopie der Daten entsprechend Art. 15 DSGVO.<br>
@@ -135,7 +197,7 @@
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="widerrufsrecht">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Widerrufsrecht</h4>
               <p>Sie haben das Recht, erteilte
@@ -143,21 +205,17 @@
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="widerspruchsrecht">
             <div class="colored-container" style="margin-bottom: 1em">
-              <h4>
-                Widerspruchsrecht</h4>
+              <h4>Widerspruchsrecht</h4>
               <p>Sie können der künftigen Verarbeitung der Sie betreffenden Daten nach
-                Maßgabe des Art. 21 DSGVO jederzeit widersprechen. Der Widerspruch kann insbesondere
-                gegen
-                die Verarbeitung für Zwecke der Direktwerbung erfolgen.
+                Maßgabe des Art. 21 DSGVO jederzeit widersprechen.
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="cookies">
             <div class="colored-container" style="margin-bottom: 1em">
-              <h4>Cookies und Widerspruchsrecht bei
-                Direktwerbung</h4>
+              <h4>Cookies und Widerspruchsrecht</h4>
               <p>Als „Cookies“ werden kleine Dateien bezeichnet, die auf Rechnern der
                 Nutzer gespeichert werden. Innerhalb der Cookies können unterschiedliche Angaben
                 gespeichert
@@ -182,7 +240,7 @@
                 <br>
                 Wir können temporäre und permanente Cookies einsetzen und klären hierüber im Rahmen
                 unserer
-                Datenschutzerklärung auf:<br>
+                Datenschutzerklärung auf:</p><br>
               <ul>
                 <li>
                   CSRF-Token (Session-Cookie), womit das Kontaktformular vor unbeobachtetem Abschicken von Inhalten
@@ -198,67 +256,71 @@
                   müssen Sie sich beim nächsten Besuch der Seite erneut einloggen.
                 </li>
                 <li>
-                  UI-Cookies (persistenter Cookie), welche Aktionen im Browserfenster gespeichert haben. Dazu zählt:
+                  Cookies für das UI (persistente Cookies), welche Aktionen im Browserfenster gespeichert haben. Dazu
+                  zählt:
                   <ol>
                     <li>dass Sie die Warnung zum Wechseln der Sprache gesehen haben,</li>
                     <li>dass Sie den allgemeinen Hinweis zum Datenschutz gesehen und akzeptiert haben,</li>
-                    <li>dass Sie am Anfang einer Diskussion das Tutorial gesehen haben. Diese Cookies beinhaltet keinerlei sensiblen Informationen, sondern lediglich Warheitswerte wir "falsch" oder "richtig".</li>
+                    <li>dass Sie am Anfang einer Diskussion das Tutorial gesehen haben. Diese Cookies beinhaltet
+                      keinerlei sensiblen Informationen, sondern lediglich Warheitswerte wir "falsch" oder "richtig".
+                    </li>
                   </ol>
                 </li>
               </ul>
               <br>
-              Falls die Nutzer nicht möchten, dass Cookies auf ihrem Rechner gespeichert werden,
-              werden
-              sie gebeten die entsprechende Option in den Systemeinstellungen ihres Browsers zu
-              deaktivieren. Gespeicherte Cookies können in den Systemeinstellungen des Browsers
-              gelöscht
-              werden. Der Ausschluss von Cookies kann zu Funktionseinschränkungen dieses
-              Onlineangebotes
-              führen.<br>
-              <br>
-              Ein genereller Widerspruch gegen den Einsatz der zu Zwecken des Onlinemarketing
-              eingesetzten
-              Cookies kann bei einer Vielzahl der Dienste, vor allem im Fall des Trackings, über die
-              US-amerikanische Seite <a href="http://www.aboutads.info/choices/">http://www.aboutads.info/choices/</a>
-              oder die EU-Seite <a href="http://www.youronlinechoices.com/">http://www.youronlinechoices.com/</a>
-              erklärt werden. Des Weiteren kann die Speicherung von Cookies mittels deren Abschaltung
-              in
-              den Einstellungen des Browsers erreicht werden. Bitte beachten Sie, dass dann
-              gegebenenfalls
-              nicht alle Funktionen dieses Onlineangebotes genutzt werden können.</p>
+              <p>
+                Falls die Nutzer nicht möchten, dass Cookies auf ihrem Rechner gespeichert werden,
+                werden
+                sie gebeten die entsprechende Option in den Systemeinstellungen ihres Browsers zu
+                deaktivieren. Gespeicherte Cookies können in den Systemeinstellungen des Browsers
+                gelöscht
+                werden. Der Ausschluss von Cookies kann zu Funktionseinschränkungen dieses
+                Onlineangebotes
+                führen.<br>
+                <br>
+                Ein genereller Widerspruch gegen den Einsatz der zu Zwecken des Onlinemarketing
+                eingesetzten
+                Cookies kann bei einer Vielzahl der Dienste, vor allem im Fall des Trackings, über die
+                US-amerikanische Seite <a href="http://www.aboutads.info/choices/">http://www.aboutads.info/choices/</a>
+                oder die EU-Seite <a href="http://www.youronlinechoices.com/">http://www.youronlinechoices.com/</a>
+                erklärt werden. Des Weiteren kann die Speicherung von Cookies mittels deren Abschaltung
+                in
+                den Einstellungen des Browsers erreicht werden. Bitte beachten Sie, dass dann
+                gegebenenfalls
+                nicht alle Funktionen dieses Onlineangebotes genutzt werden können.</p>
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="löschung">
             <div class="colored-container" style="margin-bottom: 1em">
-              <h4>Löschung von
-                Daten</h4>Die von uns verarbeiteten Daten werden nach Maßgabe der Art. 17 und 18 DSGVO
-              gelöscht oder in ihrer Verarbeitung eingeschränkt. Sofern nicht im Rahmen dieser
-              Datenschutzerklärung ausdrücklich angegeben, werden die bei uns gespeicherten Daten
-              gelöscht, sobald sie für ihre Zweckbestimmung nicht mehr erforderlich sind und der Löschung
-              keine gesetzlichen Aufbewahrungspflichten entgegenstehen. Sofern die Daten nicht gelöscht
-              werden, weil sie für andere und gesetzlich zulässige Zwecke erforderlich sind, wird deren
-              Verarbeitung eingeschränkt. D.h. die Daten werden gesperrt und nicht für andere Zwecke
-              verarbeitet. Das gilt z.B. für Daten, die aus handels- oder steuerrechtlichen Gründen
-              aufbewahrt werden müssen.<br>
-              <br>
-              Nach gesetzlichen Vorgaben in Deutschland erfolgt die Aufbewahrung insbesondere für 6 Jahre
-              gemäß § 257 Abs. 1 HGB (Handelsbücher, Inventare, Eröffnungsbilanzen, Jahresabschlüsse,
-              Handelsbriefe, Buchungsbelege, etc.) sowie für 10 Jahre gemäß § 147 Abs. 1 AO (Bücher,
-              Aufzeichnungen, Lageberichte, Buchungsbelege, Handels- und Geschäftsbriefe, Für Besteuerung
-              relevante Unterlagen, etc.). <br>
-              <br>
-              Nach gesetzlichen Vorgaben in Österreich erfolgt die Aufbewahrung insbesondere für 7 J gemäß
-              § 132 Abs. 1 BAO (Buchhaltungsunterlagen, Belege/Rechnungen, Konten, Belege,
-              Geschäftspapiere, Aufstellung der Einnahmen und Ausgaben, etc.), für 22 Jahre im
-              Zusammenhang mit Grundstücken und für 10 Jahre bei Unterlagen im Zusammenhang mit
-              elektronisch erbrachten Leistungen, Telekommunikations-, Rundfunk- und Fernsehleistungen,
-              die an Nichtunternehmer in EU-Mitgliedstaaten erbracht werden und für die der
-              Mini-One-Stop-Shop (MOSS) in Anspruch genommen wird.
+              <h4>Löschung von Daten</h4>
+              <p>Die von uns verarbeiteten Daten werden nach Maßgabe der Art. 17 und 18 DSGVO
+                gelöscht oder in ihrer Verarbeitung eingeschränkt. Sofern nicht im Rahmen dieser
+                Datenschutzerklärung ausdrücklich angegeben, werden die bei uns gespeicherten Daten
+                gelöscht, sobald sie für ihre Zweckbestimmung nicht mehr erforderlich sind und der Löschung
+                keine gesetzlichen Aufbewahrungspflichten entgegenstehen. Sofern die Daten nicht gelöscht
+                werden, weil sie für andere und gesetzlich zulässige Zwecke erforderlich sind, wird deren
+                Verarbeitung eingeschränkt. D.h. die Daten werden gesperrt und nicht für andere Zwecke
+                verarbeitet. Das gilt z.B. für Daten, die aus handels- oder steuerrechtlichen Gründen
+                aufbewahrt werden müssen.<br>
+                <br>
+                Nach gesetzlichen Vorgaben in Deutschland erfolgt die Aufbewahrung insbesondere für 6 Jahre
+                gemäß § 257 Abs. 1 HGB (Handelsbücher, Inventare, Eröffnungsbilanzen, Jahresabschlüsse,
+                Handelsbriefe, Buchungsbelege, etc.) sowie für 10 Jahre gemäß § 147 Abs. 1 AO (Bücher,
+                Aufzeichnungen, Lageberichte, Buchungsbelege, Handels- und Geschäftsbriefe, Für Besteuerung
+                relevante Unterlagen, etc.). <br>
+                <br>
+                Nach gesetzlichen Vorgaben in Österreich erfolgt die Aufbewahrung insbesondere für 7 J gemäß
+                § 132 Abs. 1 BAO (Buchhaltungsunterlagen, Belege/Rechnungen, Konten, Belege,
+                Geschäftspapiere, Aufstellung der Einnahmen und Ausgaben, etc.), für 22 Jahre im
+                Zusammenhang mit Grundstücken und für 10 Jahre bei Unterlagen im Zusammenhang mit
+                elektronisch erbrachten Leistungen, Telekommunikations-, Rundfunk- und Fernsehleistungen,
+                die an Nichtunternehmer in EU-Mitgliedstaaten erbracht werden und für die der
+                Mini-One-Stop-Shop (MOSS) in Anspruch genommen wird.</p>
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="erhebung">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Erhebung von Zugriffsdaten und
                 Logfiles</h4>
@@ -268,7 +330,9 @@
                 Name der abgerufenen Webseite, Datei, Datum und Uhrzeit des Abrufs, übertragene
                 Datenmenge, Browsertyp nebst Version, das
                 Betriebssystem des Nutzers, Referrer URL (die zuvor besuchte Seite), IP-Adresse und der
-                anfragende Provider. Die IP-Adresse wird dabei maskiert, sodass eine genaue Zurückverfolgung zu keinem Zeitpunkt möglich ist.<br>
+                anfragende Provider. Die IP-Adresse wird dabei maskiert, sodass eine genaue Zurückverfolgung oder
+                verknüpfung mit direkte Aktionen auf der Website zu keinem
+                Zeitpunkt möglich ist.<br>
                 <br>
                 Logfile-Informationen werden aus Sicherheitsgründen (z.B. zur Aufklärung von
                 Missbrauchs- oder Betrugshandlungen) für die Dauer von maximal 7 Tagen gespeichert und
@@ -278,7 +342,7 @@
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="registrierfunktion">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Registrierfunktion</h4>
               <p>Nutzer können optional ein Nutzerkonto anlegen. Im Rahmen der Registrierung werden die
@@ -294,16 +358,17 @@
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="kontaktaufnahme">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Kontaktaufnahme</h4>
               <p>Bei der Kontaktaufnahme mit uns werden die Angaben des Nutzers zur Bearbeitung der Kontaktanfrage und
-                deren Abwicklung gem. Art. 6 Abs. 1 lit. b) DSGVO verarbeitet. Kontakt können Sie zu uns zu jeder Zeit via Mail <a href="mailto:dbas@cs.uni-duesseldorf.de">dbas@cs.uni-duesseldorf.de</a> aufnehmen.<br>
+                deren Abwicklung gem. Art. 6 Abs. 1 lit. b) DSGVO verarbeitet. Kontakt können Sie zu uns zu jeder Zeit
+                via Mail <a href="mailto:dbas@cs.uni-duesseldorf.de">dbas@cs.uni-duesseldorf.de</a> aufnehmen.<br>
               </p>
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="kommentare">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Kommentare und Beiträge</h4>
               <p>Wenn Nutzer Kommentare oder sonstige Beiträge hinterlassen, werden ihre IP-Adressen auf
@@ -315,7 +380,7 @@
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="abruf">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Abruf von Profilbildern bei Gravatar</h4>
               <p>Wir setzen innerhalb unseres Onlineangebotes und insbesondere im Blog den Dienst
@@ -334,8 +399,10 @@
                 Die Nutzung von Gravatar erfolgt auf Grundlage unserer berechtigten Interessen im Sinne
                 des Art. 6 Abs. 1 lit. f) DSGVO, da wir mit Hilfe von Gravatar den Beitrags- und
                 Kommentarverfassern die Möglichkeit bieten ihre Beiträge mit einem Profilbild zu
-                personalisieren. Dies ist notwendig für die Forschung im Bereich dialogbasierter Diskussionen vom Lehrstuhl Rechnernetze der Heinrich-Heine-Universität Düsseldorf, welcher die Software veröf                Erforderlichkeit alle zwei Jahre; Ferner gelten die gesetzlichen Archivierungspflichten.
-fentlich hat.<br>
+                personalisieren. Dies ist notwendig für die Forschung im Bereich dialogbasierter Diskussionen vom
+                Lehrstuhl Rechnernetze der Heinrich-Heine-Universität Düsseldorf, welcher die Software veröf
+                Erforderlichkeit alle zwei Jahre; Ferner gelten die gesetzlichen Archivierungspflichten.
+                fentlich hat.<br>
                 <br>
                 Automattic ist unter dem Privacy-Shield-Abkommen zertifiziert und bietet hierdurch eine
                 Garantie, das europäische Datenschutzrecht einzuhalten (<a
@@ -356,24 +423,29 @@ fentlich hat.<br>
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="reichweitenmessung">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Reichweitenmessung mit Matomo</h4>
-              <p>Im Rahmen der Reichweitenanalyse von Matomo werden auf Grundlage unserer berechtigten
-                Interessen (d.h. Interesse an der Analyse, Optimierung und wirtschaftlichem Betrieb
-                unseres Onlineangebotes im Sinne des Art. 6 Abs. 1 lit. f. DSGVO) die folgenden Daten
-                verarbeittet: der von Ihnen verwendete Browsertyp und die Browserversion, das von Ihnen
-                verwendete Betriebssystem, Ihr Herkunftsland, Datum und Uhrzeit der Serveranfrage, die
-                Anzahl der Besuche, Ihre Verweildauer auf der Website sowie die von Ihnen betätigten
-                externen Links. Die IP-Adresse der Nutzer wird anonymisiert, bevor sie gespeichert wird.
-                <br>
-                <br>
-                Matomo verwendet Cookies, die auf dem Computer der Nutzer gespeichert werden und die
-                eine Analyse der Benutzung unseres Onlineangebotes durch die Nutzer ermöglichen. Dabei
-                können aus den verarbeiteten Daten pseudonyme Nutzungsprofile der Nutzer erstellt
-                werden. Die Cookies haben eine Speicherdauer von einer Woche. Die durch das Cookie
-                erzeugten Informationen über Ihre Benutzung dieser Webseite werden nur auf unserem
-                Server gespeichert und nicht an Dritte weitergegeben.<br>
+              <p>Wir nutzen auf unserer Website das Open-Source-Software-Tool Matomo (ehemals PIWIK) zur Analyse des
+                Surfverhaltens unserer Nutzer. Die Software setzt ein <a href="#cookies" class="js-scroll-trigger">Cookie</a>
+                auf dem Rechner der Nutzer. Werden Einzelseiten unserer Website aufgerufen, so werden folgende Daten
+                gespeichert:</p>
+              <ol>
+                <li>Zwei Bytes der IP-Adresse des aufrufenden Systems des Nutzers</li>
+                <li>Die aufgerufene Webseite</li>
+                <li>Die Website, von der der Nutzer auf die aufgerufene Webseite gelangt ist (Referrer)</li>
+                <li>Die Unterseiten, die von der aufgerufenen Webseite aus aufgerufen werden</li>
+                <li>Die Verweildauer auf der Webseite</li>
+                <li>Die Häufigkeit des Aufrufs der Webseite</li>
+              </ol>
+              <p>
+                Die Software läuft dabei ausschließlich auf den Servern unserer Webseite. Eine Speicherung der
+                personenbezogenen Daten der Nutzer findet nur dort statt. Eine Weitergabe der Daten an Dritte erfolgt
+                nicht. <br>
+                <br>Die Software ist so eingestellt, dass die IP-Adressen nicht vollständig gespeichert werden, sondern
+                2
+                Bytes der IP-Adresse maskiert werden (Bsp.: 192.168.xxx.xxx). Auf diese Weise ist eine Zuordnung der
+                gekürzten IP-Adresse zum aufrufenden Rechner nicht mehr möglich.<br>
                 <br>
                 Nutzer können der anonymisierten Datenerhebung durch das Programm Matomo jederzeit mit
                 Wirkung für die Zukunft widersprechen, indem sie auf den untenstehenden Link klicken. In
@@ -382,12 +454,14 @@ fentlich hat.<br>
                 hat dies jedoch zur Folge, dass auch das Opt-Out-Cookie gelöscht wird und daher von den
                 Nutzern erneut aktiviert werden muss.<br>
                 <br>
+                Die Daten werden gelöscht, sobald sie für unsere Aufzeichnungszwecke nicht mehr benötigt werden, spätestens nach 28 Tagen<br>
+                <br>
                 Die Einstellungen zu Matomo können Sie <a href="/imprint">hier</a> ändern.
               </p>
             </div>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-offset-1 col-md-10" id="google">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Google Fonts</h4>
               <p class="ts-muster-content">Wir binden die Schriftarten ("Google Fonts") des Anbieters

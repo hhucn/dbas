@@ -17,7 +17,7 @@ from dbas.handler import user
 from dbas.handler.issue import rep_limit_to_open_issues
 from dbas.handler.notification import count_of_new_notifications, get_box_for
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode, \
-    nick_of_anonymous_user
+    nick_of_anonymous_user, get_global_url
 from dbas.logger import logger
 from dbas.review.helper.queues import get_complete_review_count
 from dbas.review.helper.queues import get_count_of_all
@@ -116,6 +116,7 @@ class DictionaryHelper(object):
             is_logged_in = False
 
         return_dict = dict()
+        return_dict['url'] = get_global_url()
         return_dict['year'] = datetime.datetime.now().year
         return_dict['restart_url'] = current_slug
         return_dict['is_in_discussion'] = 'discuss' in path

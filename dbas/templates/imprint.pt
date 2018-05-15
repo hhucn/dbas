@@ -20,22 +20,17 @@
                             <h4><span i18n:translate="imprint">Impressum</span> ${project}</h4>
                             <p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
                             <h5 i18n:translate="contact">Kontakt:</h5>
-                            <a tal:condition="not:extras.lang_is_en"
-                                    href="http://www.tsn.hhu.de/ourgroup/scientists/tobias-krauthoff.html"
-                                    target="_blank">Tobias Krauthoff</a>
-                            <a tal:condition="extras.lang_is_en"
-                                    href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html"
-                                    target="_blank">Tobias Krauthoff</a>
-                            <br><span i18n:translate="department">Institut für Informatik</span>
+                            <span i18n:translate="department_of_cs">Institut für Informatik</span>
+                            <br><span i18n:translate="chair_of_cn">Lehrstuhl für Rechnernetze</span>
                             <br><span>Universitätstraße 1</span>
                             <br><span>40225 Düsseldorf</span>
                             <br>
-                            <br><span i18n:translate="phone">Telefon:</span> <span>0211-8113461</span>
                             <br><span>E-Mail: </span><a target="_blank" href='mailto:dbas@cs.uni-duesseldorf.de'>dbas@cs.uni-duesseldorf.de</a>
                             <br>
                             <br>
-                            <span i18n:translate="weiteres im">Weiteres im </span>
-                            <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html"><span i18n:translate="imprint_hhu">Impressum der HHU</span></a>
+                            <span i18n:translate="weiteres im">Weiteres im</span>
+                            <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html" i18n:translate="imprint_hhu">Impressum der HHU</a>,
+                            <a href="/privacy_policy" i18n:translate="our_privacy">unserer Datenschutzerklärung</a>
                             <span i18n:translate="or_checkout_the">or checkout the</span> <a
                                 href="https://github.com/hhucn/dbas/blob/master/LICENSE"
                                 target="_blank" i18n:translate="licence_dbas">license of D-BAS (MIT)</a>.
@@ -66,8 +61,7 @@
                                                 Button</a>
                                         </li>
                                         <li>
-                                            <a target="_blank" href="https://bootswatch.com/paper/">Bootswatch Paper
-                                                Theme</a>
+                                            <a target="_blank" href="https://bootswatch.com/">Bootswatch  Theme</a>
                                         </li>
                                         <li>
                                             <a target="_blank" href="http://bootstraptour.com/">Bootstrap Tour</a>
