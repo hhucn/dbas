@@ -798,8 +798,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function setRectProperties() {
         rect.each(function (d) {
-            var width = 0; // element.width() + 24;
-            var height = 0; // element.height() + 10;
+            // var row_count = $("#label-" + d.id + " [x='0']").length;
+            var width = 0; // 140;
+            var height = 0; // row_count * emToPx(1.2) + 10;
             var pos = calculateRectPos(width, height);
 
             // if d is a virtual node do not show label

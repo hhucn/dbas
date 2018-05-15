@@ -10,7 +10,7 @@
  */
 function setLinkActive(linkname) {
     'use strict';
-
+    
     $('#navbar-right').find('>li').each(function () {
         $(this).removeClass('active');
     });
@@ -22,20 +22,20 @@ function setLinkActive(linkname) {
  */
 function addBorderToActiveNavbar() {
     'use strict';
-
+    
     var activeElement = $('.navbar-right > .active');
     if (activeElement.length === 0) {
         return;
     }
     var borderSize = '2';
-
+    
     // replace padding of the inner element
     var innerElement = activeElement.find('a');
     var padTop = parseInt(innerElement.css('padding-top').replace('px', ''));
     var padBottom = parseInt(innerElement.css('padding-bottom').replace('px', ''));
     innerElement.css('padding-top', (padTop - borderSize / 2) + 'px');
     innerElement.css('padding-bottom', (padBottom - borderSize / 2) + 'px');
-
+    
     // add border to the navbar element
     activeElement.css('border-top', borderSize + 'px solid #2196F3');
 }
@@ -45,13 +45,13 @@ function addBorderToActiveNavbar() {
  */
 function setGravatarFallback() {
     'use strict';
-
+    
     var body = $('body');
     var img = body.find('.img-circle');
     if (img.length === 0) {
         return true;
     }
-
+    
     var src = body.find('.img-circle')[0].src;
     $.get(src, function () {
         replaceGravtarWithDefaultImage(true);
@@ -66,7 +66,7 @@ function setGravatarFallback() {
  */
 function replaceGravtarWithDefaultImage(onlyOnError) {
     'use strict';
-
+    
     $('body').find('.img-circle').each(function () {
         var icons =
             [{
@@ -79,7 +79,7 @@ function replaceGravtarWithDefaultImage(onlyOnError) {
         var t = 3;
         var no = Math.floor(Math.random() * icons[t].length);
         var src = mainpage + 'static/images/fallback-' + icons[t].name + '/' + no + '.svg';
-
+        
         if (onlyOnError) {
             $(this).attr('onerror', 'this.src="' + src + '"');
         } else {
@@ -102,7 +102,7 @@ function replaceGravtarWithDefaultImage(onlyOnError) {
  */
 function displayConfirmationDialog(titleText, bodyText, functionForAccept, functionForRefuse, smallDialog) {
     'use strict';
-
+    
     // display dialog
     var dialog = $('#' + popupConfirmDialogId);
     dialog.find('#confirm-dialog-accept-btn').show();
@@ -133,7 +133,7 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
         // unload buttons
         $('#' + popupConfirmDialogAcceptBtn).off('click');
         $('#' + popupConfirmDialogRefuseBtn).off('click');
-
+        
     });
 }
 
@@ -145,7 +145,7 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
  */
 function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) {
     'use strict';
-
+    
     // display dialog
     $('#' + popupConfirmDialogId).modal('show');
     $('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
@@ -166,7 +166,7 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
  */
 function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
     'use strict';
-
+    
     // display dialog only if the cookie was not set yet
     if (Cookies.get(WARNING_CHANGE_DISCUSSION_POPUP)) {
         window.location.href = functionForAccept;
@@ -181,13 +181,13 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
             if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
                 Cookies.set(WARNING_CHANGE_DISCUSSION_POPUP, true, {expires: 7});
             }
-
+            
             if (isRestartingDiscussion) {
                 window.location.href = functionForAccept;
             } else {
                 functionForAccept();
             }
-
+            
         });
         $('#' + popupConfirmChecbkoxDialogRefuseBtn).click(function () {
             $('#' + popupConfirmChecbkoxDialogId).modal('hide');
@@ -201,9 +201,33 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
  */
 function setAnalyticsOptOutLink(lang) {
     'use strict';
-
+    
     var src = mainpage + 'analytics/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
     $('#analytics-opt-out-iframe').attr('src', src);
+}
+
+function setScrollTrigger() {
+    'use strict';
+    // Smooth scrolling using jQuery easing by https://css-tricks.com/snippets/jquery/smooth-scrolling/
+    $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
+        if (location.pathname.replace(/^\//, '') === this.pathname.replace(/^\//, '') && location.hostname === this.hostname) {
+            var target = $(this.hash);
+            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+            if (target.length) { // Does a scroll target exist?
+                event.preventDefault(); // Only prevent default if animation is actually gonna happen
+                $('html, body').animate({
+                    scrollTop: target.offset().top - 50
+                }, 1000, function () {
+                    $(target).focus();
+                    if ($(target).is(":focus")) { // Checking if the target was focused
+                        return false;
+                    }
+                    $(target).attr('tabindex', '-1'); // Adding tabindex for elements not focusable
+                    $(target).focus(); // Set focus again
+                });
+            }
+        }
+    });
 }
 
 /**
@@ -211,7 +235,7 @@ function setAnalyticsOptOutLink(lang) {
  */
 function setEasterEggs() {
     'use strict';
-
+    
     $('#roundhousekick').click(function () {
         new AjaxMainHandler().roundhouseKick();
     });
@@ -251,10 +275,10 @@ function fillCaptcha() {
  */
 function prepareLoginRegistrationPopup() {
     'use strict';
-
+    
     // hide on startup
     new PopupHandler().hideExtraViewsOfLoginPopup();
-
+    
     // switching tabs
     $('.tab-login a').on('click', function (e) {
         e.preventDefault();
@@ -263,7 +287,7 @@ function prepareLoginRegistrationPopup() {
         var target = $(this).attr('href');
         $('.tab-content > div').not(target).hide();
         $(target).fadeIn(600);
-
+        
         if ($(this).attr('href').indexOf('signup') === -1) {
             $('#' + popupLoginButtonLogin).show();
             $('#' + popupLoginButtonRegister).hide();
@@ -273,21 +297,15 @@ function prepareLoginRegistrationPopup() {
             fillCaptcha();
         }
     });
-
+    
     $('#' + popupLoginButtonLogin).show().click(function () {
         new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
-        Cookies.set(DATA_DISCLAIMER, true, {expires: 180});
     }).keypress(function (e) {
         if (e.which === 13) {
             new AjaxMainHandler().registration();
         }
     });
-
-    // data disclaimer
-    if (Cookies.get(DATA_DISCLAIMER) === 'true') {
-        $('#dbas-login-data-disclaimer').hide();
-    }
-
+    
     $('#' + popupLoginForgotPasswordText).click(function () {
         var body = $('#' + popupLoginForgotPasswordBody);
         if (body.is(':visible')) {
@@ -301,13 +319,13 @@ function prepareLoginRegistrationPopup() {
             $('#' + popupLoginForgotPasswordText).text(_t(hidePasswordRequest));
         }
     });
-
+    
     $('#' + popupLoginCloseButton1 + ',#' + popupLoginCloseButton2).click(function () {
         new PopupHandler().hideExtraViewsOfLoginPopup();
         $('#' + popupLogin).modal('hide');
         $('#' + popupLoginButtonLogin).show();
     });
-
+    
     $('#' + popupLoginButtonRegister).click(function () {
         var userfirstname = $('#' + popupLoginUserfirstnameInputId).val();
         var userlastname = $('#' + popupLoginUserlastnameInputId).val();
@@ -320,7 +338,7 @@ function prepareLoginRegistrationPopup() {
         var fields = [userfirstname, userlastname, nick, email, password, passwordconfirm];
         var tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail), _t(checkPassword),
             _t(checkConfirmation), _t(checkPasswordConfirm)];
-
+        
         // check all fields for obivous errors
         for (i = 0; i < fields.length; i++) {
             if (!fields[i] || /^\s*$/.test(fields[i]) || 0 === fields[i].length) {
@@ -328,7 +346,7 @@ function prepareLoginRegistrationPopup() {
                 break;
             }
         }
-
+        
         if (text === '') {
             $('#' + popupLoginWarningMessage).hide();
             new AjaxMainHandler().registration();
@@ -336,9 +354,9 @@ function prepareLoginRegistrationPopup() {
             $('#' + popupLoginWarningMessage).fadeIn("slow");
             $('#' + popupLoginWarningMessageText).text(text);
         }
-
+        
     });
-
+    
     // bind enter key
     var enterKey = 13;
     [
@@ -346,7 +364,7 @@ function prepareLoginRegistrationPopup() {
         '#' + loginPwId,
         '#admin-login-user',
         '#admin-login-pw'
-    ].forEach(function(id) {
+    ].forEach(function (id) {
         $(id).keypress(function (e) {
             if (e.which === enterKey) {
                 new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
@@ -359,14 +377,14 @@ function prepareLoginRegistrationPopup() {
         '#' + popupLoginUserlastnameInputId,
         '#' + popupLoginEmailInputId,
         '#' + popupLoginPasswordconfirmInputId
-    ].forEach(function(id) {
+    ].forEach(function (id) {
         $(id).keypress(function (e) {
             if (e.which === enterKey) {
                 new AjaxMainHandler().registration();
             }
         });
     });
-
+    
     $('#' + popupLoginButtonRequest).click(function () {
         new AjaxMainHandler().passwordRequest();
     });
@@ -379,7 +397,7 @@ function prepareLoginRegistrationPopup() {
  */
 function setTextWatcherInputLength(element, displayAtTop) {
     'use strict';
-
+    
     var minLength = element.data('min-length');
     var maxLength = element.data('max-length');
     if (!maxLength) {
@@ -393,11 +411,11 @@ function setTextWatcherInputLength(element, displayAtTop) {
     } else {
         field.insertAfter(element);
     }
-
+    
     element.keyup(function () {
         var text = element.val().trim();
         var currentLength = text.length;
-
+        
         if (currentLength === 0) {
             field.addClass('text-info');
             field.removeClass('text-danger');
@@ -431,7 +449,7 @@ function setTextWatcherInputLength(element, displayAtTop) {
  */
 function setGlobalErrorHandler(heading, body) {
     'use strict';
-
+    
     $('#' + requestFailedContainer).fadeIn();
     $('#' + requestFailedContainerClose).click(function () {
         $('#' + requestFailedContainer).fadeOut();
@@ -451,7 +469,7 @@ function setGlobalErrorHandler(heading, body) {
  */
 function setGlobalSuccessHandler(heading, body) {
     'use strict';
-
+    
     $('#' + requestSuccessContainer).fadeIn();
     $('#' + requestSuccessContainerClose).click(function () {
         $('#' + requestSuccessContainer).fadeOut();
@@ -471,7 +489,7 @@ function setGlobalSuccessHandler(heading, body) {
  */
 function setGlobalInfoHandler(heading, body) {
     'use strict';
-
+    
     $('#' + requestInfoContainer).fadeIn();
     $('#' + requestInfoContainerClose).click(function () {
         $('#' + requestInfoContainer).fadeOut();
@@ -489,7 +507,7 @@ function setGlobalInfoHandler(heading, body) {
  */
 function decodeString(encodedString) {
     'use strict';
-
+    
     return decodeURIComponent(encodedString);
 }
 
@@ -529,14 +547,14 @@ function callbackIfDoneForLogin(data, showGlobalError) {
  */
 function callbackIfDoneForRegistration(data) {
     'use strict';
-
+    
     var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
     var failed = $('#' + popupLoginRegistrationFailed);
     var info = $('#' + popupLoginRegistrationInfo);
     success.hide();
     failed.hide();
     info.hide();
-
+    
     if (data.success.length > 0) {
         // trigger click
         $('a[href="#login"]').trigger('click');
@@ -560,14 +578,14 @@ function callbackIfDoneForRegistration(data) {
  */
 function callbackIfDoneForRegistrationViaOauth(data) {
     'use strict';
-
+    
     var success = $('#' + popupLoginSuccess);
     var failed = $('#popup-complete-login-failed');
     var info = $('#popup-complete-login-info');
     success.hide();
     info.hide();
     failed.hide();
-
+    
     if ('success' in data && data.success.length > 0) {
         $('#popup-complete-login').modal('hide');
         $('#popup-login').modal('show');
@@ -592,7 +610,7 @@ function callbackIfDoneForRegistrationViaOauth(data) {
  */
 function callbackIfDoneForPasswordRequest(data) {
     'use strict';
-
+    
     var success = $('#' + popupLoginSuccess);
     var failed = $('#' + popupLoginFailed);
     var info = $('#' + popupLoginInfo);
@@ -615,7 +633,7 @@ function callbackIfDoneForPasswordRequest(data) {
 // *********************
 $(document).ready(function () {
     'use strict';
-
+    
     // ajax loading animation
     var timer;
     $(document).on({
@@ -630,13 +648,14 @@ $(document).ready(function () {
             $('body').removeClass('loading');
         }
     });
-
+    
     var path = window.location.href;
     var lang = $('#hidden_language').val();
-
+    
     setAnalyticsOptOutLink(lang);
     setEasterEggs();
     setGravatarFallback();
+    setScrollTrigger();
     setTimeout(function () {
         addBorderToActiveNavbar();
     }, 150);
@@ -647,7 +666,7 @@ $(document).ready(function () {
     if (counter.length > 0) {
         counter.counterUp({delay: 5, time: 1000});
     }
-
+    
     // set current file to active
     if (path.indexOf(urlContact) !== -1) {
         setLinkActive('#' + contactLink);
@@ -667,10 +686,10 @@ $(document).ready(function () {
     else {
         setLinkActive('');
     }
-
+    
     // gui preparation
     prepareLoginRegistrationPopup();
-
+    
     // add minimal text length field
     $('input[data-min-length]').each(function () {
         setTextWatcherInputLength($(this), false);
@@ -678,25 +697,25 @@ $(document).ready(function () {
     $('textarea[data-min-length]').each(function () {
         setTextWatcherInputLength($(this), false);
     });
-
+    
     // session expired popup
     if ($('#' + sessionExpiredContainer).length === 1) {
         setTimeout(function () {
             $('#' + sessionExpiredContainer).fadeOut();
         }, 3000);
     }
-
+    
     // start guided tour, if the cookie is not set
     var href = window.location.href;
     var index = href.indexOf('/discuss/');
     if (!Cookies.get(GUIDED_TOUR) && index !== -1 && href.length > index + '/discuss/'.length + 1) {
         new GuidedTour().start();
     }
-
+    
     $('#contact_on_error').click(function () {
         window.location.href = $('#contact-link').find('a').attr('href');
     });
-
+    
     // language switch
     $('#' + translationLinkDe).click(function () {
         new GuiHandler().lang_switch('de');
@@ -714,7 +733,7 @@ $(document).ready(function () {
         e.preventDefault();
         new AjaxMainHandler().logout();
     });
-
+    
     $(window).scroll(function () {
         if ($(document).scrollTop() > 50) {
             $('nav').addClass('shrink');
