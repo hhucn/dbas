@@ -61,12 +61,15 @@ createUser.py
 *.min.js
 production.env
 development.env
+
+# Stuff
 clean.sh
+restorePostgres.sh
+graphviz*
 
 # node
 node_modules/
 /builds/
-restorePostgres.sh
 
 # DB Files
 docker/db/entrypoint/.*.sql
