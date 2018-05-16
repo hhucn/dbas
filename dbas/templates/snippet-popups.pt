@@ -376,42 +376,15 @@
                   Close
                 </button>
               </div>
-              <div class="center" tal:condition="extras.login_btns.oauth_google or extras.login_btns.oauth_facebook or extras.login_btns.oauth_twitter"
-                   style="margin-top: 3.5em;">
-                <hr>
-                <p class="text-center lead">
-                  <span i18n:translate="or_login_via">Or login via</span>:
-                </p>
-                <div class="row text-center" id="popup-login-registration-oauth-buttons">
-                  <a tal:condition="extras.login_btns.oauth_google" class="btn btn-block btn-brand btn-google"
-                                                                    data-service="google">
-                    <img src="${request.static_url('dbas:static/images/btn_google_light_normal.svg')}">
-                    <span>Google</span>
-                  </a>
-                  <a tal:condition="extras.login_btns.oauth_facebook" class="btn btn-block btn-brand btn-facebook"
-                                                                      data-service="facebook">
-                    <span class="fa fa-facebook"></span>
-                    <span>Facebook</span> </a>
-                  <a tal:condition="extras.login_btns.oauth_twitter" class="btn btn-block btn-brand btn-twitter"
-                                                                     data-service="twitter">
-                    <span class="fa fa-twitter"></span>
-                    <span>Twitter</span> </a>
-                  <a tal:condition="extras.login_btns.oauth_github" class="btn btn-block btn-brand btn-github"
-                                                                    data-service="github">
-                    <span class="fa fa-github"></span>
-                    <span>Github</span> </a>
-                </div>
-              </div>
             </div>
             <div id="signup">
 
               <div id="popup-login-registration-field">
-                <p class="center">
-                  <span class="text-info" i18n:translate="never_display_real_name">We will never display your real name to other users!</span>
-                </p>
-                <p class="text-info center" id="popup-login-hhu-text" i18n:translate="have_account_hhu">
-                  If you have a valid account at the HHU, you can directly use the login!
-                </p>
+                <div class="alert alert-dismissible alert-info">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <span i18n:translate="never_display_real_name">We will never display your real name to other users!</span><br>
+                <span i18n:translate="have_account_hhu">If you have a valid account at the HHU, you can directly use the login!</span>
+                </div>
                 <div class="form-group">
                   <label class="col-md-3 control-label" for="userfirstname-input" i18n:translate="first_name">
                     Your First Name</label>
@@ -564,6 +537,31 @@
           <button id="popup-login-close-button1" type="button" class="btn btn-secondary hidden" i18n:translate="close">
             Close
           </button>
+          <div id="popup-login-registration-oauth-footer" class="center" tal:condition="extras.login_btns.oauth_google or extras.login_btns.oauth_facebook or extras.login_btns.oauth_twitter"
+                   style="margin-top: 3.5em;">
+                <p class="text-center lead">
+                  <span i18n:translate="or_login_via">Or login via</span>:
+                </p>
+                <div class="row text-center" id="popup-login-registration-oauth-buttons">
+                  <a tal:condition="extras.login_btns.oauth_google" class="btn btn-block btn-brand btn-google"
+                                                                    data-service="google">
+                    <img src="${request.static_url('dbas:static/images/btn_google_light_normal.svg')}">
+                    <span>Google</span>
+                  </a>
+                  <a tal:condition="extras.login_btns.oauth_facebook" class="btn btn-block btn-brand btn-facebook"
+                                                                      data-service="facebook">
+                    <span class="fa fa-facebook"></span>
+                    <span>Facebook</span> </a>
+                  <a tal:condition="extras.login_btns.oauth_twitter" class="btn btn-block btn-brand btn-twitter"
+                                                                     data-service="twitter">
+                    <span class="fa fa-twitter"></span>
+                    <span>Twitter</span> </a>
+                  <a tal:condition="extras.login_btns.oauth_github" class="btn btn-block btn-brand btn-github"
+                                                                    data-service="github">
+                    <span class="fa fa-github"></span>
+                    <span>Github</span> </a>
+                </div>
+          </div>
         </div>
       </div>
     </div>
