@@ -69,7 +69,7 @@ def valid_notification_recipient(request):
     db_recipient = get_user_by_private_or_public_nickname(recipient_nickname)
 
     if not db_recipient or recipient_nickname == 'admin' or recipient_nickname == nick_of_anonymous_user:
-        add_error(request, 'Recipient not found', _tn.get(_.notLoggedIn))
+        add_error(request, 'Recipient not found', _tn.get(_.recipientNotFound))
         return False
     elif db_author and db_author.uid == db_recipient.uid:
         add_error(request, 'Author and Recipient are the same user', _tn.get(_.senderReceiverSame))
