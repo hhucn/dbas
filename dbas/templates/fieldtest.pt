@@ -39,11 +39,11 @@
                   <li><span i18n:translate="key_fact4">47 flagged statements</span></li>
                 </ul>
                 <span i18n:translate="discussion_can_be_seen">The discussion can be seen</span>
-                <a href="${request.application_url}/discuss/verbesserung-des-informatik-studiengangs"
+                <a href="/discuss/verbesserung-des-informatik-studiengangs"
                    target="_blank" i18n:translate="here">here</a>
                 <span i18n:translate="and_a_translated">and a translated, english version is available</span>
                 <a target="_blank"
-                   href="${request.application_url}/discuss/improve-the-course-of-computer-science-studies" i18n:translate="here">here</a>.
+                   href="/discuss/improve-the-course-of-computer-science-studies" i18n:translate="here">here</a>.
               </div>
             </div>
             <div class="row" style="margin-bottom: 1em">
@@ -70,11 +70,11 @@
                 <a href="http://ceur-ws.org/Vol-2012/AI3-2017_paper_11.pdf" i18n:translate="here">here</a>.
                 <br>
                 <span i18n:translate="findings3">The resulting dump of our PostgreSQL database can be downloaded from our</span>
-                <a href="${request.application_url}/static/data/fieldtest_05_2017.tar.bz2" i18n:translate="server">server</a>
+                <a href="/static/data/fieldtest_05_2017.tar.bz2" i18n:translate="server">server</a>
                 (<span i18n:translate="license_cc_by_nc_sa">License CC BY-NC-SA</span>).
                 <span i18n:translate="the archive contains">The archive contains three versions: the originaldataset of the discussion in German, a dataset which includes some corrections and a translated one.</span>
                 <span i18n:translate="findings4">The translation into an abstract AF can be</span>
-                <a href="${request.application_url}/static/data/fieldtest_05_2017.apx" i18n:translate="fetched to">
+                <a href="/static/data/fieldtest_05_2017.apx" i18n:translate="fetched to">
                   fetched to
                 </a>.
               </div>

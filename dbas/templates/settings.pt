@@ -251,7 +251,7 @@
                                     <tr>
                                         <td>
                                             <span class="lead" i18n:translate="reputation">Reputation</span>
-                                            <a href="${request.application_url}/review/reputation">
+                                            <a href="/review/reputation">
                                                 <i class="fa fa-info-circle"></i>
                                             </a>
                                         </td>

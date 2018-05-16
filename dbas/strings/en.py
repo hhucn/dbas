@@ -129,6 +129,7 @@ en_lang = {
     _.acceptItTitle: 'Accept it...',
     _.acceptIt: 'Accept it...',
     _.asReasonFor: 'as reason for',
+    _.askAFriend: 'Ask a friend',
     _.argument: 'Argument',
     _.attackPosition: 'attack Position',
     _.attackStatement: 'Attack statement',

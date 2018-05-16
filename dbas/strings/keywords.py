@@ -122,6 +122,7 @@ class Keywords(Enum):
     acceptItTitle = 'acceptItTitle'
     acceptIt = 'acceptIt'
     asReasonFor = 'asReasonFor'
+    askAFriend = 'askAFriend'
     argument = 'argument'
     attackPosition = 'attackPosition'
     attackStatement = 'attackStatement'

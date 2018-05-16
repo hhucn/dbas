@@ -29,7 +29,7 @@
           <div class="row" style="margin-bottom: 1em;">
             <div class="col-md-12">
               <ul class="breadcrumb">
-                <li><a href="${request.application_url}/review" i18n:translate="review">Review</a></li>
+                <li><a href="/review" i18n:translate="review">Review</a></li>
                 <li class="active" tal:condition="subpage.button_set.is_delete" i18n:translate="deletes">
                   Deletes
                 </li>
