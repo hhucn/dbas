@@ -52,7 +52,7 @@
               </h6>
               <h6>
                 <span i18n:translate="current_reputation_os">Your current reputation count is</span>:
-                <a href="${request.application_url}/review/reputation">${reputation.count}</a>
+                <a href="/review/reputation">${reputation.count}</a>
               </h6>
             </div>
           </div>

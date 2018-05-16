@@ -96,7 +96,7 @@
            style="margin-left: 0; margin-right: 0;" i18n:translate="find_out_more">
           Find Out More
         </a>
-        <a class="btn btn-default btn-xl" href="${request.application_url}/discuss"
+        <a class="btn btn-default btn-xl" href="/discuss"
            style="margin-left: 0; margin-right: 0;">
           <span class="text-primary" i18n:translate="start_directly">or start directly</span>
         </a>
@@ -121,7 +121,7 @@
           online-discussion. Feel free to try it out now!
         </p>
         <a class="btn btn-default btn-xl js-scroll-trigger"
-           href="${request.application_url}/discuss" i18n:translate="get_started">
+           href="/discuss" i18n:translate="get_started">
           Get Started
         </a>
       </div>
@@ -340,7 +340,7 @@
     <div class="row">
       <div class="col-md-12 text-center">
         <a class="btn btn-default btn-xl js-scroll-trigger"
-           href="${request.application_url}/news">
+           href="/news">
           <span i18n:translate="go_to_news">Go to the news</span>
         </a>
       </div>
