@@ -173,6 +173,10 @@
               <i class="fa fa-search" aria-hidden="true"></i>
               <span class="sidebar-element">${extras.tag.search}</span>
             </li>
+            <li id="sidebar-ask-a-friend" tal:condition="extras.logged_in">
+              <i class="fa fa-users" aria-hidden="true"></i>
+              <span class="sidebar-element">${extras.title.ask_friend}</span>
+            </li>
             <li id="finish-button" onclick="window.location='/discuss/exit'" tal:condition="extras.logged_in">
               <i class="fa fa-sign-out" aria-hidden="true"></i>
               <span class="sidebar-element">${extras.title.finish_title}</span>

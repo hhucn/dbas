@@ -519,6 +519,7 @@ class DictionaryHelper(object):
             'delete_statement': _tn_dis.get(_.deleteStatement),
             'disassociate_statement': _tn_dis.get(_.disassociateStatement),
             'finish_title': _tn_sys.get(_.finishTitle),
+            'ask_friend': _tn_sys.get(_.askAFriend),
             'question_title': _tn_sys.get(_.questionTitle),
             'more_title': _tn_dis.get(_.more),
             'add_statement_row_title': _tn_dis.get(_.addStatementRow),
