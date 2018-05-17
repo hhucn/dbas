@@ -1291,7 +1291,7 @@
             </p>
           </div>
           <p>
-            <span class="icon-badge blue-button" id="popup-reference-add-btn"
+            <span class="icon-badge blue-btn" id="popup-reference-add-btn"
                   style="font-size: 25px; height: 32px; width: 32px;">+</span>
           </p>
         </div>

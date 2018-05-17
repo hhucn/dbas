@@ -68,7 +68,7 @@
           </div>
         </div>
       </div>
-      <span tal:condition="is_author" class="icon-badge blue-button bottom-right" id="icon-add-news">+</span>
+      <span tal:condition="is_author" class="icon-badge blue-btn bottom-right" id="icon-add-news">+</span>
     </div>
 
   </tal:block>
