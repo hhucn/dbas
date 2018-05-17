@@ -1,6 +1,6 @@
 import unittest
 
-import dbas.review.helper.reputation as ReviewReputationHelper
+import dbas.review.reputation as ReviewReputationHelper
 from dbas.strings.translator import Translator
 
 

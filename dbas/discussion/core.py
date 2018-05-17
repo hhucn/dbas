@@ -8,7 +8,7 @@ from dbas.helper.views import handle_justification_statement, handle_justificati
     handle_justification_argument
 from dbas.lib import Attitudes, Relations
 from dbas.logger import logger
-from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
+from dbas.review.reputation import add_reputation_for, rep_reason_first_argument_click
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 

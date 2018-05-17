@@ -1,6 +1,6 @@
-====
-Core
-====
+======================
+Source-Code Docstrings
+======================
 
 Description
 ===========
@@ -171,40 +171,40 @@ Review
 Flag Helper
 ===========
 
-.. automodule:: dbas.review.helper.flags
+.. automodule:: dbas.review.flags
     :members:
 
 
 History Manager
 ===============
 
-.. automodule:: dbas.review.helper.history
+.. automodule:: dbas.review.history
     :members:
 
 
-Main  Manager
-=============
+Opinion Manager
+==============
 
-.. automodule:: dbas.review.helper.main
+.. automodule:: dbas.review.opinions
     :members:
 
 
 Queues Handler
 ==============
 
-.. automodule:: dbas.review.helper.queues
+.. automodule:: dbas.review.queues
     :members:
 
 
 Reputation Helper
 =================
 
-.. automodule:: dbas.review.helper.reputation
+.. automodule:: dbas.review.reputation
     :members:
 
 
 Subpage Manager
 ===============
 
-.. automodule:: dbas.review.helper.subpage
+.. automodule:: dbas.review.subpage
     :members:

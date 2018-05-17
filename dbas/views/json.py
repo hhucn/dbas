@@ -14,10 +14,10 @@ from pyramid.view import view_config
 import dbas.handler.history as history_handler
 import dbas.handler.issue as issue_handler
 import dbas.handler.news as news_handler
-import dbas.review.helper.flags as review_flag_helper
-import dbas.review.helper.history as review_history_helper
-import dbas.review.helper.main as review_main_helper
-import dbas.review.helper.queues as review_queue_helper
+import dbas.review.flags as review_flag_helper
+import dbas.review.history as review_history_helper
+import dbas.review.opinions
+import dbas.review.queues as review_queue_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_json_data, __refresh_headers_and_url
 from dbas.database import DBDiscussionSession
@@ -916,7 +916,7 @@ def review_delete_argument(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    review_main_helper.add_review_opinion_for_delete(db_user, main_page, db_review, should_delete, _t)
+    dbas.review.opinions.add_review_opinion_for_delete(db_user, main_page, db_review, should_delete, _t)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'deletes')
     return True
 
@@ -938,7 +938,7 @@ def review_edit_argument(request):
     main_page = request.application_url
 
     _t = Translator(ui_locales)
-    review_main_helper.add_review_opinion_for_edit(db_user, main_page, db_review, is_edit_okay, _t)
+    dbas.review.opinions.add_review_opinion_for_edit(db_user, main_page, db_review, is_edit_okay, _t)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'edits')
     return True
 
@@ -960,7 +960,7 @@ def review_duplicate_statement(request):
     main_page = request.application_url
 
     _t = Translator(ui_locales)
-    review_main_helper.add_review_opinion_for_duplicate(db_user, main_page, db_review, is_duplicate, _t)
+    dbas.review.opinions.add_review_opinion_for_duplicate(db_user, main_page, db_review, is_duplicate, _t)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'duplicates')
     return True
 
@@ -984,8 +984,8 @@ def review_optimization_argument(request):
     main_page = request.application_url
 
     _t = Translator(ui_locales)
-    review_main_helper.add_review_opinion_for_optimization(db_user, main_page, db_review, should_optimized, new_data,
-                                                           _t)
+    dbas.review.opinions.add_review_opinion_for_optimization(db_user, main_page, db_review, should_optimized, new_data,
+                                                             _t)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'optimizations')
     return True
 
@@ -1007,7 +1007,7 @@ def review_splitted_premisegroup(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    review_main_helper.add_review_opinion_for_split(db_user, main_page, db_review, should_split, _t)
+    dbas.review.opinions.add_review_opinion_for_split(db_user, main_page, db_review, should_split, _t)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'splits')
     return True
 
@@ -1029,7 +1029,7 @@ def review_merged_premisegroup(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    review_main_helper.add_review_opinion_for_merge(db_user, main_page, db_review, should_merge, _t)
+    dbas.review.opinions.add_review_opinion_for_merge(db_user, main_page, db_review, should_merge, _t)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'merges')
     return True
 

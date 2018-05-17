@@ -6,7 +6,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
-from dbas.review.helper.queues import review_queues, model_mapping
+from dbas.review.queues import review_queues, model_mapping
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.lib import add_error
