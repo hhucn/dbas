@@ -17,10 +17,10 @@ import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
 import dbas.handler.issue as issue_handler
 import dbas.handler.news as news_handler
-import dbas.review.helper.history as review_history_helper
-import dbas.review.helper.queues as review_queue_helper
-import dbas.review.helper.reputation as review_reputation_helper
-import dbas.review.helper.subpage as review_page_helper
+import dbas.review.history as review_history_helper
+import dbas.review.queues as review_queue_helper
+import dbas.review.reputation as review_reputation_helper
+import dbas.review.subpage as review_page_helper
 from api.v2.graphql.core import Query
 from dbas.auth.login import oauth_providers
 from dbas.database import DBDiscussionSession

@@ -15,7 +15,7 @@ from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelet
     LastReviewerMerge, LastReviewerSplit
 from dbas.lib import get_profile_picture
 from dbas.logger import logger
-from dbas.review.helper.reputation import get_reputation_of, reputation_icons, reputation_borders
+from dbas.review.reputation import get_reputation_of, reputation_icons, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 

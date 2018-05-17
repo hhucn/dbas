@@ -29,7 +29,7 @@ from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture, nick_of_anonymous_user
 from dbas.logger import logger
-from dbas.review.helper.reputation import get_reputation_of
+from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 

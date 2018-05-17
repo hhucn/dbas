@@ -17,8 +17,8 @@ from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, Rev
 from dbas.lib import get_text_for_argument_uid, get_profile_picture, get_text_for_statement_uid, \
     get_text_for_premisegroup_uid
 from dbas.logger import logger
-from dbas.review.helper.main import en_or_disable_object_of_review
-from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
+from dbas.review.helper import set_able_object_of_review
+from dbas.review.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.strings.keywords import Keywords as _
 
 
@@ -723,7 +723,7 @@ def __revoke_decision_and_implications(ttype, reviewer_type, uid):
 
     db_review = DBDiscussionSession.query(ttype).get(uid)
     db_review.set_revoked(True)
-    en_or_disable_object_of_review(db_review, False)
+    set_able_object_of_review(db_review, False)
 
     DBDiscussionSession.flush()
     transaction.commit()

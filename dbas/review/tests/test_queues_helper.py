@@ -2,7 +2,7 @@ import unittest
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewOptimization, TextVersion, ReviewEdit, Argument, Premise
-import dbas.review.helper.queues as rqh
+import dbas.review.queues as rqh
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 

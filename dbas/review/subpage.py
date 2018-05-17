@@ -16,8 +16,8 @@ from dbas.lib import get_all_arguments_by_statement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, \
     get_text_for_premisegroup_uid, get_profile_picture
 from dbas.logger import logger
-from dbas.review.helper.queues import review_queues
-from dbas.review.helper.reputation import get_reputation_of, reputation_borders
+from dbas.review.queues import review_queues
+from dbas.review.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
