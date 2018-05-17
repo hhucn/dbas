@@ -43,14 +43,12 @@ Security
 .. automodule:: dbas.security
     :members:
 
-==========
 Discussion
 ==========
 
 .. automodule:: dbas.discussion.core
     :members:
 
-=======
 Handler
 =======
 
@@ -103,8 +101,6 @@ Handler
     :members:
 
 
-
-======
 Helper
 ======
 
@@ -136,8 +132,6 @@ Helper
     :members:
 
 
-
-==========
 Validators
 ==========
 
@@ -166,7 +160,6 @@ Validators
     :members:
 
 
-=====
 Views
 =====
 
