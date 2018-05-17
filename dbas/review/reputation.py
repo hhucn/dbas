@@ -13,22 +13,26 @@ from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 
-reputation_borders = {'deletes': 30,
-                      'optimizations': 30,
-                      'edits': 30,
-                      'duplicates': 30,
-                      'splits': 30,
-                      'merges': 30,
-                      'history': 150}
+reputation_borders = {
+    'deletes': 30,
+    'optimizations': 30,
+    'edits': 30,
+    'duplicates': 30,
+    'splits': 30,
+    'merges': 30,
+    'history': 150
+}
 
-reputation_icons = {'deletes': 'fa fa-trash-o',
-                    'optimizations': 'fa fa-flag',
-                    'edits': 'fa fa-pencil-square-o',
-                    'duplicates': 'fa fa-files-o',
-                    'splits': 'fa fa-expand',
-                    'merges': 'fa fa-compress',
-                    'history': 'fa fa-history',
-                    'ongoing': 'fa fa-clock-o'}
+reputation_icons = {
+    'deletes': 'fa fa-trash-o',
+    'optimizations': 'fa fa-flag',
+    'edits': 'fa fa-pencil-square-o',
+    'duplicates': 'fa fa-files-o',
+    'splits': 'fa fa-expand',
+    'merges': 'fa fa-compress',
+    'history': 'fa fa-history',
+    'ongoing': 'fa fa-clock-o'
+}
 
 # every reason by its name
 rep_reason_first_position = 'rep_reason_first_position'

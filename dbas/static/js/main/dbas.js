@@ -291,10 +291,13 @@ function prepareLoginRegistrationPopup() {
         if ($(this).attr('href').indexOf('signup') === -1) {
             $('#' + popupLoginButtonLogin).show();
             $('#' + popupLoginButtonRegister).hide();
+            $('#popup-login-registration-oauth-footer').show();
+            
         } else {
             $('#' + popupLoginButtonLogin).hide();
             $('#' + popupLoginButtonRegister).show();
             fillCaptcha();
+            $('#popup-login-registration-oauth-footer').hide();
         }
     });
     

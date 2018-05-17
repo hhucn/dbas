@@ -246,7 +246,7 @@ def valid_relation(request):
         add_error(request, 'Relation is missing in path', location='path')
         return False
 
-    list_of_attacks = [relation.value for relation in list(Relations) if relation is not Relations.SUPPORT]
+    list_of_attacks = [relation.value for relation in list(Relations)]
     if relation not in list_of_attacks:
         add_error(request,
                   'Your relation is not correct. Received \'{}\', expected one of {}'.format(relation, list_of_attacks),

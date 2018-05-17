@@ -135,6 +135,9 @@ settings in `database/initializedb.py`.
     $ python setup.py develop
     $ <console_script_name> development.ini
 
+======================
+Source-Code Docstrings
+======================
 
 Description
 ===========

@@ -5,7 +5,7 @@ from typing import List, Tuple, Dict, Union, Any
 import transaction
 from sqlalchemy import func
 
-import dbas.review.helper.queues as review_queue_helper
+import dbas.review.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement
@@ -19,7 +19,7 @@ from dbas.input_validator import is_integer
 from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_string, get_text_for_argument_uid, \
     Relations, Attitudes
 from dbas.logger import logger
-from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
+from dbas.review.reputation import add_reputation_for, rep_reason_first_position, \
     rep_reason_first_justification, rep_reason_new_statement
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator

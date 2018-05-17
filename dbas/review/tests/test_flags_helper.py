@@ -1,7 +1,7 @@
 import unittest
 import transaction
 
-import dbas.review.helper.flags as rf_helper
+import dbas.review.flags as rf_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewOptimization, ReviewDuplicate, RevokedDuplicate, \
     LastReviewerDuplicate, ReviewCanceled, ReviewMergeValues, ReviewMerge, ReviewSplit, ReviewSplitValues

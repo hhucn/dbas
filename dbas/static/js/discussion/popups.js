@@ -846,7 +846,11 @@ function PopupHandler() {
         $('#' + popupUrlSharingId).modal('hide');
         $('#' + popupUrlSharingInputId).val('');
     };
-
+    
+    /**
+     *
+     * @returns {number}
+     */
     this.showLoginPopup = function () {
         if (window.location.href.indexOf('/contact') !== -1) {
             return -1;
@@ -868,5 +872,18 @@ function PopupHandler() {
         $('#' + popupLoginButtonLogin).hide();
         $('#' + popupLoginForgotPasswordBody).hide();
         $('#' + generatePasswordBodyId).hide();
+    };
+    
+    /**
+     *
+     */
+    this.showNotificationPopup = function() {
+        $('#popup-writing-notification').modal('show');
+        $('#popup-writing-notification-success').hide();
+        $('#popup-writing-notification-failed').hide();
+        $('#popup-writing-notification-recipient').show();
+        $('#popup-writing-notification-send').click(function () {
+            new AjaxNotificationHandler().sendNotification($('#popup-writing-notification-recipient').val());
+        });
     };
 }

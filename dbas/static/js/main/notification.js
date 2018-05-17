@@ -27,7 +27,7 @@ function Notifications() {
     
     this.setGui = function(){
         // proposals for user while typing the recipient
-        $('#popup-writing-notification-recipient').keyup(function () {
+        $('#popup-writing-notification-recipient').off('keyup').keyup(function () {
             setTimeout(function () {
                 var escapedText = escapeHtml($('#popup-writing-notification-recipient').val());
                 new AjaxDiscussionHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
@@ -82,13 +82,7 @@ function Notifications() {
     this.setClickFunctionsForNewNotification = function () {
         // send notification to users
         $('#new-notification').click(function () {
-            $('#popup-writing-notification').modal('show');
-            $('#popup-writing-notification-success').hide();
-            $('#popup-writing-notification-failed').hide();
-            $('#popup-writing-notification-recipient').show();
-            $('#popup-writing-notification-send').click(function () {
-                new AjaxNotificationHandler().sendNotification($('#popup-writing-notification-recipient').val());
-            });
+            new PopupHandler().showNotificationPopup();
         });
     };
 

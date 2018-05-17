@@ -19,7 +19,7 @@ from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_state
     is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_enabled_arguments_as_query
-from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
+from dbas.review.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \
     get_support_to_argument_text_list, nick_of_anonymous_user

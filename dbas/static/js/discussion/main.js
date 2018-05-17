@@ -369,6 +369,14 @@ function Main() {
         $('#sidebar-search-statement').click(function () {
             popupHandler.showSearchStatementPop();
         });
+
+        // search statement
+        $('#sidebar-ask-a-friend').click(function () {
+            new PopupHandler().showNotificationPopup();
+            $('#popup-writing-notification-title').val(_t_discussion(askAFriendTitle)).trigger('keyup');
+            $('#popup-writing-notification-text').html(_t_discussion(askAFriendText) + window.location.href).css('height', '120px').trigger('keyup');
+            new Notifications().setGui();
+        });
     };
 
     /**

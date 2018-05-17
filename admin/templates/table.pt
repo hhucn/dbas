@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        <span class="icon-badge blue-button bottom-right add" id="icon-add-news" title="Create">+</span>
+        <span class="icon-badge blue-btn bottom-right add" id="icon-add-news" title="Create">+</span>
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
         <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>

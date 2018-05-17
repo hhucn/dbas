@@ -131,6 +131,7 @@ de_lang = {
     _.andTheyDoNotBelieveCounter: 'und sie glauben, dass ist kein gutes Gegenargument für',
     _.andTheyDoNotBelieveArgument: 'und sie glauben, dass ist kein gutes Argument für',
     _.asReasonFor: 'als einen Grund für',
+    _.askAFriend: 'Einen Freund fragen',
     _.attackedBy: 'Sie wurden attackiert mit',
     _.attackedWith: 'Sie haben attackiert mit',
     _.attackPosition: 'Position angreifen',

@@ -15,7 +15,7 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_conclusion, create_
     is_author_of_argument, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, \
     get_text_for_statement_uid, Relations
 from dbas.logger import logger
-from dbas.review.helper.queues import get_complete_review_count
+from dbas.review.queues import get_complete_review_count
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_header_for_users_confrontation_response, \
     get_text_for_add_premise_container, get_text_for_confrontation, get_text_for_support, \

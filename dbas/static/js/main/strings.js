@@ -27,6 +27,8 @@ var allGivenVotes = 'allGivenVotes';
 var allGivenInterests = 'allGivenInterests';
 var author = 'author';
 var avatar = 'avatar';
+var askAFriendText = 'askAFriendText';
+var askAFriendTitle = 'askAFriendTitle';
 var acceptItTitle = 'acceptItTitle';
 var caution = 'caution';
 var cancel = 'cancel';
@@ -297,6 +299,8 @@ var dbas_en = {
     'allGivenInterests': 'All Interests',
     'attack': 'Attack',
     'author': 'Author',
+    'askAFriendTitle': 'Share your opinion',
+    'askAFriendText': 'Hey my friend,\nI think that you could improve the discussion here: ',
     'because': 'because',
     'countOfArguments': 'Count of arguments',
     'urlCopy': 'URL was copied into your clipboard',
@@ -561,6 +565,8 @@ var dbas_de = {
     'allGivenInterests': 'Alle Interessen',
     'attack': 'Angriff',
     'author': 'Autor',
+    'askAFriendTitle': 'Teile deine Meinung',
+    'askAFriendText': 'Hey,\nIch denke, dass du hier zu der Diskussion beitragen kannst: ',
     'because': 'weil',
     'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
     'caution': 'Achtung',

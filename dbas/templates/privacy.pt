@@ -15,15 +15,15 @@
 
         <div class="row">
 
-          <div class="col-md-offset-1 col-md-10">
+          <div class="col-md-12">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Name und Anschrift</h4>
               <div class="row">
                 <div class="col-md-6">
                   <h5>Des Verantwortlichen</h5>
-                  <span>Heinrich-Heine-Universität Düsseldorf</span><br>
                   <span>Institut für Informatik</span><br>
                   <span>Lehrstuhl für Rechnernetze</span><br>
+                  <span>Heinrich-Heine-Universität Düsseldorf</span><br>
                   <span>402255 Düsseldorf, Deutschland</span><br>
                   <span>Tel.: +49 211 81-11312</span><br>
                   <span>E-Mail: <a href="mailto: dbas@cs.uni-duesseldorf.de">dbas@cs.uni-duesseldorf.de</a></span><br>
@@ -31,20 +31,19 @@
                 </div>
                 <div class="col-md-6">
                   <h5>Des Datenschutzbeauftragten</h5>
-                  <span>Kurt Finkbeiner</span><br>
-                  <span>Universitätsstr. 1</span><br>
-                  <span>Gebäude: 16.11</span><br>
-                  <span>Etage/Raum: 01.81</span><br>
+                  <span>z.Hd. Datenschutzbeauftragter</span><br>
+                  <span>Stabsstelle Datenschutz</span><br>
+                  <span>Heinrich-Heine-Universität Düsseldorf</span><br>
                   <span>40225 Düsseldorf, Deutschland</span><br>
                   <span>Tel.: +49 211 81-13214</span><br>
-                  <span>E-Mail: <a
-                          href="mailto: Datenschutzbeauftragter@hhu.de">Datenschutzbeauftragter@hhu.de</a></span><br>
+                  <span>E-Mail: <a href="mailto: datenschutzbeauftragter@hhu.de">datenschutzbeauftragter@hhu.de</a></span><br>
+                  <span>Website: ${extras.url}</span><br>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10">
+          <div class="col-md-12">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Inhalt</h4>
               <div class="row">
@@ -78,7 +77,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="begrifflichkeiten">
+          <div class="col-md-12" id="begrifflichkeiten">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Verwendete Begrifflichkeiten</h4>
               <p>„Personenbezogene Daten“ sind alle Informationen, die
@@ -105,7 +104,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="rechtsgrundlagen">
+          <div class="col-md-12" id="rechtsgrundlagen">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Maßgebliche Rechtsgrundlagen</h4>
               <p>Nach Maßgabe des Art. 13 DSGVO teilen wir Ihnen die Rechtsgrundlagen
@@ -126,7 +125,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="zusammenarbeit">
+          <div class="col-md-12" id="zusammenarbeit">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Zusammenarbeit mit Auftragsverarbeitern und Dritten</h4>
               <p>Sofern wir im Rahmen unserer Verarbeitung Daten
@@ -148,7 +147,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="übermittlungen">
+          <div class="col-md-12" id="übermittlungen">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Übermittlungen in Drittländer</h4>
               <p>Sofern wir Daten in einem Drittland (d.h.
@@ -171,7 +170,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="rechte">
+          <div class="col-md-12" id="rechte">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Rechte der betroffenen Personen</h4>
               <p>Sie haben das Recht, eine Bestätigung darüber zu verlangen, ob
@@ -197,7 +196,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="widerrufsrecht">
+          <div class="col-md-12" id="widerrufsrecht">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Widerrufsrecht</h4>
               <p>Sie haben das Recht, erteilte
@@ -205,7 +204,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="widerspruchsrecht">
+          <div class="col-md-12" id="widerspruchsrecht">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Widerspruchsrecht</h4>
               <p>Sie können der künftigen Verarbeitung der Sie betreffenden Daten nach
@@ -213,7 +212,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="cookies">
+          <div class="col-md-12" id="cookies">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Cookies und Widerspruchsrecht</h4>
               <p>Als „Cookies“ werden kleine Dateien bezeichnet, die auf Rechnern der
@@ -291,7 +290,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="löschung">
+          <div class="col-md-12" id="löschung">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Löschung von Daten</h4>
               <p>Die von uns verarbeiteten Daten werden nach Maßgabe der Art. 17 und 18 DSGVO
@@ -320,7 +319,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="erhebung">
+          <div class="col-md-12" id="erhebung">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Erhebung von Zugriffsdaten und
                 Logfiles</h4>
@@ -342,7 +341,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="registrierfunktion">
+          <div class="col-md-12" id="registrierfunktion">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Registrierfunktion</h4>
               <p>Nutzer können optional ein Nutzerkonto anlegen. Im Rahmen der Registrierung werden die
@@ -358,7 +357,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="kontaktaufnahme">
+          <div class="col-md-12" id="kontaktaufnahme">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Kontaktaufnahme</h4>
               <p>Bei der Kontaktaufnahme mit uns werden die Angaben des Nutzers zur Bearbeitung der Kontaktanfrage und
@@ -368,7 +367,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="kommentare">
+          <div class="col-md-12" id="kommentare">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Kommentare und Beiträge</h4>
               <p>Wenn Nutzer Kommentare oder sonstige Beiträge hinterlassen, werden ihre IP-Adressen auf
@@ -380,7 +379,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="abruf">
+          <div class="col-md-12" id="abruf">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Abruf von Profilbildern bei Gravatar</h4>
               <p>Wir setzen innerhalb unseres Onlineangebotes und insbesondere im Blog den Dienst
@@ -421,7 +420,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="reichweitenmessung">
+          <div class="col-md-12" id="reichweitenmessung">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Reichweitenmessung mit Matomo</h4>
               <p>Wir nutzen auf unserer Website das Open-Source-Software-Tool Matomo (ehemals PIWIK) zur Analyse des
@@ -459,7 +458,7 @@
             </div>
           </div>
 
-          <div class="col-md-offset-1 col-md-10" id="google">
+          <div class="col-md-12" id="google">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Google Fonts</h4>
               <p class="ts-muster-content">Wir binden die Schriftarten ("Google Fonts") des Anbieters

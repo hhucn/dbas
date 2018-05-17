@@ -30,7 +30,7 @@ def flag_element(uid: int, reason: str, db_user: User, is_argument: bool, ui_loc
     """
     _tn = Translator(ui_locales)
     # we could have only one reason!
-    db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
+    db_del_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
 
     argument_uid = uid if is_argument else None
     statement_uid = uid if not is_argument else None
@@ -46,9 +46,9 @@ def flag_element(uid: int, reason: str, db_user: User, is_argument: bool, ui_loc
         }
 
     # add flag
-    if db_reason:
+    if db_del_reason:
         # flagged for the first time
-        __add_delete_review(argument_uid, statement_uid, db_user.uid, db_reason.uid)
+        __add_delete_review(argument_uid, statement_uid, db_user.uid, db_del_reason.uid)
 
     # and another reason for optimization
     elif reason == 'optimization':
@@ -60,7 +60,10 @@ def flag_element(uid: int, reason: str, db_user: User, is_argument: bool, ui_loc
         # flagged for the first time
         if statement_uid == extra_uid:
             logger('FlagingHelper', 'uid error', error=True)
-            return '', '', _.internalKeyError
+            return {
+                'success': '',
+                'info': _tn.get(_.internalKeyError),
+            }
         __add_duplication_review(statement_uid, extra_uid, db_user.uid)
 
     return {
