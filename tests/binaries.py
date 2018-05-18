@@ -1,26 +1,27 @@
 import subprocess
 
 existent_binaries = [
-    ('uwsgi', '--version'),
-    ('alembic', '--help'),
-    ('pserve', '--help'),
+    ('uwsgi', '--version', ''),
+    ('alembic', '--help', 'current'),
+    ('pserve', '--help', 'development.ini'),
 ]
 
 functional_binaries = [
-    ('uwsgi', '-s 1337'),
+    ('uwsgi', ''),
     ('alembic', 'current'),
     ('pserve', 'development.ini'),
 ]
 
+
+def run(binary, argument):
+    result = subprocess.run([binary, argument], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    assert 'not found' not in result
+
+
 # check for binaries
-for (binary, argument) in existent_binaries:
-    print('Run: {} {}'.format(binary, argument))
-    result = subprocess.run([binary, argument], stdout=subprocess.PIPE).stdout.decode('utf-8')
-    assert 'not found' not in result
+for (binary, argument1, argument2) in existent_binaries:
+    print('Run: {} {}'.format(binary, argument1))
+    run(binary, argument1)
 
-# test binaries
-for (binary, argument) in functional_binaries:
-    print('Test: {} {}'.format(binary, argument))
-    result = subprocess.run([binary, argument], stdout=subprocess.PIPE).stdout.decode('utf-8')
-    assert 'not found' not in result
-
+    print('Execute: {} {}'.format(binary, argument2))
+    run(binary, argument2)
