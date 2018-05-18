@@ -7,6 +7,7 @@ existent_binaries = [
 ]
 
 functional_binaries = [
+    ('uwsgi', '-s 1337'),
     ('alembic', 'current'),
     ('pserve', 'development.ini'),
 ]

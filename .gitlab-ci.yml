@@ -60,6 +60,7 @@ jshint:
   allow_failure: true
 
 binaries:
+  <<: *add-services
   stage: test
   script:
     - apk add --no-cache python3
