@@ -27,16 +27,15 @@ def start_flow():
 
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
 
-    logger('Github OAuth', 'start_flow',
-           'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
+    logger('Github OAuth', 'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
 
     github = OAuth2Session(client_id, scope=scope)
     authorization_url, state = github.authorization_url(authorization_base_url)
 
-    logger('Github OAuth', 'start_flow', 'Please go to {} and authorize access'.format(authorization_url))
+    logger('Github OAuth', 'Please go to {} and authorize access'.format(authorization_url))
     return {'authorization_url': authorization_url, 'error': ''}
 
 
@@ -47,33 +46,30 @@ def continue_flow(authorization_response, ui_locales):
     :param ui_locales:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
     github = OAuth2Session(client_id)
 
-    logger('Github OAuth', 'continue_github_flow',
-           'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
-    logger('Github OAuth', 'continue_flow', 'authorization_response: ' + authorization_response)
+    logger('Github OAuth', 'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
+    logger('Github OAuth', 'authorization_response: ' + authorization_response)
 
     try:
         github.fetch_token(token_url, client_secret=client_secret, authorization_response=authorization_response)
     except InsecureTransportError:
-        logger('Github OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
+        logger('Github OAuth', 'OAuth 2 MUST utilize https', error=True)
         _tn = Translator(ui_locales)
-        # missing_data = ['surname', 'email', 'nickname', 'password']
-        # return {'user': {'firstname': 'anton', 'gender': 'm'}, 'missing': missing_data, 'error': ''}
         return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
     except InvalidClientError:
-        logger('Github OAuth', 'continue_flow', 'InvalidClientError', error=True)
+        logger('Github OAuth', 'InvalidClientError', error=True)
         _tn = Translator(ui_locales)
         return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
     except MissingTokenError:
-        logger('Github OAuth', 'continue_flow', 'MissingTokenError', error=True)
+        logger('Github OAuth', 'MissingTokenError', error=True)
         _tn = Translator(ui_locales)
         return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
 
     resp = github.get('https://api.github.com/user')
-    logger('Github OAuth', 'continue_flow', str(resp.text))
+    logger('Github OAuth', str(resp.text))
     parsed_resp = json.loads(resp.text)
 
     # 'login': 'tkrauthoff'
@@ -107,24 +103,26 @@ def continue_flow(authorization_response, ui_locales):
     # 'created_at': 2013-11-18T15:19:32Z
     # 'updated_at': 2017-10-24T07:01:29Z
 
-    user_data = {
-        'id': parsed_resp['id'],
-        'firstname': parsed_resp['name'].rsplit(' ', 1)[0],
-        'lastname': parsed_resp['name'].rsplit(' ', 1)[1],
-        'nickname': slugify(parsed_resp['login']),
-        'gender': 'n',
-        'email': str(parsed_resp['email']) if 'email' in parsed_resp else 'None',
-        'password': '',
-        'ui_locales': 'en'
-    }
-
+    user_data = __prepare_data(parsed_resp)
     missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
 
-    logger('Github OAuth', 'continue_flow', 'user_data: ' + str(user_data))
-    logger('Github OAuth', 'continue_flow', 'missing_data: ' + str(missing_data))
+    logger('Github OAuth', 'user_data: ' + str(user_data))
+    logger('Github OAuth', 'missing_data: ' + str(missing_data))
 
     return {
         'user': user_data,
         'missing': missing_data,
         'error': ''
+    }
+
+
+def __prepare_data(parsed_resp):
+    return {
+        'id': parsed_resp.get('id', ''),
+        'firstname': parsed_resp.get('name', '').rsplit(' ', 1)[0],
+        'lastname': parsed_resp.get('name', '').rsplit(' ', 1)[1],
+        'nickname': slugify(parsed_resp.get('login', '')),
+        'gender': 'n',
+        'email': str(parsed_resp.get('email')),
+        'ui_locales': 'en'
     }

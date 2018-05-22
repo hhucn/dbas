@@ -33,21 +33,19 @@ def groupfinder(nick, _):
     :param request: request
     :return: given group as list or empty list
     """
-    # import traceback
-    # traceback.print_stack()
 
-    logger('security', 'groupfinder', 'nick: ' + nick)
+    logger('security', 'nick: ' + nick)
     try:
         user = DBDiscussionSession.query(User).filter_by(nickname=nick).first()
     except InternalError as i:
-        logger('security', 'InternalError', str(i), error=True)
+        logger('security', str(i), error=True)
         return []
 
     if user:
         group = DBDiscussionSession.query(Group).get(user.group_uid)
         if group:
-            logger('security', 'groupfinder', 'return [group:' + group.name + ']')
+            logger('security', 'return [group:' + group.name + ']')
             return ['group:' + group.name]
 
-    logger('security', 'groupfinder', 'return []')
+    logger('security', 'return []')
     return []

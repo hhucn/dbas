@@ -10,32 +10,22 @@ from dbas.database.discussion_model import Language
 from dbas.logger import logger
 
 
-def set_language(request, ui_locales=None):
+def set_language(request, db_lang):
     """
     Saves the new language in the request
 
     :param request: current request
-    :param ui_locales: Language.ui_locales
+    :param lang: Language
     :return: dict()
     """
-    return_dict = dict()
-
-    if not ui_locales:
-        ui_locales = request.params['_LOCALE_'] if '_LOCALE_' in request.params else None
-    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
-    if not db_lang or not ui_locales:
-        ui_locales = get_language_from_cookie(request)
-
-    logger('LanguageHelper', 'set_language', 'setting lang to {}'.format(ui_locales))
-    request._LOCALE_ = ui_locales
-    request.response.set_cookie('_LOCALE_', str(ui_locales))
-    request.cookies['_LOCALE_'] = ui_locales
+    logger('LanguageHelper', 'setting lang to {}'.format(db_lang.ui_locales))
+    request._LOCALE_ = db_lang.ui_locales
+    request.response.set_cookie('_LOCALE_', str(db_lang.ui_locales))
+    request.cookies['_LOCALE_'] = db_lang.ui_locales
     # we have to set 'ui_locales = get_language_from_cookie(request)' in each view again, because D-BAS is no object
-    return_dict['error'] = ''
-    return_dict['_LOCALE_'] = ui_locales
-    logger('LanguageHelper', 'set_language', 'switched to {}'.format(ui_locales))
+    logger('LanguageHelper', 'switched to {}'.format(db_lang.ui_locales))
 
-    return return_dict
+    return {'_LOCALE_': db_lang.ui_locales}
 
 
 def get_language_from_header(request):
@@ -45,8 +35,8 @@ def get_language_from_header(request):
     :param request: current request
     :return: String
     """
-    lang = request.headers['Accept-Language'] if 'Accept-Language' in request.headers else ''
-    logger('ViewHelper', 'get_language_from_header', 'Accept-Language: {}'.format(lang))
+    lang = request.headers.get('Accept-Language', '')
+    logger('ViewHelper', 'Accept-Language: {}'.format(lang))
     return 'de' if 'de' in lang else 'en'
 
 
@@ -66,7 +56,7 @@ def get_language_from_cookie(request):
     return str(lang)
 
 
-def set_language_for_first_visit(request):
+def set_language_for_visit(request):
     """
     Sets language and issue uid based on the requests header if there is no _LOCALE_ attribute in the cookie
 
@@ -75,10 +65,11 @@ def set_language_for_first_visit(request):
     """
 
     if '_LOCALE_' in request.cookies:
-        logger('ViewHelper', 'set_language_for_first_visit', 'User was already here')
+        logger('ViewHelper', 'User was already here')
         # user was already here
         return
 
-    logger('ViewHelper', 'set_language_for_first_visit', 'User is first time here')
+    logger('ViewHelper', 'User is first time here')
     ui_locales = get_language_from_header(request)
-    set_language(request, ui_locales)
+    lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
+    set_language(request, lang)

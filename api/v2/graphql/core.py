@@ -4,12 +4,47 @@ GraphQL Core. Here are the models listed, which can be queried by GraphQl.
 .. sectionauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 
+import arrow
 import graphene
+from arrow import Arrow
+from graphene import Scalar
 from graphene_sqlalchemy import SQLAlchemyObjectType
+from graphene_sqlalchemy.converter import convert_sqlalchemy_type
+from graphql.language import ast
+from sqlalchemy_utils import ArrowType
 
 from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReferences, \
     StatementOrigins, PremiseGroup, Premise, Argument
+
+
+class ArrowTypeScalar(Scalar):
+    """
+    ArrowType Scalar Description
+    """
+
+    @staticmethod
+    def serialize(a):
+        assert isinstance(a, Arrow), (
+            'Received not compatible arrowtype "{}"'.format(repr(a))
+        )
+        return a.format()
+
+    @staticmethod
+    def parse_literal(node):
+        if isinstance(node, ast.StringValue):
+            return arrow.get(node.value)
+
+    @staticmethod
+    def parse_value(value):
+        return arrow.get(value)
+
+
+@convert_sqlalchemy_type.register(ArrowType)
+def convert_column_to_arrow(ttype, column, registry=None):
+    return ArrowTypeScalar(description=getattr(column, 'doc', None),
+                           required=not (getattr(column, 'nullable', True)))
 
 
 # -----------------------------------------------------------------------------
@@ -20,30 +55,77 @@ class TextVersionGraph(SQLAlchemyObjectType):
         exclude_fields = "timestamp"
 
 
-class StatementGraph(SQLAlchemyObjectType):
-    textversions = graphene.Field(TextVersionGraph)
+class ArgumentGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = Argument
 
-    def resolve_textversions(self, args, context, info):
-        return resolve_field_query({**args, "statement_uid": self.uid}, context, TextVersionGraph)
+    @staticmethod
+    def singular():
+        return graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(),
+                              is_supportive=graphene.Boolean(), is_disabled=graphene.Boolean())
+
+    @staticmethod
+    def plural():
+        return graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean(),
+                             is_disabled=graphene.Boolean())
+
+
+class StatementGraph(SQLAlchemyObjectType):
+    text = graphene.String()
+    textversions = graphene.Field(TextVersionGraph)
+    arguments = ArgumentGraph.plural()
+    supports = ArgumentGraph.plural()
+    rebuts = ArgumentGraph.plural()
+    undercuts = ArgumentGraph.plural()
+
+    def resolve_textversions(self, info, **kwargs):
+        return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
+
+    def resolve_text(self, info, **kwargs):
+        return DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == self.uid).order_by(
+            TextVersion.timestamp.desc()).first().content
+
+    def resolve_arguments(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "conclusion_uid": self.uid}, info, ArgumentGraph)
+
+    def resolve_supports(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "is_supportive": True, "conclusion_uid": self.uid}, info, ArgumentGraph)
+
+    def resolve_rebuts(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "is_supportive": False, "conclusion_uid": self.uid}, info, ArgumentGraph)
+
+    def resolve_undercuts(self, info, **kwargs):
+        # Query for all arguments attacking / supporting this statement
+        sq = DBDiscussionSession.query(Argument.uid) \
+            .filter(Argument.conclusion_uid == self.uid,
+                    Argument.is_disabled == False) \
+            .subquery()
+
+        # Query for all arguments, which are attacking the arguments from the query above.
+        return ArgumentGraph.get_query(info) \
+            .filter_by(**kwargs) \
+            .filter(
+            Argument.is_disabled == False,
+            Argument.argument_uid.in_(sq)
+        )
 
     class Meta:
         model = Statement
 
     @staticmethod
+    def singular():
+        return graphene.Field(StatementGraph, uid=graphene.Int(), is_position=graphene.Boolean(),
+                              is_disabled=graphene.Boolean())
+
+    @staticmethod
     def plural():
-        return graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int())
-
-
-class ArgumentGraph(SQLAlchemyObjectType):
-    class Meta:
-        model = Argument
-        exclude_fields = "timestamp"
+        return graphene.List(StatementGraph, is_position=graphene.Boolean(), issue_uid=graphene.Int(),
+                             is_disabled=graphene.Boolean())
 
 
 class StatementReferencesGraph(SQLAlchemyObjectType):
     class Meta:
         model = StatementReferences
-        exclude_fields = "created"
 
 
 class StatementOriginsGraph(SQLAlchemyObjectType):
@@ -53,14 +135,35 @@ class StatementOriginsGraph(SQLAlchemyObjectType):
 
 
 class IssueGraph(SQLAlchemyObjectType):
+    position = StatementGraph.singular()
+    positions = StatementGraph.plural()
     statements = StatementGraph.plural()
+    arguments = ArgumentGraph.plural()
 
-    def resolve_statements(self, args, context, info):
-        return resolve_list_query({**args, "issue_uid": self.uid}, context, StatementGraph, Statement)
+    def resolve_position(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, StatementGraph)
+
+    def resolve_positions(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "issue_uid": self.uid, "is_position": True}, info, StatementGraph)
+
+    def resolve_statements(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, StatementGraph)
+
+    def resolve_arguments(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, ArgumentGraph)
 
     class Meta:
         model = Issue
-        exclude_fields = "date"
+
+    @staticmethod
+    def singular():
+        return graphene.Field(IssueGraph, uid=graphene.Int(), slug=graphene.String(), title=graphene.String(),
+                              is_disabled=graphene.Boolean())
+
+    @staticmethod
+    def plural():
+        return graphene.List(IssueGraph, slug=graphene.String(), title=graphene.String(),
+                             is_disabled=graphene.Boolean())
 
 
 class UserGraph(SQLAlchemyObjectType):
@@ -76,6 +179,15 @@ class LanguageGraph(SQLAlchemyObjectType):
 
 
 class PremiseGroupGraph(SQLAlchemyObjectType):
+    statements = StatementGraph.plural()
+
+    def resolve_statements(self, info, **kwargs):
+        premises = DBDiscussionSession.query(Premise).filter(Premise.premisegroup_uid == self.uid).all()
+        uids = set([premise.statement_uid for premise in premises])
+        query = StatementGraph.get_query(info)
+
+        return query.filter_by(**kwargs).filter(Statement.uid.in_(uids))
+
     class Meta:
         model = PremiseGroup
 
@@ -83,7 +195,6 @@ class PremiseGroupGraph(SQLAlchemyObjectType):
 class PremiseGraph(SQLAlchemyObjectType):
     class Meta:
         model = Premise
-        exclude_fields = ["timestamp"]
 
 
 # -----------------------------------------------------------------------------
@@ -97,66 +208,66 @@ class Query(graphene.ObjectType):
     :param graphene.ObjectType: Generic ObjectType for GraphQL
     """
 
-    statement = graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean())
+    statement = StatementGraph.singular()
     statements = StatementGraph.plural()
-    argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(), is_supportive=graphene.Boolean())
-    arguments = graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean())
+    argument = ArgumentGraph.singular()
+    arguments = ArgumentGraph.plural()
     statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
     statement_references = graphene.List(StatementReferencesGraph)
     statement_origin = graphene.Field(StatementOriginsGraph, uid=graphene.Int(), statement_uid=graphene.Int())
-    issue = graphene.Field(IssueGraph, uid=graphene.Int(), slug=graphene.String(), title=graphene.String())
-    issues = graphene.List(IssueGraph, slug=graphene.String(), title=graphene.String())
+    issue = IssueGraph.singular()
+    issues = IssueGraph.plural()
     premise = graphene.Field(PremiseGraph, uid=graphene.Int())
-    premises = graphene.List(PremiseGraph, premisesgroup_uid=graphene.Int())
+    premises = graphene.List(PremiseGraph, premisegroup_uid=graphene.Int())
     premisegroup = graphene.Field(PremiseGroupGraph, uid=graphene.Int())
     premisegroups = graphene.List(PremiseGroupGraph)
     user = graphene.Field(UserGraph)
     textversions = graphene.List(TextVersionGraph)
 
-    def resolve_statement(self, args, context, info):
-        return resolve_field_query(args, context, StatementGraph)
+    def resolve_statement(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, StatementGraph)
 
-    def resolve_statements(self, args, context, info):
-        return resolve_list_query(args, context, StatementGraph, Statement)
+    def resolve_statements(self, info, **kwargs):
+        return resolve_list_query(kwargs, info, StatementGraph)
 
-    def resolve_argument(self, args, context, info):
-        return resolve_field_query(args, context, ArgumentGraph)
+    def resolve_argument(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, ArgumentGraph)
 
-    def resolve_arguments(self, args, context, info):
-        return resolve_list_query(args, context, ArgumentGraph, Argument)
+    def resolve_arguments(self, info, **kwargs):
+        return resolve_list_query(kwargs, info, ArgumentGraph)
 
-    def resolve_statement_reference(self, args, context, info):
-        return resolve_field_query(args, context, StatementReferencesGraph)
+    def resolve_statement_reference(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, StatementReferencesGraph)
 
-    def resolve_statement_references(self, args, context, info):
-        return StatementReferencesGraph.get_query(context).all()
+    def resolve_statement_references(self, info, **kwargs):
+        return StatementReferencesGraph.get_query(info).all()
 
-    def resolve_statement_origin(self, args, context, info):
-        return resolve_field_query(args, context, StatementOriginsGraph)
+    def resolve_statement_origin(self, info, **kwargs):
+        return resolve_field_query(kwargs, info,  StatementOriginsGraph)
 
-    def resolve_issue(self, args, context, info):
-        return resolve_field_query(args, context, IssueGraph)
+    def resolve_issue(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, IssueGraph)
 
-    def resolve_issues(self, args, context, info):
-        return resolve_list_query(args, context, IssueGraph, Issue)
+    def resolve_issues(self, info, **kwargs):
+        return resolve_list_query(kwargs, info, IssueGraph)
 
-    def resolve_premise(self, args, context, info):
-        return resolve_field_query(args, context, PremiseGraph)
+    def resolve_premise(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, PremiseGraph)
 
-    def resolve_premises(self, args, context, info):
-        return resolve_list_query(args, context, PremiseGraph, Premise)
+    def resolve_premises(self, info, **kwargs):
+        return resolve_list_query(kwargs, info, PremiseGraph)
 
-    def resolve_premisegroup(self, args, context, info):
-        return resolve_field_query(args, context, PremiseGroupGraph)
+    def resolve_premisegroup(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, PremiseGroupGraph)
 
-    def resolve_premisegroups(self, args, context, info):
-        return PremiseGroupGraph.get_query(context).all()
+    def resolve_premisegroups(self, info, **kwargs):
+        return PremiseGroupGraph.get_query(info).all()
 
-    def resolve_user(self, args, context, info):
-        return resolve_field_query(args, context, UserGraph)
+    def resolve_user(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, UserGraph)
 
-    def resolve_users(self, args, context, info):
+    def resolve_users(self, info):
         return None
 
-    def resolve_textversions(self, args, context, info):
-        return TextVersionGraph.get_query(context).all()
+    def resolve_textversions(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, TextVersionGraph)

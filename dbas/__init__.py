@@ -9,18 +9,21 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 
 # from wsgiref.simple_server import make_server
 
-import logging
-import time
-from configparser import ConfigParser, NoSectionError
-from dbas.database import get_db_environs
 import os
+import re
+import time
+
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-import re
 from sqlalchemy import engine_from_config
+
+from dbas.database import get_db_environs
+from dbas.handler.rss import rewrite_issue_rss, create_news_rss
+from dbas.lib import get_global_url
+from dbas.query_wrapper import get_enabled_issues_as_query
 from .database import load_discussion_database
 from .security import groupfinder
 
@@ -34,13 +37,6 @@ def main(global_config, **settings):
 
     # Patch in beaker url
     settings.update(get_db_environs(key="session.url", db_name="beaker"))
-
-    # log settings
-    log = logging.getLogger(__name__)
-    development = False
-    for k, v in settings.items():
-        development = development or 'testing' in str(v)
-        log.debug('__INIT__() main() <{} : {}>'.format(str(k), str(v)))
 
     # authentication and authorization
     authn_policy = AuthTktAuthenticationPolicy(settings["authn.secret"], callback=groupfinder, hashalg='sha512')
@@ -56,41 +52,36 @@ def main(global_config, **settings):
     session_factory = session_factory_from_settings(settings)
     set_cache_regions_from_settings(settings)
 
+    # PLEASE USE THIS CODE TO READ CUSTOM SETTINGS FROM THE INI FILES
     # include custom parts
-    sections = ['service']
-    for s in sections:
-        try:
-            parser = ConfigParser()
-            parser.read(global_config['__file__'])
-            custom_settings = dict()
-            for k, v in parser.items('settings:{}'.format(s)):
-                log.debug('__init__() '.upper() + 'main() <settings:' + str(s) + ':' + str(k) + ' : ' + str(v) + '>')
-                custom_settings['settings:{}:{}'.format(s, k)] = v
-            settings.update(custom_settings)
-        except NoSectionError as e:
-            log.debug('__init__() '.upper() + 'main() <No ' + s + '-Section> ' + str(e))
+    # sections = ['service']
+    # log settings
+    # log = logging.getLogger(__name__)
+    # for s in sections:
+    #     try:
+    #         parser = ConfigParser()
+    #         parser.read(global_config['__file__'])
+    #         custom_settings = dict()
+    #         for k, v in parser.items('settings:{}'.format(s)):
+    #             custom_settings['settings:{}:{}'.format(s, k)] = v
+    #         settings.update(custom_settings)
+    #     except NoSectionError as e:
+    #         log.debug('__init__() '.upper() + 'main() <No ' + s + '-Section> ' + str(e))
 
     # creating the configurator
     config = Configurator(settings=settings,
                           authentication_policy=authn_policy,
                           authorization_policy=authz_policy,
                           root_factory='dbas.security.RootFactory',
-                          session_factory=session_factory
-                          )
+                          session_factory=session_factory)
     config.add_translation_dirs('dbas:locale',
                                 'admin:locale')  # add this before the locale negotiator
     config.set_default_csrf_options(require_csrf=True)
-
-    # config.set_authentication_policy(authn_policy)
-    # config.set_authorization_policy(authz_policy)
-    # config.set_root_factory('dbas.security.RootFactory')
-    # config.set_session_factory(session_factory)
 
     # Include apps
     config.include('api', route_prefix='/api')
     config.include('api.v2', route_prefix='/api/v2')
     config.include('graph', route_prefix='/graph')
-    config.include('export', route_prefix='/export')
     config.include('admin', route_prefix='/admin')
     config.include('websocket', route_prefix='/websocket')
 
@@ -112,77 +103,87 @@ def main(global_config, **settings):
     config.add_route('main_notification', '/notifications')
     config.add_route('main_news', '/news')
     config.add_route('main_imprint', '/imprint')
+    config.add_route('main_privacy', '/privacy_policy')
     config.add_route('main_rss', '/rss')
     config.add_route('main_faq', '/faq')
     config.add_route('main_docs', '/docs')
-    config.add_route('main_mydiscussions', '/mydiscussions')
+    config.add_route('main_experiment', '/fieldexperiment')
+    config.add_route('main_discussions_overview', '/mydiscussions')
+    config.add_route('main_user', '/user/{uid:\d+}')
+    config.add_route('main_graphiql', '/graphiql')
+    config.add_route('main_api', '/api')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
-    config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
-    config.add_route('ajax_user_login_oauth', '{url:.*}ajax_user_login_oauth')
-    config.add_route('ajax_user_logout', '{url:.*}ajax_user_logout')
-    config.add_route('ajax_set_new_start_argument', '/{url:.*}ajax_set_new_start_argument')
-    config.add_route('ajax_set_new_start_statement', '/{url:.*}ajax_set_new_start_statement')
-    config.add_route('ajax_set_new_start_premise', '/{url:.*}ajax_set_new_start_premise')
-    config.add_route('ajax_set_new_premises_for_argument', '/{url:.*}ajax_set_new_premises_for_argument')
-    config.add_route('ajax_set_correction_of_statement', '/{url:.*}ajax_set_correction_of_statement')
-    config.add_route('ajax_set_new_issue', '/{url:.*}ajax_set_new_issue')
-    config.add_route('ajax_get_logfile_for_statements', '/{url:.*}ajax_get_logfile_for_statements')
-    config.add_route('ajax_get_shortened_url', '/{url:.*}ajax_get_shortened_url')
-    config.add_route('ajax_user_registration', '/{url:.*}ajax_user_registration')
-    config.add_route('ajax_user_password_request', '/{url:.*}ajax_user_password_request')
-    config.add_route('ajax_fuzzy_search', '/{url:.*}ajax_fuzzy_search')
-    config.add_route('ajax_switch_language', '{url:.*}ajax_switch_language{params:.*}')
-    config.add_route('ajax_send_notification', '{url:.*}ajax_send_notification')
-    config.add_route('ajax_get_infos_about_argument', '/{url:.*}ajax_get_infos_about_argument')
-    config.add_route('ajax_get_user_with_same_opinion', '/{url:.*}ajax_get_user_with_same_opinion')
-    config.add_route('ajax_get_public_user_data', '/{url:.*}ajax_get_public_user_data')
-    config.add_route('ajax_get_user_history', 'ajax_get_user_history')
-    config.add_route('ajax_get_all_edits', 'ajax_get_all_edits')
-    config.add_route('ajax_get_all_posted_statements', 'ajax_get_all_posted_statements')
-    config.add_route('ajax_get_all_argument_clicks', 'ajax_get_all_argument_clicks')
-    config.add_route('ajax_get_all_statement_clicks', 'ajax_get_all_statement_clicks')
-    config.add_route('ajax_get_all_marked_arguments', 'ajax_get_all_marked_arguments')
-    config.add_route('ajax_get_all_marked_statements', 'ajax_get_all_marked_statements')
-    config.add_route('ajax_set_user_setting', 'ajax_set_user_setting')
-    config.add_route('ajax_set_user_language', 'ajax_set_user_language')
-    config.add_route('ajax_delete_user_history', 'ajax_delete_user_history')
-    config.add_route('ajax_delete_statistics', 'ajax_delete_statistics')
-    config.add_route('ajax_get_news', 'ajax_get_news')
-    config.add_route('ajax_send_news', 'ajax_send_news')
-    config.add_route('ajax_notifications_read', 'ajax_notifications_read')
-    config.add_route('ajax_notifications_delete', 'ajax_notifications_delete')
-    config.add_route('ajax_get_arguments_by_statement_uid', 'ajax_get_arguments_by_statement/{uid}')
-    config.add_route('ajax_additional_service', '{stuff:.*}additional_service')
-    config.add_route('ajax_flag_argument_or_statement', '{url:.*}ajax_flag_argument_or_statement')
-    config.add_route('ajax_split_or_merge_statement', '{url:.*}ajax_split_or_merge_statement')
-    config.add_route('ajax_split_or_merge_premisegroup', '{url:.*}ajax_split_or_merge_premisegroup')
-    config.add_route('ajax_review_delete_argument', '{url:.*}ajax_review_delete_argument')
-    config.add_route('ajax_review_optimization_argument', '{url:.*}ajax_review_optimization_argument')
-    config.add_route('ajax_review_duplicate_statement', '{url:.*}ajax_review_duplicate_statement')
-    config.add_route('ajax_review_edit_argument', '{url:.*}ajax_review_edit_argument')
-    config.add_route('ajax_review_splitted_premisegroup', '{url:.*}ajax_review_splitted_premisegroup')
-    config.add_route('ajax_review_merged_premisegroup', '{url:.*}ajax_review_merged_premisegroup')
-    config.add_route('ajax_undo_review', '{url:.*}ajax_undo_review')
-    config.add_route('ajax_cancel_review', '{url:.*}ajax_cancel_review')
-    config.add_route('ajax_review_lock', '{url:.*}ajax_review_lock')
-    config.add_route('ajax_revoke_content', '{url:.*}ajax_revoke_content')
-    config.add_route('ajax_get_references', '{url:.*}ajax_get_references')
-    config.add_route('ajax_set_references', '{url:.*}ajax_set_references')
-    config.add_route('ajax_set_seen_statements', '{url:.*}ajax_set_seen_statements')
-    config.add_route('ajax_mark_statement_or_argument', '{url:.*}ajax_mark_statement_or_argument')
-    config.add_route('ajax_set_discussion_properties', '{url:.*}ajax_set_discussion_properties')
+    config.add_route('user_login', '{url:.*}user_login')
+    config.add_route('user_login_oauth', '{url:.*}user_login_oauth')
+    config.add_route('user_logout', '{url:.*}user_logout')
+    config.add_route('user_delete', '{url:.*}user_delete')
+    config.add_route('set_new_start_argument', '{url:.*}set_new_start_argument')
+    config.add_route('set_new_start_premise', '{url:.*}set_new_start_premise')
+    config.add_route('set_new_premises_for_argument', '/{url:.*}set_new_premises_for_argument')
+    config.add_route('set_correction_of_statement', '/{url:.*}set_correction_of_statement')
+    config.add_route('set_new_issue', '/{url:.*}set_new_issue')
+    config.add_route('get_logfile_for_statements', '/{url:.*}get_logfile_for_statements')
+    config.add_route('get_shortened_url', '/{url:.*}get_shortened_url')
+    config.add_route('user_registration', '/{url:.*}user_registration')
+    config.add_route('user_password_request', '/{url:.*}user_password_request')
+    config.add_route('fuzzy_search', '/{url:.*}fuzzy_search')
+    config.add_route('fuzzy_nickname_search', '/{url:.*}fuzzy_nickname_search')
+    config.add_route('switch_language', '{url:.*}switch_language{params:.*}')
+    config.add_route('send_notification', '{url:.*}send_notification')
+    config.add_route('get_infos_about_argument', '/{url:.*}get_infos_about_argument')
+    config.add_route('get_user_with_same_opinion', '/{url:.*}get_user_with_same_opinion')
+    config.add_route('get_public_user_data', '/{url:.*}get_public_user_data')
+    config.add_route('get_user_history', 'get_user_history')
+    config.add_route('get_all_edits', 'get_all_edits')
+    config.add_route('get_all_posted_statements', 'get_all_posted_statements')
+    config.add_route('get_all_argument_clicks', 'get_all_argument_clicks')
+    config.add_route('get_all_statement_clicks', 'get_all_statement_clicks')
+    config.add_route('get_all_marked_arguments', 'get_all_marked_arguments')
+    config.add_route('get_all_marked_statements', 'get_all_marked_statements')
+    config.add_route('set_user_setting', 'set_user_setting')
+    config.add_route('set_user_language', 'set_user_language')
+    config.add_route('delete_user_history', 'delete_user_history')
+    config.add_route('delete_statistics', 'delete_statistics')
+    config.add_route('get_news', 'get_news')
+    config.add_route('send_news', 'send_news')
+    config.add_route('notifications_read', 'notifications_read')
+    config.add_route('notifications_delete', 'notifications_delete')
+    config.add_route('get_arguments_by_statement_uid', 'get_arguments_by_statement/{statement_id:\d+}')
+    config.add_route('flag_argument_or_statement', '{url:.*}flag_argument_or_statement')
+    config.add_route('split_or_merge_statement', '{url:.*}split_or_merge_statement')
+    config.add_route('split_or_merge_premisegroup', '{url:.*}split_or_merge_premisegroup')
+    config.add_route('review_delete_argument', '{url:.*}review_delete_argument')
+    config.add_route('review_optimization_argument', '{url:.*}review_optimization_argument')
+    config.add_route('review_duplicate_statement', '{url:.*}review_duplicate_statement')
+    config.add_route('review_edit_argument', '{url:.*}review_edit_argument')
+    config.add_route('review_splitted_premisegroup', '{url:.*}review_splitted_premisegroup')
+    config.add_route('review_merged_premisegroup', '{url:.*}review_merged_premisegroup')
+    config.add_route('undo_review', '{url:.*}undo_review')
+    config.add_route('cancel_review', '{url:.*}cancel_review')
+    config.add_route('review_lock', '{url:.*}review_lock')
+    config.add_route('revoke_statement_content', '{url:.*}revoke_statement_content')
+    config.add_route('revoke_argument_content', '{url:.*}revoke_argument_content')
+    config.add_route('get_references', '{url:.*}get_references')
+    config.add_route('set_references', '{url:.*}set_references')
+    config.add_route('set_seen_statements', '{url:.*}set_seen_statements')
+    config.add_route('mark_statement_or_argument', '{url:.*}mark_statement_or_argument')
+    config.add_route('set_discussion_properties', '{url:.*}set_discussion_properties')
 
     # logic at the end, otherwise the * pattern will do shit
-    config.add_route('main_user', '/user/{uid}')
-    config.add_route('discussion_support', '/discuss/{slug}/support/{arg_id_user}/{arg_id_sys}')
-    config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}')
-    config.add_route('discussion_justify', '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
-    config.add_route('discussion_attitude', '/discuss/{slug}/attitude/*statement_id')
-    config.add_route('discussion_choose', '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids')
-    config.add_route('discussion_jump', '/discuss/{slug}/jump/{arg_id}')
-    config.add_route('discussion_finish', '/discuss/finish')
-    config.add_route('discussion_init', '/discuss*slug')
+    config.add_route('discussion_support', '/discuss/{slug}/support/{arg_id_user:\d+}/{arg_id_sys:\d+}')
+    config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user:\d+}/{relation}/{arg_id_sys:\d+}')
+    config.add_route('discussion_justify_statement', '/discuss/{slug}/justify/{statement_id:\d+}/{attitude}')
+    config.add_route('discussion_justify_argument', '/discuss/{slug}/justify/{argument_id:\d+}/{attitude}/{relation}')
+
+    config.add_route('discussion_attitude', '/discuss/{slug}/attitude/{statement_id:\d+}')
+    config.add_route('discussion_choose', '/discuss/{slug}/choose/{is_argument}/{is_supportive}/{id:\d+}*pgroup_ids')
+    config.add_route('discussion_jump', '/discuss/{slug}/jump/{argument_id:\d+}')
+    config.add_route('discussion_finish', '/discuss/{slug}/finish/{argument_id:\d+}')
+    config.add_route('discussion_exit', '/discuss/exit')
+    config.add_route('discussion_start', '/discuss')
+    config.add_route('discussion_start_with_slash', '/discuss/')
+    config.add_route('discussion_init_with_slug', '/discuss/{slug}')
 
     # review section
     config.add_route('review_index', '/review')
@@ -192,12 +193,22 @@ def main(global_config, **settings):
     config.add_route('review_content', '/review/{queue}')
 
     config.scan()
+
+    __write_rss_feeds()
+
     return config.make_wsgi_app()
 
 
-def get_dbas_environs(prefix="DBAS_"):
+def __write_rss_feeds():
+    issues = get_enabled_issues_as_query().all()
+    for issue in issues:
+        rewrite_issue_rss(issue.uid, get_global_url())
+    create_news_rss(get_global_url(), 'en')
+
+
+def get_dbas_environs(prefix=""):
     """
-    Fetches all environment variables beginning with `prefix` (default: `DBAS_`).
+    Fetches all environment variables beginning with `prefix` (default: ``).
 
     Returns a dictionary where the keys are substituted versions of their corresponding environment variables.
     Substitution rules:
@@ -209,7 +220,7 @@ def get_dbas_environs(prefix="DBAS_"):
 
     Example::
 
-        "DBAS_TEST_FOO__BAR" ==> "test.foo_bar"
+        "TEST_FOO__BAR" ==> "test.foo_bar"
 
     :param prefix: The prefix of the environment variables.
     :return: The dictionary of parsed environment variables and their values.
@@ -218,7 +229,7 @@ def get_dbas_environs(prefix="DBAS_"):
     return dict([(_environs_to_keys(k, prefix), os.environ[k]) for k in dbas_keys])
 
 
-def _environs_to_keys(key, prefix="DBAS_"):
+def _environs_to_keys(key, prefix=""):
     prefix_pattern = '^{prefix}'.format(prefix=prefix)
     single_underscore_pattern = r'(?<!_)_(?!_)'
 

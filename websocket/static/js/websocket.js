@@ -7,21 +7,20 @@ var port = 5222;
 
 $(document).ready(function() {
 	'use strict';
-	
-	
+
 	// try to connect
 	try {
 		doConnect();
 	} catch (e) {
 	}
-	
+
 	// delete subscription on page unload events
 	$(window).bind('beforeunload',function(){
 		if (socket) {
 			socket.emit('remove_name', $('#' + headerNicknameId).text());
 		}
 	});
-	
+
 });
 
 /**
@@ -29,7 +28,7 @@ $(document).ready(function() {
  */
 function doConnect(){
 	'use strict';
-	
+
 	// switch between a local (http) and a global (https) mode
 	var dict = {query: 'nickname=' + $('#' + headerNicknameId).text(), secure: true};
 	var address =  'http://localhost';
@@ -40,15 +39,15 @@ function doConnect(){
 	address = address.replace('https', 'wss').replace('http', 'ws');
 
 	socket = io.connect(address + ':' + port, dict);
-	
+
 	socket.on('publish', function(data){
 		doPublish(data);
 	});
-	
+
 	socket.on('recent_review', function(data){
 		doRecentReview(data);
 	});
-	
+
 	enableTesting();
 }
 
@@ -58,11 +57,15 @@ function doConnect(){
  */
 function doPublish(data){
 	'use strict';
-	
-	if (data.type === 'success') {	        handleMessage(data, 'Huray!', doSuccess);
-	} else if (data.type === 'warning') {	handleMessage(data, 'Uhh!', doWarning);
-	} else if (data.type === 'info') {	    handleMessage(data, 'Ooh!', doInfo);
-	} else {                                setGlobalInfoHandler('Mhhh!', data.msg);
+
+	if (data.type === 'success') {
+		handleMessage(data, 'Huray!', doSuccess);
+	} else if (data.type === 'warning') {
+		handleMessage(data, 'Uhh!', doWarning);
+	} else if (data.type === 'info') {
+		handleMessage(data, 'Ooh!', doInfo);
+	} else {
+		setGlobalInfoHandler('Mhhh!', data.msg);
 	}
 }
 
@@ -74,7 +77,7 @@ function doPublish(data){
  */
 function handleMessage(data, intro, func){
 	'use strict';
-	
+
 	var msg = 'url' in data ? '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>' : data.msg;
 	func(intro, msg);
 	if ('increase_counter' in data) {
@@ -90,7 +93,7 @@ function handleMessage(data, intro, func){
  */
 function doSuccess(intro, msg){
 	'use strict';
-	
+
 	setGlobalSuccessHandler(intro, msg);
 }
 
@@ -101,7 +104,7 @@ function doSuccess(intro, msg){
  */
 function doWarning(intro, msg){
 	'use strict';
-	
+
 	setGlobalErrorHandler(intro, msg);
 }
 
@@ -112,7 +115,7 @@ function doWarning(intro, msg){
  */
 function doInfo(intro, msg){
 	'use strict';
-	
+
 	setGlobalInfoHandler(intro, msg);
 }
 
@@ -122,18 +125,18 @@ function doInfo(intro, msg){
  */
 function doRecentReview(data){
 	'use strict';
-	
+
 	if (window.location.href.indexOf('review') === -1) {
 		return;
 	}
-	
+
 	var queue = $('#' + data.queue);
 	if (queue.length !== 0){
 		// just push, if given user is not the last reviewer
 		if (queue.find('a:last-child').length === 0){
 			queue.find('span').remove();
 		}
-		
+
 		if (queue.find('img[src^="' + data.img_url + '"]').length === 0) {
 			queue.find('a:last-child').remove();
 			var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
@@ -150,7 +153,7 @@ function doRecentReview(data){
  */
 function incrementCounter(element){
 	'use strict';
-	
+
 	element.text(parseInt(element.text()) + 1);
 }
 
@@ -159,17 +162,17 @@ function incrementCounter(element){
  */
 function enableTesting(){
 	'use strict';
-	
+
 	socket.on('connect', function() {
 		var field = $('#socketStatus');
-		if (field) {
+		if (field.length !== 0) {
 			field.text('Connected!');
 		}
 	});
 
     socket.on('disconnect', function() {
 		var field = $('#socketStatus');
-		if (field) {
+		if (field.length !== 0) {
 			field.text('Disconnected!');
 		}
     });
@@ -177,50 +180,51 @@ function enableTesting(){
     socket.on('pong', function(ms){
     	var testCount = $('#testCount');
 		var latency = $('#latency');
-		if (latency) {
+		if (latency.length !== 0) {
 			latency.text(ms + 'ms');
 		}
-	    if (testCount) {
+	    if (testCount.length !== 0) {
 		    testCount.text(parseInt(testCount.text()) + 1);
 	    }
     });
-	
+
 	setInterval(function(){
         socket.emit('ping', {});
 	}, 100);
-	
+
 	socket.on('push_test', function(data) {
-		if (data.type === 'success') {	        handleMessage(data, 'TEST!', doSuccess);
-		} else if (data.type === 'warning') {	handleMessage(data, 'TEST!', doWarning);
-		} else if (data.type === 'info') {	    handleMessage(data, 'TEST!', doInfo);
+		if (data.type === 'success') {
+			handleMessage(data, 'TEST!', doSuccess);
+		} else if (data.type === 'warning') {
+			handleMessage(data, 'TEST!', doWarning);
+		} else if (data.type === 'info') {
+			handleMessage(data, 'TEST!', doInfo);
 		}
 	});
-	
+
 	// getting socket id from server
 	socket.on('push_socketid', function(id){
 		var field = $('#socketioId');
-		
-		if (field) {
+		if (field.length !== 0) {
 			field.text(id);
 		}
 	});
-	
+
 	$('#test_success_btn,#test_danger_btn,#test_info_btn').click(function(){
 		socket.emit('push_test', $(this).attr('data-type'), $('#test-input').val());
 	});
-	
+
 	$('#test_mail_btn').click(function(){
-		$.ajax({
-			url: 'debug_mail',
-			dataType: 'json',
-			data: {
-				'text': $('#test-input').val()
-			},
-			async: true
-		}).done(function (data) {
+		var url = 'debug_mail';
+		var d = {
+			'text': $('#test-input').val()
+			};
+		var done = function (data) {
 			console.log(data);
-		}).fail(function () {
+		};
+		var fail = function () {
 			console.log('fail');
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	});
 }

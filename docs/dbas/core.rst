@@ -1,6 +1,6 @@
-====
-Core
-====
+======================
+Source-Code Docstrings
+======================
 
 Description
 ===========
@@ -37,174 +37,135 @@ Query Wrapper
     :members:
 
 
-Recommender System
-==================
-
-.. automodule:: dbas.recommender_system
-    :members:
-
-Opinion Handler
-===============
-
-.. automodule:: dbas.handler.opinion
-    :members:
-
-
 Security
 ========
 
 .. automodule:: dbas.security
     :members:
 
+Discussion
+==========
 
-URL Manager
-===========
+.. automodule:: dbas.discussion.core
+    :members:
 
-.. automodule:: dbas.url_manager
+Handler
+=======
+
+.. automodule:: dbas.handler.arguments
+    :members:
+
+.. automodule:: dbas.handler.attacks
+    :members:
+
+.. automodule:: dbas.handler.email
+    :members:
+
+.. automodule:: dbas.handler.history
+    :members:
+
+.. automodule:: dbas.handler.issue
+    :members:
+
+.. automodule:: dbas.handler.language
+    :members:
+
+.. automodule:: dbas.handler.news
+    :members:
+
+.. automodule:: dbas.handler.notification
+    :members:
+
+.. automodule:: dbas.handler.opinion
+    :members:
+
+.. automodule:: dbas.handler.password
+    :members:
+
+.. automodule:: dbas.handler.references
+    :members:
+
+.. automodule:: dbas.handler.rss
+    :members:
+
+.. automodule:: dbas.handler.settings
+    :members:
+
+.. automodule:: dbas.handler.statements
+    :members:
+
+.. automodule:: dbas.handler.user
+    :members:
+
+.. automodule:: dbas.handler.voting
+    :members:
+
+
+Helper
+======
+
+.. automodule:: dbas.helper.decoration
+    :members:
+
+.. automodule:: dbas.helper.query
+    :members:
+
+.. automodule:: dbas.helper.relation
+    :members:
+
+.. automodule:: dbas.helper.url
+    :members:
+
+.. automodule:: dbas.helper.views
+    :members:
+
+.. automodule:: dbas.helper.dictionary.bubbles
+    :members:
+
+.. automodule:: dbas.helper.dictionary.discussion
+    :members:
+
+.. automodule:: dbas.helper.dictionary.items
+    :members:
+
+.. automodule:: dbas.helper.dictionary.main
+    :members:
+
+
+Validators
+==========
+
+.. automodule:: dbas.validators.common
+    :members:
+
+.. automodule:: dbas.validators.core
+    :members:
+
+.. automodule:: dbas.validators.database
+    :members:
+
+.. automodule:: dbas.validators.discussion
+    :members:
+
+.. automodule:: dbas.validators.lib
+    :members:
+
+.. automodule:: dbas.validators.notifications
+    :members:
+
+.. automodule:: dbas.validators.reviews
+    :members:
+
+.. automodule:: dbas.validators.user
     :members:
 
 
 Views
 =====
 
-.. automodule:: dbas.views
+.. automodule:: dbas.views.json
     :members:
 
-
-=======
-Strings
-=======
-
-
-String Matcher / i18n
-=====================
-
-.. automodule:: dbas.strings.matcher
+.. automodule:: dbas.views.rendered
     :members:
 
-
-Text-Generator
-==============
-
-.. automodule:: dbas.strings.text_generator
-    :members:
-
-
-Translator
-==========
-
-.. automodule:: dbas.strings.translator
-    :members:
-
-
-==============
-Authentication
-==============
-
-
-Authentication
-==============
-
-.. automodule:: dbas.auth.ldap
-    :members:
-
-
-======
-Helper
-======
-
-
-Dictionary Helper
-=================
-
-.. automodule:: dbas.helper.dictionary.main
-    :members:
-
-
-Dictionary Helper for Discussion
-================================
-
-.. automodule:: dbas.helper.dictionary.discussion
-    :members:
-
-
-Dictionary Helper for Item
-==========================
-
-.. automodule:: dbas.helper.dictionary.items
-    :members:
-
-
-Dictionary Helper for Speech Bubbles
-====================================
-
-.. automodule:: dbas.helper.dictionary.bubbles
-    :members:
-
-
-Query Helper
-============
-
-.. automodule:: dbas.helper.query
-    :members:
-
-
-Relation Helper
-===============
-
-.. automodule:: dbas.helper.relation
-    :members:
-
-
-View Helper
-===========
-
-.. automodule:: dbas.helper.views
-    :members:
-
-
-======
-Review
-======
-
-
-Flag Helper
-===========
-
-.. automodule:: dbas.review.helper.flags
-    :members:
-
-
-History Manager
-===============
-
-.. automodule:: dbas.review.helper.history
-    :members:
-
-
-Main  Manager
-=============
-
-.. automodule:: dbas.review.helper.main
-    :members:
-
-
-Queues Handler
-==============
-
-.. automodule:: dbas.review.helper.queues
-    :members:
-
-
-Reputation Helper
-=================
-
-.. automodule:: dbas.review.helper.reputation
-    :members:
-
-
-Subpage Manager
-===============
-
-.. automodule:: dbas.review.helper.subpage
-    :members:

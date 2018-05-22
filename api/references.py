@@ -9,7 +9,7 @@ from api.extractor import extract_reference_information, extract_author_informat
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
 from dbas.lib import resolve_issue_uid_to_slug, get_all_arguments_with_text_by_statement_id
-from dbas.url_manager import UrlManager
+from dbas.helper.url import UrlManager
 
 from .lib import escape_html, logger
 
@@ -32,16 +32,14 @@ def url_to_statement(issue_uid, statement_uid, agree=True):
     """
     if isinstance(agree, str):
         if agree == "true":
-            mode = "t"
+            mode = "agree"
         else:
-            mode = "f"
+            mode = "disagree"
     else:
-        mode = "t" if agree is True else "f"
+        mode = "agree" if agree is True else "disagree"
     slug = resolve_issue_uid_to_slug(issue_uid)
-    url_manager = UrlManager(application_url="", slug=slug, for_api=True)
-    return url_manager.get_url_for_justifying_statement(as_location_href=True,
-                                                        statement_uid=statement_uid,
-                                                        mode=mode)
+    url_manager = UrlManager(slug=slug)
+    return "api/" + url_manager.get_url_for_justifying_statement(statement_uid, mode)
 
 
 def prepare_single_reference(ref):
@@ -86,8 +84,8 @@ def store_reference(api_data, statement_uid=None):
         DBDiscussionSession.flush()
         transaction.commit()
         return db_ref
-    except KeyError:
-        log.error("[API/Reference] KeyError: could not access field in api_data.")
+    except KeyError as e:
+        log.error("[API/Reference] KeyError: could not access field in api_data. " + repr(e))
 
 
 # =============================================================================

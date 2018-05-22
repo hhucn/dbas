@@ -5,6 +5,7 @@ Provides functions
 """
 
 import time
+from os import environ
 
 import urllib.request
 
@@ -16,58 +17,55 @@ from dbas.logger import logger
 fallback_port = 5222
 
 
-def send_request_for_info_popup_to_socketio(nickname, port, message='', url=None, increase_counter=False):
+def send_request_for_info_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
     """
     Sends request to the socketio server for an info popup
 
     :param nickname: Current users nickname
-    :param port: Port of the notification server
     :param message: String
     :param url: Issue.uid
     :param increase_counter: Boolean
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio', 'main')
+    logger('Websocket.lib', 'main')
     if url:
-        use_https = 'dbas.cs' in url
-        __send_request_for_popup_to_socketio(nickname, port, 'info', message, url, increase_counter, use_https)
+        use_https = 'localhost' not in url
+        __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
 
 
-def send_request_for_info_popup_to_socketio_with_delay(nickname, port, message='', url=None, increase_counter=False, delay=5):
+def send_request_for_info_popup_to_socketio_with_delay(nickname, message='', url=None, increase_counter=False, delay=5):
     """
     Sends request to the socketio server for an info popup with a specific delay
 
     :param nickname: Current users nickname
-    :param port: Port of the notification server
     :param message: String
     :param url: String
     :param increase_counter: Boolean
     :param delay: int
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'main sleeping for ' + str(delay))
+    logger('Websocket.lib', 'main sleeping for ' + str(delay))
     time.sleep(delay)
-    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
+    logger('Websocket.lib', 'enough sleep')
     if url:
-        use_https = 'dbas.cs' in url
-        __send_request_for_popup_to_socketio(nickname, port, 'info', message, url, increase_counter, use_https)
+        use_https = 'localhost' not in url
+        __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
 
 
-def send_request_for_success_popup_to_socketio(nickname, port, message='', url=None, increase_counter=False):
+def send_request_for_success_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
     """
     Sends request to the socketio server for a success popup
 
     :param nickname: Current users nickname
-    :param port: Port of the notification server
     :param message: String
     :param url: String
     :param increase_counter:
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_success_popup_to_socketio', 'main')
+    logger('Websocket.lib', 'main')
     if url:
-        use_https = 'dbas.cs' in url
-        __send_request_for_popup_to_socketio(nickname, port, 'success', message, url, increase_counter, use_https)
+        use_https = 'localhost' not in url
+        __send_request_for_popup_to_socketio(nickname, 'success', message, url, increase_counter, use_https)
 
 
 def send_request_for_warning_popup_to_socketio(nickname, port, message='', url=None, increase_counter=False):
@@ -81,25 +79,24 @@ def send_request_for_warning_popup_to_socketio(nickname, port, message='', url=N
     :param increase_counter:
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_warning_popup_to_socketio', 'main')
-    __send_request_for_popup_to_socketio(nickname, port, 'warning', message, url, increase_counter)
+    logger('Websocket.lib', 'main')
+    __send_request_for_popup_to_socketio(nickname, 'warning', message, url, increase_counter)
 
 
-def __send_request_for_popup_to_socketio(nickname, port, popup_type, message='', url=None, increase_counter=False, use_https=False):
+def __send_request_for_popup_to_socketio(nickname, popup_type, message='', url=None, increase_counter=False,
+                                         use_https=False):
     """
     Sends an request to the socket io server
 
-    :param request: Current webservers request
     :param popup_type: String (success, warning, info)
     :param nickname: nickname of the user
-    :param port: Port of the notification server
     :param message: Some message
     :param url: URL for the event, what happened
     :param increase_counter: True, when the notification counter in D-BAS should be increased
     :param use_https: Boolean
     :return: Status code of the request
     """
-    logger('Websocket.lib', '__send_request_for_popup_to_socketio', 'main')
+    logger('Websocket.lib', 'main')
 
     if popup_type not in ['success', 'warning', 'info']:
         popup_type = 'info'
@@ -113,8 +110,7 @@ def __send_request_for_popup_to_socketio(nickname, port, popup_type, message='',
         params += 'increase_counter=True&'
     params = params[:-1]
 
-    if not port:
-        port = fallback_port
+    port = __get_port()
 
     if use_https:
         link = '{}:{}/'.format(get_global_url(), port)
@@ -125,40 +121,37 @@ def __send_request_for_popup_to_socketio(nickname, port, popup_type, message='',
     return __open_url(rurl)
 
 
-def send_request_for_recent_reviewer_socketio(nickname, main_page, port, queue):
+def send_request_for_recent_reviewer_socketio(nickname, main_page, queue):
     """
     Sends request to the socketio server for updating the last reviewer view
 
     :param nickname: Current users nickname
     :param main_page: URL of the app itself
-    :param port: Port of the notification server
     :param queue: Key of the last reviewers queue
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_recent_reviewer_socketio', 'main - nickname {} for queue {}'.format(nickname, queue))
+    logger('Websocket.lib', 'main - nickname {} for queue {}'.format(nickname, queue))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    reviewer_name = db_user.get_global_nickname()
+    reviewer_name = db_user.global_nickname
     reviewer_image_url = get_profile_picture(db_user)
     use_https = 'dbas' in main_page
-    return __send_request_for_recent_review_to_socketio(port, reviewer_name, reviewer_image_url, queue, use_https)
+    return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, queue, use_https)
 
 
-def __send_request_for_recent_review_to_socketio(port, reviewer_name, reviewer_image_url, queue, use_https):
+def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, queue, use_https):
     """
     Sends request to the socketio server for updating the last reviewer view
 
-    :param port: Port of the notification server
     :param reviewer_name: User.nickname
     :param reviewer_image_url: String
     :param queue: String
     :param use_https: Boolean
     :return: Status code of the request
     """
-    logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'main')
+    logger('Websocket.lib', 'main')
     params = '?reviewer_name=' + reviewer_name + '&img_url=' + reviewer_image_url + '&queue=' + queue
 
-    if not port:
-        port = fallback_port
+    port = __get_port()
 
     if use_https:
         link = '{}:{}/'.format(get_global_url(), port)
@@ -178,24 +171,18 @@ def __open_url(url):
     """
     try:
         resp = urllib.request.urlopen(url)
-        logger('Websocket.lib', '__open_url', 'Content of request {}'.format(resp.read()))
+        logger('Websocket.lib', 'Content of request {}'.format(resp.read()))
     except Exception as e:
-        logger('Websocket.lib', '__open_url', 'Error {} by calling {}'.format(e, url), error=True)
+        logger('Websocket.lib', 'Error {} by calling {}'.format(e, url), error=True)
         return None
-    logger('Websocket.lib', '__open_url', 'Status code of request {}'.format(resp.getcode()))
+    logger('Websocket.lib', 'Status code of request {}'.format(resp.getcode()))
     return resp.getcode()
 
 
-def get_port(request):
+def __get_port():
     """
-    Lets have a loko into the settings if there is a websocket port, otherwise 5222 will be returned
+    Lets have a look into the settings if there is a websocket port, otherwise 5222 will be returned
 
-    :param request: pyramid's request object
     :return: int
     """
-    try:
-        if request and 'settings:services:websocket_port' in request.registry.settings:
-            return request.registry.settings['settings:services:websocket_port']
-    except KeyError as e:
-        logger('Websocket.lib', 'get_port', 'error while reading port: {}'.format(repr(e)), error=True)
-    return fallback_port
+    return environ.get('WEBSOCKET_PORT', fallback_port)

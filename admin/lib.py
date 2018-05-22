@@ -9,7 +9,7 @@ from datetime import datetime
 
 import arrow
 import transaction
-from sqlalchemy import and_
+from pyramid.httpexceptions import exception_response
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 from dbas.database import DBDiscussionSession
@@ -19,10 +19,11 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate, \
     RevokedDuplicate, MarkedArgument, MarkedStatement, History, APIToken
-from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, \
+from dbas.lib import get_text_for_premisegroup_uid, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 table_mapper = {
     'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
@@ -122,7 +123,7 @@ def get_overview(page):
     :param page: Name of the main page
     :return: [[{'name': .., 'content': [{'name': .., 'count': .., 'href': ..}, ..] }], ..]
     """
-    logger('AdminLib', 'get_dashboard_infos', 'main')
+    logger('AdminLib', 'main')
     return_list = list()
 
     # all tables for the 'general' group
@@ -204,21 +205,18 @@ def get_table_dict(table_name, main_page):
     :param main_page: URL
     :return: Dictionary with head, row, count and has_elements
     """
-    logger('AdminLib', 'get_table_dict', str(table_name))
-
-    # check for table
-    if not table_name.lower() in table_mapper:
-        return {'is_existing': False}
+    logger('AdminLib', str(table_name))
 
     # check for elements
     db_elements = DBDiscussionSession.query(table_mapper[table_name.lower()]['table']).all()
 
     count = len(db_elements)
     if count == 0:
-        return {'is_existing': True,
-                'has_elements': False,
-                'name': table_name,
-                'count': count}
+        return {
+            'has_elements': False,
+            'name': table_name,
+            'count': count
+        }
 
     # getting all keys
     table = table_mapper[table_name.lower()]['table']
@@ -234,7 +232,6 @@ def get_table_dict(table_name, main_page):
 
     # save it
     return {
-        'is_existing': True,
         'name': table_name,
         'has_elements': True,
         'count': count,
@@ -267,10 +264,6 @@ def __get_author_data(uid, query, main_page):
     if not db_user:
         return 'Missing author with uid ' + str(uid), False
 
-    db_settings = DBDiscussionSession.query(Settings).get(uid)
-    if not db_settings:
-        return 'Missing settings of author with uid ' + str(uid), False
-
     img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 20, True))
     return '<a href="{}/user/{}">{} {}</a> ({})'.format(main_page, db_user.uid, img, db_user.nickname,
                                                         db_user.uid), True
@@ -284,7 +277,12 @@ def __get_dash_dict(name, href):
     :param href: link for current table
     :return: {'count': count, 'name': name, 'href': href}
     """
-    return {'name': name, 'href': href}
+    count = DBDiscussionSession.query(table_mapper[name.lower()]['table']).count()
+    return {
+        'name': name,
+        'href': href,
+        'count': count,
+    }
 
 
 def get_rows_of(columns, db_elements, main_page):
@@ -309,52 +307,86 @@ def get_rows_of(columns, db_elements, main_page):
 
 
 def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp):
-    if column in _user_columns:
-        text, success = __get_author_data(attribute, db_users, main_page)
-        text = str(text) if success else ''
-        tmp.append(text)
+    user_columns = {col: __resolve_user_attribute for col in _user_columns}
+    statement_columns = {col: __resolve_statement_attribute for col in _statement_columns}
+    arrow_columns = {col: __resolve_arrow_attribute for col in _arrow_columns}
 
-    elif column == 'lang_uid':
-        tmp.append(__get_language(attribute, db_languages))
+    column_matcher = {
+        'lang_uid': __resolve_lang_attribute,
+        'password': __resolve_password_attribute,
+        'premisegroup_uid': __resolve_premisesgroup_attribute,
+        'argument_uid': __resolve_argument_attribute,
+        'textversion_uid': __resolve_textversion_attribute,
+        'path': __resolve_path_attribute,
+        'email': __resolve_email_attribute,
+    }
+    column_matcher.update(user_columns)
+    column_matcher.update(statement_columns)
+    column_matcher.update(arrow_columns)
 
-    elif column == 'password':
-        tmp.append(str(attribute)[:5] + '...')
-
-    elif column == 'premisesgroup_uid':
-        text, uid_list = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
-        tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(uid_list))
-
-    elif column in _statement_columns:
-        text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
-        tmp.append(str(attribute) + ' - ' + str(text))
-
-    elif column == 'argument_uid':
-        text = get_text_for_argument_uid(attribute) if attribute is not None else 'None'
-        tmp.append(str(attribute) + ' - ' + str(text))
-
-    elif column == 'textversion_uid':
-        text = 'None'
-        if attribute is not None:
-            db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
-            text = db_tv.content if db_tv else ''
-        tmp.append(str(attribute) + ' - ' + str(text))
-
-    elif column == 'path':
-        tmp.append('<a href="{}/{}{}" target="_blank">{}</a>'.format(main_page, 'discuss', attribute, attribute))
-
-    elif column == 'email':
-        db_user = DBDiscussionSession.query(User).filter_by(email=str(attribute)).first()
-        img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 25))
-        tmp.append('{} {}'.format(img, attribute))
-
-    elif column in _arrow_columns:
-        tmp.append(attribute.format('YYYY-MM-DD HH:mm:ss'))
-
+    if column in column_matcher:
+        column_matcher[column](attribute, main_page, db_languages, db_users, tmp)
     else:
         tmp.append(str(attribute))
 
 
-def update_row(table_name, uids, keys, values, nickname, _tn):
+def __resolve_user_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text, success = __get_author_data(attribute, db_users, main_page)
+    text = str(text) if success else ''
+    tmp.append(text)
+
+
+def __resolve_statement_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
+    tmp.append(str(attribute) + ' - ' + str(text))
+
+
+def __resolve_arrow_attribute(attribute, main_page, db_languages, db_users, tmp):
+    tmp.append(attribute.format('YYYY-MM-DD HH:mm:ss'))
+
+
+def __resolve_lang_attribute(attribute, main_page, db_languages, db_users, tmp):
+    tmp.append(__get_language(attribute, db_languages))
+
+
+def __resolve_password_attribute(attribute, main_page, db_languages, db_users, tmp):
+    tmp.append(str(attribute)[:5] + '...')
+
+
+def __resolve_premisesgroup_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text = ''
+    uids = []
+    if attribute is not None:
+        text = get_text_for_premisegroup_uid(attribute)
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=attribute).join(Statement).all()
+        uids = [premise.statements.uid for premise in db_premises]
+    tmp.append('{} - {} {}'.format(attribute, text, uids))
+
+
+def __resolve_argument_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text = get_text_for_argument_uid(attribute) if attribute is not None else 'None'
+    tmp.append('{} - {}'.format(attribute, text))
+
+
+def __resolve_textversion_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text = 'None'
+    if attribute is not None:
+        db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
+        text = db_tv.content if db_tv else ''
+    tmp.append('{} - {}'.format(attribute, text))
+
+
+def __resolve_path_attribute(attribute, main_page, db_languages, db_users, tmp):
+    tmp.append('<a href="{}/{}{}" target="_blank">{}</a>'.format(main_page, 'discuss', attribute, attribute))
+
+
+def __resolve_email_attribute(attribute, main_page, db_languages, db_users, tmp):
+    db_user = DBDiscussionSession.query(User).filter_by(email=str(attribute)).first()
+    img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 25))
+    tmp.append('{} {}'.format(img, attribute))
+
+
+def update_row(table_name, uids, keys, values):
     """
     Updates the data in a specific row of an table
 
@@ -362,41 +394,31 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
     :param uids: Array with uids
     :param keys: Array with keys
     :param values: Array with values
-    :param nickname: Current nickname of the user
-    :param _tn: Translator
     :return: Empty string or error message
     """
-    if not is_user_admin(nickname):
-        return _tn.get(_.noRights)
-
-    if not table_name.lower() in table_mapper:
-        return _tn.get(_.internalKeyError)
-
     table = table_mapper[table_name.lower()]['table']
+    _tn = Translator('en')
     try:
-        update_dict, success = __update_row_dict(table, values, keys, _tn)
-        if not success:
-            return update_dict  # update_dict is a string
+        update_dict = __update_row_dict(table, values, keys, _tn)
     except ProgrammingError as e:
-        logger('AdminLib', 'update_row ProgrammingError in __update_row_dict', str(e))
-        return 'SQLAlchemy ProgrammingError: ' + str(e)
+        logger('AdminLib', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     try:
         __update_row(table, table_name, uids, update_dict)
-
     except IntegrityError as e:
-        logger('AdminLib', 'update_row IntegrityError', str(e))
-        return 'SQLAlchemy IntegrityError: ' + str(e)
+        logger('AdminLib', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
     except ProgrammingError as e:
-        logger('AdminLib', 'update_row ProgrammingError', str(e))
-        return 'SQLAlchemy ProgrammingError: ' + str(e)
+        logger('AdminLib', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     DBDiscussionSession.flush()
     transaction.commit()
-    return ''
+    return True
 
 
-def delete_row(table_name, uids, nickname, _tn):
+def delete_row(table_name, uids):
     """
     Deletes a row in a table
 
@@ -406,13 +428,7 @@ def delete_row(table_name, uids, nickname, _tn):
     :param _tn: Translator
     :return: Empty string or error message
     """
-    logger('AdminLib', 'delete_row', table_name + ' ' + str(uids) + ' ' + nickname)
-    if not is_user_admin(nickname):
-        return _tn.get(_.noRights)
-
-    if not table_name.lower() in table_mapper:
-        return _tn.get(_.internalKeyError)
-
+    logger('AdminLib', table_name + ' ' + str(uids))
     table = table_mapper[table_name.lower()]['table']
     try:
         # check if there is a table, where uid is not the PK!
@@ -420,39 +436,32 @@ def delete_row(table_name, uids, nickname, _tn):
             uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
             DBDiscussionSession.query(table).filter_by(author_uid=uid).delete()
         elif table_name.lower() == 'premise':
-            DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
+            DBDiscussionSession.query(table).filter(Premise.premisegroup_uid == uids[0],
                                                     Premise.statement_uid == uids[1]).delete()
         else:
             DBDiscussionSession.query(table).filter_by(uid=uids[0]).delete()
 
     except IntegrityError as e:
-        logger('AdminLib', 'delete_row IntegrityError', str(e))
-        return 'SQLAlchemy IntegrityError: ' + str(e)
+        logger('AdminLib', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
     except ProgrammingError as e:
-        logger('AdminLib', 'delete_row ProgrammingError', str(e))
-        return 'SQLAlchemy ProgrammingError: ' + str(e)
+        logger('AdminLib', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     DBDiscussionSession.flush()
     transaction.commit()
-    return ''
+    return True
 
 
-def add_row(table_name, data, nickname, _tn):
+def add_row(table_name, data):
     """
     Updates data of a row in the table
 
     :param table_name: Name of the table
-    :param data: Dictionary with data for teh update
-    :param nickname: Current nickname of the user
-    :param _tn: Translator
+    :param data: Dictionary with data for the update
     :return: Empty string or error message
     """
-    logger('AdminLib', 'add_row', str(data))
-    if not is_user_admin(nickname):
-        return _tn.get(_.noRights)
-
-    if not table_name.lower() in table_mapper:
-        return _tn.get(_.internalKeyError)
+    logger('AdminLib', str(data))
 
     table = table_mapper[table_name.lower()]['table']
     try:
@@ -461,25 +470,21 @@ def add_row(table_name, data, nickname, _tn):
         new_one = table(**data)
         DBDiscussionSession.add(new_one)
     except IntegrityError as e:
-        logger('AdminLib', 'add_row IntegrityError', str(e))
-        return 'SQLAlchemy IntegrityError: ' + str(e)
+        logger('AdminLib', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
 
     DBDiscussionSession.flush()
     transaction.commit()
-    return ''
+    return True
 
 
-def update_badge(nickname, _tn):
+def update_badge():
     """
     Returns the new count for the badge of every table
 
-    :param nickname: Current nickname of the user
-    :param _tn: Translator
     :return: dict(), string
     """
-    logger('AdminLib', 'update_badge', '')
-    if not is_user_admin(nickname):
-        return None, _tn.get(_.noRights)
+    logger('AdminLib', '')
     ret_array = []
     for t in table_mapper:
         ret_array.append({
@@ -487,7 +492,7 @@ def update_badge(nickname, _tn):
             'count': DBDiscussionSession.query(table_mapper[t]['table']).count()
         })
 
-    return ret_array, ''
+    return ret_array
 
 
 def __update_row_dict(table, values, keys, _tn):
@@ -505,24 +510,10 @@ def __update_row_dict(table, values, keys, _tn):
         value_type = str(__find_type(table, key))
         # if current type is int
         if value_type == 'INTEGER':
-            # check for foreign key of author or language
-            if key in _user_columns:
-                # clear key / cut "(uid)"
-                tmp = values[index]
-                tmp = tmp[:tmp.rfind(" (")]
-                db_user = DBDiscussionSession.query(User).filter_by(nickname=tmp).first()
-                if not db_user:
-                    return _tn.get(_.userNotFound), False
-                update_dict[key] = db_user.uid
-
-            elif key == 'lang_uid':
-                db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=values[index]).first()
-                if not db_lang:
-                    return _tn.get(_.userNotFound), False
-                update_dict[key] = db_lang.uid
-
-            else:
-                update_dict[key] = int(values[index])
+            tmp_key, tmp_val, success = __get_int_data(key, values[index], _tn)
+            if not success:
+                raise ProgrammingError
+            update_dict[tmp_key] = tmp_val
 
         # if current type is bolean
         elif value_type == 'BOOLEAN':
@@ -539,7 +530,27 @@ def __update_row_dict(table, values, keys, _tn):
         else:
             update_dict[key] = values[index]
 
-    return update_dict, True
+    return update_dict
+
+
+def __get_int_data(key, val, _tn):
+    # check for foreign key of author or language
+    if key in _user_columns:
+        # clear key / cut "(uid)"
+        val = val[:val.rfind(" (")]
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=val).first()
+        if not db_user:
+            return _tn.get(_.userNotFound), '', False
+        return key, db_user.uid, True
+
+    elif key == 'lang_uid':
+        db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=val).first()
+        if not db_lang:
+            return _tn.get(_.langNotFound), '', False
+        return key, db_lang.uid
+
+    else:
+        return key, int(val), False
 
 
 def __update_row(table, table_name, uids, update_dict):
@@ -556,7 +567,7 @@ def __update_row(table, table_name, uids, update_dict):
         uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
         DBDiscussionSession.query(table).filter_by(author_uid=uid).update(update_dict)
     elif table_name.lower() == 'premise':
-        DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
+        DBDiscussionSession.query(table).filter(Premise.premisegroup_uid == uids[0],
                                                 Premise.statement_uid == uids[1]).update(update_dict)
     else:
         DBDiscussionSession.query(table).filter_by(uid=uids[0]).update(update_dict)
@@ -619,7 +630,7 @@ def generate_application_token(owner: str) -> str:
     DBDiscussionSession.flush()
     transaction.commit()
 
-    return hashed_token[:5] + "-" + token
+    return hashed_token[:5] + ":" + token
 
 
 def __hash_token_with_owner(owner, token):
@@ -634,13 +645,13 @@ def check_token(token: str) -> bool:
     :return: True if the token is valid and not disabled.
     """
 
-    token_components = token.split("-")
+    token_components = token.split(":")
     if len(token_components) is 2:
         hash_identifier, auth_token = token_components
 
         api_tokens = DBDiscussionSession.query(APIToken) \
-            .filter(and_(APIToken.token.startswith(hash_identifier),
-                         APIToken.disabled == False))
+            .filter(APIToken.token.startswith(hash_identifier),
+                    APIToken.disabled == False)
 
         for api_token in api_tokens:
             return __hash_token_with_owner(api_token.owner, auth_token) == api_token.token

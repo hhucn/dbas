@@ -10,7 +10,6 @@ Manage Google Client IDs: https://apps.twitter.com/
 """
 
 import os
-# import twitter
 from requests_oauthlib.oauth1_session import OAuth1Session
 from dbas.logger import logger
 from dbas.handler.user import oauth_values
@@ -23,11 +22,10 @@ def start_flow(request, redirect_uri):
     :param redirect_uri:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
 
-    logger('Twitter OAuth', 'start_flow',
-           'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
+    logger('Twitter OAuth', 'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
 
     request_token_url = 'https://api.twitter.com/oauth/request_token'
     authorization_url = 'https://api.twitter.com/oauth/authorize'
@@ -39,7 +37,7 @@ def start_flow(request, redirect_uri):
     request.session['twitter_oauth_token'] = resp.get('oauth_token')
     request.session['twitter_oauth_token_secret'] = resp.get('oauth_token_secret')
 
-    logger('Twitter OAuth', 'start_flow', 'Please go to {} and authorize access'.format(authorization_url))
+    logger('Twitter OAuth', 'Please go to {} and authorize access'.format(authorization_url))
     return {'authorization_url': url, 'error': ''}
 
 
@@ -50,11 +48,10 @@ def continue_flow(request, redirect_response):
     :param redirect_response:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
 
-    logger('Twitter OAuth', 'continue_flow',
-           'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
+    logger('Twitter OAuth', 'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
 
     pincode = redirect_response.split('oauth_verifier=')[1]
 
@@ -69,11 +66,6 @@ def continue_flow(request, redirect_response):
                                  verifier=pincode)
 
     resp = oauth_client.fetch_access_token(access_token_url)
-
-    # api = twitter.Api(consumer_key=client_id,
-    #                   consumer_secret=client_secret,
-    #                   access_token_key=oauth_token,
-    #                   access_token_secret=oauth_token_secret)
 
     user_data = {
         'id': resp['id'],

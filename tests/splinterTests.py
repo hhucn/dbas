@@ -67,7 +67,7 @@ class Helper:
         :param url:
         :return:
         """
-        browser.visit(main_page + 'ajax_user_login?user=' + user + '&password=' + pw + '&keep_login=false&url=' + url)
+        browser.visit(main_page + 'user_login?user=' + user + '&password=' + pw + '&keep_login=false&url=' + url)
         return browser
 
     @staticmethod
@@ -77,7 +77,7 @@ class Helper:
         :param browser:
         :return:
         """
-        browser.visit(main_page + 'ajax_user_logout')
+        browser.visit(main_page + 'user_logout')
         return browser
 
     @staticmethod
@@ -467,9 +467,9 @@ class FrontendTests:
             time.sleep(wait_time)
         success = success and Helper.check_for_present_text(b, 'Your family argues', 'check for switched issue')
 
-        # check finish
-        b.find_by_id('finish-button').click()
-        success = success and Helper.check_for_present_text(b, 'Thank you!', 'check for finish button')
+        # check exit
+        b.find_by_id('exit-button').click()
+        success = success and Helper.check_for_present_text(b, 'Thank you!', 'check for exit button')
 
         # go back
         b.find_by_id('back-to-discuss-button').click()

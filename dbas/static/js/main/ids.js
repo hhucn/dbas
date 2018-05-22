@@ -7,7 +7,7 @@
  * @type {string}
  */
 var addTopicButtonId                          = 'add-topic';
-var addTopicPopupContainer                    = 'popup-add-topic-error';
+var addTopicPopupError = 'popup-add-topic-error';
 var addTopicPopupErrorText                    = 'popup-add-topic-error-text';
 var addReasonButtonId                         = 'add-reason';
 var addStatementContainerId                   = 'add-statement-container';
@@ -154,15 +154,6 @@ var popupLoginFailed                          = 'popup-login-failed';
 var popupLoginSuccess                         = 'popup-login-success';
 var popupLoginInfo                            = 'popup-login-info';
 
-/*
-
-settings-password-extras
-settings-password-meter
-settings-password-strength
-settings-password-info-link
-settings-password-info-icon
- */
-
 var popupLoginForgotPasswordBody              = 'popup-login-forgot-password-body';
 var popupLoginForgotPasswordText              = 'popup-login-forgot-password-text';
 var popupLoginPasswordMeterId                 = 'popup-login-password-meter';
@@ -255,9 +246,8 @@ var settingsReceiveNotifications              = 'receive-notifications-toggle';
 var settingsReceiveMails                      = 'receive-mails-toggle';
 var settingsPublicNick                        = 'public-nick-toggle';
 var settingsGuidedTour                        = 'guided-tour-toggle';
-var settingsNotificationLangDe                = 'link-settings-de';
-var settingsNotificationLangEn                = 'link-settings-en';
 var sessionExpiredContainer                   = 'session_expired_container';
+var settingsDeleteAccount                     = 'delete_account';
 var sidebarEditButtonId                       = 'edit-statement';
 var sidebarClass                              = 'sidebar';
 var sidebarTackClass                          = 'tack';
@@ -296,7 +286,6 @@ var attr_last_relation         = 'last_relation';
 var attr_long_id               = 'long_id';
 var attr_no_opinion            = 'noopinion';
 var attr_more_about            = 'more_about';
-var attr_overbid               = 'overbid';
 var attr_relation              = 'relation';
 var attr_related_argument      = 'related_argument';
 var attr_rebut                 = 'rebut';

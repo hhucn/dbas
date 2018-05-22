@@ -40,4 +40,3 @@ RUN apk add --no-cache yarn gettext libldap nodejs bash musl-dev postgresql-dev 
 
 EXPOSE 4284
 CMD sh -c "alembic upgrade head && pserve development.ini --reload"
-

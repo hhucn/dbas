@@ -10,20 +10,31 @@ return JSON objects which can then be used in external websites.
 
 """
 import json
+from typing import Callable, Any
 
 from cornice import Service
+from pyramid.httpexceptions import HTTPSeeOther
 
+import dbas.discussion.core as discussion
+import dbas.handler.history as history_handler
 import dbas.views as dbas
-from api.origins import store_origin
+from api.lib import extract_items_and_bubbles
+from api.models import Item, Bubble
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
+from dbas.database.discussion_model import Issue, Statement, User, Argument
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
-                      get_text_for_argument_uid, resolve_issue_uid_to_slug)
-from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts, HTTP400
-from .login import validate_credentials, validate_login
+                      get_text_for_argument_uid, resolve_issue_uid_to_slug, create_speechbubble_dict, BubbleTypes,
+                      Attitudes, Relations)
+from dbas.strings.translator import Keywords as _, get_translation
+from dbas.validators.core import has_keywords, validate
+from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
+    valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
+from dbas.validators.lib import add_error
+from .lib import HTTP204, flatten, json_to_dict, logger
+from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
                          prepare_single_reference, store_reference,
@@ -45,38 +56,60 @@ cors_policy = dict(enabled=True,
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
+empty_route = Service(name='empty',
+                      path='',
+                      description="Empty route",
+                      cors_policy=cors_policy)
+
 ahello = Service(name='hello',
                  path='/hello',
                  description="Say hello to remote users",
                  cors_policy=cors_policy)
 
+whoami = Service(name='whoami',
+                 path='/whoami',
+                 description='Send nickname and token to D-BAS and validate yourself',
+                 cors_policy=cors_policy)
+
 # Argumentation stuff
 reaction = Service(name='api_reaction',
-                   path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
-                   description="Discussion Reaction",
+                   path='/{slug}/reaction/{arg_id_user}/{relation}/{arg_id_sys}',
+                   description='Discussion Reaction',
                    cors_policy=cors_policy)
-justify = Service(name='api_justify',
-                  path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation',
-                  description="Discussion Justify",
-                  cors_policy=cors_policy)
+
+justify_statement = Service(name='api_justify_statement',
+                            path='/{slug}/justify/{statement_id:\d+}/{attitude:(' + '|'.join(
+                                map(str, Attitudes)) + ')}',
+                            description='Discussion Justify',
+                            cors_policy=cors_policy)
+
+justify_argument = Service(name='api_justify_argument',
+                           path='/{slug}/justify/{argument_id:\d+}' +
+                                '/{attitude:(' + '|'.join(map(str, Attitudes)) + ')}' +
+                                '/{relation:(' + '|'.join(map(str, Relations)) + ')}',
+                           description='Discussion Justify',
+                           cors_policy=cors_policy)
+
 attitude = Service(name='api_attitude',
-                   path='/{slug}/attitude/*statement_id',
-                   description="Discussion Attitude",
+                   path='/{slug}/attitude/{position_id:\d+}',
+                   description='Discussion Attitude',
                    cors_policy=cors_policy)
-support = Service(name='api_support',
-                  path='/{slug}/support/{arg_user_uid}/{arg_system_uid}',
-                  description="Coming from one argument, support another one",
-                  cors_policy=cors_policy)
+
+finish = Service(name='api_finish',
+                 path='/{slug}/finish/{argument_id:\d+}',
+                 description='End of a discussion')
+
+# add new stuff
+positions = Service(name='Positions',
+                    path='/{slug}/positions',
+                    description='Positions of a specific issue',
+                    cors_policy=cors_policy)
 
 # Prefix with 'z' so it is added as the last route
 zinit = Service(name='api_init',
                 path='/{slug}',
                 description="Discussion Init",
                 cors_policy=cors_policy)
-zinit_blank = Service(name='api_init_blank',
-                      path='/',
-                      description="Discussion Init",
-                      cors_policy=cors_policy)
 
 #
 # Add new data to D-BAS
@@ -123,6 +156,7 @@ issues = Service(name="issues",
                  path="/issues",
                  description="Get issues",
                  cors_policy=cors_policy)
+
 #
 # Build text-blocks
 #
@@ -147,10 +181,25 @@ login = Service(name='login',
                 description="Log into external discussion system",
                 cors_policy=cors_policy)
 
+logout = Service(name='logout',
+                 path='/logout',
+                 description="Logout user",
+                 cors_policy=cors_policy)
+
 
 # =============================================================================
 # SYSTEM: Say hello to new visitors
 # =============================================================================
+
+@empty_route.get()
+def empty(request):
+    """
+    Returns 404 because no route is given
+
+    :return: 404
+    """
+    add_error(request, 'Route not found', 'There was no route given')
+
 
 @ahello.get()
 def hello(_):
@@ -159,26 +208,185 @@ def hello(_):
 
     :return: dbas.discussion_reaction(True)
     """
-    return {"status": "ok",
-            "message": "Connection established. \"Back when PHP had less than 100 functions and the function hashing "
-                       "mechanism was strlen()\" -- Author of PHP"}
+    return {
+        "status": "ok",
+        "message": "Connection established. \"Back when PHP had less than 100 functions and the function hashing "
+                   "mechanism was strlen()\" -- Author of PHP"
+    }
+
+
+@whoami.get()
+@validate(valid_token)
+def whoami_fn(request):
+    """
+    Test-route to validate token and nickname from headers.
+
+    :return: welcome-dict
+    """
+    nickname = request.validated["user"].nickname
+    return {
+        "status": "ok",
+        "nickname": nickname,
+        "message": "Hello " + nickname + ", nice to meet you."
+    }
 
 
 # =============================================================================
 # DISCUSSION-RELATED REQUESTS
 # =============================================================================
 
-def append_csrf_to_dict(request, return_dict):
+@positions.get()
+@zinit.get()
+@validate(valid_issue_by_slug)
+def discussion_init(request):
     """
-    Append CSRF token to response.
+    Given a slug, show its positions.
 
-    :param request: needed to extract the token
-    :param return_dict: dictionary, which gets merged with the CSRF token
+    :param request: Request
     :return:
     """
-    csrf = request.session.get_csrf_token()
-    return merge_dicts({"csrf": csrf}, return_dict)
+    db_issue = request.validated['issue']
+    intro = get_translation(_.initialPositionInterest, db_issue.lang)
 
+    bubbles = [
+        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', message=intro, omit_url=True, lang=db_issue.lang)
+    ]
+
+    db_positions = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
+                                                               Statement.issue_uid == db_issue.uid,
+                                                               Statement.is_position == True).all()
+
+    items = [Item([pos.get_textversion().content], "{}/attitude/{}".format(db_issue.slug, pos.uid))
+             for pos in db_positions]
+
+    return {
+        'bubbles': [Bubble(bubble) for bubble in bubbles],
+        'items': items
+    }
+
+
+@attitude.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_position)
+def discussion_attitude(request):
+    """
+    Return data from DBas discussion_attitude page.
+
+    /{slug}/attitude/{position_id}
+
+    :param request: request
+    :return: dbas.discussion_attitude(True)
+    """
+    db_position = request.validated['position']
+    db_issue = request.validated['issue']
+    db_user = request.validated['user']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
+
+    return {
+        'bubbles': bubbles,
+        'attitudes': dict(zip(keys, items))
+    }
+
+
+@justify_statement.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_statement(location='path'), valid_attitude)
+def discussion_justify_statement(request) -> dict:
+    """
+    Pick attitude from path and query the statement. Show the user some statements to follow the discussion.
+
+    Path: /{slug}/justify/{statement_id}/{attitude}
+
+    :param request: request
+    :return: dict
+    """
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = dbas.discussion.justify_statement(db_issue, db_user, request.validated['statement'],
+                                                            request.validated['attitude'], history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    return {
+        'bubbles': bubbles,
+        'items': items
+    }
+
+
+@justify_argument.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_argument(location='path'), valid_attitude, valid_relation)
+def discussion_justify_argument(request) -> dict:
+    """
+    Justify an argument. Attitude and relation are important to show the correct items for the user.
+
+    /{slug}/justify/{argument_id}/{attitude}/{relation}
+
+    :param request:
+    :return:
+    """
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = dbas.discussion.justify_argument(db_issue, db_user, request.validated['argument'],
+                                                           request.validated['attitude'], request.validated['relation'],
+                                                           history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    return {
+        'bubbles': bubbles,
+        'items': items
+    }
+
+
+@reaction.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_reaction_arguments, valid_relation)
+def discussion_reaction(request):
+    """
+    Return data from DBas discussion_reaction page.
+
+    Path: /{slug}/reaction/{arg_id_user}/{relation}/{arg_id_sys}
+
+    :param request: request
+    :return: bubbles for information and items for the next step
+    """
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = dbas.discussion.reaction(db_issue, db_user,
+                                                   request.validated['arg_user'],
+                                                   request.validated['arg_sys'],
+                                                   request.validated['relation'],
+                                                   history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
+
+    return {
+        'bubbles': bubbles,
+        'attacks': dict(zip(keys, items))
+    }
+
+
+@finish.get()
+@validate(valid_token_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
+def discussion_finish(request):
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = dbas.discussion.finish(db_issue, db_user,
+                                                 request.validated['argument'], history)
+
+    return {'bubbles': extract_items_and_bubbles(prepared_discussion)[0]}
+
+
+# -----------------------------------------------------------------------------
 
 def prepare_user_information(request):
     """
@@ -189,15 +397,18 @@ def prepare_user_information(request):
     """
     val = request.validated
     try:
-        api_data = {"nickname": val["user"],
-                    "user_uid": val["user_uid"],
-                    "session_id": val["session_id"]}
+        api_data = {
+            "nickname": val["user"],
+            "user": val["user"],
+            "user_uid": val["user_uid"],
+            "session_id": val["session_id"]
+        }
     except KeyError:
         api_data = None
     return api_data
 
 
-def prepare_data_assign_reference(request, func):
+def prepare_data_assign_reference(request, func: Callable[[bool, dict], Any]):
     """
     Collect user information, prepare submitted data and store references into database.
 
@@ -206,136 +417,53 @@ def prepare_data_assign_reference(request, func):
     :return:
     """
     api_data = prepare_user_information(request)
-    if api_data:
-        data = json_to_dict(request.body)
-
-        if "issue_id" not in data:
-            if "slug" in data:
-                issue_db = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).first()
-
-                if issue_db:
-                    api_data["issue_id"] = issue_db.uid
-                else:
-                    raise HTTP400("Issue not found")
-        elif not DBDiscussionSession.query(Issue).get(data["issue_id"]):
-            raise HTTP400("Issue not found")
-
-        api_data.update(data)
-        api_data.update({'application_url': request.application_url})
-        return_dict = func(True, api_data)
-        if isinstance(return_dict, str):
-            return_dict = json.loads(return_dict)
-        statement_uids = return_dict["statement_uids"]
-        if statement_uids:
-            statement_uids = flatten(statement_uids)
-            if type(statement_uids) is int:
-                statement_uids = [statement_uids]
-
-            # Store references
-            refs_db = list(map(lambda statement: store_reference(api_data, statement), statement_uids))
-            # Store origin if provided
-            list(map(lambda statement: store_origin(api_data, statement), statement_uids))
-
-            return_dict["references"] = list(map(lambda ref: prepare_single_reference(ref), refs_db))
-        return return_dict
-    else:
+    if not api_data:
         raise HTTP204()
 
+    log.info(str(request.matched_route))
+    data = json_to_dict(request.body)
 
-def __init(request):
-    api_data = prepare_user_information(request)
-    nickname = api_data["nickname"] if api_data else None
-    return dbas.discussion.init(request, nickname, for_api=True)
+    if "issue_id" in data:
+        db_issue = DBDiscussionSession.query(Issue).get(data["issue_id"])
 
+        if not db_issue:
+            request.errors.add("body", "Issue not found", "The given issue_id is invalid")
+            request.status = 400
 
-@reaction.get(validators=validate_login)
-def discussion_reaction(request):
-    """
-    Return data from DBas discussion_reaction page.
+    elif "slug" in data:
+        db_issue = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).one()
 
-    :param request: request
-    :return: dbas.discussion_reaction(True)
+        if not db_issue:
+            request.errors.add("body", "Issue not found", "The given slug is invalid")
+            request.status = 400
 
-    """
-    api_data = prepare_user_information(request)
-    nickname = api_data["nickname"] if api_data else None
-    return dbas.discussion.reaction(request, nickname, for_api=True)
+        api_data["issue_id"] = db_issue.uid
 
+    else:
+        request.errors.add("body", "Issue not found", "There was no issue_id or slug given")
+        request.status = 400
+        return
 
-@justify.get(validators=validate_login)
-def discussion_justify(request):
-    """
-    Return data from DBas discussion_justify page.
+    api_data["issue"] = db_issue
 
-    :param request: request
-    :return: dbas.discussion_justify(True)
+    api_data.update(data)
+    api_data['application_url'] = request.application_url
 
-    """
-    api_data = prepare_user_information(request)
-    nickname = api_data["nickname"] if api_data else None
-    return dbas.discussion.justify(request, nickname, for_api=True)
+    return_dict = func(True, api_data)
 
+    if isinstance(return_dict, str):
+        return_dict = json.loads(return_dict)
 
-@attitude.get(validators=validate_login)
-def discussion_attitude(request):
-    """
-    Return data from DBas discussion_attitude page.
-
-    :param request: request
-    :return: dbas.discussion_attitude(True)
-
-    """
-    api_data = prepare_user_information(request)
-    nickname = api_data["nickname"] if api_data else None
-    return dbas.discussion.attitude(request, nickname, for_api=True)
+    statement_uids = return_dict["statement_uids"]
+    if statement_uids:
+        statement_uids = flatten(statement_uids)
+        if type(statement_uids) is int:
+            statement_uids = [statement_uids]
+        refs_db = [store_reference(api_data, statement) for statement in statement_uids]
+        return_dict["references"] = list(map(prepare_single_reference, refs_db))
+    return return_dict
 
 
-@support.get(validators=validate_login)
-def discussion_support(request):
-    """
-    Return data from D-BAS discussion_support page.
-
-    :param request: request
-    :return: dbas.discussion_support(True)
-
-    """
-    api_data = prepare_user_information(request)
-    nickname = api_data["nickname"] if api_data else None
-    if not api_data:
-        api_data = dict()
-    api_data["slug"] = request.matchdict["slug"]
-    api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
-    api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
-    return dbas.discussion.support(request, nickname, for_api=True, api_data=api_data)
-
-
-@zinit.get(validators=validate_login)
-def discussion_init(request):
-    """
-    Return data from DBas discussion_init page.
-
-    :param request: request
-    :return: dbas.discussion_init(True)
-
-    """
-    return __init(request)
-
-
-@zinit_blank.get(validators=validate_login)
-def discussion_init_blank(request):
-    """
-    Return data from DBas discussion_init page.
-
-    :param request: request
-    :return: dbas.discussion_init(True)
-
-    """
-    return __init(request)
-
-
-#
-# Add new statements / positions
-#
 @start_statement.post(validators=validate_login, require_csrf=False)
 def add_start_statement(request):
     """
@@ -387,8 +515,10 @@ def get_references(request):
     if host and path:
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
-            return {"references": list(map(lambda ref:
-                                           prepare_single_reference(ref), refs_db))}
+            return {
+                "references": list(map(lambda ref:
+                                       prepare_single_reference(ref), refs_db))
+            }
         else:
             return error("Could not retrieve references", "API/Reference")
     return error("Could not parse your origin", "API/Reference")
@@ -417,38 +547,37 @@ def get_reference_usages(request):
 # USER MANAGEMENT
 # =============================================================================
 
-@login.get()  # TODO test this permission='use'
-def get_csrf_token(request):
-    """
-    Test user's credentials, return success if valid token and username is provided.
-
-    :param request:
-    :return:
-
-    """
-    log.debug("[API/CSRF] Returning CSRF token.")
-    return append_csrf_to_dict(request, {})
-
-
-@login.post(validators=validate_credentials, require_csrf=False)
+@login.post(require_csrf=False)
+@validate(has_keywords(('nickname', str), ('password', str)), validate_credentials)
 def user_login(request):
     """
     Check provided credentials and return a token, if it is a valid user. The function body is only executed,
     if the validator added a request.validated field.
 
     :param request:
-    :return: token
-
+    :return: token and nickname
     """
-    user = request.validated['user']
-    # Convert bytes to string
-    if type(user['token']) == bytes:
-        token = user['token'].decode('utf-8')
-    else:
-        token = user['token']
+    return {
+        'nickname': request.validated['nickname'],
+        'token': request.validated['token']
+    }
 
-    return_dict = {'token': '%s-%s' % (user['nickname'], token)}
-    return append_csrf_to_dict(request, return_dict)
+
+@logout.get(require_csrf=False)
+@validate(valid_token)
+def user_logout(request):
+    """
+    If user is logged in and has token, remove the token from the database and perform logout.
+
+    :param request:
+    :return:
+    """
+    request.session.invalidate()
+    token_to_database(request.validated['user'], None)
+    return {
+        'status': 'ok',
+        'message': 'Successfully logged out'
+    }
 
 
 # =============================================================================
@@ -469,7 +598,7 @@ def find_statements_fn(request):
     api_data["issue"] = request.matchdict["issue"]
     api_data["mode"] = request.matchdict["type"]
     api_data["value"] = request.matchdict["value"]
-    results = dbas.fuzzy_search(request, for_api=True, api_data=api_data)
+    results = dbas.fuzzy_search(request, api_data=api_data)
 
     issue_uid = api_data["issue"]
 
@@ -514,9 +643,8 @@ def jump_to_argument_fn(request):
     :return: Argument with a list of possible interactions
 
     """
-    api_data = jump_preparation(request)
-    nickname = api_data["nickname"] if api_data else None
-    return dbas.discussion.jump(request, nickname, for_api=True, api_data=api_data)
+    # api_data = jump_preparation(request)
+    return dbas.discussion.jump(request)
 
 
 # =============================================================================
@@ -551,17 +679,64 @@ def get_statement_url(request):
 
 
 @issues.get()
-def get_issues(request):
+def get_issues(_request):
     """
     Returns a list of active issues.
 
-    :param request:
-    :return:
+    :param _request:
+    :return: List of active issues.
     """
+    return DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                   Issue.is_private == False).all()
 
-    def enabled(issue):
-        return issue["enabled"] == "enabled"
 
-    issues = list(filter(enabled, __init(request)["issues"]["all"]))
-    return {"status": "ok",
-            "data": {"issues": issues}}
+@positions.post(require_csrf=False)
+@validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body)
+def add_position_with_premise(request):
+    db_user: User = request.validated['user']
+    db_issue: Issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    new_position = set_position(db_user, db_issue, request.validated['position-text'])
+
+    conslusion_id: int = new_position['statement_uids'][0]
+    db_conclusion: Statement = DBDiscussionSession.query(Statement).get(conslusion_id)
+
+    pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
+                               request.mailer)
+
+    return HTTPSeeOther(location='/api' + pd['url'])
+
+
+@justify_statement.post(require_csrf=False)
+@validate(valid_token, valid_issue_by_slug, valid_reason_in_body, valid_statement(location="path"),
+          valid_attitude)
+def add_premise_to_statement(request):
+    db_user: User = request.validated['user']
+    db_issue: Issue = request.validated['issue']
+    db_statement: Statement = request.validated['statement']
+    is_supportive = request.validated['attitude'] == Attitudes.AGREE
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
+                               history,
+                               request.mailer)
+
+    return HTTPSeeOther(location='/api' + pd['url'])
+
+
+@justify_argument.post(require_csrf=False)
+@validate(valid_token, valid_issue_by_slug, valid_reason_in_body, valid_argument(location="path"), valid_relation,
+          valid_attitude)
+def add_premise_to_argument(request):
+    db_user: User = request.validated['user']
+    db_issue: Issue = request.validated['issue']
+    db_argument: Argument = request.validated['argument']
+    relation: Relations = request.validated['relation']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
+                                history,
+                                request.mailer)
+
+    return HTTPSeeOther(location='/api' + pd['url'])

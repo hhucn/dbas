@@ -1,4 +1,4 @@
-<tal:block metal:use-macro="layout" i18n:domain="admin" metal:define-macro="layout">
+<tal:block metal:use-macro="load: ../../dbas/templates/basetemplate.pt" i18n:domain="admin" metal:define-macro="layout">
   <tal:block metal:fill-slot="content_page">
     <section>
       <div class="text-center big-header">
@@ -164,7 +164,7 @@
                   <tbody>
                   <tr tal:attributes="data-href line.href; id line.name" tal:repeat="line group.content">
                     <td>${line.name}</td>
-                    <td><span class="badge">-</span></td>
+                    <td><span class="badge">${line.count}</span></td>
                   </tr>
                   </tbody>
                 </table>
@@ -203,7 +203,7 @@
                       <td><span>${token.owner}</span></td>
                       <td>${token.created}</td>
                       <td>
-                        <button class="btn btn-danger pull-right revoke-button" onclick="revoke_token(${token.id})">
+                        <button class="btn btn-danger pull-right revoke-button" onclick="new AdminAjaxHandler().revokeToken(${token.id})">
                           <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
                         </button>
                       </td>
@@ -233,7 +233,7 @@
                             </div>
                             <div class="form-group">
                               <button id="api-token-submit" type="button" class="btn btn-primary"
-                                      onclick="generate_token($('#api-token-owner-input').val())">
+                                      onclick="new AdminAjaxHandler().generateToken($('#api-token-owner-input').val())">
                                 <span>Generate new token</span>
                               </button>
                             </div>

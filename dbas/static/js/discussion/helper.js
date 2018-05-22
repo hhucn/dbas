@@ -3,36 +3,15 @@
  */
 
 /**
- * Insert a <br>-tag after the given maxTextWidth or pattern
- *
- * @param text string
- * @param maxTextWidth int
- * @param pattern string
- * @returns {String}
- */
-function cutTextOnChar (text, maxTextWidth, pattern) {
-	'use strict';
-	var i, p, l;
-		i = 1;
-		l = text.length;
-	while (i * maxTextWidth < l) {
-		p = text.indexOf(pattern, i * maxTextWidth);
-		text =  text.substr(0, p) + '<br>' + text.substr(p + pattern.length);
-		i = i + 1;
-	}
-	return text;
-}
-
-/**
  * Use the browser's built-in functionality to quickly and safely escape the string
  * Based on http://shebang.brandonmintern.com/foolproof-html-escaping-in-javascript/
  *
  * @param text to escape
  * @returns {*} escaped string
  */
-function escapeHtml (text) {
-	'use strict';
-	var div = document.createElement('div');
+function escapeHtml(text) {
+    'use strict';
+    var div = document.createElement('div');
     div.appendChild(document.createTextNode(text));
     return div.innerHTML;
 }
@@ -42,34 +21,15 @@ function escapeHtml (text) {
  *
  * @returns {number}
  */
-function getCurrentIssueId (){
-	'use strict';
-	var issue = $('#' + issueDropdownButtonID).attr('issue');
-	if (!issue) {
-		issue = $('#issue_info').data('issue');
-	}
-	return issue;
+function getCurrentIssueId() {
+    'use strict';
+    var issue = $('#' + issueDropdownButtonID).attr('issue');
+    if (!issue) {
+        issue = $('#issue_info').data('issue');
+    }
+    return issue;
 }
 
-/**
- * Opens a new tab with the contact form. Given params should contain name and content
- *
- * @param params dictionary with at least {'name': ?, 'content': ?}
- */
-function redirectInNewTabForContact (params){
-	'use strict';
-	var csrfToken = $('#' + hiddenCSRFTokenId).val();
-	var csrfField = '<input type="hidden" name="csrf_token" value="' + csrfToken + '">';
-	var f = $("<form target='_blank' method='POST' style='display:none;'>" + csrfField + "</form>").attr('action', mainpage + 'contact');
-	f.appendTo(document.body);
-	for (var prms in params) {
-		if (params.hasOwnProperty(prms)) {
-			f.append($('<input type="hidden" />').attr('name', prms).attr('value', params[prms]));
-		}
-	}
-	f.submit().remove();
-}
-	
 /**
  * Writes key-value-pair into local storage and returns boolean
  *
@@ -77,14 +37,14 @@ function redirectInNewTabForContact (params){
  * @param value
  * @returns {boolean}
  */
-function setLocalStorage (key, value){
-	'use strict';
-	try {
-		localStorage.setItem(key, value);
-		return true;
-	} catch(err){
-		return false;
-	}
+function setLocalStorage(key, value) {
+    'use strict';
+    try {
+        localStorage.setItem(key, value);
+        return true;
+    } catch (_err) {
+        return false;
+    }
 }
 
 /**
@@ -93,31 +53,31 @@ function setLocalStorage (key, value){
  * @param key
  * @returns {undefined}
  */
-function getLocalStorage (key){
-	'use strict';
-	try {
-		return localStorage.getItem(key);
-	} catch(err){
-		return undefined;
-	}
+function getLocalStorage(key) {
+    'use strict';
+    try {
+        return localStorage.getItem(key);
+    } catch (err) {
+        return undefined;
+    }
 }
-	
+
 /**
  * Sets an anchor into the location
  *
  * @param anchor string
  */
-function setAnchor (anchor){
-	'use strict';
-	location.hash = anchor;
+function setAnchor(anchor) {
+    'use strict';
+    location.hash = anchor;
 }
 
 /**
  * Clears all anchors in the location
  */
-function clearAnchor (){
-	'use strict';
-	location.hash = '';
+function clearAnchor() {
+    'use strict';
+    location.hash = '';
 }
 
 /**
@@ -125,7 +85,7 @@ function clearAnchor (){
  *
  * @returns {boolean}
  */
-function isMobileAgent(){
-	'use strict';
-	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+function isMobileAgent() {
+    'use strict';
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }

@@ -4,18 +4,18 @@ Introducing an admin interface to enable easy database management.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import json
-
 from cornice import Service
+from pyramid.httpexceptions import exception_response
 
 import admin.lib as lib
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.logger import logger
-from dbas.strings.keywords import Keywords as _
-from dbas.strings.translator import Translator
-from dbas.views import user_logout, base_layout, project_name
+from dbas.validators.core import has_keywords, validate
+from dbas.validators.database import valid_table_name
+from dbas.validators.user import valid_user_as_admin, valid_user_optional
+from dbas.views import user_logout, project_name
 
 #
 # CORS configuration
@@ -25,52 +25,44 @@ cors_policy = dict(enabled=True,
                    origins=('*',),
                    max_age=42)
 
-
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
 dashboard = Service(name='dashboard_page',
                     path='/',
-                    description="Admin Page",
+                    description='Admin Page',
                     renderer='templates/admin.pt',
-                    permission='everybody',  # or permission='use'
+                    permission='everybody',
                     cors_policy=cors_policy)
 
 z_table = Service(name='table_page',
                   path='/{table}',
-                  description="Table Page",
+                  description='Table Page',
                   renderer='templates/table.pt',
                   permission='admin',
                   cors_policy=cors_policy)
 
 update_row = Service(name='update_table_row',
-                     path='/{url:.*}ajax_admin_update',
-                     description="Update",
+                     path='/{url:.*}update',
+                     description='Update',
                      renderer='json',
                      permission='admin',
                      cors_policy=cors_policy)
 
 delete_row = Service(name='delete_table_row',
-                     path='/{url:.*}ajax_admin_delete',
-                     description="Delete",
+                     path='/{url:.*}delete',
+                     description='Delete',
                      renderer='json',
                      permission='admin',
                      cors_policy=cors_policy)
 
 add_row = Service(name='add_table_row',
-                  path='/{url:.*}ajax_admin_add',
-                  description="Add",
+                  path='/{url:.*}add',
+                  description='Add',
                   renderer='json',
                   permission='admin',
                   cors_policy=cors_policy)
-
-update_badge = Service(name='update_badge_counter',
-                       path='/{url:.*}ajax_admin_update_badges',
-                       description="Update",
-                       renderer='json',
-                       permission='admin',
-                       cors_policy=cors_policy)
 
 api_token = Service(name='api_token',
                     path='/{url:.*}api_token/',
@@ -85,7 +77,11 @@ revoke_token = Service(name='revoke_token',
                        cors_policy=cors_policy)
 
 
+# IMPORTANT: we do not need to validate if the user in an admin because we set the permission of this views
+
+
 @dashboard.get()
+@validate(valid_user_optional)
 def main_admin(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
@@ -93,31 +89,35 @@ def main_admin(request):
     :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'main_admin', 'def')
-    request_authenticated_userid = request.authenticated_userid
-    should_log_out = user.update_last_action(request_authenticated_userid)
+    logger('Admin', 'def')
+    db_user = request.validated['user']
+
+    should_log_out = user.update_last_action(request.validated['user'])
     if should_log_out:
         return user_logout(request, True)
 
     ui_locales = get_language_from_cookie(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   db_user)
     dashboard_elements = {
-        "entities": lib.get_overview(request.path),
-        "api_tokens": lib.get_application_tokens()
+        'entities': lib.get_overview(request.path),
+        'api_tokens': lib.get_application_tokens()
     }
 
     return {
-        'layout': base_layout(),
         'language': str(ui_locales),
-        'title': 'Admin' if 'is_admin' in extras_dict and extras_dict['is_admin'] else '(B)admin',
+        'title': 'Admin' if db_user.is_admin() else '(B)admin',
         'project': project_name,
         'extras': extras_dict,
-        'dashboard': dashboard_elements
+        'dashboard': dashboard_elements,
+        'discussion': {'broke_limit': False}
     }
 
 
 @z_table.get()
+@validate(valid_user_as_admin)
 def main_table(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
@@ -125,37 +125,33 @@ def main_table(request):
     :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    logger('Admin', 'main_table', 'def')
-    should_log_out = user.update_last_action(request_authenticated_userid)
+    logger('Admin', 'def')
+    should_log_out = user.update_last_action(request.validated['user'])
     if should_log_out:
         return user_logout(request, True)
 
     ui_locales = get_language_from_cookie(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-    table = request.matchdict['table']
-    try:
-        table_dict = lib.get_table_dict(table, request.application_url)
-        table_dict['has_error'] = False
-        table_dict['error'] = ''
-    except Exception as e:
-        table_dict = dict()
-        table_dict['is_existing'] = False
-        table_dict['has_error'] = True
-        table_dict['error'] = str(e)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.validated['user'])
+    table_name = request.matchdict['table']
+    if not table_name.lower() in lib.table_mapper:
+        return exception_response(400)
+    table_dict = lib.get_table_dict(table_name, request.application_url)
 
     return {
-        'layout': base_layout(),
         'language': str(ui_locales),
-        'title': 'Admin - ' + table,
+        'title': 'Admin - ' + table_name,
         'project': project_name,
         'extras': extras_dict,
-        'table': table_dict
+        'table': table_dict,
+        'discussion': {'broke_limit': False}
     }
 
 
-@update_row.get()
+@update_row.post()
+@validate(valid_user_as_admin, valid_table_name, has_keywords(('keys', list), ('uids', list), ('values', list)))
 def main_update(request):
     """
     View configuration for updating any row
@@ -163,28 +159,16 @@ def main_update(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'main_update', 'def ' + str(request.params))
-
-    nickname = request.authenticated_userid
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        table = request.params['table']
-        uids = json.loads(request.params['uids'])
-        keys = json.loads(request.params['keys'])
-        values = json.loads(request.params['values'])
-        return_dict['error'] = lib.update_row(table, uids, keys, values, nickname, _tn)
-    except KeyError as e:
-        logger('Admin', 'main_update error', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    logger('Admin', 'def ' + str(request.params))
+    table = request.validated['table']
+    uids = request.validated['uids']
+    keys = request.validated['keys']
+    values = request.validated['values']
+    return lib.update_row(table, uids, keys, values)
 
 
-@delete_row.get()
+@delete_row.post()
+@validate(valid_user_as_admin, valid_table_name, has_keywords(('uids', list)))
 def main_delete(request):
     """
     View configuration for deleting any row
@@ -192,26 +176,12 @@ def main_delete(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'main_delete', 'def ' + str(request.params))
-
-    nickname = request.authenticated_userid
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        table = request.params['table']
-        uids = json.loads(request.params['uids'])
-        return_dict['error'] = lib.delete_row(table, uids, nickname, _tn)
-    except KeyError as e:
-        logger('Admin', 'main_delete error', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    logger('Admin', 'def ' + str(request.json_body))
+    return lib.delete_row(request.validated['table'], request.validated['uids'])
 
 
-@add_row.get()
+@add_row.post()
+@validate(valid_user_as_admin, valid_table_name, has_keywords(('new_data', dict)))
 def main_add(request):
     """
     View configuration for adding any row
@@ -219,57 +189,15 @@ def main_add(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'main_add', 'def ' + str(request.params))
-
-    nickname = request.authenticated_userid
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        table = request.params['table']
-        new_data = json.loads(request.params['new_data'])
-        return_dict['error'] = lib.add_row(table, new_data, nickname, _tn)
-    except KeyError as e:
-        logger('Admin', 'main_add error', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
-
-
-@update_badge.get()
-def main_update_badge(request):
-    """
-    View configuration for updating a badge
-
-    :param request: current webservers request
-    :return: dict()
-    """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'main_update_badge', 'def ' + str(request.params))
-
-    nickname = request.authenticated_userid
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        data, error = lib.update_badge(nickname, _tn)
-        return_dict['error'] = error
-        return_dict['data'] = data
-    except KeyError as e:
-        logger('Admin', 'main_add main_update_badge', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    logger('Admin', 'def ' + str(request.json_body))
+    return lib.add_row(request.validated['table'], request.validated['new_data'])
 
 
 @api_token.post()
 def generate_api_token(request):
     owner = request.params['owner']
     token = lib.generate_application_token(owner)
-    logger('Admin', 'Application Tokens', 'API-Token for {} was created.'.format(owner))
+    logger('Admin', 'API-Token for {} was created.'.format(owner))
     return {'token': token}
 
 
@@ -277,4 +205,4 @@ def generate_api_token(request):
 def revoke_api_token(request):
     token_id = request.matchdict['id']
     lib.revoke_application_token(token_id)
-    logger('Admin', 'Application Tokens', 'API-Token {} was revoked.'.format(token_id))
+    logger('Admin', 'API-Token {} was revoked.'.format(token_id))

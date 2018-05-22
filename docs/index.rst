@@ -5,9 +5,14 @@
 
 .. _index:
 
-=================================
-Welcome to D-BAS's documentation!
-=================================
+======================================
+Welcome to the documentation of D-BAS!
+======================================
+
+.. image:: ../dbas/static/images/logo.png
+   :scale: 80
+   :alt: D-BAS Logo
+   :target: https://dbas.cs.uni-duesseldorf.de
 
 Installation
 ============

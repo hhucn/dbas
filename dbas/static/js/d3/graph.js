@@ -35,14 +35,15 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         url = url.split('#')[0];
         var is_argument = null;
         var uid = null;
-        var tmp = url.split('/');
         isPartialGraphMode = override_cases;
         if (!override_cases) {
-            var keys = { // mapping of keyword and boolean for 'is_argumentÄ
+            var tmp = url.split('/');
+            var keys = {
                 'attitude': false,
                 'justify': false,
                 'reaction': true,
                 'support': true,
+                'finish': true,
                 'jump': true
             };
             $.each(keys, function (key, bool) {
@@ -156,13 +157,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param request_for_complete
      */
     this.callbackIfDoneForDiscussionGraph = function (data, request_for_complete) {
-        var jsonData = $.parseJSON(data);
-        if (jsonData.error.length !== 0) {
-            setGlobalErrorHandler('Ohh!', jsonData.error);
+        if (data.error.length !== 0) {
+            setGlobalErrorHandler('Ohh!', data.error);
             new GuiHandler().setDisplayStyleAsDiscussion();
             return;
         }
-        new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
+        new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, data, null, request_for_complete);
     };
 
     /**
@@ -268,11 +268,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
         size.rel_node_factor = {};
-        //size.rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
-        //size.rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
 
         // height of the header (offset per line count)
-        var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
+        var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1) * 26;
 
         var width = container.width();
         var height = container.outerHeight() - offset;
@@ -662,7 +660,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 id: function (d) {
                     return "marker_" + d.edge_type + d.id;
                 },
-                // for doj
                 refX: function (d) {
                     if (d.is_undercut === true) {
                         return 6;
@@ -782,23 +779,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             var text = $("<div>").html(d.label).text();
             var node_text = text.split(" ");
             for (var i = 0; i < node_text.length; i++) {
-                if ((i % 4) === 0) {
-                    d3.select(this).append("tspan")
-                        .text(node_text[i])
-                        .attr({
-                            'dy': i ? '1.2em' : '0',
-                            'x': '0',
-                            'text-anchor': "middle"
-                        });
+                var attr = {};
+                if (i % 4 === 0) {
+                    attr = {'dy': '1.2em', 'x': '0', 'text-anchor': "middle"};
                 }
-                else {
-                    d3.select(this).append("tspan").text(' ' + node_text[i]);
-                }
+                d3.select(this).append("tspan")
+                    .text(' ' + node_text[i])
+                    .attr(attr);
             }
-            d3.select(this).attr("id", 'label-' + d.id);
             // set position of label
-            var height = $("#label-" + d.id).height();
-            d3.select(this).attr("y", -height + 45);
+            var height = $("#label-" + d.id).length > 0 ? 45 - $("#label-" + d.id).height() : - 20;
+            d3.select(this).attr({'id': 'label-' + d.id, 'y': height });
         });
     }
 
@@ -807,15 +798,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function setRectProperties() {
         rect.each(function (d) {
-            var element = $("#label-" + d.id);
-            var width = element.width() + 24;
-            var height = element.height() + 10;
+            // var row_count = $("#label-" + d.id + " [x='0']").length;
+            var width = 0; // 140;
+            var height = 0; // row_count * emToPx(1.2) + 10;
             var pos = calculateRectPos(width, height);
+
             // if d is a virtual node do not show label
             if (d.label === '') {
                 width = 0;
                 height = 0;
             }
+
             d3.select(this).attr({
                 'width': width,
                 'height': height,
@@ -823,6 +816,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 'y': pos[1],
                 'id': 'rect-' + d.id
             });
+
             if (d.id.indexOf('statement') !== -1 || d.id.indexOf('issue') !== -1) {
                 box_sizes[d.id] = {'width': width, 'height': height};
             }

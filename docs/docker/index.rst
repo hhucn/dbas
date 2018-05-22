@@ -105,6 +105,6 @@ in `NAMES`::
 This provides a full bash inside the container::
 
     $ root@20190f09319e:/code# ls
-    CHANGELOG.md  LICENSE      Makefile   README.rst  api   dbas           dbasrequest.log  docker              docker.ini      docs    graph    production.ini    run.sh    tests
-    Dockerfile    MANIFEST.in  README.md  admin       data  dbas.egg-info  development.ini  docker-compose.yml  docker_init.sh  export  i18n.sh  requirements.txt  setup.py
+    CHANGELOG.md  LICENSE      README.rst  api   dbas           dbasrequest.log  docker              docker.ini      docs    graph    production.ini    run.sh    tests
+    Dockerfile    MANIFEST.in  README.md  admin       data  dbas.egg-info  development.ini  docker-compose.yml  export  i18n.sh  requirements.txt  setup.py
     $ root@20190f09319e:/code#
