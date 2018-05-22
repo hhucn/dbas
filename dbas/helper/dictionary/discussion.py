@@ -376,7 +376,10 @@ class DiscussionDictHelper(object):
         db_argument = DBDiscussionSession.query(Argument).get(db_user_argument.uid)
         gender_of_counter_arg = ''
 
-        db_enemy, _, _, _ = get_name_link_of_arguments_author(DBDiscussionSession.query(Argument).get(arg_sys_id), nickname)
+        db_enemy = None
+        if arg_sys_id is not None:
+            db_tmp_arg = DBDiscussionSession.query(Argument).get(arg_sys_id)
+            db_enemy, _, _, _ = get_name_link_of_arguments_author(db_tmp_arg, nickname)
 
         if not attack:
             prep_dict = self.__get_dict_for_argumentation_end(db_user_argument.uid, user_changed_opinion, db_user)

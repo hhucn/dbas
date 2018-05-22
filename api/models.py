@@ -64,7 +64,7 @@ class Bubble:
         """
         self.bubble_type = self.__demultiplex_bubbletype(bubble)
         self.html = bubble['message']
-        self.url = bubble['url'] if bubble['url'] != '' else None
+        self.url = bubble['bubble_url'] if bubble['bubble_url'] != '' else None
         self.text = unhtmlify(bubble['message'])
 
     def __json__(self, _request):
