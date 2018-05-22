@@ -1,7 +1,7 @@
 """Add statement_origins table
 
 Revision ID: f0bf03bf6326
-Revises: ed3484af5b24
+Revises: 45f5c1f60de9
 Create Date: 2017-11-03 11:56:28.985785
 
 """
