@@ -8,7 +8,7 @@ from sqlalchemy import func
 import dbas.review.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
-    sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement
+    sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
 from dbas.handler import user, notification as nh
 from dbas.handler.rss import append_action_to_issue_rss
 from dbas.handler.voting import add_seen_argument, add_seen_statement
@@ -296,8 +296,12 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> 
             return db_statement, True
 
     # add text
-    statement = Statement(is_position=is_start, issue=db_issue.uid)
+    statement = Statement(is_position=is_start)
     DBDiscussionSession.add(statement)
+    DBDiscussionSession.flush()
+    transaction.commit()
+    statement2issue = StatementToIssue(statement=statement.uid, issue=db_issue.uid)
+    DBDiscussionSession.add(statement2issue)
     DBDiscussionSession.flush()
 
     # add textversion

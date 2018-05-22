@@ -5,7 +5,7 @@ Provides helping function for querying the database.
 """
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement, Argument, Premise, Issue, ClickedStatement
+from dbas.database.discussion_model import Statement, Argument, Premise, Issue, ClickedStatement, StatementToIssue
 
 
 def get_enabled_statement_as_query():
@@ -56,10 +56,16 @@ def get_visible_issues_for_user_as_query(user_uid):
     set_of_visited_issues = {tmp.uid for tmp in db_valid_issues}
 
     db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user_uid).all()
-    db_statements = DBDiscussionSession.query(Statement).filter(
-        Statement.uid.in_([tmp.statement_uid for tmp in db_clicked_statements])).all()
-    db_valid_issues = DBDiscussionSession.query(Issue).filter(
-        Issue.uid.in_([tmp.issue_uid for tmp in db_statements])).all()
+
+    statement_uids = [el.statement_uid for el in db_clicked_statements]
+    db_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(statement_uids)).all()
+
+    statement_uids = [st.uid for st in db_statements]
+    db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter(StatementToIssue.statement_uid.in_(statement_uids)).all()
+
+    issue_ids = [st.issue_uid for st in db_statement2issues]
+    db_valid_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(issue_ids)).all()
+
     for issue in db_valid_issues:
         set_of_visited_issues.add(issue.uid)
 

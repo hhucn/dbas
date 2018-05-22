@@ -21,7 +21,7 @@ import dbas.views as dbas
 from api.lib import extract_items_and_bubbles
 from api.models import Item, Bubble
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, User, Argument
+from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
@@ -252,8 +252,9 @@ def discussion_init(request):
         create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', message=intro, omit_url=True, lang=db_issue.lang)
     ]
 
+    issues_statements = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
     db_positions = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
-                                                               Statement.issue_uid == db_issue.uid,
+                                                               Statement.uid.in_(issues_statements),
                                                                Statement.is_position == True).all()
 
     items = [Item([pos.get_textversion().content], "{}/attitude/{}".format(db_issue.slug, pos.uid))

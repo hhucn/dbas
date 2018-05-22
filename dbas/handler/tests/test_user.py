@@ -76,7 +76,7 @@ class UserHandlerTests(unittest.TestCase):
         assert_equal(user.get_statement_count_of(engelbert, False), 0)
 
         # add statement
-        db_st = Statement(True, 2)
+        db_st = Statement(True)
         DBDiscussionSession.add(db_st)
         DBDiscussionSession.flush()
         transaction.commit()

@@ -429,12 +429,9 @@ class Statement(DiscussionBase):
     __tablename__ = 'statements'
     uid = Column(Integer, primary_key=True)
     is_position = Column(Boolean)
-    issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    issues = relationship('Issue', foreign_keys=[issue_uid])
-
-    def __init__(self, is_position, issue, is_disabled=False):
+    def __init__(self, is_position, is_disabled=False):
         """
         Inits a row in current statement table
 
@@ -443,7 +440,6 @@ class Statement(DiscussionBase):
         :param is_disabled: Boolean
         """
         self.is_position = is_position
-        self.issue_uid = issue
         self.is_disabled = is_disabled
 
     def set_disabled(self, is_disabled):
@@ -632,6 +628,25 @@ class StatementOrigins(DiscussionBase):
         self.author = author
         self.version = version
         self.statement_uid = statement_uid
+
+
+class StatementToIssue(DiscussionBase):
+    __tablename__ = 'statement_to_issue'
+    uid = Column(Integer, primary_key=True)
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    issue_uid = Column(Integer, ForeignKey('issues.uid'))
+
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+    issues = relationship('Issue', foreign_keys=[issue_uid])
+
+    def __init__(self, statement, issue):
+        """
+
+        :param statement:
+        :param issue:
+        """
+        self.statement_uid = statement
+        self.issue_uid = issue
 
 
 class SeenStatement(DiscussionBase):
