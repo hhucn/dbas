@@ -846,30 +846,32 @@ def pretty_print_options(message):
     return message
 
 
-def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, uid='', url='', message='',
-                             omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
-                             nickname='anonymous', lang='en', is_users_opinion=False):
+def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool=False, is_author: bool=False, uid: str='',
+                             bubble_url: str= '', content: str= '', omit_bubble_url: bool=False, omit_vote_info: bool=False,
+                             argument_uid: int=None, statement_uid: int=None, is_supportive: bool=False,
+                             nickname: str='anonymous', lang: str='en', is_users_opinion: bool=False):
     """
     Creates an dictionary which includes every information needed for a bubble.
 
     :param bubble_type: BubbleTypes
-    :param is_markable: Boolean
-    :param is_author: Boolean
-    :param uid: id of bubble
-    :param url: URL
-    :param message: String
-    :param omit_url: Boolean
+    :param is_markable: True if the content itself could be flagged
+    :param is_author: True if the current user is author of the content
+    :param uid: Identifier for the bubble
+    :param bubble_url: URL for the click event of the bubble
+    :param content: Text of the bubble
+    :param omit_bubble_url: True if the bubble should have a link
+    :param omit_vote_info: True if the bubble have the little, grey information text
     :param argument_uid: Argument.uid
     :param statement_uid: Statement.uid
     :param is_supportive: Boolean
     :param nickname: String
-    :param omit_url: Boolean
+    :param omit_bubble_url: Boolean
     :param lang: is_users_opinion
     :param is_users_opinion: Boolean
     :return: dict()
     """
     if uid is not 'now':
-        message = pretty_print_options(message)
+        content = pretty_print_options(content)
 
     # check for users opinion
     if bubble_type is BubbleTypes.USER and nickname != 'anonymous':
@@ -895,9 +897,10 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, ui
         'is_markable': is_markable,
         'is_author': is_author,
         'id': uid if len(str(uid)) > 0 else uuid4().hex,
-        'url': url,
-        'message': message,
-        'omit_url': omit_url,
+        'bubble_url': bubble_url,
+        'content': content,
+        'omit_bubble_url': omit_bubble_url,
+        'omit_vote_info': omit_vote_info,
         'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',
         'data_argument_uid': argument_uid,
         'data_statement_uid': statement_uid,
