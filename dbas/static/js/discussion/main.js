@@ -392,11 +392,11 @@ function Main() {
         var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
         var tack = sidebarwrapper.find('.' + sidebarTackClass);
         var sidebar = sidebarwrapper.find('.' + sidebarClass);
+        var bgColor = new Colors().hexToRGB('#F3F3F3');
 
         $(hamburger).click(function () {
             $(this).toggleClass('open');
             var width = wrapper.width();
-            var bgColor = $('#' + discussionBubbleSpaceId).css('background-color');
 
             if (sidebar.is(':visible')) {
                 tackwrapper.fadeOut();
@@ -477,7 +477,7 @@ function Main() {
             hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
                 .css('margin-left', 'auto')
                 .css('background-color', sidebar.css('background-color'));
-            sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
+            sidebarwrapper.css('background-color', new Colors().hexToRGB('#F3F3F3'))
                 .css('height', maincontainer.outerHeight() + 'px');
             tackwrapper.fadeIn();
 

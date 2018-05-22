@@ -331,7 +331,7 @@ class DiscussionDictHelper(object):
                 intro = b + _tn.get(_.otherParticipantsThinkThat) + e
             sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
             sys_text += '<br><br>' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, uid=uid, is_markable=True)
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, uid=uid, is_markable=True, other_author=db_other_user)
             if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
                 bubbles_array.append(bubble_sys)
 
@@ -376,10 +376,12 @@ class DiscussionDictHelper(object):
         db_argument = DBDiscussionSession.query(Argument).get(db_user_argument.uid)
         gender_of_counter_arg = ''
 
+        db_enemy, _, _, _ = get_name_link_of_arguments_author(DBDiscussionSession.query(Argument).get(arg_sys_id), nickname)
+
         if not attack:
             prep_dict = self.__get_dict_for_argumentation_end(db_user_argument.uid, user_changed_opinion, db_user)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=prep_dict['sys'], omit_bubble_url=True,
-                                                  lang=self.lang)
+                                                  lang=self.lang, other_author=db_enemy)
             bubble_mid = create_speechbubble_dict(BubbleTypes.INFO, content=prep_dict['mid'], omit_bubble_url=True,
                                                   lang=self.lang)
         else:
@@ -389,14 +391,14 @@ class DiscussionDictHelper(object):
             is_author = is_author_of_argument(db_user, prep_dict['confrontation'].uid)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, uid=quid, content=prep_dict['sys'], omit_bubble_url=True,
                                                   lang=self.lang, is_markable=True,
-                                                  is_author=is_author)
+                                                  is_author=is_author, other_author=db_enemy)
             statement_list = self.__get_all_statement_texts_by_argument(prep_dict['confrontation'])
             gender_of_counter_arg = prep_dict['gender']
 
         bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=prep_dict['user'], omit_bubble_url=True,
                                                argument_uid=db_user_argument.uid,
                                                is_supportive=db_user_argument.is_supportive, lang=self.lang,
-                                               nickname=nickname)
+                                               nickname=nickname, other_author=db_enemy)
 
         # dirty fixes
         if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
