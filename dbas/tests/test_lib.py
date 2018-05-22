@@ -234,11 +234,6 @@ class LibTests(unittest.TestCase):
         matchdict, params, session, current_issue_uid = {}, {}, {'issue': 1}, {}
         self.assertEqual('en', lib.get_discussion_language(matchdict, params, session, current_issue_uid))
 
-    def test_get_slug_by_statement_uid(self):
-        statement = DBDiscussionSession.query(Statement).get(1)
-        issue = DBDiscussionSession.query(Issue).get(statement.issue_uid)
-        self.assertEqual(issue.slug, lib.get_slug_by_statement_uid(1))
-
     def test_get_text_for_premise(self):
         self.assertIsNone(lib.get_text_for_premise(0))
         self.assertEqual(lib.get_text_for_premise(12), 'cats are fluffy')
