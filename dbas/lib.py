@@ -846,35 +846,45 @@ def pretty_print_options(message):
     return message
 
 
-def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, uid='', url='', message='',
-                             omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
-                             nickname='anonymous', lang='en', is_users_opinion=False):
+def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool=False, is_author: bool=False, uid: str='',
+                             bubble_url: str= '', content: str= '', omit_bubble_url: bool=False, omit_vote_info: bool=False,
+                             argument_uid: int=None, statement_uid: int=None, is_supportive: bool=False,
+                             nickname: str='anonymous', lang: str='en', is_users_opinion: bool=False, other_author: User=None):
     """
     Creates an dictionary which includes every information needed for a bubble.
 
     :param bubble_type: BubbleTypes
-    :param is_markable: Boolean
-    :param is_author: Boolean
-    :param uid: id of bubble
-    :param url: URL
-    :param message: String
-    :param omit_url: Boolean
+    :param is_markable: True if the content itself could be flagged
+    :param is_author: True if the current user is author of the content
+    :param uid: Identifier for the bubble
+    :param bubble_url: URL for the click event of the bubble
+    :param content: Text of the bubble
+    :param omit_bubble_url: True if the bubble should have a link
+    :param omit_vote_info: True if the bubble have the little, grey information text
     :param argument_uid: Argument.uid
     :param statement_uid: Statement.uid
     :param is_supportive: Boolean
     :param nickname: String
-    :param omit_url: Boolean
+    :param omit_bubble_url: Boolean
     :param lang: is_users_opinion
     :param is_users_opinion: Boolean
     :return: dict()
     """
+    gravatar_link = get_global_url() + '/static/images/icon.png'
+    profile = None
+
     if uid is not 'now':
-        message = pretty_print_options(message)
+        content = pretty_print_options(content)
+
+    if bubble_type is BubbleTypes.SYSTEM and other_author is not None:
+        gravatar_link = get_profile_picture(other_author, 25)
+        profile = '/user/{}'.format(other_author.uid),
 
     # check for users opinion
     if bubble_type is BubbleTypes.USER and nickname != 'anonymous':
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         db_marked = None
+        gravatar_link = get_profile_picture(db_user, 25)
         if argument_uid is not None and db_user is not None:
             db_marked = DBDiscussionSession.query(MarkedArgument).filter(
                 MarkedArgument.argument_uid == argument_uid,
@@ -895,14 +905,20 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, ui
         'is_markable': is_markable,
         'is_author': is_author,
         'id': uid if len(str(uid)) > 0 else uuid4().hex,
-        'url': url,
-        'message': message,
-        'omit_url': omit_url,
+        'bubble_url': bubble_url,
+        'message': content,
+        'omit_bubble_url': omit_bubble_url,
+        'omit_vote_info': omit_vote_info,
         'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',
         'data_argument_uid': argument_uid,
         'data_statement_uid': statement_uid,
         'data_is_supportive': is_supportive,
         'is_users_opinion': is_users_opinion,
+        'enemy': {
+            'avatar': gravatar_link,
+            'profile': profile,
+            'available': profile is not None
+        }
     }
 
     votecount_keys = __get_text_for_click_and_mark_count(nickname, bubble_type is BubbleTypes.USER, argument_uid,
@@ -1135,8 +1151,10 @@ def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=Tru
         link_begin = '<a href="/user/{}" title="{}">'.format(db_user.uid, nick)
         link_end = '</a>'
 
-    side = 'left' if gravatar_on_right_side else 'right'
-    img = '<img class="img-circle" src="{}" style="padding-{}: 0.3em">'.format(img_src, side)
+    img = ''
+    if bool(os.environ.get('MODERN_BUBBLES', False)) is not True:
+        side = 'left' if gravatar_on_right_side else 'right'
+        img = '<img class="img-circle" src="{}" style="padding-{}: 0.3em">'.format(img_src, side)
 
     if gravatar_on_right_side:
         return db_user, '{}{}{}{}'.format(link_begin, nick, img, link_end), True

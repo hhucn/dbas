@@ -142,7 +142,7 @@ function GuiHandler() {
         var start;
         var nowBubble = speechBubbles.find('*[id*=now]');
         var oldSize = speechBubbles.height();
-        $.each(speechBubbles.find('div p'), function () {
+        $.each(speechBubbles.children(), function () {
             height += $(this).outerHeight(true);
             // clear unnecessary a tags
             if ($(this).parent().attr('href') === '?breadcrumb=true') {
@@ -175,7 +175,7 @@ function GuiHandler() {
                 allowPageScroll: true
             });
         } else {
-            height += 60;
+            height += 45;
             if (height < 50) {
                 speechBubbles.css('min-height', '100px');
             } else {

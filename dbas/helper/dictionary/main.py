@@ -137,6 +137,7 @@ class DictionaryHelper(object):
         return_dict['is_development'] = registry.settings.get('mode', '') == 'development'
         return_dict['is_production'] = registry.settings.get('mode', '') == 'production'
         return_dict['review_count'] = get_complete_review_count(db_user)
+        return_dict['modern_bubbles'] = bool(os.environ.get('MODERN_BUBBLES', False))
 
         # add german and english discussion links
         db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
@@ -307,7 +308,7 @@ class DictionaryHelper(object):
             user_text = _tn.get(_.firstPositionText)
         user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.STATUS, message=user_text, lang=self.system_lang,
+            create_speechbubble_dict(BubbleTypes.STATUS, content=user_text, lang=self.system_lang,
                                      nickname=nickname))
 
         is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
@@ -340,7 +341,7 @@ class DictionaryHelper(object):
         extras_dict['show_display_style'] = False
         if is_read_only:
             mid_text = _tn.get(_.discussionEndAndReadOnly)
-            sdict = create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, lang=self.system_lang,
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, lang=self.system_lang,
                                              nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
 
@@ -351,12 +352,12 @@ class DictionaryHelper(object):
                 mid_text = _tn.get(_.firstOneReasonM)
             else:
                 mid_text = _tn.get(_.firstOneReason)
-            sdict = create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, lang=self.system_lang,
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, lang=self.system_lang,
                                              nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
         else:
             mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
-            sdict = create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, lang=self.system_lang,
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, lang=self.system_lang,
                                              nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
 
@@ -389,10 +390,10 @@ class DictionaryHelper(object):
             mid_text = _tn.get(_.discussionEnd) + ' ' + endtext
 
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.SYSTEM, message=sys_text, lang=self.system_lang,
+            create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, lang=self.system_lang,
                                      nickname=nickname))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, lang=self.system_lang,
+            create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, lang=self.system_lang,
                                      nickname=nickname))
 
     def __add_discussion_end_text_at_justify_statement(self, discussion_dict, extras_dict, nickname, current_premise,
@@ -430,7 +431,7 @@ class DictionaryHelper(object):
             endtext = _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
             mid_text += _tn.get(_.discussionEnd) + ' ' + endtext
 
-        discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, message=mid_text,
+        discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, content=mid_text,
                                                                    lang=self.system_lang, nickname=nickname))
         extras_dict['close_premise_container'] = False
         extras_dict['show_display_style'] = False

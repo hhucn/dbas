@@ -392,11 +392,11 @@ function Main() {
         var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
         var tack = sidebarwrapper.find('.' + sidebarTackClass);
         var sidebar = sidebarwrapper.find('.' + sidebarClass);
+        var bgColor = new Colors().hexToRGB('#F3F3F3');
 
         $(hamburger).click(function () {
             $(this).toggleClass('open');
             var width = wrapper.width();
-            var bgColor = $('#' + discussionBubbleSpaceId).css('background-color');
 
             if (sidebar.is(':visible')) {
                 tackwrapper.fadeOut();
@@ -463,7 +463,6 @@ function Main() {
         var gui = new GuiHandler();
 
         if (shouldShowSidebar) {
-            var width = wrapper.width();
             var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
 
             gui.rotateElement(tack, '90');
@@ -472,13 +471,13 @@ function Main() {
 
             hamburger.addClass('open');
 
-            wrapper.width(width - sidebar.outerWidth());
+            wrapper.width(maincontainer.width() - sidebar.outerWidth());
             maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
             sidebar.show();
             hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
                 .css('margin-left', 'auto')
                 .css('background-color', sidebar.css('background-color'));
-            sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
+            sidebarwrapper.css('background-color', new Colors().hexToRGB('#F3F3F3'))
                 .css('height', maincontainer.outerHeight() + 'px');
             tackwrapper.fadeIn();
 
@@ -612,7 +611,7 @@ function Main() {
         $('#navbar-left').empty();
 
         var container = $('#' + discussionContainerId);
-        var oldContainerSize = container.width();
+        var oldContainerSize = container.outerWidth();
         var burger = $('.hamburger');
         var wrapper = $('#dialog-wrapper');
 
@@ -620,7 +619,7 @@ function Main() {
             new GuiHandler().setMaxHeightForBubbleSpace();
 
             // resize main container
-            var difference = oldContainerSize - container.width();
+            var difference = oldContainerSize - container.outerWidth();
             if (difference > 0 && burger.hasClass('open')) {
                 wrapper.width(wrapper.width() - difference);
             } else if (difference < 0 && burger.hasClass('open')) {
@@ -655,8 +654,7 @@ function Main() {
         var spaceList = $('#' + discussionSpaceListId);
         var input = spaceList.find('li:last-child input');
         var textArray = [], splits, conclusion, supportive, arg, relation;
-        splits = window.location.href.split('?');
-        splits = splits[0].split('/');
+        splits = window.location.href.split('?')[0].split('/');
         var sendStartStatement = function () {
             var position = $('#' + addStatementContainerMainInputPosId).val();
             var reason = $('#' + addStatementContainerMainInputResId).val();
