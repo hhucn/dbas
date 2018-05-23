@@ -509,6 +509,11 @@ class Statement(DiscussionBase):
     def textversions(self):
         return self.get_textversion()
 
+    @hybrid_property
+    def issue_uid(self):
+        warnings.warn("Use the entries of StatementToIssue instead.", DeprecationWarning)
+        return DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=self.uid).first().uid
+
     def get_textversion(self):
         """
         Returns the latest textversion for this statement.

@@ -82,10 +82,6 @@ def get_global_url():
     return os.environ.get('URL', '')
 
 
-def is_argweb():
-    return bool(os.environ.get('ARGWEB', False))
-
-
 def get_changelog(no):
     """
     Returns the 'no' last entries from the changelog

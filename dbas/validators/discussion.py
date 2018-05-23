@@ -512,7 +512,7 @@ def __validate_enabled_entity(request: Request, db_issue: Union[Issue, None], en
         add_error(request, '{} no longer available'.format(db_entity.__class__.__name__), location='path',
                   status_code=410)
         return None
-    if db_issue and not db_entity.issue_uid == db_issue.uid:
+    if db_issue and not db_entity.issue_uid == db_issue.uid:  # TODO kick hybrid property
         add_error(request, '{} does not belong to issue'.format(db_entity.__class__.__name__), location='path')
         return None
     return db_entity
