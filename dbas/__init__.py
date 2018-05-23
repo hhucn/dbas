@@ -173,6 +173,7 @@ def main(global_config, **settings):
     # logic at the end, otherwise the * pattern will do shit
     config.add_route('discussion_support', '/discuss/{slug}/support/{arg_id_user:\d+}/{arg_id_sys:\d+}')
     config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user:\d+}/{relation}/{arg_id_sys:\d+}')
+    config.add_route('discussion_dontknow_argument', '/discuss/{slug}/justify/{argument_id:\d+}/dontknow')
     config.add_route('discussion_justify_statement', '/discuss/{slug}/justify/{statement_id:\d+}/{attitude}')
     config.add_route('discussion_justify_argument', '/discuss/{slug}/justify/{argument_id:\d+}/{attitude}/{relation}')
 

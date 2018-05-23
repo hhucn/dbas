@@ -455,13 +455,13 @@ def get_text_for_support(db_arg, argument_text, nickname, _t):
     :param _t: translator
     :return: string
     """
-    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(db_arg, nickname)
+    data = get_name_link_of_arguments_author(db_arg, nickname)
     intro = _t.get(_.goodPointAndOtherParticipantsIsInterestedToo).format(start_tag, end_tag, argument_text)
-    if is_okay:
+    if data['is_valid']:
         intro = _t.get(_.goodPointAndUserIsInterestedTooF)
-        if gender == 'm':
+        if data['gender'] == 'm':
             intro = _t.get(_.goodPointAndUserIsInterestedTooM)
-        intro = intro.format(start_tag, end_tag, author, start_tag, end_tag, argument_text)
+        intro = intro.format(start_tag, end_tag, data['link'], start_tag, end_tag, argument_text)
 
     question = '<br><br>{}?'.format(_t.get(_.whatDoYouThinkAboutThat))
 
@@ -547,12 +547,11 @@ def __get_confrontation_text_for_undermine(nickname, premise, lang, system_argum
         confrontation = start_tag + confrontation + end_tag
         move_end_tag = True
 
-    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(system_argument, nickname)
-    if is_okay:
-        intro = '{} {}{}'.format(author, start_content, _t.get(_.thinksThat))
+    data = get_name_link_of_arguments_author(system_argument, nickname)
+    if data['is_valid']:
+        intro = '{} {}{}'.format(data['link'], start_content, _t.get(_.thinksThat))
     else:
         intro = start_content + _t.get(_.otherParticipantsThinkThat)
-        gender = ''
 
     pro_con_tag = start_con
     hold_it = _t.get(_.doesNotHold)
@@ -568,7 +567,7 @@ def __get_confrontation_text_for_undermine(nickname, premise, lang, system_argum
                                                                       _t.get(_.because).lower(), end_tag,
                                                                       confrontation, outro)
 
-    return confrontation_text, gender
+    return confrontation_text, data['gender'] if data['is_valid'] else ''
 
 
 def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, confrontation, supportive,
@@ -587,35 +586,34 @@ def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, c
     """
     _t = Translator(lang)
 
-    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(system_argument, nickname)
+    data = get_name_link_of_arguments_author(system_argument, nickname)
 
-    if is_okay:
-        intro = author + ' ' + start_content + _t.get(_.agreesThat)
+    if data['is_valid']:
+        intro = data['link'] + ' ' + start_content + _t.get(_.agreesThat)
         gender_think = _t.get(_.theyThink)
-        if is_okay:
-            gender_think = __translation_based_on_gender(_t, _.heThinks, _.sheThinks, gender)
+        if data['is_valid']:
+            gender_think = __translation_based_on_gender(_t, _.heThinks, _.sheThinks, data['gender'])
     else:
         intro = start_content + _t.get(_.otherParticipantsDontHaveOpinion)
         gender_think = _t.get(_.theyThinkThat)
-        gender = ''
 
     if supportive:
         bind = _t.get(_.butTheyDoNotBelieveArgument)
-        if is_okay:
+        if data['is_valid']:
             bind = __translation_based_on_gender(_t, _.butHeDoesNotBelieveArgument, _.butSheDoesNotBelieveArgument,
-                                                 gender)
+                                                 data['gender'])
     else:
         bind = _t.get(_.butTheyDoNotBelieveCounter)
-        if is_okay:
+        if data['is_valid']:
             bind = __translation_based_on_gender(_t, _.butHeDoesNotBelieveCounter, _.butSheDoesNotBelieveCounter,
-                                                 gender)
+                                                 data['gender'])
 
     bind = bind.format(start_con, end_tag, start_con, end_tag)
 
     confrontation_text = '{} {}. {}{} {}{}. {}{} {}'.format(intro, premise, bind, end_tag, conclusion, start_tag,
                                                             gender_think, end_tag, confrontation)
 
-    return confrontation_text, gender
+    return confrontation_text, data['gender'] if data['is_valid'] else ''
 
 
 def __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument, user_arg, user_is_attacking,
@@ -639,32 +637,32 @@ def __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument, user_
     """
     _t = Translator(lang)
 
-    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(system_argument, nickname)
-    db_other_nick = db_other_user.nickname if db_other_user else ''
+    data = get_name_link_of_arguments_author(system_argument, nickname)
+    db_other_nick = data['user'].nickname if data['user'] else ''
 
     infos = {
-        'is_okay': is_okay,
+        'is_okay': data['is_valid'],
         'lang': lang,
         'nickname': nickname,
-        'author': author,
-        'gender': gender,
+        'author': data['link'],
+        'gender': data['gender'],
         'user_is_attacking': user_is_attacking,
         'db_other_nick': db_other_nick,
     }
 
     # has the other user any opinion for the users conclusion?
     has_other_user_opinion = False
-    if is_okay:
+    if data['is_valid']:
         if user_arg.argument_uid is None:
             db_vote = DBDiscussionSession.query(ClickedArgument).filter(
                 ClickedArgument.argument_uid == user_arg.argument_uid,
-                ClickedArgument.author_uid == db_other_user.uid,
+                ClickedArgument.author_uid == data['user'].uid,
                 ClickedArgument.is_up_vote == True,
                 ClickedArgument.is_valid == True).all()
         else:
             db_vote = DBDiscussionSession.query(ClickedStatement).filter(
                 ClickedStatement.statement_uid == user_arg.conclusion_uid,
-                ClickedStatement.author_uid == db_other_user.uid,
+                ClickedStatement.author_uid == data['user'].uid,
                 ClickedStatement.is_up_vote == True,
                 ClickedStatement.is_valid == True).all()
         has_other_user_opinion = db_vote and len(db_vote) > 0
@@ -678,7 +676,7 @@ def __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument, user_
     else:  # reply for premise group
         confrontation_text = __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, conclusion,
                                                                           my_start_argument, infos)
-    return confrontation_text, gender
+    return confrontation_text, data['gender']
 
 
 def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, conclusion, sys_conclusion,
@@ -778,14 +776,14 @@ def get_name_link_of_arguments_author(argument, nickname, with_link=True):
     :param with_link:
     :return:
     """
-    user, text, is_okay = get_author_data(argument.author_uid, False, True)
+    user, link, is_valid = get_author_data(argument.author_uid, False, True)
     db_author_of_argument = DBDiscussionSession.query(User).get(argument.author_uid)
     gender = db_author_of_argument.gender if db_author_of_argument else 'n'
 
     db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
 
     # if the data of arguments author is not okay, get the first user, who agrees with the argument
-    if argument.author_uid == db_anonymous_user.uid or not is_okay:
+    if argument.author_uid == db_anonymous_user.uid or not is_valid:
         # get nick of current user
         nickname = nickname if nickname is not None else nick_of_anonymous_user
         db_current_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -793,17 +791,24 @@ def get_name_link_of_arguments_author(argument, nickname, with_link=True):
         db_author_of_argument = get_author_or_first_supporter_of_element(argument.uid, db_current_user.uid, True)
 
         if db_author_of_argument:
-            user, text, is_okay = get_author_data(db_author_of_argument.uid, gravatar_on_right_side=False,
-                                                  linked_with_users_page=with_link)
+            user, link, is_valid = get_author_data(db_author_of_argument.uid, gravatar_on_right_side=False,
+                                                   linked_with_users_page=with_link)
             db_author_of_argument = DBDiscussionSession.query(User).get(db_author_of_argument.uid)
             gender = db_author_of_argument.gender if db_author_of_argument else 'n'
         else:
-            return None, '', 'n', False
+            return {
+                'user': None,
+                'text': '',
+                'gender': 'n',
+                'is_valid': False
+            }
 
-    if not is_okay:
-        text = ''
-
-    return user, text, gender, is_okay
+    return {
+        'user': user,
+        'link': link if is_valid else '',
+        'gender': gender,
+        'is_valid': is_valid
+    }
 
 
 def get_author_or_first_supporter_of_element(uid, current_user_uid, is_argument):

@@ -377,12 +377,17 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        attitudes = [attitude.value for attitude in Attitudes]
+        attitudes = [attitude.value for attitude in Attitudes if attitude is not Attitudes.DONT_KNOW]
         for attitude in attitudes:
             request = construct_dummy_request(match_dict={'attitude': attitude})
             response = discussion.valid_attitude(request)
             self.assertTrue(response)
             self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'attitude': Attitudes.DONT_KNOW.value})
+        response = discussion.valid_attitude(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
     def test_valid_relation(self):
         request = construct_dummy_request()

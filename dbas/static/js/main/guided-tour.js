@@ -109,7 +109,7 @@ function GuidedTour() {
                 var element = '<div class="line-wrapper-r" id="some-element-bubble">' +
                     '<p class="triangle-r"><i class="fa fa-star text-warning" aria-hidden="true" style="padding-right: 0.5em;"></i>' +
                     '<span class="triangle-content">' + _t(tourMarkOpinionText) + '</span></p></div>';
-                $('#dialog-speech-bubbles-space').prepend($.parseHTML(element));
+                $('#' + discussionBubbleSpaceId).prepend($.parseHTML(element));
             },
             onHide: function () {
                 $('#some-element-bubble').remove();
