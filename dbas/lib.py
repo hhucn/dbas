@@ -871,12 +871,14 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool=False, 
     :return: dict()
     """
     gravatar_link = get_global_url() + '/static/images/icon.png'
+    profile = None
 
     if uid is not 'now':
         content = pretty_print_options(content)
 
     if bubble_type is BubbleTypes.SYSTEM and other_author is not None:
         gravatar_link = get_profile_picture(other_author, 25)
+        profile = '/user/{}'.format(other_author.uid),
 
     # check for users opinion
     if bubble_type is BubbleTypes.USER and nickname != 'anonymous':
@@ -912,7 +914,11 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool=False, 
         'data_statement_uid': statement_uid,
         'data_is_supportive': is_supportive,
         'is_users_opinion': is_users_opinion,
-        'avatar': gravatar_link,
+        'enemy': {
+            'avatar': gravatar_link,
+            'profile': profile,
+            'available': profile is not None
+        }
     }
 
     votecount_keys = __get_text_for_click_and_mark_count(nickname, bubble_type is BubbleTypes.USER, argument_uid,
@@ -1145,8 +1151,10 @@ def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=Tru
         link_begin = '<a href="/user/{}" title="{}">'.format(db_user.uid, nick)
         link_end = '</a>'
 
-    side = 'left' if gravatar_on_right_side else 'right'
-    img = '<img class="img-circle" src="{}" style="padding-{}: 0.3em">'.format(img_src, side)
+    img = ''
+    if bool(os.environ.get('MODERN_BUBBLES', False)) is not True:
+        side = 'left' if gravatar_on_right_side else 'right'
+        img = '<img class="img-circle" src="{}" style="padding-{}: 0.3em">'.format(img_src, side)
 
     if gravatar_on_right_side:
         return db_user, '{}{}{}{}'.format(link_begin, nick, img, link_end), True

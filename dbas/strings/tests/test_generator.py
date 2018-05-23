@@ -255,24 +255,24 @@ class TextGeneratorText(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).get(db_arg.author_uid)
 
         with_link = True
-        user, text, gender, okay = tg.get_name_link_of_arguments_author(db_arg, 'Christian', with_link)
-        self.assertEqual(user, None)
-        self.assertEqual(text, '')
-        self.assertEqual(gender, 'n')
-        self.assertEqual(okay, False)
+        data = tg.get_name_link_of_arguments_author(db_arg, 'Christian', with_link)
+        self.assertEqual(data['user'], None)
+        self.assertEqual(data['link'], '')
+        self.assertEqual(data['gender'], 'n')
+        self.assertEqual(data['is_valid'], False)
 
-        user, text, gender, okay = tg.get_name_link_of_arguments_author(db_arg, db_user.nickname, with_link)
-        self.assertEqual(user, None)
-        self.assertEqual(text, '')
-        self.assertEqual(gender, 'n')
-        self.assertEqual(okay, False)
+        data = tg.get_name_link_of_arguments_author(db_arg, db_user.nickname, with_link)
+        self.assertEqual(data['user'], None)
+        self.assertEqual(data['link'], '')
+        self.assertEqual(data['gender'], 'n')
+        self.assertEqual(data['is_valid'], False)
 
         with_link = False
-        user, text, gender, okay = tg.get_name_link_of_arguments_author(db_arg, 'Tobias', with_link)
-        self.assertEqual(user, None)
-        self.assertEqual(text, '')
-        self.assertEqual(gender, 'n')
-        self.assertEqual(okay, False)
+        data = tg.get_name_link_of_arguments_author(db_arg, 'Tobias', with_link)
+        self.assertEqual(data['user'], None)
+        self.assertEqual(data['link'], '')
+        self.assertEqual(data['gender'], 'n')
+        self.assertEqual(data['is_valid'], False)
 
     def test_get_author_or_first_supporter_of_element(self):
         arg, user1, user2 = 1, 2, 3

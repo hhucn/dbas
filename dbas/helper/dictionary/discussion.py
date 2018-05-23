@@ -324,14 +324,15 @@ class DiscussionDictHelper(object):
             db_argument = DBDiscussionSession.query(Argument).get(uid)
             if not db_argument:
                 text = ''
-            db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(db_argument, nickname)
-            if is_okay:
-                intro = author + ' ' + b + _tn.get(_.thinksThat) + e
+            data = get_name_link_of_arguments_author(db_argument, nickname)
+            gender = data['gender']
+            if data['is_valid']:
+                intro = data['link'] + ' ' + b + _tn.get(_.thinksThat) + e
             else:
                 intro = b + _tn.get(_.otherParticipantsThinkThat) + e
             sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
             sys_text += '<br><br>' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, uid=uid, is_markable=True, other_author=db_other_user)
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, uid=uid, is_markable=True, other_author=data['user'])
             if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
                 bubbles_array.append(bubble_sys)
 
@@ -379,7 +380,8 @@ class DiscussionDictHelper(object):
         db_enemy = None
         if arg_sys_id is not None:
             db_tmp_arg = DBDiscussionSession.query(Argument).get(arg_sys_id)
-            db_enemy, _, _, _ = get_name_link_of_arguments_author(db_tmp_arg, nickname)
+            data = get_name_link_of_arguments_author(db_tmp_arg, nickname)
+            db_enemy = data['user']
 
         if not attack:
             prep_dict = self.__get_dict_for_argumentation_end(db_user_argument.uid, user_changed_opinion, db_user)

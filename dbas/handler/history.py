@@ -298,14 +298,14 @@ def __get_bubble_from_dont_know_step(step, db_user, lang):
     from dbas.strings.text_generator import get_name_link_of_arguments_author
     _tn = Translator(lang)
 
-    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(db_argument, db_user.nickname, False)
-    if is_okay:
-        intro = author + ' ' + _tn.get(_.thinksThat)
+    data = get_name_link_of_arguments_author(db_argument, db_user.nickname, False)
+    if data['is_valid']:
+        intro = data['link'] + ' ' + _tn.get(_.thinksThat)
     else:
         intro = _tn.get(_.otherParticipantsThinkThat)
     sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
     sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
-    sys_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, nickname=db_user.nickname, other_author=db_other_user)
+    sys_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, nickname=db_user.nickname, other_author=data['user'])
 
     text = _tn.get(_.showMeAnArgumentFor) + (' ' if lang == 'de' else ': ') + get_text_for_conclusion(db_argument)
     user_bubble = create_speechbubble_dict(BubbleTypes.USER, content=text, nickname=db_user.nickname)
