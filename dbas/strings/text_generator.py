@@ -792,13 +792,13 @@ def get_name_link_of_arguments_author(argument, nickname, with_link=True):
 
         if db_author_of_argument:
             user, link, is_valid = get_author_data(db_author_of_argument.uid, gravatar_on_right_side=False,
-                                                  linked_with_users_page=with_link)
+                                                   linked_with_users_page=with_link)
             db_author_of_argument = DBDiscussionSession.query(User).get(db_author_of_argument.uid)
             gender = db_author_of_argument.gender if db_author_of_argument else 'n'
         else:
             return {
                 'user': None,
-                'text':'',
+                'text': '',
                 'gender': 'n',
                 'is_valid': False
             }
