@@ -221,7 +221,7 @@ def user_login(request):
     :param request: request of the web server
     :return: dict() with error
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    logger('views', 'main')
     lang = get_language_from_cookie(request)
     nickname = request.validated['user']
     password = request.validated['password']
