@@ -83,7 +83,7 @@ def get_global_url():
 
 
 def is_argweb():
-    return os.environ.get('ARGWEB', False)
+    return bool(os.environ.get('ARGWEB', False))
 
 
 def get_changelog(no):
