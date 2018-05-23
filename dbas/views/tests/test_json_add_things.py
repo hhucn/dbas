@@ -9,7 +9,7 @@ from pyramid_mailer.mailer import DummyMailer
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup, \
     ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument, \
-    ClickedStatement, SeenStatement, SeenArgument
+    ClickedStatement, SeenStatement, SeenArgument, StatementToIssue
 from dbas.lib import Relations
 from dbas.views import set_new_premises_for_argument, set_new_start_premise, set_correction_of_some_statements, \
     set_new_issue, set_statements_as_seen
@@ -50,8 +50,9 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
     def __set_multiple_start_premises(self, view):
+        statement_in_issue2_uids = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=2).all()]
         db_conclusion = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
-                                                                    Statement.issue_uid == 2).first()
+                                                                    Statement.uid.in_(statement_in_issue2_uids)).first()
         db_arg = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == db_conclusion.uid,
                                                             Argument.is_disabled == False).first()
         db_arg_len1 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_conclusion.uid).count()

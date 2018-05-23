@@ -994,7 +994,6 @@ def is_argument_disabled_due_to_disabled_statements(argument):
                 return True
     else:
         # check conclusion of given argument
-        print(argument.conclusion_uid)
         conclusion = DBDiscussionSession.query(Statement).get(argument.conclusion_uid)
         if conclusion.is_disabled:
             return True

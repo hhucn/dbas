@@ -285,28 +285,31 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> 
     while text.endswith(('.', '?', '!', ',')):
         text = text[:-1]
 
-
     if not is_argweb():
         # check, if the text already exists
-        db_duplicate = DBDiscussionSession.query(TextVersion).filter(
-            func.lower(TextVersion.content) == text.lower()).first()
-        if db_duplicate:
-            db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == db_duplicate.statement_uid,
-                                                                       Statement.issue_uid == db_issue.uid).one()
-            return db_statement, True
+        db_tv = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
+        if db_tv:
+            db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
+                StatementToIssue.issue_uid == db_issue.uid,
+                StatementToIssue.statement_uid == db_tv.statement_uid).all()
+            if db_statement2issue:
+                db_statement = DBDiscussionSession.query(Statement).get(db_tv.statement_uid).one()
+                return db_statement, True
 
     # add text
     statement = Statement(is_position=is_start)
     DBDiscussionSession.add(statement)
     DBDiscussionSession.flush()
     transaction.commit()
-    statement2issue = StatementToIssue(statement=statement.uid, issue=db_issue.uid)
-    DBDiscussionSession.add(statement2issue)
-    DBDiscussionSession.flush()
 
     # add textversion
     textversion = TextVersion(content=text, author=db_user.uid, statement_uid=statement.uid)
     DBDiscussionSession.add(textversion)
+    DBDiscussionSession.flush()
+
+    # add issue link mapping
+    statement2issue = StatementToIssue(statement=statement.uid, issue=db_issue.uid)
+    DBDiscussionSession.add(statement2issue)
     DBDiscussionSession.flush()
 
     transaction.commit()
@@ -386,7 +389,8 @@ def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, s
         url = _um.get_url_for_choosing_premisegroup(False, supportive, db_conclusion.uid, pgroups)
 
     # send notifications and mails
-    email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, Attitudes.AGREE if supportive else Attitudes.DISAGREE)
+    email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid,
+                                                          Attitudes.AGREE if supportive else Attitudes.DISAGREE)
     nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, mailer)
 
     prepared_dict['url'] = url

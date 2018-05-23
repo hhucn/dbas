@@ -13,7 +13,7 @@ from pyramid.request import Request
 from slugify import slugify
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, \
+from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
     ClickedStatement, TextVersion, StatementToIssue
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
@@ -257,7 +257,8 @@ def get_issues_overiew(db_user: User, app_url: str) -> dict:
         db_issues_other_users = get_visible_issues_for_user_as_query(db_user.uid).filter(
             Issue.author_uid != db_user.uid).all()
 
-    db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).order_by(Issue.uid.asc()).all()
+    db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).order_by(
+        Issue.uid.asc()).all()
     return {
         'user': [__create_issue_dict(issue, app_url) for issue in db_issues_of_user],
         'other': [__create_issue_dict(issue, app_url) for issue in db_issues_other_users]
@@ -365,7 +366,8 @@ def __create_issue_dict(db_issue: Issue, app_url: str) -> dict:
     url = short_url_dict['url'] if len(short_url_dict['url']) > 0 else app_url + '/discuss/' + db_issue.slug
 
     # we do nto have to check for clicked arguments, cause arguments consist out of statements
-    statements = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
+    statements = [el.statement_uid for el in
+                  DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
     db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(
         ClickedStatement.statement_uid.in_(statements)).all()
 

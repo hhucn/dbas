@@ -295,8 +295,11 @@
               <div class="well well-sm center"
                    style="text-align: justify; margin-bottom: 1em;" tal:condition="subpage.button_set.is_edit">
                 <div style="margin-bottom: 1em;">
-                  <span i18n:translate="in_the_discussion_about">In the discussion about</span>
-                  <i>${structure:subpage.elements.reviewed_element.issue}</i>
+                  <span tal:omit-tag="" tal:switch="len(subpage.elements.reviewed_element.issue_titles) > 1">
+                    <span tal:case="False" i18n:translate="in_the_discussion_about">In the discussion about</span>
+                    <span tal:case="True" i18n:translate="in_the_discussions_about">In the discussions about</span>
+                  </span>
+                  <i tal:repeat="title subpage.elements.reviewed_element.issue_titles">${structure:title} <span tal:condition="not:repeat.title.end">,</span></i>
                   <span i18n:translate="following_argument_was_corrected">following argument was corrected.</span>
                 </div>
                 <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
@@ -321,8 +324,11 @@
               <div class="well well-sm center" style="text-align: justify;">
                 <div tal:omit-tag="" tal:condition="not:subpage.button_set.is_merge">
                   <div style="margin-bottom: 1em;" tal:condition="not:subpage.button_set.is_edit">
-                    <span i18n:translate="in_the_discussion_about">In the discussion about</span>
-                    <i>${structure:subpage.elements.reviewed_element.issue}</i>
+                  <span tal:omit-tag="" tal:switch="len(subpage.elements.reviewed_element.issue_titles) > 1">
+                    <span tal:case="False" i18n:translate="in_the_discussion_about">In the discussion about</span>
+                    <span tal:case="True" i18n:translate="in_the_discussions_about">In the discussions about</span>
+                  </span>
+                  <i tal:repeat="title subpage.elements.reviewed_element.issue_titles">${structure:title} <span tal:condition="not:repeat.title.end">,</span></i>
                     <span tal:condition="not:(subpage.button_set.is_duplicate or subpage.button_set.is_split)" i18n:translate="following_argument_was_flagged">following argument was flagged.</span>
                     <span tal:condition="subpage.button_set.is_duplicate or subpage.button_set.is_split" i18n:translate="following_statement_was_flagged">following statement was flagged.</span>
                   </div>

@@ -7,7 +7,7 @@ from typing import Optional, Union
 
 from dbas.lib import Relations
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, Premise
+from .database.discussion_model import Argument, Statement, Premise, StatementToIssue
 from .logger import logger
 
 
@@ -73,9 +73,9 @@ def check_belonging_of_statement(issue_uid, statement_uid):
     :param statement_uid: Statement.uid
     :return:
     """
-    db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == statement_uid,
-                                                               Statement.issue_uid == issue_uid).first()
-    return db_statement is not None
+    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(StatementToIssue.statement_uid == statement_uid,
+                                                                            StatementToIssue.issue_uid == issue_uid).first()
+    return db_statement2issue is not None
 
 
 def check_belonging_of_arguments(issue_uid: int, argument_uids: list) -> bool:

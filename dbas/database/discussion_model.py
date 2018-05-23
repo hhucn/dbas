@@ -3,6 +3,7 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import warnings
 
 import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -436,7 +437,6 @@ class Statement(DiscussionBase):
         Inits a row in current statement table
 
         :param is_position: boolean
-        :param issue: Issue.uid
         :param is_disabled: Boolean
         """
         self.is_position = is_position
@@ -491,7 +491,8 @@ class Statement(DiscussionBase):
 
         :return: string
         """
-        return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
+        db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=self.uid).first()
+        return DBDiscussionSession.query(Issue).get(db_statement2issues.issue_uid).lang
 
     @hybrid_property
     def textversion_uid(self):
@@ -503,20 +504,6 @@ class Statement(DiscussionBase):
 
         return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid, is_disabled=False).order_by(
             TextVersion.timestamp.desc()).first().uid
-
-    def to_dict(self):
-        """
-        Returns the row as dictionary.
-
-        :return: dict()
-        """
-        return {
-            'uid': self.uid,
-            'textversion_uid': self.textversion_uid,
-            'is_position': self.is_position,
-            'issue_uid': self.issue_uid,
-            'is_disabled': self.is_disabled
-        }
 
     @hybrid_property
     def textversions(self):

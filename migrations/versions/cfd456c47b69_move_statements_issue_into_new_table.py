@@ -9,7 +9,6 @@ import sqlalchemy as sa
 import transaction
 from alembic import op
 
-# revision identifiers, used by Alembic.
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, StatementToIssue
 

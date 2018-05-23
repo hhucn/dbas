@@ -4,7 +4,7 @@ import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences, User, Statement
+from dbas.database.discussion_model import StatementReferences, User, Statement, StatementToIssue
 from dbas.handler.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.lib import get_text_for_statement_uid
 
@@ -54,7 +54,8 @@ class ReferenceHelperTest(unittest.TestCase):
     def test_set_reference(self):
         db_user = DBDiscussionSession.query(User).get(2)
         db_statement = DBDiscussionSession.query(Statement).get(3)
-        val = set_reference('some_reference#42', 'http://www.fortschrittskolleg.de/', db_user, db_statement, db_statement.issue_uid)
+        db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first()
+        val = set_reference('some_reference#42', 'http://www.fortschrittskolleg.de/', db_user, db_statement, db_statement2issue.issue_uid)
         self.assertTrue(val)
 
         DBDiscussionSession.query(StatementReferences).filter_by(reference='some_reference#42').delete()

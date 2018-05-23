@@ -13,7 +13,7 @@ from Levenshtein import distance
 from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement, User, TextVersion, Issue
+from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
 from dbas.helper.url import UrlManager
 from dbas.lib import get_public_profile_picture, nick_of_anonymous_user
 from dbas.logger import logger
@@ -115,8 +115,9 @@ def get_suggestions_for_positions(search_value: str, issue_uid: int, position: b
     :param position: position of the statement
     :return: suggestions for statements with a certain position matching the search_value
     """
+    statement2issues_uid = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=issue_uid).all()]
     db_statements = get_enabled_statement_as_query().filter(Statement.is_position == position,
-                                                            Statement.issue_uid == issue_uid).all()
+                                                            Statement.uid.in_(statement2issues_uid)).all()
     return_array = []
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
