@@ -245,7 +245,7 @@ def user_login_oauth(request):
 
     :return: dict() with error
     """
-    logger('views', 'main: {}'.format(request.params))
+    logger('views', 'main')
 
     lang = get_language_from_cookie(request)
     _tn = Translator(lang)
