@@ -8,10 +8,10 @@ Create Date: 2018-05-22 12:12:39.771294
 import sqlalchemy as sa
 import transaction
 from alembic import op
+from sqlalchemy.sql import text
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, StatementToIssue
-
 revision = 'cfd456c47b69'
 down_revision = 'f0bf03bf6326'
 branch_labels = None
@@ -31,8 +31,15 @@ def upgrade():
                     sa.PrimaryKeyConstraint('uid')
                     )
 
+    connection = op.get_bind()
     for db_statement in DBDiscussionSession.query(Statement).all():
-        DBDiscussionSession.add(StatementToIssue(statement=db_statement.uid, issue=db_statement.issue_uid))
+        issue_uid = connection.execute(text("""
+            SELECT issue_uid
+              FROM statements
+             WHERE uid = :statement_uid
+            """), {'statement_uid': db_statement.uid})
+        DBDiscussionSession.add(StatementToIssue(statement=db_statement.uid, issue=issue_uid.first()[0]))
+
         DBDiscussionSession.flush()
     transaction.commit()
     op.drop_column('statements', 'issue_uid')
