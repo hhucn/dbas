@@ -641,9 +641,10 @@ def discussion_justify_statement(request) -> dict:
     :param request: request of the web server
     :return: dict
     """
-    logger('discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_justify_statement', 'request.matchdict: {}'.format(request.matchdict))
 
     db_statement: Statement = request.validated['statement']
+
     db_issue = request.validated['issue']
     db_user = request.validated['user']
     attitude = request.validated['attitude']
@@ -654,6 +655,34 @@ def discussion_justify_statement(request) -> dict:
 
     __append_extras_dict_during_justification_statement(request, db_user, db_issue, db_statement, prepared_discussion,
                                                         attitude)
+
+    return prepared_discussion
+
+
+@view_config(route_name='discussion_dontknow_argument', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
+def discussion_dontknow_argument(request) -> dict:
+    """
+    View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
+
+    Path: /discuss/{slug}/justify/{argument_id:\d+}/dontknow}
+
+    :param request: request of the web server
+    :return: dict
+    """
+    logger('discussion_dontknow_argument', 'request.matchdict: {}'.format(request.matchdict))
+
+    db_argument: Argument = request.validated['argument']
+
+    db_issue = request.validated['issue']
+    db_user = request.validated['user']
+    attitude = Attitudes.DONT_KNOW.value
+
+    history = history_handler.handle_history(request, db_user, db_issue)
+    prepared_discussion = discussion.dont_know_argument(db_issue, db_user, db_argument, attitude, history, request.path)
+    __modify_discussion_url(prepared_discussion)
+
+    __append_extras_dict_during_justification_argument(request, db_user, db_issue, prepared_discussion)
 
     return prepared_discussion
 
@@ -670,7 +699,7 @@ def discussion_justify_argument(request) -> dict:
     :param request: request of the web server
     :return: dict
     """
-    logger('discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_justify_argument', 'request.matchdict: {}'.format(request.matchdict))
 
     db_argument: Argument = request.validated['argument']
     db_issue = request.validated['issue']

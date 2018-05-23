@@ -3,7 +3,7 @@ Helper for D-BAS Views
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from typing import Tuple
+from typing import Tuple, Union
 
 import dbas.handler.voting as voting_helper
 from dbas.database.discussion_model import Statement, Issue, User, Argument
@@ -45,7 +45,7 @@ def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_ar
     return item_dict, discussion_dict
 
 
-def handle_justification_dontknow(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
+def handle_justification_dontknow(db_issue: Issue, db_user: User, db_stmt_or_arg: Union[Argument, Statement], attitude: str, history,
                                   path) -> Tuple[dict, dict]:
     """
 

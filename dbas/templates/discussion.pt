@@ -87,8 +87,10 @@
               <div tal:condition="bubble.is_status" class="line-wrapper-m">
                 <p class="triangle-m" id="${bubble.id}">${structure:bubble.message}</p>
               </div>
-              <div tal:condition="bubble.is_info" class="line-wrapper-m">
-                <p class="triangle-m-info" id="${bubble.id}">${structure:bubble.message}</p>
+              <div tal:condition="not:issues.read_only" tal:omit-tag="">
+                <div tal:condition="bubble.is_info" class="line-wrapper-m">
+                  <p class="triangle-m-info" id="${bubble.id}">${structure:bubble.message}</p>
+                </div>
               </div>
             </div>
           </div>
