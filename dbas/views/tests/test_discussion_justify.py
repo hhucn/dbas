@@ -10,7 +10,7 @@ from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_
     clear_reputation_of_user
 from dbas.lib import Relations, Attitudes
 from dbas.tests.utils import construct_dummy_request
-from dbas.views import discussion_justify_argument, discussion_justify_statement
+from dbas.views import discussion_justify_argument, discussion_justify_statement, discussion_dontknow_argument
 
 
 def get_meta_clicks():
@@ -21,6 +21,13 @@ def get_meta_clicks():
         'click_a': DBDiscussionSession.query(ClickedArgument).count()
     }
     return d
+
+
+def check_meta_clicks(self, vote_dict):
+    self.assertEqual(vote_dict['seen_s'], DBDiscussionSession.query(SeenStatement).count())
+    self.assertEqual(vote_dict['click_s'], DBDiscussionSession.query(ClickedStatement).count())
+    self.assertEqual(vote_dict['seen_a'], DBDiscussionSession.query(SeenArgument).count())
+    self.assertEqual(vote_dict['click_a'], DBDiscussionSession.query(ClickedArgument).count())
 
 
 class TestJustifyStatement(unittest.TestCase):
@@ -35,12 +42,6 @@ class TestJustifyStatement(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def check_meta_clicks(self, vote_dict):
-        self.assertEqual(vote_dict['seen_s'], DBDiscussionSession.query(SeenStatement).count())
-        self.assertEqual(vote_dict['click_s'], DBDiscussionSession.query(ClickedStatement).count())
-        self.assertEqual(vote_dict['seen_a'], DBDiscussionSession.query(SeenArgument).count())
-        self.assertEqual(vote_dict['click_a'], DBDiscussionSession.query(ClickedArgument).count())
-
     def test_justify_statement_page(self):
         vote_dict = get_meta_clicks()
         request = construct_dummy_request()
@@ -52,8 +53,7 @@ class TestJustifyStatement(unittest.TestCase):
         response = discussion_justify_statement(request)
         self.assertNotIsInstance(response, httpexceptions.HTTPError)
         verify_dictionary_of_view(response)
-        self.check_meta_clicks(vote_dict)
-        self.check_meta_clicks(vote_dict)
+        check_meta_clicks(self, vote_dict)
 
     def test_support_statement_page(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -106,19 +106,6 @@ class TestJustifyStatement(unittest.TestCase):
         clear_seen_by_of('Tobias')
         clear_clicks_of('Tobias')
 
-    def test_dont_know_statement_page(self):
-        vote_dict = get_meta_clicks()
-        request = construct_dummy_request()
-        request.matchdict = {
-            'slug': 'cat-or-dog',
-            'statement_id': 2,
-            'attitude': Attitudes.DONT_KNOW.value,
-        }
-        response = discussion_justify_statement(request)
-        self.assertNotIsInstance(response, httpexceptions.HTTPError)
-        verify_dictionary_of_view(response)
-        self.check_meta_clicks(vote_dict)
-
     def test_wrong_attitude(self):
         request = construct_dummy_request()
         request.matchdict = {
@@ -160,12 +147,6 @@ class TestJustifyArgument(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def check_meta_clicks(self, vote_dict):
-        self.assertEqual(vote_dict['seen_s'], DBDiscussionSession.query(SeenStatement).count())
-        self.assertEqual(vote_dict['click_s'], DBDiscussionSession.query(ClickedStatement).count())
-        self.assertEqual(vote_dict['seen_a'], DBDiscussionSession.query(SeenArgument).count())
-        self.assertEqual(vote_dict['click_a'], DBDiscussionSession.query(ClickedArgument).count())
-
     def __call_function_and_count_seen_clicked_arguments(self):
         request = construct_dummy_request()
         request.matchdict = {
@@ -199,7 +180,7 @@ class TestJustifyArgument(unittest.TestCase):
         verify_dictionary_of_view(response)
 
         len_db_reputation2 = DBDiscussionSession.query(ReputationHistory).count()
-        self.check_meta_clicks(vote_dict)
+        check_meta_clicks(self, vote_dict)
         self.assertEqual(len_db_reputation1, len_db_reputation2)
 
     def test_justify_argument_page_rep(self):
@@ -268,3 +249,25 @@ class TestJustifyArgument(unittest.TestCase):
         }
         response = discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
+
+
+class TestDontKnowArgument(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('pyramid_chameleon')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_dont_know_page(self):
+        vote_dict = get_meta_clicks()
+        request = construct_dummy_request()
+        request.matchdict = {
+            'slug': 'cat-or-dog',
+            'argument_id': 2,
+            'attitude': Attitudes.DONT_KNOW.value,
+        }
+        response = discussion_dontknow_argument(request)
+        self.assertNotIsInstance(response, httpexceptions.HTTPError)
+        verify_dictionary_of_view(response)
+        check_meta_clicks(self, vote_dict)

@@ -220,7 +220,7 @@ def valid_attitude(request):
     :param request: Request
     :return:
     """
-    attitudes = [attitude.value for attitude in Attitudes]
+    attitudes = [attitude.value for attitude in Attitudes if attitude is not Attitudes.DONT_KNOW]
 
     if has_keywords_in_path(('attitude', str))(request):
         attitude = request.validated['attitude']
