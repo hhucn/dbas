@@ -31,18 +31,19 @@ class AjaxAddThingsTest(unittest.TestCase):
         # delete content of premisegroup
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_new_arg.premisegroup_uid).all()
         for premise in db_premises:
-            tmp = premise.statement_uid
+            tmp_p_uid = premise.statement_uid
             premise.statement_uid = 1
-            DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tmp).delete()
-            DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=tmp).delete()
-            DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=tmp).delete()
-            DBDiscussionSession.query(ClickedStatement).filter_by(statement_uid=tmp).delete()
-            DBDiscussionSession.query(Statement).filter_by(uid=tmp).delete()
+            DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tmp_p_uid).delete()
+            DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=tmp_p_uid).delete()
+            DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=tmp_p_uid).delete()
+            DBDiscussionSession.query(ClickedStatement).filter_by(statement_uid=tmp_p_uid).delete()
+            DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=tmp_p_uid).delete()
+            DBDiscussionSession.query(Statement).filter_by(uid=tmp_p_uid).delete()
         # delete premisegroup
-        tmp = db_new_arg.premisegroup_uid
+        tmp_p_uid = db_new_arg.premisegroup_uid
         db_new_arg.premisegroup_uid = 1
-        DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=tmp).delete()
-        DBDiscussionSession.query(PremiseGroup).filter_by(uid=tmp).delete()
+        DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=tmp_p_uid).delete()
+        DBDiscussionSession.query(PremiseGroup).filter_by(uid=tmp_p_uid).delete()
         # delete argument
         DBDiscussionSession.query(MarkedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=db_new_arg.uid).delete()

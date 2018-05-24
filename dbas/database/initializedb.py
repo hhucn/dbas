@@ -138,6 +138,7 @@ def drop_it(argv=sys.argv):
         DBDiscussionSession.query(SeenStatement).delete()
         DBDiscussionSession.query(ClickedArgument).delete()
         DBDiscussionSession.query(ClickedStatement).delete()
+        DBDiscussionSession.query(StatementToIssue).delete()
         DBDiscussionSession.query(Message).delete()
         DBDiscussionSession.query(StatementReferences).delete()
         DBDiscussionSession.query(Premise).delete()

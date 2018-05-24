@@ -539,7 +539,7 @@ def __merge_premisegroup(review):
     DBDiscussionSession.flush()
 
     # new premise
-    db_new_premise = Premise(db_new_premisegroup.uid, new_statement.uid, False, db_user.uid, db_issue.issue_uid)
+    db_new_premise = Premise(db_new_premisegroup.uid, new_statement.uid, False, db_user.uid, db_issue.uid)
     DBDiscussionSession.add(db_new_premise)
     DBDiscussionSession.flush()
     logger('review.opinions',

@@ -512,7 +512,7 @@ class Statement(DiscussionBase):
     @hybrid_property
     def issue_uid(self):
         warnings.warn("Use the entries of StatementToIssue instead.", DeprecationWarning)
-        return DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=self.uid).first().uid
+        return DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=self.uid).first().issue_uid
 
     def get_textversion(self):
         """

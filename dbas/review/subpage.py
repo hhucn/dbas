@@ -437,7 +437,7 @@ def __get_subpage_dict_for_duplicates(session, application_url, db_user, transla
     db_statement = DBDiscussionSession.query(Statement).get(rnd_review.duplicate_statement_uid)
     text = db_statement.get_text()
     statement2issue_uids = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(
-        statement_uid=rnd_review.statement_uid)]
+        statement_uid=rnd_review.duplicate_statement_uid)]
     issue_titles = [issue.title for issue in
                     DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()]
     reason = translator.get(_.argumentFlaggedBecauseDuplicate)
