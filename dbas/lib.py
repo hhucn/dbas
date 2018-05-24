@@ -114,7 +114,31 @@ def is_development_mode(registry):
     :return: Boolean
     """
     if 'mode' in registry.settings:
-        return registry.settings['mode'] == 'development'
+        return registry.settings['mode'].lower() == 'development'
+    return False
+
+
+def usage_of_modern_bubbles(registry):
+    """
+    Returns true, if modern bubbles are set in the current ini file.
+
+    :param registry: request.registry
+    :return: Boolean
+    """
+    if 'modern_bubbles' in registry.settings:
+        return registry.settings['modern_bubbles'].lower() == 'true'
+    return False
+
+
+def usage_of_matomo(registry):
+    """
+    Returns true, if matomo is set in the current ini file.
+
+    :param registry: request.registry
+    :return: Boolean
+    """
+    if 'mode' in registry.settings:
+        return registry.settings['usage_of_matomo'].lower() == 'true'
     return False
 
 
@@ -1151,10 +1175,8 @@ def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=Tru
         link_begin = '<a href="/user/{}" title="{}">'.format(db_user.uid, nick)
         link_end = '</a>'
 
-    img = ''
-    if bool(os.environ.get('MODERN_BUBBLES', False)) is not True:
-        side = 'left' if gravatar_on_right_side else 'right'
-        img = '<img class="img-circle" src="{}" style="padding-{}: 0.3em">'.format(img_src, side)
+    side = 'left' if gravatar_on_right_side else 'right'
+    img = '<img class="img-circle" src="{}" style="padding-{}: 0.3em">'.format(img_src, side)
 
     if gravatar_on_right_side:
         return db_user, '{}{}{}{}'.format(link_begin, nick, img, link_end), True

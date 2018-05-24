@@ -17,7 +17,7 @@ from dbas.handler import user
 from dbas.handler.issue import rep_limit_to_open_issues
 from dbas.handler.notification import count_of_new_notifications, get_box_for
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode, \
-    nick_of_anonymous_user, get_global_url
+    nick_of_anonymous_user, get_global_url, usage_of_matomo, usage_of_modern_bubbles
 from dbas.logger import logger
 from dbas.review.queues import get_complete_review_count
 from dbas.review.queues import get_count_of_all
@@ -137,8 +137,8 @@ class DictionaryHelper(object):
         return_dict['is_development'] = registry.settings.get('mode', '') == 'development'
         return_dict['is_production'] = registry.settings.get('mode', '') == 'production'
         return_dict['review_count'] = get_complete_review_count(db_user)
-        return_dict['modern_bubbles'] = bool(os.environ.get('MODERN_BUBBLES', False))
-        return_dict['usage_of_matomo'] = bool(os.environ.get('USAGE_OF_MATOMO', False))
+        return_dict['modern_bubbles'] = usage_of_modern_bubbles(registry)
+        return_dict['usage_of_matomo'] = usage_of_matomo(registry)
 
         # add german and english discussion links
         db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
