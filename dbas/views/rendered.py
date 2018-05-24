@@ -3,11 +3,13 @@ Collection of pyramids views components of D-BAS' core.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
+import re
 from typing import Callable, Any
 
 import graphene
 import pkg_resources
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.registry import Registry
 from pyramid.request import Request
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -32,7 +34,7 @@ from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user, Attitudes
+from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user, Attitudes, usage_of_modern_bubbles
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -68,6 +70,21 @@ def __modify_discussion_url(prep_dict: dict):
     # modify urls for topic switch
     for i, el in enumerate(prep_dict['issues']['all']):
         prep_dict['issues']['all'][i]['url'] = '/discuss' + prep_dict['issues']['all'][i]['url']
+
+
+def __modify_discussion_bubbles(prep_dict: dict, registry: Registry):
+    """
+    Removes gravatars from the bubbles if we use the modern interface
+
+    :param prep_dict:
+    :param registry:
+    :return:
+    """
+    if usage_of_modern_bubbles(registry):
+        for bubble in prep_dict['discussion']['bubbles']:
+            if bubble['is_system']:
+                bubble['message'] = re.sub('<img[^>]*>', '', bubble['message'])
+                print(bubble['message'])
 
 
 def __modifiy_issue_overview_url(prep_dict: dict):
@@ -156,6 +173,7 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     prepared_discussion = f(request_dict)
     if prepared_discussion:
         __modify_discussion_url(prepared_discussion)
+        __modify_discussion_bubbles(prepared_discussion)
 
     return prepared_discussion, request_dict
 
@@ -582,6 +600,7 @@ def discussion_init(request):
 
     prepared_discussion = discussion.init(request.validated['issue'], request.validated['user'])
     __modify_discussion_url(prepared_discussion)
+    __modify_discussion_bubbles(prepared_discussion, request.registry)
 
     rdict = prepare_request_dict(request)
 
@@ -620,6 +639,7 @@ def discussion_attitude(request):
     history = history_handler.handle_history(request, db_user, db_issue)
     prepared_discussion = discussion.attitude(db_issue, db_user, db_statement, history, request.path)
     __modify_discussion_url(prepared_discussion)
+    __modify_discussion_bubbles(prepared_discussion, request.registry)
 
     rdict = prepare_request_dict(request)
 
@@ -652,6 +672,7 @@ def discussion_justify_statement(request) -> dict:
     history = history_handler.handle_history(request, db_user, db_issue)
     prepared_discussion = discussion.justify_statement(db_issue, db_user, db_statement, attitude, history, request.path)
     __modify_discussion_url(prepared_discussion)
+    __modify_discussion_bubbles(prepared_discussion, request.registry)
 
     __append_extras_dict_during_justification_statement(request, db_user, db_issue, db_statement, prepared_discussion,
                                                         attitude)
@@ -681,6 +702,7 @@ def discussion_dontknow_argument(request) -> dict:
     history = history_handler.handle_history(request, db_user, db_issue)
     prepared_discussion = discussion.dont_know_argument(db_issue, db_user, db_argument, attitude, history, request.path)
     __modify_discussion_url(prepared_discussion)
+    __modify_discussion_bubbles(prepared_discussion, request.registry)
 
     __append_extras_dict_during_justification_argument(request, db_user, db_issue, prepared_discussion)
 
@@ -711,6 +733,7 @@ def discussion_justify_argument(request) -> dict:
     prepared_discussion = discussion.justify_argument(db_issue, db_user, db_argument, attitude, relation, history,
                                                       request.path)
     __modify_discussion_url(prepared_discussion)
+    __modify_discussion_bubbles(prepared_discussion, request.registry)
 
     __append_extras_dict_during_justification_argument(request, db_user, db_issue, prepared_discussion)
 
@@ -742,6 +765,7 @@ def discussion_reaction(request):
     rdict = prepare_request_dict(request)
 
     __modify_discussion_url(prepared_discussion)
+    __modify_discussion_bubbles(prepared_discussion, request.registry)
     __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
 
     return prepared_discussion
@@ -769,6 +793,7 @@ def discussion_support(request):
     rdict = prepare_request_dict(request)
 
     __modify_discussion_url(prepared_discussion)
+    __modify_discussion_bubbles(prepared_discussion, request.registry)
     __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
@@ -796,6 +821,7 @@ def discussion_finish(request):
                                             history)
 
     __modify_discussion_url(prepared_discussion)
+    __modify_discussion_bubbles(prepared_discussion, request.registry)
     __append_extras_dict(prepared_discussion, prepare_request_dict(request), request.authenticated_userid, True)
 
     return prepared_discussion
@@ -852,6 +878,7 @@ def discussion_choose(request):
     rdict = prepare_request_dict(request)
 
     __modify_discussion_url(prepared_discussion)
+    __modify_discussion_bubbles(prepared_discussion, request.registry)
     __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
@@ -878,6 +905,7 @@ def discussion_jump(request):
     rdict = prepare_request_dict(request)
 
     __modify_discussion_url(prepared_discussion)
+    __modify_discussion_bubbles(prepared_discussion, request.registry)
     __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
