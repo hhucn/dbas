@@ -306,7 +306,7 @@ def __handle_table_of_review_delete(review, entry):
 
 def __handle_table_of_review_edit(review, length, entry, is_executed, short_text, full_text):
     if is_executed:
-        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()  # TODO #432
+        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()
         if len(db_textversions) == 0:
             entry['is_innocent'] = False
             text = 'Review {} is malicious / no text for statement'.format(review.uid)
@@ -739,7 +739,7 @@ def __rebend_objects_of_duplicate_review(db_review):
     logger('review_history_helper', 'review: ' + str(db_review.uid))
 
     db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
-    db_statement.set_disabled(False)   # TODO reset more than this ?
+    db_statement.set_disabled(False)
     DBDiscussionSession.add(db_statement)
 
     db_revoked_elements = DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).all()

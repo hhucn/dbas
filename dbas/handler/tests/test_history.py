@@ -42,10 +42,6 @@ class HistoryHandlerTests(unittest.TestCase):
         bubbles = history.create_bubbles_from_history(self.history)
         assert_greater(len(bubbles), 0)
 
-    def test_get_bubble_from_reaction_step(self):
-        # TODO history.get_bubble_from_reaction_step
-        return True
-
     def test_save_path_in_database(self):
         db_hist1 = DBDiscussionSession.query(History).filter_by(author_uid=self.user.uid).all()
         big_fucking_link = 'cat-or-dog/justify/13/agree/undercut?history=/attitude/2-/justify/2/t-/reaction/12/undercut/13'
@@ -61,7 +57,3 @@ class HistoryHandlerTests(unittest.TestCase):
 
     def test_delete_history_in_database(self):
         assert_true(history.delete_history_in_database(self.user))
-
-    def test_handle_history(self):
-        # TODO history.handle_history
-        return True

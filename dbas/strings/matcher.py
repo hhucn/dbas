@@ -141,14 +141,14 @@ def get_strings_for_edits(search_value: str, statement_uid: int) -> list:
     :return: suggestions for edits of a certain statement matching the search_value
     """
 
-    db_tvs = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).all()  # TODO #432
+    db_tvs = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).all()
 
     return_array = []
     index = 1
     for textversion in db_tvs:
         if search_value.lower() in textversion.content.lower():
             rd = __get_fuzzy_string_dict(current_text=search_value, return_text=textversion.content,
-                                         uid=textversion.statement_uid)  # TODO #432
+                                         uid=textversion.statement_uid)
             return_array.append(rd)
             index += 1
 
@@ -178,7 +178,7 @@ def get_strings_for_duplicates_or_reasons(search_value: str, issue_uid: int, sta
             TextVersion.uid.asc()).first()
         if search_value.lower() in db_tv.content.lower():  # and db_tv.content.lower() != oem_value.lower():
             rd = __get_fuzzy_string_dict(current_text=search_value, return_text=db_tv.content,
-                                         uid=db_tv.statement_uid)  # TODO #432
+                                         uid=db_tv.statement_uid)
             return_array.append(rd)
 
     return_array = __sort_array(return_array)

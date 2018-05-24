@@ -1,12 +1,12 @@
-import transaction
 import unittest
-import arrow
 from datetime import date, timedelta
 
-from pyramid import testing
-
+import arrow
+import transaction
 from nose.tools import assert_false, assert_true, assert_not_equal, assert_in, assert_not_in, assert_equal, \
     assert_greater_equal, assert_less_equal
+from pyramid import testing
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, ClickedArgument, ClickedStatement, ReviewEdit, \
     Statement
@@ -195,15 +195,3 @@ class UserHandlerTests(unittest.TestCase):
 
         msg, success = user.change_password(pascal, new_pw, old_pw, old_pw, 'en')
         assert_true(success)
-
-    def test_set_new_user(self):
-        # TODO
-        return True
-
-    def test_set_new_oauth_user(self):
-        # TODO
-        return True
-
-    def test_get_users_with_same_opinion(self):
-        # TODO
-        return True

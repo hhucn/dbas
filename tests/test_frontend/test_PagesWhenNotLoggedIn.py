@@ -19,7 +19,6 @@
 #
 # def test_main_page():
 #     browser.visit(ROOT + '/')
-#     # TODO use assert_in with browser.driver.page_source
 #     assert_true(browser.is_text_present('part of the graduate school'), error_text)
 #
 #

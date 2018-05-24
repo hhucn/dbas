@@ -200,7 +200,7 @@ def get_logfile_for_statements(uids, lang, main_page):
     main_dict = dict()
     for uid in uids:
         db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(
-            TextVersion.uid.asc()).all()  # TODO #432
+            TextVersion.uid.asc()).all()
         if len(db_textversions) == 0:
             continue
         return_dict = dict()
@@ -613,7 +613,6 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
 
-        # TODO This should be redundant code! new_argument should be the new argument
         new_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == premisegroup_uid,
                                                                   Argument.is_supportive == is_supportive,
                                                                   Argument.author_uid == db_user.uid,

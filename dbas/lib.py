@@ -1056,7 +1056,7 @@ def is_author_of_statement(db_user: User, statement_uid: int) -> bool:
         return False
 
     db_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).order_by(
-        TextVersion.uid.asc()).first()  # TODO #432
+        TextVersion.uid.asc()).first()
     if not db_textversion:
         return False
     return db_textversion.author_uid == db_user.uid

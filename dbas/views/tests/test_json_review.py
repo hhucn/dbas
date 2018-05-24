@@ -151,7 +151,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.__exec_request_and_check_reviewes(db_review, review_delete_argument, 'should_delete', True, 'Pascal',
                                                LastReviewerDelete)
 
-    def test_review_optimization_argument(self):  # TODO check the voting method
+    def test_review_optimization_argument(self):
         db_review = DBDiscussionSession.query(ReviewOptimization).filter(ReviewOptimization.statement_uid is not None,
                                                                          ReviewOptimization.is_executed == False).first()
         from dbas.views import review_optimization_argument as ajax
@@ -172,7 +172,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_reputation2 = DBDiscussionSession.query(ReputationHistory).count()
         self.assertEqual(db_reputation1, db_reputation2)
 
-    def test_review_optimization_argument_for_edit(self):  # TODO how to accept new corrections
+    def test_review_optimization_argument_for_edit(self):
         db_review = DBDiscussionSession.query(ReviewOptimization).filter(ReviewOptimization.statement_uid is not None,
                                                                          ReviewOptimization.is_executed == False).first()
         from dbas.views import review_optimization_argument as ajax

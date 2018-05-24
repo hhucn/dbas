@@ -129,28 +129,19 @@ def get_reputation_of(db_user: User, only_today=False):
     return count, db_user.is_author() or db_user.is_admin()
 
 
-def add_reputation_for(user: User, reason):
+def add_reputation_for(db_user: User, reason):
     """
     Add reputation for the given nickname with the reason only iff the reason can be added. For example all reputation
     for 'first' things cannot be given twice.
 
     Anonymous user is not eligible to receive reputation.
 
-    :param user: User in refactored fns, else nickname
+    :param db_user: User in refactored fns, else nickname
     :param reason: reason as string, as given in reputation.py
     :return: True, if the user gained reputation and an additional boolean that is true, when the user reached 30points
     """
     logger('ReputationPointHelper', 'main ' + reason)
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
-
-    if isinstance(user, str):  # TODO remove this check after refactoring
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    else:
-        db_user = user
-
-    if not db_user:
-        logger('ReputationPointHelper', 'The nickname \'{}\' could not be found in our database'.format(user))
-        return False, False
 
     if db_user.nickname == nick_of_anonymous_user:
         logger('ReputationPointHelper', '{} is not eligible to receive reputation'.format(db_user.nickname))
