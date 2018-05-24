@@ -84,7 +84,7 @@ def handle_justification_argument(db_issue: Issue, db_user: User, db_argument: A
 
     item_dict, discussion_dict = preparation_for_justify_argument(db_issue, db_user, db_argument, relation,
                                                                   supportive, history, path)
-    add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
+    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_confrontation)
 
     if broke_limit:
         _t = Translator(ui_locales)

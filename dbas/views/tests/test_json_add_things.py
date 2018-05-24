@@ -20,7 +20,6 @@ class AjaxAddThingsTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        # todo checking reputation
 
     def tearDown(self):
         testing.tearDown()

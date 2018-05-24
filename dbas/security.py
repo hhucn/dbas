@@ -1,5 +1,5 @@
 """
-TODO
+Security module of D-BAS, where the groups are set
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """

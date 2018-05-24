@@ -672,8 +672,6 @@ def __bend_objects_of_duplicate_review(db_review):
     db_statement.set_disabled(True)
     DBDiscussionSession.add(db_statement)
 
-    # TODO   SINGLE STATEMENT SET DISABLE
-
     # do we need a new position
     db_dupl_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
     db_orig_statement = DBDiscussionSession.query(Statement).get(db_review.original_statement_uid)

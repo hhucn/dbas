@@ -229,9 +229,9 @@ def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_ar
 
     current_argument = DBDiscussionSession.query(Argument).get(arg_id)
     # relation to the arguments premise group
-    if attack_type == Relations.UNDERMINE or attack_type == Relations.SUPPORT:  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
+    if attack_type == Relations.UNDERMINE or attack_type == Relations.SUPPORT:
         db_premise = DBDiscussionSession.query(Premise).filter_by(
-            premisegroup_uid=current_argument.premisegroup_uid).first()
+            premisegroup_uid=current_argument.premisegroup_uid).first()  # TODO what happens with |pgroups| > 1?
         db_statement = DBDiscussionSession.query(Statement).get(db_premise.statement_uid)
         url = _um.get_url_for_choosing_premisegroup(False, supportive, db_statement.uid, pgroups)
 
@@ -241,7 +241,6 @@ def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_ar
 
     # relation to the arguments conclusion
     elif attack_type == Relations.REBUT:
-        # TODO WHAT IS WITH ARGUMENT AS CONCLUSION?
         is_argument = current_argument.conclusion_uid is not None
         uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
         url = _um.get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)

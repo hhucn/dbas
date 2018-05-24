@@ -421,7 +421,7 @@ def get_textversions(db_user: User, lang: str, timestamp_after=None, timestamp_b
 
     for edit in db_edits:
         db_root_version = DBDiscussionSession.query(TextVersion).filter_by(
-            statement_uid=edit.statement_uid).first()  # TODO #432
+            statement_uid=edit.statement_uid).first()
         edit_dict = dict()
         edit_dict['uid'] = str(edit.uid)
         edit_dict['statement_uid'] = str(edit.statement_uid)

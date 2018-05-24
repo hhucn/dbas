@@ -606,7 +606,7 @@ class ItemDictHelper(object):
             else:
                 db_premises = DBDiscussionSession.query(Premise).filter_by(
                     premisegroup_uid=db_user_argument.premisegroup_uid).all()
-                db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: ELIMINATE RANDOM
+                db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: eliminate random
                 url = _um.get_url_for_justifying_statement(db_premise.statement_uid, mode)
 
         # rebutting an rebut will be a justify for the initial argument

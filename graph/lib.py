@@ -326,7 +326,7 @@ def __get_author_of_statement(uid):
     :return:
     """
     db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(
-        TextVersion.uid.asc()).first()  # TODO #432
+        TextVersion.uid.asc()).first()
     db_author = DBDiscussionSession.query(User).get(db_tv.author_uid)
     gravatar = get_profile_picture(db_author, 40)
     name = db_author.global_nickname
@@ -340,7 +340,7 @@ def __get_editor_of_statement(uid):
     :return:
     """
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(
-        TextVersion.uid.desc()).first()  # TODO #432
+        TextVersion.uid.desc()).first()
     db_editor = DBDiscussionSession.query(User).get(db_statement.author_uid)
     gravatar = get_profile_picture(db_editor, 40)
     name = db_editor.global_nickname
