@@ -59,7 +59,7 @@
                         <li><a class="js-scroll-trigger" href="#Verwendung">Verwendung von Cookies</a></li>
                         <li><a class="js-scroll-trigger" href="#Registrierung">Registrierung</a></li>
                         <li><a class="js-scroll-trigger" href="#EMail">EMail</a></li>
-                        <li><a class="js-scroll-trigger" href="#Webanalyse">Webanalyse</a></li>
+                        <li tal:condition="extras.usage_of_matomo"><a class="js-scroll-trigger" href="#Webanalyse">Webanalyse</a></li>
                         <li><a class="js-scroll-trigger" href="#Rechte">Rechte der betroffenen Person</a></li>
                       </ul>
                     </div>
@@ -299,7 +299,7 @@
             </div>
           </div>
 
-          <div class="col-md-12" id="Webanalyse">
+          <div class="col-md-12" id="Webanalyse" tal:condition="extras.usage_of_matomo">
             <div class="colored-container" style="margin-bottom: 1em">
               <h4>Webanalyse durch Matomo (ehemals PIWIK)</h4>
               <h5>Umfang der Verarbeitung personenbezogener Daten</h5>
