@@ -45,27 +45,32 @@
           <div id="dialog-speech-bubbles-space">
             <div tal:repeat="bubble discussion.bubbles" tal:omit-tag="">
               <div tal:condition="bubble.is_user" class="line-wrapper-r">
-                <p class="triangle-r" id="${bubble.id}">
-                <div tal:omit-tag="" tal:condition="extras.logged_in">
-                  <i class="fa fa-star user-star uncheck-as-users-opinion text-warning" aria-hidden="true"
-                     title="${extras.title.unmark_as_opinion}" data-is-users-opinion="${bubble.is_users_opinion}"
-                     style="display:none;"></i>
-                  <i class="fa fa-star-o user-star check-as-users-opinion" aria-hidden="true"
-                     title="${extras.title.mark_as_opinion}" data-is-users-opinion="${bubble.is_users_opinion}"
-                     style="display:none;"></i>
+                <img src="${extras.users_avatar}" class="img-circle pull-right" alt="gravatar" style="max-width: 25px; margin-top: 0.3em" tal:condition="extras.logged_in and extras.modern_bubbles">
+                <div class="triangle-r" id="${bubble.id}">
+                  <div tal:omit-tag="" tal:condition="extras.logged_in">
+                    <i class="fa fa-star user-star uncheck-as-users-opinion text-warning" aria-hidden="true"
+                       title="${extras.title.unmark_as_opinion}" data-is-users-opinion="${bubble.is_users_opinion}"
+                       style="display:none;"></i>
+                    <i class="fa fa-star-o user-star check-as-users-opinion" aria-hidden="true"
+                       title="${extras.title.mark_as_opinion}" data-is-users-opinion="${bubble.is_users_opinion}"
+                       style="display:none;"></i>
+                  </div>
+                  <a tal:omit-tag="bubble.omit_bubble_url" href="${bubble.bubble_url}" title="${extras.buttons.lets_go_back}"
+                                                    data-toggle="tooltip" data-placement="bottom">
+                    <span class="triangle-content">${structure:bubble.message}</span>
+                  </a>
+                  <br>
+                  <em class="triangle-r-info" data-type="${bubble.data_type}" tal:condition="bubble.omit_vote_info"
+                      data-argument-uid="${bubble.data_argument_uid}" data-statement-uid="${bubble.data_statement_uid}"
+                      data-votecount="${bubble.votecounts}"
+                      data-is-supportive="${bubble.data_is_supportive}">${bubble.votecounts_message}</em>
                 </div>
-                <a tal:omit-tag="bubble.omit_url" href="${bubble.url}" title="${extras.buttons.lets_go_back}"
-                                                  data-toggle="tooltip" data-placement="bottom">
-                  <span class="triangle-content">${structure:bubble.message}</span>
-                </a>
-                <br>
-                <em class="triangle-r-info" data-type="${bubble.data_type}"
-                    data-argument-uid="${bubble.data_argument_uid}" data-statement-uid="${bubble.data_statement_uid}"
-                    data-votecount="${bubble.votecounts}"
-                    data-is-supportive="${bubble.data_is_supportive}">${bubble.votecounts_message}</em>
-                </p>
               </div>
               <div tal:condition="bubble.is_system" class="line-wrapper-l">
+                <div tal:switch="bubble.enemy.available" tal:omit-tag="" tal:condition="extras.logged_in and extras.modern_bubbles">
+                  <a tal:case="True" class="pull-left" href="${bubble.enemy.profile}"><img src="${bubble.enemy.avatar}" class="img-circle" alt="gravatar" style="max-width: 25px; margin-top: 0.3em"></a>
+                  <img tal:case="False" src="${bubble.enemy.avatar}" class="img-circle pull-left" alt="gravatar" style="max-width: 25px; margin-top: 0.3em">
+                </div>
                 <p class="triangle-l" id="${bubble.id}">
                   <span class="triangle-content">${structure:bubble.message}</span>
                   <br tal:condition="bubble.is_markable and extras.logged_in">
@@ -82,8 +87,10 @@
               <div tal:condition="bubble.is_status" class="line-wrapper-m">
                 <p class="triangle-m" id="${bubble.id}">${structure:bubble.message}</p>
               </div>
-              <div tal:condition="bubble.is_info" class="line-wrapper-m">
-                <p class="triangle-m-info" id="${bubble.id}">${structure:bubble.message}</p>
+              <div tal:condition="not:issues.read_only" tal:omit-tag="">
+                <div tal:condition="bubble.is_info" class="line-wrapper-m">
+                  <p class="triangle-m-info" id="${bubble.id}">${structure:bubble.message}</p>
+                </div>
               </div>
             </div>
           </div>

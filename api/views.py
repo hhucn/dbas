@@ -249,7 +249,7 @@ def discussion_init(request):
     intro = get_translation(_.initialPositionInterest, db_issue.lang)
 
     bubbles = [
-        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', message=intro, omit_url=True, lang=db_issue.lang)
+        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', content=intro, omit_bubble_url=True, lang=db_issue.lang)
     ]
 
     issues_statements = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]

@@ -76,7 +76,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <ul>
-                                        <li>
+                                        <li tal:condition="extras.usage_of_matomo">
                                             <a target="_blank" href="http://matomo.org/">Matomo Open-Source
                                                 Analytics</a>
                                         </li>
@@ -126,7 +126,7 @@
 
                 </div>
 
-                <div class="row" tal:omit-tag="" tal:condition="not:extras.development_mode">
+                <div class="row" tal:omit-tag="" tal:condition="extras.usage_of_matomo">
                     <div class="col-lg-6">
                         <div class="colored-container" style="margin-bottom: 1em">
                             <br>

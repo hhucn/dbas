@@ -138,7 +138,7 @@
 <script src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
 
 <!-- Matomo -->
-<script type="text/javascript">
+<script type="text/javascript" tal:condition="extras.usage_of_matomo">
   var _paq = _paq || [];
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
@@ -156,12 +156,12 @@
     s.parentNode.insertBefore(g, s);
   })();
 </script>
-<noscript>
+<noscript tal:condition="extras.usage_of_matomo">
   <p>
     <img src="//dbas.cs.uni-duesseldorf.de/analytics/piwik.php?idsite=1" style="border:0;"/>
   </p>
 </noscript>
-<!-- End Matomo Code -->
+<!-- End Matomo Code ->>
 </body>
 
 </html>
