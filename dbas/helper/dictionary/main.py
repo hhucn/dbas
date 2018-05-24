@@ -138,6 +138,7 @@ class DictionaryHelper(object):
         return_dict['is_production'] = registry.settings.get('mode', '') == 'production'
         return_dict['review_count'] = get_complete_review_count(db_user)
         return_dict['modern_bubbles'] = bool(os.environ.get('MODERN_BUBBLES', False))
+        return_dict['usage_of_matomo'] = bool(os.environ.get('USAGE_OF_MATOMO', False))
 
         # add german and english discussion links
         db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
