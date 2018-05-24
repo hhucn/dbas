@@ -36,7 +36,8 @@ def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     if all_statements is None:
-        all_statements = get_enabled_statement_as_query().filter_by(issue_uid=db_issue.uid).all()
+        issues_statements_uids = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
+        all_statements = get_enabled_statement_as_query().filter(Statement.uid.in_(issues_statements_uids)).all()
 
     if all_arguments is None:
         all_arguments = get_enabled_arguments_as_query().filter_by(issue_uid=db_issue.uid).all()
