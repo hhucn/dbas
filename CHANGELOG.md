@@ -1,3 +1,6 @@
+### 1.7.0 (2018-05-24)
+ - Statements are no longer bounded to one issue. Noe we have a many-to-many relationship between statements and issues.
+
 ### 1.6.4 (2018-05-10)
  - Function to delete an account
 
