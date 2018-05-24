@@ -2,7 +2,7 @@ import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import History
+from dbas.database.discussion_model import History, StatementToIssue
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
@@ -66,7 +66,8 @@ class TestGetShortenedUrl(TestCaseWithConfig):
 class TestGetArgumentsByStatementId(TestCaseWithConfig):
     def test_get_arguments_by_statement_uid(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = construct_dummy_request({'statement_id': 3})
+        issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
+        request = construct_dummy_request({'statement_id': 3, 'issue': issue_uid})
         response = get_arguments_by_statement_id(request)
         self.assertIsNotNone(response)
         self.assertIn('arguments', response)
@@ -77,13 +78,22 @@ class TestGetArgumentsByStatementId(TestCaseWithConfig):
 
     def test_get_arguments_by_statement_uid_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = construct_dummy_request({'statement_id': 1})
+        issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
+        request = construct_dummy_request({'statement_id': 1, 'issue': issue_uid})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 410)
 
     def test_get_arguments_by_statement_uid_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = construct_dummy_request({'statement_id': 'a'})
+        issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
+        request = construct_dummy_request({'statement_id': 3, 'issue': issue_uid + 1})
+        response = get_arguments_by_statement_id(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_arguments_by_statement_uid_failure3(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
+        request = construct_dummy_request({'statement_id': 'a', 'issue': issue_uid})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 400)
 

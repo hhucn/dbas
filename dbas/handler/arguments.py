@@ -109,15 +109,16 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
     return return_dict
 
 
-def get_arguments_by_statement_uid(db_statement: Statement) -> dict:
+def get_arguments_by_statement_uid(db_statement: Statement, db_issue: Issue) -> dict:
     """
     Collects every argument which uses the given statement
 
     :param db_statement: Statement
+    :param db_issue: issue
     :rtype: dict
     :return: prepared collection with several arguments
     """
-    slug = resolve_issue_uid_to_slug(db_statement.issue_uid)
+    slug = resolve_issue_uid_to_slug(db_issue.uid)
     _um = UrlManager(slug)
     return {'arguments': get_all_arguments_with_text_and_url_by_statement_id(db_statement, _um, True, is_jump=True)}
 

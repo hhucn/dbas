@@ -18,7 +18,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate, \
-    RevokedDuplicate, MarkedArgument, MarkedStatement, History, APIToken
+    RevokedDuplicate, MarkedArgument, MarkedStatement, History, APIToken, StatementOrigins, StatementToIssue
 from dbas.lib import get_text_for_premisegroup_uid, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
@@ -33,6 +33,8 @@ table_mapper = {
     'Settings'.lower(): {'table': Settings, 'name': 'Settings'},
     'Statement'.lower(): {'table': Statement, 'name': 'Statement'},
     'StatementReferences'.lower(): {'table': StatementReferences, 'name': 'StatementReferences'},
+    'StatementOrigins'.lower(): {'table': StatementOrigins, 'name': 'StatementOrigins'},
+    'StatementToIssue'.lower(): {'table': StatementToIssue, 'name': 'StatementToIssue'},
     'SeenStatement'.lower(): {'table': SeenStatement, 'name': 'SeenStatement'},
     'SeenArgument'.lower(): {'table': SeenArgument, 'name': 'SeenArgument'},
     'TextVersion'.lower(): {'table': TextVersion, 'name': 'TextVersion'},
@@ -143,6 +145,8 @@ def get_overview(page):
     # all tables for the 'content' group
     content = list()
     content.append(__get_dash_dict('Statement', page + 'Statement'))
+    content.append(__get_dash_dict('StatementOrigins', page + 'StatementOrigins'))
+    content.append(__get_dash_dict('StatementToIssue', page + 'StatementToIssue'))
     content.append(__get_dash_dict('TextVersion', page + 'TextVersion'))
     content.append(__get_dash_dict('StatementReferences', page + 'StatementReferences'))
     content.append(__get_dash_dict('PremiseGroup', page + 'PremiseGroup'))

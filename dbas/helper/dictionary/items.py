@@ -11,7 +11,7 @@ from typing import List
 from dbas.lib import Relations, Attitudes
 from dbas.handler import attacks
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
+from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User, StatementToIssue
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.url import UrlManager
@@ -71,10 +71,12 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'def user: {}'.format(db_user.nickname))
+
+        statements = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=self.db_issue.uid).all()]
         db_statements = DBDiscussionSession.query(Statement) \
             .filter(Statement.is_disabled == False,
                     Statement.is_position == True,
-                    Statement.issue_uid == self.db_issue.uid).all()
+                    Statement.uid.in_(statements)).all()
 
         uids = [element.uid for element in db_statements if db_statements]
         slug = self.db_issue.slug
@@ -655,7 +657,6 @@ class ItemDictHelper(object):
                 db_argument = db_argument.filter_by(argument_uid=argument_uid).first()
 
             if not db_argument:
-                print(group_id)
                 return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)

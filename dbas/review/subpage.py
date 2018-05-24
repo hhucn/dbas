@@ -11,7 +11,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument, \
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
     sql_timestamp_pretty_print, ReviewDuplicate, LastReviewerDuplicate, ReviewMerge, ReviewSplit, LastReviewerMerge, \
-    LastReviewerSplit, Premise, ReviewMergeValues, ReviewSplitValues
+    LastReviewerSplit, Premise, ReviewMergeValues, ReviewSplitValues, StatementToIssue
 from dbas.lib import get_all_arguments_by_statement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, \
     get_text_for_premisegroup_uid, get_profile_picture
@@ -181,13 +181,16 @@ def __get_base_subpage_dict(review_type, db_reviews, already_seen, first_time, d
     if rnd_review.statement_uid is None:
         db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
         text = get_text_for_argument_uid(db_argument.uid)
-        issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
+        issue_titles = [DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title]
     else:
         db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = db_statement.get_text()
-        issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
+        statement2issues_uid = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(
+            statement_uid=rnd_review.statement_uid).all()]
+        issue_titles = [issue.title for issue in
+                        DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issues_uid)).all()]
 
-    return rnd_review, already_seen, extra_info, text, issue
+    return rnd_review, already_seen, extra_info, text, issue_titles
 
 
 def __get_subpage_dict_for_deletes(session, application_url, db_user, translator):
@@ -207,14 +210,16 @@ def __get_subpage_dict_for_deletes(session, application_url, db_user, translator
                                                                                                 ReviewDelete,
                                                                                                 LastReviewerDelete)
 
-    rnd_review, already_seen, extra_info, text, issue = __get_base_subpage_dict(ReviewDelete, db_reviews, already_seen,
-                                                                                first_time, db_user, already_reviewed)
+    rnd_review, already_seen, extra_info, text, issue_titles = __get_base_subpage_dict(ReviewDelete, db_reviews,
+                                                                                       already_seen,
+                                                                                       first_time, db_user,
+                                                                                       already_reviewed)
     if not rnd_review:
         return {
             'stats': None,
             'text': None,
             'reason': None,
-            'issue': None,
+            'issue_titles': None,
             'extra_info': None,
             'session': session
         }
@@ -236,7 +241,7 @@ def __get_subpage_dict_for_deletes(session, application_url, db_user, translator
     return {'stats': stats,
             'text': text,
             'reason': reason,
-            'issue': issue,
+            'issue_titles': issue_titles,
             'extra_info': extra_info,
             'session': session}
 
@@ -273,7 +278,7 @@ def __get_subpage_dict_for_optimization(session, application_url, db_user, trans
         return {'stats': None,
                 'text': None,
                 'reason': None,
-                'issue': None,
+                'issue_titles': None,
                 'context': [],
                 'extra_info': None,
                 'session': session}
@@ -282,13 +287,16 @@ def __get_subpage_dict_for_optimization(session, application_url, db_user, trans
     if rnd_review.statement_uid is None:
         db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
         text = get_text_for_argument_uid(db_argument.uid)
-        issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
+        issue_titles = [DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title]
         parts = __get_text_parts_of_argument(db_argument)
         context = [text]
     else:
         db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = db_statement.get_text()
-        issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
+        statement2issue_uids = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(
+            statement_uid=rnd_review.statement_uid)]
+        issue_titles = [issue.title for issue in
+                        DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()]
         parts = [__get_part_dict('statement', text, 0, rnd_review.statement_uid)]
         context = []
         args = get_all_arguments_by_statement(rnd_review.statement_uid)
@@ -307,7 +315,7 @@ def __get_subpage_dict_for_optimization(session, application_url, db_user, trans
     return {'stats': stats,
             'text': text,
             'reason': reason,
-            'issue': issue,
+            'issue_titles': issue_titles,
             'extra_info': extra_info,
             'context': context,
             'parts': parts,
@@ -331,8 +339,10 @@ def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
                                                                                                 ReviewEdit,
                                                                                                 LastReviewerEdit)
 
-    rnd_review, already_seen, extra_info, text, issue = __get_base_subpage_dict(ReviewEdit, db_reviews, already_seen,
-                                                                                first_time, db_user, already_reviewed)
+    rnd_review, already_seen, extra_info, text, issue_titles = __get_base_subpage_dict(ReviewEdit, db_reviews,
+                                                                                       already_seen,
+                                                                                       first_time, db_user,
+                                                                                       already_reviewed)
     if not rnd_review:
         return {
             'stats': None,
@@ -362,7 +372,7 @@ def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
                 'stats': None,
                 'text': None,
                 'reason': None,
-                'issue': None,
+                'issue_titles': None,
                 'extra_info': None,
                 'session': session
             }
@@ -379,7 +389,7 @@ def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
             'corrected_version': db_edit_value.content,
             'corrections': correction,
             'reason': reason,
-            'issue': issue,
+            'issue_titles': issue_titles,
             'extra_info': extra_info,
             'session': session}
 
@@ -419,14 +429,17 @@ def __get_subpage_dict_for_duplicates(session, application_url, db_user, transla
         return {'stats': None,
                 'text': None,
                 'reason': None,
-                'issue': None,
+                'issue_titles': None,
                 'extra_info': None,
                 'session': session}
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     db_statement = DBDiscussionSession.query(Statement).get(rnd_review.duplicate_statement_uid)
     text = db_statement.get_text()
-    issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
+    statement2issue_uids = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(
+        statement_uid=rnd_review.duplicate_statement_uid)]
+    issue_titles = [issue.title for issue in
+                    DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()]
     reason = translator.get(_.argumentFlaggedBecauseDuplicate)
 
     duplicate_of_text = get_text_for_statement_uid(rnd_review.original_statement_uid)
@@ -440,7 +453,7 @@ def __get_subpage_dict_for_duplicates(session, application_url, db_user, transla
             'text': text,
             'duplicate_of': duplicate_of_text,
             'reason': reason,
-            'issue': issue,
+            'issue_titles': issue_titles,
             'extra_info': extra_info,
             'session': session}
 
@@ -550,7 +563,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
             'stats': None,
             'text': None,
             'reason': None,
-            'issue': None,
+            'issue_titles': None,
             'extra_info': None,
             'session': session
         }
@@ -570,7 +583,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
     else:
         merged_text = get_text_for_premisegroup_uid(rnd_review.premisegroup_uid)
         pgroup_only = True
-    issue = DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title
+    issue_titles = [DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title]
     reason = translator.get(_.argumentFlaggedBecauseMerge)
 
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
@@ -583,7 +596,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
         'text': text,
         'merged_text': merged_text,
         'reason': reason,
-        'issue': issue,
+        'issue_titles': issue_titles,
         'extra_info': extra_info,
         'pgroup_only': pgroup_only,
         'session': session

@@ -3,6 +3,7 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import warnings
 
 import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -429,21 +430,16 @@ class Statement(DiscussionBase):
     __tablename__ = 'statements'
     uid = Column(Integer, primary_key=True)
     is_position = Column(Boolean)
-    issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    issues = relationship('Issue', foreign_keys=[issue_uid])
-
-    def __init__(self, is_position, issue, is_disabled=False):
+    def __init__(self, is_position, is_disabled=False):
         """
         Inits a row in current statement table
 
         :param is_position: boolean
-        :param issue: Issue.uid
         :param is_disabled: Boolean
         """
         self.is_position = is_position
-        self.issue_uid = issue
         self.is_disabled = is_disabled
 
     def set_disabled(self, is_disabled):
@@ -495,7 +491,8 @@ class Statement(DiscussionBase):
 
         :return: string
         """
-        return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
+        db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=self.uid).first()
+        return DBDiscussionSession.query(Issue).get(db_statement2issues.issue_uid).lang
 
     @hybrid_property
     def textversion_uid(self):
@@ -508,23 +505,14 @@ class Statement(DiscussionBase):
         return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid, is_disabled=False).order_by(
             TextVersion.timestamp.desc()).first().uid
 
-    def to_dict(self):
-        """
-        Returns the row as dictionary.
-
-        :return: dict()
-        """
-        return {
-            'uid': self.uid,
-            'textversion_uid': self.textversion_uid,
-            'is_position': self.is_position,
-            'issue_uid': self.issue_uid,
-            'is_disabled': self.is_disabled
-        }
-
     @hybrid_property
     def textversions(self):
         return self.get_textversion()
+
+    @hybrid_property
+    def issue_uid(self):
+        warnings.warn("Use the entries of StatementToIssue instead.", DeprecationWarning)
+        return DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=self.uid).first().issue_uid
 
     def get_textversion(self):
         """
@@ -600,6 +588,57 @@ class StatementReferences(DiscussionBase):
         """
         db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
         return db_statement.get_text(html)
+
+
+class StatementOrigins(DiscussionBase):
+    """
+    Add an origin to the statement. Comes from external services, like the aggregators.
+    """
+    __tablename__ = 'statement_origins'
+    uid = Column(Integer, primary_key=True)
+    entity_id = Column(Text, nullable=True)
+    aggregate_id = Column(Text, nullable=True)
+    author = Column(Text, nullable=True)
+    version = Column(Integer, nullable=True)
+    statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
+    created = Column(ArrowType, default=get_now())
+
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+
+    def __init__(self, entity_id, aggregate_id, author, version, statement_uid):
+        """
+        Initialize the origin.
+
+        :param entity_id: external id of the entity, e.g. a statement
+        :param aggregate_id: the original host where the entitity was first introduced into the system
+        :param author: external author of the statement
+        :param version: current version, might be different from 1 if the entity was updated
+        :param statement_uid: local statement where this origin needs to be assigned to
+        """
+        self.entity_id = entity_id
+        self.aggregate_id = aggregate_id
+        self.author = author
+        self.version = version
+        self.statement_uid = statement_uid
+
+
+class StatementToIssue(DiscussionBase):
+    __tablename__ = 'statement_to_issue'
+    uid = Column(Integer, primary_key=True)
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    issue_uid = Column(Integer, ForeignKey('issues.uid'))
+
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+    issues = relationship('Issue', foreign_keys=[issue_uid])
+
+    def __init__(self, statement, issue):
+        """
+
+        :param statement:
+        :param issue:
+        """
+        self.statement_uid = statement
+        self.issue_uid = issue
 
 
 class SeenStatement(DiscussionBase):

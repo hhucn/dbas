@@ -711,7 +711,7 @@ def get_public_user_data(request):
 
 
 @view_config(route_name='get_arguments_by_statement_uid', renderer='json')
-@validate(valid_statement(location='json_body'))
+@validate(valid_any_issue_by_id, valid_statement(location='json_body'))
 def get_arguments_by_statement_id(request):
     """
     Returns all arguments, which use the given statement
@@ -720,7 +720,9 @@ def get_arguments_by_statement_id(request):
     :return: json-dict()
     """
     logger('views', 'main: {}'.format(request.json_body))
-    return get_arguments_by_statement_uid(request.validated['statement'])
+    db_statement = request.validated['statement']
+    db_issue = request.validated['issue']
+    return get_arguments_by_statement_uid(db_statement, db_issue)
 
 
 @view_config(route_name='get_references', renderer='json')
@@ -740,7 +742,7 @@ def get_reference(request):
 
 
 @view_config(route_name='set_references', renderer='json')
-@validate(valid_user, valid_statement('json_body'), has_keywords(('reference', str), ('ref_source', str)))
+@validate(valid_user, valid_any_issue_by_id, valid_statement('json_body'), has_keywords(('reference', str), ('ref_source', str)))
 def set_references(request):
     """
     Sets a reference for a statement or an arguments
@@ -753,7 +755,9 @@ def set_references(request):
     reference = escape_string(request.validated['reference'])
     source = escape_string(request.validated['ref_source'])
     db_user = request.validated['user']
-    return set_reference(reference, source, db_user, db_statement, db_statement.issue_uid)
+    db_issue = request.validated['issue']
+    # db_statement2issue = DBDiscussionSession.query(StatementToIssue)
+    return set_reference(reference, source, db_user, db_statement, db_issue.uid)
 
 
 # ########################################

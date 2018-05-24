@@ -334,17 +334,6 @@ def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager
     return results
 
 
-def get_slug_by_statement_uid(uid):
-    """
-    Returns slug for the given Issue.uid
-
-    :param uid: Issue.uid
-    :return: String
-    """
-    db_statement = DBDiscussionSession.query(Statement).get(uid)
-    return resolve_issue_uid_to_slug(db_statement.issue_uid)
-
-
 def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
                               user_changed_opinion=False, rearrange_intro=False, colored_position=False,
                               attack_type=None, minimize_on_undercut=False, is_users_opinion=True,
@@ -1041,7 +1030,6 @@ def is_argument_disabled_due_to_disabled_statements(argument):
                 return True
     else:
         # check conclusion of given argument
-        print(argument.conclusion_uid)
         conclusion = DBDiscussionSession.query(Statement).get(argument.conclusion_uid)
         if conclusion.is_disabled:
             return True

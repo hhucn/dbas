@@ -8,7 +8,7 @@ from sqlalchemy import func
 import dbas.review.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
-    sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement
+    sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
 from dbas.handler import user, notification as nh
 from dbas.handler.rss import append_action_to_issue_rss
 from dbas.handler.voting import add_seen_argument, add_seen_statement
@@ -88,6 +88,8 @@ def set_positions_premise(db_issue: Issue, db_user: User, db_conclusion: Stateme
 
 def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: dict):
     """
+<<<<<<< HEAD
+=======
 
     :param db_user:
     :param db_issue:
@@ -107,6 +109,7 @@ def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: di
 
 def set_correction_of_statement(elements, db_user, translator) -> dict:
     """
+>>>>>>> development
     Adds a proposal for a statements correction and returns info if the proposal could be set
 
     :param elements: List of dicts with text and uids for proposals of edits for new statements
@@ -258,24 +261,21 @@ def insert_as_statement(text: str, db_user: User, db_issue: Issue, is_start=Fals
     return new_statement
 
 
-def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> Tuple[Statement, bool]:
+def set_statement(text: str, db_user: User, is_position: bool, db_issue: Issue) -> Tuple[Statement, bool]:
     """
     Saves statement for user
 
     :param text: given statement
     :param db_user: User of given user
-    :param is_start: if it is a start statement
+    :param is_position: if it is a start statement
     :param db_issue: Issue
     :return: Statement, is_duplicate or -1, False on error
     """
 
-    logger('StatementsHelper', 'user: ' + str(db_user.nickname) + ', user_id: ' + str(db_user.uid) +
-           ', text: ' + str(text) + ', issue: ' + str(db_issue.uid))
+    logger('StatementsHelper', 'user_id: {}, text: {}, issue: {}'.format(db_user.uid, text, db_issue.uid))
 
     # escaping and cleaning
-    text = text.strip()
-    text = ' '.join(text.split())
-    text = escape_string(text)
+    text = escape_string(' '.join(text.strip().split()))
     _tn = Translator(db_issue.lang)
     if text.startswith(_tn.get(_.because).lower() + ' '):
         text = text[len(_tn.get(_.because) + ' '):]
@@ -283,25 +283,83 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> 
         text = text[:-1]
 
     # check, if the text already exists
-    db_duplicate = DBDiscussionSession.query(TextVersion).filter(
-        func.lower(TextVersion.content) == text.lower()).first()
-    if db_duplicate:
-        db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == db_duplicate.statement_uid,
-                                                                   Statement.issue_uid == db_issue.uid).one()
-        return db_statement, True
+    db_dupl = __check_duplicate(db_issue, text)
+    if db_dupl:
+        return db_dupl, True
 
-    # add text
-    statement = Statement(is_position=is_start, issue=db_issue.uid)
-    DBDiscussionSession.add(statement)
+    db_statement = __add_statement(is_position)
+    __add_textversion(text, db_user.uid, db_statement.uid)
+    __add_statement2issue(db_statement.uid, db_issue.uid)
+
+    return db_statement, False
+
+
+def __check_duplicate(db_issue: Issue, text: str) -> Union[Statement, None]:
+    """
+    Check if there is already a textversion with the given text. If true the statement2issue relation will be
+    checked and set and the duplicate (Statement) returned
+
+    :param db_issue: related Issue
+    :param text: the text
+    :return:
+    """
+    db_tv = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
+    if not db_tv:
+        return None
+
+    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
+        StatementToIssue.issue_uid == db_issue.uid,
+        StatementToIssue.statement_uid == db_tv.statement_uid).all()
+
+    if not db_statement2issue:
+        __add_statement2issue(db_tv.statement_uid, db_issue.uid)
+
+    db_statement = DBDiscussionSession.query(Statement).get(db_tv.statement_uid)
+    return db_statement
+
+
+def __add_statement(is_position: bool) -> Statement:
+    """
+    Adds a new statement to the database
+
+    :param is_position: True if the statement should be a position
+    :return: New statement object
+    """
+    db_statement = Statement(is_position=is_position)
+    DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
-
-    # add textversion
-    textversion = TextVersion(content=text, author=db_user.uid, statement_uid=statement.uid)
-    DBDiscussionSession.add(textversion)
-    DBDiscussionSession.flush()
-
     transaction.commit()
-    return statement, False
+    return db_statement
+
+
+def __add_textversion(text: str, user_uid: int, statement_uid: int) -> TextVersion:
+    """
+    Adds a new statement to the database
+
+    :param text: content of the textversion
+    :param user_uid: uid of the author
+    :param statement_uid: id of the related statement
+    :return: New textversion object
+    """
+    db_textversion = TextVersion(content=text, author=user_uid, statement_uid=statement_uid)
+    DBDiscussionSession.add(db_textversion)
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return db_textversion
+
+
+def __add_statement2issue(statement_uid: int, issue_uid: int) -> StatementToIssue:
+    """
+    Adds a new statement to issue link to the database
+
+    :param statement_uid: id of the related statement
+    :param issue_uid: id of the related issue
+    :return: New statement to issue object
+    """
+    db_statement2issue = StatementToIssue(statement=statement_uid, issue=issue_uid)
+    DBDiscussionSession.add(db_statement2issue)
+    DBDiscussionSession.flush()
+    return db_statement2issue
 
 
 def __is_conclusion_in_premisegroups(premisegroups: list, db_conclusion: Statement) -> bool:
@@ -377,7 +435,8 @@ def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, s
         url = _um.get_url_for_choosing_premisegroup(False, supportive, db_conclusion.uid, pgroups)
 
     # send notifications and mails
-    email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, Attitudes.AGREE if supportive else Attitudes.DISAGREE)
+    email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid,
+                                                          Attitudes.AGREE if supportive else Attitudes.DISAGREE)
     nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, mailer)
 
     prepared_dict['url'] = url

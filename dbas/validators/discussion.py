@@ -7,7 +7,7 @@ from typing import Callable, Set, Union
 from pyramid.request import Request
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGroup
+from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGroup, StatementToIssue
 from dbas.handler import issue as issue_handler
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer, related_with_support, check_belonging_of_premisegroups
@@ -141,19 +141,17 @@ def valid_conclusion(request):
             return False
 
     if conclusion_id and isinstance(conclusion_id, int):
-        db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id,
-                                                                       issue_uid=issue.uid,
-                                                                       is_disabled=False).first()
-        if db_conclusion:
-            request.validated['conclusion'] = db_conclusion
-            return True
-        else:
-            add_error(request, 'Conclusion is missing', _tn.get(_.conclusionIsMissing))
-            return False
-    else:
-        _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'Conclusion id is missing', _tn.get(_.conclusionIsMissing))
-        return False
+        db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(StatementToIssue.issue_uid == issue.uid,
+                                                                                StatementToIssue.statement_uid == conclusion_id).first()
+        if db_statement2issue:
+            db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id,
+                                                                           is_disabled=False).first()
+            if db_conclusion:
+                request.validated['conclusion'] = db_conclusion
+                return True
+
+    add_error(request, 'Conclusion id is missing', _tn.get(_.conclusionIsMissing))
+    return False
 
 
 def valid_position(request):
@@ -178,7 +176,10 @@ def valid_position(request):
         if not db_position.is_position:
             add_error(request, 'Queried statement is not a valid position', location='path')
             return False
-        if db_position.issue_uid != request.validated['issue'].uid:
+
+        db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter(StatementToIssue.statement_uid == position_id,
+                                                                                 StatementToIssue.issue_uid == request.validated['issue'].uid).first()
+        if not db_statement2issues:
             add_error(request, 'Position does not belong to the queried issue', location='path')
             return False
         request.validated['position']: Statement = db_position
@@ -511,7 +512,7 @@ def __validate_enabled_entity(request: Request, db_issue: Union[Issue, None], en
         add_error(request, '{} no longer available'.format(db_entity.__class__.__name__), location='path',
                   status_code=410)
         return None
-    if db_issue and not db_entity.issue_uid == db_issue.uid:
+    if db_issue and not db_entity.issue_uid == db_issue.uid:  # TODO kick hybrid property
         add_error(request, '{} does not belong to issue'.format(db_entity.__class__.__name__), location='path')
         return None
     return db_entity
