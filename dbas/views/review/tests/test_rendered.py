@@ -3,7 +3,7 @@ import unittest
 from pyramid import testing
 
 from dbas.helper.test import verify_dictionary_of_view
-from dbas.views.review.rendered import overview
+from dbas.views.review.rendered import index
 
 
 class MainReviewViewTestsNotLoggedIn(unittest.TestCase):
@@ -16,7 +16,7 @@ class MainReviewViewTestsNotLoggedIn(unittest.TestCase):
 
     def test_page(self):
         request = testing.DummyRequest()
-        response = overview(request)
+        response = index(request)
         verify_dictionary_of_view(response)
 
         self.assertIn('review', response)
@@ -38,7 +38,7 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
 
     def test_page(self):
         request = testing.DummyRequest()
-        response = overview(request)
+        response = index(request)
         verify_dictionary_of_view(response)
 
         self.assertIn('review', response)
@@ -46,4 +46,4 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
         self.assertIn('reputation_list', response)
         self.assertIn('reputation', response)
         self.assertTrue(response['reputation']['has_all_rights'])
-        self.assertTrue(type(response['reputation']['count']) is int)
+        self.assertEqual(type(response['reputation']['count']), int)

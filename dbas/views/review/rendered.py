@@ -16,7 +16,7 @@ from dbas.views.helper import main_dict
 
 @view_config(route_name='review_index', renderer='../../templates/review.pt', permission='use')
 @validate(check_authentication, prep_extras_dict, valid_user_optional)
-def overview(request):
+def index(request):
     """
     View configuration for the review index.
 

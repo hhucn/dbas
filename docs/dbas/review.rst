@@ -32,7 +32,7 @@ Workflow
 If you want to add a new queue, there are some steps to be done. We will guide through these steps file-by-file:
 
 dbas/database/discussion_model.py
-================================-
+=================================
 
  1. Add a new table for your review type to the database.
  2. Add a new table for the last reviewer of your new type.
@@ -54,7 +54,7 @@ dbas/review/queues.py
 
 
 dbas/review/opinions.py
-======================-
+=======================
  1. Now please add a method for the voting in this script. This will affect actions on (un-)successful votes as well!
 
 

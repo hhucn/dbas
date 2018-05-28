@@ -11,8 +11,8 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
 from dbas.lib import get_text_for_argument_uid, nick_of_anonymous_user
 from dbas.tests.utils import TestCaseWithConfig
 from dbas.views import review_delete_argument, revoke_statement_content, flag_argument_or_statement, \
-    split_or_merge_statement, split_or_merge_premisegroup, review_edit_argument, \
-    review_duplicate_statement, review_optimization_argument, undo_review, cancel_review, review_lock
+    split_or_merge_statement, split_or_merge_premisegroup, review_edit_argument, review_splitted_premisegroup, \
+    review_duplicate_statement, review_optimization_argument, undo_review, cancel_review, review_lock, review_merged_premisegroup
 
 
 class AjaxReviewTest(unittest.TestCase):
@@ -769,7 +769,7 @@ class AjaxReviewTest(unittest.TestCase):
             'text_values': ['it is based on the cats race', 'not every cat is capricious']
         })
         # oem of pgroup pgroup_uid is: 'the fact, that cats are capricious, is based on the cats race'
-        split_or_merge_premisegroup(request)
+        split_or_merge_statement(request)
         tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=pgroup_uid).first()
 
         db_arguments_with_pgroup = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=pgroup_uid).all()
@@ -779,7 +779,7 @@ class AjaxReviewTest(unittest.TestCase):
             'review_uid': tmp.uid,
             'should_split': True
         })
-        response = split_or_merge_premisegroup(request)
+        response = review_splitted_premisegroup(request)
         db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
         pro = db_review.filter_by(should_split=True).count()
         con = db_review.filter_by(should_split=False).count()
@@ -793,7 +793,7 @@ class AjaxReviewTest(unittest.TestCase):
             'review_uid': tmp.uid,
             'should_split': True,
         })
-        response = split_or_merge_premisegroup(request)
+        response = review_splitted_premisegroup(request)
         db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
         pro = db_review.filter_by(should_split=True).count()
         con = db_review.filter_by(should_split=False).count()
@@ -807,7 +807,7 @@ class AjaxReviewTest(unittest.TestCase):
             'review_uid': tmp.uid,
             'should_split': False,
         })
-        response = split_or_merge_premisegroup(request)
+        response = review_splitted_premisegroup(request)
         db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
         pro = db_review.filter_by(should_split=True).count()
         con = db_review.filter_by(should_split=False).count()
@@ -821,7 +821,7 @@ class AjaxReviewTest(unittest.TestCase):
             'review_uid': tmp.uid,
             'should_split': True,
         })
-        response = split_or_merge_premisegroup(request)
+        response = review_splitted_premisegroup(request)
         db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
         pro = db_review.filter_by(should_split=True).count()
         con = db_review.filter_by(should_split=False).count()
@@ -837,7 +837,7 @@ class AjaxReviewTest(unittest.TestCase):
         })
         arg_old_len = DBDiscussionSession.query(Argument).count()
 
-        response = split_or_merge_premisegroup(request)
+        response = review_splitted_premisegroup(request)
 
         arg_new_len = DBDiscussionSession.query(Argument).count()
         db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
@@ -872,6 +872,7 @@ class AjaxReviewTest(unittest.TestCase):
             DBDiscussionSession.flush()
             transaction.commit()
 
+
     def test_review_merged_premisegroup(self, pgroup_uid=27, resetdb=True):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
@@ -888,7 +889,7 @@ class AjaxReviewTest(unittest.TestCase):
             'review_uid': tmp.uid,
             'should_merge': True
         })
-        response = split_or_merge_statement(request)
+        response = review_merged_premisegroup(request)
         db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
         pro = db_review.filter_by(should_merge=True).count()
         con = db_review.filter_by(should_merge=False).count()
@@ -902,7 +903,7 @@ class AjaxReviewTest(unittest.TestCase):
             'review_uid': tmp.uid,
             'should_merge': True,
         })
-        response = split_or_merge_statement(request)
+        response = review_merged_premisegroup(request)
         db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
         pro = db_review.filter_by(should_merge=True).count()
         con = db_review.filter_by(should_merge=False).count()
@@ -916,7 +917,7 @@ class AjaxReviewTest(unittest.TestCase):
             'review_uid': tmp.uid,
             'should_merge': False,
         })
-        response = split_or_merge_statement(request)
+        response = review_merged_premisegroup(request)
         db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
         pro = db_review.filter_by(should_merge=True).count()
         con = db_review.filter_by(should_merge=False).count()
@@ -930,7 +931,7 @@ class AjaxReviewTest(unittest.TestCase):
             'review_uid': tmp.uid,
             'should_merge': True,
         })
-        response = split_or_merge_statement(request)
+        response = review_merged_premisegroup(request)
         db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
         pro = db_review.filter_by(should_merge=True).count()
         con = db_review.filter_by(should_merge=False).count()
@@ -949,7 +950,7 @@ class AjaxReviewTest(unittest.TestCase):
         old_text = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first().get_text()
         old_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
         pgroup_merged_old_len = DBDiscussionSession.query(PremiseGroupMerged).count()
-        response = split_or_merge_statement(request)
+        response = review_merged_premisegroup(request)
 
         db_new_pgroup = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first()
         new_text = db_new_pgroup.get_text()
@@ -984,6 +985,7 @@ class AjaxReviewTest(unittest.TestCase):
             DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=pgroup_uid).delete()
             DBDiscussionSession.flush()
             transaction.commit()
+
 
     def test_cancel_review_splitted_merged_premisegroup_errors(self):
         self.config.testing_securitypolicy(userid='someone', permissive=True)
