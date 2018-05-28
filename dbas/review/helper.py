@@ -3,6 +3,7 @@ Provides helping function for the adding task in the review queuees or en-/disab
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+
 import transaction
 
 from dbas.database import DBDiscussionSession

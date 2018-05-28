@@ -1,6 +1,8 @@
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
+import dbas.review
+import dbas.review.helper
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
 from dbas.logger import logger
@@ -67,14 +69,14 @@ def queue_details(request):
         raise HTTPNotFound()
 
     title = _tn.get(_.review)
-    if subpage_name in review_queue_helper.title_mapping:
-        title = _tn.get(review_queue_helper.title_mapping[subpage_name])
+    if subpage_name in dbas.review.title_mapping:
+        title = _tn.get(dbas.review.title_mapping[subpage_name])
 
     prep_dict = main_dict(request, title)
     prep_dict.update({
         'extras': request.decorated['extras'],
         'subpage': subpage_dict,
-        'lock_time': review_queue_helper.max_lock_time_in_sec
+        'lock_time': dbas.review.max_lock_time_in_sec
     })
     return prep_dict
 

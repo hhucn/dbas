@@ -31,48 +31,18 @@ Workflow
 
 If you want to add a new queue, there are some steps to be done. We will guide through these steps file-by-file:
 
-dbas/database/discussion_model.py
-=================================
-
- 1. Add a new table for your review type to the database.
- 2. Add a new table for the last reviewer of your new type.
- 3. Add a column into the ReviewCanceled table.
-
-
-
-dbas/review/reputation.py
-=========================
- 1. Add an border and icon into the maps at the beginning.
- 2. Add a dict (monkey see - monkey do) to the return list of `get_privilege_list()`.
-
-
-dbas/review/queues.py
-=====================
- 1. Complete the keys and dicts at the beginning.
- 2. Expand the review list of `get_review_queues_as_lists()` with your type
- 3. Expand the review count of `get_count_of_all()` / `get_complete_review_count()`. This has some pig's tail to code.
-
-
-dbas/review/opinions.py
-=======================
- 1. Now please add a method for the voting in this script. This will affect actions on (un-)successful votes as well!
-
-
-dbas/review/history.py
-======================
- 1. Add your data in `__get_data()`.
- 2. Offer a possibility to revoke an old decision in `revoke_old_decision()` (Case: the admin wants to undo something).
- 3. Offer a possibility to cancel any ongoing decision in `cancel_ongoing_decision()` (Case: the admin wants to cancel something).
-
-
-dbas/review/flags.py
-========================
- 1. Now we need a mechanism to add a flag for the new table. Maybe you need a method on your own, maybe you could complement the `flag_element()` method.
-
-
-dbas/review/subpage.py
-======================
- 1. Last but not least, be a monkey, have a look at `get_subpage_elements_for()` and add your own code.
+    1. Visit `dbas/database/discussion_model.py` and:
+        a. Add a new table for your review type to the database.
+        b. Add a new table for the last reviewer of your new type.
+        c. Add a column into the ReviewCanceled table.
+    2. Add the necessary `keys` in `dbas/review/__init__.py`
+    3. Create a new script in `dbas/review/<your_queue_name>.py` based on the `__interface__.py`
+    4. Implement it!
+    5. Do not forget to implement the frontend: Most of the parts are just copy / paste / rename.
+        a. Add a section in the `review-content.pt'-template
+        b. Add click events for the buttons and callbacks in `queue.js` as well as `review.js`.
+        c. Be nice, we never had time to refactor the frontend.
+    6. Please add tests!
 
 
 

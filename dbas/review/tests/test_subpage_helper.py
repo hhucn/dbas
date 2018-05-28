@@ -2,7 +2,7 @@ import unittest
 
 from pyramid import testing
 
-from dbas.review.queues import review_queues
+from dbas.review import review_queues
 import dbas.review.subpage as rph
 from dbas.strings.translator import Translator
 

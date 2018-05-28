@@ -3,7 +3,6 @@ Provides helping function for displaying the review queues and locking entries.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from enum import Enum, auto
 from typing import Tuple
 
 import transaction
@@ -15,54 +14,11 @@ from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelet
     LastReviewerMerge, LastReviewerSplit
 from dbas.lib import get_profile_picture
 from dbas.logger import logger
+from dbas.review import max_lock_time_in_sec, key_deletes, key_optimizations, key_edits, key_duplicates, key_merge, \
+    key_split, key_history, key_ongoing, Code
 from dbas.review.reputation import get_reputation_of, reputation_icons, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-
-max_lock_time_in_sec = 180
-
-key_deletes = 'deletes'
-key_optimizations = 'optimizations'
-key_edits = 'edits'
-key_duplicates = 'duplicates'
-key_merge = 'merges'
-key_split = 'splits'
-key_history = 'history'
-key_ongoing = 'ongoing'
-
-review_queues = [
-    key_deletes,
-    key_optimizations,
-    key_edits,
-    key_duplicates,
-    key_merge,
-    key_split
-]
-
-title_mapping = {
-    key_deletes: _.queueDelete,
-    key_optimizations: _.queueOptimization,
-    key_edits: _.queueEdit,
-    key_duplicates: _.queueDuplicates,
-    key_split: _.queueSplit,
-    key_merge: _.queueMerge
-}
-
-model_mapping = {
-    key_deletes: ReviewDelete,
-    key_optimizations: ReviewOptimization,
-    key_edits: ReviewEdit,
-    key_duplicates: ReviewDuplicate,
-    key_split: ReviewSplit,
-    key_merge: ReviewMerge
-}
-
-
-class Code(Enum):
-    DOESNT_EXISTS = auto()
-    DUPLICATE = auto()
-    SUCCESS = auto()
-    ERROR = auto()
 
 
 def get_review_queues_as_lists(main_page, translator, nickname):

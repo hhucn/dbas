@@ -12,7 +12,8 @@ from dbas.lib import get_text_for_argument_uid, nick_of_anonymous_user
 from dbas.tests.utils import TestCaseWithConfig
 from dbas.views import review_delete_argument, revoke_statement_content, flag_argument_or_statement, \
     split_or_merge_statement, split_or_merge_premisegroup, review_edit_argument, review_splitted_premisegroup, \
-    review_duplicate_statement, review_optimization_argument, undo_review, cancel_review, review_lock, review_merged_premisegroup
+    review_duplicate_statement, review_optimization_argument, undo_review, cancel_review, review_lock, \
+    review_merged_premisegroup
 
 
 class AjaxReviewTest(unittest.TestCase):
@@ -872,7 +873,6 @@ class AjaxReviewTest(unittest.TestCase):
             DBDiscussionSession.flush()
             transaction.commit()
 
-
     def test_review_merged_premisegroup(self, pgroup_uid=27, resetdb=True):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
@@ -985,7 +985,6 @@ class AjaxReviewTest(unittest.TestCase):
             DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=pgroup_uid).delete()
             DBDiscussionSession.flush()
             transaction.commit()
-
 
     def test_cancel_review_splitted_merged_premisegroup_errors(self):
         self.config.testing_securitypolicy(userid='someone', permissive=True)
