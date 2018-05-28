@@ -7,7 +7,7 @@ from dbas.database.discussion_model import SeenStatement, ClickedStatement, Seen
     ReputationHistory, User
 from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, clear_reputation_of_user
 from dbas.lib import Relations
-from dbas.views import discussion_reaction
+from dbas.views import reaction
 
 
 class DiscussionReactionViewTests(unittest.TestCase):
@@ -44,7 +44,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         len_db_seen_a1 = DBDiscussionSession.query(SeenArgument).count()
         len_db_votes_a1 = DBDiscussionSession.query(ClickedArgument).count()
 
-        response = discussion_reaction(self.default_request)
+        response = reaction(self.default_request)
         verify_dictionary_of_view(response)
 
         len_db_seen_s2 = DBDiscussionSession.query(SeenStatement).count()
@@ -88,12 +88,12 @@ class DiscussionReactionViewTests(unittest.TestCase):
 
     def test_page_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        self.__check_standard_counting(discussion_reaction, self.user_tobi)
+        self.__check_standard_counting(reaction, self.user_tobi)
 
     def test_page_rep(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         len_db_reputation_initial = DBDiscussionSession.query(ReputationHistory).count()
-        self.__check_standard_counting(discussion_reaction, self.user_bjoern)
+        self.__check_standard_counting(reaction, self.user_bjoern)
         len_db_reputation_after_first_visit = DBDiscussionSession.query(ReputationHistory).count()
         self.assertGreater(len_db_reputation_after_first_visit, len_db_reputation_initial)
 
@@ -101,10 +101,10 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
 
         len_db_reputation_initial = DBDiscussionSession.query(ReputationHistory).count()
-        self.__check_standard_counting(discussion_reaction, self.user_bjoern)
+        self.__check_standard_counting(reaction, self.user_bjoern)
         len_db_reputation_after_first_visit = DBDiscussionSession.query(ReputationHistory).count()
 
-        response = discussion_reaction(self.default_request)
+        response = reaction(self.default_request)
         self.assertIsInstance(response, dict)
         len_db_reputation_after_second_visit = DBDiscussionSession.query(ReputationHistory).count()
 
@@ -119,7 +119,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
             'relation': Relations.UNDERMINE.value,
             'arg_id_sys': 16,
         })
-        response = discussion_reaction(request)
+        response = reaction(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_user_argument_does_not_belong_to_issue_returns_error(self):
@@ -129,7 +129,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
             'relation': Relations.UNDERMINE.value,
             'arg_id_sys': 16,
         })
-        response = discussion_reaction(request)
+        response = reaction(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_sys_argument_does_not_belong_to_issue_returns_error(self):
@@ -139,7 +139,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
             'relation': Relations.UNDERMINE.value,
             'arg_id_sys': 45,
         })
-        response = discussion_reaction(request)
+        response = reaction(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_page_failure_mode(self):
@@ -149,5 +149,5 @@ class DiscussionReactionViewTests(unittest.TestCase):
             'relation': 'invalid-relation',
             'arg_id_sys': 16,
         })
-        response = discussion_reaction(request)
+        response = reaction(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)

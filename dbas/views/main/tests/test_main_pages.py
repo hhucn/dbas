@@ -8,7 +8,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.handler.password import get_hashed_password
 from dbas.helper.test import verify_dictionary_of_view
-from dbas.views import main_imprint, main_news, main_discussions_overview, main_privacy, main_experiment, \
+from dbas.views.main import main_imprint, main_news, main_privacy, main_experiment, \
     main_notifications, main_page, main_settings, main_user
 
 
@@ -40,47 +40,6 @@ class MainFieldexperimentViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         response = main_experiment(request)
         verify_dictionary_of_view(response)
-
-        # place for additional stuff
-
-
-class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_page(self):
-        request = testing.DummyRequest()
-        response = main_discussions_overview(request)
-        verify_dictionary_of_view(response)
-
-        self.assertIn('title', response)
-        self.assertIn('project', response)
-        self.assertIn('extras', response)
-        self.assertIn('issues', response)
-
-
-class MainMyDiscussionViewTestsLoggedIn(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_page(self):
-        request = testing.DummyRequest()
-        response = main_discussions_overview(request)
-        verify_dictionary_of_view(response)
-
-        self.assertIn('title', response)
-        self.assertIn('project', response)
-        self.assertIn('extras', response)
-        self.assertIn('issues', response)
 
 
 class MainNewsViewTests(unittest.TestCase):
@@ -124,8 +83,6 @@ class MainNotificationsViewTests(unittest.TestCase):
         response = main_notifications(request)
         verify_dictionary_of_view(response)
 
-        # place for additional stuff
-
 
 class MainPageViewTests(unittest.TestCase):
     def setUp(self):
@@ -139,8 +96,6 @@ class MainPageViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         response = main_page(request)
         verify_dictionary_of_view(response)
-
-        # place for additional stuff
 
 
 class MainSettingsViewTestsNotLoggedIn(unittest.TestCase):

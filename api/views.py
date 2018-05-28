@@ -209,9 +209,9 @@ def empty(request):
 @ahello.get()
 def hello(_):
     """
-    Return data from DBas discussion_reaction page.
+    Return data from DBas reaction page.
 
-    :return: dbas.discussion_reaction(True)
+    :return: dbas.reaction(True)
     """
     return {
         "status": "ok",
@@ -277,12 +277,12 @@ def discussion_init(request):
 @validate(valid_issue_by_slug, valid_token_optional, valid_position)
 def discussion_attitude(request):
     """
-    Return data from DBas discussion_attitude page.
+    Return data from DBas attitude page.
 
     /{slug}/attitude/{position_id}
 
     :param request: request
-    :return: dbas.discussion_attitude(True)
+    :return: dbas.attitude(True)
     """
     db_position = request.validated['position']
     db_issue = request.validated['issue']
@@ -380,7 +380,7 @@ def discussion_justify_argument(request) -> dict:
 @validate(valid_issue_by_slug, valid_token_optional, valid_reaction_arguments, valid_relation)
 def discussion_reaction(request):
     """
-    Return data from DBas discussion_reaction page.
+    Return data from DBas reaction page.
 
     Path: /{slug}/reaction/{arg_id_user}/{relation}/{arg_id_sys}
 

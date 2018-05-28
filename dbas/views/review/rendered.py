@@ -14,7 +14,7 @@ from dbas.validators.user import valid_user_optional, valid_user
 from dbas.views.helper import main_dict
 
 
-@view_config(route_name='review_index', renderer='../templates/review.pt', permission='use')
+@view_config(route_name='review_index', renderer='../../templates/review.pt', permission='use')
 @validate(check_authentication, prep_extras_dict, valid_user_optional)
 def main(request):
     """
@@ -43,7 +43,7 @@ def main(request):
     return prep_dict
 
 
-@view_config(route_name='review_content', renderer='../templates/review-content.pt', permission='use')
+@view_config(route_name='review_content', renderer='../../templates/review-content.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
 def content(request):
     """
@@ -79,7 +79,7 @@ def content(request):
     return prep_dict
 
 
-@view_config(route_name='review_history', renderer='../templates/review-history.pt', permission='use')
+@view_config(route_name='review_history', renderer='../../templates/review-history.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
 def history(request):
     """
@@ -99,7 +99,7 @@ def history(request):
     return prep_dict
 
 
-@view_config(route_name='review_ongoing', renderer='../templates/review-history.pt', permission='use')
+@view_config(route_name='review_ongoing', renderer='../../templates/review-history.pt', permission='use')
 @validate(valid_user, check_authentication, prep_extras_dict)
 def ongoing(request):
     """
@@ -118,7 +118,7 @@ def ongoing(request):
     return prep_dict
 
 
-@view_config(route_name='review_reputation', renderer='../templates/review-reputation.pt', permission='use')
+@view_config(route_name='review_reputation', renderer='../../templates/review-reputation.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
 def reputation(request):
     """

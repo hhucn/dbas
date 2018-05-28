@@ -11,35 +11,26 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
 from pyramid.view import view_config
 
-import dbas.handler.history as history_handler
-import dbas.handler.issue as issue_handler
 import dbas.handler.news as news_handler
 import dbas.strings.matcher as fuzzy_string_matcher
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_json_data, __refresh_headers_and_url
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement
+from dbas.database.discussion_model import Issue
 from dbas.handler import user
-from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
-from dbas.handler.issue import set_discussions_properties
 from dbas.handler.language import set_language, get_language_from_cookie
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
 from dbas.handler.password import request_password
 from dbas.handler.references import set_reference, get_references
 from dbas.handler.settings import set_settings
-from dbas.handler.statements import set_correction_of_statement, set_position, set_positions_premise, \
-    set_seen_statements, get_logfile_for_statements
-from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.query import set_user_language, \
-    mark_statement_or_argument, get_short_url
-from dbas.lib import escape_string, get_discussion_language, relation_mapper
+    get_short_url
+from dbas.lib import escape_string
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import valid_language, valid_lang_cookie_fallback, valid_fuzzy_search_mode
 from dbas.validators.core import has_keywords, has_maybe_keywords, validate
-from dbas.validators.discussion import valid_issue_by_id, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
-    valid_statement, valid_argument, valid_premisegroups, valid_statement_or_argument, \
-    valid_text_length_of, valid_any_issue_by_id
+from dbas.validators.discussion import valid_issue_by_id, valid_statement, valid_text_length_of, valid_any_issue_by_id
 from dbas.validators.lib import add_error
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
@@ -65,141 +56,6 @@ def __modifiy_discussion_url(prep_dict: dict) -> dict:
 def main_api(request):
     add_error(request, 'Route not found', 'There was no route given')
     return json_error(request)
-
-
-# ajax - getting complete track of the user
-@view_config(route_name='get_user_history', renderer='json')
-@validate(valid_user)
-def get_user_history(request):
-    """
-    Request the complete user track.
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return history_handler.get_from_database(db_user, ui_locales)
-
-
-# ajax - getting all text edits
-@view_config(route_name='get_all_posted_statements', renderer='json')
-@validate(valid_user)
-def get_all_posted_statements(request):
-    """
-    Request for all statements of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_textversions(db_user, ui_locales).get('statements', [])
-
-
-# ajax - getting all text edits
-@view_config(route_name='get_all_edits', renderer='json')
-@validate(valid_user)
-def get_all_edits_of_user(request):
-    """
-    Request for all edits of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_textversions(db_user, ui_locales).get('edits', [])
-
-
-# ajax - getting all votes for arguments
-@view_config(route_name='get_all_marked_arguments', renderer='json')
-@validate(valid_user)
-def get_all_marked_arguments(request):
-    """
-    Request for all marked arguments of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_marked_elements_of(db_user, True, ui_locales)
-
-
-# ajax - getting all votes for statements
-@view_config(route_name='get_all_marked_statements', renderer='json')
-@validate(valid_user)
-def get_all_marked_statements(request):
-    """
-    Request for all marked statements of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_marked_elements_of(db_user, False, ui_locales)
-
-
-# ajax - getting all votes for arguments
-@view_config(route_name='get_all_argument_clicks', renderer='json')
-@validate(valid_user)
-def get_all_argument_clicks(request):
-    """
-    Request for all clicked arguments of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_clicked_elements_of(db_user, True, ui_locales)
-
-
-# ajax - getting all votes for statements
-@view_config(route_name='get_all_statement_clicks', renderer='json')
-@validate(valid_user)
-def get_all_statement_clicks(request):
-    """
-    Request for all clicked statements of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_clicked_elements_of(db_user, False, ui_locales)
-
-
-# ajax - deleting complete history of the user
-@view_config(route_name='delete_user_history', renderer='json')
-@validate(valid_user)
-def delete_user_history(request):
-    """
-    Request to delete the users history.
-
-    :param request: request of the web server
-    :return: json-dict()
-    """
-    logger('delete_user_history', 'main')
-    db_user = request.validated['user']
-    return history_handler.delete_in_database(db_user)
-
-
-# ajax - deleting complete history of the user
-@view_config(route_name='delete_statistics', renderer='json')
-@validate(valid_user)
-def delete_statistics(request):
-    """
-    Request to delete votes/clicks of the user.
-
-    :param request: request of the web server
-    :return: json-dict()
-    """
-    logger('delete_statistics', 'main')
-    db_user = request.validated['user']
-    return clear_vote_and_seen_values_of_user(db_user)
 
 
 @view_config(request_method='POST', route_name='user_login', renderer='json')
@@ -379,120 +235,9 @@ def set_user_lang(request):
     return set_user_language(request.validated['user'], request.validated.get('lang'))
 
 
-@view_config(route_name='set_discussion_properties', renderer='json')
-@validate(valid_user, valid_any_issue_by_id, has_keywords(('property', bool), ('value', str)))
-def set_discussion_properties(request):
-    """
-    Set availability, read-only, ... flags in the admin panel.
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'request.params: {}'.format(request.json_body))
-    _tn = Translator(get_language_from_cookie(request))
-
-    prop = request.validated['property']
-    db_user = request.validated['user']
-    issue = request.validated['issue']
-    value = request.validated['value']
-    return set_discussions_properties(db_user, issue, prop, value, _tn)
-
-
 # #######################################
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
 # #######################################
-
-@view_config(route_name='set_new_start_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, has_keywords(('position', str), ('reason', str)))
-def set_new_start_argument(request):
-    """
-    Inserts a new argument as starting point into the database
-
-    :param request: request of the web server
-    :return: a status code, if everything was successful
-    """
-    logger('views', 'request.params: {}'.format(request.json_body))
-    reason = request.validated['reason']
-
-    # set the new position
-    logger('views', 'set conclusion/position')
-    prepared_dict_pos = set_position(request.validated['user'], request.validated['issue'],
-                                     request.validated['position'])
-
-    if len(prepared_dict_pos['error']) is 0:
-        logger('views', 'set premise/reason')
-        prepared_dict_pos = set_positions_premise(request.validated['issue'],
-                                                  request.validated['user'],
-                                                  DBDiscussionSession.query(Statement).get(
-                                                      prepared_dict_pos['statement_uids'][0]),
-                                                  [[reason]],
-                                                  True,
-                                                  request.cookies.get('_HISTORY_'),
-                                                  request.mailer)
-    __modifiy_discussion_url(prepared_dict_pos)
-
-    return prepared_dict_pos
-
-
-@view_config(route_name='set_new_start_premise', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, valid_conclusion, valid_premisegroups,
-          has_keywords(('supportive', bool)))
-def set_new_start_premise(request):
-    """
-    Sets new premise for the start
-
-    :param request: request of the web server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    prepared_dict = set_positions_premise(request.validated['issue'],
-                                          request.validated['user'],
-                                          request.validated['conclusion'],
-                                          request.validated['premisegroups'],
-                                          request.validated['supportive'],
-                                          request.cookies.get('_HISTORY_'),
-                                          request.mailer)
-    __modifiy_discussion_url(prepared_dict)
-    return prepared_dict
-
-
-@view_config(route_name='set_new_premises_for_argument', renderer='json')
-@validate(valid_user, valid_premisegroups, valid_argument(location='json_body', depends_on={valid_issue_not_readonly}),
-          has_keywords(('attack_type', str)))
-def set_new_premises_for_argument(request):
-    """
-    Sets a new premise for an argument
-
-    :param request: request of the web server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    prepared_dict = set_arguments_premises(request.validated['issue'],
-                                           request.validated['user'],
-                                           request.validated['argument'],
-                                           request.validated['premisegroups'],
-                                           relation_mapper[request.validated['attack_type']],
-                                           request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
-                                           request.mailer)
-    __modifiy_discussion_url(prepared_dict)
-    return prepared_dict
-
-
-@view_config(route_name='set_correction_of_statement', renderer='json')
-@validate(valid_user, has_keywords(('elements', list)))
-def set_correction_of_some_statements(request):
-    """
-    Sets a new textvalue for a statement
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    ui_locales = get_language_from_cookie(request)
-    elements = request.validated['elements']
-    db_user = request.validated['user']
-    _tn = Translator(ui_locales)
-    return set_correction_of_statement(elements, db_user, _tn)
 
 
 @view_config(route_name='notifications_read', renderer='json')
@@ -542,60 +287,12 @@ def send_some_notification(request):
 
 
 # ajax - set new issue
-@view_config(route_name='set_new_issue', renderer='json')
-@validate(valid_user, valid_language, valid_new_issue, has_keywords(('is_public', bool), ('is_read_only', bool)))
-def set_new_issue(request):
-    """
-
-    :param request: current request of the server
-    :return:
-    """
-    logger('views', 'main {}'.format(request.json_body))
-    info = escape_string(request.validated['info'])
-    long_info = escape_string(request.validated['long_info'])
-    title = escape_string(request.validated['title'])
-    lang = request.validated['lang']
-    is_public = request.validated['is_public']
-    is_read_only = request.validated['is_read_only']
-
-    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only)
 
 
 # ajax - set seen premisegroup
-@view_config(route_name='set_seen_statements', renderer='json')
-@validate(valid_user, has_keywords(('uids', list)))
-def set_statements_as_seen(request):
-    """
-    Set statements as seen, when they were hidden
-
-    :param request: current request of the server
-    :return: json
-    """
-    logger('views', 'main {}'.format(request.json_body))
-    uids = request.validated['uids']
-    return set_seen_statements(uids, request.path, request.validated['user'])
 
 
 # ajax - set users opinion
-@view_config(route_name='mark_statement_or_argument', renderer='json')
-@validate(valid_user, valid_statement_or_argument, has_keywords(('step', str), ('is_supportive', bool),
-                                                                ('should_mark', bool)))
-def mark_or_unmark_statement_or_argument(request):
-    """
-    Set statements as seen, when they were hidden
-
-    :param request: current request of the server
-    :return: json
-    """
-    logger('views', 'main {}'.format(request.json_body))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    arg_or_stmt = request.validated['arg_or_stmt']
-    step = request.validated['step']
-    is_supportive = request.validated['is_supportive']
-    should_mark = request.validated['should_mark']
-    history = request.json_body.get('history', '')
-    db_user = request.validated['user']
-    return mark_statement_or_argument(arg_or_stmt, step, is_supportive, should_mark, history, ui_locales, db_user)
 
 
 # ###################################
@@ -604,19 +301,6 @@ def mark_or_unmark_statement_or_argument(request):
 
 
 # ajax - getting changelog of a statement
-@view_config(route_name='get_logfile_for_statements', renderer='json')
-@validate(valid_issue_by_id, has_keywords(('uids', list)))
-def get_logfile_for_some_statements(request):
-    """
-    Returns the changelog of a statement
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    uids = request.validated['uids']
-    db_issue = request.validated['issue']
-    return get_logfile_for_statements(uids, db_issue.lang, request.application_url)
 
 
 # ajax - for shorten url
@@ -647,20 +331,6 @@ def get_news(request):
 
 
 # ajax - for getting argument infos
-@view_config(route_name='get_infos_about_argument', renderer='json')
-@validate(valid_issue_by_id, valid_language, valid_argument(location='json_body'), valid_user_optional)
-def get_infos_about_argument(request):
-    """
-    ajax interface for getting a dump
-
-    :param request: current request of the server
-    :return: json-set with everything
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    lang = request.validated['lang']
-    db_user = request.validated['user']
-    db_argument = request.validated['argument']
-    return get_all_infos_about_argument(db_argument, request.application_url, db_user, lang)
 
 
 # ajax - for getting all users with the same opinion
@@ -699,21 +369,6 @@ def get_public_user_data(request):
     """
     logger('views', 'main: {}'.format(request.json_body))
     return user.get_public_data(request.validated['nickname'], get_language_from_cookie(request))
-
-
-@view_config(route_name='get_arguments_by_statement_uid', renderer='json')
-@validate(valid_any_issue_by_id, valid_statement(location='json_body'))
-def get_arguments_by_statement_id(request):
-    """
-    Returns all arguments, which use the given statement
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    db_statement = request.validated['statement']
-    db_issue = request.validated['issue']
-    return get_arguments_by_statement_uid(db_statement, db_issue)
 
 
 @view_config(route_name='get_references', renderer='json')
