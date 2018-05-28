@@ -35,7 +35,12 @@ def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_ar
                                    path):
     """
 
+    :param db_issue:
+    :param db_user:
+    :param db_stmt_or_arg:
     :param attitude:
+    :param history:
+    :param path:
     :return:
     """
     logger('ViewHelper', 'justify statement')

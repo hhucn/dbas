@@ -697,10 +697,9 @@ def discussion_dontknow_argument(request) -> dict:
 
     db_issue = request.validated['issue']
     db_user = request.validated['user']
-    attitude = Attitudes.DONT_KNOW.value
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
-    prepared_discussion = discussion.dont_know_argument(db_issue, db_user, db_argument, attitude, history, request.path)
+    prepared_discussion = discussion.dont_know_argument(db_issue, db_user, db_argument, history, request.path)
     __modify_discussion_url(prepared_discussion)
     __modify_discussion_bubbles(prepared_discussion, request.registry)
 

@@ -89,20 +89,17 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, a
     logger('Justify statement discussion', 'main')
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-    if attitude in [Attitudes.AGREE, Attitudes.DISAGREE]:
-        item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, attitude,
-                                                                    history, path)
-        return {
-            'issues': issue_dict,
-            'discussion': discussion_dict,
-            'items': item_dict,
-            'title': issue_dict['title']
-        }
-    else:
-        return dont_know_argument(db_issue, db_user, db_statement, attitude, history, path)
+    item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, attitude,
+                                                                history, path)
+    return {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'title': issue_dict['title']
+    }
 
 
-def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, attitude: str, history, path) -> dict:
+def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, history: str, path: str) -> dict:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
