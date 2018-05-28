@@ -10,7 +10,10 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
     ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
 from dbas.lib import get_text_for_argument_uid, nick_of_anonymous_user
 from dbas.tests.utils import TestCaseWithConfig
-from dbas.views import review_delete_argument, revoke_statement_content
+from dbas.views import review_delete_argument, revoke_statement_content, flag_argument_or_statement as ajax, \
+    split_or_merge_statement as ajax, split_or_merge_premisegroup as ajax, review_edit_argument as ajax, \
+    review_duplicate_statement as ajax, review_optimization_argument as ajax, review_splitted_premisegroup as ajax, \
+    review_merged_premisegroup as ajax, undo_review as ajax, cancel_review as ajax, review_lock as ajax
 
 
 class AjaxReviewTest(unittest.TestCase):
@@ -35,7 +38,6 @@ class AjaxReviewTest(unittest.TestCase):
         DBDiscussionSession.query(ReviewOptimization).filter_by(statement_uid=2).delete()
         transaction.commit()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import flag_argument_or_statement as ajax
         request = testing.DummyRequest(json_body={
             'uid': 2,
             'reason': 'offtopic',
@@ -154,7 +156,6 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_optimization_argument(self):
         db_review = DBDiscussionSession.query(ReviewOptimization).filter(ReviewOptimization.statement_uid is not None,
                                                                          ReviewOptimization.is_executed == False).first()
-        from dbas.views import review_optimization_argument as ajax
 
         # 0:1
         self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Kurt',
@@ -225,8 +226,6 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_review_edit_argument(self):
         db_review = DBDiscussionSession.query(ReviewEdit).filter_by(is_executed=False).first()
-
-        from dbas.views import review_edit_argument as ajax
 
         user_ids = ['Torben', 'Pascal']
         for user in user_ids:
@@ -314,8 +313,6 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_duplicate_statement(self):
         db_review = DBDiscussionSession.query(ReviewDuplicate).filter_by(is_executed=False).first()
 
-        from dbas.views import review_duplicate_statement as ajax
-
         # 1:1
         self.__exec_request_and_check_duplicates(db_review, ajax, True, 'Pascal')
 
@@ -365,7 +362,6 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_undo_review(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import undo_review as ajax
         db_canceled1 = DBDiscussionSession.query(ReviewCanceled).count()
         request = testing.DummyRequest(json_body={
             'queue': 'deletes',
@@ -390,7 +386,6 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_cancel_review(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import cancel_review as ajax
         db_canceled1 = DBDiscussionSession.query(ReviewCanceled).count()
         request = testing.DummyRequest(json_body={
             'queue': 'deletes',
@@ -430,7 +425,6 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_lock(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_review = DBDiscussionSession.query(ReviewOptimization).first()
-        from dbas.views import review_lock as ajax
         request = testing.DummyRequest(json_body={
             'review_uid': db_review.uid,
             'lock': True
@@ -571,7 +565,6 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_or_merge_statement_key_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import split_or_merge_statement as ajax
         request = testing.DummyRequest(json_body={
             'uidd': 1,
             'key': 'it crashes',
@@ -692,7 +685,6 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_premisegroup_key_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import split_or_merge_premisegroup as ajax
         request = testing.DummyRequest(json_body={
             'pgroup_uidd': 1,
             'key': 'split',
@@ -785,7 +777,6 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_review_splitted_premisegroup_uid_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import review_splitted_premisegroup as ajax
         request = testing.DummyRequest(json_body={
             'review_uid': 0,
             'should_split': True,
@@ -930,7 +921,6 @@ class AjaxReviewTest(unittest.TestCase):
         tmp = DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=pgroup_uid).first()
 
         # vote 1:0
-        from dbas.views import review_merged_premisegroup as ajax
         request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_merge': True

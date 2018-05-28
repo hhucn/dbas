@@ -8,7 +8,8 @@ from pyramid_mailer import get_mailer
 from dbas.handler.language import get_language_from_cookie
 from dbas.logger import logger
 from dbas.validators.user import valid_user_as_admin, valid_user_optional
-from dbas.views import validate, project_name
+from dbas.views import validate
+from dbas.views.helper import project_name
 from dbas.handler.email import send_mail
 from dbas.helper.dictionary.main import DictionaryHelper
 

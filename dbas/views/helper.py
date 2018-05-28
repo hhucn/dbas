@@ -246,3 +246,12 @@ def __append_extras_dict_without_flag(request: Request, db_user: User, db_issue:
                                     current_premise=db_statement.get_text(),
                                     supportive=supportive)
     pdict['extras'] = extras_dict
+
+
+def main_dict(request, title):
+    return {
+        'title': title,
+        'project': project_name,
+        'extras': request.decorated['extras'],
+        'discussion': {'broke_limit': False}
+    }

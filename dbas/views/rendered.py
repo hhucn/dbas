@@ -14,10 +14,6 @@ import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
 import dbas.handler.issue as issue_handler
 import dbas.handler.news as news_handler
-import dbas.review.history as review_history_helper
-import dbas.review.queues as review_queue_helper
-import dbas.review.reputation as review_reputation_helper
-import dbas.review.subpage as review_page_helper
 from api.v2.graphql.core import Query
 from dbas.auth.login import oauth_providers
 from dbas.database import DBDiscussionSession
@@ -39,18 +35,9 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_attitude, \
     valid_relation, valid_argument, valid_statement, valid_reaction_arguments, valid_support, \
     valid_list_of_premisegroups_in_path, valid_premisegroup_in_path
 from dbas.validators.user import valid_user, valid_user_optional
-from dbas.views.helper import name, full_version, project_name, modify_discussion_url, modify_discussion_bubbles, \
-    modifiy_issue_overview_url, prepare_request_dict, append_extras_dict, \
+from dbas.views.helper import name, full_version, modify_discussion_url, modify_discussion_bubbles, \
+    modifiy_issue_overview_url, prepare_request_dict, append_extras_dict, main_dict, \
     append_extras_dict_during_justification_argument, append_extras_dict_during_justification_statement
-
-
-def main_dict(request, title):
-    return {
-        'title': title,
-        'project': project_name,
-        'extras': request.decorated['extras'],
-        'discussion': {'broke_limit': False}
-    }
 
 
 # main page
@@ -716,134 +703,20 @@ def discussion_jump(request):
 
     return prepared_discussion
 
-
 # ####################################
 # REVIEW                             #
 # ####################################
 
 # index page for reviews
-@view_config(route_name='review_index', renderer='../templates/review.pt', permission='use')
-@validate(check_authentication, prep_extras_dict, valid_user_optional)
-def main_review(request):
-    """
-    View configuration for the review index.
-
-    :param request: current request of the server
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
-    """
-    logger('main_review', 'def {}'.format(request.matchdict))
-    nickname = request.authenticated_userid
-
-    _tn = Translator(get_language_from_cookie(request))
-    review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
-    count, all_rights = review_reputation_helper.get_reputation_of(nickname)
-
-    prep_dict = main_dict(request, _tn.get(_.review))
-    prep_dict.update({
-        'review': review_dict,
-        'privilege_list': review_reputation_helper.get_privilege_list(_tn),
-        'reputation_list': review_reputation_helper.get_reputation_list(_tn),
-        'reputation': {
-            'count': count,
-            'has_all_rights': all_rights
-        }
-    })
-    return prep_dict
 
 
 # content page for reviews
-@view_config(route_name='review_content', renderer='../templates/review-content.pt', permission='use')
-@validate(check_authentication, prep_extras_dict)
-def review_content(request):
-    """
-    View configuration for the review content.
-
-    :param request: current request of the server
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
-    """
-    logger('review_content', 'def {}'.format(request.matchdict))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    subpage_name = request.matchdict['queue']
-    nickname = request.authenticated_userid
-    session = request.session
-    application_url = request.application_url
-    subpage_dict = review_page_helper.get_subpage_elements_for(nickname, session, application_url, subpage_name, _tn)
-    request.session.update(subpage_dict['session'])
-    if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
-        logger('review_content', 'subpage error', error=True)
-        raise HTTPNotFound()
-
-    title = _tn.get(_.review)
-    if subpage_name in review_queue_helper.title_mapping:
-        title = _tn.get(review_queue_helper.title_mapping[subpage_name])
-
-    prep_dict = main_dict(request, title)
-    prep_dict.update({
-        'extras': request.decorated['extras'],
-        'subpage': subpage_dict,
-        'lock_time': review_queue_helper.max_lock_time_in_sec
-    })
-    return prep_dict
 
 
 # history page for reviews
-@view_config(route_name='review_history', renderer='../templates/review-history.pt', permission='use')
-@validate(check_authentication, prep_extras_dict)
-def review_history(request):
-    """
-    View configuration for the review history.
-
-    :param request: current request of the server
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
-    """
-    logger('review_history', 'def {}'.format(request.matchdict))
-    ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
-    _tn = Translator(ui_locales)
-
-    history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
-    prep_dict = main_dict(request, _tn.get(_.review_history))
-    prep_dict.update({'history': history})
-    return prep_dict
 
 
 # history page for reviews
-@view_config(route_name='review_ongoing', renderer='../templates/review-history.pt', permission='use')
-@validate(valid_user, check_authentication, prep_extras_dict)
-def ongoing_history(request):
-    """
-    View configuration for the current reviews.
-
-    :param request: current request of the server
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
-    """
-    logger('ongoing_history', 'def {}'.format(request.matchdict))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    history = review_history_helper.get_ongoing_reviews(request.application_url, request.validated['user'], _tn)
-    prep_dict = main_dict(request, _tn.get(_.review_ongoing))
-    prep_dict.update({'history': history})
-    return prep_dict
 
 
 # reputation_borders page for reviews
-@view_config(route_name='review_reputation', renderer='../templates/review-reputation.pt', permission='use')
-@validate(check_authentication, prep_extras_dict)
-def review_reputation(request):
-    """
-    View configuration for the review reputation_borders.
-
-    :param request: current request of the server
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
-    """
-    logger('review_reputation', 'def {}'.format(request.matchdict))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    reputation_dict = review_history_helper.get_reputation_history_of(request.authenticated_userid, _tn)
-    prep_dict = main_dict(request, _tn.get(_.reputation))
-    prep_dict.update({'reputation': reputation_dict})
-    return prep_dict
