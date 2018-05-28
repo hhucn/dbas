@@ -47,7 +47,7 @@ from dbas.validators.user import valid_user, valid_user_optional
 from dbas.views.helper import name, full_version, project_name
 
 
-def __modify_discussion_url(prep_dict: dict):
+def modify_discussion_url(prep_dict: dict):
     """
     Adds the /discuss prefix for every url entry
 
@@ -68,7 +68,7 @@ def __modify_discussion_url(prep_dict: dict):
         prep_dict['issues']['all'][i]['url'] = '/discuss' + prep_dict['issues']['all'][i]['url']
 
 
-def __modify_discussion_bubbles(prep_dict: dict, registry: Registry):
+def modify_discussion_bubbles(prep_dict: dict, registry: Registry):
     """
     Removes gravatars from the bubbles if we use the modern interface
 
@@ -83,7 +83,7 @@ def __modify_discussion_bubbles(prep_dict: dict, registry: Registry):
                 print(bubble['message'])
 
 
-def __modifiy_issue_overview_url(prep_dict: dict):
+def modifiy_issue_overview_url(prep_dict: dict):
     # modify urls for topic switch
     pdict = ['user', 'other']
     for p in pdict:
@@ -145,36 +145,7 @@ def prepare_request_dict(request: Request):
     }
 
 
-def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
-    """
-    Checks for an expired session, the authentication and calls f the users nickname.
-    On error an HTTPNotFound-Error is raised, otherwise the discussion dict is returned.
-
-    :param request: A pyramid request
-    :param f: A function with three arguments
-    :return: prepared collection for the discussion
-    """
-    logger('Views', 'def')
-    session_expired = user.update_last_action(request.validated['user'])
-    if session_expired:
-        request.session.invalidate()
-        headers = forget(request)
-        location = request.application_url + 'discuss?session_expired=true',
-        return HTTPFound(
-            location=location,
-            headers=headers
-        )
-
-    request_dict = prepare_request_dict(request)
-    prepared_discussion = f(request_dict)
-    if prepared_discussion:
-        __modify_discussion_url(prepared_discussion)
-        __modify_discussion_bubbles(prepared_discussion)
-
-    return prepared_discussion, request_dict
-
-
-def __append_extras_dict(pdict: dict, rdict: dict, nickname: str, is_reportable: bool) -> None:
+def append_extras_dict(pdict: dict, rdict: dict, nickname: str, is_reportable: bool) -> None:
     """
 
     :param pdict: prepared dict for rendering
@@ -190,7 +161,7 @@ def __append_extras_dict(pdict: dict, rdict: dict, nickname: str, is_reportable:
                                               rdict['app_url'], rdict['path'], db_user)
 
 
-def __append_extras_dict_during_justification_argument(request: Request, db_user: User, db_issue: Issue, pdict: dict):
+def append_extras_dict_during_justification_argument(request: Request, db_user: User, db_issue: Issue, pdict: dict):
     system_lang = get_language_from_cookie(request)
     item_len = len(pdict['items']['elements'])
     _dh = DictionaryHelper(system_lang, db_issue.lang)
@@ -205,9 +176,9 @@ def __append_extras_dict_during_justification_argument(request: Request, db_user
     pdict['extras'] = extras_dict
 
 
-def __append_extras_dict_during_justification_statement(request: Request, db_user: User, db_issue: Issue,
-                                                        db_statement: Statement,
-                                                        pdict: dict, attitude: Attitudes):
+def append_extras_dict_during_justification_statement(request: Request, db_user: User, db_issue: Issue,
+                                                      db_statement: Statement,
+                                                      pdict: dict, attitude: Attitudes):
     system_lang = get_language_from_cookie(request)
     supportive = attitude in [Attitudes.AGREE, Attitudes.DONT_KNOW]
     item_len = len(pdict['items']['elements'])
@@ -233,7 +204,7 @@ def __append_extras_dict_during_justification_statement(request: Request, db_use
     pdict['extras'] = extras_dict
 
 
-def __main_dict(request, title):
+def main_dict(request, title):
     return {
         'title': title,
         'project': project_name,
@@ -259,7 +230,7 @@ def main_page(request):
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
     ui_locales = get_language_from_cookie(request)
 
-    prep_dict = __main_dict(request, name + ' ' + full_version)
+    prep_dict = main_dict(request, name + ' ' + full_version)
     prep_dict.update({
         'session_expired': session_expired,
         'news': news_handler.get_latest_news(ui_locales)
@@ -296,7 +267,7 @@ def main_settings(request):
                                                                        message, db_user, request.application_url,
                                                                        request.decorated['extras']['use_with_ldap'])
 
-    prep_dict = __main_dict(request, Translator(ui_locales).get(_.settings))
+    prep_dict = main_dict(request, Translator(ui_locales).get(_.settings))
     prep_dict.update({
         'settings': settings_dict
     })
@@ -315,7 +286,7 @@ def main_notifications(request):
     """
     logger('main_notifications', 'main')
     _tn = Translator(get_language_from_cookie(request))
-    return __main_dict(request, _tn.get(_.message))
+    return main_dict(request, _tn.get(_.message))
 
 
 # news page for everybody
@@ -334,7 +305,7 @@ def main_news(request):
     db_user = request.validated['user']
     is_author = db_user.is_admin() or db_user.is_author()
 
-    prep_dict = __main_dict(request, 'News')
+    prep_dict = main_dict(request, 'News')
     prep_dict.update({
         'is_author': is_author,
         'news': news_handler.get_news(ui_locales)
@@ -374,7 +345,7 @@ def main_user(request):
     if db_user_of_request:
         can_send_notification = current_user.uid != db_user_of_request.uid
 
-    prep_dict = __main_dict(request, user_dict['public_nick'])
+    prep_dict = main_dict(request, user_dict['public_nick'])
     prep_dict.update({
         'user': user_dict,
         'can_send_notification': can_send_notification
@@ -396,7 +367,7 @@ def main_imprint(request):
     # add version of pyramid
     request.decorated['extras'].update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
-    prep_dict = __main_dict(request, Translator(get_language_from_cookie(request)).get(_.imprint))
+    prep_dict = main_dict(request, Translator(get_language_from_cookie(request)).get(_.imprint))
     prep_dict.update({'imprint': get_changelog(5)})
     return prep_dict
 
@@ -412,7 +383,7 @@ def main_privacy(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_privacy', 'main')
-    return __main_dict(request, Translator(get_language_from_cookie(request)).get(_.privacy_policy))
+    return main_dict(request, Translator(get_language_from_cookie(request)).get(_.privacy_policy))
 
 
 # faq
@@ -426,7 +397,7 @@ def main_faq(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_faq', 'main')
-    return __main_dict(request, 'FAQ')
+    return main_dict(request, 'FAQ')
 
 
 # fieldtest
@@ -441,7 +412,7 @@ def main_experiment(request):
     """
     logger('main_experiment', 'main')
     ui_locales = get_language_from_cookie(request)
-    return __main_dict(request, Translator(ui_locales).get(_.fieldtest))
+    return main_dict(request, Translator(ui_locales).get(_.fieldtest))
 
 
 # my discussions
@@ -458,8 +429,8 @@ def main_discussions_overview(request):
     ui_locales = get_language_from_cookie(request)
     issue_dict = get_issues_overiew(request.validated['user'], request.application_url)
 
-    prep_dict = __main_dict(request, Translator(ui_locales).get(_.myDiscussions))
-    __modifiy_issue_overview_url(issue_dict)
+    prep_dict = main_dict(request, Translator(ui_locales).get(_.myDiscussions))
+    modifiy_issue_overview_url(issue_dict)
     prep_dict.update({
         'issues': issue_dict
     })
@@ -477,7 +448,7 @@ def main_docs(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_docs', 'main')
-    return __main_dict(request, Translator(get_language_from_cookie(request)).get(_.docs))
+    return main_dict(request, Translator(get_language_from_cookie(request)).get(_.docs))
 
 
 # imprint
@@ -494,7 +465,7 @@ def main_rss(request):
     ui_locales = get_language_from_cookie(request)
     rss = get_list_of_all_feeds(ui_locales)
 
-    prep_dict = __main_dict(request, 'RSS')
+    prep_dict = main_dict(request, 'RSS')
     prep_dict.update({'rss': rss})
     return prep_dict
 
@@ -544,7 +515,7 @@ def notfound(request):
 
     request.response.status = 404
 
-    prep_dict = __main_dict(request, '404 Error')
+    prep_dict = main_dict(request, '404 Error')
     prep_dict.update({
         'page_notfound_viewname': path,
         'param_error': param_error,
@@ -571,7 +542,7 @@ def discussion_start(request):
     for i in range(len(issue_dict['issues'])):
         issue_dict['issues'][i]['url'] = '/discuss' + issue_dict['issues'][i]['url']
 
-    prep_dict = __main_dict(request, Translator(ui_locales).get(_.discussionStart))
+    prep_dict = main_dict(request, Translator(ui_locales).get(_.discussionStart))
 
     prep_dict.update(issue_dict)
     return prep_dict
@@ -595,8 +566,8 @@ def discussion_init(request):
     logger('discussion_init', 'request.matchdict: {}'.format(request.matchdict))
 
     prepared_discussion = discussion.init(request.validated['issue'], request.validated['user'])
-    __modify_discussion_url(prepared_discussion)
-    __modify_discussion_bubbles(prepared_discussion, request.registry)
+    modify_discussion_url(prepared_discussion)
+    modify_discussion_bubbles(prepared_discussion, request.registry)
 
     rdict = prepare_request_dict(request)
 
@@ -605,7 +576,7 @@ def discussion_init(request):
         url = request.session['oauth_redirect_url']
         return HTTPFound(location=url)
 
-    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
+    append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
     if len(prepared_discussion['items']['elements']) == 1:
         _dh = DictionaryHelper(rdict['ui_locales'], prepared_discussion['issues']['lang'])
         nickname = request.authenticated_userid if request.authenticated_userid else nick_of_anonymous_user
@@ -634,12 +605,12 @@ def discussion_attitude(request):
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     prepared_discussion = discussion.attitude(db_issue, db_user, db_statement, history, request.path)
-    __modify_discussion_url(prepared_discussion)
-    __modify_discussion_bubbles(prepared_discussion, request.registry)
+    modify_discussion_url(prepared_discussion)
+    modify_discussion_bubbles(prepared_discussion, request.registry)
 
     rdict = prepare_request_dict(request)
 
-    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
+    append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
 
@@ -667,11 +638,11 @@ def discussion_justify_statement(request) -> dict:
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     prepared_discussion = discussion.justify_statement(db_issue, db_user, db_statement, attitude, history, request.path)
-    __modify_discussion_url(prepared_discussion)
-    __modify_discussion_bubbles(prepared_discussion, request.registry)
+    modify_discussion_url(prepared_discussion)
+    modify_discussion_bubbles(prepared_discussion, request.registry)
 
-    __append_extras_dict_during_justification_statement(request, db_user, db_issue, db_statement, prepared_discussion,
-                                                        attitude)
+    append_extras_dict_during_justification_statement(request, db_user, db_issue, db_statement, prepared_discussion,
+                                                      attitude)
 
     return prepared_discussion
 
@@ -696,10 +667,10 @@ def discussion_dontknow_argument(request) -> dict:
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     prepared_discussion = discussion.dont_know_argument(db_issue, db_user, db_argument, history, request.path)
-    __modify_discussion_url(prepared_discussion)
-    __modify_discussion_bubbles(prepared_discussion, request.registry)
+    modify_discussion_url(prepared_discussion)
+    modify_discussion_bubbles(prepared_discussion, request.registry)
 
-    __append_extras_dict_during_justification_argument(request, db_user, db_issue, prepared_discussion)
+    append_extras_dict_during_justification_argument(request, db_user, db_issue, prepared_discussion)
 
     return prepared_discussion
 
@@ -727,10 +698,10 @@ def discussion_justify_argument(request) -> dict:
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     prepared_discussion = discussion.justify_argument(db_issue, db_user, db_argument, attitude, relation, history,
                                                       request.path)
-    __modify_discussion_url(prepared_discussion)
-    __modify_discussion_bubbles(prepared_discussion, request.registry)
+    modify_discussion_url(prepared_discussion)
+    modify_discussion_bubbles(prepared_discussion, request.registry)
 
-    __append_extras_dict_during_justification_argument(request, db_user, db_issue, prepared_discussion)
+    append_extras_dict_during_justification_argument(request, db_user, db_issue, prepared_discussion)
 
     return prepared_discussion
 
@@ -759,9 +730,9 @@ def discussion_reaction(request):
                                               history, request.path)
     rdict = prepare_request_dict(request)
 
-    __modify_discussion_url(prepared_discussion)
-    __modify_discussion_bubbles(prepared_discussion, request.registry)
-    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
+    modify_discussion_url(prepared_discussion)
+    modify_discussion_bubbles(prepared_discussion, request.registry)
+    append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
 
     return prepared_discussion
 
@@ -787,9 +758,9 @@ def discussion_support(request):
                                              history, request.path)
     rdict = prepare_request_dict(request)
 
-    __modify_discussion_url(prepared_discussion)
-    __modify_discussion_bubbles(prepared_discussion, request.registry)
-    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
+    modify_discussion_url(prepared_discussion)
+    modify_discussion_bubbles(prepared_discussion, request.registry)
+    append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
 
@@ -815,9 +786,9 @@ def discussion_finish(request):
                                             request.validated['argument'],
                                             history)
 
-    __modify_discussion_url(prepared_discussion)
-    __modify_discussion_bubbles(prepared_discussion, request.registry)
-    __append_extras_dict(prepared_discussion, prepare_request_dict(request), request.authenticated_userid, True)
+    modify_discussion_url(prepared_discussion)
+    modify_discussion_bubbles(prepared_discussion, request.registry)
+    append_extras_dict(prepared_discussion, prepare_request_dict(request), request.authenticated_userid, True)
 
     return prepared_discussion
 
@@ -872,9 +843,9 @@ def discussion_choose(request):
 
     rdict = prepare_request_dict(request)
 
-    __modify_discussion_url(prepared_discussion)
-    __modify_discussion_bubbles(prepared_discussion, request.registry)
-    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
+    modify_discussion_url(prepared_discussion)
+    modify_discussion_bubbles(prepared_discussion, request.registry)
+    append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
 
@@ -899,9 +870,9 @@ def discussion_jump(request):
 
     rdict = prepare_request_dict(request)
 
-    __modify_discussion_url(prepared_discussion)
-    __modify_discussion_bubbles(prepared_discussion, request.registry)
-    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
+    modify_discussion_url(prepared_discussion)
+    modify_discussion_bubbles(prepared_discussion, request.registry)
+    append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
 
@@ -927,7 +898,7 @@ def main_review(request):
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
     count, all_rights = review_reputation_helper.get_reputation_of(nickname)
 
-    prep_dict = __main_dict(request, _tn.get(_.review))
+    prep_dict = main_dict(request, _tn.get(_.review))
     prep_dict.update({
         'review': review_dict,
         'privilege_list': review_reputation_helper.get_privilege_list(_tn),
@@ -968,7 +939,7 @@ def review_content(request):
     if subpage_name in review_queue_helper.title_mapping:
         title = _tn.get(review_queue_helper.title_mapping[subpage_name])
 
-    prep_dict = __main_dict(request, title)
+    prep_dict = main_dict(request, title)
     prep_dict.update({
         'extras': request.decorated['extras'],
         'subpage': subpage_dict,
@@ -993,7 +964,7 @@ def review_history(request):
     _tn = Translator(ui_locales)
 
     history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
-    prep_dict = __main_dict(request, _tn.get(_.review_history))
+    prep_dict = main_dict(request, _tn.get(_.review_history))
     prep_dict.update({'history': history})
     return prep_dict
 
@@ -1013,7 +984,7 @@ def ongoing_history(request):
     _tn = Translator(ui_locales)
 
     history = review_history_helper.get_ongoing_reviews(request.application_url, request.validated['user'], _tn)
-    prep_dict = __main_dict(request, _tn.get(_.review_ongoing))
+    prep_dict = main_dict(request, _tn.get(_.review_ongoing))
     prep_dict.update({'history': history})
     return prep_dict
 
@@ -1033,6 +1004,6 @@ def review_reputation(request):
     _tn = Translator(ui_locales)
 
     reputation_dict = review_history_helper.get_reputation_history_of(request.authenticated_userid, _tn)
-    prep_dict = __main_dict(request, _tn.get(_.reputation))
+    prep_dict = main_dict(request, _tn.get(_.reputation))
     prep_dict.update({'reputation': reputation_dict})
     return prep_dict
