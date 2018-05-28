@@ -8,7 +8,7 @@ from pyramid_mailer.mailer import DummyMailer
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.handler.password import get_hashed_password
-from dbas.views import user_password_request
+from dbas.views import user_password_request, mark_or_unmark_statement_or_argument as ajax
 
 
 class AjaxTest(unittest.TestCase):
@@ -269,7 +269,6 @@ class AjaxTest(unittest.TestCase):
         self.assertTrue(response['gravatar_url'] != '')
 
     def test_mark_statement_or_argument(self):
-        from dbas.views import mark_or_unmark_statement_or_argument as ajax
         request = testing.DummyRequest(json_body={'ui_locales': 'en'})
         response = ajax(request)
         self.assertEqual(400, response.status_code)

@@ -4,7 +4,7 @@ import transaction
 
 from dbas.tests.utils import construct_dummy_request
 
-from dbas.views import discussion_choose
+from dbas.views import choose
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
@@ -34,7 +34,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'id': (self.arg_uid, ),
             'pgroup_ids': [self.pgroup_uid],
         })
-        response = discussion_choose(request)
+        response = choose(request)
         verify_dictionary_of_view(response)
 
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
@@ -54,7 +54,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'id': (self.arg_uid, ),
             'pgroup_ids': [self.pgroup_uid],
         })
-        response = discussion_choose(request)
+        response = choose(request)
         verify_dictionary_of_view(response)
 
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
@@ -70,7 +70,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'id': (self.arg_uid, ),
             'pgroup_ids': [self.pgroup_uid, 'a'],
         })
-        response = discussion_choose(request)
+        response = choose(request)
         self.assertEqual(400, response.status_code)
 
         request = construct_dummy_request(match_dict={
@@ -80,7 +80,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'id': (self.arg_uid, ),
             'pgroup_ids': [self.pgroup_uid, 'a'],
         })
-        response = discussion_choose(request)
+        response = choose(request)
         self.assertEqual(400, response.status_code)
 
         request = construct_dummy_request(match_dict={
@@ -90,5 +90,5 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'id': (self.arg_uid, ),
             'pgroup_ids': [self.pgroup_uid, 55],
         })
-        response = discussion_choose(request)
+        response = choose(request)
         self.assertEqual(400, response.status_code)

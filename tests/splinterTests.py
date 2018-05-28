@@ -220,7 +220,7 @@ class FrontendTests:
         print('Is server online? ')
         b = Helper.open_browser(browser)
         b.visit(main_page)
-        success = Helper.check_for_present_text(b, 'part of the graduate school', 'check main page')
+        success = Helper.check_for_present_text(b, 'part of the graduate school', 'check overview page')
         b.quit()
         return success
 

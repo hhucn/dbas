@@ -15,7 +15,8 @@ from dbas.logger import logger
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.database import valid_table_name
 from dbas.validators.user import valid_user_as_admin, valid_user_optional
-from dbas.views import user_logout, project_name
+from dbas.views import user_logout
+from dbas.views.helper import project_name
 
 #
 # CORS configuration

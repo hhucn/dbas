@@ -1,5 +1,5 @@
 /**
- * Script for the discussion overview page
+ * Script for the discussion main page
  *
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */

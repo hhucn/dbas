@@ -17,7 +17,7 @@ from pyramid.httpexceptions import HTTPSeeOther
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
-import dbas.views as dbas
+import dbas.views.discussion as dbas
 from api.lib import extract_items_and_bubbles
 from api.models import Item, Bubble
 from dbas.database import DBDiscussionSession
@@ -315,8 +315,8 @@ def discussion_justify_statement(request) -> dict:
     db_issue = request.validated['issue']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
-    prepared_discussion = dbas.discussion.justify_statement(db_issue, db_user, request.validated['statement'],
-                                                            request.validated['attitude'], history, request.path)
+    prepared_discussion = discussion.justify_statement(db_issue, db_user, request.validated['statement'],
+                                                       request.validated['attitude'], history, request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     return {
@@ -338,10 +338,10 @@ def discussion_dontknow_argument(request) -> dict:
     """
     db_user = request.validated['user']
     db_issue = request.validated['issue']
-    hist = history_handler.handle_history(request, db_user, db_issue)
+    hist = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
-    prepared_discussion = dbas.discussion.dont_know_argument(db_issue, db_user, request.validated['argument'], hist,
-                                                             request.path)
+    prepared_discussion = discussion.dont_know_argument(db_issue, db_user, request.validated['argument'], hist,
+                                                        request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     return {
@@ -365,9 +365,9 @@ def discussion_justify_argument(request) -> dict:
     db_issue = request.validated['issue']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
-    prepared_discussion = dbas.discussion.justify_argument(db_issue, db_user, request.validated['argument'],
-                                                           request.validated['attitude'], request.validated['relation'],
-                                                           history, request.path)
+    prepared_discussion = discussion.justify_argument(db_issue, db_user, request.validated['argument'],
+                                                      request.validated['attitude'], request.validated['relation'],
+                                                      history, request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     return {
@@ -391,11 +391,11 @@ def discussion_reaction(request):
     db_issue = request.validated['issue']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
-    prepared_discussion = dbas.discussion.reaction(db_issue, db_user,
-                                                   request.validated['arg_user'],
-                                                   request.validated['arg_sys'],
-                                                   request.validated['relation'],
-                                                   history, request.path)
+    prepared_discussion = discussion.reaction(db_issue, db_user,
+                                              request.validated['arg_user'],
+                                              request.validated['arg_sys'],
+                                              request.validated['relation'],
+                                              history, request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
@@ -413,8 +413,8 @@ def discussion_finish(request):
     db_issue = request.validated['issue']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
-    prepared_discussion = dbas.discussion.finish(db_issue, db_user,
-                                                 request.validated['argument'], history)
+    prepared_discussion = discussion.finish(db_issue, db_user,
+                                            request.validated['argument'], history)
 
     return {'bubbles': extract_items_and_bubbles(prepared_discussion)[0]}
 
@@ -677,7 +677,7 @@ def jump_to_argument_fn(request):
 
     """
     # api_data = jump_preparation(request)
-    return dbas.discussion.jump(request)
+    return dbas.jump(request)
 
 
 # =============================================================================

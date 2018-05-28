@@ -3,10 +3,10 @@ import unittest
 from pyramid import testing
 
 from dbas.helper.test import verify_dictionary_of_view
-from dbas.views import discussion_finish
+from dbas.views.discussion.rendered import attitude
 
 
-class DiscussionFinishViewTests(unittest.TestCase):
+class DiscussionAttitudeViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
@@ -15,6 +15,9 @@ class DiscussionFinishViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_page(self):
-        request = testing.DummyRequest(matchdict={'argument_id': 10, 'slug': 'cat-or-dog'})
-        response = discussion_finish(request)
+        request = testing.DummyRequest(matchdict={
+            'slug': 'cat-or-dog',
+            'statement_id': 2,
+        })
+        response = attitude(request)
         verify_dictionary_of_view(response)

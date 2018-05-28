@@ -1,6 +1,6 @@
 import unittest
 
-from dbas.views import discussion_jump
+from dbas.views import jump
 
 from dbas.tests.utils import construct_dummy_request
 from pyramid import testing
@@ -21,7 +21,7 @@ class DiscussionJumpViewTests(unittest.TestCase):
             'slug': 'cat-or-dog',
             'argument_id': 12,
         })
-        response = discussion_jump(request)
+        response = jump(request)
         verify_dictionary_of_view(response)
 
     def test_page_on_failure(self):
@@ -29,5 +29,5 @@ class DiscussionJumpViewTests(unittest.TestCase):
             'slug': 'cat-or-dog',
             'argument_id': 35,
         })
-        response = discussion_jump(request)
+        response = jump(request)
         self.assertEqual(400, response.status_code)

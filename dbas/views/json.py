@@ -7,52 +7,34 @@ Collection of pyramids views components of D-BAS' core.
 from time import sleep
 
 from cornice.util import json_error
-from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
+from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
 from pyramid.view import view_config
 
-import dbas.handler.history as history_handler
-import dbas.handler.issue as issue_handler
 import dbas.handler.news as news_handler
-import dbas.review.flags as review_flag_helper
-import dbas.review.history as review_history_helper
-import dbas.review.opinions
-import dbas.review.queues as review_queue_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_json_data, __refresh_headers_and_url
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, ReviewEdit, ReviewMerge, ReviewSplit, ReviewOptimization, \
-    ReviewDuplicate, ReviewDelete
+from dbas.database.discussion_model import Issue
 from dbas.handler import user
-from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
-from dbas.handler.issue import set_discussions_properties
 from dbas.handler.language import set_language, get_language_from_cookie
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
 from dbas.handler.password import request_password
 from dbas.handler.references import set_reference, get_references
 from dbas.handler.settings import set_settings
-from dbas.handler.statements import set_correction_of_statement, set_position, set_positions_premise, \
-    set_seen_statements, get_logfile_for_statements
-from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.query import set_user_language, \
-    mark_statement_or_argument, get_short_url, revoke_author_of_argument_content, revoke_author_of_statement_content
-from dbas.lib import escape_string, get_discussion_language, relation_mapper
+    get_short_url
+from dbas.lib import escape_string
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import valid_language, valid_lang_cookie_fallback, valid_fuzzy_search_mode
 from dbas.validators.core import has_keywords, has_maybe_keywords, validate
-from dbas.validators.database import valid_database_model
-from dbas.validators.discussion import valid_issue_by_id, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
-    valid_statement, valid_argument, valid_premisegroup, valid_premisegroups, valid_statement_or_argument, \
-    valid_text_values, valid_text_length_of, valid_any_issue_by_id
+from dbas.validators.discussion import valid_issue_by_id, valid_statement, valid_text_length_of, valid_any_issue_by_id
 from dbas.validators.lib import add_error
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
-from dbas.validators.reviews import valid_review_reason, valid_not_executed_review, valid_uid_as_row_in_review_queue
-from dbas.validators.user import valid_user, valid_user_optional, valid_user_as_author, \
-    valid_user_as_author_of_statement, valid_user_as_author_of_argument
-from websocket.lib import send_request_for_recent_reviewer_socketio
+from dbas.validators.user import valid_user, valid_user_optional, valid_user_as_author
 
 
 def __modifiy_discussion_url(prep_dict: dict) -> dict:
@@ -74,141 +56,6 @@ def __modifiy_discussion_url(prep_dict: dict) -> dict:
 def main_api(request):
     add_error(request, 'Route not found', 'There was no route given')
     return json_error(request)
-
-
-# ajax - getting complete track of the user
-@view_config(route_name='get_user_history', renderer='json')
-@validate(valid_user)
-def get_user_history(request):
-    """
-    Request the complete user track.
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return history_handler.get_from_database(db_user, ui_locales)
-
-
-# ajax - getting all text edits
-@view_config(route_name='get_all_posted_statements', renderer='json')
-@validate(valid_user)
-def get_all_posted_statements(request):
-    """
-    Request for all statements of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_textversions(db_user, ui_locales).get('statements', [])
-
-
-# ajax - getting all text edits
-@view_config(route_name='get_all_edits', renderer='json')
-@validate(valid_user)
-def get_all_edits_of_user(request):
-    """
-    Request for all edits of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_textversions(db_user, ui_locales).get('edits', [])
-
-
-# ajax - getting all votes for arguments
-@view_config(route_name='get_all_marked_arguments', renderer='json')
-@validate(valid_user)
-def get_all_marked_arguments(request):
-    """
-    Request for all marked arguments of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_marked_elements_of(db_user, True, ui_locales)
-
-
-# ajax - getting all votes for statements
-@view_config(route_name='get_all_marked_statements', renderer='json')
-@validate(valid_user)
-def get_all_marked_statements(request):
-    """
-    Request for all marked statements of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_marked_elements_of(db_user, False, ui_locales)
-
-
-# ajax - getting all votes for arguments
-@view_config(route_name='get_all_argument_clicks', renderer='json')
-@validate(valid_user)
-def get_all_argument_clicks(request):
-    """
-    Request for all clicked arguments of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_clicked_elements_of(db_user, True, ui_locales)
-
-
-# ajax - getting all votes for statements
-@view_config(route_name='get_all_statement_clicks', renderer='json')
-@validate(valid_user)
-def get_all_statement_clicks(request):
-    """
-    Request for all clicked statements of the user
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return user.get_clicked_elements_of(db_user, False, ui_locales)
-
-
-# ajax - deleting complete history of the user
-@view_config(route_name='delete_user_history', renderer='json')
-@validate(valid_user)
-def delete_user_history(request):
-    """
-    Request to delete the users history.
-
-    :param request: request of the web server
-    :return: json-dict()
-    """
-    logger('delete_user_history', 'main')
-    db_user = request.validated['user']
-    return history_handler.delete_in_database(db_user)
-
-
-# ajax - deleting complete history of the user
-@view_config(route_name='delete_statistics', renderer='json')
-@validate(valid_user)
-def delete_statistics(request):
-    """
-    Request to delete votes/clicks of the user.
-
-    :param request: request of the web server
-    :return: json-dict()
-    """
-    logger('delete_statistics', 'main')
-    db_user = request.validated['user']
-    return clear_vote_and_seen_values_of_user(db_user)
 
 
 @view_config(request_method='POST', route_name='user_login', renderer='json')
@@ -284,7 +131,7 @@ def user_logout(request, redirect_to_main=False):
     :param redirect_to_main: Boolean
     :return: HTTPFound with forgotten headers
     """
-    logger('views', 'user: {}, redirect main: {}'.format(request.authenticated_userid, redirect_to_main))
+    logger('views', 'user: {}, redirect overview: {}'.format(request.authenticated_userid, redirect_to_main))
     request.session.invalidate()
     headers = forget(request)
     if redirect_to_main:
@@ -388,120 +235,9 @@ def set_user_lang(request):
     return set_user_language(request.validated['user'], request.validated.get('lang'))
 
 
-@view_config(route_name='set_discussion_properties', renderer='json')
-@validate(valid_user, valid_any_issue_by_id, has_keywords(('property', bool), ('value', str)))
-def set_discussion_properties(request):
-    """
-    Set availability, read-only, ... flags in the admin panel.
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'request.params: {}'.format(request.json_body))
-    _tn = Translator(get_language_from_cookie(request))
-
-    prop = request.validated['property']
-    db_user = request.validated['user']
-    issue = request.validated['issue']
-    value = request.validated['value']
-    return set_discussions_properties(db_user, issue, prop, value, _tn)
-
-
 # #######################################
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
 # #######################################
-
-@view_config(route_name='set_new_start_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, has_keywords(('position', str), ('reason', str)))
-def set_new_start_argument(request):
-    """
-    Inserts a new argument as starting point into the database
-
-    :param request: request of the web server
-    :return: a status code, if everything was successful
-    """
-    logger('views', 'request.params: {}'.format(request.json_body))
-    reason = request.validated['reason']
-
-    # set the new position
-    logger('views', 'set conclusion/position')
-    prepared_dict_pos = set_position(request.validated['user'], request.validated['issue'],
-                                     request.validated['position'])
-
-    if len(prepared_dict_pos['error']) is 0:
-        logger('views', 'set premise/reason')
-        prepared_dict_pos = set_positions_premise(request.validated['issue'],
-                                                  request.validated['user'],
-                                                  DBDiscussionSession.query(Statement).get(
-                                                      prepared_dict_pos['statement_uids'][0]),
-                                                  [[reason]],
-                                                  True,
-                                                  request.cookies.get('_HISTORY_'),
-                                                  request.mailer)
-    __modifiy_discussion_url(prepared_dict_pos)
-
-    return prepared_dict_pos
-
-
-@view_config(route_name='set_new_start_premise', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, valid_conclusion, valid_premisegroups,
-          has_keywords(('supportive', bool)))
-def set_new_start_premise(request):
-    """
-    Sets new premise for the start
-
-    :param request: request of the web server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    prepared_dict = set_positions_premise(request.validated['issue'],
-                                          request.validated['user'],
-                                          request.validated['conclusion'],
-                                          request.validated['premisegroups'],
-                                          request.validated['supportive'],
-                                          request.cookies.get('_HISTORY_'),
-                                          request.mailer)
-    __modifiy_discussion_url(prepared_dict)
-    return prepared_dict
-
-
-@view_config(route_name='set_new_premises_for_argument', renderer='json')
-@validate(valid_user, valid_premisegroups, valid_argument(location='json_body', depends_on={valid_issue_not_readonly}),
-          has_keywords(('attack_type', str)))
-def set_new_premises_for_argument(request):
-    """
-    Sets a new premise for an argument
-
-    :param request: request of the web server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    prepared_dict = set_arguments_premises(request.validated['issue'],
-                                           request.validated['user'],
-                                           request.validated['argument'],
-                                           request.validated['premisegroups'],
-                                           relation_mapper[request.validated['attack_type']],
-                                           request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
-                                           request.mailer)
-    __modifiy_discussion_url(prepared_dict)
-    return prepared_dict
-
-
-@view_config(route_name='set_correction_of_statement', renderer='json')
-@validate(valid_user, has_keywords(('elements', list)))
-def set_correction_of_some_statements(request):
-    """
-    Sets a new textvalue for a statement
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    ui_locales = get_language_from_cookie(request)
-    elements = request.validated['elements']
-    db_user = request.validated['user']
-    _tn = Translator(ui_locales)
-    return set_correction_of_statement(elements, db_user, _tn)
 
 
 @view_config(route_name='notifications_read', renderer='json')
@@ -551,60 +287,12 @@ def send_some_notification(request):
 
 
 # ajax - set new issue
-@view_config(route_name='set_new_issue', renderer='json')
-@validate(valid_user, valid_language, valid_new_issue, has_keywords(('is_public', bool), ('is_read_only', bool)))
-def set_new_issue(request):
-    """
-
-    :param request: current request of the server
-    :return:
-    """
-    logger('views', 'main {}'.format(request.json_body))
-    info = escape_string(request.validated['info'])
-    long_info = escape_string(request.validated['long_info'])
-    title = escape_string(request.validated['title'])
-    lang = request.validated['lang']
-    is_public = request.validated['is_public']
-    is_read_only = request.validated['is_read_only']
-
-    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only)
 
 
 # ajax - set seen premisegroup
-@view_config(route_name='set_seen_statements', renderer='json')
-@validate(valid_user, has_keywords(('uids', list)))
-def set_statements_as_seen(request):
-    """
-    Set statements as seen, when they were hidden
-
-    :param request: current request of the server
-    :return: json
-    """
-    logger('views', 'main {}'.format(request.json_body))
-    uids = request.validated['uids']
-    return set_seen_statements(uids, request.path, request.validated['user'])
 
 
 # ajax - set users opinion
-@view_config(route_name='mark_statement_or_argument', renderer='json')
-@validate(valid_user, valid_statement_or_argument, has_keywords(('step', str), ('is_supportive', bool),
-                                                                ('should_mark', bool)))
-def mark_or_unmark_statement_or_argument(request):
-    """
-    Set statements as seen, when they were hidden
-
-    :param request: current request of the server
-    :return: json
-    """
-    logger('views', 'main {}'.format(request.json_body))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    arg_or_stmt = request.validated['arg_or_stmt']
-    step = request.validated['step']
-    is_supportive = request.validated['is_supportive']
-    should_mark = request.validated['should_mark']
-    history = request.json_body.get('history', '')
-    db_user = request.validated['user']
-    return mark_statement_or_argument(arg_or_stmt, step, is_supportive, should_mark, history, ui_locales, db_user)
 
 
 # ###################################
@@ -613,19 +301,6 @@ def mark_or_unmark_statement_or_argument(request):
 
 
 # ajax - getting changelog of a statement
-@view_config(route_name='get_logfile_for_statements', renderer='json')
-@validate(valid_issue_by_id, has_keywords(('uids', list)))
-def get_logfile_for_some_statements(request):
-    """
-    Returns the changelog of a statement
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    uids = request.validated['uids']
-    db_issue = request.validated['issue']
-    return get_logfile_for_statements(uids, db_issue.lang, request.application_url)
 
 
 # ajax - for shorten url
@@ -656,20 +331,6 @@ def get_news(request):
 
 
 # ajax - for getting argument infos
-@view_config(route_name='get_infos_about_argument', renderer='json')
-@validate(valid_issue_by_id, valid_language, valid_argument(location='json_body'), valid_user_optional)
-def get_infos_about_argument(request):
-    """
-    ajax interface for getting a dump
-
-    :param request: current request of the server
-    :return: json-set with everything
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    lang = request.validated['lang']
-    db_user = request.validated['user']
-    db_argument = request.validated['argument']
-    return get_all_infos_about_argument(db_argument, request.application_url, db_user, lang)
 
 
 # ajax - for getting all users with the same opinion
@@ -710,21 +371,6 @@ def get_public_user_data(request):
     return user.get_public_data(request.validated['nickname'], get_language_from_cookie(request))
 
 
-@view_config(route_name='get_arguments_by_statement_uid', renderer='json')
-@validate(valid_any_issue_by_id, valid_statement(location='json_body'))
-def get_arguments_by_statement_id(request):
-    """
-    Returns all arguments, which use the given statement
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    db_statement = request.validated['statement']
-    db_issue = request.validated['issue']
-    return get_arguments_by_statement_uid(db_statement, db_issue)
-
-
 @view_config(route_name='get_references', renderer='json')
 @validate(has_keywords(('uids', list), ('is_argument', bool)))
 def get_reference(request):
@@ -742,7 +388,8 @@ def get_reference(request):
 
 
 @view_config(route_name='set_references', renderer='json')
-@validate(valid_user, valid_any_issue_by_id, valid_statement('json_body'), has_keywords(('reference', str), ('ref_source', str)))
+@validate(valid_user, valid_any_issue_by_id, valid_statement('json_body'),
+          has_keywords(('reference', str), ('ref_source', str)))
 def set_references(request):
     """
     Sets a reference for a statement or an arguments
@@ -833,283 +480,3 @@ def fuzzy_nickname_search(request):
     """
     logger('views', 'main: {}'.format(request.json_body))
     return fuzzy_string_matcher.get_nicknames(request.validated['user'], request.validated['value'])
-
-
-# #######################################
-# ADDITIONAL AJAX STUFF # REVIEW THINGS #
-# #######################################
-
-
-@view_config(route_name='flag_argument_or_statement', renderer='json')
-@validate(valid_user, valid_review_reason, has_keywords(('uid', int), ('is_argument', bool)),
-          has_maybe_keywords(('extra_uid', int, None)))
-def flag_argument_or_statement(request):
-    """
-    Flags an argument or statement for a specific reason
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    uid = request.validated['uid']
-    reason = request.validated['reason']
-    extra_uid = request.validated['extra_uid']
-    is_argument = request.validated['is_argument']
-    db_user = request.validated['user']
-    return review_flag_helper.flag_element(uid, reason, db_user, is_argument, ui_locales, extra_uid)
-
-
-@view_config(route_name='split_or_merge_statement', renderer='json')
-@validate(valid_user, valid_premisegroup, valid_text_values, has_keywords(('key', str)))
-def split_or_merge_statement(request):
-    """
-    Flags a statement for a specific reason
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    _tn = Translator(ui_locales)
-    db_user = request.validated['user']
-    pgroup = request.validated['pgroup']
-    key = request.validated['key']
-    tvalues = request.validated['text_values']
-
-    if key not in ['merge', 'split']:
-        raise HTTPBadRequest()
-    return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, tvalues, db_user, _tn)
-
-
-@view_config(route_name='split_or_merge_premisegroup', renderer='json')
-@validate(valid_user, valid_premisegroup, has_keywords(('key', str)))
-def split_or_merge_premisegroup(request):
-    """
-    Flags a premisegroup for a specific reason
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.params))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    _tn = Translator(ui_locales)
-    db_user = request.validated['user']
-    pgroup = request.validated['pgroup']
-    key = request.validated['key']
-
-    if key not in ['merge', 'split']:
-        raise HTTPBadRequest()
-    return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, db_user, _tn)
-
-
-@view_config(route_name='review_delete_argument', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewDelete), has_keywords(('should_delete', bool)))
-def review_delete_argument(request):
-    """
-    Values for the review for an argument, which should be deleted
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    db_review = request.validated['db_review']
-    db_user = request.validated['user']
-    should_delete = request.validated['should_delete']
-    main_page = request.application_url
-    _t = Translator(ui_locales)
-
-    dbas.review.opinions.add_review_opinion_for_delete(db_user, main_page, db_review, should_delete, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'deletes')
-    return True
-
-
-@view_config(route_name='review_edit_argument', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewEdit), has_keywords(('is_edit_okay', bool)))
-def review_edit_argument(request):
-    """
-    Values for the review for an argument, which should be edited
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('Views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    db_review = request.validated['db_review']
-    db_user = request.validated['user']
-    is_edit_okay = request.validated['is_edit_okay']
-    main_page = request.application_url
-
-    _t = Translator(ui_locales)
-    dbas.review.opinions.add_review_opinion_for_edit(db_user, main_page, db_review, is_edit_okay, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'edits')
-    return True
-
-
-@view_config(route_name='review_duplicate_statement', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewDuplicate), has_keywords(('is_duplicate', bool)))
-def review_duplicate_statement(request):
-    """
-    Values for the review for an argument, which is maybe a duplicate
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('Views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    db_review = request.validated['db_review']
-    db_user = request.validated['user']
-    is_duplicate = request.validated['is_duplicate']
-    main_page = request.application_url
-
-    _t = Translator(ui_locales)
-    dbas.review.opinions.add_review_opinion_for_duplicate(db_user, main_page, db_review, is_duplicate, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'duplicates')
-    return True
-
-
-@view_config(route_name='review_optimization_argument', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewOptimization),
-          has_keywords(('should_optimized', bool), ('new_data', list)))
-def review_optimization_argument(request):
-    """
-    Values for the review for an argument, which should be optimized
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    db_review = request.validated['db_review']
-    db_user = request.validated['user']
-    should_optimized = request.validated['should_optimized']
-    new_data = request.validated['new_data']
-    main_page = request.application_url
-
-    _t = Translator(ui_locales)
-    dbas.review.opinions.add_review_opinion_for_optimization(db_user, main_page, db_review, should_optimized, new_data,
-                                                             _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'optimizations')
-    return True
-
-
-@view_config(route_name='review_splitted_premisegroup', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewSplit), has_keywords(('should_split', bool)))
-def review_splitted_premisegroup(request):
-    """
-    Values for the review for a premisegroup, which should be splitted
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    db_review = request.validated['db_review']
-    db_user = request.validated['user']
-    should_split = request.validated['should_split']
-    main_page = request.application_url
-    _t = Translator(ui_locales)
-
-    dbas.review.opinions.add_review_opinion_for_split(db_user, main_page, db_review, should_split, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'splits')
-    return True
-
-
-@view_config(route_name='review_merged_premisegroup', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewMerge), has_keywords(('should_merge', bool)))
-def review_merged_premisegroup(request):
-    """
-    Values for the review for a statement, which should be merged
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    db_review = request.validated['db_review']
-    db_user = request.validated['user']
-    should_merge = request.validated['should_merge']
-    main_page = request.application_url
-    _t = Translator(ui_locales)
-
-    dbas.review.opinions.add_review_opinion_for_merge(db_user, main_page, db_review, should_merge, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'merges')
-    return True
-
-
-@view_config(route_name='undo_review', renderer='json')
-@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
-def undo_review(request):
-    """
-    Trys to undo a done review process
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    db_user = request.validated['user']
-    queue = request.validated['queue']
-    db_review = request.validated['review']
-    return review_history_helper.revoke_old_decision(queue, db_review, db_user)
-
-
-@view_config(route_name='cancel_review', renderer='json')
-@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
-def cancel_review(request):
-    """
-    Trys to cancel an ongoing review
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    db_user = request.validated['user']
-    queue = request.validated['queue']
-    db_review = request.validated['review']
-    return review_history_helper.cancel_ongoing_decision(queue, db_review, db_user)
-
-
-@view_config(route_name='review_lock', renderer='json', require_csrf=False)
-@validate(valid_user, valid_database_model('review_uid', ReviewOptimization), has_keywords(('lock', bool)))
-def review_lock(request):
-    """
-    Locks an optimization review so that the user can do an edit
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    _tn = Translator(ui_locales)
-    lock = request.validated['lock']
-    db_review = request.validated['db_model']
-    db_user = request.validated['user']
-
-    if lock:
-        return review_queue_helper.lock_optimization_review(db_user, db_review, _tn)
-    else:
-        return review_queue_helper.unlock_optimization_review(db_review, _tn)
-
-
-@view_config(route_name='revoke_statement_content', renderer='json', require_csrf=False)
-@validate(valid_user_as_author_of_statement, valid_statement(location='json_body'))
-def revoke_statement_content(request):
-    """
-    Revokes the given user as author from a statement
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.json_body))
-    db_user = request.validated['user']
-    statement = request.validated['statement']
-    return revoke_author_of_statement_content(statement, db_user)
-
-
-@view_config(route_name='revoke_argument_content', renderer='json', require_csrf=False)
-@validate(valid_user_as_author_of_argument, valid_argument(location='json_body'))
-def revoke_argument_content(request):
-    db_user = request.validated['user']
-    argument = request.validated['argument']
-    return revoke_author_of_argument_content(argument, db_user)
