@@ -83,6 +83,11 @@ justify_statement = Service(name='api_justify_statement',
                             description='Discussion Justify',
                             cors_policy=cors_policy)
 
+dontknow_argument = Service(name='api_dontknow_argument',
+                            path='/{slug}/justify/{argument_id:\d+}/dontknow',
+                            description='Discussion Dont Know',
+                            cors_policy=cors_policy)
+
 justify_argument = Service(name='api_justify_argument',
                            path='/{slug}/justify/{argument_id:\d+}' +
                                 '/{attitude:(' + '|'.join(map(str, Attitudes)) + ')}' +
@@ -249,10 +254,12 @@ def discussion_init(request):
     intro = get_translation(_.initialPositionInterest, db_issue.lang)
 
     bubbles = [
-        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', content=intro, omit_bubble_url=True, lang=db_issue.lang)
+        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', content=intro, omit_bubble_url=True,
+                                 lang=db_issue.lang)
     ]
 
-    issues_statements = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
+    issues_statements = [el.statement_uid for el in
+                         DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
     db_positions = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
                                                                Statement.uid.in_(issues_statements),
                                                                Statement.is_position == True).all()
@@ -310,6 +317,31 @@ def discussion_justify_statement(request) -> dict:
 
     prepared_discussion = dbas.discussion.justify_statement(db_issue, db_user, request.validated['statement'],
                                                             request.validated['attitude'], history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    return {
+        'bubbles': bubbles,
+        'items': items
+    }
+
+
+@dontknow_argument.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_argument(location='path'))
+def discussion_dontknow_argument(request) -> dict:
+    """
+    Dont know an argument.
+
+    /{slug}/justify/{argument_id}/dontknow
+
+    :param request:
+    :return:
+    """
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    hist = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = dbas.discussion.dont_know_argument(db_issue, db_user, request.validated['argument'], hist,
+                                                             request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     return {
