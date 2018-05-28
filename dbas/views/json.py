@@ -88,7 +88,7 @@ def get_user_history(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return history_handler.get_history_from_database(db_user, ui_locales)
+    return history_handler.get_from_database(db_user, ui_locales)
 
 
 # ajax - getting all text edits
@@ -193,7 +193,7 @@ def delete_user_history(request):
     """
     logger('delete_user_history', 'main')
     db_user = request.validated['user']
-    return history_handler.delete_history_in_database(db_user)
+    return history_handler.delete_in_database(db_user)
 
 
 # ajax - deleting complete history of the user

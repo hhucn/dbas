@@ -549,10 +549,10 @@ msgstr "Frequent Questions"
 msgid "simple_answers"
 msgstr "Simple answers to your most common questions"
 
-#. Default: How do we handle your login data?
+#. Default: How do we save_and_set_cookie your login data?
 #: templates/faq.pt:27
 msgid "faq_question_ldap"
-msgstr "How do we handle your login data?"
+msgstr "How do we save_and_set_cookie your login data?"
 
 #. Default: If you are using the LDAP login, we are using the name information
 #. service of the University Düsseldorf. Your password is send from your

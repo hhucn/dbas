@@ -34,7 +34,7 @@ def save_issue_uid(issue_uid: int, db_user: User):
     transaction.commit()
 
 
-def get_saved_issue(db_user: User):
+def get_last_issue_of(db_user: User):
     """
     Returns the last used issue of the user or None
 
@@ -50,7 +50,7 @@ def get_saved_issue(db_user: User):
     return None if db_issue.is_disabled else db_issue
 
 
-def get_splitted_history(history):
+def split(history):
     """
     Splits history by specific keyword and removes leading '/'
 
@@ -60,7 +60,7 @@ def get_splitted_history(history):
     return [his[1:] if his[0:1] == '/' else his for his in history.split('-')]
 
 
-def create_bubbles_from_history(history, nickname='', lang='', slug=''):
+def create_bubbles(history, nickname='', lang='', slug=''):
     """
     Creates the bubbles for every history step
 
@@ -74,7 +74,7 @@ def create_bubbles_from_history(history, nickname='', lang='', slug=''):
         return []
 
     logger('history_handler', 'nickname: ' + str(nickname) + ', history: ' + history)
-    splitted_history = get_splitted_history(history)
+    splitted_history = split(history)
 
     bubble_array = []
     consumed_history = ''
@@ -401,7 +401,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     return [bubble_user, bubble_syst]
 
 
-def save_path_in_database(db_user: User, slug: str, path: str, history: str = '') -> None:
+def save_database(db_user: User, slug: str, path: str, history: str = '') -> None:
     """
     Saves a path into the database
 
@@ -432,7 +432,7 @@ def save_path_in_database(db_user: User, slug: str, path: str, history: str = ''
     # transaction.commit()  # 207
 
 
-def get_history_from_database(db_user: User, lang: str):
+def get_from_database(db_user: User, lang: str):
     """
     Returns history from database
 
@@ -449,7 +449,7 @@ def get_history_from_database(db_user: User, lang: str):
     return return_array
 
 
-def delete_history_in_database(db_user):
+def delete_in_database(db_user):
     """
     Deletes history from database
 
@@ -462,7 +462,7 @@ def delete_history_in_database(db_user):
     return True
 
 
-def handle_history(request: Request, db_user: User, issue: Issue) -> str:
+def save_and_set_cookie(request: Request, db_user: User, issue: Issue) -> str:
     """
 
     :param request: pyramid's request object
@@ -473,7 +473,7 @@ def handle_history(request: Request, db_user: User, issue: Issue) -> str:
     """
     history = request.params.get('history', '')
     if db_user and db_user.nickname != nick_of_anonymous_user:
-        save_path_in_database(db_user, issue.slug, request.path, history)
+        save_database(db_user, issue.slug, request.path, history)
         save_issue_uid(issue.uid, db_user)
 
     if request.path.startswith('/discuss/'):

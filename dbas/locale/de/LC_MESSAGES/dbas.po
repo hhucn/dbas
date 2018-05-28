@@ -554,7 +554,7 @@ msgstr "Häufige Fragen"
 msgid "simple_answers"
 msgstr "Kurze Antworten auf die häufigsten Fragen"
 
-#. Default: How do we handle your login data?
+#. Default: How do we save_and_set_cookie your login data?
 #: templates/faq.pt:27
 msgid "faq_question_ldap"
 msgstr "Wie wird meine Uni-Kennung behandelt?"

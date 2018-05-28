@@ -106,7 +106,7 @@ def prepare_request_dict(request: Request):
 
     db_user = request.validated['user']
     nickname = db_user.nickname if db_user.nickname != nick_of_anonymous_user else None
-    db_last_topic = history_handler.get_saved_issue(db_user)
+    db_last_topic = history_handler.get_last_issue_of(db_user)
 
     slug = None
     if 'slug' in request.matchdict:
@@ -131,7 +131,7 @@ def prepare_request_dict(request: Request):
         db_issue = issue
 
     issue_handler.save_issue_id_in_session(db_issue.uid, request)
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     set_language_for_visit(request)
 
     return {
@@ -636,7 +636,7 @@ def discussion_attitude(request):
     db_issue = request.validated['issue']
     db_user = request.validated['user']
 
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     prepared_discussion = discussion.attitude(db_issue, db_user, db_statement, history, request.path)
     __modify_discussion_url(prepared_discussion)
     __modify_discussion_bubbles(prepared_discussion, request.registry)
@@ -669,7 +669,7 @@ def discussion_justify_statement(request) -> dict:
     db_user = request.validated['user']
     attitude = request.validated['attitude']
 
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     prepared_discussion = discussion.justify_statement(db_issue, db_user, db_statement, attitude, history, request.path)
     __modify_discussion_url(prepared_discussion)
     __modify_discussion_bubbles(prepared_discussion, request.registry)
@@ -698,7 +698,7 @@ def discussion_dontknow_argument(request) -> dict:
     db_issue = request.validated['issue']
     db_user = request.validated['user']
 
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     prepared_discussion = discussion.dont_know_argument(db_issue, db_user, db_argument, history, request.path)
     __modify_discussion_url(prepared_discussion)
     __modify_discussion_bubbles(prepared_discussion, request.registry)
@@ -728,7 +728,7 @@ def discussion_justify_argument(request) -> dict:
     attitude = request.validated['attitude']
     relation = request.validated['relation']
 
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     prepared_discussion = discussion.justify_argument(db_issue, db_user, db_argument, attitude, relation, history,
                                                       request.path)
     __modify_discussion_url(prepared_discussion)
@@ -755,7 +755,7 @@ def discussion_reaction(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
 
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     prepared_discussion = discussion.reaction(db_issue, db_user,
                                               request.validated['arg_user'],
                                               request.validated['arg_sys'],
@@ -784,7 +784,7 @@ def discussion_support(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
 
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     prepared_discussion = discussion.support(db_issue, db_user,
                                              request.validated['arg_user'],
                                              request.validated['arg_sys'],
@@ -812,7 +812,7 @@ def discussion_finish(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
 
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     prepared_discussion = discussion.finish(db_issue,
                                             db_user,
@@ -865,7 +865,7 @@ def discussion_choose(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
 
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     prepared_discussion = discussion.choose(db_issue, db_user,
                                             request.validated['is_argument'],
@@ -897,7 +897,7 @@ def discussion_jump(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
 
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     prepared_discussion = discussion.jump(db_issue, db_user, request.validated['argument'], history, request.path)
 

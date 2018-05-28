@@ -287,7 +287,7 @@ def discussion_attitude(request):
     db_position = request.validated['position']
     db_issue = request.validated['issue']
     db_user = request.validated['user']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
@@ -313,7 +313,7 @@ def discussion_justify_statement(request) -> dict:
     """
     db_user = request.validated['user']
     db_issue = request.validated['issue']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     prepared_discussion = dbas.discussion.justify_statement(db_issue, db_user, request.validated['statement'],
                                                             request.validated['attitude'], history, request.path)
@@ -363,7 +363,7 @@ def discussion_justify_argument(request) -> dict:
     """
     db_user = request.validated['user']
     db_issue = request.validated['issue']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     prepared_discussion = dbas.discussion.justify_argument(db_issue, db_user, request.validated['argument'],
                                                            request.validated['attitude'], request.validated['relation'],
@@ -389,7 +389,7 @@ def discussion_reaction(request):
     """
     db_user = request.validated['user']
     db_issue = request.validated['issue']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     prepared_discussion = dbas.discussion.reaction(db_issue, db_user,
                                                    request.validated['arg_user'],
@@ -411,7 +411,7 @@ def discussion_reaction(request):
 def discussion_finish(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     prepared_discussion = dbas.discussion.finish(db_issue, db_user,
                                                  request.validated['argument'], history)
@@ -728,7 +728,7 @@ def get_issues(_request):
 def add_position_with_premise(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
 
@@ -749,7 +749,7 @@ def add_premise_to_statement(request):
     db_issue: Issue = request.validated['issue']
     db_statement: Statement = request.validated['statement']
     is_supportive = request.validated['attitude'] == Attitudes.AGREE
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
                                history,
@@ -766,7 +766,7 @@ def add_premise_to_argument(request):
     db_issue: Issue = request.validated['issue']
     db_argument: Argument = request.validated['argument']
     relation: Relations = request.validated['relation']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
                                 history,

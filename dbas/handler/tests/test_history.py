@@ -30,30 +30,30 @@ class HistoryHandlerTests(unittest.TestCase):
         assert_equal(self.last_issue.uid, settings.last_topic_uid)
 
     def test_get_saved_issue(self):
-        assert_is_none(history.get_saved_issue(None))
+        assert_is_none(history.get_last_issue_of(None))
         settings = self.user.settings
-        assert_equal(settings.last_topic_uid, history.get_saved_issue(self.user).uid)
+        assert_equal(settings.last_topic_uid, history.get_last_issue_of(self.user).uid)
 
     def test_get_splitted_history(self):
-        hist = history.get_splitted_history(self.history)
+        hist = history.split(self.history)
         assert_greater(len(hist), 0)
 
     def test_create_bubbles_from_history(self):
-        bubbles = history.create_bubbles_from_history(self.history)
+        bubbles = history.create_bubbles(self.history)
         assert_greater(len(bubbles), 0)
 
     def test_save_path_in_database(self):
         db_hist1 = DBDiscussionSession.query(History).filter_by(author_uid=self.user.uid).all()
         big_fucking_link = 'cat-or-dog/justify/13/agree/undercut?history=/attitude/2-/justify/2/t-/reaction/12/undercut/13'
-        history.save_path_in_database(self.user, 'cat-or-dog', big_fucking_link, self.history)
+        history.save_database(self.user, 'cat-or-dog', big_fucking_link, self.history)
         db_hist2 = DBDiscussionSession.query(History).filter_by(author_uid=self.user.uid).all()
         assert_less(len(db_hist1), len(db_hist2))
 
     def test_get_history_from_database(self):
         big_fucking_link = 'cat-or-dog/justify/13/agree/undercut?history=/attitude/2-/justify/2/t-/reaction/12/undercut/13'
-        history.save_path_in_database(self.user, 'cat-or-dog', big_fucking_link, self.history)
-        hist = history.get_history_from_database(self.user, 'en')
+        history.save_database(self.user, 'cat-or-dog', big_fucking_link, self.history)
+        hist = history.get_from_database(self.user, 'en')
         assert_greater(len(hist), 0)
 
     def test_delete_history_in_database(self):
-        assert_true(history.delete_history_in_database(self.user))
+        assert_true(history.delete_in_database(self.user))
