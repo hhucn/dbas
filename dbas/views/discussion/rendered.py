@@ -22,7 +22,7 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_statement, val
 from dbas.validators.user import valid_user_optional
 from dbas.views.helper import main_dict, modify_discussion_url, modify_discussion_bubbles, prepare_request_dict, \
     append_extras_dict, append_extras_dict_during_justification_statement, \
-    append_extras_dict_during_justification_argument, modifiy_issue_overview_url
+    append_extras_dict_during_justification_argument, modifiy_issue_main_url
 
 
 @view_config(route_name='discussion_overview', renderer='../../templates/discussion-overview.pt', permission='use')
@@ -39,7 +39,7 @@ def discussion_overview(request):
     issue_dict = get_issues_overiew(request.validated['user'], request.application_url)
 
     prep_dict = main_dict(request, Translator(ui_locales).get(_.myDiscussions))
-    modifiy_issue_overview_url(issue_dict)
+    modifiy_issue_main_url(issue_dict)
     prep_dict.update({
         'issues': issue_dict
     })

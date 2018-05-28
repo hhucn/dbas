@@ -27,7 +27,7 @@ cors_policy = dict(enabled=True,
 
 debug_data = Service(name='debug',
                      path='/debug',
-                     renderer='templates/main.pt',
+                     renderer='templates/overview.pt',
                      description="Debug Data",
                      permission='everybody',  # or permission='use'
                      cors_policy=cors_policy)

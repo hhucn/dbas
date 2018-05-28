@@ -54,7 +54,7 @@ def modify_discussion_bubbles(prep_dict: dict, registry: Registry):
                 print(bubble['message'])
 
 
-def modifiy_issue_overview_url(prep_dict: dict):
+def modifiy_issue_main_url(prep_dict: dict):
     # modify urls for topic switch
     pdict = ['user', 'other']
     for p in pdict:

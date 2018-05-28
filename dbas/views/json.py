@@ -131,7 +131,7 @@ def user_logout(request, redirect_to_main=False):
     :param redirect_to_main: Boolean
     :return: HTTPFound with forgotten headers
     """
-    logger('views', 'user: {}, redirect main: {}'.format(request.authenticated_userid, redirect_to_main))
+    logger('views', 'user: {}, redirect overview: {}'.format(request.authenticated_userid, redirect_to_main))
     request.session.invalidate()
     headers = forget(request)
     if redirect_to_main:

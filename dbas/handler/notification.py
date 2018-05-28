@@ -141,7 +141,7 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
     :param mailer: Instance of pyramid mailer
     :return: None
     """
-    # getting all text versions, the main author, last editor and settings ob both authors as well as their languages
+    # getting all text versions, the overview author, last editor and settings ob both authors as well as their languages
     db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()
     db_root_author = DBDiscussionSession.query(User).get(db_textversions[0].author_uid)
     db_last_editor = DBDiscussionSession.query(User).get(db_textversions[-1].author_uid)
@@ -152,7 +152,7 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
     _t_editor = Translator(editor_lang)
     _t_root = Translator(root_lang)
 
-    # send mail to main author
+    # send mail to overview author
     if db_root_author_settings.should_send_mails \
             and db_user != db_root_author:
         email_helper.send_mail_due_to_added_text(root_lang, url, db_root_author, mailer)
@@ -163,7 +163,7 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
             and db_last_editor != db_user:
         email_helper.send_mail_due_to_added_text(editor_lang, url, db_last_editor, mailer)
 
-    # send notification via websocket to main author
+    # send notification via websocket to overview author
     if db_root_author_settings.should_send_notifications and db_root_author != db_user:
         send_request_for_info_popup_to_socketio(db_root_author.nickname, _t_root.get(_.statementAdded), url,
                                                 increase_counter=True)

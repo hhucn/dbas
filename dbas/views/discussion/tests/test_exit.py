@@ -3,6 +3,7 @@ import unittest
 from pyramid import testing
 
 from dbas.helper.test import verify_dictionary_of_view
+from dbas.views.discussion.rendered import dexit
 
 
 class DiscussionFinishViewTests(unittest.TestCase):
@@ -14,8 +15,7 @@ class DiscussionFinishViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_page(self):
-        from dbas.views import dexit as d
 
         request = testing.DummyRequest()
-        response = d(request)
+        response = dexit(request)
         verify_dictionary_of_view(response)

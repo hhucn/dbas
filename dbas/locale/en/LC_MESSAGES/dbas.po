@@ -128,12 +128,12 @@ msgstr ""
 msgid "findings"
 msgstr "Findings?"
 
-#. Default: We had many findings from our field experiment. The main results
+#. Default: We had many findings from our field experiment. The overview results
 #. are summarized in
 #: templates/fieldtest.pt:66
 msgid "findings1"
 msgstr ""
-"We had many findings from our field experiment. The main results are "
+"We had many findings from our field experiment. The overview results are "
 "summarized in"
 
 #. Default: this paper

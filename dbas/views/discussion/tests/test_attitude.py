@@ -3,6 +3,7 @@ import unittest
 from pyramid import testing
 
 from dbas.helper.test import verify_dictionary_of_view
+from dbas.views.discussion.rendered import attitude
 
 
 class DiscussionAttitudeViewTests(unittest.TestCase):
@@ -14,10 +15,9 @@ class DiscussionAttitudeViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_page(self):
-        from dbas.views import attitude as d
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
             'statement_id': 2,
         })
-        response = d(request)
+        response = attitude(request)
         verify_dictionary_of_view(response)

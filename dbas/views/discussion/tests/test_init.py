@@ -8,6 +8,7 @@ from dbas.database.discussion_model import SeenStatement, User
 from dbas.helper.test import verify_dictionary_of_view
 from dbas.views.discussion.rendered import init, discussion_overview
 
+
 class DiscussionInitViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
@@ -17,7 +18,6 @@ class DiscussionInitViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_page(self):
-
         # check count of seen by statements
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
 
@@ -66,7 +66,6 @@ class DiscussionInitViewTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
         transaction.commit()
-
 
 
 class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):

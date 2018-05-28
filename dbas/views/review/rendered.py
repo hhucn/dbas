@@ -16,7 +16,7 @@ from dbas.views.helper import main_dict
 
 @view_config(route_name='review_index', renderer='../../templates/review.pt', permission='use')
 @validate(check_authentication, prep_extras_dict, valid_user_optional)
-def main(request):
+def overview(request):
     """
     View configuration for the review index.
 
@@ -45,14 +45,14 @@ def main(request):
 
 @view_config(route_name='review_content', renderer='../../templates/review-content.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
-def content(request):
+def queue_details(request):
     """
     View configuration for the review content.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('content', 'def {}'.format(request.matchdict))
+    logger('queue_details', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 

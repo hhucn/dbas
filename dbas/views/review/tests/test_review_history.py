@@ -3,6 +3,7 @@ import unittest
 from pyramid import testing
 
 from dbas.helper.test import verify_dictionary_of_view
+from dbas.views.review.rendered import history
 
 
 class ReviewHistoryViewTests(unittest.TestCase):
@@ -14,21 +15,19 @@ class ReviewHistoryViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_page(self):
-        from dbas.views import review_history as d
 
         request = testing.DummyRequest()
-        response = d(request)
+        response = history(request)
         verify_dictionary_of_view(response)
 
         self.assertIn('history', response)
         self.assertTrue(len(response['history']) == 0)
 
     def test_page_logged_in(self):
-        from dbas.views import review_history as d
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
         request = testing.DummyRequest()
-        response = d(request)
+        response = history(request)
         verify_dictionary_of_view(response)
 
         self.assertIn('history', response)

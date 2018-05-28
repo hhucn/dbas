@@ -4,6 +4,7 @@ from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
 from dbas.helper.test import verify_dictionary_of_view, clear_clicks_of, clear_seen_by_of
+from dbas.views.review.rendered import queue_details
 
 
 class ReviewContentViewTests(unittest.TestCase):
@@ -19,41 +20,33 @@ class ReviewContentViewTests(unittest.TestCase):
         clear_seen_by_of('Tobias')
 
     def test_page_deletes(self):
-        from dbas.views import review_content as d
-
         request = testing.DummyRequest(matchdict={'queue': 'deletes'})
         try:
-            response = d(request)
+            response = queue_details(request)
             self.assertTrue(type(response) is HTTPNotFound)
         except HTTPNotFound:
             pass
 
     def test_page_edits(self):
-        from dbas.views import review_content as d
-
         request = testing.DummyRequest(matchdict={'queue': 'edits'})
         try:
-            response = d(request)
+            response = queue_details(request)
             self.assertTrue(type(response) is HTTPNotFound)
         except HTTPNotFound:
             pass
 
     def test_page_optimizations(self):
-        from dbas.views import review_content as d
-
         request = testing.DummyRequest(matchdict={'queue': 'optimizations'})
         try:
-            response = d(request)
+            response = queue_details(request)
             self.assertTrue(type(response) is HTTPNotFound)
         except HTTPNotFound:
             pass
 
     def test_page_deletes_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import review_content as d
-
         request = testing.DummyRequest(matchdict={'queue': 'deletes'})
-        response = d(request)
+        response = queue_details(request)
         verify_dictionary_of_view(response)
         self.assertTrue(len(response['subpage']['elements']) > 0)
         self.assertTrue(response['subpage']['button_set']['is_delete'])
@@ -62,10 +55,8 @@ class ReviewContentViewTests(unittest.TestCase):
 
     def test_page_edits_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import review_content as d
-
         request = testing.DummyRequest(matchdict={'queue': 'edits'})
-        response = d(request)
+        response = queue_details(request)
         verify_dictionary_of_view(response)
         self.assertTrue(len(response['subpage']['elements']) > 0)
         self.assertFalse(response['subpage']['button_set']['is_delete'])
@@ -74,10 +65,9 @@ class ReviewContentViewTests(unittest.TestCase):
 
     def test_page_optimizations_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import review_content as d
 
         request = testing.DummyRequest(matchdict={'queue': 'optimizations'})
-        response = d(request)
+        response = queue_details(request)
         verify_dictionary_of_view(response)
         self.assertTrue(len(response['subpage']['elements']) > 0)
         self.assertFalse(response['subpage']['button_set']['is_delete'])

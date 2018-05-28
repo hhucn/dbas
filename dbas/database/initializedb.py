@@ -47,7 +47,7 @@ def usage(argv):
 
 def main_discussion(argv=sys.argv):
     """
-    Inits the main dummy discussion
+    Inits the overview dummy discussion
 
     :param argv: standard argv
     :return: None
@@ -764,7 +764,7 @@ def __set_up_issue(session, lang1, lang2, is_field_test=False):
     :param is_field_test: Boolean
     :return: None
     """
-    # adding our main issue
+    # adding our overview issue
     db_user = session.query(User).filter_by(nickname='Tobias').first()
     issue1 = Issue(title='Town has to cut spending ',
                    info='Our town needs to cut spending. Please discuss ideas how this should be done.',
@@ -1433,7 +1433,7 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
     Fills the database with dummy date, created by given user
 
     :param session: database session
-    :param user: main author
+    :param user: overview author
     :param issue1: issue1
     :param issue2: issue2
     :param issue4: issue4

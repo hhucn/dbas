@@ -122,7 +122,7 @@ def get_overview(page):
     """
     Returns a nested data structure with information about the database
 
-    :param page: Name of the main page
+    :param page: Name of the overview page
     :return: [[{'name': .., 'content': [{'name': .., 'count': .., 'href': ..}, ..] }], ..]
     """
     logger('AdminLib', 'main')

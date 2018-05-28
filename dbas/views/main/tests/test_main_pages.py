@@ -8,8 +8,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.handler.password import get_hashed_password
 from dbas.helper.test import verify_dictionary_of_view
-from dbas.views.main import main_imprint, main_news, main_privacy, main_experiment, \
-    main_notifications, main_page, main_settings, main_user
+from dbas.views.main.rendered import imprint, news, privacy, experiment, \
+    notifications, index, settings, user
 
 
 class MainImprintViewTests(unittest.TestCase):
@@ -22,7 +22,7 @@ class MainImprintViewTests(unittest.TestCase):
 
     def test_page(self):
         request = testing.DummyRequest()
-        response = main_imprint(request)
+        response = imprint(request)
         verify_dictionary_of_view(response)
 
         # place for additional stuff
@@ -38,7 +38,7 @@ class MainFieldexperimentViewTests(unittest.TestCase):
 
     def test_page(self):
         request = testing.DummyRequest()
-        response = main_experiment(request)
+        response = experiment(request)
         verify_dictionary_of_view(response)
 
 
@@ -52,7 +52,7 @@ class MainNewsViewTests(unittest.TestCase):
 
     def test_page(self):
         request = testing.DummyRequest()
-        response = main_news(request)
+        response = news(request)
         verify_dictionary_of_view(response)
 
 
@@ -66,7 +66,7 @@ class MainPrivacyViewTests(unittest.TestCase):
 
     def test_page(self):
         request = testing.DummyRequest()
-        response = main_privacy(request)
+        response = privacy(request)
         verify_dictionary_of_view(response)
 
 
@@ -80,7 +80,7 @@ class MainNotificationsViewTests(unittest.TestCase):
 
     def test_page(self):
         request = testing.DummyRequest()
-        response = main_notifications(request)
+        response = notifications(request)
         verify_dictionary_of_view(response)
 
 
@@ -94,7 +94,7 @@ class MainPageViewTests(unittest.TestCase):
 
     def test_page(self):
         request = testing.DummyRequest()
-        response = main_page(request)
+        response = index(request)
         verify_dictionary_of_view(response)
 
 
@@ -108,7 +108,7 @@ class MainSettingsViewTestsNotLoggedIn(unittest.TestCase):
 
     def test_page(self):
         request = testing.DummyRequest()
-        self.assertEqual(400, main_settings(request).status_code)
+        self.assertEqual(400, settings(request).status_code)
 
 
 class MainSettingsViewTestsLoggedIn(unittest.TestCase):
@@ -122,7 +122,7 @@ class MainSettingsViewTestsLoggedIn(unittest.TestCase):
 
     def test_page(self):
         request = testing.DummyRequest()
-        response = main_settings(request)
+        response = settings(request)
         verify_dictionary_of_view(response)
 
         # check settings
@@ -147,7 +147,7 @@ class MainSettingsViewTestsPassword(unittest.TestCase):
             'password': 'tobias',
             'passwordconfirm': 'tobias'
         })
-        response = main_settings(request)
+        response = settings(request)
         verify_dictionary_of_view(response)
 
         # check settings
@@ -166,7 +166,7 @@ class MainSettingsViewTestsPassword(unittest.TestCase):
             'password': 'tobiass',
             'passwordconfirm': 'tobiass'
         })
-        response = main_settings(request)
+        response = settings(request)
         verify_dictionary_of_view(response)
 
         # check settings
@@ -197,7 +197,7 @@ class MainUserView(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         request = testing.DummyRequest(matchdict={'uid': db_user.uid})
-        response = main_user(request)
+        response = user(request)
         verify_dictionary_of_view(response)
         self.assertIn('user', response)
         self.assertIn('can_send_notification', response)
@@ -208,7 +208,7 @@ class MainUserView(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         request = testing.DummyRequest(matchdict={'uid': db_user.uid})
-        response = main_user(request)
+        response = user(request)
         verify_dictionary_of_view(response)
         self.assertIn('user', response)
         self.assertIn('can_send_notification', response)
@@ -219,7 +219,7 @@ class MainUserView(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Christian').first()
 
         request = testing.DummyRequest(matchdict={'uid': db_user.uid})
-        response = main_user(request)
+        response = user(request)
         verify_dictionary_of_view(response)
         self.assertIn('user', response)
         self.assertIn('can_send_notification', response)
@@ -230,7 +230,7 @@ class MainUserView(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'uid': 0})
         try:
-            main_user(request)
+            user(request)
         except HTTPNotFound:
             pass
 
@@ -239,7 +239,7 @@ class MainUserView(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'uid': 1000})
         try:
-            main_user(request)
+            user(request)
         except HTTPNotFound:
             pass
 
@@ -248,7 +248,7 @@ class MainUserView(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'uid1': 3})
         try:
-            main_user(request)
+            user(request)
         except HTTPNotFound:
             pass
 
@@ -257,6 +257,6 @@ class MainUserView(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'uid': 'a'})
         try:
-            main_user(request)
+            user(request)
         except HTTPNotFound:
             pass

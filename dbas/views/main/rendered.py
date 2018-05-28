@@ -4,7 +4,7 @@ from pyramid.view import view_config, forbidden_view_config
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.handler import news as news_handler, user
+from dbas.handler import news as news_handler, user as user_handler
 from dbas.handler.language import set_language_for_visit, get_language_from_cookie
 from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.decoration import prep_extras_dict
@@ -23,14 +23,14 @@ from dbas.views.helper import main_dict, name, full_version
 @view_config(route_name='main_page', renderer='../../templates/index.pt', permission='everybody')
 @forbidden_view_config(renderer='../../templates/index.pt')
 @validate(check_authentication, prep_extras_dict)
-def main_page(request):
+def index(request):
     """
-    View configuration for the main page
+    View configuration for the overview page
 
     :param request: current request of the server
     :return: HTTP 200 with several information
     """
-    logger('main_page', 'request.matchdict: {}'.format(request.matchdict))
+    logger('page', 'request.matchdict: {}'.format(request.matchdict))
 
     set_language_for_visit(request)
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
@@ -46,14 +46,14 @@ def main_page(request):
 
 @view_config(route_name='main_settings', renderer='../../templates/settings.pt', permission='use')
 @validate(valid_user, check_authentication, prep_extras_dict)
-def main_settings(request):
+def settings(request):
     """
     View configuration for the personal settings view. Only logged in user can reach this page.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_settings', 'main: {}'.format(request.params))
+    logger('settings', 'main: {}'.format(request.params))
 
     ui_locales = get_language_from_cookie(request)
     old_pw, new_pw, confirm_pw, message = '', '', '', ''
@@ -65,7 +65,7 @@ def main_settings(request):
         new_pw = escape_string(request.params['password'])
         confirm_pw = escape_string(request.params['passwordconfirm'])
 
-        message, success = user.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
+        message, success = user_handler.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
         error = not success
 
     settings_dict = DictionaryHelper(ui_locales).prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error,
@@ -81,28 +81,28 @@ def main_settings(request):
 
 @view_config(route_name='main_notification', renderer='../../templates/notifications.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
-def main_notifications(request):
+def notifications(request):
     """
     View configuration for the notification view. Only logged in user can reach this page.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_notifications', 'main')
+    logger('notifications', 'main')
     _tn = Translator(get_language_from_cookie(request))
     return main_dict(request, _tn.get(_.message))
 
 
 @view_config(route_name='main_news', renderer='../../templates/news.pt', permission='everybody')
 @validate(valid_user_optional, check_authentication, prep_extras_dict)
-def main_news(request):
+def news(request):
     """
     View configuration for the news.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_news', 'main')
+    logger('news', 'main')
 
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
@@ -118,7 +118,7 @@ def main_news(request):
 
 @view_config(route_name='main_user', renderer='../../templates/user.pt', permission='everybody')
 @validate(check_authentication, prep_extras_dict)
-def main_user(request):
+def user(request):
     """
     View configuration for the public user page.
 
@@ -126,21 +126,21 @@ def main_user(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     match_dict = request.matchdict
-    logger('main_user', 'request.matchdict: {}'.format(match_dict))
+    logger('user', 'request.matchdict: {}'.format(match_dict))
 
     uid = match_dict.get('uid', 0)
-    logger('main_user', 'uid: {}'.format(uid))
+    logger('user', 'uid: {}'.format(uid))
 
     if not is_integer(uid):
         raise HTTPNotFound
 
     current_user = DBDiscussionSession.query(User).get(uid)
     if current_user is None or current_user.nickname == nick_of_anonymous_user:
-        logger('main_user', 'no user: {}'.format(uid), error=True)
+        logger('user', 'no user: {}'.format(uid), error=True)
         raise HTTPNotFound()
 
     ui_locales = get_language_from_cookie(request)
-    user_dict = user.get_information_of(current_user, ui_locales)
+    user_dict = user_handler.get_information_of(current_user, ui_locales)
 
     db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     can_send_notification = False
@@ -157,14 +157,14 @@ def main_user(request):
 
 @view_config(route_name='main_imprint', renderer='../../templates/imprint.pt', permission='everybody')
 @validate(check_authentication, prep_extras_dict)
-def main_imprint(request):
+def imprint(request):
     """
     View configuration for the imprint.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_imprint', 'main')
+    logger('imprint', 'main')
     # add version of pyramid
     request.decorated['extras'].update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
@@ -175,67 +175,67 @@ def main_imprint(request):
 
 @view_config(route_name='main_privacy', renderer='../../templates/privacy.pt', permission='everybody')
 @validate(check_authentication, prep_extras_dict)
-def main_privacy(request):
+def privacy(request):
     """
     View configuration for the privacy.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_privacy', 'main')
+    logger('privacy', 'main')
     return main_dict(request, Translator(get_language_from_cookie(request)).get(_.privacy_policy))
 
 
 @view_config(route_name='main_faq', renderer='../../templates/faq.pt', permission='everybody')
 @validate(check_authentication, prep_extras_dict)
-def main_faq(request):
+def faq(request):
     """
     View configuration for FAQs.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_faq', 'main')
+    logger('faq', 'main')
     return main_dict(request, 'FAQ')
 
 
 @view_config(route_name='main_experiment', renderer='../../templates/fieldtest.pt', permission='everybody')
 @validate(check_authentication, prep_extras_dict)
-def main_experiment(request):
+def experiment(request):
     """
     View configuration for fieldtest.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_experiment', 'main')
+    logger('experiment', 'main')
     ui_locales = get_language_from_cookie(request)
     return main_dict(request, Translator(ui_locales).get(_.fieldtest))
 
 
 @view_config(route_name='main_docs', renderer='../../templates/docs.pt', permission='everybody')
 @validate(check_authentication, prep_extras_dict)
-def main_docs(request):
+def docs(request):
     """
     View configuration for the documentation.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_docs', 'main')
+    logger('docs', 'main')
     return main_dict(request, Translator(get_language_from_cookie(request)).get(_.docs))
 
 
 @view_config(route_name='main_rss', renderer='../../templates/rss.pt', permission='everybody')
 @validate(check_authentication, prep_extras_dict)
-def main_rss(request):
+def rss(request):
     """
     View configuration for the RSS feed.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_rss', 'main')
+    logger('rss', 'main')
     ui_locales = get_language_from_cookie(request)
     rss = get_list_of_all_feeds(ui_locales)
 
