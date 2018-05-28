@@ -14,7 +14,7 @@ from urllib3.exceptions import NewConnectionError
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, RevokedContent, \
     RevokedContentHistory, MarkedArgument, MarkedStatement, Language
-from dbas.handler.history import get_bubble_from_reaction_step, get_splitted_history
+from dbas.handler.history import get_bubble_from_reaction_step, split
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid
@@ -118,7 +118,7 @@ def __get_text_for_justification_or_reaction_bubble(stmt_or_arg: Union[Statement
     :return: String
     """
     if isinstance(stmt_or_arg, Argument):
-        splitted_history = get_splitted_history(history)
+        splitted_history = split(history)
         bubbles = get_bubble_from_reaction_step(step, db_user, _tn.get_lang(), splitted_history, '', color_steps=True)
         text = bubbles[0]['message'] if bubbles else ''
     else:

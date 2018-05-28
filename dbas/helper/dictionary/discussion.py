@@ -5,7 +5,7 @@ Provides helping function for dictionaries, which are used in discussions.
 """
 from typing import Union, List
 
-import dbas.handler.history as history_helper
+import dbas.handler.history as history_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, User
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement, \
@@ -119,7 +119,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'at_justify')
         _tn = Translator(self.lang)
 
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
 
         save_statement_url = 'set_new_start_statement'
         text = db_statement.get_text()
@@ -193,7 +193,7 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', 'def')
         _tn = Translator(self.lang)
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
         save_statement_url = 'set_new_premises_for_argument'
 
@@ -310,7 +310,7 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', 'at_dont_know')
         _tn = Translator(self.lang)
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
         gender = ''
@@ -367,11 +367,11 @@ class DiscussionDictHelper(object):
             db_user = None
             nickname = None
 
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, nickname, self.lang, self.slug)
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
         bubble_mid = ''
-        splitted_history = history_helper.get_splitted_history(self.history)
+        splitted_history = history_handler.split(self.history)
         user_changed_opinion = splitted_history[-1].endswith(str(db_user_argument.uid))
         statement_list = list()
         db_argument = DBDiscussionSession.query(Argument).get(db_user_argument.uid)
@@ -492,7 +492,7 @@ class DiscussionDictHelper(object):
                                                     attack_type=attack)
 
         # did the user changed his opinion?
-        history = history_helper.get_splitted_history(history)
+        history = history_handler.split(history)
         user_changed_opinion = len(history) > 1 and '/undercut/' in history[-2]
 
         # argumentation is a reply for an argument, if the arguments conclusion of the user is no position
@@ -543,7 +543,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'argument ' + str(uid))
         _tn = Translator(self.lang)
         argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
 
         coming_from_jump = False
         if self.history:
@@ -590,7 +590,7 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', str(uid_system_arg))
         _tn = Translator(self.lang)
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, nickname, self.lang, self.slug)
         db_arg_system = DBDiscussionSession.query(Argument).get(uid_system_arg)
         db_arg_user = DBDiscussionSession.query(Argument).get(uid_user_arg)
 
@@ -668,7 +668,7 @@ class DiscussionDictHelper(object):
         :return:
         """
         _tn = Translator(self.lang)
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
 
