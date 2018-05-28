@@ -23,7 +23,7 @@ points by default. The queues are for:
  * edits
  * splits
  * merges
- * detecting
+ * detecting duplicates
 
 
 Workflow
