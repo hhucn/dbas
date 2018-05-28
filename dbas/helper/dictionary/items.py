@@ -8,13 +8,13 @@ import hashlib
 import random
 from typing import List
 
-from dbas.lib import Relations, Attitudes
-from dbas.handler import attacks
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User, StatementToIssue
+from dbas.handler import attacks
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.url import UrlManager
+from dbas.lib import Relations, Attitudes
 from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_statement, \
     is_author_of_argument
 from dbas.logger import logger
@@ -72,7 +72,8 @@ class ItemDictHelper(object):
         """
         logger('ItemDictHelper', 'def user: {}'.format(db_user.nickname))
 
-        statements = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=self.db_issue.uid).all()]
+        statements = [el.statement_uid for el in
+                      DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=self.db_issue.uid).all()]
         db_statements = DBDiscussionSession.query(Statement) \
             .filter(Statement.is_disabled == False,
                     Statement.is_position == True,
@@ -143,9 +144,13 @@ class ItemDictHelper(object):
         url_t = _um.get_url_for_justifying_statement(statement_uid, Attitudes.AGREE.value)
         url_f = _um.get_url_for_justifying_statement(statement_uid, Attitudes.DISAGREE.value)
         url_d = _um.get_url_for_justifying_statement(uid, Attitudes.DONT_KNOW.value)
-        d_t = self.__create_answer_dict(Attitudes.AGREE.value, [{'title': title_t, 'id': Attitudes.AGREE.value}], Attitudes.AGREE.value, url_t)
-        d_f = self.__create_answer_dict(Attitudes.DISAGREE.value, [{'title': title_f, 'id': Attitudes.DISAGREE.value}], Attitudes.DISAGREE.value, url_f)
-        d_d = self.__create_answer_dict(Attitudes.DONT_KNOW.value, [{'title': title_d, 'id': Attitudes.DONT_KNOW.value}], Attitudes.DONT_KNOW.value, url_d)
+        d_t = self.__create_answer_dict(Attitudes.AGREE.value, [{'title': title_t, 'id': Attitudes.AGREE.value}],
+                                        Attitudes.AGREE.value, url_t)
+        d_f = self.__create_answer_dict(Attitudes.DISAGREE.value, [{'title': title_f, 'id': Attitudes.DISAGREE.value}],
+                                        Attitudes.DISAGREE.value, url_f)
+        d_d = self.__create_answer_dict(Attitudes.DONT_KNOW.value,
+                                        [{'title': title_d, 'id': Attitudes.DONT_KNOW.value}],
+                                        Attitudes.DONT_KNOW.value, url_d)
         statements_array.append(d_t)
         statements_array.append(d_f)
         statements_array.append(d_d)
@@ -347,12 +352,11 @@ class ItemDictHelper(object):
                                                             Argument.issue_uid == self.db_issue.uid).all()
         return db_arguments
 
-    def get_array_for_dont_know_reaction(self, argument_uid, is_supportive, db_user, gender):
+    def get_array_for_dont_know_reaction(self, argument_uid, db_user, gender):
         """
         Prepares the dict with all items for the third step, where a supportive argument will be presented.
 
         :param argument_uid: Argument.uid
-        :param is_supportive: Boolean
         :param db_user: User
         :param gender: m, f or n
         :return:
@@ -375,11 +379,9 @@ class ItemDictHelper(object):
             add_seen_argument(argument_uid, db_user)
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, False, is_dont_know=True, gender=gender)
-        current_mode = Attitudes.AGREE if is_supportive else Attitudes.DISAGREE
-        not_current_mode = Attitudes.DISAGREE if is_supportive else Attitudes.AGREE
 
         relation = Relations.UNDERMINE.value
-        url = self.__get_dont_know_item_for_undermine(db_argument, not_current_mode, _um)
+        url = self.__get_dont_know_item_for_undermine(db_argument, Attitudes.DISAGREE, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)
         statements_array.append(d)
@@ -391,13 +393,13 @@ class ItemDictHelper(object):
         statements_array.append(d)
 
         relation = Relations.UNDERCUT.value
-        url = self.__get_dont_know_item_for_undercut(argument_uid, current_mode, _um)
+        url = self.__get_dont_know_item_for_undercut(argument_uid, Attitudes.AGREE, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)
         statements_array.append(d)
 
         relation = Relations.REBUT.value
-        url = self.__get_dont_know_item_for_rebut(db_argument, not_current_mode, _um)
+        url = self.__get_dont_know_item_for_rebut(db_argument, Attitudes.DISAGREE, _um)
         d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url)
         statements_array.append(d)
@@ -464,9 +466,11 @@ class ItemDictHelper(object):
         else:
             uids = [db_argument.premisegroup_uid]
             if db_argument.conclusion_uid is not None:
-                url = _um.get_url_for_choosing_premisegroup(False, db_argument.is_supportive, db_argument.conclusion_uid, uids)
+                url = _um.get_url_for_choosing_premisegroup(False, db_argument.is_supportive,
+                                                            db_argument.conclusion_uid, uids)
             else:
-                url = _um.get_url_for_choosing_premisegroup(True, db_argument.is_supportive, db_argument.argument_uid, uids)
+                url = _um.get_url_for_choosing_premisegroup(True, db_argument.is_supportive, db_argument.argument_uid,
+                                                            uids)
         return url
 
     def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack, gender):

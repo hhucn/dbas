@@ -50,7 +50,7 @@ def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_ar
     return item_dict, discussion_dict
 
 
-def handle_justification_dontknow(db_issue: Issue, db_user: User, db_stmt_or_arg: Union[Argument, Statement], attitude: str, history,
+def handle_justification_dontknow(db_issue: Issue, db_user: User, db_stmt_or_arg: Union[Argument, Statement], history,
                                   path) -> Tuple[dict, dict]:
     """
 
@@ -63,9 +63,7 @@ def handle_justification_dontknow(db_issue: Issue, db_user: User, db_stmt_or_arg
     :return:
     """
     logger('ViewHelper', 'do not know for {}'.format(db_stmt_or_arg.uid))
-    supportive = attitude in [Attitudes.AGREE, Attitudes.DONT_KNOW]
-    item_dict, discussion_dict = __preparation_for_dont_know_statement(db_issue, db_user, db_stmt_or_arg, supportive,
-                                                                       history, path)
+    item_dict, discussion_dict = __preparation_for_dont_know_statement(db_issue, db_user, db_stmt_or_arg, history, path)
     return item_dict, discussion_dict
 
 
@@ -126,8 +124,8 @@ def preparation_for_justify_statement(history, db_user: User, path, db_issue: Is
     return item_dict, discussion_dict
 
 
-def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, supportive: bool,
-                                          history, path) -> Tuple[dict, dict]:
+def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, history, path) -> \
+Tuple[dict, dict]:
     """
     Prepares some parameter for the "don't know" step
 
@@ -148,8 +146,7 @@ def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stm
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(db_stmt_or_arg.uid, nickname)
-    item_dict = _idh.get_array_for_dont_know_reaction(db_stmt_or_arg.uid, supportive, db_user,
-                                                      discussion_dict['gender'])
+    item_dict = _idh.get_array_for_dont_know_reaction(db_stmt_or_arg.uid, db_user, discussion_dict['gender'])
     return item_dict, discussion_dict
 
 
