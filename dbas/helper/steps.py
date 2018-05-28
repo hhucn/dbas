@@ -7,7 +7,6 @@ from typing import Tuple, Union
 
 import dbas.handler.voting as voting_helper
 from dbas.database.discussion_model import Statement, Issue, User, Argument
-from dbas.handler import user
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.lib import Attitudes
@@ -17,18 +16,6 @@ from dbas.review.reputation import rep_reason_first_confrontation
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
-
-
-def preparation_for_view(request):
-    """
-    Does some elementary things like: getting nickname, session id and history.
-    Additionally boolean, if the session is expired
-
-    :param request: Current request
-    :return: nickname, session_id, session_expired, history
-    """
-    session_expired = user.update_last_action(request.validated['user'])
-    return request.authenticated_userid, session_expired
 
 
 def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
@@ -125,7 +112,7 @@ def preparation_for_justify_statement(history, db_user: User, path, db_issue: Is
 
 
 def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, history, path) -> \
-Tuple[dict, dict]:
+        Tuple[dict, dict]:
     """
     Prepares some parameter for the "don't know" step
 

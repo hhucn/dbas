@@ -4,7 +4,7 @@ from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.helper.views import handle_justification_statement, handle_justification_dontknow, \
+from dbas.helper.steps import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
 from dbas.lib import Relations
 from dbas.logger import logger

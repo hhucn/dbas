@@ -3,15 +3,10 @@ Collection of pyramids views components of D-BAS' core.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
-import re
-from typing import Callable, Any
 
 import graphene
 import pkg_resources
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.registry import Registry
-from pyramid.request import Request
-from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from webob_graphql import serve_graphql_request
 
@@ -26,7 +21,7 @@ import dbas.review.subpage as review_page_helper
 from api.v2.graphql.core import Query
 from dbas.auth.login import oauth_providers
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue, Statement, Argument
+from dbas.database.discussion_model import User, Statement, Argument
 from dbas.handler import user
 from dbas.handler.issue import get_issues_overiew
 from dbas.handler.language import set_language_for_visit, get_language_from_cookie
@@ -34,7 +29,7 @@ from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user, Attitudes, usage_of_modern_bubbles
+from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -44,164 +39,9 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_attitude, \
     valid_relation, valid_argument, valid_statement, valid_reaction_arguments, valid_support, \
     valid_list_of_premisegroups_in_path, valid_premisegroup_in_path
 from dbas.validators.user import valid_user, valid_user_optional
-from dbas.views.helper import name, full_version, project_name
-
-
-def modify_discussion_url(prep_dict: dict):
-    """
-    Adds the /discuss prefix for every url entry
-
-    :param prep_dict:
-    :return:
-    """
-    # modify urls for the radio buttons and urls of the bubbles
-    dict_tuples = [('items', 'elements'), ('discussion', 'bubbles')]
-    for (x, y) in dict_tuples:
-        for i, el in enumerate(prep_dict[x][y]):
-            if '/' in el.get('url', ''):
-                prep_dict[x][y][i]['url'] = '/discuss' + prep_dict[x][y][i]['url']
-            if '/' in el.get('attack_url', ''):
-                prep_dict[x][y][i]['attack_url'] = '/discuss' + prep_dict[x][y][i]['attack_url']
-
-    # modify urls for topic switch
-    for i, el in enumerate(prep_dict['issues']['all']):
-        prep_dict['issues']['all'][i]['url'] = '/discuss' + prep_dict['issues']['all'][i]['url']
-
-
-def modify_discussion_bubbles(prep_dict: dict, registry: Registry):
-    """
-    Removes gravatars from the bubbles if we use the modern interface
-
-    :param prep_dict:
-    :param registry:
-    :return:
-    """
-    if usage_of_modern_bubbles(registry):
-        for bubble in prep_dict['discussion']['bubbles']:
-            if bubble['is_system']:
-                bubble['message'] = re.sub('<img[^>]*>', '', bubble['message'])
-                print(bubble['message'])
-
-
-def modifiy_issue_overview_url(prep_dict: dict):
-    # modify urls for topic switch
-    pdict = ['user', 'other']
-    for p in pdict:
-        for i, el in enumerate(prep_dict[p]):
-            prep_dict[p][i]['url'] = '/discuss' + prep_dict[p][i]['url']
-    return prep_dict
-
-
-def prepare_request_dict(request: Request):
-    """
-
-    :param request:
-    :return:
-    """
-    logger('Renderer', 'def')
-
-    db_user = request.validated['user']
-    nickname = db_user.nickname if db_user.nickname != nick_of_anonymous_user else None
-    db_last_topic = history_handler.get_last_issue_of(db_user)
-
-    slug = None
-    if 'slug' in request.matchdict:
-        slug = request.matchdict['slug']
-        if not isinstance(request.matchdict['slug'], str) and len(request.matchdict['slug']) > 0:
-            slug = request.matchdict['slug'][0]
-
-    if not slug and db_last_topic:
-        issue = db_last_topic
-    elif slug:
-        issue = issue_handler.get_id_of_slug(slug)
-    else:
-        issue = issue_handler.get_issue_id(request)
-
-    ui_locales = get_language_from_cookie(request)
-    if not issue:
-        raise HTTPNotFound()
-
-    if isinstance(issue, int):
-        db_issue = DBDiscussionSession.query(Issue).get(issue)
-    else:
-        db_issue = issue
-
-    issue_handler.save_issue_id_in_session(db_issue.uid, request)
-    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
-    set_language_for_visit(request)
-
-    return {
-        'nickname': nickname,
-        'user': db_user,
-        'path': request.path,
-        'app_url': request.application_url,
-        'matchdict': request.matchdict,
-        'params': request.params,
-        'session': request.session,
-        'registry': request.registry,
-        'issue': db_issue,
-        'history': history,
-        'ui_locales': ui_locales
-    }
-
-
-def append_extras_dict(pdict: dict, rdict: dict, nickname: str, is_reportable: bool) -> None:
-    """
-
-    :param pdict: prepared dict for rendering
-    :param idict: item dict with the answers
-    :param nickname: request.authenticated_userid
-    :param is_reportable: Same as discussion.bubbles.last.is_markable, but TAL has no last indicator
-    :return:
-    """
-    _dh = DictionaryHelper(rdict['ui_locales'], pdict['issues']['lang'])
-    db_user = DBDiscussionSession.query(User).filter_by(
-        nickname=nickname if nickname else nick_of_anonymous_user).first()
-    pdict['extras'] = _dh.prepare_extras_dict(rdict['issue'].slug, is_reportable, True, True, rdict['registry'],
-                                              rdict['app_url'], rdict['path'], db_user)
-
-
-def append_extras_dict_during_justification_argument(request: Request, db_user: User, db_issue: Issue, pdict: dict):
-    system_lang = get_language_from_cookie(request)
-    item_len = len(pdict['items']['elements'])
-    _dh = DictionaryHelper(system_lang, db_issue.lang)
-    logged_in = (db_user and db_user.nickname != nick_of_anonymous_user) is not None
-    extras_dict = _dh.prepare_extras_dict(db_issue.slug, False, True, False, request.registry,
-                                          request.application_url, request.path, db_user=db_user)
-    # is the discussion at the end?
-    if item_len == 0 or item_len == 1 and logged_in or 'login' in pdict['items']['elements'][0].get('id'):
-        _dh.add_discussion_end_text(pdict['discussion'], extras_dict, request.authenticated_userid,
-                                    at_justify_argumentation=True)
-
-    pdict['extras'] = extras_dict
-
-
-def append_extras_dict_during_justification_statement(request: Request, db_user: User, db_issue: Issue,
-                                                      db_statement: Statement,
-                                                      pdict: dict, attitude: Attitudes):
-    system_lang = get_language_from_cookie(request)
-    supportive = attitude in [Attitudes.AGREE, Attitudes.DONT_KNOW]
-    item_len = len(pdict['items']['elements'])
-    _dh = DictionaryHelper(system_lang, db_issue.lang)
-    logged_in = (db_user and db_user.nickname != nick_of_anonymous_user) is not None
-
-    if attitude in (Attitudes.AGREE, Attitudes.DISAGREE):
-        extras_dict = _dh.prepare_extras_dict(db_issue.slug, False, True, True, request.registry,
-                                              request.application_url, request.path, db_user)
-        if item_len == 0 or item_len == 1 and logged_in:
-            _dh.add_discussion_end_text(pdict['discussion'], extras_dict, db_user.nickname, at_justify=True,
-                                        current_premise=db_statement.get_text(),
-                                        supportive=supportive)
-
-    else:
-        extras_dict = _dh.prepare_extras_dict(db_issue.slug, True, True, True, request.registry,
-                                              request.application_url, request.path, db_user=db_user)
-        # is the discussion at the end?
-        if item_len == 0:
-            _dh.add_discussion_end_text(pdict['discussion'], extras_dict, db_user.nickname,
-                                        at_dont_know=True, current_premise=db_statement.get_text())
-
-    pdict['extras'] = extras_dict
+from dbas.views.helper import name, full_version, project_name, modify_discussion_url, modify_discussion_bubbles, \
+    modifiy_issue_overview_url, prepare_request_dict, append_extras_dict, \
+    append_extras_dict_during_justification_argument, append_extras_dict_during_justification_statement
 
 
 def main_dict(request, title):
