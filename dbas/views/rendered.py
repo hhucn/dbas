@@ -44,11 +44,7 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_attitude, \
     valid_relation, valid_argument, valid_statement, valid_reaction_arguments, valid_support, \
     valid_list_of_premisegroups_in_path, valid_premisegroup_in_path
 from dbas.validators.user import valid_user, valid_user_optional
-
-name = 'D-BAS'
-version = '1.7.0'
-full_version = version
-project_name = name + ' ' + full_version
+from dbas.views.helper import name, full_version, project_name
 
 
 def __modify_discussion_url(prep_dict: dict):
