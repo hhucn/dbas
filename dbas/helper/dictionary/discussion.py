@@ -140,7 +140,8 @@ class DiscussionDictHelper(object):
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=system_question, omit_bubble_url=True,
                                                    lang=self.lang)
         url = UrlManager(slug).get_url_for_statement_attitude(db_statement.uid)
-        select_bubble = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=user_text, omit_bubble_url=False,
+        select_bubble = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=user_text,
+                                                 omit_bubble_url=False,
                                                  statement_uid=db_statement.uid, is_supportive=is_supportive,
                                                  nickname=nickname,
                                                  lang=self.lang)
@@ -332,7 +333,8 @@ class DiscussionDictHelper(object):
                 intro = b + _tn.get(_.otherParticipantsThinkThat) + e
             sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
             sys_text += '<br><br>' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, uid=uid, is_markable=True, other_author=data['user'])
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, uid=uid, is_markable=True,
+                                                  other_author=data['user'])
             if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
                 bubbles_array.append(bubble_sys)
 
@@ -394,7 +396,8 @@ class DiscussionDictHelper(object):
                 db_argument, arg_sys_id, history, attack, nickname, db_user_argument.is_supportive)
             quid = 'question-bubble-' + str(arg_sys_id) if int(arg_sys_id) > 0 else ''
             is_author = is_author_of_argument(db_user, prep_dict['confrontation'].uid)
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, uid=quid, content=prep_dict['sys'], omit_bubble_url=True,
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, uid=quid, content=prep_dict['sys'],
+                                                  omit_bubble_url=True,
                                                   lang=self.lang, is_markable=True,
                                                   is_author=is_author, other_author=db_enemy)
             statement_list = self.__get_all_statement_texts_by_argument(prep_dict['confrontation'])

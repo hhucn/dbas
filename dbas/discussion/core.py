@@ -4,9 +4,9 @@ from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.helper.views import handle_justification_statement, handle_justification_dontknow, \
+from dbas.helper.steps import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
-from dbas.lib import Attitudes, Relations
+from dbas.lib import Relations
 from dbas.logger import logger
 from dbas.review.reputation import add_reputation_for, rep_reason_first_argument_click
 from dbas.strings.keywords import Keywords as _
@@ -115,7 +115,7 @@ def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, hi
     logger('Justify statement discussion', 'main')
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-    item_dict, discussion_dict = handle_justification_dontknow(db_issue, db_user, db_argument, attitude, history, path)
+    item_dict, discussion_dict = handle_justification_dontknow(db_issue, db_user, db_argument, history, path)
 
     return {
         'issues': issue_dict,
