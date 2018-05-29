@@ -342,7 +342,7 @@ var dbas_en = {
     'have done.',
     'euCookiePopupTitle': 'This website uses cookies.',
     'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll ' +
-    'assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose.',
+    'assume that you are happy to receive all cookies.',
     'euCookiePopoupButton1': 'Okay',
     'euCookiePopoupButton2': 'Learn&nbsp;more',
     'empty_news_input': 'News title or text is empty or too short!',

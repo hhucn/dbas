@@ -68,12 +68,11 @@ def send_request_for_success_popup_to_socketio(nickname, message='', url=None, i
         __send_request_for_popup_to_socketio(nickname, 'success', message, url, increase_counter, use_https)
 
 
-def send_request_for_warning_popup_to_socketio(nickname, port, message='', url=None, increase_counter=False):
+def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
     """
     Sends request to the socketio server for a warning popup
 
     :param nickname: Current users nickname
-    :param port: Port of the notification server
     :param message: String
     :param url: String
     :param increase_counter:

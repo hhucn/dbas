@@ -1,0 +1,211 @@
+<tal:block i18n:domain="dbas" metal:define-macro="layout">
+
+  <div class="row" style="margin-bottom: 1em;">
+    <div class="col-md-12">
+      <ul class="breadcrumb">
+        <li><a href="/review" i18n:translate="review">Review</a></li>
+        <li class="active" i18n:translate="optimizations">
+          Optimizations
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom: 1em;">
+    <div class="col-md-7">
+      <h6>${structure:subpage.elements.reviewed_element.reason}
+        <a id="more_about_reason" href="#" i18n:translate="wrapped_more">(more)</a>
+        <a id="less_about_reason" href="#" i18n:translate="wrapped_less" style="display: none;">(less)</a>
+      </h6>
+    </div>
+    <div class="col-md-5" tal:condition="subpage.button_set.is_optimize">
+      <div class="btn-group pull-right">
+        <a id="opti_ack" href="#" class="review-btn-optimize btn btn-success btn-sm"
+           data-queue="optimization" i18n:translate="correct_it"
+           data-id="${subpage.elements.reviewed_element.stats.id}">
+          Let me correct it
+        </a>
+        <a id="opti_nack" href="#" class="review-btn-optimize btn btn-danger btn-sm"
+           data-queue="optimization" i18n:translate="its_okay_so"
+           data-id="${subpage.elements.reviewed_element.stats.id}">
+          It's okay so
+        </a>
+        <a id="opti_skip" href="#" class="review-btn-optimize btn btn-info btn-sm"
+           data-queue="optimization" i18n:translate="skip_it"
+           data-id="${subpage.elements.reviewed_element.stats.id}">
+          Skip it
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" id="more_about_reason_content" style="display:none; margin-bottom: 1em;">
+    <div class="col-md-7">
+      <blockquote>
+        <div style="padding-left: 0.5em">
+          <span i18n:translate="information_for_the_different_reasons">Information for the different reasons</span>
+          <ul style="padding-left: 0.5em">
+            <li>
+              <strong i18n:translate="off_topic_or_irrelevant">Off topic or irrelevant</strong>
+              <span i18n:translate="off_topic_explanation">text does not belong to the topic under discussion</span>.
+            </li>
+            <li>
+              <strong i18n:translate="inappropriate_harmful_abbusive">Inappropriate, harmful or abusive</strong>
+              <span i18n:translate="inappropriate_harmful_abbusive_explanation">are posts, which are inappropriate, harmful or abbusive</span>.
+            </li>
+            <li>
+              <strong i18n:translate="needs_optimization">Needs optimization</strong>
+              <span i18n:translate="needs_optimization_explanation">if posts are useful, but need edits in grammar and/or spelling</span>.
+            </li>
+          </ul>
+        </div>
+      </blockquote>
+    </div>
+    <div class="col-md-5">
+      <blockquote class="blockquote-reverse" style="text-align: left;">
+        <p class="lead" i18n:translate="information_for_the_different_buttons">
+          Information for the different buttons
+        </p>
+        <ul style="padding-left: 0.5em">
+          <li>
+            <span class="text-success" i18n:translate="correct_it">Let me correct it</span>
+            <span i18n:translate="correct_it_explanation">, if you have an idea for a better formulation with the same content.</span>
+          </li>
+          <li>
+            <span class="text-danger" i18n:translate="its_okay_so">It's okay so</span>
+            <span i18n:translate="its_okay_so_explanation">for arguments, which can be understood as-is.</span>
+          </li>
+          <li>
+            <span class="text-info" i18n:translate="skip_it">Skip it</span>
+            <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span>
+          </li>
+        </ul>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom: 1em;">
+
+    <div class="col-md-offset-1 col-md-6">
+
+      <div class="well well-sm center" style="text-align: justify;">
+        <div tal:omit-tag="">
+          <div style="margin-bottom: 1em;">
+                  <span tal:omit-tag="" tal:switch="len(subpage.elements.reviewed_element.issue_titles) > 1">
+                    <span tal:case="False" i18n:translate="in_the_discussion_about">In the discussion about</span>
+                    <span tal:case="True" i18n:translate="in_the_discussions_about">In the discussions about</span>
+                  </span>
+            <i tal:repeat="title subpage.elements.reviewed_element.issue_titles">${structure:title}
+              <span tal:condition="not:repeat.title.end">,</span></i>
+            <span i18n:translate="following_argument_was_flagged">following argument was flagged.</span>
+          </div>
+          <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+          <span class="lead" id="reviewed-argument-text">
+                  ${structure:subpage.elements.reviewed_element.text}
+          </span>
+          <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+          <br>
+        </div>
+
+      </div>
+
+      <div class="well well-sm center"
+           style="text-align: justify;">
+        <span i18n:translate="context_where_statement_is_used">Context, where the statement is used:</span>
+        <div tal:repeat="context subpage.elements.reviewed_element.context">
+          <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+          <span class="lead" id="reviewed-argument-text">${structure:context}</span>
+          <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-offset-2 col-md-3">
+      <table id="stats-table" class="table table-condensed pull-right"
+             style="font-size: 14px;" data-extra-info="${subpage.elements.reviewed_element.extra_info}">
+        <tbody>
+        <tr>
+          <td i18n:translate="reported">Reported</td>
+          <td>${subpage.elements.reviewed_element.stats.reported}</td>
+        </tr>
+        <tr>
+          <td i18n:translate="reported_by">Reported by</td>
+          <td>
+            <a href="${subpage.elements.reviewed_element.stats.reporter_url}">
+              <img class="img-circle" src="${subpage.elements.reviewed_element.stats.reporter_gravatar}">
+              <span>${subpage.elements.reviewed_element.stats.reporter}</span>
+            </a>
+          </td>
+        </tr>
+        <tal:comment replace="nothing">
+          <tr>
+            <td i18n:translate="viewed">Viewed</td>
+            <td>${subpage.elements.reviewed_element.stats.viewed}</td>
+          </tr>
+          <tr>
+            <td i18n:translate="attacks">Relations</td>
+            <td>${subpage.elements.reviewed_element.stats.attacks}</td>
+          </tr>
+          <tr>
+            <td i18n:translate="supports">Supports</td>
+            <td>${subpage.elements.reviewed_element.stats.supports}</td>
+          </tr>
+        </tal:comment>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div id="optimization-container"
+       class="row" tal:condition="subpage.button_set.is_optimize"
+       style="display: none;">
+    <button id="close-optimization-container" type="button" class="close" data-dismiss="modal"
+            aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div class="row">
+      <div class="col-md-12">
+        <a id="request-lock" href="#"
+           class="btn btn-warning btn-sm" i18n:translate="request_lock"
+           data-id="${subpage.elements.reviewed_element.stats.id}" data-lock_sec="${lock_time}"
+           style="margin-bottom: 1.0em; display: none;">Request lock</a>
+        <strong id="request-not-lock-text" class="text-danger"
+                style="padding-left: 1em; display: none;">
+          Data is not locked anymore, please request a new lock for your edits.
+        </strong>
+        <p class="lead" id="request-lock-text">
+          <span i18n:translate="argument_is_locked">This argument is locked for your edit. You have </span>
+          <span id="countdown_timer_min"></span><span id="countdown_timer_point">:</span><span
+                id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
+          <span class="lead" i18n:translate="please_make_your_edits">Please make your edits in grammar and/or spelling here:</span>
+        </p>
+
+        <table class="table table-condensed" id="argument-part-table">
+          <thead>
+          <tr class="success">
+            <th i18n:translate="original">Original</th>
+            <th i18n:translate="your correcture">Your correcture</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr tal:repeat="part subpage.elements.reviewed_element.parts">
+            <td style="width: 50%">${part.text}</td>
+            <td style="width: 50%">
+              <input type="text" class="form-control"
+                     autocomplete="off" tal:attributes="placeholder part.text; data-statement part.statement_uid; data-argument part.argument_uid; data-type part.type">
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+    <a id="send_edit" href="#"
+       class="btn btn-success pull-right disabled" i18n:translate="send"
+       data-id="${subpage.elements.reviewed_element.stats.id}">
+      Send
+    </a>
+  </div>
+</tal:block>

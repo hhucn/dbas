@@ -24,14 +24,18 @@
       </div>
 
       <div tal:condition="not:subpage.no_arguments_to_review">
+        <div class="container colored-container" tal:condition="subpage.has_access">
+          <div tal:condition="subpage.button_set.is_delete" metal:use-macro="load: type/delete.pt"></div>
+          <div tal:condition="subpage.button_set.is_optimize" metal:use-macro="load: type/optimize.pt"></div>
+          <div tal:condition="subpage.button_set.is_edit" metal:use-macro="load: type/edit.pt"></div>
+          <div tal:condition="subpage.button_set.is_duplicate" metal:use-macro="load: type/duplicate.pt"></div>
+          <div tal:condition="subpage.button_set.is_merge" metal:use-macro="load: type/merge.pt"></div>
+          <div tal:condition="subpage.button_set.is_split" metal:use-macro="load: type/split.pt"></div>
 
-        <div tal:condition="subpage.button_set.is_delete" metal:use-macro="load: type/delete" tal:omit-tag=""></div>
-        <div tal:condition="subpage.button_set.is_optimize" metal:use-macro="load: type/optimize" tal:omit-tag=""></div>
-        <div tal:condition="subpage.button_set.is_edit" metal:use-macro="load: type/edit" tal:omit-tag=""></div>
-        <div tal:condition="subpage.button_set.is_duplicate" metal:use-macro="load: type/duplicate" tal:omit-tag=""></div>
-        <div tal:condition="subpage.button_set.is_merge" metal:use-macro="load: type/merge" tal:omit-tag=""></div>
-        <div tal:condition="subpage.button_set.is_split" metal:use-macro="load: type/split" tal:omit-tag=""></div>
-
+          <small id="review-id"
+                 class="text-muted pull-right" data-id="${subpage.elements.reviewed_element.stats.id}">
+            ID: ${subpage.elements.reviewed_element.stats.id}</small>
+        </div>
       </div>
 
     </div>

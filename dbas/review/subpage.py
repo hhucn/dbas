@@ -16,7 +16,8 @@ from dbas.lib import get_all_arguments_by_statement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, \
     get_text_for_premisegroup_uid, get_profile_picture
 from dbas.logger import logger
-from dbas.review import review_queues, reputation_borders
+from dbas.review import review_queues, reputation_borders, key_merge, key_delete, key_duplicate, key_edit, \
+    key_optimization, key_split
 from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -66,27 +67,27 @@ def get_subpage_elements_for(nickname, session, application_url, subpage_name, t
     reason = ''
     stats = ''
 
-    if subpage_name == 'deletes':
+    if subpage_name == key_delete:
         subpage_dict = __get_subpage_dict_for_deletes(session, application_url, db_user, translator)
         button_set['is_delete'] = True
 
-    elif subpage_name == 'optimizations':
+    elif subpage_name == key_optimization:
         subpage_dict = __get_subpage_dict_for_optimization(session, application_url, db_user, translator)
         button_set['is_optimize'] = True
 
-    elif subpage_name == 'edits':
+    elif subpage_name == key_edit:
         subpage_dict = __get_subpage_dict_for_edits(session, application_url, db_user, translator)
         button_set['is_edit'] = True
 
-    elif subpage_name == 'duplicates':
+    elif subpage_name == key_duplicate:
         subpage_dict = __get_subpage_dict_for_duplicates(session, application_url, db_user, translator)
         button_set['is_duplicate'] = True
 
-    elif subpage_name == 'splits':
+    elif subpage_name == key_split:
         subpage_dict = __get_subpage_dict_for_splits(session, application_url, db_user, translator)
         button_set['is_split'] = True
 
-    elif subpage_name == 'merges':
+    elif subpage_name == key_merge:
         subpage_dict = __get_subpage_dict_for_merges(session, application_url, db_user, translator)
         button_set['is_merge'] = True
 
@@ -495,6 +496,7 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
             'reason': None,
             'issue': None,
             'extra_info': None,
+            'issue_titles': [],
             'session': session
         }
 
@@ -511,6 +513,12 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
     issue = DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseSplit)
 
+    statement_uids = [p.statement_uid for p in premises]
+    statement2issue_uids = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter(
+        StatementToIssue.statement_uid.in_(statement_uids))]
+    issue_titles = [issue.title for issue in
+                    DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()]
+
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
     already_seen.append(rnd_review.uid)
@@ -524,6 +532,7 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
         'issue': issue,
         'extra_info': extra_info,
         'pgroup_only': pgroup_only,
+        'issue_titles': issue_titles,
         'session': session
     }
 
@@ -563,7 +572,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
             'stats': None,
             'text': None,
             'reason': None,
-            'issue_titles': None,
+            'issue_titles': [],
             'extra_info': None,
             'session': session
         }
@@ -583,7 +592,12 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
     else:
         merged_text = get_text_for_premisegroup_uid(rnd_review.premisegroup_uid)
         pgroup_only = True
-    issue_titles = [DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title]
+
+    statement_uids = [p.statement_uid for p in premises]
+    statement2issue_uids = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter(
+        StatementToIssue.statement_uid.in_(statement_uids))]
+    issue_titles = [issue.title for issue in
+                    DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()]
     reason = translator.get(_.argumentFlaggedBecauseMerge)
 
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
