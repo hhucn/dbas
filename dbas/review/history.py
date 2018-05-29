@@ -17,9 +17,10 @@ from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, Rev
 from dbas.lib import get_text_for_argument_uid, get_profile_picture, get_text_for_statement_uid, \
     get_text_for_premisegroup_uid
 from dbas.logger import logger
+from dbas.review import reputation_borders, reputation_icons, key_delete, key_merge, key_split, key_duplicate, key_edit, \
+    key_optimization
 from dbas.review.helper import set_able_object_of_review
 from dbas.review.reputation import get_reputation_of
-from dbas.review import reputation_borders, reputation_icons
 from dbas.strings.keywords import Keywords as _
 
 
@@ -67,16 +68,21 @@ def __get_data(main_page, db_user, translator, is_executed=False):
         ret_dict['has_access'] = db_user.is_admin() or db_user.is_author()
     ret_dict['is_history'] = is_executed
 
-    deletes_list = __get_executed_reviews_of('deletes', main_page, ReviewDelete, LastReviewerDelete, translator, is_executed)
-    optimizations_list = __get_executed_reviews_of('optimizations', main_page, ReviewOptimization, LastReviewerOptimization, translator, is_executed)
+    deletes_list = __get_executed_reviews_of('deletes', main_page, ReviewDelete, LastReviewerDelete, translator,
+                                             is_executed)
+    optimizations_list = __get_executed_reviews_of('optimizations', main_page, ReviewOptimization,
+                                                   LastReviewerOptimization, translator, is_executed)
     edits_list = __get_executed_reviews_of('edits', main_page, ReviewEdit, LastReviewerEdit, translator, is_executed)
-    duplicates_list = __get_executed_reviews_of('duplicates', main_page, ReviewDuplicate, LastReviewerDuplicate, translator, is_executed)
-    splits_list = __get_executed_reviews_of('splits', main_page, ReviewSplit, LastReviewerSplit, translator, is_executed)
-    merges_list = __get_executed_reviews_of('merges', main_page, ReviewMerge, LastReviewerMerge, translator, is_executed)
+    duplicates_list = __get_executed_reviews_of('duplicates', main_page, ReviewDuplicate, LastReviewerDuplicate,
+                                                translator, is_executed)
+    splits_list = __get_executed_reviews_of('splits', main_page, ReviewSplit, LastReviewerSplit, translator,
+                                            is_executed)
+    merges_list = __get_executed_reviews_of('merges', main_page, ReviewMerge, LastReviewerMerge, translator,
+                                            is_executed)
 
     past_decision = [{
         'title': 'Delete Queue',
-        'icon': reputation_icons['deletes'],
+        'icon': reputation_icons[key_delete],
         'queue': 'deletes',
         'content': deletes_list,
         'has_reason': True,
@@ -85,7 +91,7 @@ def __get_data(main_page, db_user, translator, is_executed=False):
     }, {
         'title': 'Optimization Queue',
         'queue': 'optimizations',
-        'icon': reputation_icons['optimizations'],
+        'icon': reputation_icons[key_optimization],
         'content': optimizations_list,
         'has_reason': False,
         'has_oem_text': False,
@@ -93,7 +99,7 @@ def __get_data(main_page, db_user, translator, is_executed=False):
     }, {
         'title': 'Edit Queue',
         'queue': 'edits',
-        'icon': reputation_icons['edits'],
+        'icon': reputation_icons[key_edit],
         'content': edits_list,
         'has_reason': False,
         'has_oem_text': True,
@@ -101,7 +107,7 @@ def __get_data(main_page, db_user, translator, is_executed=False):
     }, {
         'title': 'Duplicates Queue',
         'queue': 'duplicates',
-        'icon': reputation_icons['duplicates'],
+        'icon': reputation_icons[key_duplicate],
         'content': duplicates_list,
         'has_reason': False,
         'has_oem_text': False,
@@ -109,7 +115,7 @@ def __get_data(main_page, db_user, translator, is_executed=False):
     }, {
         'title': 'Splits Queue',
         'queue': 'splits',
-        'icon': reputation_icons['splits'],
+        'icon': reputation_icons[key_split],
         'content': splits_list,
         'has_reason': False,
         'has_oem_text': True,
@@ -117,7 +123,7 @@ def __get_data(main_page, db_user, translator, is_executed=False):
     }, {
         'title': 'Merges Queue',
         'queue': 'merges',
-        'icon': reputation_icons['merges'],
+        'icon': reputation_icons[key_merge],
         'content': merges_list,
         'has_reason': False,
         'has_oem_text': True,
@@ -148,7 +154,7 @@ def get_reputation_history_of(nickname, translator):
     db_reputation = DBDiscussionSession.query(ReputationHistory) \
         .filter_by(reputator_uid=db_user.uid) \
         .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
-        .order_by(ReputationHistory.uid.asc())\
+        .order_by(ReputationHistory.uid.asc()) \
         .all()
 
     rep_list = list()
@@ -181,7 +187,8 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     """
     logger('History', 'Table: {} ({})'.format(table, table_type))
     some_list = list()
-    db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == is_executed).order_by(table_type.uid.desc()).all()
+    db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == is_executed).order_by(
+        table_type.uid.desc()).all()
 
     for review in db_reviews:
         entry = __get_executed_review_element_of(table, main_page, review, last_review_type, translator, is_executed)
@@ -307,7 +314,8 @@ def __handle_table_of_review_delete(review, entry):
 
 def __handle_table_of_review_edit(review, length, entry, is_executed, short_text, full_text):
     if is_executed:
-        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()
+        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(
+            TextVersion.uid.desc()).all()
         if len(db_textversions) == 0:
             entry['is_innocent'] = False
             text = 'Review {} is malicious / no text for statement'.format(review.uid)
@@ -493,7 +501,8 @@ def __revoke_old_merges_decision(db_review, db_user):
     db_review = DBDiscussionSession.query(ReviewMerge).get(db_review.uid)
     db_review.set_revoked(True)
     db_pgroup_merged = DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review.uid).all()
-    replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(review_uid=db_review.uid).all()
+    replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(
+        review_uid=db_review.uid).all()
     __undo_premisegroups(db_pgroup_merged, replacements)
     DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review.uid).delete()
     DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=db_review.uid).delete()
@@ -512,8 +521,10 @@ def __revoke_old_splits_decision(db_review, db_user):
     db_review = DBDiscussionSession.query(ReviewSplit).get(db_review.uid)
     db_review.set_revoked(True)
     db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).all()
-    replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(review_uid=db_review.uid).all()
-    disable_args = [arg.uid for arg in DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=db_review.uid).all()]
+    replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(
+        review_uid=db_review.uid).all()
+    disable_args = [arg.uid for arg in DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(
+        review_uid=db_review.uid).all()]
     __undo_premisegroups(db_pgroup_splitted, replacements)
     __disable_arguments_by_id(disable_args)
     DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
@@ -752,14 +763,17 @@ def __rebend_objects_of_duplicate_review(db_review):
 
         if revoke.argument_uid is not None:
             db_argument = DBDiscussionSession.query(Argument).get(revoke.argument_uid)
-            text = 'Rebend conclusion of argument {} from {} to {}'.format(revoke.argument_uid, db_argument.conclusion_uid, db_review.duplicate_statement_uid)
+            text = 'Rebend conclusion of argument {} from {} to {}'.format(revoke.argument_uid,
+                                                                           db_argument.conclusion_uid,
+                                                                           db_review.duplicate_statement_uid)
             logger('review_history_helper', text)
             db_argument.conclusion_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_argument)
 
         if revoke.premise_uid is not None:
             db_premise = DBDiscussionSession.query(Premise).get(revoke.premise_uid)
-            text = 'Rebend premise {} from {} to {}'.format(revoke.premise_uid, db_premise.statement_uid, db_review.duplicate_statement_uid)
+            text = 'Rebend premise {} from {} to {}'.format(revoke.premise_uid, db_premise.statement_uid,
+                                                            db_review.duplicate_statement_uid)
             logger('review_history_helper', text)
             db_premise.statement_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_premise)
