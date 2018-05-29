@@ -10,15 +10,15 @@ from dbas.strings.keywords import Keywords as _
 #  - add a reputation_icon key_<your_queue_name>: <your_font_awesome_icon>
 #  - please add the translation string like queue<Yourname> and priv_access_<queuename>_access (respect the capitals)
 
-max_lock_time_in_sec = 180
-key_edit = 'edit'
-key_delete = 'delete'
-key_duplicate = 'duplicate'
-key_optimization = 'optimization'
-key_merge = 'merge'
-key_split = 'split'
-key_history = 'history'  # this queue has it's own route
-key_ongoing = 'ongoing'  # this queue has it's own route
+max_lock_time_in_sec: int = 180
+key_edit: str = 'edit'
+key_delete: str = 'delete'
+key_duplicate: str = 'duplicate'
+key_optimization: str = 'optimization'
+key_merge: str = 'merge'
+key_split: str = 'split'
+key_history: str = 'history'  # this queue has it's own route
+key_ongoing: str = 'ongoing'  # this queue has it's own route
 
 # list of queues where reviews can be done
 review_queues = [

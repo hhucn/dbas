@@ -39,14 +39,7 @@ def get_subpage_elements_for(nickname, session, application_url, subpage_name, t
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     user_has_access = False
     no_arguments_to_review = False
-    button_set = {
-        'is_delete': False,
-        'is_optimize': False,
-        'is_edit': False,
-        'is_duplicate': False,
-        'is_split': False,
-        'is_merge': False
-    }
+    button_set = {f'is_{key}': False for key in review_queues}
 
     # does the subpage exists
     if subpage_name not in review_queues and subpage_name != 'history':
@@ -73,7 +66,7 @@ def get_subpage_elements_for(nickname, session, application_url, subpage_name, t
 
     elif subpage_name == key_optimization:
         subpage_dict = __get_subpage_dict_for_optimization(session, application_url, db_user, translator)
-        button_set['is_optimize'] = True
+        button_set['is_optimization'] = True
 
     elif subpage_name == key_edit:
         subpage_dict = __get_subpage_dict_for_edits(session, application_url, db_user, translator)

@@ -83,14 +83,14 @@ def __get_data(main_page, db_user, translator, is_executed=False):
     past_decision = [{
         'title': 'Delete Queue',
         'icon': reputation_icons[key_delete],
-        'queue': 'deletes',
+        'queue': key_delete,
         'content': deletes_list,
         'has_reason': True,
         'has_oem_text': False,
         'has_duplicate_text': False
     }, {
         'title': 'Optimization Queue',
-        'queue': 'optimizations',
+        'queue': key_optimization,
         'icon': reputation_icons[key_optimization],
         'content': optimizations_list,
         'has_reason': False,
@@ -98,7 +98,7 @@ def __get_data(main_page, db_user, translator, is_executed=False):
         'has_duplicate_text': False
     }, {
         'title': 'Edit Queue',
-        'queue': 'edits',
+        'queue': key_edit,
         'icon': reputation_icons[key_edit],
         'content': edits_list,
         'has_reason': False,
@@ -106,7 +106,7 @@ def __get_data(main_page, db_user, translator, is_executed=False):
         'has_duplicate_text': False
     }, {
         'title': 'Duplicates Queue',
-        'queue': 'duplicates',
+        'queue': key_duplicate,
         'icon': reputation_icons[key_duplicate],
         'content': duplicates_list,
         'has_reason': False,
@@ -114,7 +114,7 @@ def __get_data(main_page, db_user, translator, is_executed=False):
         'has_duplicate_text': True
     }, {
         'title': 'Splits Queue',
-        'queue': 'splits',
+        'queue': key_split,
         'icon': reputation_icons[key_split],
         'content': splits_list,
         'has_reason': False,
@@ -122,7 +122,7 @@ def __get_data(main_page, db_user, translator, is_executed=False):
         'has_duplicate_text': False
     }, {
         'title': 'Merges Queue',
-        'queue': 'merges',
+        'queue': key_merge,
         'icon': reputation_icons[key_merge],
         'content': merges_list,
         'has_reason': False,
@@ -414,19 +414,20 @@ def revoke_old_decision(queue, db_review, db_user):
     """
     logger('review_history_helper', 'queue {} with uid {}'.format(queue, db_review.uid))
 
-    review_canceled = None
-    if queue == 'deletes':
+    if queue == key_delete:
         review_canceled = __revoke_old_deletes_decision(db_review, db_user)
-    elif queue == 'optimizations':
+    elif queue == key_optimization:
         review_canceled = __revoke_old_optimizations_decision(db_review, db_user)
-    elif queue == 'edits':
+    elif queue == key_edit:
         review_canceled = __revoke_old_edits_decision(db_review, db_user)
-    elif queue == 'duplicates':
+    elif queue == key_duplicate:
         review_canceled = __revoke_old_duplicates_decision(db_review, db_user)
-    elif queue == 'merges':
+    elif queue == key_merge:
         review_canceled = __revoke_old_merges_decision(db_review, db_user)
-    elif queue == 'splits':
+    elif queue == key_split:
         review_canceled = __revoke_old_splits_decision(db_review, db_user)
+    else:
+        return False
     DBDiscussionSession.add(review_canceled)
     DBDiscussionSession.flush()
     transaction.commit()
@@ -598,19 +599,20 @@ def cancel_ongoing_decision(queue, db_review, db_user):
     """
     logger('review_history_helper', 'queue {} uid {}'.format(queue, db_review.uid))
 
-    review_canceled = None
-    if queue == 'deletes':
+    if queue == key_delete:
         review_canceled = __cancel_ongoing_deletes_decision(db_review, db_user)
-    elif queue == 'optimizations':
+    elif queue == key_optimization:
         review_canceled = __cancel_ongoing_optimizations_decision(db_review, db_user)
-    elif queue == 'edits':
+    elif queue == key_edit:
         review_canceled = __cancel_ongoing_edits_decision(db_review, db_user)
-    elif queue == 'duplicates':
+    elif queue == key_duplicate:
         review_canceled = __cancel_ongoing_duplicates_decision(db_review, db_user)
-    elif queue == 'merges':
+    elif queue == key_merge:
         review_canceled = __cancel_ongoing_merges_decision(db_review, db_user)
-    elif queue == 'splits':
+    elif queue == key_split:
         review_canceled = __cancel_ongoing_splits_decision(db_review, db_user)
+    else:
+        return False
 
     DBDiscussionSession.add(review_canceled)
     DBDiscussionSession.flush()

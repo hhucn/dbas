@@ -1,9 +1,13 @@
 import unittest
 
+import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, get_now
 from dbas.helper.test import verify_dictionary_of_view, clear_clicks_of, clear_seen_by_of
+from dbas.review import review_queues
 from dbas.views.review.rendered import queue_details
 
 
@@ -13,63 +17,36 @@ class ReviewContentViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
         clear_clicks_of('Tobias')
         clear_seen_by_of('Tobias')
+        self.db_tobias = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        self.last_login_of_tobias = self.db_tobias.last_login
+        self.db_tobias.last_login = get_now()
+        DBDiscussionSession.add(self.db_tobias)
+        DBDiscussionSession.flush()
+        transaction.commit()
 
     def tearDown(self):
         testing.tearDown()
         clear_clicks_of('Tobias')
         clear_seen_by_of('Tobias')
+        self.db_tobias.last_login = self.last_login_of_tobias
+        DBDiscussionSession.add(self.db_tobias)
+        DBDiscussionSession.flush()
+        transaction.commit()
 
-    def test_page_deletes(self):
-        request = testing.DummyRequest(matchdict={'queue': 'deletes'})
-        try:
-            response = queue_details(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+    def test_queue_pages_not_logged_in(self):
+        for key in review_queues:
+            request = testing.DummyRequest(matchdict={'queue': key})
+            try:
+                response = queue_details(request)
+                self.assertEqual(HTTPNotFound, type(response))
+            except HTTPNotFound:
+                pass
 
-    def test_page_edits(self):
-        request = testing.DummyRequest(matchdict={'queue': 'edits'})
-        try:
-            response = queue_details(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
-
-    def test_page_optimizations(self):
-        request = testing.DummyRequest(matchdict={'queue': 'optimizations'})
-        try:
-            response = queue_details(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
-
-    def test_page_deletes_logged_in(self):
+    def test_queue_pages_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(matchdict={'queue': 'deletes'})
-        response = queue_details(request)
-        verify_dictionary_of_view(response)
-        self.assertTrue(len(response['subpage']['elements']) > 0)
-        self.assertTrue(response['subpage']['button_set']['is_delete'])
-        self.assertFalse(response['subpage']['button_set']['is_edit'])
-        self.assertFalse(response['subpage']['button_set']['is_optimize'])
-
-    def test_page_edits_logged_in(self):
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(matchdict={'queue': 'edits'})
-        response = queue_details(request)
-        verify_dictionary_of_view(response)
-        self.assertTrue(len(response['subpage']['elements']) > 0)
-        self.assertFalse(response['subpage']['button_set']['is_delete'])
-        self.assertTrue(response['subpage']['button_set']['is_edit'])
-        self.assertFalse(response['subpage']['button_set']['is_optimize'])
-
-    def test_page_optimizations_logged_in(self):
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
-        request = testing.DummyRequest(matchdict={'queue': 'optimizations'})
-        response = queue_details(request)
-        verify_dictionary_of_view(response)
-        self.assertTrue(len(response['subpage']['elements']) > 0)
-        self.assertFalse(response['subpage']['button_set']['is_delete'])
-        self.assertFalse(response['subpage']['button_set']['is_edit'])
-        self.assertTrue(response['subpage']['button_set']['is_optimize'])
+        for key in review_queues:
+            request = testing.DummyRequest(matchdict={'queue': key})
+            response = queue_details(request)
+            self.assertEqual(dict, type(response))
+            verify_dictionary_of_view(response)
+            self.assertTrue(response['subpage']['button_set']['is_' + key])

@@ -12,7 +12,6 @@ class Base(metaclass=ABCMeta):
         """
         pass
 
-
     @abstractmethod
     def add_vote(self, db_user: User):
         """
@@ -20,7 +19,6 @@ class Base(metaclass=ABCMeta):
         :return:
         """
         pass
-
 
     @abstractmethod
     def add_review(self, db_user: User):
@@ -30,7 +28,6 @@ class Base(metaclass=ABCMeta):
         """
         pass
 
-
     @abstractmethod
     def get_review_count(self):
         """
@@ -39,7 +36,6 @@ class Base(metaclass=ABCMeta):
         """
         pass
 
-
     @abstractmethod
     def cancel_vote(self, db_user: User):
         """
@@ -47,7 +43,6 @@ class Base(metaclass=ABCMeta):
         :return:
         """
         pass
-
 
     @abstractmethod
     def revoke_vote(self, db_user: User):

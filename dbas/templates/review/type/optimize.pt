@@ -18,7 +18,7 @@
         <a id="less_about_reason" href="#" i18n:translate="wrapped_less" style="display: none;">(less)</a>
       </h6>
     </div>
-    <div class="col-md-5" tal:condition="subpage.button_set.is_optimize">
+    <div class="col-md-5">
       <div class="btn-group pull-right">
         <a id="opti_ack" href="#" class="review-btn-optimize btn btn-success btn-sm"
            data-queue="optimization" i18n:translate="correct_it"
@@ -158,9 +158,7 @@
 
   </div>
 
-  <div id="optimization-container"
-       class="row" tal:condition="subpage.button_set.is_optimize"
-       style="display: none;">
+  <div id="optimization-container" class="row" style="display: none;">
     <button id="close-optimization-container" type="button" class="close" data-dismiss="modal"
             aria-label="Close">
       <span aria-hidden="true">&times;</span>
