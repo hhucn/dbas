@@ -14,9 +14,9 @@ from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelet
     LastReviewerMerge, LastReviewerSplit
 from dbas.lib import get_profile_picture
 from dbas.logger import logger
-from dbas.review import max_lock_time_in_sec, key_deletes, key_optimizations, key_edits, key_duplicates, key_merge, \
-    key_split, key_history, key_ongoing, Code
-from dbas.review.reputation import get_reputation_of, reputation_icons, reputation_borders
+from dbas.review import max_lock_time_in_sec, key_delete, key_optimization, key_edit, key_duplicate, key_merge, \
+    key_split, key_history, key_ongoing, Code, reputation_borders, reputation_icons
+from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -66,10 +66,10 @@ def get_complete_review_count(db_user: User) -> int:
     """
     count, all_rights = get_reputation_of(db_user)
 
-    rights1 = count >= reputation_borders[key_deletes] or all_rights
-    rights2 = count >= reputation_borders[key_optimizations] or all_rights
-    rights3 = count >= reputation_borders[key_edits] or all_rights
-    rights4 = count >= reputation_borders[key_duplicates] or all_rights
+    rights1 = count >= reputation_borders[key_delete] or all_rights
+    rights2 = count >= reputation_borders[key_optimization] or all_rights
+    rights3 = count >= reputation_borders[key_edit] or all_rights
+    rights4 = count >= reputation_borders[key_duplicate] or all_rights
     rights5 = count >= reputation_borders[key_split] or all_rights
     rights6 = count >= reputation_borders[key_merge] or all_rights
 
@@ -99,13 +99,13 @@ def __get_delete_dict(main_page, translator, db_user, count, all_rights):
 
     tmp_dict = {'task_name': translator.get(_.queueDelete),
                 'id': 'deletes',
-                'url': main_page + '/review/' + key_deletes,
-                'icon': reputation_icons[key_deletes],
+                'url': main_page + '/review/' + key_delete,
+                'icon': reputation_icons[key_delete],
                 'task_count': task_count,
-                'is_allowed': count >= reputation_borders[key_deletes] or all_rights,
+                'is_allowed': count >= reputation_borders[key_delete] or all_rights,
                 'is_allowed_text': translator.get(_.visitDeleteQueue),
                 'is_not_allowed_text': translator.get(_.visitDeleteQueueLimitation).format(
-                    str(reputation_borders[key_deletes])),
+                    str(reputation_borders[key_delete])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDelete, main_page)
                 }
     return tmp_dict
@@ -125,13 +125,13 @@ def __get_optimization_dict(main_page, translator, db_user, count, all_rights):
 
     tmp_dict = {'task_name': translator.get(_.queueOptimization),
                 'id': 'optimizations',
-                'url': main_page + '/review/' + key_optimizations,
-                'icon': reputation_icons[key_optimizations],
+                'url': main_page + '/review/' + key_optimization,
+                'icon': reputation_icons[key_optimization],
                 'task_count': task_count,
-                'is_allowed': count >= reputation_borders[key_optimizations] or all_rights,
+                'is_allowed': count >= reputation_borders[key_optimization] or all_rights,
                 'is_allowed_text': translator.get(_.visitOptimizationQueue),
                 'is_not_allowed_text': translator.get(_.visitOptimizationQueueLimitation).format(
-                    str(reputation_borders[key_optimizations])),
+                    str(reputation_borders[key_optimization])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, main_page)
                 }
     return tmp_dict
@@ -151,13 +151,13 @@ def __get_edit_dict(main_page, translator, db_user, count, all_rights):
 
     tmp_dict = {'task_name': translator.get(_.queueEdit),
                 'id': 'edits',
-                'url': main_page + '/review/' + key_edits,
-                'icon': reputation_icons[key_edits],
+                'url': main_page + '/review/' + key_edit,
+                'icon': reputation_icons[key_edit],
                 'task_count': task_count,
-                'is_allowed': count >= reputation_borders[key_edits] or all_rights,
+                'is_allowed': count >= reputation_borders[key_edit] or all_rights,
                 'is_allowed_text': translator.get(_.visitEditQueue),
                 'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).format(
-                    str(reputation_borders[key_edits])),
+                    str(reputation_borders[key_edit])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerEdit, main_page)
                 }
     return tmp_dict
@@ -175,15 +175,15 @@ def __get_duplicates_dict(main_page, translator, db_user, count, all_rights):
     #  logger('ReviewQueues', '__get_duplicates_dict', 'main')
     task_count = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, db_user)
 
-    tmp_dict = {'task_name': translator.get(_.queueDuplicates),
+    tmp_dict = {'task_name': translator.get(_.queueDuplicate),
                 'id': 'duplicates',
-                'url': main_page + '/review/' + key_duplicates,
-                'icon': reputation_icons[key_duplicates],
+                'url': main_page + '/review/' + key_duplicate,
+                'icon': reputation_icons[key_duplicate],
                 'task_count': task_count,
-                'is_allowed': count >= reputation_borders[key_duplicates] or all_rights,
+                'is_allowed': count >= reputation_borders[key_duplicate] or all_rights,
                 'is_allowed_text': translator.get(_.visitDuplicateQueue),
                 'is_not_allowed_text': translator.get(_.visitDuplicateQueueLimitation).format(
-                    str(reputation_borders[key_duplicates])),
+                    str(reputation_borders[key_duplicate])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDuplicate, main_page)
                 }
     return tmp_dict

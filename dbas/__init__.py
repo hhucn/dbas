@@ -190,7 +190,7 @@ def main(global_config, **settings):
     config.add_route('review_reputation', '/review/reputation')
     config.add_route('review_history', '/review/history')
     config.add_route('review_ongoing', '/review/ongoing')
-    config.add_route('review_content', '/review/{queue}')
+    config.add_route('review_queue', '/review/{queue}')
 
     config.scan()
 

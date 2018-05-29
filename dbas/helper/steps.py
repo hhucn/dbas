@@ -12,7 +12,7 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.lib import Attitudes
 from dbas.logger import logger
 from dbas.review.reputation import add_reputation_for
-from dbas.review.reputation import rep_reason_first_confrontation
+from dbas.review import rep_reason_first_confrontation
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio

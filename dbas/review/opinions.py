@@ -10,8 +10,9 @@ from dbas.handler.statements import correct_statement, set_statement
 from dbas.lib import get_text_for_premisegroup_uid, get_all_arguments_by_statement
 from dbas.logger import logger
 from dbas.review.helper import set_able_object_of_review
-from dbas.review.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag, \
-    rep_reason_success_edit, rep_reason_bad_edit, rep_reason_success_duplicate, rep_reason_bad_duplicate
+from dbas.review.reputation import add_reputation_for
+from dbas.review import rep_reason_success_flag, rep_reason_success_edit, rep_reason_success_duplicate, \
+    rep_reason_bad_flag, rep_reason_bad_edit, rep_reason_bad_duplicate
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio

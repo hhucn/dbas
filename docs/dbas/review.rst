@@ -38,11 +38,13 @@ If you want to add a new queue, there are some steps to be done. We will guide t
     2. Add the necessary `keys` in `dbas/review/__init__.py`
     3. Create a new script in `dbas/review/<your_queue_name>.py` based on the `__interface__.py`
     4. Implement it!
-    5. Do not forget to implement the frontend: Most of the parts are just copy / paste / rename.
-        a. Add a section in the `review-content.pt'-template
-        b. Add click events for the buttons and callbacks in `queue.js` as well as `review.js`.
-        c. Be nice, we never had time to refactor the frontend.
-    6. Please add tests!
+    5. Add the strings for `priv_access_x_queue` and `<queueY>`
+    6. Do not forget to implement the frontend: Most of the parts are just copy / paste / rename.
+        a. Add a subpage section in the `review/qeueue.pt`-template
+        b. Add your queue in `review/type/<queue>.pt`
+        c. Add click events for the buttons in `queue.js` and the methods in `review.js`.
+        d. Be nice, we never had time to refactor the frontend.
+    7. Please add tests!
 
 
 

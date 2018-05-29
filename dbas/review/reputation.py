@@ -11,42 +11,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
 from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
+from dbas.review import reputation_borders, reputation_icons, all_queues
 from dbas.strings.keywords import Keywords as _
-
-reputation_borders = {
-    'deletes': 30,
-    'optimizations': 30,
-    'edits': 30,
-    'duplicates': 30,
-    'splits': 30,
-    'merges': 30,
-    'history': 150
-}
-
-reputation_icons = {
-    'deletes': 'fa fa-trash-o',
-    'optimizations': 'fa fa-flag',
-    'edits': 'fa fa-pencil-square-o',
-    'duplicates': 'fa fa-files-o',
-    'splits': 'fa fa-expand',
-    'merges': 'fa fa-compress',
-    'history': 'fa fa-history',
-    'ongoing': 'fa fa-clock-o'
-}
-
-# every reason by its name
-rep_reason_first_position = 'rep_reason_first_position'
-rep_reason_first_justification = 'rep_reason_first_justification'
-rep_reason_first_argument_click = 'rep_reason_first_argument_click'
-rep_reason_first_confrontation = 'rep_reason_first_confrontation'
-rep_reason_first_new_argument = 'rep_reason_first_new_argument'
-rep_reason_new_statement = 'rep_reason_new_statement'
-rep_reason_success_flag = 'rep_reason_success_flag'
-rep_reason_success_edit = 'rep_reason_success_edit'
-rep_reason_success_duplicate = 'rep_reason_success_duplicate'
-rep_reason_bad_flag = 'rep_reason_bad_flag'
-rep_reason_bad_edit = 'rep_reason_bad_edit'
-rep_reason_bad_duplicate = 'rep_reason_bad_duplicate'
 
 
 def get_privilege_list(translator):
@@ -56,22 +22,11 @@ def get_privilege_list(translator):
     :param translator: instance of translator
     :return: list()
     """
-    return [
-        {'points': reputation_borders['deletes'], 'icon': reputation_icons['deletes'],
-         'text': translator.get(_.priv_access_opti_queue)},
-        {'points': reputation_borders['optimizations'], 'icon': reputation_icons['optimizations'],
-         'text': translator.get(_.priv_access_del_queue)},
-        {'points': reputation_borders['edits'], 'icon': reputation_icons['edits'],
-         'text': translator.get(_.priv_access_edit_queue)},
-        {'points': reputation_borders['splits'], 'icon': reputation_icons['splits'],
-         'text': translator.get(_.priv_access_splits_queue)},
-        {'points': reputation_borders['merges'], 'icon': reputation_icons['merges'],
-         'text': translator.get(_.priv_access_merges_queue)},
-        {'points': reputation_borders['duplicates'], 'icon': reputation_icons['duplicates'],
-         'text': translator.get(_.priv_access_duplicate_queue)},
-        {'points': reputation_borders['history'], 'icon': reputation_icons['history'],
-         'text': translator.get(_.priv_history_queue)}
-    ]
+    return [{
+        'points': reputation_borders[key],
+        'icon': reputation_icons[key],
+        'text': translator.get(_.get_key_by_string(_.priv_access_x_queue.value.format(key))),
+    } for key in all_queues]
 
 
 def get_reputation_list(translator):

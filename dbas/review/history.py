@@ -18,7 +18,8 @@ from dbas.lib import get_text_for_argument_uid, get_profile_picture, get_text_fo
     get_text_for_premisegroup_uid
 from dbas.logger import logger
 from dbas.review.helper import set_able_object_of_review
-from dbas.review.reputation import get_reputation_of, reputation_borders, reputation_icons
+from dbas.review.reputation import get_reputation_of
+from dbas.review import reputation_borders, reputation_icons
 from dbas.strings.keywords import Keywords as _
 
 

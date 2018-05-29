@@ -234,7 +234,7 @@ def get_title_for_slug(slug):
     return None
 
 
-def get_issues_overiew(db_user: User, app_url: str) -> dict:
+def get_issues_overiew_for(db_user: User, app_url: str) -> dict:
     """
     Returns dictionary with keywords 'user' and 'others', which got lists with dicts with infos
     IMPORTANT: URL's are generated for the frontend!

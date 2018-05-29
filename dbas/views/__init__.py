@@ -6,3 +6,5 @@ from dbas.views.main.json import *
 from dbas.views.rendered import *
 from dbas.views.review.rendered import *
 from dbas.views.review.json import *
+from dbas.views.user.rendered import *
+from dbas.views.user.json import *

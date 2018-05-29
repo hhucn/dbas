@@ -6,7 +6,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Argument, User
 from dbas.discussion import core as discussion
 from dbas.handler import issue as issue_handler, history as history_handler
-from dbas.handler.issue import get_issues_overiew
+from dbas.handler.issue import get_issues_overiew_for
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -25,18 +25,18 @@ from dbas.views.helper import main_dict, modify_discussion_url, modify_discussio
     append_extras_dict_during_justification_argument, modifiy_issue_main_url
 
 
-@view_config(route_name='discussion_overview', renderer='../../templates/discussion-overview.pt', permission='use')
+@view_config(route_name='discussion_overview', renderer='../../templates/discussion/myoverview.pt', permission='use')
 @validate(check_authentication, prep_extras_dict, valid_user_optional)
 def discussion_overview(request):
     """
-    View configuration for FAQs.
+    
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('discussion_overview', 'main')
     ui_locales = get_language_from_cookie(request)
-    issue_dict = get_issues_overiew(request.validated['user'], request.application_url)
+    issue_dict = get_issues_overiew_for(request.validated['user'], request.application_url)
 
     prep_dict = main_dict(request, Translator(ui_locales).get(_.myDiscussions))
     modifiy_issue_main_url(issue_dict)
@@ -46,8 +46,8 @@ def discussion_overview(request):
     return prep_dict
 
 
-@view_config(route_name='discussion_start', renderer='../../templates/discussion-start.pt', permission='everybody')
-@view_config(route_name='discussion_start_with_slash', renderer='../../templates/discussion-start.pt',
+@view_config(route_name='discussion_start', renderer='../../templates/discussion/start.pt', permission='everybody')
+@view_config(route_name='discussion_start_with_slash', renderer='../../templates/discussion/start.pt',
              permission='everybody')
 @validate(check_authentication, valid_user_optional, prep_extras_dict)
 def start(request):
@@ -69,7 +69,8 @@ def start(request):
     return prep_dict
 
 
-@view_config(route_name='discussion_init_with_slug', renderer='../../templates/discussion.pt', permission='everybody')
+@view_config(route_name='discussion_init_with_slug', renderer='../../templates/discussion/index.pt',
+             permission='everybody')
 @validate(check_authentication, valid_issue_by_slug, valid_user_optional)
 def init(request):
     """
@@ -101,7 +102,7 @@ def init(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_attitude', renderer='../../templates/discussion.pt', permission='everybody')
+@view_config(route_name='discussion_attitude', renderer='../../templates/discussion/index.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}))
 def attitude(request):
     """
@@ -129,7 +130,8 @@ def attitude(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_justify_statement', renderer='../../templates/discussion.pt', permission='everybody')
+@view_config(route_name='discussion_justify_statement', renderer='../../templatex/discussion/index.pt',
+             permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}),
           valid_attitude)
 def justify_statement(request) -> dict:
@@ -160,7 +162,8 @@ def justify_statement(request) -> dict:
     return prepared_discussion
 
 
-@view_config(route_name='discussion_dontknow_argument', renderer='../../templates/discussion.pt', permission='everybody')
+@view_config(route_name='discussion_dontknow_argument', renderer='../../templatex/discussion/index.pt',
+             permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def dontknow_argument(request) -> dict:
     """
@@ -188,7 +191,8 @@ def dontknow_argument(request) -> dict:
     return prepared_discussion
 
 
-@view_config(route_name='discussion_justify_argument', renderer='../../templates/discussion.pt', permission='everybody')
+@view_config(route_name='discussion_justify_argument', renderer='../../templatex/discussion/index.pt',
+             permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}),
           valid_attitude, valid_relation)
 def justify_argument(request) -> dict:
@@ -219,7 +223,7 @@ def justify_argument(request) -> dict:
     return prepared_discussion
 
 
-@view_config(route_name='discussion_reaction', renderer='../../templates/discussion.pt', permission='everybody')
+@view_config(route_name='discussion_reaction', renderer='../../templatex/discussion/index.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_reaction_arguments, valid_relation)
 def reaction(request):
     """
@@ -250,7 +254,7 @@ def reaction(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_support', renderer='../../templates/discussion.pt', permission='everybody')
+@view_config(route_name='discussion_support', renderer='../../templatex/discussion/index.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_support)
 def support(request):
     """
@@ -278,7 +282,7 @@ def support(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_finish', renderer='../../templates/discussion.pt', permission='everybody')
+@view_config(route_name='discussion_finish', renderer='../../templatex/discussion/index.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def finish(request):
     """
@@ -306,7 +310,7 @@ def finish(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_exit', renderer='../../templates/exit.pt', permission='use')
+@view_config(route_name='discussion_exit', renderer='../../templates/discussion/exit.pt', permission='use')
 @validate(check_authentication, valid_user_optional)
 def dexit(request):
     """
@@ -328,7 +332,7 @@ def dexit(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_choose', renderer='../../templates/discussion.pt', permission='everybody')
+@view_config(route_name='discussion_choose', renderer='../../templatex/discussion/index.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_issue_by_slug, valid_premisegroup_in_path,
           valid_list_of_premisegroups_in_path, has_keywords_in_path(('is_argument', bool), ('is_supportive', bool)))
 def choose(request):
@@ -363,7 +367,7 @@ def choose(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_jump', renderer='../../templates/discussion.pt', permission='everybody')
+@view_config(route_name='discussion_jump', renderer='../../templatex/discussion/index.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def jump(request):
     """

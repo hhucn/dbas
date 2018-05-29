@@ -16,7 +16,7 @@ from dbas.validators.user import valid_user_optional, valid_user
 from dbas.views.helper import main_dict
 
 
-@view_config(route_name='review_index', renderer='../../templates/review.pt', permission='use')
+@view_config(route_name='review_index', renderer='../../templates/review/index.pt', permission='use')
 @validate(check_authentication, prep_extras_dict, valid_user_optional)
 def index(request):
     """
@@ -45,7 +45,7 @@ def index(request):
     return prep_dict
 
 
-@view_config(route_name='review_content', renderer='../../templates/review-content.pt', permission='use')
+@view_config(route_name='review_queue', renderer='../../templates/review/queue.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
 def queue_details(request):
     """
@@ -65,7 +65,7 @@ def queue_details(request):
     subpage_dict = review_page_helper.get_subpage_elements_for(nickname, session, application_url, subpage_name, _tn)
     request.session.update(subpage_dict['session'])
     if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
-        logger('review_content', 'subpage error', error=True)
+        logger('review_queue', 'subpage error', error=True)
         raise HTTPNotFound()
 
     title = _tn.get(_.review)
@@ -81,7 +81,7 @@ def queue_details(request):
     return prep_dict
 
 
-@view_config(route_name='review_history', renderer='../../templates/review-history.pt', permission='use')
+@view_config(route_name='review_history', renderer='../../templates/review/history.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
 def history(request):
     """
@@ -101,7 +101,7 @@ def history(request):
     return prep_dict
 
 
-@view_config(route_name='review_ongoing', renderer='../../templates/review-history.pt', permission='use')
+@view_config(route_name='review_ongoing', renderer='../../templates/review/history.pt', permission='use')
 @validate(valid_user, check_authentication, prep_extras_dict)
 def ongoing(request):
     """
@@ -120,7 +120,7 @@ def ongoing(request):
     return prep_dict
 
 
-@view_config(route_name='review_reputation', renderer='../../templates/review-reputation.pt', permission='use')
+@view_config(route_name='review_reputation', renderer='../../templates/review/reputation.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
 def reputation(request):
     """
