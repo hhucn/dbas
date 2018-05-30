@@ -16,27 +16,27 @@ class Queue():
     Adapter for the different queue adaptees
     """
 
-    def __init__(self, queue: Union[DeleteQueue, DuplicateQueue, EditQueue, MergeQueue, OptimizationQueue, SplitQueue],
-                 db_user: User, main_page: str, translator: Translator, **kwargs):
+    def __init__(self, queue: Union[DeleteQueue, DuplicateQueue, EditQueue, MergeQueue, OptimizationQueue, SplitQueue] = None,
+                 db_user: User = None, application_url: str = '', translator: Translator = '', **kwargs):
         """
 
         :param queue:
         :param db_user:
-        :param main_page:
+        :param application_url:
         :param translator:
         """
         self.queue = queue
         self.db_user: User = db_user
-        self.main_page = main_page
+        self.application_url = application_url
         self.translator = translator
         self.kwargs = kwargs
 
-    def get_queue_information(self, _t):
+    def get_queue_information(self, session, queue_name):
         """
 
         :return:
         """
-        self.queue.get_queue_information()
+        self.queue.get_queue_information(self.db_user, session, self.application_url, queue_name, self.translator)
 
     def add_vote(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization,
                                         ReviewSplit], is_okay: bool):
@@ -46,7 +46,7 @@ class Queue():
         :param is_okay:
         :return:
         """
-        self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay, main_page=self.main_page, translator=self.translator, **self.kwargs)
+        self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay, main_page=self.application_url, translator=self.translator, **self.kwargs)
 
     def add_review(self):
         """

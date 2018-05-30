@@ -1,5 +1,6 @@
 # Adaptee for the delete queue. Every deleted statement will just be disabled.
 import transaction
+from requests import Session
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete
@@ -12,7 +13,8 @@ from dbas.strings.translator import Translator
 
 
 class DeleteQueue(QueueABC):
-    def get_queue_information(self):
+    def get_queue_information(self, db_user: User, session: Session, application_url: str, queue_name: str,
+                              translator: Translator):
         pass
 
     def add_vote(self, db_user: User, db_review: ReviewDelete, is_okay: bool, main_page: str, translator: Translator,

@@ -46,7 +46,7 @@ def index(request):
 
 
 @view_config(route_name='review_queue', renderer='../../templates/review/queue.pt', permission='use')
-@validate(check_authentication, prep_extras_dict)
+@validate(check_authentication, valid_user, prep_extras_dict)
 def queue_details(request):
     """
     View configuration for the review content.
@@ -58,20 +58,21 @@ def queue_details(request):
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    subpage_name = request.matchdict['queue']
-    nickname = request.authenticated_userid
+    queue_name = request.matchdict['queue']
+    db_user = request.validated['user']
     session = request.session
     application_url = request.application_url
 
-    subpage_dict = review_page_helper.get_subpage_elements_for(nickname, session, application_url, subpage_name, _tn)
+    # subpage_dict = Queue(db_user=db_user, application_url=application_url, translator=_tn).get_queue_information(request.session, queue_name)
+    subpage_dict = review_page_helper.get_subpage_elements_for(db_user, session, application_url, queue_name, _tn)
     request.session.update(subpage_dict['session'])
     if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
         logger('review_queue', 'subpage error', error=True)
         raise HTTPNotFound()
 
     title = _tn.get(_.review)
-    if subpage_name in dbas.review.title_mapping:
-        title = _tn.get(dbas.review.title_mapping[subpage_name])
+    if queue_name in dbas.review.title_mapping:
+        title = _tn.get(dbas.review.title_mapping[queue_name])
 
     prep_dict = main_dict(request, title)
     prep_dict.update({

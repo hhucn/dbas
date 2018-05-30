@@ -11,7 +11,6 @@ class ReviewQueuesHelperTest(unittest.TestCase):
 
     def test_get_review_queues_as_lists(self):
         _tn = Translator('en')
-        self.assertIsNone(rqh.get_review_queues_as_lists('page', _tn, 'Pikachu'))
 
         queues = rqh.get_review_queues_as_lists('page', _tn, 'Tobias')
         for q in queues:

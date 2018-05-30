@@ -47,17 +47,12 @@ def flag_element(uid: int, reason: str, db_user: User, is_argument: bool, ui_loc
 
     # add flag
     if db_del_reason:
-        # flagged for the first time
         __add_delete_review(argument_uid, statement_uid, db_user.uid, db_del_reason.uid)
 
-    # and another reason for optimization
     elif reason == 'optimization':
-        # flagged for the first time
         __add_optimization_review(argument_uid, statement_uid, db_user.uid)
 
-    # and another reason for duplicates
     elif reason == 'duplicate':
-        # flagged for the first time
         if statement_uid == extra_uid:
             logger('FlagingHelper', 'uid error', error=True)
             return {

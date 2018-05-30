@@ -57,3 +57,28 @@ def add_reputation_and_check_review_access(db_user: User, rep_reason: str, main_
     if has_access_to_review_system(db_user):
         send_request_for_info_popup_to_socketio(db_user.nickname, translator.get(_.youAreAbleToReviewNow),
                                                 main_page + '/review')
+
+
+def get_all_allowed_reviews_for_user(session, session_keyword, db_user, review_type, last_reviewer_type):
+    """
+    Returns all reviews from given type, whereby already seen and reviewed reviews are restricted.
+
+    :param session: session of current webserver request
+    :param session_keyword: keyword of 'already_seen' element in request.session
+    :param db_user: current user
+    :param review_type: data table of reviews
+    :param last_reviewer_type: data table of last reviewers
+    :return: all revies, list of already seen reviews as uids, list of already reviewed reviews as uids, boolean if the user reviews for the first time in this session
+    """
+    # only get arguments, which the user has not seen yet
+    logger('review.lib', 'main')
+    already_seen, first_time = (session[session_keyword], False) if session_keyword in session else (list(), True)
+
+    # and not reviewed
+    db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
+    already_reviewed = [last_review.review_uid for last_review in db_last_reviews_of_user]
+    db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
+                                                               review_type.detector_uid != db_user.uid,
+                                                               ~review_type.uid.in_(already_seen + already_reviewed)).all()
+
+    return db_reviews, already_seen, already_reviewed, first_time

@@ -18,6 +18,7 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, \
 from dbas.logger import logger
 from dbas.review import review_queues, reputation_borders, key_merge, key_delete, key_duplicate, key_edit, \
     key_optimization, key_split
+from dbas.review.queue.lib import get_all_allowed_reviews_for_user
 from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -44,14 +45,14 @@ def get_subpage_elements_for(nickname, session, application_url, subpage_name, t
     # does the subpage exists
     if subpage_name not in review_queues and subpage_name != 'history':
         logger('ReviewSubpagerHelper', 'No page found', error=True)
-        return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
+        return __wrap_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
     rep_count, all_rights = get_reputation_of(nickname)
     user_has_access = rep_count >= reputation_borders[subpage_name] or all_rights
     # does the user exists and does he has the rights for this queue?
     if not db_user or not user_has_access:
         logger('ReviewSubpagerHelper', 'No user found', error=True)
-        return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
+        return __wrap_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
     ret_dict = {'page_name': subpage_name}
 
@@ -91,13 +92,12 @@ def get_subpage_elements_for(nickname, session, application_url, subpage_name, t
     ret_dict['reviewed_element'] = subpage_dict
     ret_dict['session'] = subpage_dict['session']
     if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
-        no_arguments_to_review = True
-        return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
+        return __wrap_subpage_dict({}, user_has_access, True, button_set)
 
-    return __get_subpage_dict(ret_dict, True, no_arguments_to_review, button_set)
+    return __wrap_subpage_dict(ret_dict, True, no_arguments_to_review, button_set)
 
 
-def __get_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set):
+def __wrap_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set):
     """
     Set up dict()
 
@@ -119,42 +119,6 @@ def __get_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set)
         'button_set': button_set,
         'session': session
     }
-
-
-def __get_all_allowed_reviews_for_user(session, session_keyword, db_user, review_type, last_reviewer_type):
-    """
-    Returns all reviews from given type, whereby already seen and reviewed reviews are restricted.
-
-    :param session: session of current webserver request
-    :param session_keyword: keyword of 'already_seen' element in request.session
-    :param db_user: current user
-    :param review_type: data table of reviews
-    :param last_reviewer_type: data table of last reviewers
-    :return: all revies, list of already seen reviews as uids, list of already reviewed reviews as uids, boolean if the user reviews for the first time in this session
-    """
-    # only get arguments, which the user has not seen yet
-    logger('ReviewSubpagerHelper', 'main')
-    already_seen, first_time = (session[session_keyword], False) if session_keyword in session else (list(), True)
-
-    # and not reviewed
-    db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
-    already_reviewed = []
-    for last_review in db_last_reviews_of_user:
-        already_reviewed.append(last_review.review_uid)
-
-    # get all reviews
-    db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
-                                                               review_type.detector_uid != db_user.uid)
-
-    # filter the ones, we have already seen
-    if len(already_seen) > 0:
-        db_reviews = db_reviews.filter(~review_type.uid.in_(already_seen))
-
-    # filter the ones, we have already reviewed
-    if len(already_reviewed) > 0:
-        db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
-
-    return db_reviews.all(), already_seen, already_reviewed, first_time
 
 
 def __get_base_subpage_dict(review_type, db_reviews, already_seen, first_time, db_user, already_reviewed):
@@ -198,11 +162,11 @@ def __get_subpage_dict_for_deletes(session, application_url, db_user, translator
     :return: dict()
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(session,
-                                                                                                'already_seen_deletes',
-                                                                                                db_user,
-                                                                                                ReviewDelete,
-                                                                                                LastReviewerDelete)
+    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
+                                                                                              'already_seen_deletes',
+                                                                                              db_user,
+                                                                                              ReviewDelete,
+                                                                                              LastReviewerDelete)
 
     rnd_review, already_seen, extra_info, text, issue_titles = __get_base_subpage_dict(ReviewDelete, db_reviews,
                                                                                        already_seen,
@@ -251,11 +215,11 @@ def __get_subpage_dict_for_optimization(session, application_url, db_user, trans
     :return: dict()
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(session,
-                                                                                                'already_seen_optimization',
-                                                                                                db_user,
-                                                                                                ReviewOptimization,
-                                                                                                LastReviewerOptimization)
+    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
+                                                                                              'already_seen_optimization',
+                                                                                              db_user,
+                                                                                              ReviewOptimization,
+                                                                                              LastReviewerOptimization)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
@@ -327,11 +291,11 @@ def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
     :return: dict()
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(session,
-                                                                                                'already_seen_edit',
-                                                                                                db_user,
-                                                                                                ReviewEdit,
-                                                                                                LastReviewerEdit)
+    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
+                                                                                              'already_seen_edit',
+                                                                                              db_user,
+                                                                                              ReviewEdit,
+                                                                                              LastReviewerEdit)
 
     rnd_review, already_seen, extra_info, text, issue_titles = __get_base_subpage_dict(ReviewEdit, db_reviews,
                                                                                        already_seen,
@@ -399,11 +363,11 @@ def __get_subpage_dict_for_duplicates(session, application_url, db_user, transla
     :return: dict()
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(session,
-                                                                                                'already_seen_duplicate',
-                                                                                                db_user,
-                                                                                                ReviewDuplicate,
-                                                                                                LastReviewerDuplicate)
+    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
+                                                                                              'already_seen_duplicate',
+                                                                                              db_user,
+                                                                                              ReviewDuplicate,
+                                                                                              LastReviewerDuplicate)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
@@ -462,11 +426,11 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
     :return:
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(session,
-                                                                                                'already_seen_split',
-                                                                                                db_user,
-                                                                                                ReviewSplit,
-                                                                                                LastReviewerSplit)
+    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
+                                                                                              'already_seen_split',
+                                                                                              db_user,
+                                                                                              ReviewSplit,
+                                                                                              LastReviewerSplit)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
@@ -540,11 +504,11 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
     :return:
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(session,
-                                                                                                'already_seen_merge',
-                                                                                                db_user,
-                                                                                                ReviewMerge,
-                                                                                                LastReviewerMerge)
+    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
+                                                                                              'already_seen_merge',
+                                                                                              db_user,
+                                                                                              ReviewMerge,
+                                                                                              LastReviewerMerge)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions

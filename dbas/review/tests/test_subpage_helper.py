@@ -7,7 +7,7 @@ import dbas.review.subpage as rph
 from dbas.strings.translator import Translator
 
 
-class rphTest(unittest.TestCase):
+class SubPageHelperTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
@@ -20,15 +20,6 @@ class rphTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
         ret_dict = rph.get_subpage_elements_for('Tobias', request.session, 'url', 'some page', Translator('en'))
-        self.assertIsNone(ret_dict['elements'])
-        self.assertFalse(ret_dict['has_access'])
-        self.assertFalse(ret_dict['no_arguments_to_review'])
-
-    def test_get_subpage_failure_nick(self):
-        request = testing.DummyRequest()
-        self.config.testing_securitypolicy(userid='some nick', permissive=True)
-
-        ret_dict = rph.get_subpage_elements_for('some nick', request.session, 'url', review_queues[0], Translator('en'))
         self.assertIsNone(ret_dict['elements'])
         self.assertFalse(ret_dict['has_access'])
         self.assertFalse(ret_dict['no_arguments_to_review'])

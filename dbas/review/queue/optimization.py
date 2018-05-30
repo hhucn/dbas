@@ -1,5 +1,6 @@
 # Adaptee for the optimizations queue. Every accepted optimization will be an edit.
 import transaction
+from requests import Session
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerOptimization, ReviewOptimization, ReviewEdit, \
@@ -12,7 +13,7 @@ from dbas.strings.translator import Translator
 
 
 class OptimizationQueue(QueueABC):
-    def get_queue_information(self):
+    def get_queue_information(self, db_user: User, session: Session, application_url: str, queue_name: str, translator: Translator):
         pass
 
     def add_vote(self, db_user: User, db_review: ReviewOptimization, is_okay: bool, main_page: str,

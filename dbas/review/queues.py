@@ -15,7 +15,7 @@ from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelet
 from dbas.lib import get_profile_picture
 from dbas.logger import logger
 from dbas.review import max_lock_time_in_sec, key_delete, key_optimization, key_edit, key_duplicate, key_merge, \
-    key_split, key_history, key_ongoing, Code, reputation_borders, reputation_icons
+    key_split, key_history, key_ongoing, Code, reputation_borders, reputation_icons, model_mapping, reviewer_mapping
 from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -32,8 +32,6 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     """
     logger('ReviewQueues', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return None
     count, all_rights = get_reputation_of(nickname)
 
     review_list = list()
@@ -64,25 +62,13 @@ def get_complete_review_count(db_user: User) -> int:
     :param db_user: User
     :return: int
     """
-    count, all_rights = get_reputation_of(db_user)
+    user_rep, all_rights = get_reputation_of(db_user)
+    count = 0
+    for key in model_mapping:
+        if user_rep >= reputation_borders[key] or all_rights:
+            count += __get_review_count_for(model_mapping[key], reviewer_mapping[key], db_user)
 
-    rights1 = count >= reputation_borders[key_delete] or all_rights
-    rights2 = count >= reputation_borders[key_optimization] or all_rights
-    rights3 = count >= reputation_borders[key_edit] or all_rights
-    rights4 = count >= reputation_borders[key_duplicate] or all_rights
-    rights5 = count >= reputation_borders[key_split] or all_rights
-    rights6 = count >= reputation_borders[key_merge] or all_rights
-
-    count = [
-        __get_review_count_for(ReviewDelete, LastReviewerDelete, db_user) if rights1 else 0,
-        __get_review_count_for(ReviewOptimization, LastReviewerOptimization, db_user) if rights2 else 0,
-        __get_review_count_for(ReviewEdit, LastReviewerEdit, db_user) if rights3 else 0,
-        __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, db_user) if rights4 else 0,
-        __get_review_count_for(ReviewSplit, LastReviewerSplit, db_user) if rights5 else 0,
-        __get_review_count_for(ReviewMerge, LastReviewerMerge, db_user) if rights6 else 0,
-    ]
-
-    return sum(count)
+    return count
 
 
 def __get_delete_dict(main_page, translator, db_user, count, all_rights):

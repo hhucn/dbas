@@ -1,5 +1,6 @@
 # Adaptee for the split queue.
 import transaction
+from requests import Session
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerSplit, ReviewSplit, ReviewSplitValues, Premise, Issue, \
@@ -14,7 +15,7 @@ from dbas.strings.translator import Translator
 
 
 class SplitQueue(QueueABC):
-    def get_queue_information(self):
+    def get_queue_information(self, db_user: User, session: Session, application_url: str, queue_name: str, translator: Translator):
         pass
 
     def add_vote(self, db_user: User, db_review: ReviewSplit, is_okay: bool, main_page: str, translator: Translator,
