@@ -11,7 +11,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
 from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
-from dbas.review import reputation_borders, reputation_icons, all_queues
+from dbas.review import reputation_borders, reputation_icons, all_queues, smallest_border
 from dbas.strings.keywords import Keywords as _
 
 
@@ -29,7 +29,7 @@ def get_privilege_list(translator):
     } for key in all_queues]
 
 
-def get_reputation_list(translator):
+def get_reputation_reasons_list(translator):
     """
     Returns a list with all reputations and points.
 
@@ -93,40 +93,38 @@ def add_reputation_for(db_user: User, reason):
 
     :param db_user: User in refactored fns, else nickname
     :param reason: reason as string, as given in reputation.py
-    :return: True, if the user gained reputation and an additional boolean that is true, when the user reached 30points
+    :return: boolean that is true, when the user reached 30points
     """
-    logger('ReputationPointHelper', 'main ' + reason)
+    logger('Reputation', 'main ' + reason)
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
 
-    if db_user.nickname == nick_of_anonymous_user:
-        logger('ReputationPointHelper', '{} is not eligible to receive reputation'.format(db_user.nickname))
-        return False, False
-
-    if not db_reason or not db_user:
-        logger('ReputationPointHelper', 'no reason or no user')
-        return False, False
-
-    logger('ReputationPointHelper', 'user ' + str(db_user.uid))
+    logger('Reputation', 'user ' + str(db_user.uid))
     # special case:
     if '_first_' in reason:
         db_already_farmed = DBDiscussionSession.query(ReputationHistory).filter(
             ReputationHistory.reputation_uid == db_reason.uid,
             ReputationHistory.reputator_uid == db_user.uid).first()
         if db_already_farmed:
-            logger('ReputationPointHelper', 'karma already farmed')
-            return False, False
+            logger('Reputation', 'karma already farmed')
+            return False
 
-    logger('ReputationPointHelper', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
-    db_old_points = __collect_points(
-        DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all())
+    logger('Reputation', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()
 
     transaction.commit()
-    db_new_points = db_old_points + db_reason.points
+    return True
 
-    return True, db_old_points < 30 <= db_new_points
+
+def has_access_to_review_system(db_user: User):
+    """
+    
+    :param db_user: 
+    :return: 
+    """
+    points = __collect_points(DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all())
+    return points <= smallest_border
 
 
 def __collect_points(reputation_history):

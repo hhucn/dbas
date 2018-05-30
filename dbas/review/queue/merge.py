@@ -9,11 +9,9 @@ from dbas.handler.statements import set_statement
 from dbas.logger import logger
 from dbas.review import rep_reason_success_flag, rep_reason_bad_flag
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import min_difference, max_votes, add_vote_for
-from dbas.review.reputation import add_reputation_for
+from dbas.review.queue.lib import min_difference, max_votes, add_vote_for, add_reputation_and_check_access_to_review
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from websocket.lib import send_request_for_info_popup_to_socketio
 
 
 class MergeQueue(QueueABC):
@@ -32,51 +30,42 @@ class MergeQueue(QueueABC):
         :param kwargs:
         :return:
         """
-        logger('SplitQueue', 'main {}'.format(db_review.uid))
-
+        logger('MergeQueue', 'main {}'.format(db_review.uid))
         db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
+        rep_reason = None
+
         # add new vote
         add_vote_for(db_user, db_review, is_okay, LastReviewerMerge)
-        broke_limit = False
 
         # get all keep and delete votes
         count_of_merge, count_of_keep = self.get_review_count(db_review.uid)
-        logger('SplitQueue', 'result ' + str(count_of_merge) + ':' + str(count_of_keep))
 
         # do we reached any limit?
         reached_max = max(count_of_merge, count_of_keep) >= max_votes
         if reached_max:
             if count_of_merge > count_of_keep:  # split pgroup
-                logger('SplitQueue', 'max reached for review {}'.format(db_review.uid))
                 self.__merge_premisegroup(db_review)
-                add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+                rep_reason = rep_reason_success_flag
             else:  # just close the review
-                logger('SplitQueue', 'max reached / forget about review {}'.format(db_review.uid))
-                add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+                rep_reason = rep_reason_bad_flag
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_merge >= min_difference:  # just close the review
-            logger('SplitQueue', 'vote says forget about review {}'.format(db_review.uid))
-            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+            rep_reason = rep_reason_bad_flag
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_merge - count_of_keep >= min_difference:  # split pgroup
-            logger('SplitQueue', 'vote says merge for review {}'.format(db_review.uid))
             self.__merge_premisegroup(db_review)
-            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+            rep_reason = rep_reason_success_flag
             db_review.set_executed(True)
             db_review.update_timestamp()
 
+        add_reputation_and_check_access_to_review(db_user_created_flag, rep_reason, main_page, translator)
         DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()
-
-        if broke_limit:
-            send_request_for_info_popup_to_socketio(db_user_created_flag.nickname,
-                                                    translator.get(_.youAreAbleToReviewNow),
-                                                    main_page + '/review')
 
         return True
 
@@ -97,12 +86,12 @@ class MergeQueue(QueueABC):
         db_user = DBDiscussionSession.query(User).get(db_review.detector_uid)
 
         if db_values:
-            logger('SplitQueue', 'merge given premisegroup with the mapped, new statements')
+            logger('MergeQueue', 'merge given premisegroup with the mapped, new statements')
             texts = [values.content for values in db_values]
             translator_discussion = Translator(discussion_lang)
             new_text = ' {} '.format(translator_discussion.get(_.aand)).join(texts)
         else:
-            logger('SplitQueue', 'just merge the premisegroup')
+            logger('MergeQueue', 'just merge the premisegroup')
             new_text = DBDiscussionSession.query(PremiseGroup).get(db_review.premisegroup_uid).get_text()
 
         # now we have new text as a variable, let's set the statement
@@ -117,13 +106,13 @@ class MergeQueue(QueueABC):
         db_new_premise = Premise(db_new_premisegroup.uid, new_statement.uid, False, db_user.uid, db_issue.uid)
         DBDiscussionSession.add(db_new_premise)
         DBDiscussionSession.flush()
-        logger('SplitQueue',
+        logger('MergeQueue',
                'Added new premise {} with pgroup {}'.format(db_new_premise.uid, db_new_premisegroup.uid))
 
         # swap the premisegroup occurence in every argument
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=db_review.premisegroup_uid).all()
         for argument in db_arguments:
-            logger('SplitQueue',
+            logger('MergeQueue',
                    'Reset argument {} from pgroup {} to new pgroup {}'.format(argument.uid, argument.premisegroup_uid,
                                                                               db_new_premisegroup.uid))
             argument.set_premisegroup(db_new_premisegroup.uid)
@@ -138,7 +127,7 @@ class MergeQueue(QueueABC):
         for old_statement_id in old_statement_ids:
             db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=old_statement_id).all()
             for argument in db_arguments:
-                logger('SplitQueue',
+                logger('MergeQueue',
                        'Reset arguments {} from conclusion {} to new merges statement {}'.format(argument.uid,
                                                                                                  argument.conclusion_uid,
                                                                                                  new_statement.uid))

@@ -36,7 +36,7 @@ def index(request):
     prep_dict.update({
         'review': review_dict,
         'privilege_list': review_reputation_helper.get_privilege_list(_tn),
-        'reputation_list': review_reputation_helper.get_reputation_list(_tn),
+        'reputation_list': review_reputation_helper.get_reputation_reasons_list(_tn),
         'reputation': {
             'count': count,
             'has_all_rights': all_rights

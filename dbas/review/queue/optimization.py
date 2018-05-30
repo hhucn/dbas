@@ -7,11 +7,8 @@ from dbas.database.discussion_model import User, LastReviewerOptimization, Revie
 from dbas.logger import logger
 from dbas.review import rep_reason_bad_flag
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import max_votes
-from dbas.review.reputation import add_reputation_for
-from dbas.strings.keywords import Keywords as _
+from dbas.review.queue.lib import max_votes, add_reputation_and_check_access_to_review
 from dbas.strings.translator import Translator
-from websocket.lib import send_request_for_info_popup_to_socketio
 
 
 class OptimizationQueue(QueueABC):
@@ -49,18 +46,18 @@ class OptimizationQueue(QueueABC):
         return True
 
     @staticmethod
-    def __keep_the_element_of_optimization_review(db_review: ReviewOptimization, application_url: str,
+    def __keep_the_element_of_optimization_review(db_review: ReviewOptimization, main_page: str,
                                                   translator: Translator):
         """
         Adds row for LastReviewerOptimization
 
         :param db_review: ReviewOptimization
-        :param application_url: URL
+        :param main_page: URL
         :param translator: Translator
         :return: None
         """
         # add new vote
-        db_user_who_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
+        db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
 
         # get all keep and delete votes
         db_keep_version = DBDiscussionSession.query(LastReviewerOptimization).filter(
@@ -68,11 +65,7 @@ class OptimizationQueue(QueueABC):
             LastReviewerOptimization.is_okay == True).all()
 
         if len(db_keep_version) > max_votes:
-            add_rep, broke_limit = add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag)
-            if broke_limit:
-                send_request_for_info_popup_to_socketio(db_user_who_created_flag.nickname,
-                                                        translator.get(_.youAreAbleToReviewNow),
-                                                        application_url + '/review')
+            add_reputation_and_check_access_to_review(db_user_created_flag, rep_reason_bad_flag, main_page, translator)
 
             db_review.set_executed(True)
             db_review.update_timestamp()

@@ -9,11 +9,9 @@ from dbas.handler.statements import set_statement
 from dbas.logger import logger
 from dbas.review import rep_reason_success_flag, rep_reason_bad_flag
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import min_difference, max_votes, add_vote_for
-from dbas.review.reputation import add_reputation_for
-from dbas.strings.keywords import Keywords as _
+from dbas.review.queue.lib import min_difference, max_votes, add_vote_for, add_reputation_and_check_access_to_review
 from dbas.strings.translator import Translator
-from websocket.lib import send_request_for_info_popup_to_socketio
+
 
 
 class SplitQueue(QueueABC):
@@ -34,48 +32,40 @@ class SplitQueue(QueueABC):
         """
         logger('SplitQueue', 'main {}'.format(db_review.uid))
         db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
+        rep_reason = None
+
         # add new vote
         add_vote_for(db_user, db_review, is_okay, LastReviewerSplit)
-        broke_limit = False
 
         # get all keep and delete votes
         count_of_split, count_of_keep = self.get_review_count(db_review.uid)
-        logger('SplitQueue', 'result ' + str(count_of_split) + ':' + str(count_of_keep))
 
         # do we reached any limit?
         reached_max = max(count_of_split, count_of_keep) >= max_votes
         if reached_max:
             if count_of_split > count_of_keep:  # split pgroup
-                logger('SplitQueue', 'max reached for review {}'.format(db_review.uid))
                 self.__split_premisegroup(db_review)
-                add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+                rep_reason = rep_reason_success_flag
             else:  # just close the review
-                logger('SplitQueue', 'max reached / forget about review {}'.format(db_review.uid))
-                add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+                rep_reason = rep_reason_bad_flag
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_split >= min_difference:  # just close the review
-            logger('SplitQueue', 'vote says forget about review {}'.format(db_review.uid))
-            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+            rep_reason = rep_reason_bad_flag
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_split - count_of_keep >= min_difference:  # split pgroup
-            logger('SplitQueue', 'vote says split for review {}'.format(db_review.uid))
             self.__split_premisegroup(db_review)
-            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+            rep_reason = rep_reason_success_flag
             db_review.set_executed(True)
             db_review.update_timestamp()
 
+        add_reputation_and_check_access_to_review(db_user_created_flag, rep_reason, main_page, translator)
         DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()
-
-        if broke_limit:
-            send_request_for_info_popup_to_socketio(db_user_created_flag.nickname,
-                                                    translator.get(_.youAreAbleToReviewNow),
-                                                    main_page + '/review')
 
         return True
 

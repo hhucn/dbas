@@ -7,18 +7,19 @@ from dbas.handler.statements import correct_statement
 from dbas.logger import logger
 from dbas.review import rep_reason_success_edit, rep_reason_bad_edit
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import min_difference, max_votes, add_vote_for
-from dbas.review.reputation import add_reputation_for
-from dbas.strings.keywords import Keywords as _
+from dbas.review.queue.lib import min_difference, max_votes, add_vote_for, add_reputation_and_check_access_to_review
 from dbas.strings.translator import Translator
-from websocket.lib import send_request_for_info_popup_to_socketio
+
+
+
 
 
 class EditQueue(QueueABC):
     def get_queue_information(self):
         pass
 
-    def add_vote(self, db_user: User, db_review: ReviewEdit, is_okay: bool, main_page: str, translator: Translator, **kwargs):
+    def add_vote(self, db_user: User, db_review: ReviewEdit, is_okay: bool, main_page: str, translator: Translator,
+                 **kwargs):
         """
 
         :param db_user:
@@ -31,7 +32,7 @@ class EditQueue(QueueABC):
         """
         logger('EditQueue', 'main')
         db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
-        broke_limit = False
+        rep_reason = None
 
         # add new vote
         add_vote_for(db_user, db_review, is_okay, LastReviewerEdit)
@@ -44,30 +45,27 @@ class EditQueue(QueueABC):
         if reached_max:
             if count_of_dont_edit < count_of_edit:  # accept the edit
                 self.__accept_edit_review(db_review)
-                add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_edit)
+                rep_reason = rep_reason_success_edit
             else:  # just close the review
-                add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_edit)
+                rep_reason = rep_reason_bad_edit
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
             self.__accept_edit_review(db_review)
-            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_edit)
+            rep_reason = rep_reason_success_edit
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_dont_edit - count_of_edit >= min_difference:  # decline edit
-            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_edit)
+            rep_reason = rep_reason_bad_edit
             db_review.set_executed(True)
             db_review.update_timestamp()
 
+        add_reputation_and_check_access_to_review(db_user_created_flag, rep_reason, main_page, translator)
         DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()
-
-        if broke_limit:
-            send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, translator.get(_.youAreAbleToReviewNow),
-                                                    main_page + '/review')
 
         return True
 

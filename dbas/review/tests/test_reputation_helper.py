@@ -7,7 +7,7 @@ from dbas.strings.translator import Translator
 class TestReviewReputationHelper(unittest.TestCase):
 
     def test_get_reputation_list(self):
-        some_list = ReviewReputationHelper.get_reputation_list(Translator('en'))
+        some_list = ReviewReputationHelper.get_reputation_reasons_list(Translator('en'))
         self.assertTrue('gains' in some_list)
         self.assertTrue('looses' in some_list)
 

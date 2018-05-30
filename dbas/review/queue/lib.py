@@ -7,13 +7,19 @@ from dbas.database.discussion_model import LastReviewerSplit, LastReviewerMerge,
     LastReviewerDuplicate, LastReviewerEdit, LastReviewerOptimization, User, ReviewDelete, ReviewEdit, ReviewMerge, \
     ReviewOptimization, ReviewSplit, ReviewDuplicate
 from dbas.logger import logger
+from dbas.review.reputation import add_reputation_for, has_access_to_review_system
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
+from websocket.lib import send_request_for_info_popup_to_socketio
 
 max_votes = 5
 min_difference = 3
 
 
-def add_vote_for(db_user: User, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization, ReviewSplit],
-                 is_okay: bool, db_reviewer_type: Union[LastReviewerDelete, LastReviewerDuplicate, LastReviewerEdit, LastReviewerMerge, LastReviewerOptimization, LastReviewerSplit]):
+def add_vote_for(db_user: User, db_review: Union[
+    ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization, ReviewSplit],
+                 is_okay: bool, db_reviewer_type: Union[
+            LastReviewerDelete, LastReviewerDuplicate, LastReviewerEdit, LastReviewerMerge, LastReviewerOptimization, LastReviewerSplit]):
     """
     Add vote for a specific review
 
@@ -58,3 +64,20 @@ def get_review_count(review_type: Union[LastReviewerMerge, LastReviewerSplit, La
         count_of_not_okay = db_reviews.filter_by(is_okay=False).count()
 
     return count_of_okay, count_of_not_okay
+
+
+def add_reputation_and_check_access_to_review(db_user: User, rep_reason: str, main_page: str, translator: Translator):
+    """
+
+    :param db_user:
+    :param rep_reason:
+    :param main_page:
+    :param translator:
+    :return:
+    """
+    if rep_reason:
+        add_reputation_for(db_user, rep_reason)
+
+        if has_access_to_review_system(db_user):
+            send_request_for_info_popup_to_socketio(db_user.nickname, translator.get(_.youAreAbleToReviewNow),
+                                                    main_page + '/review')

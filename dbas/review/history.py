@@ -19,7 +19,7 @@ from dbas.lib import get_text_for_argument_uid, get_profile_picture, get_text_fo
 from dbas.logger import logger
 from dbas.review import reputation_borders, reputation_icons, key_delete, key_merge, key_split, key_duplicate, key_edit, \
     key_optimization
-from dbas.review.helper import set_able_object_of_review
+from dbas.review.lib import set_able_object_of_review
 from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 

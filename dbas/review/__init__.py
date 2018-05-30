@@ -53,8 +53,8 @@ class Code(Enum):
     SUCCESS = auto()
     ERROR = auto()
 
-
-reputation_borders = {**{key: 30 for key in review_queues}, **{key_history: 150, key_ongoing: 300}}
+smallest_border = 30
+reputation_borders = {**{key: smallest_border for key in review_queues}, **{key_history: 150, key_ongoing: 300}}
 
 reputation_icons = {
     key_edit: 'fa fa-pencil-square-o',

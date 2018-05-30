@@ -19,7 +19,7 @@ from dbas.input_validator import is_integer
 from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_string, get_text_for_argument_uid, \
     Relations, Attitudes
 from dbas.logger import logger
-from dbas.review.reputation import add_reputation_for
+from dbas.review.reputation import add_reputation_for, has_access_to_review_system
 from dbas.review import rep_reason_first_position, rep_reason_first_justification, rep_reason_new_statement
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -44,10 +44,10 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
-    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_position)
-    if not add_rep:
-        add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
-        # send message if the user is now able to review
+    rep_added = add_reputation_for(db_user, rep_reason_first_position)
+    if not rep_added:
+        add_reputation_for(db_user, rep_reason_new_statement)
+    broke_limit = has_access_to_review_system(db_user)
     if broke_limit:
         url += '#access-review'
 
@@ -97,10 +97,10 @@ def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: di
     :param prepared_dict:
     :return:
     """
-    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_justification)
-    if not add_rep:
-        add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
-        # send message if the user is now able to review
+    rep_added = add_reputation_for(db_user, rep_reason_first_justification)
+    if not rep_added:
+        add_reputation_for(db_user, rep_reason_new_statement)
+    broke_limit = has_access_to_review_system(db_user)
     if broke_limit:
         _t = Translator(db_issue.lang)
         send_request_for_info_popup_to_socketio(db_user.nickname, _t.get(_.youAreAbleToReviewNow), '/review')
