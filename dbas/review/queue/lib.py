@@ -16,10 +16,10 @@ max_votes = 5
 min_difference = 3
 
 
-def add_vote_for(db_user: User, db_review: Union[
-    ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization, ReviewSplit],
-                 is_okay: bool, db_reviewer_type: Union[
-            LastReviewerDelete, LastReviewerDuplicate, LastReviewerEdit, LastReviewerMerge, LastReviewerOptimization, LastReviewerSplit]):
+def add_vote_for(db_user: User, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
+                                                 ReviewOptimization, ReviewSplit], is_okay: bool,
+                 db_reviewer_type: Union[LastReviewerDelete, LastReviewerDuplicate, LastReviewerEdit, LastReviewerMerge,
+                                         LastReviewerOptimization, LastReviewerSplit]):
     """
     Add vote for a specific review
 

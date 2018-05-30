@@ -31,7 +31,7 @@ review_queues = [
 ]
 
 # list of all queues, including the voted reviews as well as the ongoing ones
-all_queues = review_queues + [key_history,  key_ongoing]
+all_queues = review_queues + [key_history, key_ongoing]
 
 # key value pairs of the queue key and a title string
 title_mapping = {key: _.get_key_by_string(_.queue.value + key[0:1].upper() + key[1:]) for key in review_queues}
@@ -52,6 +52,7 @@ class Code(Enum):
     DUPLICATE = auto()
     SUCCESS = auto()
     ERROR = auto()
+
 
 smallest_border = 30
 reputation_borders = {**{key: smallest_border for key in review_queues}, **{key_history: 150, key_ongoing: 300}}

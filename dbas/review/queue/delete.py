@@ -11,9 +11,6 @@ from dbas.review.queue.lib import min_difference, max_votes, add_vote_for, add_r
 from dbas.strings.translator import Translator
 
 
-
-
-
 class DeleteQueue(QueueABC):
     def get_queue_information(self):
         pass

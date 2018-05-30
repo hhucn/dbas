@@ -119,9 +119,9 @@ def add_reputation_for(db_user: User, reason):
 
 def has_access_to_review_system(db_user: User):
     """
-    
-    :param db_user: 
-    :return: 
+
+    :param db_user:
+    :return:
     """
     points = __collect_points(DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all())
     return points <= smallest_border

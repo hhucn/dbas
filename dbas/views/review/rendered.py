@@ -2,7 +2,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
 import dbas.review
-import dbas.review.helper
+import dbas.review.lib
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
 from dbas.logger import logger
