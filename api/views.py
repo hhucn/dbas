@@ -264,7 +264,7 @@ def discussion_init(request):
                                                                Statement.uid.in_(issues_statements),
                                                                Statement.is_position == True).all()
 
-    items = [Item([pos.get_textversion().content], "{}/attitude/{}".format(db_issue.slug, pos.uid))
+    items = [Item([pos.get_textversion().content], "/{}/attitude/{}".format(db_issue.slug, pos.uid))
              for pos in db_positions]
 
     return {
