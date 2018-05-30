@@ -641,7 +641,7 @@ def __hash_token_with_owner(owner, token):
     return hashlib.sha256((owner + token).encode()).hexdigest()
 
 
-def check_token(token: str) -> bool:
+def check_api_token(token: str) -> bool:
     """
     Checks if a token is valid or not.
 
