@@ -7,9 +7,9 @@ from dbas.database.discussion_model import User, LastReviewerMerge, ReviewMerge,
     ReviewMergeValues, Statement
 from dbas.handler.statements import set_statement
 from dbas.logger import logger
-from dbas.review import rep_reason_success_flag, rep_reason_bad_flag
+from dbas.review import rep_reason_success_flag, rep_reason_bad_flag, max_votes, min_difference
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import min_difference, max_votes, add_vote_for, add_reputation_and_check_access_to_review
+from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -62,7 +62,7 @@ class MergeQueue(QueueABC):
             db_review.set_executed(True)
             db_review.update_timestamp()
 
-        add_reputation_and_check_access_to_review(db_user_created_flag, rep_reason, main_page, translator)
+        add_reputation_and_check_review_access(db_user_created_flag, rep_reason, main_page, translator)
         DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()

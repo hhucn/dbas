@@ -5,9 +5,9 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerOptimization, ReviewOptimization, ReviewEdit, \
     ReviewEditValue
 from dbas.logger import logger
-from dbas.review import rep_reason_bad_flag
+from dbas.review import rep_reason_bad_flag, max_votes
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import max_votes, add_reputation_and_check_access_to_review
+from dbas.review.queue.lib import add_reputation_and_check_review_access
 from dbas.strings.translator import Translator
 
 
@@ -65,7 +65,7 @@ class OptimizationQueue(QueueABC):
             LastReviewerOptimization.is_okay == True).all()
 
         if len(db_keep_version) > max_votes:
-            add_reputation_and_check_access_to_review(db_user_created_flag, rep_reason_bad_flag, main_page, translator)
+            add_reputation_and_check_review_access(db_user_created_flag, rep_reason_bad_flag, main_page, translator)
 
             db_review.set_executed(True)
             db_review.update_timestamp()

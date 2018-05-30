@@ -81,3 +81,7 @@ rep_reason_success_duplicate = 'rep_reason_success_duplicate'
 rep_reason_bad_flag = 'rep_reason_bad_flag'
 rep_reason_bad_edit = 'rep_reason_bad_edit'
 rep_reason_bad_duplicate = 'rep_reason_bad_duplicate'
+
+
+max_votes = 5  # highest count of votes
+min_difference = 3  # least count of difference between okay / not okay
