@@ -65,80 +65,42 @@ function Review() {
         }
     };
 
-    /**
-     *
-     */
     this.doDeleteAck = function (review_uid) {
         new AjaxReviewHandler().reviewDeleteArgument(true, review_uid);
     };
 
-    /**
-     *
-     */
     this.doDeleteNack = function (review_uid) {
         new AjaxReviewHandler().reviewDeleteArgument(false, review_uid);
     };
 
-    /**
-     *
-     * @param review_uid
-     */
     this.doEditAck = function (review_uid) {
         new AjaxReviewHandler().reviewEditArgument(true, review_uid);
     };
 
-    /**
-     *
-     * @param review_uid
-     */
     this.doEditNack = function (review_uid) {
         new AjaxReviewHandler().reviewEditArgument(false, review_uid);
     };
 
-    /**
-     *
-     * @param review_uid
-     */
     this.doDuplicateAck = function (review_uid) {
         new AjaxReviewHandler().reviewDuplicateStatement(true, review_uid);
     };
 
-    /**
-     *
-     * @param review_uid
-     */
     this.doDuplicateNack = function (review_uid) {
         new AjaxReviewHandler().reviewDuplicateStatement(false, review_uid);
     };
 
-    /**
-     *
-     * @param review_uid
-     */
     this.doMergeAck = function (review_uid) {
         new AjaxReviewHandler().reviewMergeStatement(true, review_uid);
     };
 
-    /**
-     *
-     * @param review_uid
-     */
     this.doMergeNack = function (review_uid) {
         new AjaxReviewHandler().reviewMergeStatement(false, review_uid);
     };
 
-    /**
-     *
-     * @param review_uid
-     */
     this.doSplitAck = function (review_uid) {
         new AjaxReviewHandler().reviewSplitStatement(true, review_uid);
     };
 
-    /**
-     *
-     * @param review_uid
-     */
     this.doSplitNack = function (review_uid) {
         new AjaxReviewHandler().reviewSplitStatement(false, review_uid);
     };

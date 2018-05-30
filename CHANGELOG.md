@@ -1,3 +1,6 @@
+### 1.8.0 (2018-05-30)
+ - Refactored the review queues. IMPORTANT: Now some logic is switched, so that old discussions are not
+
 ### 1.7.0 (2018-05-24)
  - Statements are no longer bounded to one issue. Noe we have a many-to-many relationship between statements and issues.
 
@@ -68,7 +71,7 @@
 - Corrections for the user interface
 - Language fixes
 - Improvements on many smaller details
-- Base version for our fieldtest
+- QueueABC version for our fieldtest
 
 ### 1.3.4 (2017-05-01)
 - Corrections for the user interface

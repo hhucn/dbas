@@ -129,7 +129,7 @@ def send_request_for_recent_reviewer_socketio(nickname, main_page, queue):
     :param queue: Key of the last reviewers queue
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'main - nickname {} for queue {}'.format(nickname, queue))
+    logger('Websocket.lib', f'main - nickname {nickname} for queue {queue}')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.global_nickname
     reviewer_image_url = get_profile_picture(db_user)

@@ -176,11 +176,6 @@ def correct_statement(db_user, uid, corrected_text):
         DBDiscussionSession.add(textversion)
         DBDiscussionSession.flush()
 
-    # if request:
-    #     nh.send_edit_text_notification(db_user, textversion, url, request)
-
-    # transaction.commit() # # 207
-
     return_dict['uid'] = uid
     return_dict['text'] = corrected_text
     return return_dict

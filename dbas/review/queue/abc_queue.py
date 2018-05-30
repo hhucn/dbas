@@ -1,10 +1,10 @@
 # Source interface for the review queues
 
 from abc import ABCMeta, abstractmethod
-
 from typing import Union
 
-from dbas.database.discussion_model import User, ReviewDelete, ReviewEdit, ReviewMerge, ReviewOptimization, ReviewSplit
+from dbas.database.discussion_model import User, ReviewDelete, ReviewEdit, ReviewMerge, ReviewOptimization, \
+    ReviewSplit, ReviewDuplicate
 from dbas.strings.translator import Translator
 
 
@@ -18,12 +18,17 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def add_vote(self, db_user: User, db_review: Union[ReviewDelete, ReviewEdit, ReviewMerge, ReviewOptimization, ReviewSplit], is_okay: bool, main_page: str, translator: Translator):
+    def add_vote(self, db_user: User, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge,
+                                                       ReviewOptimization, ReviewSplit], is_okay: bool, main_page: str,
+                 translator: Translator, **kwargs):
         """
 
         :param db_user:
         :param db_review:
         :param is_okay:
+        :param main_page:
+        :param translator:
+        :param kwargs:
         :return:
         """
         pass
