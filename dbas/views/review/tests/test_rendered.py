@@ -29,7 +29,6 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
     def tearDown(self):
         testing.tearDown()
@@ -40,6 +39,7 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_page(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest()
         response = index(request)
         verify_dictionary_of_view(response)

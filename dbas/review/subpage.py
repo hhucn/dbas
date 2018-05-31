@@ -39,21 +39,8 @@ def get_subpage_elements_for(db_user: User, session: Session, application_url: s
     """
 
     logger('ReviewSubpagerHelper', subpage_name)
-    user_has_access = False
     no_arguments_to_review = False
     button_set = {f'is_{key}': False for key in review_queues}
-
-    # does the subpage exists
-    if subpage_name not in review_queues and subpage_name != 'history':
-        logger('ReviewSubpagerHelper', 'No page found', error=True)
-        return __wrap_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
-
-    rep_count, all_rights = get_reputation_of(db_user)
-    user_has_access = rep_count >= reputation_borders[subpage_name] or all_rights
-    # does the user exists and does he has the rights for this queue?
-    if not user_has_access:
-        logger('ReviewSubpagerHelper', 'No user found', error=True)
-        return __wrap_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
     ret_dict = {'page_name': subpage_name}
 
@@ -93,17 +80,16 @@ def get_subpage_elements_for(db_user: User, session: Session, application_url: s
     ret_dict['reviewed_element'] = subpage_dict
     ret_dict['session'] = subpage_dict['session']
     if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
-        return __wrap_subpage_dict({}, user_has_access, True, button_set)
+        return __wrap_subpage_dict({}, True, button_set)
 
-    return __wrap_subpage_dict(ret_dict, True, no_arguments_to_review, button_set)
+    return __wrap_subpage_dict(ret_dict, no_arguments_to_review, button_set)
 
 
-def __wrap_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set):
+def __wrap_subpage_dict(ret_dict, no_arguments_to_review, button_set):
     """
     Set up dict()
 
     :param ret_dict: dict()
-    :param has_access: Boolean
     :param no_arguments_to_review: Boolean
     :param button_set: dict()
     :return: dict()
@@ -115,7 +101,6 @@ def __wrap_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set
 
     return {
         'elements': ret_dict,
-        'has_access': has_access,
         'no_arguments_to_review': no_arguments_to_review,
         'button_set': button_set,
         'session': session

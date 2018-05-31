@@ -46,7 +46,7 @@ class TestCaseWithConfig(unittest.TestCase):
         transaction.commit()
 
 
-def construct_dummy_request(json_body: dict = None, match_dict: dict = None) -> DummyRequest:
+def construct_dummy_request(json_body: dict = None, match_dict: dict = None) -> object:
     """
     Creates a Dummy-Request. Optionally takes a json_body, which can directly be injected into the request.
 

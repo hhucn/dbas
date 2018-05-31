@@ -1,9 +1,9 @@
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewEdit
-from dbas.review import review_queues, key_edit
+from dbas.review import review_queues, key_edit, all_queues, key_split
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 from dbas.validators.reviews import valid_not_executed_review, valid_review_queue_key, valid_review_reason, \
-    valid_uid_as_row_in_review_queue
+    valid_uid_as_row_in_review_queue, valid_review_queue_name, valid_user_has_review_access
 
 
 class TestReviewValidators(TestCaseWithConfig):
@@ -73,3 +73,26 @@ class TestReviewValidators(TestCaseWithConfig):
         self.assertIn('queue', request.validated)
         self.assertIn('uid', request.validated)
         self.assertIn('review', request.validated)
+
+    def test_valid_review_queue_name_error(self):
+        request = construct_dummy_request({'queue': 'foo'})
+        response = valid_review_queue_name(request)
+        self.assertFalse(response)
+
+    def test_valid_review_queue_name(self):
+        for queue in all_queues:
+            request = construct_dummy_request({'queue': queue})
+            response = valid_review_queue_name(request)
+            self.assertTrue(response)
+
+    def test_valid_user_has_review_access(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        request = construct_dummy_request({'queue': key_split})
+        response = valid_user_has_review_access(request)
+        self.assertTrue(response)
+
+    def test_valid_user_has_not_review_access(self):
+        self.config.testing_securitypolicy(userid='Alwin', permissive=True)
+        request = construct_dummy_request({'queue': key_split})
+        response = valid_user_has_review_access(request)
+        self.assertFalse(response)

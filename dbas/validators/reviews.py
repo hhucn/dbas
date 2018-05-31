@@ -6,7 +6,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
-from dbas.review import review_queues, model_mapping
+from dbas.review import review_queues, model_mapping, all_queues, reputation_borders
+from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.lib import add_error
@@ -28,6 +29,41 @@ def valid_review_reason(request):
     else:
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'Invalid reason', _tn.get(_.internalError))
+        return False
+
+
+def valid_review_queue_name(request):
+    """
+    Given a name for a queue, validates the correctness for our review system
+
+    :param request:
+    :return:
+    """
+    queue = request.json_body.get('queue')
+    if queue in all_queues:
+        request.validated['queue'] = queue
+        return True
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        add_error(request, 'Invalid queue', _tn.get(_.internalError))
+        return False
+
+
+def valid_user_has_review_access(request):
+    """
+    Given a user and a name for a queue, validates the access to our review system
+
+    :param request:
+    :return:
+    """
+    db_user = request.validated['user']
+    queue = request.validated.get('queue')
+    rep_count, all_rights = get_reputation_of(db_user)
+    if rep_count >= reputation_borders[queue] or all_rights:
+        return True
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        add_error(request, 'Invalid user rights', _tn.get(_.internalError))
         return False
 
 

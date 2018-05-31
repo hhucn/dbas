@@ -12,6 +12,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
+from dbas.validators.reviews import valid_review_queue_name
 from dbas.validators.user import valid_user_optional, valid_user
 from dbas.views.helper import main_dict
 
@@ -25,7 +26,7 @@ def index(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main', 'def {}'.format(request.matchdict))
+    logger('index', f'main {request.matchdict} / {request.json_body}')
     db_user = request.validated['user']
 
     _tn = Translator(get_language_from_cookie(request))
@@ -46,7 +47,7 @@ def index(request):
 
 
 @view_config(route_name='review_queue', renderer='../../templates/review/queue.pt', permission='use')
-@validate(check_authentication, valid_user, prep_extras_dict)
+@validate(check_authentication, valid_user, prep_extras_dict, valid_review_queue_name, valid_user_has_review_access)
 def queue_details(request):
     """
     View configuration for the review content.
@@ -54,11 +55,11 @@ def queue_details(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('queue_details', 'def {}'.format(request.matchdict))
+    logger('queue_details', f'main {request.matchdict} / {request.json_body}')
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    queue_name = request.matchdict['queue']
+    queue_name = request.validated['queue']
     db_user = request.validated['user']
     session = request.session
     application_url = request.application_url
@@ -66,15 +67,11 @@ def queue_details(request):
     # subpage_dict = Queue(db_user=db_user, application_url=application_url, translator=_tn).get_queue_information(request.session, queue_name)
     subpage_dict = review_page_helper.get_subpage_elements_for(db_user, session, application_url, queue_name, _tn)
     request.session.update(subpage_dict['session'])
-    if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
+    if not subpage_dict['elements'] and not subpage_dict['no_arguments_to_review']:
         logger('review_queue', 'subpage error', error=True)
         raise HTTPNotFound()
 
-    title = _tn.get(_.review)
-    if queue_name in dbas.review.title_mapping:
-        title = _tn.get(dbas.review.title_mapping[queue_name])
-
-    prep_dict = main_dict(request, title)
+    prep_dict = main_dict(request, _tn.get(dbas.review.title_mapping[queue_name]))
     prep_dict.update({
         'extras': request.decorated['extras'],
         'subpage': subpage_dict,
@@ -92,7 +89,7 @@ def history(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('history', 'def {}'.format(request.matchdict))
+    logger('history', f'main {request.matchdict} / {request.json_body}')
     ui_locales = get_language_from_cookie(request)
     request_authenticated_userid = request.authenticated_userid
     _tn = Translator(ui_locales)
@@ -112,7 +109,7 @@ def ongoing(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('ongoing', 'def {}'.format(request.matchdict))
+    logger('ongoing', f'main {request.matchdict} / {request.json_body}')
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
@@ -131,7 +128,7 @@ def reputation(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('reputation', 'def {}'.format(request.matchdict))
+    logger('reputation', f'main {request.matchdict} / {request.json_body}')
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 

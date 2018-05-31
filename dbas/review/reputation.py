@@ -9,7 +9,6 @@ import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
-from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.review import reputation_borders, reputation_icons, all_queues, smallest_border
 from dbas.strings.keywords import Keywords as _
@@ -62,11 +61,6 @@ def get_reputation_of(db_user: User, only_today=False):
     :param only_today: Boolean
     :return: Integer and Boolean, if the user is author
     """
-    count = 0
-
-    if not db_user or db_user.nickname == nick_of_anonymous_user:
-        return count, False
-
     db_reputation = DBDiscussionSession.query(ReputationHistory)
 
     if only_today:
@@ -77,7 +71,7 @@ def get_reputation_of(db_user: User, only_today=False):
         .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
         .all()
 
-    count = sum([r.reputations.points for r in db_reputation])
+    count = sum([rep.reputations.points for rep in db_reputation])
 
     return count, db_user.is_author() or db_user.is_admin()
 
@@ -122,7 +116,8 @@ def has_access_to_review_system(db_user: User):
     :param db_user:
     :return:
     """
-    db_points = DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all()
+    db_points = DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(
+        ReputationReason).all()
     points = __collect_points(db_points)
     return points <= smallest_border
 
