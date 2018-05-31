@@ -12,13 +12,13 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
-from dbas.validators.reviews import valid_review_queue_name
-from dbas.validators.user import valid_user_optional, valid_user
+from dbas.validators.reviews import valid_review_queue_name, valid_user_has_review_access
+from dbas.validators.user import valid_user
 from dbas.views.helper import main_dict
 
 
 @view_config(route_name='review_index', renderer='../../templates/review/index.pt', permission='use')
-@validate(check_authentication, valid_user, prep_extras_dict, valid_user_optional)
+@validate(check_authentication, valid_user, prep_extras_dict)
 def index(request):
     """
     View configuration for the review index.
@@ -26,7 +26,7 @@ def index(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('index', f'main {request.matchdict} / {request.json_body}')
+    logger('index', f'main {request.matchdict} / {request.params}')
     db_user = request.validated['user']
 
     _tn = Translator(get_language_from_cookie(request))
@@ -55,7 +55,7 @@ def queue_details(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('queue_details', f'main {request.matchdict} / {request.json_body}')
+    logger('queue_details', f'main {request.matchdict} / {request.params}')
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
@@ -64,7 +64,7 @@ def queue_details(request):
     session = request.session
     application_url = request.application_url
 
-    # subpage_dict = Queue(db_user=db_user, application_url=application_url, translator=_tn).get_queue_information(request.session, queue_name)
+    #  subpage_dict = Queue(db_user=db_user, application_url=application_url, translator=_tn).get_queue_information(request.session, queue_name)
     subpage_dict = review_page_helper.get_subpage_elements_for(db_user, session, application_url, queue_name, _tn)
     request.session.update(subpage_dict['session'])
     if not subpage_dict['elements'] and not subpage_dict['no_arguments_to_review']:
@@ -89,7 +89,7 @@ def history(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('history', f'main {request.matchdict} / {request.json_body}')
+    logger('history', f'main {request.matchdict} / {request.params}')
     ui_locales = get_language_from_cookie(request)
     request_authenticated_userid = request.authenticated_userid
     _tn = Translator(ui_locales)
@@ -109,7 +109,7 @@ def ongoing(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('ongoing', f'main {request.matchdict} / {request.json_body}')
+    logger('ongoing', f'main {request.matchdict} / {request.params}')
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
@@ -128,7 +128,7 @@ def reputation(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('reputation', f'main {request.matchdict} / {request.json_body}')
+    logger('reputation', f'main {request.matchdict} / {request.params}')
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 

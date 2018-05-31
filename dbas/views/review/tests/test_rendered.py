@@ -1,7 +1,6 @@
 import unittest
 
 import transaction
-from paste.httpexceptions import HTTPNotFound
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
@@ -48,8 +47,8 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
         self.assertIn('privilege_list', response)
         self.assertIn('reputation_list', response)
         self.assertIn('reputation', response)
-        self.assertFalse(response['reputation']['has_all_rights'])
-        self.assertTrue(response['reputation']['count'] == 0)
+        self.assertTrue(response['reputation']['has_all_rights'])
+        self.assertEqual(15, response['reputation']['count'])
 
 
 class ReviewReputationViewTests(unittest.TestCase):
@@ -101,17 +100,14 @@ class ReviewContentViewTests(unittest.TestCase):
         for key in review_queues:
             request = testing.DummyRequest(matchdict={'queue': key})
             response = queue_details(request)
-            self.assertEqual(response.status_code, 400)
+            self.assertEqual(400, response.status_code)
 
     def test_queue_pages_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        try:
-            request = testing.DummyRequest(matchdict={'queue': 'foobaar'})
-            response = queue_details(request)
-            self.assertEqual(HTTPNotFound, type(response))
-        except HTTPNotFound:
-            pass
+        request = testing.DummyRequest(matchdict={'queue': 'foobaar'})
+        response = queue_details(request)
+        self.assertEqual(400, response.status_code)
 
         for key in review_queues:
             request = testing.DummyRequest(matchdict={'queue': key})

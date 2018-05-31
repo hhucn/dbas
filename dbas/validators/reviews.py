@@ -39,7 +39,7 @@ def valid_review_queue_name(request):
     :param request:
     :return:
     """
-    queue = request.json_body.get('queue')
+    queue = request.matchdict.get('queue')
     if queue in all_queues:
         request.validated['queue'] = queue
         return True
@@ -56,8 +56,12 @@ def valid_user_has_review_access(request):
     :param request:
     :return:
     """
-    db_user = request.validated['user']
+    db_user = request.validated.get('user')
     queue = request.validated.get('queue')
+    if not db_user or not queue:
+        _tn = Translator(get_language_from_cookie(request))
+        add_error(request, 'Invalid user or queue', _tn.get(_.internalError))
+        return False
     rep_count, all_rights = get_reputation_of(db_user)
     if rep_count >= reputation_borders[queue] or all_rights:
         return True

@@ -61,6 +61,9 @@ def get_reputation_of(db_user: User, only_today=False):
     :param only_today: Boolean
     :return: Integer and Boolean, if the user is author
     """
+    if not db_user:
+        return 0, False
+
     db_reputation = DBDiscussionSession.query(ReputationHistory)
 
     if only_today:

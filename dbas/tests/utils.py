@@ -46,12 +46,13 @@ class TestCaseWithConfig(unittest.TestCase):
         transaction.commit()
 
 
-def construct_dummy_request(json_body: dict = None, match_dict: dict = None) -> object:
+def construct_dummy_request(json_body: dict = None, match_dict: dict = None, validated: dict = None) -> object:
     """
     Creates a Dummy-Request. Optionally takes a json_body, which can directly be injected into the request.
 
     :param json_body: dict
     :param match_dict: dict
+    :param validated: dict
     :return: DummyRequest
     :rtype: DummyRequest
     """
@@ -59,5 +60,7 @@ def construct_dummy_request(json_body: dict = None, match_dict: dict = None) -> 
         json_body = dict()
     if match_dict is None:
         match_dict = dict()
-    return DummyRequest(json_body=json_body, matchdict=match_dict, validated={}, errors=Errors(), mailer=DummyMailer,
-                        cookies={'_LOCALE_': 'en'})
+    if validated is None:
+        validated = dict()
+    return DummyRequest(json_body=json_body, matchdict=match_dict, validated=validated, errors=Errors(),
+                        mailer=DummyMailer, cookies={'_LOCALE_': 'en'})

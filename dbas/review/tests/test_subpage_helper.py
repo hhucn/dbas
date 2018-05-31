@@ -7,6 +7,7 @@ from dbas.database.discussion_model import User
 from dbas.review import review_queues
 import dbas.review.subpage as rph
 from dbas.strings.translator import Translator
+from dbas.strings.keywords import Keywords as _
 
 
 class SubPageHelperTest(unittest.TestCase):
@@ -21,9 +22,14 @@ class SubPageHelperTest(unittest.TestCase):
     def test_get_subpage_failure_page(self):
         request = testing.DummyRequest()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        _tn = Translator('en')
 
         ret_dict = rph.get_subpage_elements_for(self.user, request.session, 'url', 'some page', Translator('en'))
-        self.assertIsNone(ret_dict['elements'])
+        print(ret_dict)
+        self.assertEqual('', ret_dict['elements']['reviewed_element']['reason'])
+        self.assertEqual('', ret_dict['elements']['reviewed_element']['stats'])
+        self.assertEqual(_tn.get(_.internalError), ret_dict['elements']['reviewed_element']['text'])
+        self.assertEqual(_tn.get(_.internalError), ret_dict['elements']['reviewed_element']['issue'])
         self.assertFalse(ret_dict['no_arguments_to_review'])
 
     def test_get_subpage_empty_session(self):

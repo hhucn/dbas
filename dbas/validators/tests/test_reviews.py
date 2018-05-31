@@ -1,5 +1,5 @@
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ReviewDeleteReason, ReviewEdit
+from dbas.database.discussion_model import ReviewDeleteReason, ReviewEdit, User
 from dbas.review import review_queues, key_edit, all_queues, key_split
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 from dbas.validators.reviews import valid_not_executed_review, valid_review_queue_key, valid_review_reason, \
@@ -81,18 +81,18 @@ class TestReviewValidators(TestCaseWithConfig):
 
     def test_valid_review_queue_name(self):
         for queue in all_queues:
-            request = construct_dummy_request({'queue': queue})
+            request = construct_dummy_request(match_dict={'queue': queue})
             response = valid_review_queue_name(request)
             self.assertTrue(response)
 
     def test_valid_user_has_review_access(self):
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = construct_dummy_request({'queue': key_split})
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        request = construct_dummy_request(validated={'queue': key_split, 'user': db_user})
         response = valid_user_has_review_access(request)
         self.assertTrue(response)
 
     def test_valid_user_has_not_review_access(self):
-        self.config.testing_securitypolicy(userid='Alwin', permissive=True)
-        request = construct_dummy_request({'queue': key_split})
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Elias').first()
+        request = construct_dummy_request(validated={'queue': key_split, 'user': db_user})
         response = valid_user_has_review_access(request)
         self.assertFalse(response)
