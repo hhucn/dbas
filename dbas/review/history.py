@@ -22,6 +22,7 @@ from dbas.review import reputation_borders, reputation_icons, key_delete, key_me
 from dbas.review.lib import set_able_object_of_review
 from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 
 def get_review_history(main_page, nickname, translator):
@@ -134,20 +135,16 @@ def __get_data(main_page, db_user, translator, is_executed=False):
     return ret_dict
 
 
-def get_reputation_history_of(nickname, translator):
+def get_reputation_history_of(db_user: User, translator: Translator):
     """
     Returns the reputation history of an user
 
-    :param nickname: User.nickname
+    :param db_user: User
     :param translator: Translator
     :return: dict()
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return dict()
-
     ret_dict = dict()
-    count, all_rights = get_reputation_of(nickname)
+    count, all_rights = get_reputation_of(db_user)
     ret_dict['count'] = count
     ret_dict['all_rights'] = all_rights
 

@@ -216,7 +216,7 @@ class DictionaryHelper(object):
 
         group = db_group.name if db_group else '-'
         gravatar_public_url = get_profile_picture(db_user, 80)
-        reputation, tmp = get_reputation_of(db_user.nickname)
+        reputation, tmp = get_reputation_of(db_user)
 
         return {
             'passwordold': '' if pw_change_success else old_pw,

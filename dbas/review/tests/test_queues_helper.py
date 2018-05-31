@@ -12,7 +12,8 @@ class ReviewQueuesHelperTest(unittest.TestCase):
     def test_get_review_queues_as_lists(self):
         _tn = Translator('en')
 
-        queues = rqh.get_review_queues_as_lists('page', _tn, 'Tobias')
+        db_user = DBDiscussionSession.query(User).get(2)
+        queues = rqh.get_review_queues_as_lists('page', _tn, db_user)
         for q in queues:
             self.assertTrue('task_name' in q)
             self.assertTrue('url' in q)

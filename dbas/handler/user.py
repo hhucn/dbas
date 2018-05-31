@@ -534,7 +534,7 @@ def get_information_of(db_user: User, lang):
     ret_dict['discussion_arg_votes'] = arg_votes
     ret_dict['discussion_stat_votes'] = stat_votes
     ret_dict['avatar_url'] = get_profile_picture(db_user, 120)
-    ret_dict['discussion_stat_rep'], trash = get_reputation_of(db_user.nickname)
+    ret_dict['discussion_stat_rep'], trash = get_reputation_of(db_user)
 
     return ret_dict
 

@@ -21,18 +21,17 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def get_review_queues_as_lists(main_page, translator, nickname):
+def get_review_queues_as_lists(main_page: str, translator: Translator, db_user: User):
     """
     Prepares dictionary for the edit section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: Users nickname
     :return: Array
     """
     logger('ReviewQueues', 'main')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    count, all_rights = get_reputation_of(nickname)
+    count, all_rights = get_reputation_of(db_user)
 
     review_list = list()
     review_list.append(__get_delete_dict(main_page, translator, db_user, count, all_rights))

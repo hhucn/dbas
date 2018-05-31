@@ -31,8 +31,8 @@ class TestReviewHistoryHelper(unittest.TestCase):
         self.assertFalse(history['has_access'])
 
     def test_get_reputation_history_of(self):
-        self.assertEqual(len(rhh.get_reputation_history_of('Bla', Translator('en'))), 0)
-        history = rhh.get_reputation_history_of('Tobias', Translator('en'))
+        db_user = DBDiscussionSession.query(User).get(2)
+        history = rhh.get_reputation_history_of(db_user, Translator('en'))
         self.assertTrue(len(history) > 0)
         self.assertTrue('count' in history)
         self.assertTrue('history' in history)

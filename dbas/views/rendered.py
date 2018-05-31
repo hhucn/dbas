@@ -48,11 +48,8 @@ def notfound(request):
             'message': 'Not Found'
         })
 
-    logger('notfound', 'main in {}'.format(request.method) + '-request' +
-           ', path: ' + request.path +
-           ', view name: ' + request.view_name +
-           ', matchdict: {}'.format(request.matchdict) +
-           ', params: {}'.format(request.params))
+    logger('notfound', f'main in {request.method}-request, path: {request.path}, view name: {request.view_name}, '
+                       f'matchdict: {request.matchdict}, params: {request.params}')
     path = request.path
     if path.startswith('/404/'):
         path = path[4:]
@@ -70,3 +67,15 @@ def notfound(request):
         'discussion': {'broke_limit': False}
     })
     return prep_dict
+
+
+@view_config(route_name='main_batman', renderer='../templates/batman.pt', permission='everybody')
+@validate(prep_extras_dict)
+def batman(request):
+    """
+    You are not the user D-BAS deserves!
+
+    :param request: current request of the server
+    """
+    logger('batman', 'main')
+    return main_dict(request, 'Batman')

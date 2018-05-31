@@ -2,6 +2,8 @@ import unittest
 
 from pyramid import testing
 
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
 from dbas.review import review_queues
 import dbas.review.subpage as rph
 from dbas.strings.translator import Translator
@@ -11,6 +13,7 @@ class SubPageHelperTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
+        self.user = DBDiscussionSession.query(User).get(2)
 
     def tearDown(self):
         testing.tearDown()
@@ -19,7 +22,7 @@ class SubPageHelperTest(unittest.TestCase):
         request = testing.DummyRequest()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        ret_dict = rph.get_subpage_elements_for('Tobias', request.session, 'url', 'some page', Translator('en'))
+        ret_dict = rph.get_subpage_elements_for(self.user, request.session, 'url', 'some page', Translator('en'))
         self.assertIsNone(ret_dict['elements'])
         self.assertFalse(ret_dict['has_access'])
         self.assertFalse(ret_dict['no_arguments_to_review'])
@@ -27,7 +30,7 @@ class SubPageHelperTest(unittest.TestCase):
     def test_get_subpage_empty_session(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        ret_dict = rph.get_subpage_elements_for('Tobias', {}, 'url', review_queues[0], Translator('en'))
+        ret_dict = rph.get_subpage_elements_for(self.user, {}, 'url', review_queues[0], Translator('en'))
         self.assertIsNotNone(ret_dict['elements'])
         self.assertFalse(ret_dict['no_arguments_to_review'])
         self.assertTrue(ret_dict['has_access'])
@@ -38,7 +41,7 @@ class SubPageHelperTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
         for queue in review_queues:
-            ret_dict = rph.get_subpage_elements_for('Tobias', request.session, 'url', queue, Translator('en'))
+            ret_dict = rph.get_subpage_elements_for(self.user, request.session, 'url', queue, Translator('en'))
             self.assertIsNotNone(ret_dict['elements'])
             self.assertFalse(ret_dict['no_arguments_to_review'])
             self.assertTrue(ret_dict['has_access'])

@@ -7,6 +7,8 @@ Provides helping function for displaying subpages like the edit queue.
 import difflib
 import random
 
+from requests import Session
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument, \
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
@@ -24,11 +26,11 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def get_subpage_elements_for(nickname, session, application_url, subpage_name, translator):
+def get_subpage_elements_for(db_user: User, session: Session, application_url: str, subpage_name: str, translator: Translator):
     """
     Returns subpage for a specific review queue
 
-    :param nickname: current nickname in the request
+    :param db_user: current user
     :param session: current session in the request
     :param application_url: current application_url in the request
     :param subpage_name: String
@@ -37,7 +39,6 @@ def get_subpage_elements_for(nickname, session, application_url, subpage_name, t
     """
 
     logger('ReviewSubpagerHelper', subpage_name)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     user_has_access = False
     no_arguments_to_review = False
     button_set = {f'is_{key}': False for key in review_queues}
@@ -47,10 +48,10 @@ def get_subpage_elements_for(nickname, session, application_url, subpage_name, t
         logger('ReviewSubpagerHelper', 'No page found', error=True)
         return __wrap_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
-    rep_count, all_rights = get_reputation_of(nickname)
+    rep_count, all_rights = get_reputation_of(db_user)
     user_has_access = rep_count >= reputation_borders[subpage_name] or all_rights
     # does the user exists and does he has the rights for this queue?
-    if not db_user or not user_has_access:
+    if not user_has_access:
         logger('ReviewSubpagerHelper', 'No user found', error=True)
         return __wrap_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 

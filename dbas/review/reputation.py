@@ -58,12 +58,10 @@ def get_reputation_of(db_user: User, only_today=False):
     """
     Return the total sum of reputation_borders points for the given nickname
 
-    :param db_user: Should be of type "User", but also accepts nickname for legacy support
+    :param db_user: Should be of type "User"
     :param only_today: Boolean
     :return: Integer and Boolean, if the user is author
     """
-    if not isinstance(db_user, User):
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=db_user).first()
     count = 0
 
     if not db_user or db_user.nickname == nick_of_anonymous_user:
@@ -119,11 +117,13 @@ def add_reputation_for(db_user: User, reason):
 
 def has_access_to_review_system(db_user: User):
     """
+    Check if the user has more points than the lowers border in the review system
 
     :param db_user:
     :return:
     """
-    points = __collect_points(DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all())
+    db_points = DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all()
+    points = __collect_points(db_points)
     return points <= smallest_border
 
 

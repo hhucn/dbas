@@ -1,6 +1,8 @@
 import unittest
 
 import dbas.review.reputation as ReviewReputationHelper
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
 from dbas.strings.translator import Translator
 
 
@@ -19,10 +21,7 @@ class TestReviewReputationHelper(unittest.TestCase):
             self.assertTrue('text' in element)
 
     def test_get_reputation_of(self):
-        count, has_all_rights = ReviewReputationHelper.get_reputation_of('Tobias')
+        db_user = DBDiscussionSession.query(User).get(2)
+        count, has_all_rights = ReviewReputationHelper.get_reputation_of(db_user)
         self.assertTrue(count > 20)
         self.assertTrue(has_all_rights)
-
-        count, has_all_rights = ReviewReputationHelper.get_reputation_of('Tobiass')
-        self.assertTrue(count == 0)
-        self.assertFalse(has_all_rights)

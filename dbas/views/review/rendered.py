@@ -17,7 +17,7 @@ from dbas.views.helper import main_dict
 
 
 @view_config(route_name='review_index', renderer='../../templates/review/index.pt', permission='use')
-@validate(check_authentication, prep_extras_dict, valid_user_optional)
+@validate(check_authentication, valid_user, prep_extras_dict, valid_user_optional)
 def index(request):
     """
     View configuration for the review index.
@@ -26,11 +26,11 @@ def index(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main', 'def {}'.format(request.matchdict))
-    nickname = request.authenticated_userid
+    db_user = request.validated['user']
 
     _tn = Translator(get_language_from_cookie(request))
-    review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
-    count, all_rights = review_reputation_helper.get_reputation_of(nickname)
+    review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, db_user)
+    count, all_rights = review_reputation_helper.get_reputation_of(db_user)
 
     prep_dict = main_dict(request, _tn.get(_.review))
     prep_dict.update({
@@ -104,7 +104,7 @@ def history(request):
 
 
 @view_config(route_name='review_ongoing', renderer='../../templates/review/history.pt', permission='use')
-@validate(valid_user, check_authentication, prep_extras_dict)
+@validate(check_authentication, valid_user, prep_extras_dict)
 def ongoing(request):
     """
     View configuration for the current reviews.
@@ -123,7 +123,7 @@ def ongoing(request):
 
 
 @view_config(route_name='review_reputation', renderer='../../templates/review/reputation.pt', permission='use')
-@validate(check_authentication, prep_extras_dict)
+@validate(check_authentication, valid_user, prep_extras_dict)
 def reputation(request):
     """
     View configuration for the review reputation_borders.
@@ -135,7 +135,7 @@ def reputation(request):
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    reputation_dict = review_history_helper.get_reputation_history_of(request.authenticated_userid, _tn)
+    reputation_dict = review_history_helper.get_reputation_history_of(request.validated['user'], _tn)
     prep_dict = main_dict(request, _tn.get(_.reputation))
     prep_dict.update({'reputation': reputation_dict})
     return prep_dict
