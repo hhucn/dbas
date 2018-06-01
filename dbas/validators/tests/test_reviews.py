@@ -1,6 +1,7 @@
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewEdit, User
-from dbas.review import review_queues, key_edit, all_queues, key_split
+from dbas.review import key_edit, key_split
+from dbas.review.queue import review_queues, all_queues
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 from dbas.validators.reviews import valid_not_executed_review, valid_review_queue_key, valid_review_reason, \
     valid_uid_as_row_in_review_queue, valid_review_queue_name, valid_user_has_review_access

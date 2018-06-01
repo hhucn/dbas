@@ -17,10 +17,11 @@ from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, Rev
 from dbas.lib import get_text_for_argument_uid, get_profile_picture, get_text_for_statement_uid, \
     get_text_for_premisegroup_uid
 from dbas.logger import logger
-from dbas.review import reputation_borders, reputation_icons, key_delete, key_merge, key_split, key_duplicate, key_edit, \
+from dbas.review import key_delete, key_merge, key_split, key_duplicate, key_edit, \
     key_optimization
 from dbas.review.lib import set_able_object_of_review
-from dbas.review.reputation import get_reputation_of
+from dbas.review.reputation import get_reputation_of, reputation_borders
+from dbas.review.reputation import reputation_icons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 

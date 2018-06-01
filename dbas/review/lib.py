@@ -1,7 +1,9 @@
+from typing import Union
+
 import transaction
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement, Premise, Argument
+from dbas.database.discussion_model import Statement, Premise, Argument, ReputationReason
 from dbas.logger import logger
 
 
@@ -69,3 +71,25 @@ def __set_able_of_reviews_argument(review, is_disabled):
 
     DBDiscussionSession.flush()
     transaction.commit()
+
+
+def get_reputation_reason_by_action(action: str) -> Union[str, None]:
+    """
+    Returns the reason string from database by its action. Currently we have the following actions:
+     - first_position -> rep_reason_first_position
+     - first_justification -> rep_reason_first_justification
+     - first_argument_click -> rep_reason_first_argument_click
+     - first_confrontation -> rep_reason_first_confrontation
+     - first_new_argument -> rep_reason_first_new_argument
+     - new_statement -> rep_reason_new_statement
+     - success_flag -> rep_reason_success_flag
+     - success_edit -> rep_reason_success_edit
+     - success_duplicate -> rep_reason_success_duplicate
+     - bad_flag -> rep_reason_bad_flag
+     - bad_edit -> rep_reason_bad_edit
+     - bad_duplicate -> rep_reason_bad_duplicate
+
+    :param action:
+    :return:
+    """
+    return DBDiscussionSession.query(ReputationReason).filter_by(reason=f'rep_reason_{action}').first()

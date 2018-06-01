@@ -112,6 +112,6 @@ class RoutingTests(unittest.TestCase):
 
     def test_review_content(self):
         self.testapp.get('/review/', status=404)
-        from dbas.review import review_queues
+        from dbas.review.queue import review_queues
         for queue in review_queues:
             self.testapp.get('/review/' + queue, status=200)

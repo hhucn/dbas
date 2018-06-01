@@ -6,7 +6,7 @@ from pyramid import testing
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, get_now
 from dbas.helper.test import verify_dictionary_of_view, clear_clicks_of, clear_seen_by_of
-from dbas.review import review_queues
+from dbas.review.queue import review_queues
 from dbas.views.review.rendered import index, reputation, ongoing, history, queue_details
 
 

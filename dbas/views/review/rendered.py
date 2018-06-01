@@ -5,8 +5,8 @@ import dbas.review.lib
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
 from dbas.logger import logger
-from dbas.review import queue_mapping, title_mapping
 from dbas.review.history import get_ongoing_reviews, get_reputation_history_of, get_review_history
+from dbas.review.mapper import title_mapping, queue_mapping
 from dbas.review.queues import get_review_queues_as_lists
 from dbas.review.reputation import get_reputation_of, get_privilege_list, get_reputation_reasons_list
 from dbas.strings.keywords import Keywords as _

@@ -4,7 +4,7 @@ from beaker.session import Session
 
 from dbas.database.discussion_model import User, ReviewSplit, ReviewOptimization, ReviewMerge, ReviewEdit, ReviewDelete, \
     ReviewDuplicate
-from dbas.review import review_queues
+from dbas.review.queue import review_queues
 from dbas.review.queue.delete import DeleteQueue
 from dbas.review.queue.duplicate import DuplicateQueue
 from dbas.review.queue.edit import EditQueue

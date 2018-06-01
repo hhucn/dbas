@@ -25,8 +25,6 @@ from dbas.query_wrapper import get_enabled_issues_as_query, get_visible_issues_f
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
-rep_limit_to_open_issues = 10
-
 
 def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Language, is_public: bool,
               is_read_only: bool) -> dict:

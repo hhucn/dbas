@@ -3,20 +3,19 @@ Provides helping function for displaying the review queues and locking entries.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from typing import Tuple
 
 import transaction
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, TextVersion, \
-    LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now, \
-    Statement, ReviewDuplicate, LastReviewerDuplicate, Argument, Premise, ReviewMerge, ReviewSplit, \
-    LastReviewerMerge, LastReviewerSplit
+from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
+    LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, get_now, \
+    ReviewDuplicate, LastReviewerDuplicate, ReviewMerge, ReviewSplit, LastReviewerMerge, LastReviewerSplit
 from dbas.lib import get_profile_picture
 from dbas.logger import logger
 from dbas.review import max_lock_time_in_sec, key_delete, key_optimization, key_edit, key_duplicate, key_merge, \
-    key_split, key_history, key_ongoing, Code, reputation_borders, reputation_icons, model_mapping, reviewer_mapping
-from dbas.review.reputation import get_reputation_of
+    key_split, key_history, key_ongoing
+from dbas.review.mapper import model_mapping, reviewer_mapping
+from dbas.review.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -346,133 +345,6 @@ def __get_last_reviewer_of(reviewer_type, main_page):
             limit += 1 if len(db_reviews) > limit else 0
         index += 1
     return users_array
-
-
-def add_proposals_for_statement_corrections(elements, db_user, _tn) -> Tuple[str, bool]:
-    """
-    Add a proposal to correct a statement
-
-    :param elements: [Strings]
-    :param db_user: User
-    :param _tn: Translator
-    :return: String, Boolean for Error
-    """
-    logger('ReviewQueues', 'main')
-
-    review_count = len(elements)
-    added_reviews = [__add_edit_reviews(el, db_user) for el in elements]
-
-    if added_reviews.count(Code.SUCCESS) == 0:  # no edits set
-        if added_reviews.count(Code.DOESNT_EXISTS) > 0:
-            logger('ReviewQueues', 'internal key error')
-            return _tn.get(_.internalKeyError), True
-        if added_reviews.count(Code.DUPLICATE) > 0:
-            logger('ReviewQueues', 'already edit proposals')
-            return _tn.get(_.alreadyEditProposals), True
-        logger('ReviewQueues', 'no corrections given')
-        return _tn.get(_.noCorrections), True
-
-    DBDiscussionSession.flush()
-    transaction.commit()
-
-    added_values = [__add_edit_values_review(element, db_user) for element in elements]
-    if added_values == 0:
-        return _tn.get(_.alreadyEditProposals), True
-    DBDiscussionSession.flush()
-    transaction.commit()
-
-    msg = ''
-    if review_count > added_values.count(Code.SUCCESS) \
-            or added_reviews.count(Code.SUCCESS) != added_values.count(Code.SUCCESS):
-        msg = _tn.get(_.alreadyEditProposals)
-
-    return msg, False
-
-
-def __add_edit_reviews(element, db_user):
-    """
-    Setup a new ReviewEdit row
-
-    :param element: String
-    :param db_user: User
-    :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success, 0 otherwise
-    """
-    logger('ReviewQueues', 'current element: {}'.format(element))
-    db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
-    if not db_statement:
-        logger('ReviewQueues', 'statement {} not found (return -1)'.format(element['uid']))
-        return Code.DOESNT_EXISTS
-
-    # already set an correction for this?
-    if is_statement_in_edit_queue(element['uid']):  # if we already have an edit, skip this
-        logger('ReviewQueues', '{} already got an edit (return -2)'.format(element['uid']))
-        return Code.DUPLICATE
-
-    # is text different?
-    db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-    if len(element['text']) > 0 and db_tv.content.lower().strip() != element['text'].lower().strip():
-        logger('ReviewQueues', 'added review element for {}  (return 1)'.format(element['uid']))
-        DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=element['uid']))
-        return Code.SUCCESS
-
-    return Code.ERROR
-
-
-def is_statement_in_edit_queue(uid: int, is_executed: bool = False) -> bool:
-    """
-    Returns true if the statement is not in the edit queue
-
-    :param uid: Statement.uid
-    :param is_executed: Bool
-    :return: Boolean
-    """
-    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
-                                                                         ReviewEdit.is_executed == is_executed).count()
-    return db_already_edit_count > 0
-
-
-def is_arguments_premise_in_edit_queue(db_argument: Argument, is_executed: bool = False) -> bool:
-    """
-    Returns true if the premises of an argument are not in the edit queue
-
-    :param db_argument: Argument
-    :param is_executed: Bool
-    :return: Boolean
-    """
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
-    dbp_uid = [p.uid for p in db_premises]
-    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid.in_(dbp_uid),
-                                                                         ReviewEdit.is_executed == is_executed).count()
-    return db_already_edit_count > 0
-
-
-def __add_edit_values_review(element, db_user):
-    """
-    Setup a new ReviewEditValue row
-
-    :param element: String
-    :param db_user: User
-    :return: 1 on success, 0 otherwise
-    """
-    logger('ReviewQueues', 'current element: ' + str(element))
-    db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
-    if not db_statement:
-        logger('ReviewQueues', str(element['uid']) + ' not found')
-        return Code.ERROR
-
-    db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-
-    if len(element['text']) > 0 and db_textversion.content.lower().strip() != element['text'].lower().strip():
-        db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
-                                                                      ReviewEdit.statement_uid == element[
-                                                                          'uid']).order_by(
-            ReviewEdit.uid.desc()).first()
-        DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, element['uid'], 'statement', element['text']))
-        logger('ReviewQueues', '{} - \'{}\' accepted'.format(element['uid'], element['text']))
-        return Code.SUCCESS
-    else:
-        logger('ReviewQueues', '{} - \'{}\' malicious edit'.format(element['uid'], element['text']))
-        return Code.ERROR
 
 
 def lock_optimization_review(db_user: User, db_review: ReviewOptimization, translator: Translator):

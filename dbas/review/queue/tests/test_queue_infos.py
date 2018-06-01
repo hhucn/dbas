@@ -4,12 +4,12 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.review import queue_mapping
-from dbas.review import review_queues
+from dbas.review.mapper import queue_mapping
+from dbas.review.queue import review_queues
 from dbas.strings.translator import Translator
 
 
-class SubPageHelperTest(unittest.TestCase):
+class QueueInfosTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')

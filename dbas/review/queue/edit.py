@@ -3,12 +3,14 @@ import difflib
 
 import transaction
 from beaker.session import Session
+from typing import List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerEdit, ReviewEdit, ReviewEditValue
 from dbas.handler.statements import correct_statement
 from dbas.logger import logger
-from dbas.review import rep_reason_success_edit, rep_reason_bad_edit, max_votes, min_difference
+from dbas.review.lib import get_reputation_reason_by_action
+from dbas.review.queue import max_votes, min_difference
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, \
     get_all_allowed_reviews_for_user, get_base_subpage_dict, get_reporter_stats_for_review
@@ -87,7 +89,7 @@ class EditQueue(QueueABC):
         }
 
     @staticmethod
-    def __difference_between_string(a: str, b: str, correction_list: list(str)):
+    def __difference_between_string(a: str, b: str, correction_list: List[str]):
         """
         Colors the difference between two strings
 
@@ -140,20 +142,20 @@ class EditQueue(QueueABC):
         if reached_max:
             if count_of_dont_edit < count_of_edit:  # accept the edit
                 self.__accept_edit_review(db_review)
-                rep_reason = rep_reason_success_edit
+                rep_reason = get_reputation_reason_by_action('success_edit')
             else:  # just close the review
-                rep_reason = rep_reason_bad_edit
+                rep_reason = get_reputation_reason_by_action('bad_edit')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
             self.__accept_edit_review(db_review)
-            rep_reason = rep_reason_success_edit
+            rep_reason = get_reputation_reason_by_action('success_edit')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_dont_edit - count_of_edit >= min_difference:  # decline edit
-            rep_reason = rep_reason_bad_edit
+            rep_reason = get_reputation_reason_by_action('bad_edit')
             db_review.set_executed(True)
             db_review.update_timestamp()
 

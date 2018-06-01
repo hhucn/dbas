@@ -9,10 +9,11 @@ from dbas.database.discussion_model import User, LastReviewerOptimization, Revie
     ReviewEditValue, Statement, Issue, Argument, Premise
 from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, get_text_for_statement_uid
 from dbas.logger import logger
-from dbas.review import rep_reason_bad_flag, max_votes
+from dbas.review.queue import max_votes
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_reputation_and_check_review_access, get_issues_for_statement_uids, \
     get_reporter_stats_for_review, get_all_allowed_reviews_for_user
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
@@ -202,7 +203,8 @@ class OptimizationQueue(QueueABC):
             LastReviewerOptimization.is_okay == True).all()
 
         if len(db_keep_version) > max_votes:
-            add_reputation_and_check_review_access(db_user_created_flag, rep_reason_bad_flag, main_page, translator)
+            add_reputation_and_check_review_access(db_user_created_flag, get_reputation_reason_by_action('bad_flag'),
+                                                   main_page, translator)
 
             db_review.set_executed(True)
             db_review.update_timestamp()

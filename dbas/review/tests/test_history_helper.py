@@ -3,16 +3,16 @@ import unittest
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 import dbas.review.history as rhh
+from dbas.handler.statements import set_correction_of_statement
 from dbas.strings.translator import Translator
 
 
 class TestReviewHistoryHelper(unittest.TestCase):
 
     def setUp(self):
-        from dbas.review.queues import add_proposals_for_statement_corrections
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         elements = [{'uid': 4, 'text': 'some random text'}]
-        add_proposals_for_statement_corrections(elements, db_user, Translator('en'))
+        set_correction_of_statement(elements, db_user, Translator('en'))
 
     def test_flag_argument(self):
         history = rhh.get_review_history('mainpage', 'nickname', Translator('en'))

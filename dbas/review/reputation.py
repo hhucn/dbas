@@ -10,8 +10,24 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
 from dbas.logger import logger
-from dbas.review import reputation_borders, reputation_icons, all_queues, smallest_border
+from dbas.review import key_history, key_ongoing, key_edit, key_delete, key_duplicate, \
+    key_optimization, key_merge, key_split
+from dbas.review.queue import review_queues, all_queues
 from dbas.strings.keywords import Keywords as _
+
+smallest_border = 30
+limit_to_open_issues = 10
+reputation_borders = {**{key: smallest_border for key in review_queues}, **{key_history: 150, key_ongoing: 300}}
+reputation_icons = {
+    key_edit: 'fa fa-pencil-square-o',
+    key_delete: 'fa fa-trash-o',
+    key_duplicate: 'fa fa-files-o',
+    key_optimization: 'fa fa-compress',
+    key_merge: 'fa fa-flag',
+    key_split: 'fa fa-expand',
+    key_history: 'fa fa-history',
+    key_ongoing: 'fa fa-clock-o'
+}
 
 
 def get_privilege_list(translator):

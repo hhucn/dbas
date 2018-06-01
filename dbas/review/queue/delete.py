@@ -5,8 +5,8 @@ from beaker.session import Session
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete, ReviewDeleteReason
 from dbas.logger import logger
-from dbas.review import rep_reason_success_flag, rep_reason_bad_flag, max_votes, min_difference
-from dbas.review.lib import set_able_object_of_review
+from dbas.review.lib import set_able_object_of_review, get_reputation_reason_by_action
+from dbas.review.queue import max_votes, min_difference
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, get_base_subpage_dict, \
     get_all_allowed_reviews_for_user, get_reporter_stats_for_review
@@ -92,20 +92,20 @@ class DeleteQueue(QueueABC):
         if reached_max:
             if count_of_delete > count_of_keep:  # disable the flagged part
                 set_able_object_of_review(db_review, True)
-                rep_reason = rep_reason_success_flag
+                rep_reason = get_reputation_reason_by_action('success_flag')
             else:  # just close the review
-                rep_reason = rep_reason_bad_flag
+                rep_reason = get_reputation_reason_by_action('bad_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_delete >= min_difference:  # just close the review
-            rep_reason = rep_reason_bad_flag
+            rep_reason = get_reputation_reason_by_action('bad_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
             set_able_object_of_review(db_review, True)
-            rep_reason = rep_reason_success_flag
+            rep_reason = get_reputation_reason_by_action('success_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 

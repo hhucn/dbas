@@ -11,7 +11,8 @@ from dbas.database.discussion_model import User, LastReviewerSplit, ReviewSplit,
 from dbas.handler.statements import set_statement
 from dbas.lib import get_text_for_premisegroup_uid
 from dbas.logger import logger
-from dbas.review import rep_reason_success_flag, rep_reason_bad_flag, max_votes, min_difference
+from dbas.review.queue import max_votes, min_difference
+from dbas.review.lib import get_reputation_reason_by_action
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, \
     get_all_allowed_reviews_for_user, get_issues_for_statement_uids, get_reporter_stats_for_review
@@ -120,20 +121,20 @@ class SplitQueue(QueueABC):
         if reached_max:
             if count_of_split > count_of_keep:  # split pgroup
                 self.__split_premisegroup(db_review)
-                rep_reason = rep_reason_success_flag
+                rep_reason = get_reputation_reason_by_action('success_flag')
             else:  # just close the review
-                rep_reason = rep_reason_bad_flag
+                rep_reason = get_reputation_reason_by_action('bad_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_split >= min_difference:  # just close the review
-            rep_reason = rep_reason_bad_flag
+            rep_reason = get_reputation_reason_by_action('bad_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_split - count_of_keep >= min_difference:  # split pgroup
             self.__split_premisegroup(db_review)
-            rep_reason = rep_reason_success_flag
+            rep_reason = get_reputation_reason_by_action('success_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 

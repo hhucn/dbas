@@ -1,5 +1,5 @@
 import random
-from typing import Union
+from typing import Union, List
 
 import transaction
 
@@ -7,9 +7,10 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import LastReviewerSplit, LastReviewerMerge, LastReviewerDelete, \
     LastReviewerDuplicate, LastReviewerEdit, LastReviewerOptimization, User, ReviewDelete, ReviewEdit, ReviewMerge, \
     ReviewOptimization, ReviewSplit, ReviewDuplicate, Argument, Issue, Statement, StatementToIssue, \
-    sql_timestamp_pretty_print
+    sql_timestamp_pretty_print, TextVersion, ReviewEditValue, Premise
 from dbas.lib import get_text_for_argument_uid, get_profile_picture
 from dbas.logger import logger
+from dbas.review import Code
 from dbas.review.reputation import add_reputation_for, has_access_to_review_system
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -168,9 +169,100 @@ def get_reporter_stats_for_review(db_review, ui_locales, main_page):
     }
 
 
-def get_issues_for_statement_uids(statement_uids: list(int)) -> list(Issue):
+def get_issues_for_statement_uids(statement_uids: List[int]) -> List[Issue]:
+    """
+    Get all issues via the statement-to-issue table of a list of statement uids
+
+    :param statement_uids: list of Statements.uids
+    :return: List of Issues
+    """
     db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
         StatementToIssue.statement_uid.in_(statement_uids)).all()
     statement2issue_uids = [el.issue_uid for el in db_statement2issue]
     db_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()
     return db_issues
+
+
+def add_edit_reviews(db_user: User, uid: int, text: str):
+    """
+    Setup a new ReviewEdit row
+
+    :param db_user: User
+    :param uid: Statement.uid
+    :param text: New content for statement
+    :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success, 0 otherwise
+    """
+    db_statement = DBDiscussionSession.query(Statement).get(uid)
+    if not db_statement:
+        logger('review.lib', f'statement {uid} not found (return {Code.DOESNT_EXISTS})')
+        return Code.DOESNT_EXISTS
+
+    # already set an correction for this?
+    if is_statement_in_edit_queue(uid):  # if we already have an edit, skip this
+        logger('review.lib', f'{uid} already got an edit (return {Code.DUPLICATE})')
+        return Code.DUPLICATE
+
+    # is text different?
+    db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+    if len(text) > 0 and db_tv.content.lower().strip() != text.lower().strip():
+        logger('review.lib', f'added review element for {uid} (return {Code.SUCCESS})')
+        DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=uid))
+        return Code.SUCCESS
+
+    return Code.ERROR
+
+
+def add_edit_values_review(db_user: User, uid: int, text: str):
+    """
+    Setup a new ReviewEditValue row
+
+    :param db_user: User
+    :param uid: Statement.uid
+    :param text: New content for statement
+    :return: 1 on success, 0 otherwise
+    """
+    db_statement = DBDiscussionSession.query(Statement).get(uid)
+    if not db_statement:
+        logger('review.lib', f'{uid} not found')
+        return Code.ERROR
+
+    db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+
+    if len(text) > 0 and db_textversion.content.lower().strip() != text.lower().strip():
+        db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
+                                                                      ReviewEdit.statement_uid == uid).order_by(
+            ReviewEdit.uid.desc()).first()
+        DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, uid, 'statement', text))
+        logger('review.lib', f'{uid} - \'{text}\' accepted')
+        return Code.SUCCESS
+
+    logger('review.lib', f'{uid} - \'{text}\' malicious edit')
+    return Code.ERROR
+
+
+def is_statement_in_edit_queue(uid: int, is_executed: bool = False) -> bool:
+    """
+    Returns true if the statement is not in the edit queue
+
+    :param uid: Statement.uid
+    :param is_executed: Bool
+    :return: Boolean
+    """
+    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
+                                                                         ReviewEdit.is_executed == is_executed).count()
+    return db_already_edit_count > 0
+
+
+def is_arguments_premise_in_edit_queue(db_argument: Argument, is_executed: bool = False) -> bool:
+    """
+    Returns true if the premises of an argument are not in the edit queue
+
+    :param db_argument: Argument
+    :param is_executed: Bool
+    :return: Boolean
+    """
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
+    dbp_uid = [p.uid for p in db_premises]
+    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid.in_(dbp_uid),
+                                                                         ReviewEdit.is_executed == is_executed).count()
+    return db_already_edit_count > 0

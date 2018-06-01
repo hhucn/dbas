@@ -9,7 +9,8 @@ from dbas.database.discussion_model import User, LastReviewerDuplicate, ReviewDu
     Premise
 from dbas.lib import get_all_arguments_by_statement, get_text_for_statement_uid
 from dbas.logger import logger
-from dbas.review import rep_reason_success_duplicate, rep_reason_bad_duplicate, max_votes, min_difference
+from dbas.review.queue import min_difference, max_votes
+from dbas.review.lib import get_reputation_reason_by_action
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, \
     get_all_allowed_reviews_for_user, get_reporter_stats_for_review, get_issues_for_statement_uids
@@ -108,20 +109,20 @@ class DuplicateQueue(QueueABC):
         if reached_max:
             if count_of_reset > count_of_keep:  # disable the flagged part
                 self.__bend_objects_of_duplicate_review(db_review)
-                rep_reason = rep_reason_success_duplicate
+                rep_reason = get_reputation_reason_by_action('success_duplicate')
             else:  # just close the review
-                rep_reason = rep_reason_bad_duplicate
+                rep_reason = get_reputation_reason_by_action('bad_duplicate')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_reset >= min_difference:  # just close the review
-            rep_reason = rep_reason_bad_duplicate
+            rep_reason = get_reputation_reason_by_action('bad_duplicate')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_reset - count_of_keep >= min_difference:  # disable the flagged part
             self.__bend_objects_of_duplicate_review(db_review)
-            rep_reason = rep_reason_success_duplicate
+            rep_reason = get_reputation_reason_by_action('success_duplicate')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
