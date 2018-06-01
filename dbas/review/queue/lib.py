@@ -1,3 +1,4 @@
+import random
 from typing import Union
 
 import transaction
@@ -5,7 +6,9 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import LastReviewerSplit, LastReviewerMerge, LastReviewerDelete, \
     LastReviewerDuplicate, LastReviewerEdit, LastReviewerOptimization, User, ReviewDelete, ReviewEdit, ReviewMerge, \
-    ReviewOptimization, ReviewSplit, ReviewDuplicate
+    ReviewOptimization, ReviewSplit, ReviewDuplicate, Argument, Issue, Statement, StatementToIssue, \
+    sql_timestamp_pretty_print
+from dbas.lib import get_text_for_argument_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.review.reputation import add_reputation_for, has_access_to_review_system
 from dbas.strings.keywords import Keywords as _
@@ -16,7 +19,7 @@ from websocket.lib import send_request_for_info_popup_to_socketio
 def add_vote_for(db_user: User, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
                                                  ReviewOptimization, ReviewSplit], is_okay: bool,
                  db_reviewer_type: Union[LastReviewerDelete, LastReviewerDuplicate, LastReviewerEdit, LastReviewerMerge,
-                                         LastReviewerOptimization, LastReviewerSplit]):
+                                         LastReviewerOptimization, LastReviewerSplit]) -> True:
     """
     Add vote for a specific review
 
@@ -24,19 +27,21 @@ def add_vote_for(db_user: User, db_review: Union[ReviewDelete, ReviewDuplicate, 
     :param db_review: one table ouf of the Reviews
     :param is_okay: Boolean
     :param db_reviewer_type: one table out of the LastReviews
-    :return: None
+    :return: True, if the cote can be added
     """
     logger('review.lib', f'{db_reviewer_type}, user {db_user.uid}, db_review {db_review}, is_okay {is_okay}')
     already_voted = DBDiscussionSession.query(db_reviewer_type).filter(db_reviewer_type.reviewer_uid == db_user.uid,
                                                                        db_reviewer_type.review_uid == db_review.uid).first()
-    if not already_voted:
-        db_new_review = db_reviewer_type(db_user.uid, db_review.uid, is_okay)
-        DBDiscussionSession.add(db_new_review)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        logger('review.lib', 'vote added')
-    else:
+    if already_voted:
         logger('review.lib', 'already voted')
+        return False
+
+    logger('review.lib', 'vote added')
+    db_new_review = db_reviewer_type(db_user.uid, db_review.uid, is_okay)
+    DBDiscussionSession.add(db_new_review)
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return True
 
 
 def add_reputation_and_check_review_access(db_user: User, rep_reason: str, main_page: str, translator: Translator):
@@ -89,4 +94,79 @@ def get_all_allowed_reviews_for_user(session, session_keyword, db_user, review_t
         'already_seen_reviews': already_seen,
         'already_voted_reviews': already_reviewed,
         'first_time': first_time
+    }
+
+
+def get_base_subpage_dict(review_type, db_reviews, already_seen, first_time, db_user, already_reviewed):
+    """
+
+    :param review_type:
+    :param db_reviews:
+    :param already_seen:
+    :param first_time:
+    :param db_user:
+    :param already_reviewed:
+    :return:
+    """
+    extra_info = ''
+    if not db_reviews:
+        already_seen = list()
+        extra_info = 'already_seen' if not first_time else ''
+        db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
+                                                                   review_type.detector_uid != db_user.uid)
+        if len(already_reviewed) > 0:
+            db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
+        db_reviews = db_reviews.all()
+
+    if not db_reviews:
+        return {
+            'rnd_review': None,
+            'already_seen_reviews': None,
+            'extra_info': None,
+            'text': None,
+            'issue_titles': None,
+        }
+
+    rnd_review = random.choice(db_reviews)
+    if rnd_review.statement_uid is None:
+        db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
+        text = get_text_for_argument_uid(db_argument.uid)
+        issue_titles = [DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title]
+    else:
+        db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
+        text = db_statement.get_text()
+        db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter_by(
+            statement_uid=rnd_review.statement_uid).all()
+        statement2issues_uid = [el.issue_uid for el in db_statement2issues]
+        db_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issues_uid)).all()
+        issue_titles = [issue.title for issue in db_issues]
+
+    return {
+        'rnd_review': rnd_review,
+        'already_seen_reviews': already_seen,
+        'extra_info': extra_info,
+        'text': text,
+        'issue_titles': issue_titles
+    }
+
+
+def get_reporter_stats_for_review(db_review, ui_locales, main_page):
+    """
+    Get statistics for the current review
+
+    :param db_review: Review-Row
+    :param ui_locales: Language.ui_locales
+    :param main_page: Host URL
+    :return: dict()
+    """
+    logger('ReviewSubpagerHelper', 'main')
+
+    db_reporter = DBDiscussionSession.query(User).get(db_review.detector_uid)
+
+    return {
+        'reported': sql_timestamp_pretty_print(db_review.timestamp, ui_locales),
+        'reporter': db_reporter.global_nickname,
+        'reporter_gravatar': get_profile_picture(db_reporter, 20),
+        'reporter_url': main_page + '/user/' + str(db_reporter.uid),
+        'id': str(db_review.uid)
     }

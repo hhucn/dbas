@@ -1,6 +1,6 @@
 # Adaptee for the split queue.
 import transaction
-from requests import Session
+from beaker.session import Session
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerSplit, ReviewSplit, ReviewSplitValues, Premise, Issue, \
@@ -15,17 +15,17 @@ from dbas.strings.translator import Translator
 
 
 class SplitQueue(QueueABC):
-    def get_queue_information(self, db_user: User, session: Session, application_url: str, queue_name: str, translator: Translator):
+    def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         pass
 
-    def add_vote(self, db_user: User, db_review: ReviewSplit, is_okay: bool, main_page: str, translator: Translator,
+    def add_vote(self, db_user: User, db_review: ReviewSplit, is_okay: bool, application_url: str, translator: Translator,
                  **kwargs):
         """
 
         :param db_user:
         :param db_review:
         :param is_okay:
-        :param main_page:
+        :param application_url:
         :param translator:
         :param kwargs:
         :return:
@@ -62,7 +62,7 @@ class SplitQueue(QueueABC):
             db_review.set_executed(True)
             db_review.update_timestamp()
 
-        add_reputation_and_check_review_access(db_user_created_flag, rep_reason, main_page, translator)
+        add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
         DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()

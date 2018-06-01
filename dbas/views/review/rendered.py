@@ -40,7 +40,7 @@ def index(request):
         'reputation_list': review_reputation_helper.get_reputation_reasons_list(_tn),
         'reputation': {
             'count': count,
-            'has_all_rights': all_rights
+            'has_all_rights': all_rWights
         }
     })
     return prep_dict

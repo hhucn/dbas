@@ -4,14 +4,13 @@ Provides helping function for displaying subpages like the edit queue.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import difflib
 import random
 
 from requests import Session
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument, \
-    Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
+    Issue, LastReviewerDelete, LastReviewerOptimization, Statement, \
     sql_timestamp_pretty_print, ReviewDuplicate, LastReviewerDuplicate, ReviewMerge, ReviewSplit, LastReviewerMerge, \
     LastReviewerSplit, Premise, ReviewMergeValues, ReviewSplitValues, StatementToIssue
 from dbas.lib import get_all_arguments_by_statement
@@ -20,6 +19,7 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, \
 from dbas.logger import logger
 from dbas.review import review_queues, key_merge, key_delete, key_duplicate, key_edit, \
     key_optimization, key_split
+from dbas.review.queue.edit import EditQueue
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -42,43 +42,40 @@ def get_subpage_elements_for(db_user: User, session: Session, application_url: s
     no_arguments_to_review = False
     button_set = {f'is_{key}': False for key in review_queues}
 
-    ret_dict = {'page_name': subpage_name}
-
     text = translator.get(_.internalError)
     issue = translator.get(_.internalError)
     reason = ''
     stats = ''
+    subpage_dict = {}
 
+    if subpage_name not in review_queues:
+        subpage_dict = {'stats': stats, 'text': text, 'reason': reason, 'issue': issue, 'session': {}}
+
+    button_set[f'is_{subpage_name}'] = True
     if subpage_name == key_delete:
         subpage_dict = __get_subpage_dict_for_deletes(session, application_url, db_user, translator)
-        button_set['is_delete'] = True
 
     elif subpage_name == key_optimization:
         subpage_dict = __get_subpage_dict_for_optimization(session, application_url, db_user, translator)
-        button_set['is_optimization'] = True
 
     elif subpage_name == key_edit:
-        subpage_dict = __get_subpage_dict_for_edits(session, application_url, db_user, translator)
-        button_set['is_edit'] = True
+        subpage_dict = EditQueue().get_queue_information(db_user, session, application_url, translator)
 
     elif subpage_name == key_duplicate:
         subpage_dict = __get_subpage_dict_for_duplicates(session, application_url, db_user, translator)
-        button_set['is_duplicate'] = True
 
     elif subpage_name == key_split:
         subpage_dict = __get_subpage_dict_for_splits(session, application_url, db_user, translator)
-        button_set['is_split'] = True
 
     elif subpage_name == key_merge:
         subpage_dict = __get_subpage_dict_for_merges(session, application_url, db_user, translator)
-        button_set['is_merge'] = True
-
-    else:
-        subpage_dict = {'stats': stats, 'text': text, 'reason': reason, 'issue': issue, 'session': {}}
 
     # logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'subpage_dict ' + str(subpage_dict))
-    ret_dict['reviewed_element'] = subpage_dict
-    ret_dict['session'] = subpage_dict['session']
+    ret_dict = {
+        'page_name': subpage_name,
+        'reviewed_element': subpage_dict,
+        'session': subpage_dict['session']
+    }
     if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
         return __wrap_subpage_dict({}, True, button_set)
 
@@ -187,7 +184,7 @@ def __get_subpage_dict_for_deletes(session, application_url, db_user, translator
         }
 
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(rev_dict['rnd_review'].reason_uid)
-    stats = __get_stats_for_review(rev_dict['rnd_review'], translator.get_lang(), application_url)
+    stats = __get_reporter_stats_for_review(rev_dict['rnd_review'], translator.get_lang(), application_url)
 
     reason = ''
     if db_reason.reason == 'offtopic':
@@ -268,7 +265,7 @@ def __get_subpage_dict_for_optimization(session, application_url, db_user, trans
 
     reason = translator.get(_.argumentFlaggedBecauseOptimization)
 
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
+    stats = __get_reporter_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
     all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
     session[f'already_seen_{key_optimization}'] = all_rev_dict['already_seen_reviews']
@@ -281,76 +278,6 @@ def __get_subpage_dict_for_optimization(session, application_url, db_user, trans
         'extra_info': extra_info,
         'context': context,
         'parts': parts,
-        'session': session
-    }
-
-
-def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
-    """
-    Setup the subpage for the edits queue
-
-    :param session: session of current webserver request
-    :param application_url: current url of the app
-    :param db_user: User
-    :param translator: Translator
-    :return: dict()
-    """
-    logger('ReviewSubpagerHelper', 'main')
-    all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_edit}', db_user, ReviewEdit,
-                                                    LastReviewerEdit)
-
-    rev_dict = __get_base_subpage_dict(ReviewEdit, all_rev_dict['reviews'], all_rev_dict['already_seen_reviews'],
-                                       all_rev_dict['first_time'], db_user, all_rev_dict['already_voted_reviews'])
-    if not rev_dict['rnd_review']:
-        return {
-            'stats': None,
-            'text': None,
-            'reason': None,
-            'issue': None,
-            'extra_info': None,
-            'session': session
-        }
-
-    reason = translator.get(_.argumentFlaggedBecauseEdit)
-
-    # build correction
-    db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(
-        review_edit_uid=rev_dict['rnd_review'].uid).first()
-    stats = __get_stats_for_review(rev_dict['rnd_review'], translator.get_lang(), application_url)
-
-    if not db_edit_value:
-        logger('ReviewSubpagerHelper', 'ReviewEdit {} has no edit value!'.format(rev_dict['rnd_review'].uid),
-               error=True)
-        # get all valid reviews
-        db_allowed_reviews = DBDiscussionSession.query(ReviewEdit).filter(
-            ReviewEdit.uid.in_(DBDiscussionSession.query(ReviewEditValue.review_edit_uid))).all()
-
-        if len(db_allowed_reviews) > 0:
-            return __get_subpage_dict_for_edits(session, db_user, translator, application_url)
-        return {
-            'stats': None,
-            'text': None,
-            'reason': None,
-            'issue_titles': None,
-            'extra_info': None,
-            'session': session
-        }
-
-    correction_list = [char for char in rev_dict['text']]
-    __difference_between_string(rev_dict['text'], db_edit_value.content, correction_list)
-    correction = ''.join(correction_list)
-
-    rev_dict[f'already_seen_{key_edit}'].append(not rev_dict['rnd_review'].uid)
-    session[f'already_seen_{key_edit}'] = rev_dict[f'already_seen_{key_edit}']
-
-    return {
-        'stats': stats,
-        'text': rev_dict['text'],
-        'corrected_version': db_edit_value.content,
-        'corrections': correction,
-        'reason': reason,
-        'issue_titles': rev_dict['issue_titles'],
-        'extra_info': rev_dict['extra_info'],  # TODO KILL
         'session': session
     }
 
@@ -405,7 +332,7 @@ def __get_subpage_dict_for_duplicates(session, application_url, db_user, transla
     issue_titles = [issue.title for issue in db_issues]
     reason = translator.get(_.argumentFlaggedBecauseDuplicate)
     duplicate_of_text = get_text_for_statement_uid(rnd_review.original_statement_uid)
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
+    stats = __get_reporter_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
     all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
     session['already_seen_duplicate'] = all_rev_dict['already_seen_reviews']
@@ -479,7 +406,7 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
     db_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()
     issue_titles = [issue.title for issue in db_issues]
 
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
+    stats = __get_reporter_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
     all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
     session[f'already_seen_{key_split}'] = all_rev_dict['already_seen_reviews']
@@ -558,7 +485,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
     issue_titles = [issue.title for issue in db_issues]
     reason = translator.get(_.argumentFlaggedBecauseMerge)
 
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
+    stats = __get_reporter_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
     all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
     session[f'already_seen_{key_merge}'] = all_rev_dict['already_seen_reviews']
@@ -575,33 +502,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
     }
 
 
-def __difference_between_string(a: str, b: str, correction_list: list(str)):
-    """
-    Colors the difference between two strings
-
-    :param a: first string
-    :param b: second string
-    :param correction_list: character list of the first string
-    :return: modified correction list with html strings around the modified characters
-    """
-    base = '<strong><span class="text-{}">'
-    tag_p = base.format('success')
-    tag_m = base.format('danger')
-    tag_e = '</span></strong>'
-
-    for i, s in enumerate(difflib.ndiff(a, b)):
-        if i >= len(correction_list):
-            correction_list.append('')
-        if s[0] == ' ':
-            correction_list[i] = s[-1]
-            continue
-        elif s[0] == '-':
-            correction_list[i] = tag_m + s[-1] + tag_e
-        elif s[0] == '+':
-            correction_list[i] = tag_p + s[-1] + tag_e
-
-
-def __get_stats_for_review(db_review, ui_locales, main_page):
+def __get_reporter_stats_for_review(db_review, ui_locales, main_page):
     """
     Get statistics for the current review
 

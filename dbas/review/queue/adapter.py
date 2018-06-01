@@ -31,12 +31,12 @@ class Queue():
         self.translator = translator
         self.kwargs = kwargs
 
-    def get_queue_information(self, session, queue_name):
+    def get_queue_information(self, session):
         """
 
         :return:
         """
-        self.queue.get_queue_information(self.db_user, session, self.application_url, queue_name, self.translator)
+        self.queue.get_queue_information(self.db_user, session, self.application_url, self.translator)
 
     def add_vote(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization,
                                         ReviewSplit], is_okay: bool):
@@ -46,7 +46,7 @@ class Queue():
         :param is_okay:
         :return:
         """
-        self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay, main_page=self.application_url,
+        self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay, application_url=self.application_url,
                             translator=self.translator, **self.kwargs)
 
     def add_review(self):

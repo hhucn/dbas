@@ -12,7 +12,7 @@ from dbas.strings.translator import Translator
 
 class QueueABC(metaclass=ABCMeta):
     @abstractmethod
-    def get_queue_information(self, db_user: User, session: Session, application_url: str, queue_name: str, translator: Translator):
+    def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         """
 
         :param db_user:

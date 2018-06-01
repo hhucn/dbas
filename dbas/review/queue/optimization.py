@@ -1,6 +1,6 @@
 # Adaptee for the optimizations queue. Every accepted optimization will be an edit.
 import transaction
-from requests import Session
+from beaker.session import Session
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerOptimization, ReviewOptimization, ReviewEdit, \
@@ -13,17 +13,17 @@ from dbas.strings.translator import Translator
 
 
 class OptimizationQueue(QueueABC):
-    def get_queue_information(self, db_user: User, session: Session, application_url: str, queue_name: str, translator: Translator):
+    def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         pass
 
-    def add_vote(self, db_user: User, db_review: ReviewOptimization, is_okay: bool, main_page: str,
+    def add_vote(self, db_user: User, db_review: ReviewOptimization, is_okay: bool, application_url: str,
                  translator: Translator, **kwargs):
         """
 
         :param db_user:
         :param db_review:
         :param is_okay:
-        :param main_page:
+        :param application_url:
         :param translator:
         :param kwargs:
         :return:
@@ -38,7 +38,7 @@ class OptimizationQueue(QueueABC):
         if is_okay:
             self.__proposal_for_the_element(db_review, kwargs['new_data'], db_user)
         else:
-            self.__keep_the_element_of_optimization_review(db_review, main_page, translator)
+            self.__keep_the_element_of_optimization_review(db_review, application_url, translator)
 
         DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
