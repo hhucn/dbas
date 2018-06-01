@@ -14,7 +14,7 @@ from dbas.review.queue.split import SplitQueue
 from dbas.strings.translator import Translator
 
 
-class Queue():
+class QueueAdapter():
     """
     Adapter for the different queue adaptees
     """
@@ -42,7 +42,6 @@ class Queue():
         """
         button_set = {f'is_{key}': False for key in review_queues}
         button_set[f'is_{queue_name}'] = True
-
         subpage_dict = self.queue.get_queue_information(self.db_user, session, self.application_url, self.translator)
 
         ret_dict = {

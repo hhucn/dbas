@@ -18,7 +18,7 @@ from dbas.input_validator import is_integer
 from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_string, get_text_for_argument_uid, \
     Relations, Attitudes
 from dbas.logger import logger
-from dbas.review import Code
+from dbas.review.queue import Code
 from dbas.review.lib import get_reputation_reason_by_action
 from dbas.review.queue.lib import add_edit_reviews, add_edit_values_review
 from dbas.review.reputation import add_reputation_for, has_access_to_review_system
@@ -123,18 +123,18 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
 
     if added_reviews.count(Code.SUCCESS) == 0:  # no edits set
         if added_reviews.count(Code.DOESNT_EXISTS) > 0:
-            logger('ReviewQueues', 'internal key error')
+            logger('StatementsHelper', 'internal key error')
             return {
                 'info': translator.get(_.internalKeyError),
                 'error': True
             }
         if added_reviews.count(Code.DUPLICATE) > 0:
-            logger('ReviewQueues', 'already edit proposals')
+            logger('StatementsHelper', 'already edit proposals')
             return {
                 'info': translator.get(_.alreadyEditProposals),
                 'error': True
             }
-        logger('ReviewQueues', 'no corrections given')
+        logger('StatementsHelper', 'no corrections given')
         return {
             'info': translator.get(_.noCorrections),
             'error': True

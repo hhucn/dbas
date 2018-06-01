@@ -17,6 +17,7 @@ from dbas.logger import logger
 from dbas.review.lib import get_reputation_reason_by_action
 from dbas.review.reputation import add_reputation_for, has_access_to_review_system
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
 
 
@@ -89,7 +90,7 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
     return_dict['gravatar'] = get_profile_picture(db_author)
     return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, db_argument.lang)
     text = get_text_for_argument_uid(db_argument.uid)
-    return_dict['text'] = text[0:1].upper() + text[1:] + '.'
+    return_dict['text'] = start_with_capital(text)
 
     supporters = []
     gravatars = dict()

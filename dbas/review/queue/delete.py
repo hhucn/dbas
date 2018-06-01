@@ -6,7 +6,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete, ReviewDeleteReason
 from dbas.logger import logger
 from dbas.review.lib import set_able_object_of_review, get_reputation_reason_by_action
-from dbas.review.queue import max_votes, min_difference
+from dbas.review.queue import max_votes, min_difference, key_delete
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, get_base_subpage_dict, \
     get_all_allowed_reviews_for_user, get_reporter_stats_for_review
@@ -15,6 +15,22 @@ from dbas.strings.translator import Translator
 
 
 class DeleteQueue(QueueABC):
+
+    def __init__(self):
+        super().__init__()
+        self.key = key_delete
+
+    def key(self, key=None):
+        """
+
+        :param key:
+        :return:
+        """
+        if not key:
+            return key
+        else:
+            self.key = key
+
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         """
         Setup the subpage for the delete queue
@@ -25,8 +41,8 @@ class DeleteQueue(QueueABC):
         :param translator: Translator
         :return: dict()
         """
-        logger(DeleteQueue, 'main')
-        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_delete}', db_user, ReviewDelete,
+        logger('DeleteQueue', 'main')
+        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user, ReviewDelete,
                                                         LastReviewerDelete)
 
         rev_dict = get_base_subpage_dict(ReviewDelete, all_rev_dict['reviews'], all_rev_dict['already_seen_reviews'],
@@ -53,7 +69,7 @@ class DeleteQueue(QueueABC):
             reason = translator.get(_.argumentFlaggedBecauseHarmful)
 
         rev_dict['already_seen_reviews'].append(rev_dict['rnd_review'].uid)
-        session[f'already_seen_{key_delete}'] = rev_dict['already_seen_reviews']
+        session[f'already_seen_{self.key}'] = rev_dict['already_seen_reviews']
 
         return {
             'stats': stats,

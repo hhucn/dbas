@@ -10,7 +10,7 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReviewCanceled, ReviewDelete, ReviewDuplicate, \
     ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
 from dbas.lib import get_text_for_argument_uid, nick_of_anonymous_user
-from dbas.review import key_delete, key_merge, key_split, key_duplicate
+from dbas.review.queue import key_delete, key_duplicate, key_merge, key_split
 from dbas.tests.utils import TestCaseWithConfig
 from dbas.views import review_delete_argument, revoke_statement_content, flag_argument_or_statement, \
     split_or_merge_statement, split_or_merge_premisegroup, review_edit_argument, review_splitted_premisegroup, \

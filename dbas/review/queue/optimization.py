@@ -9,7 +9,8 @@ from dbas.database.discussion_model import User, LastReviewerOptimization, Revie
     ReviewEditValue, Statement, Issue, Argument, Premise
 from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, get_text_for_statement_uid
 from dbas.logger import logger
-from dbas.review.queue import max_votes
+from dbas.review.lib import get_reputation_reason_by_action
+from dbas.review.queue import max_votes, key_optimization
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_reputation_and_check_review_access, get_issues_for_statement_uids, \
     get_reporter_stats_for_review, get_all_allowed_reviews_for_user
@@ -18,6 +19,22 @@ from dbas.strings.translator import Translator
 
 
 class OptimizationQueue(QueueABC):
+
+    def __init__(self):
+        super().__init__()
+        self.key = key_optimization
+
+    def key(self, key=None):
+        """
+
+        :param key:
+        :return:
+        """
+        if not key:
+            return key
+        else:
+            self.key = key
+
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         """
         Setup the subpage for the optimization queue
@@ -29,7 +46,7 @@ class OptimizationQueue(QueueABC):
         :return: dict()
         """
         logger('OptimizationQueue', 'main')
-        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_optimization}', db_user,
+        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user,
                                                         ReviewOptimization, LastReviewerOptimization)
 
         extra_info = ''
@@ -59,13 +76,13 @@ class OptimizationQueue(QueueABC):
             db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
             text = get_text_for_argument_uid(db_argument.uid)
             issue_titles = [DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title]
-            parts = self.get_text_parts_of_argument(db_argument)
+            parts = self.__get_text_parts_of_argument(db_argument)
             context = [text]
         else:
             db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
             text = db_statement.get_text()
             issue_titles = [issue.title for issue in get_issues_for_statement_uids([rnd_review.statement_uid])]
-            parts = [self.get_part_dict('statement', text, 0, rnd_review.statement_uid)]
+            parts = [self.__get_part_dict('statement', text, 0, rnd_review.statement_uid)]
             context = []
             args = get_all_arguments_by_statement(rnd_review.statement_uid)
             if args:
@@ -77,7 +94,7 @@ class OptimizationQueue(QueueABC):
         stats = get_reporter_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
         all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
-        session[f'already_seen_{key_optimization}'] = all_rev_dict['already_seen_reviews']
+        session[f'already_seen_{self.key}'] = all_rev_dict['already_seen_reviews']
 
         return {
             'stats': stats,
@@ -90,7 +107,7 @@ class OptimizationQueue(QueueABC):
             'session': session
         }
 
-    def get_text_parts_of_argument(self, db_argument: Argument):
+    def __get_text_parts_of_argument(self, db_argument: Argument):
         """
         Get all parts of an argument as string
 
@@ -106,12 +123,12 @@ class OptimizationQueue(QueueABC):
         for uid in premises_uids:
             logger('OptimizationQueue', 'add premise of argument ' + str(db_argument.uid))
             text = get_text_for_statement_uid(uid)
-            ret_list.append(self.get_part_dict('premise', text, db_argument.uid, uid))
+            ret_list.append(self.__get_part_dict('premise', text, db_argument.uid, uid))
 
         if db_argument.argument_uid is None:  # get conclusion of current argument
             conclusion = db_argument.get_conclusion_text()
             logger('OptimizationQueue', 'add statement of argument ' + str(db_argument.uid))
-            ret_list.append(self.get_part_dict('conclusion', conclusion, db_argument.uid, db_argument.conclusion_uid))
+            ret_list.append(self.__get_part_dict('conclusion', conclusion, db_argument.uid, db_argument.conclusion_uid))
         else:  # or get the conclusions argument
             db_conclusions_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
 
@@ -124,15 +141,15 @@ class OptimizationQueue(QueueABC):
                 for uid in premises_uids:
                     text = get_text_for_statement_uid(uid)
                     logger('OptimizationQueue', 'add premise of argument ' + str(db_conclusions_argument.uid))
-                    ret_list.append(self.get_part_dict('premise', text, db_conclusions_argument.uid, uid))
+                    ret_list.append(self.__get_part_dict('premise', text, db_conclusions_argument.uid, uid))
 
                 db_conclusions_argument = DBDiscussionSession.query(Argument).get(db_conclusions_argument.argument_uid)
 
             # get the last conclusion of the chain
             conclusion = db_conclusions_argument.get_conclusion_text()
             logger('OptimizationQueue', 'add statement of argument ' + str(db_conclusions_argument.uid))
-            ret_list.append(self.get_part_dict('conclusion', conclusion, db_conclusions_argument.uid,
-                                               db_conclusions_argument.conclusion_uid))
+            ret_list.append(self.__get_part_dict('conclusion', conclusion, db_conclusions_argument.uid,
+                                                 db_conclusions_argument.conclusion_uid))
 
         return ret_list[::-1]
 

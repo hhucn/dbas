@@ -172,7 +172,7 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     """
     logger('Core', 'Entering discussion.reaction')
     # set votes and reputation
-    add_reputation_for(db_user, reason=get_reputation_reason_by_action('first_argument_click'))
+    add_reputation_for(db_user, get_reputation_reason_by_action('first_argument_click'))
     broke_limit = has_access_to_review_system(db_user)
 
     add_click_for_argument(db_arg_user, db_user)

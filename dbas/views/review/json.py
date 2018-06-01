@@ -6,9 +6,9 @@ from dbas.database.discussion_model import ReviewDelete, ReviewEdit, ReviewDupli
 from dbas.helper.query import revoke_author_of_statement_content, revoke_author_of_argument_content
 from dbas.lib import get_discussion_language
 from dbas.logger import logger
-from dbas.review import flags as review_flag_helper, history as review_history_helper, queues as review_queue_helper, \
-    key_delete, key_edit, key_split, key_merge, key_duplicate, key_optimization
-from dbas.review.queue.adapter import Queue
+from dbas.review import flags as review_flag_helper, history as review_history_helper, queues as review_queue_helper
+from dbas.review.queue import key_edit, key_delete, key_duplicate, key_optimization, key_merge, key_split
+from dbas.review.queue.adapter import QueueAdapter
 from dbas.review.queue.delete import DeleteQueue
 from dbas.review.queue.duplicate import DuplicateQueue
 from dbas.review.queue.edit import EditQueue
@@ -105,7 +105,7 @@ def review_delete_argument(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    Queue(DeleteQueue(), db_user, main_page, _t).add_vote(db_review, should_delete)
+    QueueAdapter(DeleteQueue(), db_user, main_page, _t).add_vote(db_review, should_delete)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_delete)
     return True
 
@@ -127,7 +127,7 @@ def review_edit_argument(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    Queue(EditQueue(), db_user, main_page, _t).add_vote(db_review, is_edit_okay)
+    QueueAdapter(EditQueue(), db_user, main_page, _t).add_vote(db_review, is_edit_okay)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_edit)
     return True
 
@@ -149,7 +149,7 @@ def review_duplicate_statement(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    Queue(DuplicateQueue(), db_user, main_page, _t).add_vote(db_review, is_duplicate)
+    QueueAdapter(DuplicateQueue(), db_user, main_page, _t).add_vote(db_review, is_duplicate)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_duplicate)
     return True
 
@@ -173,7 +173,7 @@ def review_optimization_argument(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    Queue(OptimizationQueue(), db_user, main_page, _t, new_data=new_data).add_vote(db_review, should_optimized)
+    QueueAdapter(OptimizationQueue(), db_user, main_page, _t, new_data=new_data).add_vote(db_review, should_optimized)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_optimization)
     return True
 
@@ -195,7 +195,7 @@ def review_splitted_premisegroup(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    Queue(SplitQueue(), db_user, main_page, _t).add_vote(db_review, should_split)
+    QueueAdapter(SplitQueue(), db_user, main_page, _t).add_vote(db_review, should_split)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_split)
     return True
 
@@ -217,7 +217,7 @@ def review_merged_premisegroup(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    Queue(MergeQueue(), db_user, main_page, _t).add_vote(db_review, should_merge)
+    QueueAdapter(MergeQueue(), db_user, main_page, _t).add_vote(db_review, should_merge)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_merge)
     return True
 

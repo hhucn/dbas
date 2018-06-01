@@ -9,7 +9,7 @@ from dbas.database.discussion_model import User, LastReviewerDuplicate, ReviewDu
     Premise
 from dbas.lib import get_all_arguments_by_statement, get_text_for_statement_uid
 from dbas.logger import logger
-from dbas.review.queue import min_difference, max_votes
+from dbas.review.queue import min_difference, max_votes, key_duplicate
 from dbas.review.lib import get_reputation_reason_by_action
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, \
@@ -19,6 +19,22 @@ from dbas.strings.translator import Translator
 
 
 class DuplicateQueue(QueueABC):
+
+    def __init__(self):
+        super().__init__()
+        self.key = key_duplicate
+
+    def key(self, key=None):
+        """
+
+        :param key:
+        :return:
+        """
+        if not key:
+            return key
+        else:
+            self.key = key
+
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         """
         Setup the subpage for the duplicate queue
@@ -29,27 +45,27 @@ class DuplicateQueue(QueueABC):
         :param translator: Translator
         :return: dict()
         """
-        logger(DuplicateQueue, 'main')
-        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_duplicate}', db_user,
+        logger('DuplicateQueue', 'main')
+        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user,
                                                         ReviewDuplicate,
                                                         LastReviewerDuplicate)
 
         extra_info = ''
         # if we have no reviews, try again with fewer restrictions
         if not all_rev_dict['reviews']:
-            logger(DuplicateQueue, 'no unseen reviews')
+            logger('DuplicateQueue', 'no unseen reviews')
             all_rev_dict['already_seen_reviews'] = list()
             extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
             all_rev_dict['reviews'] = DBDiscussionSession.query(ReviewDuplicate).filter(
                 ReviewDuplicate.is_executed == False,
                 ReviewDuplicate.detector_uid != db_user.uid)
             if len(all_rev_dict['already_voted_reviews']) > 0:
-                logger(DuplicateQueue, 'everything was seen')
+                logger('DuplicateQueue', 'everything was seen')
                 all_rev_dict['reviews'] = all_rev_dict['reviews'].filter(
                     ~ReviewDuplicate.uid.in_(all_rev_dict['already_voted_reviews'])).all()
 
         if not all_rev_dict['reviews']:
-            logger(DuplicateQueue, 'no reviews')
+            logger('DuplicateQueue', 'no reviews')
             return {
                 'stats': None,
                 'text': None,

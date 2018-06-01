@@ -17,6 +17,7 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_conclusion, create_
 from dbas.logger import logger
 from dbas.review.queues import get_complete_review_count
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.text_generator import tag_type, get_header_for_users_confrontation_response, \
     get_text_for_add_premise_container, get_text_for_confrontation, get_text_for_support, \
     get_name_link_of_arguments_author
@@ -213,7 +214,7 @@ class DiscussionDictHelper(object):
         conclusion = get_text_for_conclusion(db_argument, is_users_opinion=False)
 
         if db_argument.conclusion_uid is None:
-            conclusion = conclusion[0:1].lower() + conclusion[1:]
+            conclusion = start_with_small(conclusion)
 
         while premise.endswith(('.', '?', '!')):
             premise = premise[:-1]
@@ -282,7 +283,7 @@ class DiscussionDictHelper(object):
         if attack == Relations.UNDERMINE:
             add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack,
                                                                   conclusion, db_argument.is_supportive)
-            add_premise_text = add_premise_text[0:1].upper() + add_premise_text[1:]
+            add_premise_text = start_with_capital(add_premise_text)
 
         elif attack == Relations.SUPPORT:
             is_supportive = not is_supportive
@@ -331,7 +332,7 @@ class DiscussionDictHelper(object):
                 intro = data['link'] + ' ' + b + _tn.get(_.thinksThat) + e
             else:
                 intro = b + _tn.get(_.otherParticipantsThinkThat) + e
-            sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
+            sys_text = intro + ' ' + start_with_small(text) + '. '
             sys_text += '<br><br>' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, uid=uid, is_markable=True,
                                                   other_author=data['user'])
@@ -444,7 +445,7 @@ class DiscussionDictHelper(object):
         _tn = Translator(self.lang)
         text = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion,
                                          minimize_on_undercut=True, nickname=nickname)
-        user_text = text[0:1].upper() + text[1:]
+        user_text = start_with_capital(text)
         sys_text = _tn.get(_.otherParticipantsDontHaveCounterForThat) + '.'
         trophy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
         mid_text = '{} {} {} <br>{}'.format(trophy, _tn.get(_.congratulation), trophy,
@@ -515,9 +516,9 @@ class DiscussionDictHelper(object):
                                                      minimize_on_undercut=True,
                                                      support_counter_argument=support_counter_argument)
 
-        current_argument = current_argument[0:1].upper() + current_argument[1:]
+        current_argument = start_with_capital(current_argument)
         if self.lang != 'de':
-            premise = premise[0:1].lower() + premise[1:]
+            premise = start_with_small(premise)
 
         # check for support and build text
         _tn = Translator(self.lang)

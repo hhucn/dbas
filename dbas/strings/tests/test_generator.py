@@ -7,6 +7,7 @@ from pyramid import testing
 from dbas.lib import Relations
 from dbas.strings import text_generator as tg
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, MarkedArgument
@@ -31,7 +32,7 @@ class TextGeneratorText(unittest.TestCase):
         _t = Translator('en')
 
         for is_supportive in [True, False]:
-            confrontation = self.confrontation[0:1].upper() + self.confrontation[1:]
+            confrontation = start_with_capital(self.confrontation)
             undermine = _t.get(_.itIsFalseThat) + ' ' + self.premise
             support = _t.get(_.itIsTrueThat) if is_supportive else _t.get(_.itIsFalseThat)
             support += ' ' + self.conclusion + ' '

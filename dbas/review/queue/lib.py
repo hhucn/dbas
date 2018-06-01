@@ -10,7 +10,7 @@ from dbas.database.discussion_model import LastReviewerSplit, LastReviewerMerge,
     sql_timestamp_pretty_print, TextVersion, ReviewEditValue, Premise
 from dbas.lib import get_text_for_argument_uid, get_profile_picture
 from dbas.logger import logger
-from dbas.review import Code
+from dbas.review.queue import Code
 from dbas.review.reputation import add_reputation_for, has_access_to_review_system
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -199,7 +199,7 @@ def add_edit_reviews(db_user: User, uid: int, text: str):
 
     # already set an correction for this?
     if is_statement_in_edit_queue(uid):  # if we already have an edit, skip this
-        logger('review.lib', f'{uid} already got an edit (return {Code.DUPLICATE})')
+        logger('review.lib', f'statement {uid} already got an edit (return {Code.DUPLICATE})')
         return Code.DUPLICATE
 
     # is text different?
@@ -209,6 +209,7 @@ def add_edit_reviews(db_user: User, uid: int, text: str):
         DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=uid))
         return Code.SUCCESS
 
+    logger('review.lib', f'no case for {uid} (return {Code.ERROR})')
     return Code.ERROR
 
 
@@ -262,7 +263,7 @@ def is_arguments_premise_in_edit_queue(db_argument: Argument, is_executed: bool 
     :return: Boolean
     """
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
-    dbp_uid = [p.uid for p in db_premises]
-    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid.in_(dbp_uid),
+    statement_uids = [db_premise.statement_uid for db_premise in db_premises]
+    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid.in_(statement_uids),
                                                                          ReviewEdit.is_executed == is_executed).count()
     return db_already_edit_count > 0

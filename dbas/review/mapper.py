@@ -1,8 +1,7 @@
 from dbas.database.discussion_model import ReviewEdit, ReviewDelete, ReviewDuplicate, ReviewOptimization, ReviewMerge, \
     ReviewSplit, LastReviewerEdit, LastReviewerDelete, LastReviewerDuplicate, LastReviewerOptimization, \
     LastReviewerMerge, LastReviewerSplit
-from dbas.review import key_edit, key_delete, key_duplicate, key_optimization, key_merge, key_split
-from dbas.review.queue import review_queues
+from dbas.review.queue import review_queues, key_edit, key_delete, key_duplicate, key_optimization, key_merge, key_split
 from dbas.review.queue.delete import DeleteQueue
 from dbas.review.queue.duplicate import DuplicateQueue
 from dbas.review.queue.edit import EditQueue
@@ -12,7 +11,9 @@ from dbas.review.queue.split import SplitQueue
 from dbas.strings.keywords import Keywords as _
 
 # key value pairs of the queue key and a title string
-title_mapping = {key: _.get_key_by_string(_.queue.value + key[0:1].upper() + key[1:]) for key in review_queues}
+from dbas.strings.lib import start_with_capital
+
+title_mapping = {key: _.get_key_by_string(_.queue.value + start_with_capital(key)) for key in review_queues}
 
 # key value pairs of the queue key and the table object
 model_mapping = {

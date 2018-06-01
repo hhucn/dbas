@@ -12,7 +12,7 @@ from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelet
     ReviewDuplicate, LastReviewerDuplicate, ReviewMerge, ReviewSplit, LastReviewerMerge, LastReviewerSplit
 from dbas.lib import get_profile_picture
 from dbas.logger import logger
-from dbas.review import max_lock_time_in_sec, key_delete, key_optimization, key_edit, key_duplicate, key_merge, \
+from dbas.review.queue import max_lock_time_in_sec, key_edit, key_delete, key_duplicate, key_optimization, key_merge, \
     key_split, key_history, key_ongoing
 from dbas.review.mapper import model_mapping, reviewer_mapping
 from dbas.review.reputation import get_reputation_of, reputation_borders, reputation_icons
@@ -149,7 +149,7 @@ def __get_edit_dict(main_page, translator, db_user, count, all_rights):
 
 def __get_duplicates_dict(main_page, translator, db_user, count, all_rights):
     """
-    Prepares dictionary for the a section. Queue should be added iff the user is author!
+    Prepares dictionary for the a section. QueueAdapter should be added iff the user is author!
 
     :param main_page: URL
     :param translator: Translator
@@ -227,7 +227,7 @@ def __get_merge_dict(main_page, translator, db_user, count, all_rights):
 
 def __get_history_dict(main_page, translator, count, all_rights):
     """
-    Prepares dictionary for the a section. Queue should be added iff the user is author!
+    Prepares dictionary for the a section. QueueAdapter should be added iff the user is author!
 
     :param main_page: URL
     :param translator: Translator
@@ -250,7 +250,7 @@ def __get_history_dict(main_page, translator, count, all_rights):
 
 def __get_ongoing_dict(main_page, translator):
     """
-    Prepares dictionary for the a section. Queue should be added iff the user is author!
+    Prepares dictionary for the a section. QueueAdapter should be added iff the user is author!
 
     :param main_page: URL
     :param translator: Translator

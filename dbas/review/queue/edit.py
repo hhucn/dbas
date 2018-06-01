@@ -10,7 +10,7 @@ from dbas.database.discussion_model import User, LastReviewerEdit, ReviewEdit, R
 from dbas.handler.statements import correct_statement
 from dbas.logger import logger
 from dbas.review.lib import get_reputation_reason_by_action
-from dbas.review.queue import max_votes, min_difference
+from dbas.review.queue import max_votes, min_difference, key_edit
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, \
     get_all_allowed_reviews_for_user, get_base_subpage_dict, get_reporter_stats_for_review
@@ -19,6 +19,22 @@ from dbas.strings.translator import Translator
 
 
 class EditQueue(QueueABC):
+
+    def __init__(self):
+        super().__init__()
+        self.key = key_edit
+
+    def key(self, key=None):
+        """
+
+        :param key:
+        :return:
+        """
+        if not key:
+            return key
+        else:
+            self.key = key
+
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         """
         Setup the subpage for the edit queue
@@ -30,7 +46,7 @@ class EditQueue(QueueABC):
         :return: dict()
         """
         logger('EditQueue', 'main')
-        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_edit}', db_user, ReviewEdit,
+        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user, ReviewEdit,
                                                         LastReviewerEdit)
 
         rev_dict = get_base_subpage_dict(ReviewEdit, all_rev_dict['reviews'], all_rev_dict['already_seen_reviews'],
@@ -60,7 +76,7 @@ class EditQueue(QueueABC):
                 ReviewEdit.uid.in_(DBDiscussionSession.query(ReviewEditValue.review_edit_uid))).all()
 
             if len(db_allowed_reviews) > 0:  # get new one
-                return self.get_queue_information(db_user, session, application_url, application_url, translator)
+                return self.get_queue_information(db_user, session, application_url, translator)
             return {
                 'stats': None,
                 'text': None,
@@ -74,8 +90,8 @@ class EditQueue(QueueABC):
         self.__difference_between_string(rev_dict['text'], db_edit_value.content, correction_list)
         correction = ''.join(correction_list)
 
-        rev_dict[f'already_seen_{key_edit}'].append(not rev_dict['rnd_review'].uid)
-        session[f'already_seen_{key_edit}'] = rev_dict[f'already_seen_{key_edit}']
+        rev_dict[f'already_seen_reviews'].append(not rev_dict['rnd_review'].uid)
+        session[f'already_seen_{self.key}'] = rev_dict[f'already_seen_reviews']
 
         return {
             'stats': stats,

@@ -10,19 +10,20 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, \
     LastReviewerOptimization, User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, \
     LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print, \
-    ReviewDuplicate, LastReviewerDuplicate, RevokedDuplicate, Argument, Premise, ReviewMerge, ReviewSplit, \
+    ReviewDuplicate, RevokedDuplicate, Argument, Premise, ReviewMerge, ReviewSplit, \
     PremiseGroupMerged, PremiseGroupSplitted, LastReviewerSplit, LastReviewerMerge, ReviewSplitValues, \
     ReviewMergeValues, StatementReplacementsByPremiseGroupSplit, StatementReplacementsByPremiseGroupMerge, \
     ArgumentsAddedByPremiseGroupSplit
 from dbas.lib import get_text_for_argument_uid, get_profile_picture, get_text_for_statement_uid, \
     get_text_for_premisegroup_uid
 from dbas.logger import logger
-from dbas.review import key_delete, key_merge, key_split, key_duplicate, key_edit, \
-    key_optimization
 from dbas.review.lib import set_able_object_of_review
+from dbas.review.mapper import model_mapping, reviewer_mapping
+from dbas.review.queue import key_edit, key_delete, key_duplicate, key_optimization, key_merge, key_split, review_queues
 from dbas.review.reputation import get_reputation_of, reputation_borders
 from dbas.review.reputation import reputation_icons
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
 
 
@@ -63,77 +64,25 @@ def __get_data(main_page, db_user, translator, is_executed=False):
     :param is_executed: Boolean
     :return: dict()
     """
-    ret_dict = dict()
-    if is_executed:
-        ret_dict['has_access'] = __has_access_to_history(db_user)
-    else:
-        ret_dict['has_access'] = db_user.is_admin() or db_user.is_author()
-    ret_dict['is_history'] = is_executed
+    past_decision = []
+    for key in review_queues:
+        executed_list = __get_executed_reviews_of(key, main_page, model_mapping[key], reviewer_mapping[key], translator,
+                                                  is_executed)
+        past_decision.append({
+            'title': start_with_capital(key) + ' Queue',
+            'icon': reputation_icons[key],
+            'queue': key,
+            'content': executed_list,
+            'has_reason': key in [key_delete],
+            'has_oem_text': key in [key_edit, key_merge, key_split],
+            'has_duplicate_text': key in [key_duplicate]
+        })
 
-    deletes_list = __get_executed_reviews_of('deletes', main_page, ReviewDelete, LastReviewerDelete, translator,
-                                             is_executed)
-    optimizations_list = __get_executed_reviews_of('optimizations', main_page, ReviewOptimization,
-                                                   LastReviewerOptimization, translator, is_executed)
-    edits_list = __get_executed_reviews_of('edits', main_page, ReviewEdit, LastReviewerEdit, translator, is_executed)
-    duplicates_list = __get_executed_reviews_of('duplicates', main_page, ReviewDuplicate, LastReviewerDuplicate,
-                                                translator, is_executed)
-    splits_list = __get_executed_reviews_of('splits', main_page, ReviewSplit, LastReviewerSplit, translator,
-                                            is_executed)
-    merges_list = __get_executed_reviews_of('merges', main_page, ReviewMerge, LastReviewerMerge, translator,
-                                            is_executed)
-
-    past_decision = [{
-        'title': 'Delete Queue',
-        'icon': reputation_icons[key_delete],
-        'queue': key_delete,
-        'content': deletes_list,
-        'has_reason': True,
-        'has_oem_text': False,
-        'has_duplicate_text': False
-    }, {
-        'title': 'Optimization Queue',
-        'queue': key_optimization,
-        'icon': reputation_icons[key_optimization],
-        'content': optimizations_list,
-        'has_reason': False,
-        'has_oem_text': False,
-        'has_duplicate_text': False
-    }, {
-        'title': 'Edit Queue',
-        'queue': key_edit,
-        'icon': reputation_icons[key_edit],
-        'content': edits_list,
-        'has_reason': False,
-        'has_oem_text': True,
-        'has_duplicate_text': False
-    }, {
-        'title': 'Duplicates Queue',
-        'queue': key_duplicate,
-        'icon': reputation_icons[key_duplicate],
-        'content': duplicates_list,
-        'has_reason': False,
-        'has_oem_text': False,
-        'has_duplicate_text': True
-    }, {
-        'title': 'Splits Queue',
-        'queue': key_split,
-        'icon': reputation_icons[key_split],
-        'content': splits_list,
-        'has_reason': False,
-        'has_oem_text': True,
-        'has_duplicate_text': False
-    }, {
-        'title': 'Merges Queue',
-        'queue': key_merge,
-        'icon': reputation_icons[key_merge],
-        'content': merges_list,
-        'has_reason': False,
-        'has_oem_text': True,
-        'has_duplicate_text': False
-    }]
-    ret_dict['past_decision'] = past_decision
-
-    return ret_dict
+    return {
+        'has_access': is_executed and __has_access_to_history(db_user) or db_user.is_admin() or db_user.is_author(),
+        'is_history': is_executed,
+        'past_decision': past_decision
+    }
 
 
 def get_reputation_history_of(db_user: User, translator: Translator):
@@ -183,7 +132,7 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     :param is_executed
     :return: Array with all decision per table
     """
-    logger('History', 'Table: {} ({})'.format(table, table_type))
+    logger('History', f'Table: {table} ({table_type})')
     some_list = list()
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == is_executed).order_by(
         table_type.uid.desc()).all()
@@ -210,9 +159,9 @@ def __get_executed_review_element_of(table, main_page, review, last_review_type,
 
     length = 35
     # getting text
-    if table == 'duplicates':
+    if table == key_duplicate:
         full_text = get_text_for_statement_uid(review.duplicate_statement_uid)
-    elif table in ['splits', 'merges']:
+    elif table in [key_split, key_merge]:
         full_text = get_text_for_premisegroup_uid(review.premisegroup_uid)
     elif review.statement_uid is None:
         full_text = get_text_for_argument_uid(review.argument_uid)
@@ -230,11 +179,11 @@ def __get_executed_review_element_of(table, main_page, review, last_review_type,
     short_text = '<span class="text-primary">' + short_text + '</span>'
 
     all_votes = DBDiscussionSession.query(last_review_type).filter_by(review_uid=review.uid)
-    is_okay = False if table == 'optimizations' else True
-    if table is 'merges':
+    is_okay = False if table == key_optimization else True
+    if table is key_merge:
         pro_votes = all_votes.filter_by(should_merge=is_okay).all()
         con_votes = all_votes.filter(last_review_type.should_merge != is_okay).all()
-    elif table is 'splits':
+    elif table is key_split:
         pro_votes = all_votes.filter_by(should_split=is_okay).all()
         con_votes = all_votes.filter(last_review_type.should_split != is_okay).all()
     else:
@@ -245,7 +194,7 @@ def __get_executed_review_element_of(table, main_page, review, last_review_type,
     pro_list = [__get_user_dict_for_review(pro.reviewer_uid, main_page) for pro in pro_votes]
     con_list = [__get_user_dict_for_review(con.reviewer_uid, main_page) for con in con_votes]
 
-    if table == 'duplicates':
+    if table == key_duplicate:
         # switch it, because contra is: it should not be there!
         tmp_list = pro_list
         pro_list = con_list

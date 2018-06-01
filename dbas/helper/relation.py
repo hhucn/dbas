@@ -13,6 +13,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User, Issue
 from dbas.input_validator import is_integer
 from dbas.query_wrapper import get_enabled_arguments_as_query, get_enabled_premises_as_query
+from dbas.strings.lib import start_with_capital
 
 
 def get_undermines_for_argument_uid(argument_uid, is_supportive=False):
@@ -112,7 +113,7 @@ def __get_rebuts_for_arguments_conclusion_uid(db_argument):
             tmp_dict = dict()
             tmp_dict['id'] = rebut.uid
             text = rebut.get_premisegroup_text()
-            tmp_dict['text'] = text[0:1].upper() + text[1:]
+            tmp_dict['text'] = start_with_capital(text)
             return_array.append(tmp_dict)
     return return_array
 

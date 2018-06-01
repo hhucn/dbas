@@ -31,6 +31,7 @@ from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid, \
 from dbas.logger import logger
 from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
 
 values = ['firstname', 'surname', 'email', 'nickname', 'password', 'gender']
@@ -514,7 +515,7 @@ def get_information_of(db_user: User, lang):
     ret_dict['last_action'] = sql_timestamp_pretty_print(db_user.last_action, lang)
     ret_dict['last_login'] = sql_timestamp_pretty_print(db_user.last_login, lang)
     ret_dict['registered'] = sql_timestamp_pretty_print(db_user.registered, lang)
-    ret_dict['group'] = db_group.name[0:1].upper() + db_group.name[1:-1]
+    ret_dict['group'] = start_with_capital(db_group.name)
 
     ret_dict['is_male'] = db_user.gender == 'm'
     ret_dict['is_female'] = db_user.gender == 'f'

@@ -11,6 +11,15 @@ from dbas.strings.translator import Translator
 
 
 class QueueABC(metaclass=ABCMeta):
+
+    @abstractmethod
+    def __init__(self):
+        self.key = 'key'
+
+    @abstractmethod
+    def key(self, key=None):
+        pass
+
     @abstractmethod
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         """

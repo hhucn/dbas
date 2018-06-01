@@ -54,7 +54,7 @@
 
 ### 1.4.3 (2017-08-24)
 - Entering position and premise at once
-- Queue for split and merge statements
+- QueueAdapter for split and merge statements
 - Discussion for Meta-D-BAS
 
 ### 1.4.2 (2017-06-07)
@@ -101,7 +101,7 @@
 - Dockerization
 
 ### 1.2.3 (2017-02-08)
-- Queue for duplicates
+- QueueAdapter for duplicates
 - New step, where the user gets another support/attack for the same conclusion
 - Mark statements/arguments as your opinion
 

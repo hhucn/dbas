@@ -43,10 +43,10 @@ class LibTest(unittest.TestCase):
         self.assertFalse(is_statement_in_edit_queue(50))
 
     def test_is_arguments_premise_in_edit_queue(self):
-        db_review = DBDiscussionSession.query(ReviewEdit).filter_by(is_executed=False).all()
-        for review in db_review:
-            db_p = DBDiscussionSession.query(Premise).filter_by(statement_uid=review.statement_uid).first()
-            if db_p:
-                db_arg = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=db_p.premisegroup_uid).first()
-                self.assertTrue(is_arguments_premise_in_edit_queue(db_arg, False))
-                break
+        db_reviews = DBDiscussionSession.query(ReviewEdit).filter_by(is_executed=False, is_revoked=False).all()
+        for db_review in db_reviews:
+            db_premise = DBDiscussionSession.query(Premise).filter_by(statement_uid=db_review.statement_uid).first()
+            if not db_premise:  # skip this cause we just have random data
+                continue
+            db_arg = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=db_premise.premisegroup_uid).first()
+            self.assertTrue(is_arguments_premise_in_edit_queue(db_arg))

@@ -6,6 +6,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.review.mapper import queue_mapping
 from dbas.review.queue import review_queues
+from dbas.review.queue.adapter import QueueAdapter
 from dbas.strings.translator import Translator
 
 
@@ -22,20 +23,20 @@ class QueueInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
         queue = queue_mapping.get(review_queues[0])
-        subpage_dict = queue(db_user=self.user, application_url='url',
-                             translator=Translator('en')).get_queue_information({}, review_queues[0])
+        adapter = QueueAdapter(queue=queue(), db_user=self.user, application_url='url', translator=Translator('en'))
+        subpage_dict = adapter.get_queue_information({}, review_queues[0])
         self.assertIsNotNone(subpage_dict['elements'])
         self.assertFalse(subpage_dict['no_arguments_to_review'])
-        self.assertTrue(review_queues[0] in subpage_dict['button_set'])
+        self.assertTrue(f'is_{review_queues[0]}' in subpage_dict['button_set'].keys())
 
     def test_get_all_subpages(self):
         request = testing.DummyRequest()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
         for key in queue_mapping:
-            queue = queue_mapping[key]
-            subpage_dict = queue(db_user=self.user, application_url='url',
-                                 translator=Translator('en')).get_queue_information(request.session, queue)
+            queue = queue_mapping[key]()
+            adapter = QueueAdapter(queue=queue, db_user=self.user, application_url='url', translator=Translator('en'))
+            subpage_dict = adapter.get_queue_information(request.session, key)
             self.assertIsNotNone(subpage_dict['elements'])
             self.assertFalse(subpage_dict['no_arguments_to_review'])
-            self.assertTrue(key in subpage_dict['button_set'])
+            self.assertTrue(f'is_{key}' in subpage_dict['button_set'].keys())

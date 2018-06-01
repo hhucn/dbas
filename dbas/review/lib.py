@@ -73,7 +73,7 @@ def __set_able_of_reviews_argument(review, is_disabled):
     transaction.commit()
 
 
-def get_reputation_reason_by_action(action: str) -> Union[str, None]:
+def get_reputation_reason_by_action(action: str) -> Union[ReputationReason, None]:
     """
     Returns the reason string from database by its action. Currently we have the following actions:
      - first_position -> rep_reason_first_position

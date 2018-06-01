@@ -1395,19 +1395,19 @@ msgstr "Aktuelle Entscheidungen"
 #: templates/review-history.pt:14
 msgid "page_contains_list_past_votes"
 msgstr ""
-"Die Seite enthält eine Liste mit allen vergangenen Abstimmungen pro Queue"
+"Die Seite enthält eine Liste mit allen vergangenen Abstimmungen pro QueueAdapter"
 
 #. Default: This page contains lists with an over of ongoing votes for each
 #. queue
 #: templates/review-history.pt:17
 msgid "page_contains_list_ongoing_votes"
 msgstr ""
-"Die Seite enthält eine Liste mit allen aktuellen Abstimmungen pro Queue"
+"Die Seite enthält eine Liste mit allen aktuellen Abstimmungen pro QueueAdapter"
 
 #. Default: You have to earn more reputation for this queue
 #: templates/review-history.pt:27
 msgid "earn_more_reputation_for_queue"
-msgstr "Für diese Queue ist mehr Reputation erforderlich"
+msgstr "Für diese QueueAdapter ist mehr Reputation erforderlich"
 
 #. Default: You have no access to this site
 #: templates/review-history.pt:28

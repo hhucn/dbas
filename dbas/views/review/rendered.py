@@ -2,11 +2,13 @@ from pyramid.view import view_config
 
 import dbas.review
 import dbas.review.lib
+import dbas.review.queue
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
 from dbas.logger import logger
 from dbas.review.history import get_ongoing_reviews, get_reputation_history_of, get_review_history
 from dbas.review.mapper import title_mapping, queue_mapping
+from dbas.review.queue.adapter import QueueAdapter
 from dbas.review.queues import get_review_queues_as_lists
 from dbas.review.reputation import get_reputation_of, get_privilege_list, get_reputation_reasons_list
 from dbas.strings.keywords import Keywords as _
@@ -65,15 +67,15 @@ def queue_details(request):
     application_url = request.application_url
 
     queue = queue_mapping.get(queue_name)
-    subpage_dict = queue(db_user=db_user, application_url=application_url, translator=_tn).get_queue_information(
-        request.session, queue_name)
+    adapter = QueueAdapter(queue(), db_user, application_url, _tn)
+    subpage_dict = adapter.get_queue_information(request.session, queue_name)
     request.session.update(subpage_dict['session'])
 
     prep_dict = main_dict(request, _tn.get(title_mapping[queue_name]))
     prep_dict.update({
         'extras': request.decorated['extras'],
         'subpage': subpage_dict,
-        'lock_time': dbas.review.max_lock_time_in_sec
+        'lock_time': dbas.review.queue.max_lock_time_in_sec
     })
     return prep_dict
 

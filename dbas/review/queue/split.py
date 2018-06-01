@@ -11,7 +11,7 @@ from dbas.database.discussion_model import User, LastReviewerSplit, ReviewSplit,
 from dbas.handler.statements import set_statement
 from dbas.lib import get_text_for_premisegroup_uid
 from dbas.logger import logger
-from dbas.review.queue import max_votes, min_difference
+from dbas.review.queue import max_votes, min_difference, key_split
 from dbas.review.lib import get_reputation_reason_by_action
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, \
@@ -21,6 +21,22 @@ from dbas.strings.translator import Translator
 
 
 class SplitQueue(QueueABC):
+
+    def __init__(self):
+        super().__init__()
+        self.key = key_split
+
+    def key(self, key=None):
+        """
+
+        :param key:
+        :return:
+        """
+        if not key:
+            return key
+        else:
+            self.key = key
+
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         """
         Setup the subpage for the split queue
@@ -32,7 +48,7 @@ class SplitQueue(QueueABC):
         :return: dict()
         """
         logger('SplitQueue', 'main')
-        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_split}', db_user, ReviewSplit,
+        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user, ReviewSplit,
                                                         LastReviewerSplit)
 
         extra_info = ''
@@ -79,7 +95,7 @@ class SplitQueue(QueueABC):
         stats = get_reporter_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
         all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
-        session[f'already_seen_{key_split}'] = all_rev_dict['already_seen_reviews']
+        session[f'already_seen_{self.key}'] = all_rev_dict['already_seen_reviews']
 
         return {
             'stats': stats,

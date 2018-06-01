@@ -11,7 +11,7 @@ from dbas.database.discussion_model import User, LastReviewerMerge, ReviewMerge,
 from dbas.handler.statements import set_statement
 from dbas.lib import get_text_for_premisegroup_uid
 from dbas.logger import logger
-from dbas.review.queue import max_votes, min_difference
+from dbas.review.queue import max_votes, min_difference, key_merge
 from dbas.review.lib import get_reputation_reason_by_action
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, \
@@ -21,6 +21,22 @@ from dbas.strings.translator import Translator
 
 
 class MergeQueue(QueueABC):
+
+    def __init__(self):
+        super().__init__()
+        self.key = key_merge
+
+    def key(self, key=None):
+        """
+
+        :param key:
+        :return:
+        """
+        if not key:
+            return key
+        else:
+            self.key = key
+
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         """
         Setup the subpage for the merge queue
@@ -32,7 +48,7 @@ class MergeQueue(QueueABC):
         :return: dict()
         """
         logger('MergeQueue', 'main')
-        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_merge}', db_user, ReviewMerge,
+        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user, ReviewMerge,
                                                         LastReviewerMerge)
 
         extra_info = ''
@@ -82,7 +98,7 @@ class MergeQueue(QueueABC):
         stats = get_reporter_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
         all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
-        session[f'already_seen_{key_merge}'] = all_rev_dict['already_seen_reviews']
+        session[f'already_seen_{self.key}'] = all_rev_dict['already_seen_reviews']
 
         return {
             'stats': stats,

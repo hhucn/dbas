@@ -10,9 +10,8 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
 from dbas.logger import logger
-from dbas.review import key_history, key_ongoing, key_edit, key_delete, key_duplicate, \
-    key_optimization, key_merge, key_split
-from dbas.review.queue import review_queues, all_queues
+from dbas.review.queue import review_queues, all_queues, key_edit, key_delete, key_duplicate, key_optimization, \
+    key_merge, key_split, key_history, key_ongoing
 from dbas.strings.keywords import Keywords as _
 
 smallest_border = 30
@@ -95,7 +94,7 @@ def get_reputation_of(db_user: User, only_today=False):
     return count, db_user.is_author() or db_user.is_admin()
 
 
-def add_reputation_for(db_user: User, reason):
+def add_reputation_for(db_user: User, db_reason: ReputationReason):
     """
     Add reputation for the given nickname with the reason only iff the reason can be added. For example all reputation
     for 'first' things cannot be given twice.
@@ -103,15 +102,12 @@ def add_reputation_for(db_user: User, reason):
     Anonymous user is not eligible to receive reputation.
 
     :param db_user: User in refactored fns, else nickname
-    :param reason: reason as string, as given in reputation.py
+    :param db_reason: ReputationReason
     :return: boolean that is true, when the user reached 30points
     """
-    logger('Reputation', 'main ' + reason)
-    db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
-
-    logger('Reputation', 'user ' + str(db_user.uid))
+    logger('Reputation', f'main {db_reason.reason}, user {db_user.uid}')
     # special case:
-    if '_first_' in reason:
+    if '_first_' in db_reason.reason:
         db_already_farmed = DBDiscussionSession.query(ReputationHistory).filter(
             ReputationHistory.reputation_uid == db_reason.uid,
             ReputationHistory.reputator_uid == db_user.uid).first()
