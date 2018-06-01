@@ -3,6 +3,12 @@ from enum import Enum, auto
 from dbas.database.discussion_model import ReviewDelete, ReviewOptimization, ReviewEdit, ReviewDuplicate, ReviewSplit, \
     ReviewMerge, LastReviewerSplit, LastReviewerEdit, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerOptimization, LastReviewerMerge
+from dbas.review.queue.delete import DeleteQueue
+from dbas.review.queue.duplicate import DuplicateQueue
+from dbas.review.queue.edit import EditQueue
+from dbas.review.queue.merge import MergeQueue
+from dbas.review.queue.optimization import OptimizationQueue
+from dbas.review.queue.split import SplitQueue
 from dbas.strings.keywords import Keywords as _
 
 # If you want to add a new queue, please
@@ -45,6 +51,16 @@ model_mapping = {
     key_optimization: ReviewOptimization,
     key_merge: ReviewMerge,
     key_split: ReviewSplit
+}
+
+# key value pairs of the queue key and the queue object
+queue_mapping = {
+    key_edit: EditQueue,
+    key_delete: DeleteQueue,
+    key_duplicate: DuplicateQueue,
+    key_optimization: OptimizationQueue,
+    key_merge: MergeQueue,
+    key_split: SplitQueue
 }
 
 # key value pairs of the queue key and the last reviewer object

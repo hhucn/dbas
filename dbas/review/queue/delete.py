@@ -3,20 +3,69 @@ import transaction
 from beaker.session import Session
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete
+from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete, ReviewDeleteReason
 from dbas.logger import logger
 from dbas.review import rep_reason_success_flag, rep_reason_bad_flag, max_votes, min_difference
 from dbas.review.lib import set_able_object_of_review
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access
+from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, get_base_subpage_dict, \
+    get_all_allowed_reviews_for_user, get_reporter_stats_for_review
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
 class DeleteQueue(QueueABC):
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
-        pass
+        """
+        Setup the subpage for the delete queue
 
-    def add_vote(self, db_user: User, db_review: ReviewDelete, is_okay: bool, application_url: str, translator: Translator,
+        :param db_user: User
+        :param session: session of current webserver request
+        :param application_url: current url of the app
+        :param translator: Translator
+        :return: dict()
+        """
+        logger(DeleteQueue, 'main')
+        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_delete}', db_user, ReviewDelete,
+                                                        LastReviewerDelete)
+
+        rev_dict = get_base_subpage_dict(ReviewDelete, all_rev_dict['reviews'], all_rev_dict['already_seen_reviews'],
+                                         all_rev_dict['first_time'], db_user, all_rev_dict['already_voted_reviews'])
+        if not rev_dict['rnd_review']:
+            return {
+                'stats': None,
+                'text': None,
+                'reason': None,
+                'issue_titles': None,
+                'extra_info': None,
+                'session': session
+            }
+
+        db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(rev_dict['rnd_review'].reason_uid)
+        stats = get_reporter_stats_for_review(rev_dict['rnd_review'], translator.get_lang(), application_url)
+
+        reason = ''
+        if db_reason.reason == 'offtopic':
+            reason = translator.get(_.argumentFlaggedBecauseOfftopic)
+        if db_reason.reason == 'spam':
+            reason = translator.get(_.argumentFlaggedBecauseSpam)
+        if db_reason.reason == 'harmful':
+            reason = translator.get(_.argumentFlaggedBecauseHarmful)
+
+        rev_dict['already_seen_reviews'].append(rev_dict['rnd_review'].uid)
+        session[f'already_seen_{key_delete}'] = rev_dict['already_seen_reviews']
+
+        return {
+            'stats': stats,
+            'text': rev_dict['text'],
+            'reason': reason,
+            'issue_titles': rev_dict['issue_titles'],
+            'extra_info': rev_dict['extra_info'],
+            'session': session
+        }
+
+    def add_vote(self, db_user: User, db_review: ReviewDelete, is_okay: bool, application_url: str,
+                 translator: Translator,
                  **kwargs):
         """
 

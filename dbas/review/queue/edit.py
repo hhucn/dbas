@@ -18,7 +18,16 @@ from dbas.strings.translator import Translator
 
 class EditQueue(QueueABC):
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
-        logger('ReviewSubpagerHelper', 'main')
+        """
+        Setup the subpage for the edit queue
+
+        :param db_user: User
+        :param session: session of current webserver request
+        :param application_url: current url of the app
+        :param translator: Translator
+        :return: dict()
+        """
+        logger('EditQueue', 'main')
         all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_edit}', db_user, ReviewEdit,
                                                         LastReviewerEdit)
 
@@ -43,7 +52,7 @@ class EditQueue(QueueABC):
 
         if not db_edit_value:
             rnd_review = rev_dict['rnd_review']
-            logger('ReviewSubpagerHelper', f'ReviewEdit {rnd_review.uid} has no edit value!', error=True)
+            logger('EditQueue', f'ReviewEdit {rnd_review.uid} has no edit value!', error=True)
             # get all valid reviews
             db_allowed_reviews = DBDiscussionSession.query(ReviewEdit).filter(
                 ReviewEdit.uid.in_(DBDiscussionSession.query(ReviewEditValue.review_edit_uid))).all()

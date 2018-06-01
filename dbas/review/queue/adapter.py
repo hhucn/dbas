@@ -1,7 +1,10 @@
 from typing import Union
 
+from beaker.session import Session
+
 from dbas.database.discussion_model import User, ReviewSplit, ReviewOptimization, ReviewMerge, ReviewEdit, ReviewDelete, \
     ReviewDuplicate
+from dbas.review import review_queues
 from dbas.review.queue.delete import DeleteQueue
 from dbas.review.queue.duplicate import DuplicateQueue
 from dbas.review.queue.edit import EditQueue
@@ -16,7 +19,8 @@ class Queue():
     Adapter for the different queue adaptees
     """
 
-    def __init__(self, queue: Union[DeleteQueue, DuplicateQueue, EditQueue, MergeQueue, OptimizationQueue, SplitQueue] = None,
+    def __init__(self,
+                 queue: Union[DeleteQueue, DuplicateQueue, EditQueue, MergeQueue, OptimizationQueue, SplitQueue] = None,
                  db_user: User = None, application_url: str = '', translator: Translator = '', **kwargs):
         """
 
@@ -31,12 +35,46 @@ class Queue():
         self.translator = translator
         self.kwargs = kwargs
 
-    def get_queue_information(self, session):
+    def get_queue_information(self, session: Session, queue_name: str):
         """
 
         :return:
         """
-        self.queue.get_queue_information(self.db_user, session, self.application_url, self.translator)
+        button_set = {f'is_{key}': False for key in review_queues}
+        button_set[f'is_{queue_name}'] = True
+
+        subpage_dict = self.queue.get_queue_information(self.db_user, session, self.application_url, self.translator)
+
+        ret_dict = {
+            'page_name': queue_name,
+            'reviewed_element': subpage_dict,
+            'session': subpage_dict['session']
+        }
+        if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
+            return self.__wrap_subpage_dict({}, button_set)
+
+        return self.__wrap_subpage_dict(ret_dict, button_set)
+
+    @staticmethod
+    def __wrap_subpage_dict(ret_dict, button_set):
+        """
+        Set up dict()
+
+        :param ret_dict: dict()
+        :param button_set: dict()
+        :return: dict()
+        """
+        session = {}
+        if ret_dict and 'session' in ret_dict:
+            session = ret_dict['session']
+            ret_dict.pop('session')
+
+        return {
+            'elements': ret_dict,
+            'no_arguments_to_review': len(ret_dict) is 0,
+            'button_set': button_set,
+            'session': session
+        }
 
     def add_vote(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization,
                                         ReviewSplit], is_okay: bool):
@@ -46,7 +84,8 @@ class Queue():
         :param is_okay:
         :return:
         """
-        self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay, application_url=self.application_url,
+        self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay,
+                            application_url=self.application_url,
                             translator=self.translator, **self.kwargs)
 
     def add_review(self):

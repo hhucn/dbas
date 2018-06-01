@@ -135,11 +135,7 @@ def get_base_subpage_dict(review_type, db_reviews, already_seen, first_time, db_
     else:
         db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = db_statement.get_text()
-        db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter_by(
-            statement_uid=rnd_review.statement_uid).all()
-        statement2issues_uid = [el.issue_uid for el in db_statement2issues]
-        db_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issues_uid)).all()
-        issue_titles = [issue.title for issue in db_issues]
+        issue_titles = [issue.title for issue in get_issues_for_statement_uids([rnd_review.statement_uid])]
 
     return {
         'rnd_review': rnd_review,
@@ -170,3 +166,11 @@ def get_reporter_stats_for_review(db_review, ui_locales, main_page):
         'reporter_url': main_page + '/user/' + str(db_reporter.uid),
         'id': str(db_review.uid)
     }
+
+
+def get_issues_for_statement_uids(statement_uids: list(int)) -> list(Issue):
+    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
+        StatementToIssue.statement_uid.in_(statement_uids)).all()
+    statement2issue_uids = [el.issue_uid for el in db_statement2issue]
+    db_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()
+    return db_issues

@@ -1,20 +1,156 @@
 # Adaptee for the optimizations queue. Every accepted optimization will be an edit.
+import random
+
 import transaction
 from beaker.session import Session
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerOptimization, ReviewOptimization, ReviewEdit, \
-    ReviewEditValue
+    ReviewEditValue, Statement, Issue, Argument, Premise
+from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review import rep_reason_bad_flag, max_votes
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import add_reputation_and_check_review_access
+from dbas.review.queue.lib import add_reputation_and_check_review_access, get_issues_for_statement_uids, \
+    get_reporter_stats_for_review, get_all_allowed_reviews_for_user
 from dbas.strings.translator import Translator
 
 
 class OptimizationQueue(QueueABC):
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
-        pass
+        """
+        Setup the subpage for the optimization queue
+
+        :param db_user: User
+        :param session: session of current webserver request
+        :param application_url: current url of the app
+        :param translator: Translator
+        :return: dict()
+        """
+        logger('OptimizationQueue', 'main')
+        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_optimization}', db_user,
+                                                        ReviewOptimization, LastReviewerOptimization)
+
+        extra_info = ''
+        # if we have no reviews, try again with fewer restrictions
+        if not all_rev_dict['reviews']:
+            all_rev_dict['already_seen_reviews'] = list()
+            extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
+            db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(ReviewOptimization.is_executed == False,
+                                                                              ReviewOptimization.detector_uid != db_user.uid)
+            if len(all_rev_dict['already_voted_reviews']) > 0:
+                db_reviews = db_reviews.filter(~ReviewOptimization.uid.in_(all_rev_dict['already_voted_reviews']))
+            all_rev_dict['reviews'] = db_reviews.all()
+
+        if not all_rev_dict['reviews']:
+            return {
+                'stats': None,
+                'text': None,
+                'reason': None,
+                'issue_titles': None,
+                'context': [],
+                'extra_info': None,
+                'session': session
+            }
+
+        rnd_review = random.choice(all_rev_dict['reviews'])
+        if rnd_review.statement_uid is None:
+            db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
+            text = get_text_for_argument_uid(db_argument.uid)
+            issue_titles = [DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title]
+            parts = self.get_text_parts_of_argument(db_argument)
+            context = [text]
+        else:
+            db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
+            text = db_statement.get_text()
+            issue_titles = [issue.title for issue in get_issues_for_statement_uids([rnd_review.statement_uid])]
+            parts = [self.get_part_dict('statement', text, 0, rnd_review.statement_uid)]
+            context = []
+            args = get_all_arguments_by_statement(rnd_review.statement_uid)
+            if args:
+                html_wrap = '<span class="text-info"><strong>{}</strong></span>'
+                context = [get_text_for_argument_uid(arg.uid).replace(text, html_wrap.format(text)) for arg in args]
+
+        reason = translator.get(_.argumentFlaggedBecauseOptimization)
+
+        stats = get_reporter_stats_for_review(rnd_review, translator.get_lang(), application_url)
+
+        all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
+        session[f'already_seen_{key_optimization}'] = all_rev_dict['already_seen_reviews']
+
+        return {
+            'stats': stats,
+            'text': text,
+            'reason': reason,
+            'issue_titles': issue_titles,
+            'extra_info': extra_info,
+            'context': context,
+            'parts': parts,
+            'session': session
+        }
+
+    def get_text_parts_of_argument(self, db_argument: Argument):
+        """
+        Get all parts of an argument as string
+
+        :param db_argument: Argument.uid
+        :return: list of strings
+        """
+        logger('OptimizationQueue', 'main')
+        ret_list = list()
+
+        # get premise of current argument
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
+        premises_uids = [premise.uid for premise in db_premises]
+        for uid in premises_uids:
+            logger('OptimizationQueue', 'add premise of argument ' + str(db_argument.uid))
+            text = get_text_for_statement_uid(uid)
+            ret_list.append(self.get_part_dict('premise', text, db_argument.uid, uid))
+
+        if db_argument.argument_uid is None:  # get conclusion of current argument
+            conclusion = db_argument.get_conclusion_text()
+            logger('OptimizationQueue', 'add statement of argument ' + str(db_argument.uid))
+            ret_list.append(self.get_part_dict('conclusion', conclusion, db_argument.uid, db_argument.conclusion_uid))
+        else:  # or get the conclusions argument
+            db_conclusions_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
+
+            while db_conclusions_argument.argument_uid is not None:  # get further conclusions arguments
+
+                # get premise of conclusions arguments
+                db_premises = DBDiscussionSession.query(Premise).filter_by(
+                    premisegroup_uid=db_argument.premisegroup_uid).all()
+                premises_uids = [premise.uid for premise in db_premises]
+                for uid in premises_uids:
+                    text = get_text_for_statement_uid(uid)
+                    logger('OptimizationQueue', 'add premise of argument ' + str(db_conclusions_argument.uid))
+                    ret_list.append(self.get_part_dict('premise', text, db_conclusions_argument.uid, uid))
+
+                db_conclusions_argument = DBDiscussionSession.query(Argument).get(db_conclusions_argument.argument_uid)
+
+            # get the last conclusion of the chain
+            conclusion = db_conclusions_argument.get_conclusion_text()
+            logger('OptimizationQueue', 'add statement of argument ' + str(db_conclusions_argument.uid))
+            ret_list.append(self.get_part_dict('conclusion', conclusion, db_conclusions_argument.uid,
+                                               db_conclusions_argument.conclusion_uid))
+
+        return ret_list[::-1]
+
+    @staticmethod
+    def __get_part_dict(typeof: str, text: str, argument_uid: int, conclusion_uid: int):
+        """
+        Collects the aprts of the argument-string and builds up a little dict
+
+        :param typeof: String
+        :param text: String
+        :param argument_uid: Argument.uid
+        :return: dict()
+        """
+        return {
+            'type': typeof,
+            'text': text,
+            'argument_uid': argument_uid,
+            'statement_uid': conclusion_uid
+        }
 
     def add_vote(self, db_user: User, db_review: ReviewOptimization, is_okay: bool, application_url: str,
                  translator: Translator, **kwargs):
