@@ -108,6 +108,16 @@ def __wrap_subpage_dict(ret_dict, no_arguments_to_review, button_set):
 
 
 def __get_base_subpage_dict(review_type, db_reviews, already_seen, first_time, db_user, already_reviewed):
+    """
+
+    :param review_type:
+    :param db_reviews:
+    :param already_seen:
+    :param first_time:
+    :param db_user:
+    :param already_reviewed:
+    :return:
+    """
     extra_info = ''
     if not db_reviews:
         already_seen = list()
@@ -119,9 +129,15 @@ def __get_base_subpage_dict(review_type, db_reviews, already_seen, first_time, d
         db_reviews = db_reviews.all()
 
     if not db_reviews:
-        return None, None, None, None, None
+        return {
+            'rnd_review': None,
+            'already_seen_reviews': None,
+            'extra_info': None,
+            'text': None,
+            'issue_titles': None,
+        }
 
-    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
+    rnd_review = random.choice(db_reviews)
     if rnd_review.statement_uid is None:
         db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
         text = get_text_for_argument_uid(db_argument.uid)
@@ -129,12 +145,19 @@ def __get_base_subpage_dict(review_type, db_reviews, already_seen, first_time, d
     else:
         db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = db_statement.get_text()
-        statement2issues_uid = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(
-            statement_uid=rnd_review.statement_uid).all()]
-        issue_titles = [issue.title for issue in
-                        DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issues_uid)).all()]
+        db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter_by(
+            statement_uid=rnd_review.statement_uid).all()
+        statement2issues_uid = [el.issue_uid for el in db_statement2issues]
+        db_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issues_uid)).all()
+        issue_titles = [issue.title for issue in db_issues]
 
-    return rnd_review, already_seen, extra_info, text, issue_titles
+    return {
+        'rnd_review': rnd_review,
+        'already_seen_reviews': already_seen,
+        'extra_info': extra_info,
+        'text': text,
+        'issue_titles': issue_titles
+    }
 
 
 def __get_subpage_dict_for_deletes(session, application_url, db_user, translator):
@@ -148,17 +171,12 @@ def __get_subpage_dict_for_deletes(session, application_url, db_user, translator
     :return: dict()
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
-                                                                                              'already_seen_deletes',
-                                                                                              db_user,
-                                                                                              ReviewDelete,
-                                                                                              LastReviewerDelete)
+    all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_delete}', db_user, ReviewDelete,
+                                                    LastReviewerDelete)
 
-    rnd_review, already_seen, extra_info, text, issue_titles = __get_base_subpage_dict(ReviewDelete, db_reviews,
-                                                                                       already_seen,
-                                                                                       first_time, db_user,
-                                                                                       already_reviewed)
-    if not rnd_review:
+    rev_dict = __get_base_subpage_dict(ReviewDelete, all_rev_dict['reviews'], all_rev_dict['already_seen_reviews'],
+                                       all_rev_dict['first_time'], db_user, all_rev_dict['already_voted_reviews'])
+    if not rev_dict['rnd_review']:
         return {
             'stats': None,
             'text': None,
@@ -168,8 +186,8 @@ def __get_subpage_dict_for_deletes(session, application_url, db_user, translator
             'session': session
         }
 
-    db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(rnd_review.reason_uid)
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
+    db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(rev_dict['rnd_review'].reason_uid)
+    stats = __get_stats_for_review(rev_dict['rnd_review'], translator.get_lang(), application_url)
 
     reason = ''
     if db_reason.reason == 'offtopic':
@@ -179,14 +197,14 @@ def __get_subpage_dict_for_deletes(session, application_url, db_user, translator
     if db_reason.reason == 'harmful':
         reason = translator.get(_.argumentFlaggedBecauseHarmful)
 
-    already_seen.append(rnd_review.uid)
-    session['already_seen_deletes'] = already_seen
+    rev_dict['already_seen_reviews'].append(rev_dict['rnd_review'].uid)
+    session[f'already_seen_{key_delete}'] = rev_dict['already_seen_reviews']
 
     return {'stats': stats,
-            'text': text,
+            'text': rev_dict['text'],
             'reason': reason,
-            'issue_titles': issue_titles,
-            'extra_info': extra_info,
+            'issue_titles': rev_dict['issue_titles'],
+            'extra_info': rev_dict['extra_info'],
             'session': session}
 
 
@@ -201,33 +219,32 @@ def __get_subpage_dict_for_optimization(session, application_url, db_user, trans
     :return: dict()
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
-                                                                                              'already_seen_optimization',
-                                                                                              db_user,
-                                                                                              ReviewOptimization,
-                                                                                              LastReviewerOptimization)
+    all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_optimization}', db_user,
+                                                    ReviewOptimization, LastReviewerOptimization)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
-    if not db_reviews:
-        already_seen = list()
-        extra_info = 'already_seen' if not first_time else ''
+    if not all_rev_dict['reviews']:
+        all_rev_dict['already_seen_reviews'] = list()
+        extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
         db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(ReviewOptimization.is_executed == False,
                                                                           ReviewOptimization.detector_uid != db_user.uid)
-        if len(already_reviewed) > 0:
-            db_reviews = db_reviews.filter(~ReviewOptimization.uid.in_(already_reviewed))
-        db_reviews = db_reviews.all()
+        if len(all_rev_dict['already_voted_reviews']) > 0:
+            db_reviews = db_reviews.filter(~ReviewOptimization.uid.in_(all_rev_dict['already_voted_reviews']))
+        all_rev_dict['reviews'] = db_reviews.all()
 
-    if not db_reviews:
-        return {'stats': None,
-                'text': None,
-                'reason': None,
-                'issue_titles': None,
-                'context': [],
-                'extra_info': None,
-                'session': session}
+    if not all_rev_dict['reviews']:
+        return {
+            'stats': None,
+            'text': None,
+            'reason': None,
+            'issue_titles': None,
+            'context': [],
+            'extra_info': None,
+            'session': session
+        }
 
-    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
+    rnd_review = random.choice(all_rev_dict['reviews'])
     if rnd_review.statement_uid is None:
         db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
         text = get_text_for_argument_uid(db_argument.uid)
@@ -237,33 +254,35 @@ def __get_subpage_dict_for_optimization(session, application_url, db_user, trans
     else:
         db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = db_statement.get_text()
-        statement2issue_uids = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(
-            statement_uid=rnd_review.statement_uid)]
-        issue_titles = [issue.title for issue in
-                        DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()]
+        db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter_by(
+            statement_uid=rnd_review.statement_uid).all()
+        statement2issue_uids = [el.issue_uid for el in db_statement2issue]
+        db_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()
+        issue_titles = [issue.title for issue in db_issues]
         parts = [__get_part_dict('statement', text, 0, rnd_review.statement_uid)]
         context = []
         args = get_all_arguments_by_statement(rnd_review.statement_uid)
         if args:
-            context = [get_text_for_argument_uid(arg.uid).replace(text,
-                                                                  '<span class="text-info"><strong>{}</strong></span>'.format(
-                                                                      text)) for arg in args]
+            html_wrap = '<span class="text-info"><strong>{}</strong></span>'
+            context = [get_text_for_argument_uid(arg.uid).replace(text, html_wrap.format(text)) for arg in args]
 
     reason = translator.get(_.argumentFlaggedBecauseOptimization)
 
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
-    already_seen.append(rnd_review.uid)
-    session['already_seen_optimization'] = already_seen
+    all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
+    session[f'already_seen_{key_optimization}'] = all_rev_dict['already_seen_reviews']
 
-    return {'stats': stats,
-            'text': text,
-            'reason': reason,
-            'issue_titles': issue_titles,
-            'extra_info': extra_info,
-            'context': context,
-            'parts': parts,
-            'session': session}
+    return {
+        'stats': stats,
+        'text': text,
+        'reason': reason,
+        'issue_titles': issue_titles,
+        'extra_info': extra_info,
+        'context': context,
+        'parts': parts,
+        'session': session
+    }
 
 
 def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
@@ -277,17 +296,12 @@ def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
     :return: dict()
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
-                                                                                              'already_seen_edit',
-                                                                                              db_user,
-                                                                                              ReviewEdit,
-                                                                                              LastReviewerEdit)
+    all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_edit}', db_user, ReviewEdit,
+                                                    LastReviewerEdit)
 
-    rnd_review, already_seen, extra_info, text, issue_titles = __get_base_subpage_dict(ReviewEdit, db_reviews,
-                                                                                       already_seen,
-                                                                                       first_time, db_user,
-                                                                                       already_reviewed)
-    if not rnd_review:
+    rev_dict = __get_base_subpage_dict(ReviewEdit, all_rev_dict['reviews'], all_rev_dict['already_seen_reviews'],
+                                       all_rev_dict['first_time'], db_user, all_rev_dict['already_voted_reviews'])
+    if not rev_dict['rnd_review']:
         return {
             'stats': None,
             'text': None,
@@ -300,42 +314,45 @@ def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
     reason = translator.get(_.argumentFlaggedBecauseEdit)
 
     # build correction
-    db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=rnd_review.uid).first()
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
+    db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(
+        review_edit_uid=rev_dict['rnd_review'].uid).first()
+    stats = __get_stats_for_review(rev_dict['rnd_review'], translator.get_lang(), application_url)
 
     if not db_edit_value:
-        logger('ReviewSubpagerHelper', 'ReviewEdit {} has no edit value!'.format(rnd_review.uid), error=True)
+        logger('ReviewSubpagerHelper', 'ReviewEdit {} has no edit value!'.format(rev_dict['rnd_review'].uid),
+               error=True)
         # get all valid reviews
         db_allowed_reviews = DBDiscussionSession.query(ReviewEdit).filter(
             ReviewEdit.uid.in_(DBDiscussionSession.query(ReviewEditValue.review_edit_uid))).all()
 
         if len(db_allowed_reviews) > 0:
             return __get_subpage_dict_for_edits(session, db_user, translator, application_url)
-        else:
-            return {
-                'stats': None,
-                'text': None,
-                'reason': None,
-                'issue_titles': None,
-                'extra_info': None,
-                'session': session
-            }
+        return {
+            'stats': None,
+            'text': None,
+            'reason': None,
+            'issue_titles': None,
+            'extra_info': None,
+            'session': session
+        }
 
-    correction_list = [char for char in text]
-    __difference_between_string(text, db_edit_value.content, correction_list)
+    correction_list = [char for char in rev_dict['text']]
+    __difference_between_string(rev_dict['text'], db_edit_value.content, correction_list)
     correction = ''.join(correction_list)
 
-    already_seen.append(rnd_review.uid)
-    session['already_seen_edit'] = already_seen
+    rev_dict[f'already_seen_{key_edit}'].append(not rev_dict['rnd_review'].uid)
+    session[f'already_seen_{key_edit}'] = rev_dict[f'already_seen_{key_edit}']
 
-    return {'stats': stats,
-            'text': text,
-            'corrected_version': db_edit_value.content,
-            'corrections': correction,
-            'reason': reason,
-            'issue_titles': issue_titles,
-            'extra_info': extra_info,
-            'session': session}
+    return {
+        'stats': stats,
+        'text': rev_dict['text'],
+        'corrected_version': db_edit_value.content,
+        'corrections': correction,
+        'reason': reason,
+        'issue_titles': rev_dict['issue_titles'],
+        'extra_info': rev_dict['extra_info'],  # TODO KILL
+        'session': session
+    }
 
 
 def __get_subpage_dict_for_duplicates(session, application_url, db_user, translator):
@@ -349,57 +366,59 @@ def __get_subpage_dict_for_duplicates(session, application_url, db_user, transla
     :return: dict()
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
-                                                                                              'already_seen_duplicate',
-                                                                                              db_user,
-                                                                                              ReviewDuplicate,
-                                                                                              LastReviewerDuplicate)
+    all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_duplicate}', db_user, ReviewDuplicate,
+                                                    LastReviewerDuplicate)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
-    if not db_reviews:
+    if not all_rev_dict['reviews']:
         logger('ReviewSubpagerHelper', 'no unseen reviews')
-        already_seen = list()
-        extra_info = 'already_seen' if not first_time else ''
-        db_reviews = DBDiscussionSession.query(ReviewDuplicate).filter(ReviewDuplicate.is_executed == False,
-                                                                       ReviewDuplicate.detector_uid != db_user.uid)
-        if len(already_reviewed) > 0:
+        all_rev_dict['already_seen_reviews'] = list()
+        extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
+        all_rev_dict['reviews'] = DBDiscussionSession.query(ReviewDuplicate).filter(
+            ReviewDuplicate.is_executed == False,
+            ReviewDuplicate.detector_uid != db_user.uid)
+        if len(all_rev_dict['already_voted_reviews']) > 0:
             logger('ReviewSubpagerHelper', 'everything was seen')
-            db_reviews = db_reviews.filter(~ReviewDuplicate.uid.in_(already_reviewed))
-        db_reviews = db_reviews.all()
+            all_rev_dict['reviews'] = all_rev_dict['reviews'].filter(
+                ~ReviewDuplicate.uid.in_(all_rev_dict['already_voted_reviews'])).all()
 
-    if not db_reviews:
+    if not all_rev_dict['reviews']:
         logger('ReviewSubpagerHelper', 'no reviews')
-        return {'stats': None,
-                'text': None,
-                'reason': None,
-                'issue_titles': None,
-                'extra_info': None,
-                'session': session}
+        return {
+            'stats': None,
+            'text': None,
+            'reason': None,
+            'issue_titles': None,
+            'extra_info': None,
+            'session': session
+        }
 
-    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
+    rnd_review = random.choice(all_rev_dict['reviews'])
     db_statement = DBDiscussionSession.query(Statement).get(rnd_review.duplicate_statement_uid)
     text = db_statement.get_text()
-    statement2issue_uids = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(
-        statement_uid=rnd_review.duplicate_statement_uid)]
-    issue_titles = [issue.title for issue in
-                    DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()]
+
+    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter_by(
+        statement_uid=rnd_review.duplicate_statement_uid)
+    statement2issue_uids = [el.issue_uid for el in db_statement2issue]
+    db_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()
+    issue_titles = [issue.title for issue in db_issues]
     reason = translator.get(_.argumentFlaggedBecauseDuplicate)
-
     duplicate_of_text = get_text_for_statement_uid(rnd_review.original_statement_uid)
-
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
-    already_seen.append(rnd_review.uid)
-    session['already_seen_duplicate'] = already_seen
+    all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
+    session['already_seen_duplicate'] = all_rev_dict['already_seen_reviews']
 
-    return {'stats': stats,
-            'text': text,
-            'duplicate_of': duplicate_of_text,
-            'reason': reason,
-            'issue_titles': issue_titles,
-            'extra_info': extra_info,
-            'session': session}
+    return {
+        'stats': stats,
+        'text': text,
+        'duplicate_of': duplicate_of_text,
+        'reason': reason,
+        'issue_titles': issue_titles,
+        'extra_info': extra_info,
+        'session': session
+    }
 
 
 def __get_subpage_dict_for_splits(session, application_url, db_user, translator):
@@ -412,26 +431,23 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
     :return:
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
-                                                                                              'already_seen_split',
-                                                                                              db_user,
-                                                                                              ReviewSplit,
-                                                                                              LastReviewerSplit)
+    all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_split}', db_user, ReviewSplit,
+                                                    LastReviewerSplit)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
-    if not db_reviews:
+    if not all_rev_dict['reviews']:
         logger('ReviewSubpagerHelper', 'no unseen reviews')
-        already_seen = list()
-        extra_info = 'already_seen' if not first_time else ''
+        all_rev_dict['already_seen_reviews'] = list()
+        extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
         db_reviews = DBDiscussionSession.query(ReviewSplit).filter(ReviewSplit.is_executed == False,
                                                                    ReviewSplit.detector_uid != db_user.uid)
-        if len(already_reviewed) > 0:
+        if len(all_rev_dict['already_voted_reviews']) > 0:
             logger('ReviewSubpagerHelper', 'everything was seen')
-            db_reviews = db_reviews.filter(~ReviewSplit.uid.in_(already_reviewed))
-        db_reviews = db_reviews.all()
+            db_reviews = db_reviews.filter(~ReviewSplit.uid.in_(all_rev_dict['already_voted_reviews']))
+            all_rev_dict['reviews'] = db_reviews.all()
 
-    if not db_reviews:
+    if not all_rev_dict['reviews']:
         logger('ReviewSubpagerHelper', 'no reviews')
         return {
             'stats': None,
@@ -443,7 +459,7 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
             'session': session
         }
 
-    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
+    rnd_review = random.choice(all_rev_dict['reviews'])
     premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=rnd_review.premisegroup_uid).all()
     text = get_text_for_premisegroup_uid(rnd_review.premisegroup_uid)
     db_review_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=rnd_review.uid).all()
@@ -457,15 +473,16 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
     reason = translator.get(_.argumentFlaggedBecauseSplit)
 
     statement_uids = [p.statement_uid for p in premises]
-    statement2issue_uids = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter(
-        StatementToIssue.statement_uid.in_(statement_uids))]
-    issue_titles = [issue.title for issue in
-                    DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()]
+    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
+        StatementToIssue.statement_uid.in_(statement_uids)).all()
+    statement2issue_uids = [el.issue_uid for el in db_statement2issue]
+    db_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()
+    issue_titles = [issue.title for issue in db_issues]
 
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
-    already_seen.append(rnd_review.uid)
-    session['already_seen_split'] = already_seen
+    all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
+    session[f'already_seen_{key_split}'] = all_rev_dict['already_seen_reviews']
 
     return {
         'stats': stats,
@@ -490,26 +507,23 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
     :return:
     """
     logger('ReviewSubpagerHelper', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = get_all_allowed_reviews_for_user(session,
-                                                                                              'already_seen_merge',
-                                                                                              db_user,
-                                                                                              ReviewMerge,
-                                                                                              LastReviewerMerge)
+    all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{key_merge}', db_user, ReviewMerge,
+                                                    LastReviewerMerge)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
-    if not db_reviews:
+    if not all_rev_dict['reviews']:
         logger('ReviewSubpagerHelper', 'no unseen reviews')
-        already_seen = list()
-        extra_info = 'already_seen' if not first_time else ''
+        all_rev_dict['already_seen_reviews'] = list()
+        extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
         db_reviews = DBDiscussionSession.query(ReviewMerge).filter(ReviewMerge.is_executed == False,
                                                                    ReviewMerge.detector_uid != db_user.uid)
-        if len(already_reviewed) > 0:
+        if len(all_rev_dict['already_voted_reviews']) > 0:
             logger('ReviewSubpagerHelper', 'everything was seen')
-            db_reviews = db_reviews.filter(~ReviewMerge.uid.in_(already_reviewed))
-        db_reviews = db_reviews.all()
+            db_reviews = db_reviews.filter(~ReviewMerge.uid.in_(all_rev_dict['already_voted_reviews']))
+        all_rev_dict['reviews'] = db_reviews.all()
 
-    if not db_reviews:
+    if not all_rev_dict['reviews']:
         logger('ReviewSubpagerHelper', 'no reviews')
         return {
             'stats': None,
@@ -520,7 +534,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
             'session': session
         }
 
-    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
+    rnd_review = random.choice(all_rev_dict['reviews'])
     premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=rnd_review.premisegroup_uid).all()
     text = [premise.get_text() for premise in premises]
     db_review_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=rnd_review.uid).all()
@@ -537,16 +551,17 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
         pgroup_only = True
 
     statement_uids = [p.statement_uid for p in premises]
-    statement2issue_uids = [el.issue_uid for el in DBDiscussionSession.query(StatementToIssue).filter(
-        StatementToIssue.statement_uid.in_(statement_uids))]
-    issue_titles = [issue.title for issue in
-                    DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()]
+    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
+        StatementToIssue.statement_uid.in_(statement_uids)).all()
+    statement2issue_uids = [el.issue_uid for el in db_statement2issue]
+    db_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(statement2issue_uids)).all()
+    issue_titles = [issue.title for issue in db_issues]
     reason = translator.get(_.argumentFlaggedBecauseMerge)
 
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
-    already_seen.append(rnd_review.uid)
-    session['already_seen_merge'] = already_seen
+    all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
+    session[f'already_seen_{key_merge}'] = all_rev_dict['already_seen_reviews']
 
     return {
         'stats': stats,
@@ -560,9 +575,18 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
     }
 
 
-def __difference_between_string(a, b, correction_list):
-    tag_p = '<strong><span class="text-success">'
-    tag_m = '<strong><span class="text-danger">'
+def __difference_between_string(a: str, b: str, correction_list: list(str)):
+    """
+    Colors the difference between two strings
+
+    :param a: first string
+    :param b: second string
+    :param correction_list: character list of the first string
+    :return: modified correction list with html strings around the modified characters
+    """
+    base = '<strong><span class="text-{}">'
+    tag_p = base.format('success')
+    tag_m = base.format('danger')
     tag_e = '</span></strong>'
 
     for i, s in enumerate(difflib.ndiff(a, b)):
@@ -577,32 +601,31 @@ def __difference_between_string(a, b, correction_list):
             correction_list[i] = tag_p + s[-1] + tag_e
 
 
-def __get_stats_for_review(review, ui_locales, main_page):
+def __get_stats_for_review(db_review, ui_locales, main_page):
     """
     Get statistics for the current review
 
-    :param review: Review-Row
+    :param db_review: Review-Row
     :param ui_locales: Language.ui_locales
     :param main_page: Host URL
     :return: dict()
     """
     logger('ReviewSubpagerHelper', 'main')
 
-    db_reporter = DBDiscussionSession.query(User).get(review.detector_uid)
+    db_reporter = DBDiscussionSession.query(User).get(db_review.detector_uid)
 
-    stats = dict()
-    stats['reported'] = sql_timestamp_pretty_print(review.timestamp, ui_locales)
-    stats['reporter'] = db_reporter.global_nickname
-    stats['reporter_gravatar'] = get_profile_picture(db_reporter, 20)
-    stats['reporter_url'] = main_page + '/user/' + str(db_reporter.uid)
-    stats['id'] = str(review.uid)
-
-    return stats
+    return {
+        'reported': sql_timestamp_pretty_print(db_review.timestamp, ui_locales),
+        'reporter': db_reporter.global_nickname,
+        'reporter_gravatar': get_profile_picture(db_reporter, 20),
+        'reporter_url': main_page + '/user/' + str(db_reporter.uid),
+        'id': str(db_review.uid)
+    }
 
 
 def __get_text_parts_of_argument(argument):
     """
-    Get all parts of ana rgument as string
+    Get all parts of an argument as string
 
     :param argument: Argument.uid
     :return: list of strings

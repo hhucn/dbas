@@ -72,13 +72,21 @@ def get_all_allowed_reviews_for_user(session, session_keyword, db_user, review_t
     """
     # only get arguments, which the user has not seen yet
     logger('review.lib', 'main')
-    already_seen, first_time = (session[session_keyword], False) if session_keyword in session else (list(), True)
+    already_seen, first_time = list(), True
+    if session_keyword in session:
+        already_seen, first_time = session[session_keyword], False
 
     # and not reviewed
     db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
     already_reviewed = [last_review.review_uid for last_review in db_last_reviews_of_user]
     db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
                                                                review_type.detector_uid != db_user.uid,
-                                                               ~review_type.uid.in_(already_seen + already_reviewed)).all()
+                                                               ~review_type.uid.in_(
+                                                                   already_seen + already_reviewed)).all()
 
-    return db_reviews, already_seen, already_reviewed, first_time
+    return {
+        'reviews': db_reviews,
+        'already_seen_reviews': already_seen,
+        'already_voted_reviews': already_reviewed,
+        'first_time': first_time
+    }

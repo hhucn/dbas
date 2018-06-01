@@ -46,7 +46,8 @@ class Queue():
         :param is_okay:
         :return:
         """
-        self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay, main_page=self.application_url, translator=self.translator, **self.kwargs)
+        self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay, main_page=self.application_url,
+                            translator=self.translator, **self.kwargs)
 
     def add_review(self):
         """
