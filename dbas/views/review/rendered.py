@@ -6,11 +6,13 @@ import dbas.review.queue
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
 from dbas.logger import logger
-from dbas.review.history import get_ongoing_reviews, get_reputation_history_of, get_review_history
-from dbas.review.mapper import title_mapping, queue_mapping
+from dbas.review.history import get_ongoing_reviews, get_review_history
+from dbas.review.mapper import get_title_by_key
+from dbas.review.queue.abc_queue import subclass_by_name
 from dbas.review.queue.adapter import QueueAdapter
 from dbas.review.queues import get_review_queues_as_lists
-from dbas.review.reputation import get_reputation_of, get_privilege_list, get_reputation_reasons_list
+from dbas.review.reputation import get_reputation_of, get_privilege_list, get_reputation_reasons_list, \
+    get_history_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
@@ -66,12 +68,12 @@ def queue_details(request):
     db_user = request.validated['user']
     application_url = request.application_url
 
-    queue = queue_mapping.get(queue_name)
+    queue = subclass_by_name(queue_name)
     adapter = QueueAdapter(queue(), db_user, application_url, _tn)
     subpage_dict = adapter.get_queue_information(request.session, queue_name)
     request.session.update(subpage_dict['session'])
 
-    prep_dict = main_dict(request, _tn.get(title_mapping[queue_name]))
+    prep_dict = main_dict(request, _tn.get(get_title_by_key(queue_name)))
     prep_dict.update({
         'extras': request.decorated['extras'],
         'subpage': subpage_dict,
@@ -132,7 +134,7 @@ def reputation(request):
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    reputation_dict = get_reputation_history_of(request.validated['user'], _tn)
+    reputation_dict = get_history_of(request.validated['user'], _tn)
     prep_dict = main_dict(request, _tn.get(_.reputation))
     prep_dict.update({'reputation': reputation_dict})
     return prep_dict

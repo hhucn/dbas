@@ -7,15 +7,15 @@ from beaker.session import Session
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerSplit, ReviewSplit, ReviewSplitValues, Premise, Issue, \
     Statement, PremiseGroup, PremiseGroupSplitted, Argument, ArgumentsAddedByPremiseGroupSplit, \
-    StatementReplacementsByPremiseGroupSplit
+    StatementReplacementsByPremiseGroupSplit, ReviewCanceled, ReviewMergeValues, LastReviewerMerge
 from dbas.handler.statements import set_statement
 from dbas.lib import get_text_for_premisegroup_uid
 from dbas.logger import logger
 from dbas.review.queue import max_votes, min_difference, key_split
-from dbas.review.lib import get_reputation_reason_by_action
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, \
-    get_all_allowed_reviews_for_user, get_issues_for_statement_uids, get_reporter_stats_for_review
+from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, get_reporter_stats_for_review, undo_premisegroups
+from dbas.review.queues import add_vote_for
+from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -137,20 +137,20 @@ class SplitQueue(QueueABC):
         if reached_max:
             if count_of_split > count_of_keep:  # split pgroup
                 self.__split_premisegroup(db_review)
-                rep_reason = get_reputation_reason_by_action('success_flag')
+                rep_reason = get_reason_by_action('success_flag')
             else:  # just close the review
-                rep_reason = get_reputation_reason_by_action('bad_flag')
+                rep_reason = get_reason_by_action('bad_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_split >= min_difference:  # just close the review
-            rep_reason = get_reputation_reason_by_action('bad_flag')
+            rep_reason = get_reason_by_action('bad_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_split - count_of_keep >= min_difference:  # split pgroup
             self.__split_premisegroup(db_review)
-            rep_reason = get_reputation_reason_by_action('success_flag')
+            rep_reason = get_reason_by_action('success_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
@@ -252,8 +252,56 @@ class SplitQueue(QueueABC):
 
         return count_of_okay, count_of_not_okay
 
-    def cancel_ballot(self, db_user: User):
-        pass
+    def cancel_ballot(self, db_user: User, db_review: ReviewSplit):
+        """
 
-    def revoke_ballot(self, db_user: User):
-        pass
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        DBDiscussionSession.query(ReviewSplit).get(db_review.uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review.uid).delete()
+        DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={'split': db_review.uid}, was_ongoing=True)
+
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    def revoke_ballot(self, db_user: User, db_review: ReviewSplit):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        db_review = DBDiscussionSession.query(ReviewSplit).get(db_review.uid)
+        db_review.set_revoked(True)
+        db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).all()
+        replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(
+            review_uid=db_review.uid).all()
+        disable_args = [arg.uid for arg in DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(
+            review_uid=db_review.uid).all()]
+        undo_premisegroups(db_pgroup_splitted, replacements)
+        self.__disable_arguments_by_id(disable_args)
+        DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
+        DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).delete()
+        DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_split: db_review.uid})
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    @staticmethod
+    def __disable_arguments_by_id(argument_uids):
+        """
+        Disbale the list of argument by their id
+
+        :param Argument_uids: list of argument.uid
+        :return: None
+        """
+        for uid in argument_uids:
+            db_arg = DBDiscussionSession.query(Argument).get(uid)
+            db_arg.set_disabled(True)
+            DBDiscussionSession.add(db_arg)
+            DBDiscussionSession.flush()

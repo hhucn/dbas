@@ -3,16 +3,19 @@ Provides helping function for handling reputation.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
+from typing import Union
 
 import arrow
 import transaction
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
+from dbas.database.discussion_model import User, ReputationHistory, ReputationReason, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.review.queue import review_queues, all_queues, key_edit, key_delete, key_duplicate, key_optimization, \
     key_merge, key_split, key_history, key_ongoing
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
+from websocket.lib import send_request_for_info_popup_to_socketio
 
 smallest_border = 30
 limit_to_open_issues = 10
@@ -145,3 +148,77 @@ def __collect_points(reputation_history):
     :return:
     """
     return sum([history.reputations.points for history in reputation_history])
+
+
+def get_reason_by_action(action: str) -> Union[ReputationReason, None]:
+    """
+    Returns the reason string from database by its action. Currently we have the following actions:
+     - first_position -> rep_reason_first_position
+     - first_justification -> rep_reason_first_justification
+     - first_argument_click -> rep_reason_first_argument_click
+     - first_confrontation -> rep_reason_first_confrontation
+     - first_new_argument -> rep_reason_first_new_argument
+     - new_statement -> rep_reason_new_statement
+     - success_flag -> rep_reason_success_flag
+     - success_edit -> rep_reason_success_edit
+     - success_duplicate -> rep_reason_success_duplicate
+     - bad_flag -> rep_reason_bad_flag
+     - bad_edit -> rep_reason_bad_edit
+     - bad_duplicate -> rep_reason_bad_duplicate
+
+    :param action:
+    :return:
+    """
+    return DBDiscussionSession.query(ReputationReason).filter_by(reason=f'rep_reason_{action}').first()
+
+
+def get_history_of(db_user: User, translator: Translator):
+    """
+    Returns the reputation history of an user
+
+    :param db_user: User
+    :param translator: Translator
+    :return: dict()
+    """
+
+    db_reputation = DBDiscussionSession.query(ReputationHistory) \
+        .filter_by(reputator_uid=db_user.uid) \
+        .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
+        .order_by(ReputationHistory.uid.asc()) \
+        .all()
+
+    rep_list = []
+    for rep in db_reputation:
+        date = sql_timestamp_pretty_print(rep.timestamp, translator.get_lang(), humanize=False)
+        points_data = ('+' if rep.reputations.points > 0 else '') + str(rep.reputations.points)
+        rep_list.append({
+            'date': date,
+            'points_data': points_data,
+            'action': translator.get(rep.reputations.reason),
+            'points': rep.reputations.points
+        })
+
+    count, all_rights = get_reputation_of(db_user)
+    return {
+        'count': count,
+        'all_rights': all_rights,
+        'history': list(reversed(rep_list))
+    }
+
+
+def add_reputation_and_check_review_access(db_user: User, db_rep_reason: ReputationReason, main_page: str,
+                                           translator: Translator):
+    """
+    Adds reputation to a specific user and checks (send info popup) to this user
+
+    :param db_user: user, which should get reputation
+    :param db_rep_reason: Any reputation reason
+    :param main_page: URL of the app
+    :param translator: Instance of a translator
+    :return:
+    """
+    add_reputation_for(db_user, db_rep_reason)
+
+    if has_access_to_review_system(db_user):
+        send_request_for_info_popup_to_socketio(db_user.nickname, translator.get(_.youAreAbleToReviewNow),
+                                                main_page + '/review')

@@ -11,6 +11,7 @@ from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, Rev
     User, ReviewDuplicate, ReviewSplit, ReviewMerge, ReviewMergeValues, ReviewSplitValues, \
     PremiseGroup
 from dbas.logger import logger
+from dbas.review.queue import key_optimization, key_duplicate
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -49,10 +50,10 @@ def flag_element(uid: int, reason: str, db_user: User, is_argument: bool, ui_loc
     if db_del_reason:
         __add_delete_review(argument_uid, statement_uid, db_user.uid, db_del_reason.uid)
 
-    elif reason == 'optimization':
+    elif reason == key_optimization:
         __add_optimization_review(argument_uid, statement_uid, db_user.uid)
 
-    elif reason == 'duplicate':
+    elif reason == key_duplicate:
         if statement_uid == extra_uid:
             logger('FlagingHelper', 'uid error', error=True)
             return {

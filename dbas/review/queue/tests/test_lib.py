@@ -2,10 +2,7 @@ import unittest
 
 from pyramid import testing
 
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ReviewEdit, Premise, Argument
-from dbas.review.lib import get_reputation_reason_by_action
-from dbas.review.queue.lib import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
+from dbas.review.reputation import get_reason_by_action
 
 
 class LibTest(unittest.TestCase):
@@ -16,7 +13,7 @@ class LibTest(unittest.TestCase):
         testing.tearDown()
 
     def test_get_reputation_reason_by_wrong_action(self):
-        self.assertIsNone(get_reputation_reason_by_action('foo'))
+        self.assertIsNone(get_reason_by_action('foo'))
 
     def test_get_reputation_reason_by_action(self):
         actions = [
@@ -34,19 +31,4 @@ class LibTest(unittest.TestCase):
             'bad_duplicate'
         ]
         for action in actions:
-            self.assertIsNotNone(get_reputation_reason_by_action(action))
-
-    def test_is_statement_in_edit_queue(self):
-        db_review_edits = DBDiscussionSession.query(ReviewEdit).all()
-        for review in db_review_edits:
-            self.assertTrue(is_statement_in_edit_queue(review.statement_uid, review.is_executed))
-        self.assertFalse(is_statement_in_edit_queue(50))
-
-    def test_is_arguments_premise_in_edit_queue(self):
-        db_reviews = DBDiscussionSession.query(ReviewEdit).filter_by(is_executed=False, is_revoked=False).all()
-        for db_review in db_reviews:
-            db_premise = DBDiscussionSession.query(Premise).filter_by(statement_uid=db_review.statement_uid).first()
-            if not db_premise:  # skip this cause we just have random data
-                continue
-            db_arg = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=db_premise.premisegroup_uid).first()
-            self.assertTrue(is_arguments_premise_in_edit_queue(db_arg))
+            self.assertIsNotNone(get_reason_by_action(action))

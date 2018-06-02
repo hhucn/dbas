@@ -6,14 +6,15 @@ from beaker.session import Session
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerDuplicate, ReviewDuplicate, Statement, RevokedDuplicate, \
-    Premise
+    Premise, ReviewCanceled, Argument, LastReviewerDelete
 from dbas.lib import get_all_arguments_by_statement, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review.queue import min_difference, max_votes, key_duplicate
-from dbas.review.lib import get_reputation_reason_by_action
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, \
-    get_all_allowed_reviews_for_user, get_reporter_stats_for_review, get_issues_for_statement_uids
+from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_reporter_stats_for_review, \
+    get_issues_for_statement_uids
+from dbas.review.queues import add_vote_for
+from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -125,20 +126,20 @@ class DuplicateQueue(QueueABC):
         if reached_max:
             if count_of_reset > count_of_keep:  # disable the flagged part
                 self.__bend_objects_of_duplicate_review(db_review)
-                rep_reason = get_reputation_reason_by_action('success_duplicate')
+                rep_reason = get_reason_by_action('success_duplicate')
             else:  # just close the review
-                rep_reason = get_reputation_reason_by_action('bad_duplicate')
+                rep_reason = get_reason_by_action('bad_duplicate')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_reset >= min_difference:  # just close the review
-            rep_reason = get_reputation_reason_by_action('bad_duplicate')
+            rep_reason = get_reason_by_action('bad_duplicate')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_reset - count_of_keep >= min_difference:  # disable the flagged part
             self.__bend_objects_of_duplicate_review(db_review)
-            rep_reason = get_reputation_reason_by_action('success_duplicate')
+            rep_reason = get_reason_by_action('success_duplicate')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
@@ -217,8 +218,72 @@ class DuplicateQueue(QueueABC):
 
         return count_of_okay, count_of_not_okay
 
-    def cancel_ballot(self, db_user: User):
-        pass
+    def cancel_ballot(self, db_user: User, db_review: ReviewDuplicate):
+        """
 
-    def revoke_ballot(self, db_user: User):
-        pass
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        DBDiscussionSession.query(ReviewDuplicate).get(db_review.uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_duplicate: db_review.uid},
+                                            was_ongoing=True)
+
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    def revoke_ballot(self, db_user: User, db_review: ReviewDuplicate):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        db_review = DBDiscussionSession.query(ReviewDuplicate).get(db_review.uid)
+        db_review.set_revoked(True)
+        self.__rebend_objects_of_duplicate_review(db_review)
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_duplicate: db_review.uid})
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    @staticmethod
+    def __rebend_objects_of_duplicate_review(db_review):
+        """
+        If something was bend (due to duplicates), lets rebend this
+
+        :param db_review: Review
+        :return: None
+        """
+        logger('review_history_helper', f'review: {db_review.uid}')
+
+        db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
+        db_statement.set_disabled(False)
+        DBDiscussionSession.add(db_statement)
+
+        db_revoked_elements = DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).all()
+        for revoke in db_revoked_elements:
+            if revoke.bend_position:
+                db_statement = DBDiscussionSession.query(Statement).get(revoke.statement_uid)
+                db_statement.set_position(False)
+                DBDiscussionSession.add(db_statement)
+
+            if revoke.argument_uid is not None:
+                db_argument = DBDiscussionSession.query(Argument).get(revoke.argument_uid)
+                text = f'Rebend conclusion of argument {revoke.argument_uid} from {db_argument.conclusion_uid} to {db_review.duplicate_statement_uid}'
+                logger('review_history_helper', text)
+                db_argument.conclusion_uid = db_review.duplicate_statement_uid
+                DBDiscussionSession.add(db_argument)
+
+            if revoke.premise_uid is not None:
+                db_premise = DBDiscussionSession.query(Premise).get(revoke.premise_uid)
+                text = f'Rebend premise {revoke.premise_uid} from {db_premise.statement_uid} to {db_review.duplicate_statement_uid}'
+                logger('review_history_helper', text)
+                db_premise.statement_uid = db_review.duplicate_statement_uid
+                DBDiscussionSession.add(db_premise)
+        DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).delete()
+
+        DBDiscussionSession.flush()
+        transaction.commit()

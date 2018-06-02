@@ -83,16 +83,16 @@ class QueueAdapter():
         :param is_okay:
         :return:
         """
-        self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay,
-                            application_url=self.application_url,
-                            translator=self.translator, **self.kwargs)
+        return self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay,
+                                   application_url=self.application_url,
+                                   translator=self.translator, **self.kwargs)
 
     def add_review(self):
         """
 
         :return:
         """
-        self.queue.add_review(self.db_user)
+        return self.queue.add_review(self.db_user)
 
     def get_review_count(self, review_uid: int):
         """
@@ -101,16 +101,17 @@ class QueueAdapter():
         """
         return self.queue.get_review_count(review_uid)
 
-    def cancel_ballot(self):
+    def cancel_ballot(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization, ReviewSplit]):
         """
 
         :return:
         """
-        self.queue.cancel_ballot(self.db_user)
+        return self.queue.cancel_ballot(self.db_user, db_review)
 
-    def revoke_ballot(self):
+    def revoke_ballot(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization, ReviewSplit]):
         """
 
+        :param db_review:
         :return:
         """
-        self.queue.revoke_ballot(self.db_user)
+        return self.queue.revoke_ballot(self.db_user, db_review)

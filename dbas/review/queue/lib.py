@@ -1,68 +1,15 @@
 import random
-from typing import Union, List
+from typing import List
 
 import transaction
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import LastReviewerSplit, LastReviewerMerge, LastReviewerDelete, \
-    LastReviewerDuplicate, LastReviewerEdit, LastReviewerOptimization, User, ReviewDelete, ReviewEdit, ReviewMerge, \
-    ReviewOptimization, ReviewSplit, ReviewDuplicate, Argument, Issue, Statement, StatementToIssue, \
-    sql_timestamp_pretty_print, TextVersion, ReviewEditValue, Premise
+from dbas.database.discussion_model import User, Argument, Issue, Statement, StatementToIssue, \
+    sql_timestamp_pretty_print, Premise
 from dbas.lib import get_text_for_argument_uid, get_profile_picture
 from dbas.logger import logger
-from dbas.review.queue import Code
-from dbas.review.reputation import add_reputation_for, has_access_to_review_system
-from dbas.strings.keywords import Keywords as _
-from dbas.strings.translator import Translator
-from websocket.lib import send_request_for_info_popup_to_socketio
-
-
-def add_vote_for(db_user: User, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
-                                                 ReviewOptimization, ReviewSplit], is_okay: bool,
-                 db_reviewer_type: Union[LastReviewerDelete, LastReviewerDuplicate, LastReviewerEdit, LastReviewerMerge,
-                                         LastReviewerOptimization, LastReviewerSplit]) -> True:
-    """
-    Add vote for a specific review
-
-    :param db_user: User
-    :param db_review: one table ouf of the Reviews
-    :param is_okay: Boolean
-    :param db_reviewer_type: one table out of the LastReviews
-    :return: True, if the cote can be added
-    """
-    logger('review.lib', f'{db_reviewer_type}, user {db_user.uid}, db_review {db_review}, is_okay {is_okay}')
-    already_voted = DBDiscussionSession.query(db_reviewer_type).filter(db_reviewer_type.reviewer_uid == db_user.uid,
-                                                                       db_reviewer_type.review_uid == db_review.uid).first()
-    if already_voted:
-        logger('review.lib', 'already voted')
-        return False
-
-    logger('review.lib', 'vote added')
-    db_new_review = db_reviewer_type(db_user.uid, db_review.uid, is_okay)
-    DBDiscussionSession.add(db_new_review)
-    DBDiscussionSession.flush()
-    transaction.commit()
-    return True
-
-
-def add_reputation_and_check_review_access(db_user: User, rep_reason: str, main_page: str, translator: Translator):
-    """
-    Adds reputation to a specific user and checks (send info popup) to this user
-
-    :param db_user: user, which should get reputation
-    :param rep_reason: Any reputation reason as string
-    :param main_page: URL of the app
-    :param translator: Instance of a translator
-    :return:
-    """
-    if not rep_reason:
-        return
-
-    add_reputation_for(db_user, rep_reason)
-
-    if has_access_to_review_system(db_user):
-        send_request_for_info_popup_to_socketio(db_user.nickname, translator.get(_.youAreAbleToReviewNow),
-                                                main_page + '/review')
+from dbas.review.mapper import get_review_modal_mapping, get_last_reviewer_by_key
+from dbas.review.reputation import get_reputation_of, reputation_borders
 
 
 def get_all_allowed_reviews_for_user(session, session_keyword, db_user, review_type, last_reviewer_type):
@@ -183,87 +130,178 @@ def get_issues_for_statement_uids(statement_uids: List[int]) -> List[Issue]:
     return db_issues
 
 
-def add_edit_reviews(db_user: User, uid: int, text: str):
+def revoke_decision_and_implications(ttype, reviewer_type, uid):
     """
-    Setup a new ReviewEdit row
+    Revokes the old decision and the implications
 
-    :param db_user: User
-    :param uid: Statement.uid
-    :param text: New content for statement
-    :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success, 0 otherwise
+    :param ttype: table of Review
+    :param reviewer_type: Table of LastReviewer
+    :param uid: Review.uid
+    :return: None
     """
-    db_statement = DBDiscussionSession.query(Statement).get(uid)
-    if not db_statement:
-        logger('review.lib', f'statement {uid} not found (return {Code.DOESNT_EXISTS})')
-        return Code.DOESNT_EXISTS
+    DBDiscussionSession.query(reviewer_type).filter_by(review_uid=uid).delete()
 
-    # already set an correction for this?
-    if is_statement_in_edit_queue(uid):  # if we already have an edit, skip this
-        logger('review.lib', f'statement {uid} already got an edit (return {Code.DUPLICATE})')
-        return Code.DUPLICATE
+    db_review = DBDiscussionSession.query(ttype).get(uid)
+    db_review.set_revoked(True)
+    set_able_object_of_review(db_review, False)
 
-    # is text different?
-    db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-    if len(text) > 0 and db_tv.content.lower().strip() != text.lower().strip():
-        logger('review.lib', f'added review element for {uid} (return {Code.SUCCESS})')
-        DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=uid))
-        return Code.SUCCESS
-
-    logger('review.lib', f'no case for {uid} (return {Code.ERROR})')
-    return Code.ERROR
+    DBDiscussionSession.flush()
+    transaction.commit()
 
 
-def add_edit_values_review(db_user: User, uid: int, text: str):
+def set_able_object_of_review(review, is_disabled):
     """
-    Setup a new ReviewEditValue row
+    En- or -disable a specific review, this affects all the statements and arguments
 
-    :param db_user: User
-    :param uid: Statement.uid
-    :param text: New content for statement
-    :return: 1 on success, 0 otherwise
+    :param review: Review
+    :param is_disabled: boolean
+    :return: None
     """
-    db_statement = DBDiscussionSession.query(Statement).get(uid)
-    if not db_statement:
-        logger('review.lib', f'{uid} not found')
-        return Code.ERROR
-
-    db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-
-    if len(text) > 0 and db_textversion.content.lower().strip() != text.lower().strip():
-        db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
-                                                                      ReviewEdit.statement_uid == uid).order_by(
-            ReviewEdit.uid.desc()).first()
-        DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, uid, 'statement', text))
-        logger('review.lib', f'{uid} - \'{text}\' accepted')
-        return Code.SUCCESS
-
-    logger('review.lib', f'{uid} - \'{text}\' malicious edit')
-    return Code.ERROR
+    logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
+    if review.statement_uid is not None:
+        __set_able_of_reviews_statement(review, is_disabled)
+    else:
+        __set_able_of_reviews_argument(review, is_disabled)
 
 
-def is_statement_in_edit_queue(uid: int, is_executed: bool = False) -> bool:
+def __set_able_of_reviews_statement(review, is_disabled):
     """
-    Returns true if the statement is not in the edit queue
+    En- or -disable a specific review, this affects all the statements
 
-    :param uid: Statement.uid
-    :param is_executed: Bool
-    :return: Boolean
+    :param review: Review
+    :param is_disabled: boolean
+    :return: None
     """
-    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
-                                                                         ReviewEdit.is_executed == is_executed).count()
-    return db_already_edit_count > 0
+    logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
+    db_statement = DBDiscussionSession.query(Statement).get(review.statement_uid)
+    db_statement.set_disabled(is_disabled)
+    DBDiscussionSession.add(db_statement)
+    db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=review.statement_uid).all()
+
+    for premise in db_premises:
+        premise.set_disabled(is_disabled)
+        DBDiscussionSession.add(premise)
+
+    DBDiscussionSession.flush()
+    transaction.commit()
 
 
-def is_arguments_premise_in_edit_queue(db_argument: Argument, is_executed: bool = False) -> bool:
+def __set_able_of_reviews_argument(review, is_disabled):
     """
-    Returns true if the premises of an argument are not in the edit queue
+    En- or -disable a specific review, this affects all the arguments
 
-    :param db_argument: Argument
-    :param is_executed: Bool
-    :return: Boolean
+    :param review: Review
+    :param is_disabled: boolean
+    :return: None
     """
+    logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
+    db_argument = DBDiscussionSession.query(Argument).get(review.argument_uid)
+    db_argument.set_disabled(is_disabled)
+    DBDiscussionSession.add(db_argument)
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
-    statement_uids = [db_premise.statement_uid for db_premise in db_premises]
-    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid.in_(statement_uids),
-                                                                         ReviewEdit.is_executed == is_executed).count()
-    return db_already_edit_count > 0
+
+    for premise in db_premises:
+        db_statement = DBDiscussionSession.query(Statement).get(premise.statement_uid)
+        db_statement.set_disabled(is_disabled)
+        premise.set_disabled(is_disabled)
+        DBDiscussionSession.add(premise)
+
+    if db_argument.conclusion_uid is not None:
+        db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
+        db_statement.set_disabled(is_disabled)
+        DBDiscussionSession.add(db_statement)
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+
+def undo_premisegroups(pgroups_splitted_or_merged, replacements):
+    """
+
+    :param pgroups_splitted_or_merged:
+    :param replacements:
+    :return:
+    """
+    logger('review_history_helper',
+           f'Got {len(pgroups_splitted_or_merged)} merge/splitted pgroups and {len(replacements)} replacements')
+
+    for element in pgroups_splitted_or_merged:
+        old_pgroup = element.old_premisegroup_uid
+        new_pgroup = element.new_premisegroup_uid
+
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=new_pgroup).all()
+        for argument in db_arguments:
+            logger('review_history_helper',
+                   f'reset arguments {argument.uid} pgroup from {new_pgroup} back to {old_pgroup}')
+            argument.set_premisegroup(old_pgroup)
+            DBDiscussionSession.add(argument)
+            DBDiscussionSession.flush()
+
+    for element in replacements:
+        old_statement = element.old_statement_uid
+        new_statement = element.new_statement_uid
+
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=new_statement).all()
+        for argument in db_arguments:
+            logger('review_history_helper',
+                   f'reset arguments {argument.uid} conclusion from {new_statement} back to {old_statement}')
+            argument.set_conclusion(old_statement)
+            DBDiscussionSession.add(argument)
+            DBDiscussionSession.flush()
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+
+def get_count_of_all():
+    counts = [DBDiscussionSession.query(model).count() for model in get_review_modal_mapping().values()]
+    return sum(counts)
+
+
+def get_complete_review_count(db_user: User) -> int:
+    """
+    Sums up the review points of the user
+
+    :param db_user: User
+    :return: int
+    """
+    user_rep, all_rights = get_reputation_of(db_user)
+    count = 0
+    mapping = get_review_modal_mapping()
+    for key in mapping:
+        if user_rep >= reputation_borders[key] or all_rights:
+            last_reviewer = get_last_reviewer_by_key(key)
+            count += get_review_count_for(mapping[key], last_reviewer, db_user)
+    return count
+
+
+def get_review_count_for(review_type, last_reviewer_type, db_user):
+    """
+    Returns the count of reviews of *review_type* for the user with *nickname*, whereby all reviewed data
+    of *last_reviewer_type* are not observed
+
+    :param review_type: ReviewEdit, ReviewOptimization or ...
+    :param last_reviewer_type: LastReviewerEdit, LastReviewer...
+    :param db_user: User
+    :return: Integer
+    """
+    #  logger('ReviewQueues', '__get_review_count_for', 'main')
+    if not db_user:
+        db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
+        return len(db_reviews)
+
+    # get all reviews but filter reviews, which
+    # - the user has detected
+    # - the user has reviewed
+    db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
+    already_reviewed = []
+    for last_review in db_last_reviews_of_user:
+        already_reviewed.append(last_review.review_uid)
+    db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
+                                                               review_type.detector_uid != db_user.uid)
+
+    if len(already_reviewed) > 0:
+        db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
+    db_reviews = db_reviews.all()
+
+    return len(db_reviews)

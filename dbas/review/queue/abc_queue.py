@@ -10,6 +10,18 @@ from dbas.database.discussion_model import User, ReviewDelete, ReviewEdit, Revie
 from dbas.strings.translator import Translator
 
 
+def subclass_by_name(key: str):
+    """
+    Evaluates the subclasses of the abstract base class Queue and returns the subclass with key in its name
+
+    :param key:
+    :return:
+    """
+    for cls in eval('QueueABC').__subclasses__():
+        if key.lower() in cls.__name__.lower():
+            return cls
+
+
 class QueueABC(metaclass=ABCMeta):
 
     @abstractmethod
@@ -66,7 +78,7 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def cancel_ballot(self, db_user: User):
+    def cancel_ballot(self, db_user: User, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
         """
 
         :return:
@@ -74,7 +86,7 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def revoke_ballot(self, db_user: User):
+    def revoke_ballot(self, db_user: User, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
         """
 
         :return:

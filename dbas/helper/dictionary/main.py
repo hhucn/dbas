@@ -18,8 +18,7 @@ from dbas.handler.notification import count_of_new_notifications, get_box_for
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode, \
     nick_of_anonymous_user, get_global_url, usage_of_matomo, usage_of_modern_bubbles
 from dbas.logger import logger
-from dbas.review.queues import get_complete_review_count
-from dbas.review.queues import get_count_of_all
+from dbas.review.queue.lib import get_count_of_all, get_complete_review_count
 from dbas.review.reputation import get_reputation_of, limit_to_open_issues
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator

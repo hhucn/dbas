@@ -4,6 +4,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 import dbas.review.history as rhh
 from dbas.handler.statements import set_correction_of_statement
+from dbas.review.reputation import get_history_of
 from dbas.strings.translator import Translator
 
 
@@ -32,7 +33,7 @@ class TestReviewHistoryHelper(unittest.TestCase):
 
     def test_get_reputation_history_of(self):
         db_user = DBDiscussionSession.query(User).get(2)
-        history = rhh.get_reputation_history_of(db_user, Translator('en'))
+        history = get_history_of(db_user, Translator('en'))
         self.assertTrue(len(history) > 0)
         self.assertTrue('count' in history)
         self.assertTrue('history' in history)

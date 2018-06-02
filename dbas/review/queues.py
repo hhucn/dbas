@@ -3,6 +3,7 @@ Provides helping function for displaying the review queues and locking entries.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from typing import Union
 
 import transaction
 
@@ -14,7 +15,7 @@ from dbas.lib import get_profile_picture
 from dbas.logger import logger
 from dbas.review.queue import max_lock_time_in_sec, key_edit, key_delete, key_duplicate, key_optimization, key_merge, \
     key_split, key_history, key_ongoing
-from dbas.review.mapper import model_mapping, reviewer_mapping
+from dbas.review.queue.lib import get_review_count_for
 from dbas.review.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -47,28 +48,6 @@ def get_review_queues_as_lists(main_page: str, translator: Translator, db_user: 
     return review_list
 
 
-def get_count_of_all():
-    reviews = [ReviewDelete, ReviewOptimization, ReviewEdit, ReviewDuplicate, ReviewSplit, ReviewMerge]
-    count = [DBDiscussionSession.query(r).count() for r in reviews]
-    return sum(count)
-
-
-def get_complete_review_count(db_user: User) -> int:
-    """
-    Sums up the review points of the user
-
-    :param db_user: User
-    :return: int
-    """
-    user_rep, all_rights = get_reputation_of(db_user)
-    count = 0
-    for key in model_mapping:
-        if user_rep >= reputation_borders[key] or all_rights:
-            count += __get_review_count_for(model_mapping[key], reviewer_mapping[key], db_user)
-
-    return count
-
-
 def __get_delete_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
@@ -79,7 +58,7 @@ def __get_delete_dict(main_page, translator, db_user, count, all_rights):
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_delete_dict', 'main')
-    task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, db_user)
+    task_count = get_review_count_for(ReviewDelete, LastReviewerDelete, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueDelete),
                 'id': 'deletes',
@@ -105,7 +84,7 @@ def __get_optimization_dict(main_page, translator, db_user, count, all_rights):
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_optimization_dict', 'main')
-    task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, db_user)
+    task_count = get_review_count_for(ReviewOptimization, LastReviewerOptimization, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueOptimization),
                 'id': 'optimizations',
@@ -131,7 +110,7 @@ def __get_edit_dict(main_page, translator, db_user, count, all_rights):
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_edit_dict', 'main')
-    task_count = __get_review_count_for(ReviewEdit, LastReviewerEdit, db_user)
+    task_count = get_review_count_for(ReviewEdit, LastReviewerEdit, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueEdit),
                 'id': 'edits',
@@ -157,7 +136,7 @@ def __get_duplicates_dict(main_page, translator, db_user, count, all_rights):
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_duplicates_dict', 'main')
-    task_count = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, db_user)
+    task_count = get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueDuplicate),
                 'id': 'duplicates',
@@ -183,7 +162,7 @@ def __get_split_dict(main_page, translator, db_user, count, all_rights):
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_delete_dict', 'main')
-    task_count = __get_review_count_for(ReviewSplit, LastReviewerSplit, db_user)
+    task_count = get_review_count_for(ReviewSplit, LastReviewerSplit, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueSplit),
                 'id': 'splits',
@@ -209,7 +188,7 @@ def __get_merge_dict(main_page, translator, db_user, count, all_rights):
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_delete_dict', 'main')
-    task_count = __get_review_count_for(ReviewMerge, LastReviewerMerge, db_user)
+    task_count = get_review_count_for(ReviewMerge, LastReviewerMerge, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueMerge),
                 'id': 'merges',
@@ -269,38 +248,6 @@ def __get_ongoing_dict(main_page, translator):
                 'last_reviews': list()
                 }
     return tmp_dict
-
-
-def __get_review_count_for(review_type, last_reviewer_type, db_user):
-    """
-    Returns the count of reviews of *review_type* for the user with *nickname*, whereby all reviewed data
-    of *last_reviewer_type* are not observed
-
-    :param review_type: ReviewEdit, ReviewOptimization or ...
-    :param last_reviewer_type: LastReviewerEdit, LastReviewer...
-    :param db_user: User
-    :return: Integer
-    """
-    #  logger('ReviewQueues', '__get_review_count_for', 'main')
-    if not db_user:
-        db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
-        return len(db_reviews)
-
-    # get all reviews but filter reviews, which
-    # - the user has detected
-    # - the user has reviewed
-    db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
-    already_reviewed = []
-    for last_review in db_last_reviews_of_user:
-        already_reviewed.append(last_review.review_uid)
-    db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
-                                                               review_type.detector_uid != db_user.uid)
-
-    if len(already_reviewed) > 0:
-        db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
-    db_reviews = db_reviews.all()
-
-    return len(db_reviews)
 
 
 def __get_review_count_for_history(is_executed):
@@ -439,3 +386,31 @@ def tidy_up_optimization_locks():
         if (get_now() - lock.locked_since).seconds >= max_lock_time_in_sec:
             DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
                 review_optimization_uid=lock.review_optimization_uid).delete()
+
+
+def add_vote_for(db_user: User, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
+                                                 ReviewOptimization, ReviewSplit], is_okay: bool,
+                 db_reviewer_type: Union[LastReviewerDelete, LastReviewerDuplicate, LastReviewerEdit, LastReviewerMerge,
+                                         LastReviewerOptimization, LastReviewerSplit]) -> True:
+    """
+    Add vote for a specific review
+
+    :param db_user: User
+    :param db_review: one table ouf of the Reviews
+    :param is_okay: Boolean
+    :param db_reviewer_type: one table out of the LastReviews
+    :return: True, if the cote can be added
+    """
+    logger('review.lib', f'{db_reviewer_type}, user {db_user.uid}, db_review {db_review}, is_okay {is_okay}')
+    already_voted = DBDiscussionSession.query(db_reviewer_type).filter(db_reviewer_type.reviewer_uid == db_user.uid,
+                                                                       db_reviewer_type.review_uid == db_review.uid).first()
+    if already_voted:
+        logger('review.lib', 'already voted')
+        return False
+
+    logger('review.lib', 'vote added')
+    db_new_review = db_reviewer_type(db_user.uid, db_review.uid, is_okay)
+    DBDiscussionSession.add(db_new_review)
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return True

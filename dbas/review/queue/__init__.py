@@ -1,10 +1,14 @@
 from enum import Enum, auto
 
 # If you want to add a new queue, please
-#  - add a key_<your_queue_name>
-#  - add a model_mapping key_<your_queue_name>: <your_db_table>  in mapper.py
+#  - add two tables in the model
+#    - review_<your_queue_name>
+#    - last_reviewers_<your_queue_name>
+#  - then add key_<your_queue_name> here
 #  - add a reputation_icon key_<your_queue_name>: <your_font_awesome_icon> in reputation.py
-#  - please add the translation string like queue<Yourname> and priv_access_<queuename>_access (respect the capitals)
+#  - please add the translation strings (respect the capitals)
+#    - queue<Your_queue_name>
+#    - priv_access_<your_queue_name>_access
 
 
 max_votes = 5  # highest count of votes

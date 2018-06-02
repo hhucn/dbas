@@ -7,7 +7,7 @@ from dbas.database.discussion_model import ReviewDeleteReason
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
 from dbas.review.queue import review_queues, all_queues
-from dbas.review.mapper import model_mapping
+from dbas.review.mapper import get_review_model_by_key
 from dbas.review.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -107,7 +107,7 @@ def valid_review_queue_key(request):
 def valid_uid_as_row_in_review_queue(request):
     uid = request.json_body.get('uid')
     queue = request.json_body.get('queue', '')
-    model = model_mapping.get(queue)
+    model = get_review_model_by_key(queue)
 
     db_review = DBDiscussionSession.query(model).get(uid) if is_integer(uid) and model else None
     if db_review:

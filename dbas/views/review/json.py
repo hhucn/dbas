@@ -3,10 +3,12 @@ from pyramid.view import view_config
 
 from dbas.database.discussion_model import ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewOptimization, ReviewSplit, \
     ReviewMerge
+from dbas.handler.language import get_language_from_cookie
 from dbas.helper.query import revoke_author_of_statement_content, revoke_author_of_argument_content
 from dbas.lib import get_discussion_language
 from dbas.logger import logger
-from dbas.review import flags as review_flag_helper, history as review_history_helper, queues as review_queue_helper
+from dbas.review import flags as review_flag_helper, queues as review_queue_helper
+from dbas.review.mapper import get_review_model_by_key
 from dbas.review.queue import key_edit, key_delete, key_duplicate, key_optimization, key_merge, key_split
 from dbas.review.queue.adapter import QueueAdapter
 from dbas.review.queue.delete import DeleteQueue
@@ -235,7 +237,11 @@ def undo_review(request):
     db_user = request.validated['user']
     queue = request.validated['queue']
     db_review = request.validated['review']
-    return review_history_helper.revoke_old_decision(queue, db_review, db_user)
+    _tn = Translator(get_language_from_cookie(request))
+
+    queue = get_review_model_by_key(queue)
+    adapter = QueueAdapter(queue(), db_user, request.application_url, _tn)
+    return adapter.revoke_ballot(db_review)
 
 
 @view_config(route_name='cancel_review', renderer='json')
@@ -251,7 +257,11 @@ def cancel_review(request):
     db_user = request.validated['user']
     queue = request.validated['queue']
     db_review = request.validated['review']
-    return review_history_helper.cancel_ongoing_decision(queue, db_review, db_user)
+    _tn = Translator(get_language_from_cookie(request))
+
+    queue = get_review_model_by_key(queue)
+    adapter = QueueAdapter(queue(), db_user, request.application_url, _tn)
+    return adapter.cancel_ballot(db_review)
 
 
 @view_config(route_name='review_lock', renderer='json', require_csrf=False)

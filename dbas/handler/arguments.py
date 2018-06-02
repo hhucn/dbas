@@ -14,8 +14,7 @@ from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, get_profile_picture, Relations, \
     get_text_for_argument_uid, resolve_issue_uid_to_slug
 from dbas.logger import logger
-from dbas.review.lib import get_reputation_reason_by_action
-from dbas.review.reputation import add_reputation_for, has_access_to_review_system
+from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
@@ -51,9 +50,9 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
         return prepared_dict
 
     # add reputation
-    rep_added = add_reputation_for(db_user, get_reputation_reason_by_action('first_new_argument'))
+    rep_added = add_reputation_for(db_user, get_reason_by_action('first_new_argument'))
     if not rep_added:
-        add_reputation_for(db_user, get_reputation_reason_by_action('new_statement'))
+        add_reputation_for(db_user, get_reason_by_action('new_statement'))
     broke_limit = has_access_to_review_system(db_user)
     if broke_limit:
         url += '#access-review'

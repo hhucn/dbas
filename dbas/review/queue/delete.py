@@ -3,13 +3,15 @@ import transaction
 from beaker.session import Session
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete, ReviewDeleteReason
+from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete, ReviewDeleteReason, ReviewCanceled
 from dbas.logger import logger
-from dbas.review.lib import set_able_object_of_review, get_reputation_reason_by_action
 from dbas.review.queue import max_votes, min_difference, key_delete
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, get_base_subpage_dict, \
-    get_all_allowed_reviews_for_user, get_reporter_stats_for_review
+from dbas.review.queue.lib import get_base_subpage_dict, \
+    get_all_allowed_reviews_for_user, get_reporter_stats_for_review, set_able_object_of_review, \
+    revoke_decision_and_implications
+from dbas.review.queues import add_vote_for
+from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -108,20 +110,20 @@ class DeleteQueue(QueueABC):
         if reached_max:
             if count_of_delete > count_of_keep:  # disable the flagged part
                 set_able_object_of_review(db_review, True)
-                rep_reason = get_reputation_reason_by_action('success_flag')
+                rep_reason = get_reason_by_action('success_flag')
             else:  # just close the review
-                rep_reason = get_reputation_reason_by_action('bad_flag')
+                rep_reason = get_reason_by_action('bad_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_delete >= min_difference:  # just close the review
-            rep_reason = get_reputation_reason_by_action('bad_flag')
+            rep_reason = get_reason_by_action('bad_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
             set_able_object_of_review(db_review, True)
-            rep_reason = get_reputation_reason_by_action('success_flag')
+            rep_reason = get_reason_by_action('success_flag')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
@@ -142,8 +144,31 @@ class DeleteQueue(QueueABC):
 
         return count_of_okay, count_of_not_okay
 
-    def cancel_ballot(self, db_user: User):
-        pass
+    def cancel_ballot(self, db_user: User, db_review: ReviewDelete):
+        """
 
-    def revoke_ballot(self, db_user: User):
-        pass
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        DBDiscussionSession.query(ReviewDelete).get(db_review.uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_delete: db_review.uid},
+                                            was_ongoing=True)
+
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    def revoke_ballot(self, db_user: User, db_review: ReviewDelete):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, db_review.uid)
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_delete: db_review.uid})
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()

@@ -1,19 +1,21 @@
 # Adaptee for the edit queue. Every edit results in a new textversion of a statement.
 import difflib
+from typing import List
 
 import transaction
 from beaker.session import Session
-from typing import List
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, LastReviewerEdit, ReviewEdit, ReviewEditValue
-from dbas.handler.statements import correct_statement
+from dbas.database.discussion_model import User, LastReviewerEdit, ReviewEdit, ReviewEditValue, TextVersion, \
+    ReviewCanceled, Statement, Argument, Premise
+from dbas.handler.textversion import propose_new_textversion_for_statement
 from dbas.logger import logger
-from dbas.review.lib import get_reputation_reason_by_action
-from dbas.review.queue import max_votes, min_difference, key_edit
+from dbas.review.queue import max_votes, min_difference, key_edit, Code
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import add_vote_for, add_reputation_and_check_review_access, \
-    get_all_allowed_reviews_for_user, get_base_subpage_dict, get_reporter_stats_for_review
+from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_base_subpage_dict, \
+    get_reporter_stats_for_review
+from dbas.review.queues import add_vote_for
+from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -158,20 +160,20 @@ class EditQueue(QueueABC):
         if reached_max:
             if count_of_dont_edit < count_of_edit:  # accept the edit
                 self.__accept_edit_review(db_review)
-                rep_reason = get_reputation_reason_by_action('success_edit')
+                rep_reason = get_reason_by_action('success_edit')
             else:  # just close the review
-                rep_reason = get_reputation_reason_by_action('bad_edit')
+                rep_reason = get_reason_by_action('bad_edit')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
             self.__accept_edit_review(db_review)
-            rep_reason = get_reputation_reason_by_action('success_edit')
+            rep_reason = get_reason_by_action('success_edit')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_dont_edit - count_of_edit >= min_difference:  # decline edit
-            rep_reason = get_reputation_reason_by_action('bad_edit')
+            rep_reason = get_reason_by_action('bad_edit')
             db_review.set_executed(True)
             db_review.update_timestamp()
 
@@ -193,20 +195,141 @@ class EditQueue(QueueABC):
         db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_review.uid).all()
         db_user = DBDiscussionSession.query(User).get(db_review.detector_uid)
         for value in db_values:
-            correct_statement(db_user, value.statement_uid, value.content)
+            propose_new_textversion_for_statement(db_user, value.statement_uid, value.content)
 
     def add_review(self, db_user: User):
         pass
 
     def get_review_count(self, review_uid: int):
+        """
+
+        :param review_uid:
+        :return:
+        """
         db_reviews = DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=review_uid)
         count_of_okay = db_reviews.filter_by(is_okay=True).count()
         count_of_not_okay = db_reviews.filter_by(is_okay=False).count()
 
         return count_of_okay, count_of_not_okay
 
-    def cancel_ballot(self, db_user: User):
-        pass
+    def cancel_ballot(self, db_user: User, db_review: ReviewEdit):
+        """
 
-    def revoke_ballot(self, db_user: User):
-        pass
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        DBDiscussionSession.query(ReviewEdit).filter_by(uid=db_review.uid).delete()
+        DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).first().set_revoked(True)
+        DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_edit: db_review.uid}, was_ongoing=True)
+
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    def revoke_ballot(self, db_user: User, db_review: ReviewEdit):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        db_review = DBDiscussionSession.query(ReviewEdit).get(db_review.uid)
+        db_review.set_revoked(True)
+        DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).delete()
+        db_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_review.uid)
+        content = db_value.first().content
+        db_value.delete()
+        # delete forbidden textversion
+        DBDiscussionSession.query(TextVersion).filter_by(content=content).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_edit: db_review.uid})
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    def add_edit_reviews(self, db_user: User, uid: int, text: str):
+        """
+        Setup a new ReviewEdit row
+
+        :param db_user: User
+        :param uid: Statement.uid
+        :param text: New content for statement
+        :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success, 0 otherwise
+        """
+        db_statement = DBDiscussionSession.query(Statement).get(uid)
+        if not db_statement:
+            logger('review.lib', f'statement {uid} not found (return {Code.DOESNT_EXISTS})')
+            return Code.DOESNT_EXISTS
+
+        # already set an correction for this?
+        if self.is_statement_in_edit_queue(uid):  # if we already have an edit, skip this
+            logger('review.lib', f'statement {uid} already got an edit (return {Code.DUPLICATE})')
+            return Code.DUPLICATE
+
+        # is text different?
+        db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+        if len(text) > 0 and db_tv.content.lower().strip() != text.lower().strip():
+            logger('review.lib', f'added review element for {uid} (return {Code.SUCCESS})')
+            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=uid))
+            return Code.SUCCESS
+
+        logger('review.lib', f'no case for {uid} (return {Code.ERROR})')
+        return Code.ERROR
+
+    @staticmethod
+    def add_edit_values_review(db_user: User, uid: int, text: str):
+        """
+        Setup a new ReviewEditValue row
+
+        :param db_user: User
+        :param uid: Statement.uid
+        :param text: New content for statement
+        :return: 1 on success, 0 otherwise
+        """
+        db_statement = DBDiscussionSession.query(Statement).get(uid)
+        if not db_statement:
+            logger('review.lib', f'{uid} not found')
+            return Code.ERROR
+
+        db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+
+        if len(text) > 0 and db_textversion.content.lower().strip() != text.lower().strip():
+            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
+                                                                          ReviewEdit.statement_uid == uid).order_by(
+                ReviewEdit.uid.desc()).first()
+            DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, uid, 'statement', text))
+            logger('review.lib', f'{uid} - \'{text}\' accepted')
+            return Code.SUCCESS
+
+        logger('review.lib', f'{uid} - \'{text}\' malicious edit')
+        return Code.ERROR
+
+    @staticmethod
+    def is_statement_in_edit_queue(uid: int, is_executed: bool = False) -> bool:
+        """
+        Returns true if the statement is not in the edit queue
+
+        :param uid: Statement.uid
+        :param is_executed: Bool
+        :return: Boolean
+        """
+        db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
+                                                                             ReviewEdit.is_executed == is_executed).count()
+        return db_already_edit_count > 0
+
+    @staticmethod
+    def is_arguments_premise_in_edit_queue(db_argument: Argument, is_executed: bool = False) -> bool:
+        """
+        Returns true if the premises of an argument are not in the edit queue
+
+        :param db_argument: Argument
+        :param is_executed: Bool
+        :return: Boolean
+        """
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
+        statement_uids = [db_premise.statement_uid for db_premise in db_premises]
+        db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(
+            ReviewEdit.statement_uid.in_(statement_uids),
+            ReviewEdit.is_executed == is_executed).count()
+        return db_already_edit_count > 0

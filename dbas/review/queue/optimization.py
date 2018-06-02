@@ -6,14 +6,14 @@ from beaker.session import Session
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerOptimization, ReviewOptimization, ReviewEdit, \
-    ReviewEditValue, Statement, Issue, Argument, Premise
+    ReviewEditValue, Statement, Issue, Argument, Premise, ReviewCanceled
 from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, get_text_for_statement_uid
 from dbas.logger import logger
-from dbas.review.lib import get_reputation_reason_by_action
 from dbas.review.queue import max_votes, key_optimization
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import add_reputation_and_check_review_access, get_issues_for_statement_uids, \
-    get_reporter_stats_for_review, get_all_allowed_reviews_for_user
+from dbas.review.queue.lib import get_issues_for_statement_uids, \
+    get_reporter_stats_for_review, get_all_allowed_reviews_for_user, revoke_decision_and_implications
+from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -220,7 +220,7 @@ class OptimizationQueue(QueueABC):
             LastReviewerOptimization.is_okay == True).all()
 
         if len(db_keep_version) > max_votes:
-            add_reputation_and_check_review_access(db_user_created_flag, get_reputation_reason_by_action('bad_flag'),
+            add_reputation_and_check_review_access(db_user_created_flag, get_reason_by_action('bad_flag'),
                                                    main_page, translator)
 
             db_review.set_executed(True)
@@ -319,8 +319,31 @@ class OptimizationQueue(QueueABC):
 
         return count_of_okay, count_of_not_okay
 
-    def cancel_ballot(self, db_user: User):
-        pass
+    def cancel_ballot(self, db_user: User, db_review: ReviewOptimization):
+        """
 
-    def revoke_ballot(self, db_user: User):
-        pass
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        DBDiscussionSession.query(ReviewOptimization).get(db_review.uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_optimization: db_review.uid},
+                                            was_ongoing=True)
+
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    def revoke_ballot(self, db_user: User, db_review: ReviewOptimization):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, db_review.uid)
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_optimization: db_review.uid})
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()

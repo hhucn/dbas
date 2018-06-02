@@ -15,7 +15,6 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_conclusion, create_
     is_author_of_argument, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, \
     get_text_for_statement_uid, Relations
 from dbas.logger import logger
-from dbas.review.queues import get_complete_review_count
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.text_generator import tag_type, get_header_for_users_confrontation_response, \
@@ -451,18 +450,10 @@ class DiscussionDictHelper(object):
         mid_text = '{} {} {} <br>{}'.format(trophy, _tn.get(_.congratulation), trophy,
                                             _tn.get(_.discussionCongratulationEnd))
 
-        # do we have task in the queue?
-        count = get_complete_review_count(db_user)
-        if count > 0:
-            if nickname is not None:
-                mid_text += _tn.get(_.discussionEndLinkTextWithQueueLoggedIn)
-            else:
-                mid_text += _tn.get(_.discussionEndLinkTextWithQueueNotLoggedIn)
+        if nickname is not None:
+            mid_text += _tn.get(_.discussionEndLinkTextWithQueueLoggedIn)
         else:
-            if nickname is not None:
-                mid_text += _tn.get(_.discussionEndLinkTextLoggedIn)
-            else:
-                mid_text += _tn.get(_.discussionEndLinkTextNotLoggedIn)
+            mid_text += _tn.get(_.discussionEndLinkTextWithQueueNotLoggedIn)
 
         return {
             'user': user_text,
