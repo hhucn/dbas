@@ -20,7 +20,8 @@ from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_str
 from dbas.logger import logger
 from dbas.review.queue import Code
 from dbas.review.queue.edit import EditQueue
-from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action
+from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
+    ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
@@ -44,9 +45,9 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
-    rep_added = add_reputation_for(db_user, get_reason_by_action('first_position'))
+    rep_added = add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_position))
     if not rep_added:
-        add_reputation_for(db_user, get_reason_by_action('new_statement'))
+        add_reputation_for(db_user, get_reason_by_action(ReputationReasons.new_statement))
     broke_limit = has_access_to_review_system(db_user)
     if broke_limit:
         url += '#access-review'
@@ -95,9 +96,9 @@ def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: di
     :param prepared_dict:
     :return:
     """
-    rep_added = add_reputation_for(db_user, get_reason_by_action('first_justification'))
+    rep_added = add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_justification))
     if not rep_added:
-        add_reputation_for(db_user, get_reason_by_action('new_statement'))
+        add_reputation_for(db_user, get_reason_by_action(ReputationReasons.new_statement))
     broke_limit = has_access_to_review_system(db_user)
     if broke_limit:
         _t = Translator(db_issue.lang)

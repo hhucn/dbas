@@ -8,7 +8,8 @@ from dbas.helper.steps import handle_justification_statement, handle_justificati
     handle_justification_argument
 from dbas.lib import Relations
 from dbas.logger import logger
-from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action
+from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
+    ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -171,7 +172,7 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     """
     logger('Core', 'Entering discussion.reaction')
     # set votes and reputation
-    add_reputation_for(db_user, get_reason_by_action('first_argument_click'))
+    add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_argument_click))
     broke_limit = has_access_to_review_system(db_user)
 
     add_click_for_argument(db_arg_user, db_user)

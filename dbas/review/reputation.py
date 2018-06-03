@@ -3,6 +3,7 @@ Provides helping function for handling reputation.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
+from enum import Enum
 from typing import Union
 
 import arrow
@@ -30,6 +31,28 @@ reputation_icons = {
     key_history: 'fa fa-history',
     key_ongoing: 'fa fa-clock-o'
 }
+
+class ReputationReasons(Enum):
+    first_position = 'first_position'
+    first_justification = 'first_justification'
+    first_argument_click = 'first_argument_click'
+    first_confrontation = 'first_confrontation'
+    first_new_argument = 'first_new_argument'
+    new_statement = 'new_statement'
+    success_flag = 'success_flag'
+    success_edit = 'success_edit'
+    success_duplicate = 'success_duplicate'
+    bad_flag = 'bad_flag'
+    bad_edit = 'bad_edit'
+    bad_duplicate = 'bad_duplicate'
+
+    @staticmethod
+    def values():
+        return list(map(lambda r: r.value, ReputationReasons))
+
+    @staticmethod
+    def list():
+        return list(ReputationReasons)
 
 
 def get_privilege_list(translator):
@@ -150,7 +173,7 @@ def __collect_points(reputation_history):
     return sum([history.reputations.points for history in reputation_history])
 
 
-def get_reason_by_action(action: str) -> Union[ReputationReason, None]:
+def get_reason_by_action(reason: ReputationReasons) -> Union[ReputationReason, None]:
     """
     Returns the reason string from database by its action. Currently we have the following actions:
      - first_position -> rep_reason_first_position
@@ -166,10 +189,10 @@ def get_reason_by_action(action: str) -> Union[ReputationReason, None]:
      - bad_edit -> rep_reason_bad_edit
      - bad_duplicate -> rep_reason_bad_duplicate
 
-    :param action:
+    :param reason:
     :return:
     """
-    return DBDiscussionSession.query(ReputationReason).filter_by(reason=f'rep_reason_{action}').first()
+    return DBDiscussionSession.query(ReputationReason).filter_by(reason=f'rep_reason_{reason.value}').first()
 
 
 def get_history_of(db_user: User, translator: Translator):
@@ -206,7 +229,7 @@ def get_history_of(db_user: User, translator: Translator):
     }
 
 
-def add_reputation_and_check_review_access(db_user: User, db_rep_reason: ReputationReason, main_page: str,
+def add_reputation_and_check_review_access(db_user: User, db_rep_reason: Union[None, ReputationReason], main_page: str,
                                            translator: Translator):
     """
     Adds reputation to a specific user and checks (send info popup) to this user

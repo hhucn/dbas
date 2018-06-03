@@ -14,7 +14,7 @@ from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_reporter_stats_for_review, \
     get_issues_for_statement_uids
 from dbas.review.queues import add_vote_for
-from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access
+from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -126,25 +126,26 @@ class DuplicateQueue(QueueABC):
         if reached_max:
             if count_of_reset > count_of_keep:  # disable the flagged part
                 self.__bend_objects_of_duplicate_review(db_review)
-                rep_reason = get_reason_by_action('success_duplicate')
+                rep_reason = get_reason_by_action(ReputationReasons.success_duplicate)
             else:  # just close the review
-                rep_reason = get_reason_by_action('bad_duplicate')
+                rep_reason = get_reason_by_action(ReputationReasons.bad_duplicate)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_reset >= min_difference:  # just close the review
-            rep_reason = get_reason_by_action('bad_duplicate')
+            rep_reason = get_reason_by_action(ReputationReasons.bad_duplicate)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_reset - count_of_keep >= min_difference:  # disable the flagged part
             self.__bend_objects_of_duplicate_review(db_review)
-            rep_reason = get_reason_by_action('success_duplicate')
+            rep_reason = get_reason_by_action(ReputationReasons.success_duplicate)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
-        add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
-        DBDiscussionSession.add(db_review)
+        if rep_reason:
+            add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
+            DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()
 

@@ -11,7 +11,7 @@ from dbas.review.queue.lib import get_base_subpage_dict, \
     get_all_allowed_reviews_for_user, get_reporter_stats_for_review, set_able_object_of_review, \
     revoke_decision_and_implications
 from dbas.review.queues import add_vote_for
-from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access
+from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -110,25 +110,26 @@ class DeleteQueue(QueueABC):
         if reached_max:
             if count_of_delete > count_of_keep:  # disable the flagged part
                 set_able_object_of_review(db_review, True)
-                rep_reason = get_reason_by_action('success_flag')
+                rep_reason = get_reason_by_action(ReputationReasons.success_flag)
             else:  # just close the review
-                rep_reason = get_reason_by_action('bad_flag')
+                rep_reason = get_reason_by_action(ReputationReasons.bad_flag)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_delete >= min_difference:  # just close the review
-            rep_reason = get_reason_by_action('bad_flag')
+            rep_reason = get_reason_by_action(ReputationReasons.bad_flag)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
             set_able_object_of_review(db_review, True)
-            rep_reason = get_reason_by_action('success_flag')
+            rep_reason = get_reason_by_action(ReputationReasons.success_flag)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
-        add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
-        DBDiscussionSession.add(db_review)
+        if rep_reason:
+            add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
+            DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()
 

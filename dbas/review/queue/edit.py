@@ -15,7 +15,7 @@ from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_base_subpage_dict, \
     get_reporter_stats_for_review
 from dbas.review.queues import add_vote_for
-from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access
+from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -160,25 +160,26 @@ class EditQueue(QueueABC):
         if reached_max:
             if count_of_dont_edit < count_of_edit:  # accept the edit
                 self.__accept_edit_review(db_review)
-                rep_reason = get_reason_by_action('success_edit')
+                rep_reason = get_reason_by_action(ReputationReasons.success_edit)
             else:  # just close the review
-                rep_reason = get_reason_by_action('bad_edit')
+                rep_reason = get_reason_by_action(ReputationReasons.bad_edit)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
             self.__accept_edit_review(db_review)
-            rep_reason = get_reason_by_action('success_edit')
+            rep_reason = get_reason_by_action(ReputationReasons.success_edit)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_dont_edit - count_of_edit >= min_difference:  # decline edit
-            rep_reason = get_reason_by_action('bad_edit')
+            rep_reason = get_reason_by_action(ReputationReasons.bad_edit)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
-        add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
-        DBDiscussionSession.add(db_review)
+        if rep_reason:
+            add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
+            DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()
 

@@ -15,7 +15,7 @@ from dbas.review.queue import max_votes, min_difference, key_merge
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, get_reporter_stats_for_review, undo_premisegroups
 from dbas.review.queues import add_vote_for
-from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access
+from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -139,25 +139,26 @@ class MergeQueue(QueueABC):
         if reached_max:
             if count_of_merge > count_of_keep:  # split pgroup
                 self.__merge_premisegroup(db_review)
-                rep_reason = get_reason_by_action('success_flag')
+                rep_reason = get_reason_by_action(ReputationReasons.success_flag)
             else:  # just close the review
-                rep_reason = get_reason_by_action('bad_flag')
+                rep_reason = get_reason_by_action(ReputationReasons.bad_flag)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_keep - count_of_merge >= min_difference:  # just close the review
-            rep_reason = get_reason_by_action('bad_flag')
+            rep_reason = get_reason_by_action(ReputationReasons.bad_flag)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
         elif count_of_merge - count_of_keep >= min_difference:  # split pgroup
             self.__merge_premisegroup(db_review)
-            rep_reason = get_reason_by_action('success_flag')
+            rep_reason = get_reason_by_action(ReputationReasons.success_flag)
             db_review.set_executed(True)
             db_review.update_timestamp()
 
-        add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
-        DBDiscussionSession.add(db_review)
+        if rep_reason:
+            add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
+            DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()
 

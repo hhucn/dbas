@@ -11,7 +11,8 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.lib import Attitudes
 from dbas.logger import logger
-from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action
+from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
+    ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
@@ -73,7 +74,7 @@ def handle_justification_argument(db_issue: Issue, db_user: User, db_argument: A
 
     item_dict, discussion_dict = preparation_for_justify_argument(db_issue, db_user, db_argument, relation,
                                                                   supportive, history, path)
-    add_reputation_for(db_user, get_reason_by_action('first_confrontation'))
+    add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_confrontation))
     broke_limit = has_access_to_review_system(db_user)
 
     if broke_limit:

@@ -2,7 +2,7 @@ import unittest
 
 from pyramid import testing
 
-from dbas.review.reputation import get_reason_by_action
+from dbas.review.reputation import get_reason_by_action, ReputationReasons
 
 
 class LibTest(unittest.TestCase):
@@ -12,23 +12,8 @@ class LibTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_get_reputation_reason_by_wrong_action(self):
-        self.assertIsNone(get_reason_by_action('foo'))
-
     def test_get_reputation_reason_by_action(self):
-        actions = [
-            'first_position',
-            'first_justification',
-            'first_argument_click',
-            'first_confrontation',
-            'first_new_argument',
-            'new_statement',
-            'success_flag',
-            'success_edit',
-            'success_duplicate',
-            'bad_flag',
-            'bad_edit',
-            'bad_duplicate'
-        ]
-        for action in actions:
-            self.assertIsNotNone(get_reason_by_action(action))
+        for action in ReputationReasons.list():
+            db_reason = get_reason_by_action(action)
+            self.assertIsNotNone(db_reason)
+            self.assertTrue(db_reason.points != 0)
