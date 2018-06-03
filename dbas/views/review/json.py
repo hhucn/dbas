@@ -8,7 +8,7 @@ from dbas.helper.query import revoke_author_of_statement_content, revoke_author_
 from dbas.lib import get_discussion_language
 from dbas.logger import logger
 from dbas.review import flags as review_flag_helper, queues as review_queue_helper
-from dbas.review.mapper import get_review_model_by_key
+from dbas.review.mapper import get_queue_by_key
 from dbas.review.queue import key_edit, key_delete, key_duplicate, key_optimization, key_merge, key_split
 from dbas.review.queue.adapter import QueueAdapter
 from dbas.review.queue.delete import DeleteQueue
@@ -239,7 +239,7 @@ def undo_review(request):
     db_review = request.validated['review']
     _tn = Translator(get_language_from_cookie(request))
 
-    queue = get_review_model_by_key(queue)
+    queue = get_queue_by_key(queue)
     adapter = QueueAdapter(queue(), db_user, request.application_url, _tn)
     return adapter.revoke_ballot(db_review)
 
@@ -259,7 +259,7 @@ def cancel_review(request):
     db_review = request.validated['review']
     _tn = Translator(get_language_from_cookie(request))
 
-    queue = get_review_model_by_key(queue)
+    queue = get_queue_by_key(queue)
     adapter = QueueAdapter(queue(), db_user, request.application_url, _tn)
     return adapter.cancel_ballot(db_review)
 

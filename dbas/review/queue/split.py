@@ -268,6 +268,7 @@ class SplitQueue(QueueABC):
         DBDiscussionSession.add(db_review_canceled)
         DBDiscussionSession.flush()
         transaction.commit()
+        return True
 
     def revoke_ballot(self, db_user: User, db_review: ReviewSplit):
         """
@@ -292,6 +293,7 @@ class SplitQueue(QueueABC):
         DBDiscussionSession.add(db_review_canceled)
         DBDiscussionSession.flush()
         transaction.commit()
+        return True
 
     @staticmethod
     def __disable_arguments_by_id(argument_uids):

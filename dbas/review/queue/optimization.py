@@ -334,6 +334,7 @@ class OptimizationQueue(QueueABC):
         DBDiscussionSession.add(db_review_canceled)
         DBDiscussionSession.flush()
         transaction.commit()
+        return True
 
     def revoke_ballot(self, db_user: User, db_review: ReviewOptimization):
         """
@@ -347,3 +348,4 @@ class OptimizationQueue(QueueABC):
         DBDiscussionSession.add(db_review_canceled)
         DBDiscussionSession.flush()
         transaction.commit()
+        return True

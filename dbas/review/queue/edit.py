@@ -228,6 +228,7 @@ class EditQueue(QueueABC):
         DBDiscussionSession.add(db_review_canceled)
         DBDiscussionSession.flush()
         transaction.commit()
+        return True
 
     def revoke_ballot(self, db_user: User, db_review: ReviewEdit):
         """
@@ -248,6 +249,7 @@ class EditQueue(QueueABC):
         DBDiscussionSession.add(db_review_canceled)
         DBDiscussionSession.flush()
         transaction.commit()
+        return True
 
     def add_edit_reviews(self, db_user: User, uid: int, text: str):
         """

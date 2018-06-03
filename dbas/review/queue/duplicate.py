@@ -234,6 +234,7 @@ class DuplicateQueue(QueueABC):
         DBDiscussionSession.add(db_review_canceled)
         DBDiscussionSession.flush()
         transaction.commit()
+        return True
 
     def revoke_ballot(self, db_user: User, db_review: ReviewDuplicate):
         """
@@ -249,6 +250,7 @@ class DuplicateQueue(QueueABC):
         DBDiscussionSession.add(db_review_canceled)
         DBDiscussionSession.flush()
         transaction.commit()
+        return True
 
     @staticmethod
     def __rebend_objects_of_duplicate_review(db_review):

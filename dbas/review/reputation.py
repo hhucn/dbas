@@ -32,6 +32,7 @@ reputation_icons = {
     key_ongoing: 'fa fa-clock-o'
 }
 
+
 class ReputationReasons(Enum):
     first_position = 'first_position'
     first_justification = 'first_justification'

@@ -69,7 +69,7 @@ def queue_details(request):
     application_url = request.application_url
 
     queue = subclass_by_name(queue_name)
-    adapter = QueueAdapter(queue(), db_user, application_url, _tn)
+    adapter = QueueAdapter(queue=queue(), db_user=db_user, application_url=application_url, translator=_tn)
     subpage_dict = adapter.get_queue_information(request.session, queue_name)
     request.session.update(subpage_dict['session'])
 

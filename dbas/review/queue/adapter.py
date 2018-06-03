@@ -21,7 +21,10 @@ class QueueAdapter():
 
     def __init__(self,
                  queue: Union[DeleteQueue, DuplicateQueue, EditQueue, MergeQueue, OptimizationQueue, SplitQueue] = None,
-                 db_user: User = None, application_url: str = '', translator: Translator = '', **kwargs):
+                 db_user: User = None,
+                 application_url: str = '',
+                 translator: Translator = '',
+                 **kwargs):
         """
 
         :param queue:
