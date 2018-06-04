@@ -64,7 +64,7 @@ def split_or_merge_statement(request):
     key = request.validated['key']
     tvalues = request.validated['text_values']
 
-    if key not in ['merge', 'split']:
+    if key not in [key_merge, key_split]:
         raise HTTPBadRequest()
     return flag_statement_for_merge_or_split(key, pgroup, tvalues, db_user, _tn)
 

@@ -40,32 +40,28 @@ class TestFlagElement(unittest.TestCase):
         DBDiscussionSession.flush()
         transaction.commit()
 
-    def test_flag_element_for_opti(self):
-        return_dict = flag_element(4, key_optimization, self.user_tobias, True, 'en')
+    def test_flag_element_for_optimizations(self):
+        return_dict = flag_element(7, key_optimization, self.user_tobias, True, 'en')
         self.assertEqual(self.tn.get(_.thxForFlagText), return_dict['success'])
         self.assertEqual('', return_dict['info'])
 
-    def test_double_flag_element_by_me_for_opti(self):
-        return_dict = flag_element(4, key_optimization, self.user_tobias, True, 'en')
+        return_dict = flag_element(7, key_optimization, self.user_tobias, True, 'en')
         self.assertEqual('', return_dict['success'])
         self.assertEqual(self.tn.get(_.alreadyFlaggedByYou), return_dict['info'])
 
-    def test_double_flag_element_by_other_for_opti(self):
-        return_dict = flag_element(4, key_optimization, self.user_christian, True, 'en')
+        return_dict = flag_element(7, key_optimization, self.user_christian, True, 'en')
         self.assertEqual('', return_dict['success'])
         self.assertEqual(self.tn.get(_.alreadyFlaggedByOthers), return_dict['info'])
 
-    def test_flag_element_for_dupli(self):
+    def test_flag_element_for_duplicates(self):
         return_dict = flag_element(5, key_duplicate, self.user_tobias, False, 'en', 1)
         self.assertEqual(self.tn.get(_.thxForFlagText), return_dict['success'])
         self.assertEqual('', return_dict['info'])
 
-    def test_double_flag_element_by_me_for_dupli(self):
         return_dict = flag_element(5, key_duplicate, self.user_tobias, False, 'en', 1)
         self.assertEqual('', return_dict['success'])
         self.assertEqual(self.tn.get(_.alreadyFlaggedByYou), return_dict['info'])
 
-    def test_double_flag_element_by_other_for_dupli(self):
         return_dict = flag_element(5, key_duplicate, self.user_christian, False, 'en', 1)
         self.assertEqual('', return_dict['success'])
         self.assertEqual(self.tn.get(_.alreadyFlaggedByOthers), return_dict['info'])

@@ -14,12 +14,17 @@ from dbas.strings.translator import Translator
 
 
 class AdapterTest(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+        self.user = DBDiscussionSession.query(User).get(2)
+
+    def tearDown(self):
+        testing.tearDown()
 
     def test_get_review_queues_as_lists(self):
         _tn = Translator('en')
 
-        db_user = DBDiscussionSession.query(User).get(2)
-        queues = QueueAdapter(db_user=db_user, main_page='page', translator=_tn).get_review_queues_as_lists()
+        queues = QueueAdapter(db_user=self.user, main_page='page', translator=_tn).get_review_queues_as_lists()
         for q in queues:
             self.assertTrue('task_name' in q)
             self.assertTrue('url' in q)

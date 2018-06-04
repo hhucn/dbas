@@ -23,11 +23,11 @@ key_merge: str = 'merge'
 key_split: str = 'split'
 
 review_queues = [
-    key_edit,
     key_delete,
     key_duplicate,
-    key_optimization,
+    key_edit,
     key_merge,
+    key_optimization,
     key_split
 ]
 

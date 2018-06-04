@@ -7,9 +7,9 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewSplit, ReviewOptimization, ReviewMerge, ReviewEdit, ReviewDelete, \
     ReviewDuplicate
 from dbas.lib import get_profile_picture
-from dbas.review import FlaggedBy
-from dbas.review.mapper import get_review_model_by_key, get_last_reviewer_by_key
-from dbas.review.queue import review_queues, key_ongoing
+from dbas.review import FlaggedBy, ReviewDeleteReasons
+from dbas.review.mapper import get_review_model_by_key, get_last_reviewer_by_key, get_title_by_key
+from dbas.review.queue import review_queues, key_ongoing, key_history, key_duplicate, key_optimization
 from dbas.review.queue.delete import DeleteQueue
 from dbas.review.queue.duplicate import DuplicateQueue
 from dbas.review.queue.edit import EditQueue
@@ -104,8 +104,8 @@ class QueueAdapter():
         """
         return self.queue.cancel_ballot(self.db_user, db_review)
 
-    def revoke_ballot(self, db_review: Union[ ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
-                                              ReviewOptimization, ReviewSplit]):
+    def revoke_ballot(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
+                                             ReviewOptimization, ReviewSplit]):
         """
 
         :param db_review:
@@ -113,18 +113,26 @@ class QueueAdapter():
         """
         return self.queue.revoke_ballot(self.db_user, db_review)
 
-    def is_element_flagged(self, **kwargs) -> Union[FlaggedBy, None]:
+    def is_element_flagged(self, argument_uid: int=None, statement_uid: int=None, premisegroup_uid: int=None) -> Union[FlaggedBy, None]:
         """
 
         :param by_user:
         :param kwargs:
         :return:
         """
-        for key in review_queues:
-            table = get_review_model_by_key(key)
-            status = self.__check_flags_in_table(table, **kwargs)
-            if status:
-                return status
+
+        status = [self.__is_anything_flagged_for_delete(argument_uid, statement_uid, self.db_user),
+                  self.__is_anything_flagged_for_duplication(statement_uid, self.db_user),
+                  self.__is_anything_flagged_for_edit(argument_uid, statement_uid, self.db_user),
+                  self.__is_anything_flagged_for_optimization(argument_uid, statement_uid, self.db_user),
+                  self.__is_anything_flagged_for_merge(premisegroup_uid, self.db_user),
+                  self.__is_anything_flagged_for_split(premisegroup_uid, self.db_user)]
+
+        if FlaggedBy.user in status:
+            return FlaggedBy.user
+
+        if FlaggedBy.other in status:
+            return FlaggedBy.other
         return None
 
     def get_review_queues_as_lists(self):
@@ -133,11 +141,12 @@ class QueueAdapter():
         :return:
         """
         review_list = []
-        for key in review_queues + [key_ongoing]:
+        for key in review_queues:
             review_list.append(self.__get_queue_information(key))
 
+        review_list.append(self.__get_history_information())
         if self.db_user.is_author() or self.db_user.is_admin():
-            review_list.append(self.__get_queue_information(key_ongoing))
+            review_list.append(self.__get_ongoing_information())
 
         return review_list
 
@@ -154,8 +163,8 @@ class QueueAdapter():
         visit_key_str = _.get_key_by_string('visit{}Queue'.format(start_with_capital(queue_name)))
         visit_limit_key_str = _.get_key_by_string('visit{}QueueLimitation'.format(start_with_capital(queue_name)))
         return {
-            'task_name': self.translator.get(_.queueDelete),
-            'id': 'deletes',
+            'task_name': get_title_by_key(queue_name),
+            'id': queue_name,
             'url': f'{self.application_url}/review/{queue_name}',
             'icon': reputation_icons[queue_name],
             'task_count': task_count,
@@ -164,6 +173,46 @@ class QueueAdapter():
             'is_not_allowed_text': self.translator.get(visit_limit_key_str).format(str(reputation_borders[queue_name])),
             'last_reviews': self.__get_last_reviewer_of(last_reviewer, self.application_url)
         }
+
+    def __get_history_information(self):
+        count, all_rights = get_reputation_of(self.db_user)
+        return {
+            'task_name': self.translator.get(_.queueHistory),
+            'id': key_history,
+            'url': f'{self.application_url}/review/{key_history}',
+            'icon': reputation_icons[key_history],
+            'task_count': self.__get_review_count_for_history(True),
+            'is_allowed': count >= reputation_borders[key_history] or all_rights,
+            'is_allowed_text': self.translator.get(_.visitHistoryQueue),
+            'is_not_allowed_text': self.translator.get(_.visitHistoryQueueLimitation).format(str(reputation_borders[key_history])),
+            'last_reviews': list()
+        }
+
+    def __get_ongoing_information(self):
+        return {
+            'task_name': self.translator.get(_.queueOngoing),
+            'id': key_ongoing,
+            'url': f'{self.application_url}/review/{key_ongoing}',
+            'icon': reputation_icons[key_ongoing],
+            'task_count': self.__get_review_count_for_history(False),
+            'is_allowed': True,
+            'is_allowed_text': self.translator.get(_.visitOngoingQueue),
+            'is_not_allowed_text': '',
+            'last_reviews': list()
+        }
+
+    @staticmethod
+    def __get_review_count_for_history(is_executed):
+        """
+
+        :param is_executed:
+        :return:
+        """
+        count = 0
+        tables = [get_review_model_by_key(key) for key in review_queues]
+        for table in tables:
+            count += DBDiscussionSession.query(table).filter_by(is_executed=is_executed).count()
+        return count
 
     @staticmethod
     def __get_last_reviewer_of(reviewer_type, main_page):
@@ -185,7 +234,7 @@ class QueueAdapter():
             if db_user:
                 tmp_dict = dict()
                 tmp_dict['img_src'] = get_profile_picture(db_user, 40)
-                tmp_dict['url'] = main_page + '/user/' + str(db_user.uid)
+                tmp_dict['url'] = f'{main_page}/user/{db_user.uid}'
                 tmp_dict['name'] = db_user.global_nickname
                 # skip it, if it is already in
                 if tmp_dict in users_array:
@@ -218,36 +267,77 @@ class QueueAdapter():
             'session': session
         }
 
-    def __check_flags_in_table(self, table, **kwargs) -> Union[FlaggedBy, None]:
-        columns = [c.name for c in table.__table__.columns]
-
-        db_reviews = DBDiscussionSession.query(table).filter_by(is_executed=False, is_revoked=False)
-
-        for key, value in kwargs.items():
-            db_reviews = self.__execute_query(db_reviews, columns, key, value)
-
-        # check if the review was flagged by other users
-        if db_reviews.count() > 0:
-            return FlaggedBy.others
-
-        # check if the review was flagged by the user
-        if db_reviews.filter_by(detector_uid=self.db_user.uid).count() > 0:
+    @staticmethod
+    def __is_anything_flagged_for_delete(argument_uid, statement_uid, db_user):
+        db_review = DBDiscussionSession.query(ReviewDelete).filter_by(
+            argument_uid=argument_uid,
+            statement_uid=statement_uid,
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
             return FlaggedBy.user
-
+        if db_review.count() > 0:
+            return FlaggedBy.other
         return None
 
     @staticmethod
-    def __execute_query(query: Query, columns: List[str], key: str, value: str) -> Query:
-        if key not in columns:
-            return query
+    def __is_anything_flagged_for_duplication(statement_uid, db_user):
+        db_review = DBDiscussionSession.query(ReviewDuplicate).filter_by(
+            duplicate_statement_uid=statement_uid,
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None
 
-        if key == 'argument_uid':
-            query = query.filter_by(argument_uid=value)
-        if key == 'statement_uid':
-            query = query.filter_by(statement_uid=value)
-        if key == 'premisegroup_uid':
-            query = query.filter_by(premisegroup_uid=value)
-        if key == 'duplicate_statement_uid':
-            query = query.filter_by(duplicate_statement_uid=value)
+    @staticmethod
+    def __is_anything_flagged_for_edit(argument_uid, statement_uid, db_user):
+        db_review = DBDiscussionSession.query(ReviewEdit).filter_by(
+            argument_uid=argument_uid,
+            statement_uid=statement_uid,
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None
 
-        return query
+    @staticmethod
+    def __is_anything_flagged_for_merge(pgroup_uid, db_user):
+        db_review = DBDiscussionSession.query(ReviewMerge).filter_by(
+            premisegroup_uid=pgroup_uid,
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None
+
+    @staticmethod
+    def __is_anything_flagged_for_optimization(argument_uid, statement_uid, db_user):
+        db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(
+            argument_uid=argument_uid,
+            statement_uid=statement_uid,
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None
+
+    @staticmethod
+    def __is_anything_flagged_for_split(pgroup_uid, db_user):
+        db_review = DBDiscussionSession.query(ReviewSplit).filter_by(
+            premisegroup_uid=pgroup_uid,
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None
