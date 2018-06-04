@@ -35,12 +35,12 @@ class QueueABC(metaclass=ABCMeta):
     @abstractmethod
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         """
+        Setup the subpage for the any queue
 
-        :param db_user:
-        :param session:
-        :param application_url:
-        :param queue_name:
-        :param translator:
+        :param db_user: User
+        :param session: session of current webserver request
+        :param application_url: current url of the app
+        :param translator: Translator
         :return:
         """
         pass

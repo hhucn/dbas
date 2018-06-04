@@ -136,13 +136,15 @@ class EditQueue(QueueABC):
                  translator: Translator,
                  **kwargs):
         """
+        Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged element get a new
+        textversion
 
-        :param db_user:
-        :param db_review:
-        :param is_okay:
-        :param application_url:
-        :param translator:
-        :param kwargs:
+        :param db_user: current user who votes
+        :param db_review: the review, which is voted vor
+        :param is_okay: True, if the element is rightly flagged
+        :param application_url: the app url
+        :param translator: a instance of a translator
+        :param kwargs: optional, keyworded arguments
         :return:
         """
         logger('EditQueue', 'main')
@@ -199,6 +201,12 @@ class EditQueue(QueueABC):
             propose_new_textversion_for_statement(db_user, value.statement_uid, value.content)
 
     def add_review(self, db_user: User):
+        """
+        Just adds a new element
+
+        :param db_user:
+        :return:
+        """
         pass
 
     def get_review_count(self, review_uid: int):

@@ -20,7 +20,7 @@ def __get_table_by_key(prefix: str, key: str):
 
 # key value pairs of the queue key and a title string
 
-def get_title_by_key(key):
+def get_title_by_key(key: str):
     """
 
     :param key:
@@ -31,10 +31,11 @@ def get_title_by_key(key):
 
 
 # key value pairs of the queue key and the table object
-def get_review_model_by_key(key):
+def get_review_model_by_key(key: str):
     """
+    Get the review table by key, because all tables are named by review_{key}
 
-    :param key:
+    :param key: suffix of the table
     :return:
     """
     return __get_table_by_key('review_', key)
@@ -42,56 +43,31 @@ def get_review_model_by_key(key):
 
 def get_review_modal_mapping():
     """
+    Get the all review tables as mapping key: table
 
     :return:
     """
     return {key: __get_table_by_key('review_', key) for key in review_queues}
 
 
-# model_mapping = {
-#    key_edit: ReviewEdit,
-#    key_delete: ReviewDelete,
-#    key_duplicate: ReviewDuplicate,
-#    key_optimization: ReviewOptimization,
-#    key_merge: ReviewMerge,
-#    key_split: ReviewSplit
-# }
-
-
 # key value pairs of the queue key and the queue object
 def get_queue_by_key(key):
     """
+    Returns any queue with given key in its name, derivated from the abc_queue
 
-    :param key:
+    :param key: infix of the queue
     :return:
     """
     return subclass_by_name(key)
 
 
-# queue_mapping = {
-#     key_edit: EditQueue,
-#     key_delete: DeleteQueue,
-#     key_duplicate: DuplicateQueue,
-#     key_optimization: OptimizationQueue,
-#     key_merge: MergeQueue,
-#     key_split: SplitQueue
-# }
-
 # key value pairs of the queue key and the last reviewer object
 def get_last_reviewer_by_key(key):
     """
+    Get the last reviewer  table by key, because all tables are named by last_reviewers_{key}
 
-    :param key:
+    :param key: suffix of the table
     :return:
     """
     # reviewer_mapping = {key: __get_table_by_key('last_reviewers_', key) for key in review_queues}
     return __get_table_by_key('last_reviewers_', key)
-
-# reviewer_mapping = {
-#    key_edit: LastReviewerEdit,
-#    key_delete: LastReviewerDelete,
-#    key_duplicate: LastReviewerDuplicate,
-#    key_optimization: LastReviewerOptimization,
-#    key_merge: LastReviewerMerge,
-#    key_split: LastReviewerSplit
-# }

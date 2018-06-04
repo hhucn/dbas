@@ -9,11 +9,11 @@ from dbas.database.discussion_model import User, LastReviewerMerge, ReviewMerge,
     StatementReplacementsByPremiseGroupMerge, PremiseGroupMerged, Argument, PremiseGroup, Premise, Issue, \
     ReviewMergeValues, Statement, ReviewCanceled
 from dbas.handler.statements import set_statement
-from dbas.lib import get_text_for_premisegroup_uid
 from dbas.logger import logger
 from dbas.review.queue import max_votes, min_difference, key_merge
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, get_reporter_stats_for_review, undo_premisegroups
+from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, \
+    get_reporter_stats_for_review, undo_premisegroups
 from dbas.review.queues import add_vote_for
 from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
@@ -88,7 +88,7 @@ class MergeQueue(QueueABC):
             merged_text = ' {} '.format(aand).join([rsv.content for rsv in db_review_values])
             pgroup_only = False
         else:
-            merged_text = get_text_for_premisegroup_uid(rnd_review.premisegroup_uid)
+            merged_text = DBDiscussionSession.query(PremiseGroup).get(rnd_review.premisegroup_uid).get_text()
             pgroup_only = True
 
         statement_uids = [p.statement_uid for p in premises]
@@ -115,13 +115,15 @@ class MergeQueue(QueueABC):
                  translator: Translator,
                  **kwargs):
         """
+        Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged elements will be merged
+        together
 
-        :param db_user:
-        :param db_review:
-        :param is_okay:
-        :param application_url:
-        :param translator:
-        :param kwargs:
+        :param db_user: current user who votes
+        :param db_review: the review, which is voted vor
+        :param is_okay: True, if the element is rightly flagged
+        :param application_url: the app url
+        :param translator: a instance of a translator
+        :param kwargs: optional, keyworded arguments
         :return:
         """
         logger('MergeQueue', 'main {}'.format(db_review.uid))
@@ -237,6 +239,12 @@ class MergeQueue(QueueABC):
         transaction.commit()
 
     def add_review(self, db_user: User):
+        """
+        Just adds a new element
+
+        :param db_user:
+        :return:
+        """
         pass
 
     def get_review_count(self, review_uid: int):

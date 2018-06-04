@@ -9,11 +9,11 @@ from dbas.database.discussion_model import User, LastReviewerSplit, ReviewSplit,
     Statement, PremiseGroup, PremiseGroupSplitted, Argument, ArgumentsAddedByPremiseGroupSplit, \
     StatementReplacementsByPremiseGroupSplit, ReviewCanceled, ReviewMergeValues, LastReviewerMerge
 from dbas.handler.statements import set_statement
-from dbas.lib import get_text_for_premisegroup_uid
 from dbas.logger import logger
 from dbas.review.queue import max_votes, min_difference, key_split
 from dbas.review.queue.abc_queue import QueueABC
-from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, get_reporter_stats_for_review, undo_premisegroups
+from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, \
+    get_reporter_stats_for_review, undo_premisegroups
 from dbas.review.queues import add_vote_for
 from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
@@ -78,7 +78,7 @@ class SplitQueue(QueueABC):
 
         rnd_review = random.choice(all_rev_dict['reviews'])
         premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=rnd_review.premisegroup_uid).all()
-        text = get_text_for_premisegroup_uid(rnd_review.premisegroup_uid)
+        text = DBDiscussionSession.query(PremiseGroup).get(rnd_review.premisegroup_uid).get_text()
         db_review_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=rnd_review.uid).all()
         if db_review_values:
             splitted_text = [rsv.content for rsv in db_review_values]
@@ -110,16 +110,17 @@ class SplitQueue(QueueABC):
         }
 
     def add_vote(self, db_user: User, db_review: ReviewSplit, is_okay: bool, application_url: str,
-                 translator: Translator,
-                 **kwargs):
+                 translator: Translator, **kwargs):
         """
+        Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged element will be split
+        into two seperate statements.
 
-        :param db_user:
-        :param db_review:
-        :param is_okay:
-        :param application_url:
-        :param translator:
-        :param kwargs:
+        :param db_user: current user who votes
+        :param db_review: the review, which is voted vor
+        :param is_okay: True, if the element is rightly flagged
+        :param application_url: the app url
+        :param translator: a instance of a translator
+        :param kwargs: optional, keyworded arguments
         :return:
         """
         logger('SplitQueue', 'main {}'.format(db_review.uid))
@@ -244,6 +245,12 @@ class SplitQueue(QueueABC):
         transaction.commit()
 
     def add_review(self, db_user: User):
+        """
+        Just adds a new element
+
+        :param db_user:
+        :return:
+        """
         pass
 
     def get_review_count(self, review_uid: int):

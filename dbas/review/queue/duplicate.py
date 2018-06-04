@@ -102,13 +102,15 @@ class DuplicateQueue(QueueABC):
                  translator: Translator,
                  **kwargs):
         """
+        Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged element will disabled
+        and the origin will be set as root for any relative
 
-        :param db_user:
-        :param db_review:
-        :param is_okay:
-        :param application_url:
-        :param translator:
-        :param kwargs:
+        :param db_user: current user who votes
+        :param db_review: the review, which is voted vor
+        :param is_okay: True, if the element is rightly flagged
+        :param application_url: the app url
+        :param translator: a instance of a translator
+        :param kwargs: optional, keyworded arguments
         :return:
         """
         logger('DuplicateQueue', 'main {}, duplicate {}'.format(db_review.uid, is_okay))
@@ -210,6 +212,12 @@ class DuplicateQueue(QueueABC):
         transaction.commit()
 
     def add_review(self, db_user: User):
+        """
+        Just adds a new element
+
+        :param db_user:
+        :return:
+        """
         pass
 
     def get_review_count(self, review_uid: int):

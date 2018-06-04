@@ -1,9 +1,13 @@
-from typing import Union
+from typing import Union, List
 
 from beaker.session import Session
+from sqlalchemy.orm import Query
 
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewSplit, ReviewOptimization, ReviewMerge, ReviewEdit, ReviewDelete, \
     ReviewDuplicate
+from dbas.review import FlaggedBy
+from dbas.review.mapper import get_review_model_by_key
 from dbas.review.queue import review_queues
 from dbas.review.queue.delete import DeleteQueue
 from dbas.review.queue.duplicate import DuplicateQueue
@@ -78,10 +82,12 @@ class QueueAdapter():
             'session': session
         }
 
-    def add_vote(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization,
-                                        ReviewSplit], is_okay: bool):
+    def add_vote(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization, ReviewSplit], is_okay: bool):
         """
+        Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged element will ...
 
+        :param db_user: current user who votes
+        :param is_okay: True, if the element is rightly flagged
         :param db_review:
         :param is_okay:
         :return:
@@ -92,6 +98,7 @@ class QueueAdapter():
 
     def add_review(self):
         """
+        Just adds a new element
 
         :return:
         """
@@ -118,3 +125,52 @@ class QueueAdapter():
         :return:
         """
         return self.queue.revoke_ballot(self.db_user, db_review)
+
+    def is_element_flagged(self, **kwargs) -> Union[FlaggedBy, None]:
+        """
+
+        :param by_user:
+        :param kwargs:
+        :return:
+        """
+        for key in review_queues:
+            table = get_review_model_by_key(key)
+            status = self.__check_flags_in_table(table, **kwargs)
+            if status:
+                return status
+        return None
+
+    def __check_flags_in_table(self, table, **kwargs) -> Union[FlaggedBy, None]:
+        columns = [c.name for c in table.__table__.columns]
+
+        db_reviews = DBDiscussionSession.query(table).filter_by(is_executed=False, is_revoked=False)
+
+        for key, value in kwargs.items():
+            db_reviews = self.__execute_query(db_reviews, columns, key, value)
+
+
+        # check if the review was flagged by other users
+        if db_reviews.count() > 0:
+            return FlaggedBy.others
+
+        # check if the review was flagged by the user
+        if db_reviews.filter_by(detector_uid=self.db_user.uid).count() > 0:
+            return FlaggedBy.user
+
+        return None
+
+    @staticmethod
+    def __execute_query(query: Query, columns: List[str], key: str, value: str) -> Query:
+        if key not in columns:
+            return query
+
+        if key == 'argument_uid':
+            query = query.filter_by(argument_uid=value)
+        if key == 'statement_uid':
+            query = query.filter_by(statement_uid=value)
+        if key == 'premisegroup_uid':
+            query = query.filter_by(premisegroup_uid=value)
+        if key == 'duplicate_statement_uid':
+            query = query.filter_by(duplicate_statement_uid=value)
+
+        return query
