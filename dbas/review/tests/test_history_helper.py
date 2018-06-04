@@ -2,31 +2,27 @@ import unittest
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-import dbas.review.history as rhh
-from dbas.handler.statements import set_correction_of_statement
+from dbas.review.history import get_review_history
 from dbas.review.reputation import get_history_of
 from dbas.strings.translator import Translator
 
 
 class TestReviewHistoryHelper(unittest.TestCase):
 
-    def setUp(self):
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        elements = [{'uid': 4, 'text': 'some random text'}]
-        set_correction_of_statement(elements, db_user, Translator('en'))
-
-    def test_flag_argument(self):
-        history = rhh.get_review_history('mainpage', 'nickname', Translator('en'))
+    def test_get_review_history_for_unknown_user(self):
+        history = get_review_history('mainpage', 'nickname', Translator('en'))
         self.assertNotIn('has_access', history)
         self.assertNotIn('past_decision', history)
         self.assertNotIn('has_access', history)
 
-        history = rhh.get_review_history('mainpage', 'Tobias', Translator('en'))
+    def test_get_review_history_for_with_special_access(self):
+        history = get_review_history('mainpage', 'Tobias', Translator('en'))
         self.assertTrue('has_access' in history)
         self.assertTrue('past_decision' in history)
         self.assertTrue(history['has_access'])
 
-        history = rhh.get_review_history('mainpage', 'Pascal', Translator('en'))
+    def test_get_review_history_for_without_special_access(self):
+        history = get_review_history('mainpage', 'Pascal', Translator('en'))
         self.assertTrue('has_access' in history)
         self.assertTrue('past_decision' in history)
         self.assertFalse(history['has_access'])

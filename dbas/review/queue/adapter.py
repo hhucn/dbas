@@ -1,15 +1,14 @@
-from typing import Union, List
+from typing import Union
 
 from beaker.session import Session
-from sqlalchemy.orm import Query
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewSplit, ReviewOptimization, ReviewMerge, ReviewEdit, ReviewDelete, \
     ReviewDuplicate
 from dbas.lib import get_profile_picture
-from dbas.review import FlaggedBy, ReviewDeleteReasons
+from dbas.review import FlaggedBy
 from dbas.review.mapper import get_review_model_by_key, get_last_reviewer_by_key, get_title_by_key
-from dbas.review.queue import review_queues, key_ongoing, key_history, key_duplicate, key_optimization
+from dbas.review.queue import review_queues, key_ongoing, key_history
 from dbas.review.queue.delete import DeleteQueue
 from dbas.review.queue.duplicate import DuplicateQueue
 from dbas.review.queue.edit import EditQueue
@@ -71,10 +70,8 @@ class QueueAdapter():
         """
         Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged element will ...
 
-        :param db_user: current user who votes
+        :param db_review: review element which should be voted
         :param is_okay: True, if the element is rightly flagged
-        :param db_review:
-        :param is_okay:
         :return:
         """
         return self.queue.add_vote(db_user=self.db_user, db_review=db_review, is_okay=is_okay,
@@ -113,11 +110,13 @@ class QueueAdapter():
         """
         return self.queue.revoke_ballot(self.db_user, db_review)
 
-    def is_element_flagged(self, argument_uid: int=None, statement_uid: int=None, premisegroup_uid: int=None) -> Union[FlaggedBy, None]:
+    def is_element_flagged(self, argument_uid: int = None, statement_uid: int = None,
+                           premisegroup_uid: int = None) -> Union[FlaggedBy, None]:
         """
 
-        :param by_user:
-        :param kwargs:
+        :param argument_uid:
+        :param statement_uid:
+        :param premisegroup_uid:
         :return:
         """
 
@@ -184,7 +183,8 @@ class QueueAdapter():
             'task_count': self.__get_review_count_for_history(True),
             'is_allowed': count >= reputation_borders[key_history] or all_rights,
             'is_allowed_text': self.translator.get(_.visitHistoryQueue),
-            'is_not_allowed_text': self.translator.get(_.visitHistoryQueueLimitation).format(str(reputation_borders[key_history])),
+            'is_not_allowed_text': self.translator.get(_.visitHistoryQueueLimitation).format(
+                str(reputation_borders[key_history])),
             'last_reviews': list()
         }
 
