@@ -22,11 +22,11 @@ def __get_table_by_key(prefix: str, key: str):
 
 def get_title_by_key(key: str):
     """
+    Get the title of a queue page
 
     :param key:
     :return:
     """
-    # title_mapping = {key: _.get_key_by_string(_.queue.value + start_with_capital(key)) for key in review_queues}
     return _.get_key_by_string(_.queue.value + start_with_capital(key))
 
 

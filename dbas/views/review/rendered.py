@@ -10,7 +10,6 @@ from dbas.review.history import get_ongoing_reviews, get_review_history
 from dbas.review.mapper import get_title_by_key
 from dbas.review.queue.abc_queue import subclass_by_name
 from dbas.review.queue.adapter import QueueAdapter
-from dbas.review.queues import get_review_queues_as_lists
 from dbas.review.reputation import get_reputation_of, get_privilege_list, get_reputation_reasons_list, \
     get_history_of
 from dbas.strings.keywords import Keywords as _
@@ -35,7 +34,8 @@ def index(request):
     db_user = request.validated['user']
 
     _tn = Translator(get_language_from_cookie(request))
-    review_dict = get_review_queues_as_lists(request.application_url, _tn, db_user)
+    adapter = QueueAdapter(db_user=db_user, main_page=request.application_url, translator=_tn)
+    review_dict = adapter.get_review_queues_as_lists()
     count, all_rights = get_reputation_of(db_user)
 
     prep_dict = main_dict(request, _tn.get(_.review))
@@ -70,7 +70,7 @@ def queue_details(request):
 
     queue = subclass_by_name(queue_name)
     adapter = QueueAdapter(queue=queue(), db_user=db_user, application_url=application_url, translator=_tn)
-    subpage_dict = adapter.get_queue_information(request.session, queue_name)
+    subpage_dict = adapter.get_subpage_of_queue(request.session, queue_name)
     request.session.update(subpage_dict['session'])
 
     prep_dict = main_dict(request, _tn.get(get_title_by_key(queue_name)))

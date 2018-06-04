@@ -9,8 +9,7 @@ from dbas.review.queue import max_votes, min_difference, key_delete
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_base_subpage_dict, \
     get_all_allowed_reviews_for_user, get_reporter_stats_for_review, set_able_object_of_review, \
-    revoke_decision_and_implications
-from dbas.review.queues import add_vote_for
+    revoke_decision_and_implications, add_vote_for
 from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator

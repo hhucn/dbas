@@ -1,11 +1,14 @@
 import random
-from typing import List
+from typing import List, Union
 
 import transaction
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Argument, Issue, Statement, StatementToIssue, \
+from dbas.database.discussion_model import Argument, Issue, Statement, StatementToIssue, \
     sql_timestamp_pretty_print, Premise
+from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
+    LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewDuplicate, LastReviewerDuplicate, ReviewMerge, \
+    ReviewSplit, LastReviewerMerge, LastReviewerSplit
 from dbas.lib import get_text_for_argument_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.review.mapper import get_review_modal_mapping, get_last_reviewer_by_key
@@ -305,3 +308,31 @@ def get_review_count_for(review_type, last_reviewer_type, db_user):
     db_reviews = db_reviews.all()
 
     return len(db_reviews)
+
+
+def add_vote_for(db_user: User, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
+                                                 ReviewOptimization, ReviewSplit], is_okay: bool,
+                 db_reviewer_type: Union[LastReviewerDelete, LastReviewerDuplicate, LastReviewerEdit, LastReviewerMerge,
+                                         LastReviewerOptimization, LastReviewerSplit]) -> True:
+    """
+    Add vote for a specific review
+
+    :param db_user: User
+    :param db_review: one table ouf of the Reviews
+    :param is_okay: Boolean
+    :param db_reviewer_type: one table out of the LastReviews
+    :return: True, if the cote can be added
+    """
+    logger('review.lib', f'{db_reviewer_type}, user {db_user.uid}, db_review {db_review}, is_okay {is_okay}')
+    already_voted = DBDiscussionSession.query(db_reviewer_type).filter(db_reviewer_type.reviewer_uid == db_user.uid,
+                                                                       db_reviewer_type.review_uid == db_review.uid).first()
+    if already_voted:
+        logger('review.lib', 'already voted')
+        return False
+
+    logger('review.lib', 'vote added')
+    db_new_review = db_reviewer_type(db_user.uid, db_review.uid, is_okay)
+    DBDiscussionSession.add(db_new_review)
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return True

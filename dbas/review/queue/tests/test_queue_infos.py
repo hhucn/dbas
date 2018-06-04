@@ -24,7 +24,7 @@ class QueueInfosTest(unittest.TestCase):
 
         queue = subclass_by_name(review_queues[0])
         adapter = QueueAdapter(queue=queue(), db_user=self.user, application_url='url', translator=Translator('en'))
-        subpage_dict = adapter.get_queue_information({}, review_queues[0])
+        subpage_dict = adapter.get_subpage_of_queue({}, review_queues[0])
         self.assertIsNotNone(subpage_dict['elements'])
         self.assertFalse(subpage_dict['no_arguments_to_review'])
         self.assertTrue(f'is_{review_queues[0]}' in subpage_dict['button_set'].keys())
@@ -36,7 +36,7 @@ class QueueInfosTest(unittest.TestCase):
         for key in review_queues:
             queue = subclass_by_name(key)
             adapter = QueueAdapter(queue=queue(), db_user=self.user, application_url='url', translator=Translator('en'))
-            subpage_dict = adapter.get_queue_information(request.session, key)
+            subpage_dict = adapter.get_subpage_of_queue(request.session, key)
             self.assertIsNotNone(subpage_dict['elements'])
             self.assertFalse(subpage_dict['no_arguments_to_review'])
             self.assertTrue(f'is_{key}' in subpage_dict['button_set'].keys())

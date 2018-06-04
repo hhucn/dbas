@@ -7,7 +7,7 @@ from dbas.handler.language import get_language_from_cookie
 from dbas.helper.query import revoke_author_of_statement_content, revoke_author_of_argument_content
 from dbas.lib import get_discussion_language
 from dbas.logger import logger
-from dbas.review import flags as review_flag_helper, queues as review_queue_helper
+from dbas.review.flags import flag_element, flag_statement_for_merge_or_split, flag_pgroup_for_merge_or_split
 from dbas.review.mapper import get_queue_by_key
 from dbas.review.queue import key_edit, key_delete, key_duplicate, key_optimization, key_merge, key_split
 from dbas.review.queue.adapter import QueueAdapter
@@ -44,7 +44,7 @@ def flag_argument_or_statement(request):
     extra_uid = request.validated['extra_uid']
     is_argument = request.validated['is_argument']
     db_user = request.validated['user']
-    return review_flag_helper.flag_element(uid, reason, db_user, is_argument, ui_locales, extra_uid)
+    return flag_element(uid, reason, db_user, is_argument, ui_locales, extra_uid)
 
 
 @view_config(route_name='split_or_merge_statement', renderer='json')
@@ -66,7 +66,7 @@ def split_or_merge_statement(request):
 
     if key not in ['merge', 'split']:
         raise HTTPBadRequest()
-    return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, tvalues, db_user, _tn)
+    return flag_statement_for_merge_or_split(key, pgroup, tvalues, db_user, _tn)
 
 
 @view_config(route_name='split_or_merge_premisegroup', renderer='json')
@@ -85,9 +85,9 @@ def split_or_merge_premisegroup(request):
     pgroup = request.validated['pgroup']
     key = request.validated['key']
 
-    if key not in ['merge', 'split']:
+    if key not in [key_merge, key_split]:
         raise HTTPBadRequest()
-    return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, db_user, _tn)
+    return flag_pgroup_for_merge_or_split(key, pgroup, db_user, _tn)
 
 
 @view_config(route_name='review_delete_argument', renderer='json')
@@ -281,9 +281,9 @@ def review_lock(request):
     db_user = request.validated['user']
 
     if lock:
-        return review_queue_helper.lock_optimization_review(db_user, db_review, _tn)
+        return OptimizationQueue().lock_optimization_review(db_user, db_review, _tn)
     else:
-        return review_queue_helper.unlock_optimization_review(db_review, _tn)
+        return OptimizationQueue().unlock_optimization_review(db_review, _tn)
 
 
 @view_config(route_name='revoke_statement_content', renderer='json', require_csrf=False)

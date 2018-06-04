@@ -4,8 +4,9 @@ Provides helping function for flagging arguments.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import transaction
 from typing import Union
+
+import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
@@ -19,7 +20,8 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], db_user: User, is_argument: bool, ui_locales: str, extra_uid=None) -> dict():
+def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], db_user: User,
+                 is_argument: bool, ui_locales: str, extra_uid=None) -> dict():
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
@@ -38,7 +40,9 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
     statement_uid = uid if not is_argument else None
 
     # was this already flagged?
-    flag_status = QueueAdapter(db_user=db_user).is_element_flagged(argument_uid=argument_uid, duplicate_statement_uid=statement_uid, statement_uid=statement_uid)
+    flag_status = QueueAdapter(db_user=db_user).is_element_flagged(argument_uid=argument_uid,
+                                                                   duplicate_statement_uid=statement_uid,
+                                                                   statement_uid=statement_uid)
     if flag_status:
         logger('FlagingHelper', 'already flagged')
         if flag_status == FlaggedBy.user:
@@ -50,8 +54,8 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
     return __add_flag(reason, argument_uid, statement_uid, extra_uid, db_user, tn)
 
 
-
-def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument_uid: Union[int, None], statement_uid: Union[int, None], extra_uid: Union[int, None], db_user: User, tn: Translator) -> dict():
+def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument_uid: Union[int, None],
+               statement_uid: Union[int, None], extra_uid: Union[int, None], db_user: User, tn: Translator) -> dict():
     """
 
     :param reason:
@@ -78,7 +82,9 @@ def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReason
 
     return {'success': tn.get(_.thxForFlagText), 'info': ''}
 
-def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_values: list(), db_user: User, tn: Translator) -> dict():
+
+def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_values: list(), db_user: User,
+                                      tn: Translator) -> dict():
     """
     Flags a statement for a merge or split event. On split, the statement of the pgroup will be splitted into the
     given text_values. On merge the statements of the pgroup will be connected by an and.
@@ -149,7 +155,8 @@ def __add_optimization_review(argument_uid, statement_uid, user_uid):
     :param user_uid: User.uid
     :return: None
     """
-    logger('FlagingHelper', f'Flag argument/statement {argument_uid}/{statement_uid} by user {user_uid} for optimization')
+    logger('FlagingHelper',
+           f'Flag argument/statement {argument_uid}/{statement_uid} by user {user_uid} for optimization')
     review_optimization = ReviewOptimization(detector=user_uid, argument=argument_uid, statement=statement_uid)
     DBDiscussionSession.add(review_optimization)
     DBDiscussionSession.flush()
@@ -165,7 +172,8 @@ def __add_duplication_review(duplicate_statement_uid, original_statement_uid, us
     :param user_uid: User.uid
     :return: None
     """
-    logger('FlagingHelper', f'Flag statement {duplicate_statement_uid} by user {user_uid} as duplicate of {original_statement_uid}')
+    logger('FlagingHelper',
+           f'Flag statement {duplicate_statement_uid} by user {user_uid} as duplicate of {original_statement_uid}')
     review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement_uid,
                                          original_statement=original_statement_uid)
     DBDiscussionSession.add(review_duplication)
@@ -182,13 +190,15 @@ def __add_split_review(pgroup_uid, user_uid, text_values):
     :param text_values: text values or None, if you want to split the premisegroup itself
     :return: None
     """
-    logger('FlagingHelper', f'Flag pgroup {pgroup_uid} by user {user_uid} for merging with additional values: {text_values}')
+    logger('FlagingHelper',
+           f'Flag pgroup {pgroup_uid} by user {user_uid} for merging with additional values: {text_values}')
     review_split = ReviewSplit(detector=user_uid, premisegroup=pgroup_uid)
     DBDiscussionSession.add(review_split)
     DBDiscussionSession.flush()
 
     if text_values:
-        DBDiscussionSession.add_all([ReviewSplitValues(review=review_split.uid, content=value) for value in text_values])
+        DBDiscussionSession.add_all(
+            [ReviewSplitValues(review=review_split.uid, content=value) for value in text_values])
         DBDiscussionSession.flush()
 
     transaction.commit()
@@ -203,13 +213,15 @@ def __add_merge_review(pgroup_uid, user_uid, text_values):
     :param text_values: text values or None, if you want to merge the premisegroup itself
     :return: None
     """
-    logger('FlagingHelper', f'Flag pgroup {pgroup_uid} by user {user_uid} for merging with additional values: {text_values}')
+    logger('FlagingHelper',
+           f'Flag pgroup {pgroup_uid} by user {user_uid} for merging with additional values: {text_values}')
     review_merge = ReviewMerge(detector=user_uid, premisegroup=pgroup_uid)
     DBDiscussionSession.add(review_merge)
     DBDiscussionSession.flush()
 
     if text_values:
-        DBDiscussionSession.add_all([ReviewMergeValues(review=review_merge.uid, content=value) for value in text_values])
+        DBDiscussionSession.add_all(
+            [ReviewMergeValues(review=review_merge.uid, content=value) for value in text_values])
         DBDiscussionSession.flush()
 
     transaction.commit()

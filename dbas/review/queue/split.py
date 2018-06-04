@@ -13,8 +13,7 @@ from dbas.logger import logger
 from dbas.review.queue import max_votes, min_difference, key_split
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, \
-    get_reporter_stats_for_review, undo_premisegroups
-from dbas.review.queues import add_vote_for
+    get_reporter_stats_for_review, undo_premisegroups, add_vote_for
 from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
