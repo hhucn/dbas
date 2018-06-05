@@ -5,12 +5,11 @@ Test Documentation
 
 Requirements
 ============
-
-Ensure that the following tools are installed (if you want to test locally, without docker:
+Ensure that the following tools are installed (if you want to test locally, without docker):
 
 * Python >= 3.4
 * `pipenv <https://pip.pypa.io/en/stable/installing/>`_
-* `splinter <https://splinter.readthedocs.org/en/latest/>`_
+* `splinter <https://splinter.readthedocs.org/en/latest/>`_ **DEPRECATED**
 
 
 Backend with WebTest
@@ -18,7 +17,7 @@ Backend with WebTest
 Backend tests are realized by the use of *WebTest*. A quick tutorial can be found in the
 `documentation of pyramid <http://docs.pylonsproject.org/projects/pyramid/en/latest/quick_tutorial/functional_testing.html>`_
 or in the `documentation of WebTest <http://docs.pylonsproject.org/projects/webtest/en/latest/>`_.
-Webtests are end-to-end-full-stack tests.
+Webtests are normally unit tests, but can be used for end-to-end-full-stack tests as well.
 
 Execute these tests with::
 
@@ -30,10 +29,61 @@ If you want to stay very clean on your machine, you could just run the tests in 
     docker exec dbas_web_1 nosetests
 
 
+Please note, that every module has its own tests and if you call::
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+Please also call::
+
+    def tearDown(self):
+        testing.tearDown()
+
+Otherwise the transactions for the database will brake.
+
 Code
-----
+====
 
 .. automodule:: dbas.tests
+    :members:
+
+.. automodule:: dbas.auth.tests
+    :members:
+
+.. automodule:: dbas.auth.oauth.tests
+    :members:
+
+.. automodule:: dbas.handler.tests
+    :members:
+
+.. automodule:: dbas.handler.dictionary.tests
+    :members:
+
+.. automodule:: dbas.review.tests
+    :members:
+
+.. automodule:: dbas.review.queue.tests
+    :members:
+
+.. automodule:: dbas.strings.tests
+    :members:
+
+.. automodule:: dbas.validators.tests
+    :members:
+
+.. automodule:: dbas.views.tests
+    :members:
+
+.. automodule:: dbas.views.discussion.tests
+    :members:
+
+.. automodule:: dbas.views.main.tests
+    :members:
+
+.. automodule:: dbas.views.review.tests
+    :members:
+
+.. automodule:: dbas.views.user.tests
     :members:
 
 
@@ -51,31 +101,31 @@ For running these tests, just execute::
 
 If you want to add a tests, please follow these steps:
 
-1. Open tests/splinterTests.py
+    1. Open tests/splinterTests.py
 
-2. Add your test into the test list.
+    2. Add your test into the test list.
 
 
-3. Define your test function in Webtests by using this skeleton::
+    3. Define your test function in Webtests by using this skeleton::
 
-    def __test_YOUR_TEST_METHOD(self, browser):
-        """
-        Please enter a description here
-        :param browser: current browser
-        :return: 1 if success else 0
-        """
-        print('Starting tests for XYZ:')
-        b = Browser(browser)
-        success = True
+        def __test_YOUR_TEST_METHOD(self, browser):
+            """
+            Please enter a description here
+            :param browser: current browser
+            :return: 1 if success else 0
+            """
+            print('Starting tests for XYZ:')
+            b = Browser(browser)
+            success = True
 
-        # your test routine
+            # your test routine
 
-        b.quit()
-        return 1 if success else 0
+            b.quit()
+            return 1 if success else 0
 
-Please:
-    * replace the name with the chosen name out of 2.
-    * enter a short description
-    * use the *success*-parameter
+        Please:
+            * replace the name with the chosen name out of 2.
+            * enter a short description
+            * use the *success*-parameter
 
-4. Have fun!
+    4. Have fun!

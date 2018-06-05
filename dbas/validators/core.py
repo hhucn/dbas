@@ -106,8 +106,8 @@ class validate(object):
     Decorate a function like this
 
     .. code-block:: python
-    @validate(validators=(check_for_user, check_for_issue, )
-    def my_view(request)
+        @validate(validators=(check_for_user, check_for_issue, )
+        def my_view(request)
     """
 
     def __init__(self, *validators):

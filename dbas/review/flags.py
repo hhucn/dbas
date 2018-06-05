@@ -109,9 +109,9 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
         return {'success': '', 'info': info}
 
     if key is key_merge:
-        return __add_merge_review(pgroup.uid, db_user.uid, text_values)
+        __add_merge_review(pgroup.uid, db_user.uid, text_values)
     elif key is key_split:
-        return __add_split_review(pgroup.uid, db_user.uid, text_values)
+        __add_split_review(pgroup.uid, db_user.uid, text_values)
 
     success = tn.get(_.thxForFlagText)
     return {'success': success, 'info': ''}

@@ -10,6 +10,7 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReviewCanceled, ReviewDelete, ReviewDuplicate, \
     ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
 from dbas.lib import get_text_for_argument_uid, nick_of_anonymous_user
+from dbas.review import ReviewDeleteReasons
 from dbas.review.queue import key_delete, key_duplicate, key_merge, key_split
 from dbas.tests.utils import TestCaseWithConfig
 from dbas.views import review_delete_argument, revoke_statement_content, flag_argument_or_statement, \
@@ -41,26 +42,26 @@ class AjaxReviewTest(unittest.TestCase):
         transaction.commit()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(json_body={
-            'uid': 2,
-            'reason': 'offtopic',
+            'uid': 20,
+            'reason': ReviewDeleteReasons.offtopic.value,
             'is_argument': False,
         })
         response = flag_argument_or_statement(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['success']) != 0)
-        self.assertTrue(len(response['info']) == 0)
+        self.assertNotEqual(0, len(response['success']))
+        self.assertEqual(0, len(response['info']))
 
     def test_flag_argument_or_statement_twice(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(json_body={
-            'uid': 2,
-            'reason': 'offtopic',
+            'uid': 20,
+            'reason': ReviewDeleteReasons.offtopic.value,
             'is_argument': False,
         })
         response = flag_argument_or_statement(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['success']) == 0)
-        self.assertTrue(len(response['info']) != 0)
+        self.assertEqual(0, len(response['success']))
+        self.assertNotEqual(0, len(response['info']))
         DBDiscussionSession.query(ReviewDelete).filter_by(statement_uid=2).delete()
         DBDiscussionSession.query(ReviewOptimization).filter_by(statement_uid=2).delete()
         transaction.commit()
@@ -74,7 +75,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_flag_argument_or_statement_error_reason(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(json_body={
-            'uid': 2,
+            'uid': 20,
             'reason': 'some_fake_reason',
             'is_argument': False,
         })
@@ -86,7 +87,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(json_body={
             'uid': 'a',
-            'reason': 'offtopic',
+            'reason': ReviewDeleteReasons.offtopic.value,
             'is_argument': False,
         })
         response = flag_argument_or_statement(request)
@@ -733,8 +734,8 @@ class AjaxReviewTest(unittest.TestCase):
         response = split_or_merge_premisegroup(request)
         db_review2 = DBDiscussionSession.query(ReviewMerge).count()
         db_values2 = DBDiscussionSession.query(ReviewMergeValues).count()
-        self.assertEqual(len(response['info']), 0)
-        self.assertNotEqual(len(response['success']), 0)
+        self.assertEqual(0, len(response['info']))
+        self.assertNotEqual(0, len(response['success']))
         self.assertEqual(db_review1 + 1, db_review2)
         self.assertEqual(db_values1, db_values2)
 
@@ -772,17 +773,17 @@ class AjaxReviewTest(unittest.TestCase):
         })
         # oem of pgroup pgroup_uid is: 'the fact, that cats are capricious, is based on the cats race'
         split_or_merge_statement(request)
-        tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=pgroup_uid).first()
+        db_review_split = DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=pgroup_uid).first()
 
         db_arguments_with_pgroup = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=pgroup_uid).all()
 
         # vote 1:0
         request = testing.DummyRequest(json_body={
-            'review_uid': tmp.uid,
+            'review_uid': db_review_split.uid,
             'should_split': True
         })
         response = review_splitted_premisegroup(request)
-        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
+        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review_split.uid)
         pro = db_review.filter_by(should_split=True).count()
         con = db_review.filter_by(should_split=False).count()
         self.assertTrue(response)
@@ -792,11 +793,11 @@ class AjaxReviewTest(unittest.TestCase):
         # vote 2:0
         self.config.testing_securitypolicy(userid='Christian', permissive=True)
         request = testing.DummyRequest(json_body={
-            'review_uid': tmp.uid,
+            'review_uid': db_review_split.uid,
             'should_split': True,
         })
         response = review_splitted_premisegroup(request)
-        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
+        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review_split.uid)
         pro = db_review.filter_by(should_split=True).count()
         con = db_review.filter_by(should_split=False).count()
         self.assertTrue(response)
@@ -806,11 +807,11 @@ class AjaxReviewTest(unittest.TestCase):
         # vote 2:1
         self.config.testing_securitypolicy(userid='Bob', permissive=True)
         request = testing.DummyRequest(json_body={
-            'review_uid': tmp.uid,
+            'review_uid': db_review_split.uid,
             'should_split': False,
         })
         response = review_splitted_premisegroup(request)
-        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
+        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review_split.uid)
         pro = db_review.filter_by(should_split=True).count()
         con = db_review.filter_by(should_split=False).count()
         self.assertTrue(response)
@@ -820,11 +821,11 @@ class AjaxReviewTest(unittest.TestCase):
         # vote 3:1
         self.config.testing_securitypolicy(userid='Pascal', permissive=True)
         request = testing.DummyRequest(json_body={
-            'review_uid': tmp.uid,
+            'review_uid': db_review_split.uid,
             'should_split': True,
         })
         response = review_splitted_premisegroup(request)
-        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
+        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review_split.uid)
         pro = db_review.filter_by(should_split=True).count()
         con = db_review.filter_by(should_split=False).count()
         self.assertTrue(response)
@@ -834,7 +835,7 @@ class AjaxReviewTest(unittest.TestCase):
         # vote 4:1
         self.config.testing_securitypolicy(userid='Kurt', permissive=True)
         request = testing.DummyRequest(json_body={
-            'review_uid': tmp.uid,
+            'review_uid': db_review_split.uid,
             'should_split': True,
         })
         arg_old_len = DBDiscussionSession.query(Argument).count()
@@ -842,7 +843,7 @@ class AjaxReviewTest(unittest.TestCase):
         response = review_splitted_premisegroup(request)
 
         arg_new_len = DBDiscussionSession.query(Argument).count()
-        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
+        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review_split.uid)
         pro = db_review.filter_by(should_split=True).count()
         con = db_review.filter_by(should_split=False).count()
         self.assertTrue(response)
@@ -851,7 +852,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(arg_old_len + 1, arg_new_len)
 
         # now the vote is executed
-        self.assertTrue(DBDiscussionSession.query(ReviewSplit).get(tmp.uid).is_executed)
+        self.assertTrue(DBDiscussionSession.query(ReviewSplit).get(db_review_split.uid).is_executed)
 
         # check the new premisegroups
         for arg in db_arguments_with_pgroup:
@@ -860,15 +861,15 @@ class AjaxReviewTest(unittest.TestCase):
             self.assertNotEqual(arg.premisegroup_uid, tmp_arg.premisegroup_uid)
 
         # remove added args
-        add_args = DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=tmp.uid).all()
+        add_args = DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=db_review_split.uid).all()
         self.assertEqual(len(add_args), 1)  # one argument was added and one was modified
         map(lambda arg: DBDiscussionSession.query(Argument).filter_by(arg.uid).delete(), add_args)
 
         if resetdb:
-            DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid).delete()
-            DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=tmp.uid).delete()
-            DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=tmp.uid).delete()
-            DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=tmp.uid).delete()
+            DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review_split.uid).delete()
+            DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=db_review_split.uid).delete()
+            DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review_split.uid).delete()
+            DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=db_review_split.uid).delete()
             DBDiscussionSession.flush()
             DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=pgroup_uid).delete()
             DBDiscussionSession.flush()
@@ -883,15 +884,15 @@ class AjaxReviewTest(unittest.TestCase):
             'text_values': ['cats are small and fluffy']
         })
         split_or_merge_statement(request)
-        tmp = DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=pgroup_uid).first()
+        db_review_merge = DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=pgroup_uid).first()
 
         # vote 1:0
         request = testing.DummyRequest(json_body={
-            'review_uid': tmp.uid,
+            'review_uid': db_review_merge.uid,
             'should_merge': True
         })
         response = review_merged_premisegroup(request)
-        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
+        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review_merge.uid)
         pro = db_review.filter_by(should_merge=True).count()
         con = db_review.filter_by(should_merge=False).count()
         self.assertTrue(response)
@@ -901,11 +902,11 @@ class AjaxReviewTest(unittest.TestCase):
         # vote 2:0
         self.config.testing_securitypolicy(userid='Christian', permissive=True)
         request = testing.DummyRequest(json_body={
-            'review_uid': tmp.uid,
+            'review_uid': db_review_merge.uid,
             'should_merge': True,
         })
         response = review_merged_premisegroup(request)
-        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
+        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review_merge.uid)
         pro = db_review.filter_by(should_merge=True).count()
         con = db_review.filter_by(should_merge=False).count()
         self.assertTrue(response)
@@ -915,11 +916,11 @@ class AjaxReviewTest(unittest.TestCase):
         # vote 2:1
         self.config.testing_securitypolicy(userid='Bob', permissive=True)
         request = testing.DummyRequest(json_body={
-            'review_uid': tmp.uid,
+            'review_uid': db_review_merge.uid,
             'should_merge': False,
         })
         response = review_merged_premisegroup(request)
-        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
+        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review_merge.uid)
         pro = db_review.filter_by(should_merge=True).count()
         con = db_review.filter_by(should_merge=False).count()
         self.assertTrue(response)
@@ -929,11 +930,11 @@ class AjaxReviewTest(unittest.TestCase):
         # vote 3:1
         self.config.testing_securitypolicy(userid='Pascal', permissive=True)
         request = testing.DummyRequest(json_body={
-            'review_uid': tmp.uid,
+            'review_uid': db_review_merge.uid,
             'should_merge': True,
         })
         response = review_merged_premisegroup(request)
-        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
+        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review_merge.uid)
         pro = db_review.filter_by(should_merge=True).count()
         con = db_review.filter_by(should_merge=False).count()
         self.assertTrue(response)
@@ -943,7 +944,7 @@ class AjaxReviewTest(unittest.TestCase):
         # vote 4:1
         self.config.testing_securitypolicy(userid='Kurt', permissive=True)
         request = testing.DummyRequest(json_body={
-            'review_uid': tmp.uid,
+            'review_uid': db_review_merge.uid,
             'should_merge': True,
         })
         pgroup_old_len = DBDiscussionSession.query(PremiseGroup).count()
@@ -958,7 +959,7 @@ class AjaxReviewTest(unittest.TestCase):
         new_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
         pgroup_new_len = DBDiscussionSession.query(PremiseGroup).count()
         pgroup_merged_new_len = DBDiscussionSession.query(PremiseGroupMerged).count()
-        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
+        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review_merge.uid)
         pro = db_review.filter_by(should_merge=True).count()
         con = db_review.filter_by(should_merge=False).count()
 
@@ -969,7 +970,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(pgroup_merged_old_len + 1, pgroup_merged_new_len)
 
         # now the vote is executed
-        self.assertTrue(DBDiscussionSession.query(ReviewMerge).get(tmp.uid).is_executed)
+        self.assertTrue(DBDiscussionSession.query(ReviewMerge).get(db_review_merge.uid).is_executed)
 
         # check the new premisegroups in every argument
         map(lambda arg: self.assertEqual(arg.premisegroup_uid, db_new_pgroup.uid), db_arguments_with_pgroup)
@@ -979,9 +980,9 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertNotEqual(old_argument_text, new_argument_text)
 
         if resetdb:
-            DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid).delete()
-            DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=tmp.uid).delete()
-            DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=tmp.uid).delete()
+            DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review_merge.uid).delete()
+            DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review_merge.uid).delete()
+            DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review_merge.uid).delete()
             DBDiscussionSession.flush()
             DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=pgroup_uid).delete()
             DBDiscussionSession.flush()
@@ -1029,7 +1030,7 @@ class AjaxReviewTest(unittest.TestCase):
         request = testing.DummyRequest(json_body={
             'uid': 33,
             'key': key_split,
-            'text_values': ['cats are small and fluffy', 'split it up man']
+            'text_values': ['cats are small and fluffy', 'split it up, dude']
         })
 
         len1 = DBDiscussionSession.query(ReviewSplit).count()

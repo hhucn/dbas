@@ -53,43 +53,14 @@ Source-Code Docstrings
 ======================
 
 
-Flag Helper
-===========
-
-.. automodule:: dbas.review.flags
-    :members:
-
-
-History Manager
-===============
-
-.. automodule:: dbas.review.history
-    :members:
-
-
-Opinion Manager
-==============
-
-.. automodule:: dbas.review.opinions
-    :members:
-
-
-Queues Handler
-==============
+Queues
+======
 
 .. automodule:: dbas.review.queues
     :members:
 
+Stuff
+=====
 
-Reputation Helper
-=================
-
-.. automodule:: dbas.review.reputation
-    :members:
-
-
-Subpage Manager
-===============
-
-.. automodule:: dbas.review.subpage
+.. automodule:: dbas.review
     :members:

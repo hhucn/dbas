@@ -85,7 +85,7 @@ def get_reputation_reasons_list(translator):
         key = _.get_key_by_string(gain.reason)
         gains.append({
             'text': translator.get(key),
-            'points': '+' + str(gain.points)
+            'points': f'+{gain.points}'
         })
 
     db_looses = DBDiscussionSession.query(ReputationReason).filter(ReputationReason.points < 0).all()
