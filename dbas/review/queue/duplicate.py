@@ -13,7 +13,7 @@ from dbas.review import FlaggedBy, txt_len_history_page
 from dbas.review.queue import min_difference, max_votes, key_duplicate
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_reporter_stats_for_review, \
-    get_issues_for_statement_uids, add_vote_for
+    get_issues_for_statement_uids, add_vote_for, get_user_dict_for_review
 from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -230,9 +230,33 @@ class DuplicateQueue(QueueABC):
         text = get_text_for_statement_uid(db_review.original_statement_uid)
         if text is None:
             text = '...'
-        entry['statement_duplicate_shorttext'] = text[0:txt_len_history_page] + ('...' if len(text) > txt_len_history_page else '')
+        entry['statement_duplicate_shorttext'] = text[0:txt_len_history_page] + (
+            '...' if len(text) > txt_len_history_page else '')
         entry['statement_duplicate_fulltext'] = text
         return entry
+
+    def get_text_of_element(self, db_review: ReviewDuplicate):
+        """
+
+        :param db_review:
+        :return:
+        """
+        return DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid).get_text()
+
+    def get_all_votes_for(self, db_review: ReviewDuplicate, application_url: str):
+        """
+
+        :param db_review:
+        :return:
+        """
+        db_all_votes = DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid)
+        pro_votes = db_all_votes.filter_by(is_okay=True).all()
+        con_votes = db_all_votes.filter_by(is_okay=False).all()
+
+        pro_list = [get_user_dict_for_review(pro.reviewer_uid, application_url) for pro in pro_votes]
+        con_list = [get_user_dict_for_review(con.reviewer_uid, application_url) for con in con_votes]
+
+        return pro_list, con_list
 
     @staticmethod
     def __bend_objects_of_review(db_review):

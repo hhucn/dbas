@@ -140,6 +140,21 @@ class QueueAdapter():
         """
         return self.queue.get_history_table_row(db_review, entry, **kwargs)
 
+    def get_text_of_element(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
+        """
+
+        :param db_review:
+        :return:
+        """
+        return self.queue.get_text_of_element(db_review)
+
+    def get_all_votes_for(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
+        """
+
+        :return:
+        """
+        return self.queue.get_all_votes_for(db_review, self.application_url)
+
     def get_review_queues_as_lists(self):
         """
 

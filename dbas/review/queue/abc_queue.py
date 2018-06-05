@@ -113,3 +113,20 @@ class QueueABC(metaclass=ABCMeta):
         :return:
         """
         pass
+
+    @abstractmethod
+    def get_text_of_element(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
+        """
+
+        :param db_review:
+        :return:
+        """
+        pass
+
+    @abstractmethod
+    def get_all_votes_for(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit], application_url: str):
+        """
+
+        :return:
+        """
+        pass

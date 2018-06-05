@@ -9,12 +9,13 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerEdit, ReviewEdit, ReviewEditValue, TextVersion, \
     ReviewCanceled, Statement, Argument, Premise
 from dbas.handler.textversion import propose_new_textversion_for_statement
+from dbas.lib import get_text_for_argument_uid
 from dbas.logger import logger
 from dbas.review import FlaggedBy, txt_len_history_page
 from dbas.review.queue import max_votes, min_difference, key_edit, Code
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_base_subpage_dict, \
-    get_reporter_stats_for_review, add_vote_for
+    get_reporter_stats_for_review, add_vote_for, get_user_dict_for_review
 from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -247,7 +248,8 @@ class EditQueue(QueueABC):
         :return:
         """
         if kwargs.get('is_executed'):
-            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=db_review.statement_uid).order_by(
+            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(
+                statement_uid=db_review.statement_uid).order_by(
                 TextVersion.uid.desc()).all()
             if len(db_textversions) == 0:
                 entry['is_innocent'] = False
@@ -270,6 +272,32 @@ class EditQueue(QueueABC):
                     entry['argument_shorttext'] = db_edit_value.content
                 entry['argument_fulltext'] = db_edit_value.content
         return entry
+
+    def get_text_of_element(self, db_review: ReviewEdit):
+        """
+
+        :param db_review:
+        :return:
+        """
+        if db_review.statement_uid is None:
+            return get_text_for_argument_uid(db_review.argument_uid)
+        else:
+            return DBDiscussionSession.query(Statement).get(db_review.statement_uid).get_text()
+
+    def get_all_votes_for(self, db_review: ReviewEdit, application_url: str):
+        """
+
+        :param db_review:
+        :return:
+        """
+        db_all_votes = DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid)
+        pro_votes = db_all_votes.filter_by(is_okay=True).all()
+        con_votes = db_all_votes.filter_by(is_okay=False).all()
+
+        pro_list = [get_user_dict_for_review(pro.reviewer_uid, application_url) for pro in pro_votes]
+        con_list = [get_user_dict_for_review(con.reviewer_uid, application_url) for con in con_votes]
+
+        return pro_list, con_list
 
     def add_edit_reviews(self, db_user: User, uid: int, text: str):
         """

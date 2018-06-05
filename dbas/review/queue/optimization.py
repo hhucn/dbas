@@ -13,7 +13,8 @@ from dbas.review import FlaggedBy
 from dbas.review.queue import max_votes, key_optimization, max_lock_time_in_sec
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_issues_for_statement_uids, \
-    get_reporter_stats_for_review, get_all_allowed_reviews_for_user, revoke_decision_and_implications
+    get_reporter_stats_for_review, get_all_allowed_reviews_for_user, revoke_decision_and_implications, \
+    get_user_dict_for_review
 from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -204,6 +205,32 @@ class OptimizationQueue(QueueABC):
         if db_review.count() > 0:
             return FlaggedBy.other
         return None
+
+    def get_text_of_element(self, db_review: ReviewOptimization):
+        """
+
+        :param db_review:
+        :return:
+        """
+        if db_review.statement_uid is None:
+            return get_text_for_argument_uid(db_review.argument_uid)
+        else:
+            return DBDiscussionSession.query(Statement).get(db_review.statement_uid).get_text()
+
+    def get_all_votes_for(self, db_review: ReviewOptimization, application_url: str):
+        """
+
+        :param db_review:
+        :return:
+        """
+        db_all_votes = DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid)
+        pro_votes = db_all_votes.filter_by(is_okay=True).all()
+        con_votes = db_all_votes.filter_by(is_okay=False).all()
+
+        pro_list = [get_user_dict_for_review(pro.reviewer_uid, application_url) for pro in pro_votes]
+        con_list = [get_user_dict_for_review(con.reviewer_uid, application_url) for con in con_votes]
+
+        return pro_list, con_list
 
     def get_history_table_row(self, db_review: ReviewOptimization, entry, **kwargs):
         """

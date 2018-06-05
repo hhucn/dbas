@@ -15,7 +15,7 @@ from dbas.review import FlaggedBy, txt_len_history_page
 from dbas.review.queue import max_votes, min_difference, key_merge
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, \
-    get_reporter_stats_for_review, undo_premisegroups, add_vote_for
+    get_reporter_stats_for_review, undo_premisegroups, add_vote_for, get_user_dict_for_review
 from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -255,11 +255,36 @@ class MergeQueue(QueueABC):
         if db_values:
             full_text = str([value.content for value in db_values])
         full_text = ' and '.join(full_text)
-        entry['argument_oem_shorttext'] = (oem_fulltext[0:txt_len_history_page] + '...') if len(oem_fulltext) > txt_len_history_page else oem_fulltext
+        entry['argument_oem_shorttext'] = (oem_fulltext[0:txt_len_history_page] + '...') if len(
+            oem_fulltext) > txt_len_history_page else oem_fulltext
         entry['argument_oem_fulltext'] = oem_fulltext
-        entry['argument_shorttext'] = (full_text[0:txt_len_history_page] + '...') if len(full_text) > txt_len_history_page else full_text
+        entry['argument_shorttext'] = (full_text[0:txt_len_history_page] + '...') if len(
+            full_text) > txt_len_history_page else full_text
         entry['argument_fulltext'] = full_text
         return entry
+
+    def get_text_of_element(self, db_review: ReviewMerge):
+        """
+
+        :param db_review:
+        :return:
+        """
+        return DBDiscussionSession.query(PremiseGroup).get(db_review.premisegroup_uid).get_text()
+
+    def get_all_votes_for(self, db_review: ReviewMerge, application_url: str):
+        """
+
+        :param db_review:
+        :return:
+        """
+        db_all_votes = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid)
+        pro_votes = db_all_votes.filter_by(should_merge=True).all()
+        con_votes = db_all_votes.filter_by(should_merge=False).all()
+
+        pro_list = [get_user_dict_for_review(pro.reviewer_uid, application_url) for pro in pro_votes]
+        con_list = [get_user_dict_for_review(con.reviewer_uid, application_url) for con in con_votes]
+
+        return pro_list, con_list
 
     @staticmethod
     def __merge_premisegroup(db_review: ReviewMerge):

@@ -336,3 +336,20 @@ def add_vote_for(db_user: User, db_review: Union[ReviewDelete, ReviewDuplicate, 
     DBDiscussionSession.flush()
     transaction.commit()
     return True
+
+
+def get_user_dict_for_review(user_id, application_url):
+    """
+    Fetches some data of the given user.
+
+    :param user_id:
+    :param application_url: app url of D-BAS
+    :return: dict with gravatar, users page and nickname
+    """
+    db_user = DBDiscussionSession.query(User).get(user_id)
+    image_url = get_profile_picture(db_user, 20)
+    return {
+        'gravatar_url': image_url,
+        'nickname': db_user.global_nickname,
+        'userpage_url': f'{application_url}/user/{db_user.uid}'
+    }

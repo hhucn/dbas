@@ -3,14 +3,16 @@ import transaction
 from beaker.session import Session
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete, ReviewDeleteReason, ReviewCanceled
+from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete, ReviewDeleteReason, ReviewCanceled, \
+    Statement
+from dbas.lib import get_text_for_argument_uid
 from dbas.logger import logger
 from dbas.review import FlaggedBy
 from dbas.review.queue import max_votes, min_difference, key_delete
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_base_subpage_dict, \
     get_all_allowed_reviews_for_user, get_reporter_stats_for_review, set_able_object_of_review, \
-    revoke_decision_and_implications, add_vote_for
+    revoke_decision_and_implications, add_vote_for, get_user_dict_for_review
 from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -212,3 +214,29 @@ class DeleteQueue(QueueABC):
         db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(db_review.reason_uid)
         entry['reason'] = db_reason.reason
         return entry
+
+    def get_text_of_element(self, db_review: ReviewDelete):
+        """
+
+        :param db_review:
+        :return:
+        """
+        if db_review.statement_uid is None:
+            return get_text_for_argument_uid(db_review.argument_uid)
+        else:
+            return DBDiscussionSession.query(Statement).get(db_review.statement_uid).get_text()
+
+    def get_all_votes_for(self, db_review: ReviewDelete, application_url: str):
+        """
+
+        :param db_review:
+        :return:
+        """
+        db_all_votes = DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid)
+        pro_votes = db_all_votes.filter_by(is_okay=True).all()
+        con_votes = db_all_votes.filter_by(is_okay=False).all()
+
+        pro_list = [get_user_dict_for_review(pro.reviewer_uid, application_url) for pro in pro_votes]
+        con_list = [get_user_dict_for_review(con.reviewer_uid, application_url) for con in con_votes]
+
+        return pro_list, con_list
