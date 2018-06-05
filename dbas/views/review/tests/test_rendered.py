@@ -152,10 +152,7 @@ class ReviewHistoryViewTests(unittest.TestCase):
     def test_page(self):
         request = testing.DummyRequest()
         response = history(request)
-        verify_dictionary_of_view(response)
-
-        self.assertIn('history', response)
-        self.assertTrue(len(response['history']) == 0)
+        self.assertEqual(response.status_code, 400)
 
     def test_page_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

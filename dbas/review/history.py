@@ -5,36 +5,29 @@ Provides helping function for the managing the queue with all executed decisions
 """
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ReviewDelete, User, ReviewDeleteReason, \
-    ReviewEdit, \
-    ReviewEditValue, TextVersion, sql_timestamp_pretty_print, \
-    ReviewDuplicate, Premise, ReviewMerge, ReviewSplit, \
-    ReviewSplitValues, \
-    ReviewMergeValues
-from dbas.lib import get_text_for_argument_uid, get_profile_picture, get_text_for_statement_uid, \
-    get_text_for_premisegroup_uid
+from dbas.database.discussion_model import User, sql_timestamp_pretty_print, Statement, PremiseGroup
+from dbas.lib import get_text_for_argument_uid, get_profile_picture
 from dbas.logger import logger
-from dbas.review.mapper import get_last_reviewer_by_key, get_review_model_by_key
+from dbas.review import txt_len_history_page
+from dbas.review.mapper import get_last_reviewer_by_key, get_review_model_by_key, get_queue_by_key
 from dbas.review.queue import key_edit, key_delete, key_duplicate, key_optimization, key_merge, key_split, review_queues
+from dbas.review.queue.adapter import QueueAdapter
 from dbas.review.reputation import get_reputation_of, reputation_borders
 from dbas.review.reputation import reputation_icons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 
 
-def get_review_history(main_page, nickname, translator):
+def get_review_history(main_page, db_user, translator):
     """
     Returns the history of all reviews
 
     :param main_page: Host URL
-    :param nickname: User.nickname
+    :param db_user: User
     :param translator: Translator
     :return: dict()
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return dict()
-    return __get_data(main_page, db_user, translator, True)
+    return __get_reviews_from_histor_queue(main_page, db_user, translator, True)
 
 
 def get_ongoing_reviews(main_page, db_user, translator):
@@ -46,12 +39,11 @@ def get_ongoing_reviews(main_page, db_user, translator):
     :param translator: Translator
     :return: dict()
     """
-    return __get_data(main_page, db_user, translator, False)
+    return __get_reviews_from_histor_queue(main_page, db_user, translator, False)
 
 
-def __get_data(main_page, db_user, translator, is_executed=False):
+def __get_reviews_from_histor_queue(main_page, db_user, translator, is_executed=False):
     """
-    Collects data for every review queue
 
     :param main_page: Host URL
     :param db_user: User
@@ -106,45 +98,85 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     return some_list
 
 
-def __get_executed_review_element_of(table, main_page, review, last_review_type, translator, is_executed):
+def __get_executed_review_element_of(table_key, main_page, db_review, last_review_type, translator, is_executed):
     """
 
-    :param table: Shortcut for the table
+    :param table_key: Shortcut for the table
     :param main_page: Main page of D-BAS
-    :param review: Element
+    :param db_review: Element
     :param last_review_type: Type of the last reviewer of the table
     :param translator: current ui_locales
     :param is_executed
     :return: Element
     """
 
-    length = 35
-    # getting text
-    if table == key_duplicate:
-        full_text = get_text_for_statement_uid(review.duplicate_statement_uid)
-    elif table in [key_split, key_merge]:
-        full_text = get_text_for_premisegroup_uid(review.premisegroup_uid)
-    elif review.statement_uid is None:
-        full_text = get_text_for_argument_uid(review.argument_uid)
-    else:
-        full_text = get_text_for_statement_uid(review.statement_uid)
+    full_text = __get_full_text(db_review, table_key)
 
     # pretty print
     intro = translator.get(_.otherUsersSaidThat) + ' '
     if full_text.startswith(intro):
-        short_text = full_text[len(intro):len(intro) + 1].upper() + full_text[len(intro) + 1:len(intro) + length]
+        short_text = full_text[len(intro):len(intro) + 1].upper()
+        short_text += full_text[len(intro) + 1:len(intro) + txt_len_history_page]
     else:
-        short_text = full_text[0:length]
+        short_text = full_text[0:txt_len_history_page]
 
-    short_text += '...' if len(full_text) > length else '.'
-    short_text = '<span class="text-primary">' + short_text + '</span>'
+    short_text += '...' if len(full_text) > txt_len_history_page else '.'
+    short_text = f'<span class="text-primary">{short_text}</span>'
 
-    all_votes = DBDiscussionSession.query(last_review_type).filter_by(review_uid=review.uid)
-    is_okay = False if table == key_optimization else True
-    if table is key_merge:
+    pro_list, con_list = __get_votes(db_review, table_key, last_review_type, main_page)
+
+    # and build up some dict
+    entry = dict()
+    entry['entry_id'] = db_review.uid
+    tmp = __handle_table_of_review_element(table_key, entry, db_review, short_text, full_text, is_executed)
+    if not tmp:
+        return None
+
+    entry.update(tmp)
+    entry['pro'] = pro_list
+    entry['con'] = con_list
+    entry['timestamp'] = sql_timestamp_pretty_print(db_review.timestamp, translator.get_lang())
+    entry['votes_pro'] = pro_list
+    entry['votes_con'] = con_list
+    entry['reporter'] = __get_user_dict_for_review(db_review.detector_uid, main_page)
+
+    return entry
+
+
+def __get_full_text(db_review, table_key):
+    """
+
+    :param db_review:
+    :param table_key:
+    :return:
+    """
+    if table_key == key_duplicate:
+        full_text = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid).get_text()
+    elif table_key in [key_split, key_merge]:
+        full_text = DBDiscussionSession.query(PremiseGroup).get(db_review.premisegroup_uid).get_text()
+    elif db_review.statement_uid is None:
+        full_text = get_text_for_argument_uid(db_review.argument_uid)
+    else:
+        full_text = DBDiscussionSession.query(Statement).get(db_review.statement_uid).get_text()
+    return full_text
+
+
+def __get_votes(db_review, table_key, last_review_type, main_page):
+    """
+
+    :param db_review:
+    :param table_key:
+    :param last_review_type:
+    :param main_page:
+    :return:
+    """
+    all_votes = DBDiscussionSession.query(last_review_type).filter_by(review_uid=db_review.uid)
+    is_okay = False if table_key == key_optimization else True
+
+    if table_key is key_merge:
         pro_votes = all_votes.filter_by(should_merge=is_okay).all()
         con_votes = all_votes.filter(last_review_type.should_merge != is_okay).all()
-    elif table is key_split:
+    elif table_key is key_split:
         pro_votes = all_votes.filter_by(should_split=is_okay).all()
         con_votes = all_votes.filter(last_review_type.should_split != is_okay).all()
     else:
@@ -155,131 +187,35 @@ def __get_executed_review_element_of(table, main_page, review, last_review_type,
     pro_list = [__get_user_dict_for_review(pro.reviewer_uid, main_page) for pro in pro_votes]
     con_list = [__get_user_dict_for_review(con.reviewer_uid, main_page) for con in con_votes]
 
-    if table == key_duplicate:
+    if table_key == key_duplicate:
         # switch it, because contra is: it should not be there!
-        tmp_list = pro_list
-        pro_list = con_list
-        con_list = tmp_list
+        pro_list, con_list = con_list, pro_list
 
-    # and build up some dict
-    entry = dict()
-    entry['entry_id'] = review.uid
-    tmp = __handle_table_of_review_element(table, entry, review, short_text, full_text, length, is_executed)
-    if not tmp:
-        entry = None
-    else:
-        entry.update(tmp)
-        entry['pro'] = pro_list
-        entry['con'] = con_list
-        entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
-        entry['votes_pro'] = pro_list
-        entry['votes_con'] = con_list
-        entry['reporter'] = __get_user_dict_for_review(review.detector_uid, main_page)
-
-    return entry
+    return pro_list, con_list
 
 
-def __handle_table_of_review_element(table, entry, review, short_text, full_text, length, is_executed):
+def __handle_table_of_review_element(table_key, entry, review, short_text, full_text, is_executed):
     """
 
-    :param table:
+    :param table_key:
     :param entry:
     :param review:
     :param short_text:
     :param full_text:
-    :param length:
     :param is_executed:
     :return:
     """
-    entry['row_id'] = table + str(review.uid)
+    entry['row_id'] = table_key + str(review.uid)
     entry['argument_shorttext'] = short_text
     entry['argument_fulltext'] = full_text
     entry['is_innocent'] = True
 
-    if table == key_delete:
-        return __handle_table_of_review_delete(review, entry)
+    if table_key in review_queues:
+        queue = get_queue_by_key(table_key)
+        adapter = QueueAdapter(queue())
+        return adapter.get_history_table_row(review, entry, is_executed=is_executed, short_text=short_text,
+                                             full_text=full_text)
 
-    if table == key_edit:
-        return __handle_table_of_review_edit(review, length, entry, is_executed, short_text, full_text)
-
-    if table == key_duplicate:
-        return __handle_table_of_review_duplicate(review, length, entry)
-
-    if table is key_split:
-        return __handle_table_of_review_split(review, length, entry)
-
-    if table is key_merge:
-        return __handle_table_of_review_merge(review, length, entry)
-
-    return entry
-
-
-def __handle_table_of_review_delete(review: ReviewDelete, entry):
-    db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(review.reason_uid)
-    entry['reason'] = db_reason.reason
-    return entry
-
-
-def __handle_table_of_review_edit(review: ReviewEdit, length, entry, is_executed, short_text, full_text):
-    if is_executed:
-        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(
-            TextVersion.uid.desc()).all()
-        if len(db_textversions) == 0:
-            entry['is_innocent'] = False
-            text = 'Review {} is malicious / no text for statement'.format(review.uid)
-            entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
-            entry['argument_oem_fulltext'] = text
-        else:
-            entry['argument_oem_shorttext'] = db_textversions[1].content[0:length]
-            entry['argument_oem_fulltext'] = db_textversions[1].content
-    else:
-        db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).first()
-        if not db_edit_value:
-            entry = None
-        else:
-            entry['argument_oem_shorttext'] = short_text
-            entry['argument_oem_fulltext'] = full_text
-            entry['argument_shorttext'] = short_text.replace(short_text,
-                                                             (db_edit_value.content[0:length] + '...') if len(
-                                                                 full_text) > length else db_edit_value.content)
-            entry['argument_fulltext'] = db_edit_value.content
-    return entry
-
-
-def __handle_table_of_review_duplicate(review: ReviewDuplicate, length, entry):
-    text = get_text_for_statement_uid(review.original_statement_uid)
-    if text is None:
-        text = '...'
-    entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
-    entry['statement_duplicate_fulltext'] = text
-    return entry
-
-
-def __handle_table_of_review_split(review: ReviewSplit, length, entry):
-    oem_fulltext = get_text_for_premisegroup_uid(review.premisegroup_uid)
-    full_text = oem_fulltext
-    db_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=review.uid).all()
-    if db_values:
-        full_text = str([value.content for value in db_values])
-    entry['argument_oem_shorttext'] = oem_fulltext[0:length] + '...' if len(oem_fulltext) > length else oem_fulltext
-    entry['argument_oem_fulltext'] = oem_fulltext
-    entry['argument_shorttext'] = full_text[0:length] + '...' if len(full_text) > length else full_text
-    entry['argument_fulltext'] = full_text
-    return entry
-
-
-def __handle_table_of_review_merge(review: ReviewMerge, length, entry):
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=review.premisegroup_uid).all()
-    oem_fulltext = str([get_text_for_statement_uid(p.statement_uid) for p in db_premises])
-    full_text = oem_fulltext
-    db_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=review.uid).all()
-    if db_values:
-        full_text = str([value.content for value in db_values])
-    full_text = ' and '.join(full_text)
-    entry['argument_oem_shorttext'] = oem_fulltext[0:length] + '...' if len(oem_fulltext) > length else oem_fulltext
-    entry['argument_oem_fulltext'] = oem_fulltext
-    entry['argument_shorttext'] = full_text[0:length] + '...' if len(full_text) > length else full_text
-    entry['argument_fulltext'] = full_text
     return entry
 
 

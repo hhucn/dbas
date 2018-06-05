@@ -83,7 +83,7 @@ def queue_details(request):
 
 
 @view_config(route_name='review_history', renderer='../../templates/review/history.pt', permission='use')
-@validate(check_authentication, prep_extras_dict)
+@validate(check_authentication, valid_user, prep_extras_dict)
 def history(request):
     """
     View configuration for the review history.
@@ -93,10 +93,9 @@ def history(request):
     """
     logger('history', f'main {request.matchdict} / {request.params}')
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
     _tn = Translator(ui_locales)
 
-    history = get_review_history(request.application_url, request_authenticated_userid, _tn)
+    history = get_review_history(request.application_url, request.validated['user'], _tn)
     prep_dict = main_dict(request, _tn.get(_.review_history))
     prep_dict.update({'history': history})
     return prep_dict

@@ -32,11 +32,11 @@ Workflow
 If you want to add a new queue, there are some steps to be done. We will guide through these steps file-by-file:
 
     1. Visit `dbas/database/discussion_model.py` and:
-        a. Add a new table for your review type to the database.
-        b. Add a new table for the last reviewer of your new type.
-        c. Add a column into the ReviewCanceled table.
-    2. Add the necessary `keys` in `dbas/review/__init__.py`
-    3. Create a new script in `dbas/review/<your_queue_name>.py` based on the `__interface__.py`
+        a. Add a new table for your review type to the database, respect the common pattern (Review<Queuename> with tablename = review_<queuename>)!
+        b. Add a new table for the last reviewer of your new type, respect the common pattern (LastReviewer<Queuename> with tablename = last_reviewers__<queuename>)!
+        c. Add a column into the ReviewCanceled table, respect the common pattern!
+    2. Add the necessary `keys` in `dbas/review/queue/__init__.py`
+    3. Create a new script in `dbas/review/queue/<your_queue_name>.py` based on the `abc_queue.py`
     4. Implement it!
     5. Add the strings for `priv_access_x_queue` and `<queueY>`
     6. Do not forget to implement the frontend: Most of the parts are just copy / paste / rename.
@@ -45,7 +45,6 @@ If you want to add a new queue, there are some steps to be done. We will guide t
         c. Add click events for the buttons in `queue.js` and the methods in `review.js`.
         d. Be nice, we never had time to refactor the frontend.
     7. Please add tests!
-
 
 
 ======================

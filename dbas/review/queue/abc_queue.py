@@ -93,10 +93,22 @@ class QueueABC(metaclass=ABCMeta):
         """
         pass
 
+    @abstractmethod
     def element_in_queue(self, db_user: User, **kwargs):
         """
 
         :param db_user:
+        :param kwargs:
+        :return:
+        """
+        pass
+
+    @abstractmethod
+    def get_history_table_row(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit], entry, **kwargs):
+        """
+
+        :param db_review:
+        :param entry:
         :param kwargs:
         :return:
         """

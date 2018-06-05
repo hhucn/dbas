@@ -9,7 +9,7 @@ from dbas.database.discussion_model import User, LastReviewerDuplicate, ReviewDu
     Premise, ReviewCanceled, Argument, LastReviewerDelete
 from dbas.lib import get_all_arguments_by_statement, get_text_for_statement_uid
 from dbas.logger import logger
-from dbas.review import FlaggedBy
+from dbas.review import FlaggedBy, txt_len_history_page
 from dbas.review.queue import min_difference, max_votes, key_duplicate
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_reporter_stats_for_review, \
@@ -203,6 +203,12 @@ class DuplicateQueue(QueueABC):
         return True
 
     def element_in_queue(self, db_user: User, **kwargs):
+        """
+
+        :param db_user:
+        :param kwargs:
+        :return:
+        """
         db_review = DBDiscussionSession.query(ReviewDuplicate).filter_by(
             duplicate_statement_uid=kwargs.get('statement_uid'),
             is_executed=False,
@@ -212,6 +218,21 @@ class DuplicateQueue(QueueABC):
         if db_review.count() > 0:
             return FlaggedBy.other
         return None
+
+    def get_history_table_row(self, db_review: ReviewDuplicate, entry, **kwargs):
+        """
+
+        :param db_review:
+        :param entry:
+        :param kwargs:
+        :return:
+        """
+        text = get_text_for_statement_uid(db_review.original_statement_uid)
+        if text is None:
+            text = '...'
+        entry['statement_duplicate_shorttext'] = text[0:txt_len_history_page] + ('...' if len(text) > txt_len_history_page else '')
+        entry['statement_duplicate_fulltext'] = text
+        return entry
 
     @staticmethod
     def __bend_objects_of_review(db_review):

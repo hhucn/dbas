@@ -9,8 +9,9 @@ from dbas.database.discussion_model import User, LastReviewerMerge, ReviewMerge,
     StatementReplacementsByPremiseGroupMerge, PremiseGroupMerged, Argument, PremiseGroup, Premise, Issue, \
     ReviewMergeValues, Statement, ReviewCanceled
 from dbas.handler.statements import set_statement
+from dbas.lib import get_text_for_statement_uid
 from dbas.logger import logger
-from dbas.review import FlaggedBy
+from dbas.review import FlaggedBy, txt_len_history_page
 from dbas.review.queue import max_votes, min_difference, key_merge
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, \
@@ -223,6 +224,12 @@ class MergeQueue(QueueABC):
         return True
 
     def element_in_queue(self, db_user: User, **kwargs):
+        """
+
+        :param db_user:
+        :param kwargs:
+        :return:
+        """
         db_review = DBDiscussionSession.query(ReviewMerge).filter_by(
             premisegroup_uid=kwargs.get('premisegroup_uid'),
             is_executed=False,
@@ -232,6 +239,27 @@ class MergeQueue(QueueABC):
         if db_review.count() > 0:
             return FlaggedBy.other
         return None
+
+    def get_history_table_row(self, db_review: ReviewMerge, entry, **kwargs):
+        """
+
+        :param db_review:
+        :param entry:
+        :param kwargs:
+        :return:
+        """
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_review.premisegroup_uid).all()
+        oem_fulltext = str([get_text_for_statement_uid(p.statement_uid) for p in db_premises])
+        full_text = oem_fulltext
+        db_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).all()
+        if db_values:
+            full_text = str([value.content for value in db_values])
+        full_text = ' and '.join(full_text)
+        entry['argument_oem_shorttext'] = (oem_fulltext[0:txt_len_history_page] + '...') if len(oem_fulltext) > txt_len_history_page else oem_fulltext
+        entry['argument_oem_fulltext'] = oem_fulltext
+        entry['argument_shorttext'] = (full_text[0:txt_len_history_page] + '...') if len(full_text) > txt_len_history_page else full_text
+        entry['argument_fulltext'] = full_text
+        return entry
 
     @staticmethod
     def __merge_premisegroup(db_review: ReviewMerge):

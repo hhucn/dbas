@@ -188,6 +188,12 @@ class OptimizationQueue(QueueABC):
         return True
 
     def element_in_queue(self, db_user: User, **kwargs):
+        """
+
+        :param db_user:
+        :param kwargs:
+        :return:
+        """
         db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(
             argument_uid=kwargs.get('argument_uid'),
             statement_uid=kwargs.get('statement_uid'),
@@ -198,6 +204,16 @@ class OptimizationQueue(QueueABC):
         if db_review.count() > 0:
             return FlaggedBy.other
         return None
+
+    def get_history_table_row(self, db_review: ReviewOptimization, entry, **kwargs):
+        """
+
+        :param db_review:
+        :param entry:
+        :param kwargs:
+        :return:
+        """
+        pass
 
     def lock_optimization_review(self, db_user: User, db_review: ReviewOptimization, translator: Translator):
         """

@@ -10,7 +10,7 @@ from dbas.database.discussion_model import User, LastReviewerEdit, ReviewEdit, R
     ReviewCanceled, Statement, Argument, Premise
 from dbas.handler.textversion import propose_new_textversion_for_statement
 from dbas.logger import logger
-from dbas.review import FlaggedBy
+from dbas.review import FlaggedBy, txt_len_history_page
 from dbas.review.queue import max_votes, min_difference, key_edit, Code
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_base_subpage_dict, \
@@ -221,6 +221,12 @@ class EditQueue(QueueABC):
         return True
 
     def element_in_queue(self, db_user: User, **kwargs):
+        """
+
+        :param db_user:
+        :param kwargs:
+        :return:
+        """
         db_review = DBDiscussionSession.query(ReviewEdit).filter_by(
             argument_uid=kwargs.get('argument_uid'),
             statement_uid=kwargs.get('statement_uid'),
@@ -231,6 +237,39 @@ class EditQueue(QueueABC):
         if db_review.count() > 0:
             return FlaggedBy.other
         return None
+
+    def get_history_table_row(self, db_review: ReviewEdit, entry, **kwargs):
+        """
+
+        :param db_review:
+        :param entry:
+        :param kwargs:
+        :return:
+        """
+        if kwargs.get('is_executed'):
+            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=db_review.statement_uid).order_by(
+                TextVersion.uid.desc()).all()
+            if len(db_textversions) == 0:
+                entry['is_innocent'] = False
+                text = 'Review {} is malicious / no text for statement'.format(db_review.uid)
+                entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
+                entry['argument_oem_fulltext'] = text
+            else:
+                entry['argument_oem_shorttext'] = db_textversions[1].content[0:txt_len_history_page]
+                entry['argument_oem_fulltext'] = db_textversions[1].content
+        else:
+            db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_review.uid).first()
+            if not db_edit_value:
+                entry = None
+            else:
+                entry['argument_oem_shorttext'] = kwargs.get('short_text')
+                entry['argument_oem_fulltext'] = kwargs.get('full_text')
+                if len(kwargs.get('full_text')) > txt_len_history_page:
+                    entry['argument_shorttext'] = db_edit_value.content[0:txt_len_history_page] + '...'
+                else:
+                    entry['argument_shorttext'] = db_edit_value.content
+                entry['argument_fulltext'] = db_edit_value.content
+        return entry
 
     def add_edit_reviews(self, db_user: User, uid: int, text: str):
         """

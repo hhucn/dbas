@@ -184,6 +184,12 @@ class DeleteQueue(QueueABC):
         return True
 
     def element_in_queue(self, db_user: User, **kwargs):
+        """
+
+        :param db_user:
+        :param kwargs:
+        :return:
+        """
         db_review = DBDiscussionSession.query(ReviewDelete).filter_by(
             argument_uid=kwargs.get('argument_uid'),
             statement_uid=kwargs.get('statement_uid'),
@@ -194,3 +200,15 @@ class DeleteQueue(QueueABC):
         if db_review.count() > 0:
             return FlaggedBy.other
         return None
+
+    def get_history_table_row(self, db_review: ReviewDelete, entry, **kwargs):
+        """
+
+        :param db_review:
+        :param entry:
+        :param kwargs:
+        :return:
+        """
+        db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(db_review.reason_uid)
+        entry['reason'] = db_reason.reason
+        return entry

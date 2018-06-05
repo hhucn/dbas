@@ -7,7 +7,7 @@ from dbas.database.discussion_model import User, ReviewSplit, ReviewOptimization
     ReviewDuplicate
 from dbas.lib import get_profile_picture
 from dbas.review import FlaggedBy
-from dbas.review.mapper import get_review_model_by_key, get_last_reviewer_by_key, get_title_by_key
+from dbas.review.mapper import get_review_model_by_key, get_last_reviewer_by_key, get_title_by_key, get_queue_by_key
 from dbas.review.queue import review_queues, key_ongoing, key_history
 from dbas.review.queue.delete import DeleteQueue
 from dbas.review.queue.duplicate import DuplicateQueue
@@ -119,21 +119,26 @@ class QueueAdapter():
         :param premisegroup_uid:
         :return:
         """
-        # tables = [get_review_model_by_key(key) for key in review_queues]
-        # status = [table().element_in_queue(self.db_user, argument_uid=argument_uid, statement_uid=statement_uid, premisegroup_uid=premisegroup_uid) for table in tables]
-        status = [DeleteQueue().element_in_queue(self.db_user, argument_uid=argument_uid, statement_uid=statement_uid),
-                  DuplicateQueue().element_in_queue(self.db_user, statement_uid=statement_uid),
-                  EditQueue().element_in_queue(self.db_user, argument_uid=argument_uid, statement_uid=statement_uid),
-                  OptimizationQueue().element_in_queue(self.db_user, argument_uid=argument_uid, statement_uid=statement_uid),
-                  MergeQueue().element_in_queue(self.db_user, premisegroup_uid=premisegroup_uid),
-                  SplitQueue().element_in_queue(self.db_user, premisegroup_uid=premisegroup_uid)]
+        queues = [get_queue_by_key(key) for key in review_queues]
+        status = [queue().element_in_queue(self.db_user, argument_uid=argument_uid, statement_uid=statement_uid, premisegroup_uid=premisegroup_uid) for queue in queues]
 
         if FlaggedBy.user in status:
             return FlaggedBy.user
 
         if FlaggedBy.other in status:
             return FlaggedBy.other
+
         return None
+
+    def get_history_table_row(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit], entry, **kwargs):
+        """
+
+        :param db_review:
+        :param entry:
+        :param kwargs:
+        :return:
+        """
+        return self.queue.get_history_table_row(db_review, entry, **kwargs)
 
     def get_review_queues_as_lists(self):
         """
