@@ -101,15 +101,15 @@ class AdapterTest(unittest.TestCase):
             self.assertFalse(subpage_dict['no_arguments_to_review'])
             self.assertTrue(f'is_{key}' in subpage_dict['button_set'].keys())
 
-    def test_is_element_flagged(self):
+    def test_element_in_queue(self):
         adapter = QueueAdapter(db_user=self.user, application_url='url', translator=Translator('en'))
 
-        status = adapter.is_element_flagged(30, None, None)
+        status = adapter.element_in_queue(argument_uid=30, statement_uid=None, premisegroup_uid=None)
         self.assertIsNone(status)
 
-        status = adapter.is_element_flagged(None, 9, None)
+        status = adapter.element_in_queue(argument_uid=None, statement_uid=9, premisegroup_uid=None)
         self.assertEqual(FlaggedBy.other, status)
 
         adapter = QueueAdapter(db_user=self.other_user, application_url='url', translator=Translator('en'))
-        status = adapter.is_element_flagged(None, 9, None)
+        status = adapter.element_in_queue(argument_uid=None, statement_uid=9, premisegroup_uid=None)
         self.assertEqual(FlaggedBy.user, status)

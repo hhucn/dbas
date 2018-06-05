@@ -1,7 +1,7 @@
 # Source interface for the review queues
 
 from abc import ABCMeta, abstractmethod
-from typing import Union
+from typing import Union, Tuple
 
 from requests import Session
 
@@ -65,14 +65,17 @@ class QueueABC(metaclass=ABCMeta):
     def add_review(self, db_user: User):
         """
 
+        :param db_user:
         :return:
         """
         pass
 
     @abstractmethod
-    def get_review_count(self, review_uid: int):
+    def get_review_count(self, review_uid: int) -> Tuple(int, int):
         """
+        Returns total pro and con count for the given review.uid
 
+        :param review_uid: Review.uid
         :return:
         """
         pass
@@ -81,6 +84,8 @@ class QueueABC(metaclass=ABCMeta):
     def cancel_ballot(self, db_user: User, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
         """
 
+        :param db_user:
+        :param db_review:
         :return:
         """
         pass
@@ -89,15 +94,16 @@ class QueueABC(metaclass=ABCMeta):
     def revoke_ballot(self, db_user: User, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
         """
 
+        :param db_user:
+        :param db_review:
         :return:
         """
         pass
 
     @abstractmethod
-    def element_in_queue(self, db_user: User, **kwargs):
+    def element_in_queue(self, **kwargs):
         """
 
-        :param db_user:
         :param kwargs:
         :return:
         """
@@ -115,7 +121,7 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_text_of_element(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
+    def get_text_of_element(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]) -> str:
         """
 
         :param db_review:
@@ -124,9 +130,11 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_all_votes_for(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit], application_url: str):
+    def get_all_votes_for(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit], application_url: str) -> Tuple[list, list]:
         """
 
+        :param db_review:
+        :param application_url:
         :return:
         """
         pass

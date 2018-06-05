@@ -1,6 +1,6 @@
 # Adaptee for the edit queue. Every edit results in a new textversion of a statement.
 import difflib
-from typing import List
+from typing import List, Union, Tuple
 
 import transaction
 from beaker.session import Session
@@ -29,6 +29,7 @@ class EditQueue(QueueABC):
 
     def key(self, key=None):
         """
+        Getter/setter for the key of the queue which is just the name
 
         :param key:
         :return:
@@ -166,15 +167,16 @@ class EditQueue(QueueABC):
         """
         Just adds a new element
 
-        :param db_user:
+        :param db_user: current user
         :return:
         """
         pass
 
-    def get_review_count(self, review_uid: int):
+    def get_review_count(self, review_uid: int) -> Tuple(int, int):
         """
+        Returns total pro and con count for the given review.uid
 
-        :param review_uid:
+        :param review_uid: Review.uid
         :return:
         """
         db_reviews = DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=review_uid)
@@ -185,9 +187,10 @@ class EditQueue(QueueABC):
 
     def cancel_ballot(self, db_user: User, db_review: ReviewEdit):
         """
+        Cancels any ongoing vote
 
-        :param db_user:
-        :param db_review:
+        :param db_user: current user
+        :param db_review: any element from a review queue
         :return:
         """
         DBDiscussionSession.query(ReviewEdit).filter_by(uid=db_review.uid).delete()
@@ -202,6 +205,7 @@ class EditQueue(QueueABC):
 
     def revoke_ballot(self, db_user: User, db_review: ReviewEdit):
         """
+        Revokes/Undo the implications of any successfull reviewed element
 
         :param db_user:
         :param db_review:
@@ -221,12 +225,12 @@ class EditQueue(QueueABC):
         transaction.commit()
         return True
 
-    def element_in_queue(self, db_user: User, **kwargs):
+    def element_in_queue(self, db_user: User, **kwargs) -> Union(None, FlaggedBy):
         """
+        Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
-        :param db_user:
-        :param kwargs:
-        :return:
+        :param db_user: current user
+        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update this!
         """
         db_review = DBDiscussionSession.query(ReviewEdit).filter_by(
             argument_uid=kwargs.get('argument_uid'),
@@ -273,10 +277,11 @@ class EditQueue(QueueABC):
                 entry['argument_fulltext'] = db_edit_value.content
         return entry
 
-    def get_text_of_element(self, db_review: ReviewEdit):
+    def get_text_of_element(self, db_review: ReviewEdit) -> str:
         """
+        Returns full text of the given element
 
-        :param db_review:
+        :param db_review: current review element
         :return:
         """
         if db_review.statement_uid is None:
@@ -284,10 +289,11 @@ class EditQueue(QueueABC):
         else:
             return DBDiscussionSession.query(Statement).get(db_review.statement_uid).get_text()
 
-    def get_all_votes_for(self, db_review: ReviewEdit, application_url: str):
+    def get_all_votes_for(self, db_review: ReviewEdit, application_url: str) -> Tuple[list, list]:
         """
+        Returns all pro and con votes for the given element
 
-        :param db_review:
+        :param db_review: current review element
         :return:
         """
         db_all_votes = DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid)

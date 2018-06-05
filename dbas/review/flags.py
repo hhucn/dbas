@@ -40,9 +40,9 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
     statement_uid = uid if not is_argument else None
 
     # was this already flagged?
-    flag_status = QueueAdapter(db_user=db_user).is_element_flagged(argument_uid=argument_uid,
-                                                                   statement_uid=statement_uid,
-                                                                   premisegroup_uid=None)
+    flag_status = QueueAdapter(db_user=db_user).element_in_queue(argument_uid=argument_uid,
+                                                                 statement_uid=statement_uid,
+                                                                 premisegroup_uid=None)
     if flag_status:
         logger('FlagingHelper', f'Already flagged by {flag_status}')
         if flag_status == FlaggedBy.user:
@@ -97,9 +97,9 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
     """
     logger('FlagingHelper', f'Flag statements in pgroup {pgroup.uid} for a {key} with values {text_values}')
     # was this already flagged?
-    flag_status = QueueAdapter(db_user=db_user).is_element_flagged(argument_uid=None,
-                                                                   statement_uid=None,
-                                                                   premisegroup_uid=pgroup.uid)
+    flag_status = QueueAdapter(db_user=db_user).element_in_queue(argument_uid=None,
+                                                                 statement_uid=None,
+                                                                 premisegroup_uid=pgroup.uid)
     if flag_status:
         logger('FlagingHelper', 'already flagged')
         if flag_status == FlaggedBy.user:

@@ -1,5 +1,6 @@
 # Adaptee for the optimizations queue. Every accepted optimization will be an edit.
 import random
+from typing import Union, Tuple
 
 import transaction
 from beaker.session import Session
@@ -28,6 +29,7 @@ class OptimizationQueue(QueueABC):
 
     def key(self, key=None):
         """
+        Getter/setter for the key of the queue which is just the name
 
         :param key:
         :return:
@@ -145,12 +147,18 @@ class OptimizationQueue(QueueABC):
         """
         Just adds a new element
 
-        :param db_user:
+        :param db_user: current user
         :return:
         """
         pass
 
-    def get_review_count(self, review_uid: int):
+    def get_review_count(self, review_uid: int) -> Tuple(int, int):
+        """
+        Returns total pro and con count for the given review.uid
+
+        :param review_uid: Review.uid
+        :return:
+        """
         db_reviews = DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=review_uid)
         count_of_okay = db_reviews.filter_by(is_okay=True).count()
         count_of_not_okay = db_reviews.filter_by(is_okay=False).count()
@@ -159,9 +167,10 @@ class OptimizationQueue(QueueABC):
 
     def cancel_ballot(self, db_user: User, db_review: ReviewOptimization):
         """
+        Cancels any ongoing vote
 
-        :param db_user:
-        :param db_review:
+        :param db_user: current user
+        :param db_review: any element from a review queue
         :return:
         """
         DBDiscussionSession.query(ReviewOptimization).get(db_review.uid).set_revoked(True)
@@ -176,6 +185,7 @@ class OptimizationQueue(QueueABC):
 
     def revoke_ballot(self, db_user: User, db_review: ReviewOptimization):
         """
+        Revokes/Undo the implications of any successfull reviewed element
 
         :param db_user:
         :param db_review:
@@ -188,12 +198,12 @@ class OptimizationQueue(QueueABC):
         transaction.commit()
         return True
 
-    def element_in_queue(self, db_user: User, **kwargs):
+    def element_in_queue(self, db_user: User, **kwargs) -> Union(None, FlaggedBy):
         """
+        Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
-        :param db_user:
-        :param kwargs:
-        :return:
+        :param db_user: current user
+        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update this!
         """
         db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(
             argument_uid=kwargs.get('argument_uid'),
@@ -206,10 +216,11 @@ class OptimizationQueue(QueueABC):
             return FlaggedBy.other
         return None
 
-    def get_text_of_element(self, db_review: ReviewOptimization):
+    def get_text_of_element(self, db_review: ReviewOptimization) -> str:
         """
+        Returns full text of the given element
 
-        :param db_review:
+        :param db_review: current review element
         :return:
         """
         if db_review.statement_uid is None:
@@ -217,10 +228,11 @@ class OptimizationQueue(QueueABC):
         else:
             return DBDiscussionSession.query(Statement).get(db_review.statement_uid).get_text()
 
-    def get_all_votes_for(self, db_review: ReviewOptimization, application_url: str):
+    def get_all_votes_for(self, db_review: ReviewOptimization, application_url: str) -> Tuple[list, list]:
         """
+        Returns all pro and con votes for the given element
 
-        :param db_review:
+        :param db_review: current review element
         :return:
         """
         db_all_votes = DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid)

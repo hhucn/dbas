@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Tuple
 
 from beaker.session import Session
 
@@ -34,11 +34,13 @@ class QueueAdapter():
                  translator: Translator = '',
                  **kwargs):
         """
+        Initialize the adapter for the different queue adaptees. The queue object will be called everytime you call any
+        function from this adapter.
 
-        :param queue:
-        :param db_user:
-        :param application_url:
-        :param translator:
+        :param queue: any queue object which derives from the abc_queue.py
+        :param db_user: current user object
+        :param application_url: the url of the application
+        :param translator: a translator object
         """
         self.queue = queue
         self.db_user: User = db_user
@@ -48,8 +50,11 @@ class QueueAdapter():
 
     def get_subpage_of_queue(self, session: Session, queue_name: str):
         """
+        Setup the subpage for the edit queue
 
-        :return:
+        :param session: session of current webserver request
+        :param queue_name: current name of the given queue
+        :return: dict()
         """
         button_set = {f'is_{key}': False for key in review_queues}
         button_set[f'is_{queue_name}'] = True
@@ -80,15 +85,17 @@ class QueueAdapter():
 
     def add_review(self):
         """
-        Just adds a new element
+        Just adds a new element to the review queue
 
         :return:
         """
         return self.queue.add_review(self.db_user)
 
-    def get_review_count(self, review_uid: int):
+    def get_review_count(self, review_uid: int) -> Tuple(int, int):
         """
+        Returns total pro and con count for the given review.uid
 
+        :param review_uid: Review.uid
         :return:
         """
         return self.queue.get_review_count(review_uid)
@@ -96,7 +103,9 @@ class QueueAdapter():
     def cancel_ballot(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
                                              ReviewOptimization, ReviewSplit]):
         """
+        Cancels any ongoing vote
 
+        :param db_review: any element from a review queue
         :return:
         """
         return self.queue.cancel_ballot(self.db_user, db_review)
@@ -104,24 +113,23 @@ class QueueAdapter():
     def revoke_ballot(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
                                              ReviewOptimization, ReviewSplit]):
         """
+        Revokes/Undo the implications of any successfull reviewed element
 
-        :param db_review:
+        :param db_review: any element from a review queue
         :return:
         """
         return self.queue.revoke_ballot(self.db_user, db_review)
 
-    def is_element_flagged(self, argument_uid: int = None, statement_uid: int = None,
-                           premisegroup_uid: int = None) -> Union[FlaggedBy, None]:
+    def element_in_queue(self, **kwargs) -> Union(None, FlaggedBy):
         """
+        Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
-        :param argument_uid:
-        :param statement_uid:
-        :param premisegroup_uid:
+        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update this!
         :return:
         """
-        queues = [get_queue_by_key(key) for key in review_queues]
-        status = [queue().element_in_queue(self.db_user, argument_uid=argument_uid, statement_uid=statement_uid, premisegroup_uid=premisegroup_uid) for queue in queues]
 
+        queues = [get_queue_by_key(key) for key in review_queues]
+        status = [queue().element_in_queue(self.db_user, argument_uid=kwargs.get('argument_uid'), statement_uid=kwargs.get('statement_uid'), premisegroup_uid=kwargs.get('premisegroup_uid')) for queue in queues]
         if FlaggedBy.user in status:
             return FlaggedBy.user
 
@@ -132,31 +140,36 @@ class QueueAdapter():
 
     def get_history_table_row(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit], entry, **kwargs):
         """
+        Returns a row the the history/ongoing page for the given review element
 
-        :param db_review:
-        :param entry:
-        :param kwargs:
+        :param db_review: current element which is the source of the row
+        :param entry: dictionary with some values which were already set
+        :param kwargs: "magic" -> atm keywords like is_executed, short_text and full_text. Please update this!
         :return:
         """
         return self.queue.get_history_table_row(db_review, entry, **kwargs)
 
-    def get_text_of_element(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
+    def get_text_of_element(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]) -> str:
         """
+        Returns full text of the given element
 
-        :param db_review:
+        :param db_review: current review element
         :return:
         """
         return self.queue.get_text_of_element(db_review)
 
-    def get_all_votes_for(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
+    def get_all_votes_for(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]) -> Tuple[list, list]:
         """
+        Returns all pro and con votes for the given element
 
+        :param db_review: current review element
         :return:
         """
         return self.queue.get_all_votes_for(db_review, self.application_url)
 
     def get_review_queues_as_lists(self):
         """
+        Returns a list with several dicts which contain many information about the queues
 
         :return:
         """
@@ -172,8 +185,9 @@ class QueueAdapter():
 
     def __get_queue_information(self, queue_name: str):
         """
+        Returns some information of the current queue
 
-        :param queue_name:
+        :param queue_name: name of the queue
         :return:
         """
         last_reviewer = get_last_reviewer_by_key(queue_name)
@@ -195,6 +209,11 @@ class QueueAdapter():
         }
 
     def __get_history_information(self):
+        """
+        Returns some information of the history queue
+
+        :return:
+        """
         count, all_rights = get_reputation_of(self.db_user)
         return {
             'task_name': self.translator.get(_.queueHistory),
@@ -210,6 +229,11 @@ class QueueAdapter():
         }
 
     def __get_ongoing_information(self):
+        """
+        Returns some information of the ongoing queue
+
+        :return:
+        """
         return {
             'task_name': self.translator.get(_.queueOngoing),
             'id': key_ongoing,
