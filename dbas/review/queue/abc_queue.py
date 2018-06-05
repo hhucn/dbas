@@ -71,7 +71,7 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_review_count(self, review_uid: int) -> Tuple(int, int):
+    def get_review_count(self, review_uid: int) -> Tuple[int, int]:
         """
         Returns total pro and con count for the given review.uid
 

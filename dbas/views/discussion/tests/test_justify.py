@@ -148,13 +148,12 @@ class TestJustifyArgument(unittest.TestCase):
         testing.tearDown()
 
     def __call_function_and_count_seen_clicked_arguments(self):
-        request = construct_dummy_request()
-        request.matchdict = {
+        request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
             'argument_id': 15,
             'attitude': Attitudes.DISAGREE.value,
             'relation': Relations.UNDERCUT.value,
-        }
+        })
         seen_arguments_before = DBDiscussionSession.query(SeenArgument).count()
         clicked_arguments_before = DBDiscussionSession.query(ClickedArgument).count()
 
@@ -168,13 +167,12 @@ class TestJustifyArgument(unittest.TestCase):
     def test_justify_argument_page_no_rep(self):
         vote_dict = get_meta_clicks()
         len_db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
-        request = construct_dummy_request()
-        request.matchdict = {
+        request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
             'argument_id': 4,
             'attitude': Attitudes.AGREE.value,
             'relation': Relations.UNDERMINE.value,
-        }
+        })
         response = justify_argument(request)
         self.assertNotIsInstance(response, httpexceptions.HTTPError)
         verify_dictionary_of_view(response)

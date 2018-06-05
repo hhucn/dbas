@@ -91,7 +91,7 @@ class QueueAdapter():
         """
         return self.queue.add_review(self.db_user)
 
-    def get_review_count(self, review_uid: int) -> Tuple(int, int):
+    def get_review_count(self, review_uid: int) -> Tuple[int, int]:
         """
         Returns total pro and con count for the given review.uid
 
@@ -120,7 +120,7 @@ class QueueAdapter():
         """
         return self.queue.revoke_ballot(self.db_user, db_review)
 
-    def element_in_queue(self, **kwargs) -> Union(None, FlaggedBy):
+    def element_in_queue(self, **kwargs) -> Union[None, FlaggedBy]:
         """
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 

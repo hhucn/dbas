@@ -11,6 +11,7 @@ import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason, sql_timestamp_pretty_print
+from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.review.queue import review_queues, all_queues, key_edit, key_delete, key_duplicate, key_optimization, \
     key_merge, key_split, key_history, key_ongoing
@@ -138,6 +139,9 @@ def add_reputation_for(db_user: User, db_reason: ReputationReason):
     """
     logger('Reputation', f'main {db_reason.reason}, user {db_user.uid}')
     # special case:
+    if db_user.nickname == nick_of_anonymous_user:
+        return False
+
     if '_first_' in db_reason.reason:
         db_already_farmed = DBDiscussionSession.query(ReputationHistory).filter(
             ReputationHistory.reputation_uid == db_reason.uid,
@@ -150,7 +154,6 @@ def add_reputation_for(db_user: User, db_reason: ReputationReason):
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()
-
     transaction.commit()
     return True
 
@@ -162,10 +165,13 @@ def has_access_to_review_system(db_user: User):
     :param db_user:
     :return:
     """
+    if db_user.nickname == nick_of_anonymous_user:
+        return False
+
     db_points = DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(
         ReputationReason).all()
     points = __collect_points(db_points)
-    return points <= smallest_border
+    return points >= smallest_border
 
 
 def __collect_points(reputation_history):
@@ -197,7 +203,8 @@ def get_reason_by_action(reason: ReputationReasons) -> Union[ReputationReason, N
     :param reason:
     :return:
     """
-    return DBDiscussionSession.query(ReputationReason).filter_by(reason=f'rep_reason_{reason.value}').first()
+    reason_str = f'rep_reason_{reason.value}'
+    return DBDiscussionSession.query(ReputationReason).filter_by(reason=reason_str).first()
 
 
 def get_history_of(db_user: User, translator: Translator):

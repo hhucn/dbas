@@ -27,7 +27,7 @@ def get_review_history(main_page, db_user, translator):
     :param translator: Translator
     :return: dict()
     """
-    return __get_reviews_from_histor_queue(main_page, db_user, translator, True)
+    return __get_reviews_from_history_queue(main_page, db_user, translator, True)
 
 
 def get_ongoing_reviews(main_page, db_user, translator):
@@ -39,10 +39,10 @@ def get_ongoing_reviews(main_page, db_user, translator):
     :param translator: Translator
     :return: dict()
     """
-    return __get_reviews_from_histor_queue(main_page, db_user, translator, False)
+    return __get_reviews_from_history_queue(main_page, db_user, translator, False)
 
 
-def __get_reviews_from_histor_queue(main_page, db_user, translator, is_executed=False):
+def __get_reviews_from_history_queue(main_page, db_user, translator, is_executed=False):
     """
 
     :param main_page: Host URL

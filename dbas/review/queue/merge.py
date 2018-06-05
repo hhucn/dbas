@@ -178,7 +178,7 @@ class MergeQueue(QueueABC):
         """
         pass
 
-    def get_review_count(self, review_uid: int) -> Tuple(int, int):
+    def get_review_count(self, review_uid: int) -> Tuple[int, int]:
         """
         Returns total pro and con count for the given review.uid
 
@@ -233,7 +233,7 @@ class MergeQueue(QueueABC):
         transaction.commit()
         return True
 
-    def element_in_queue(self, db_user: User, **kwargs) -> Union(None, FlaggedBy):
+    def element_in_queue(self, db_user: User, **kwargs) -> Union[None, FlaggedBy]:
         """
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 

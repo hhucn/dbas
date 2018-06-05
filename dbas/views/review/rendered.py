@@ -1,7 +1,6 @@
 from pyramid.view import view_config
 
 import dbas.review
-import dbas.review.lib
 import dbas.review.queue
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict

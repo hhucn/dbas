@@ -8,6 +8,7 @@ from dbas.review.queue.edit import EditQueue
 
 
 class EditQueueTest(unittest.TestCase):
+
     def setUp(self):
         self.config = testing.setUp()
 
