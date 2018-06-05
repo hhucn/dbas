@@ -5,6 +5,7 @@ from beaker.session import Session
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete, ReviewDeleteReason, ReviewCanceled
 from dbas.logger import logger
+from dbas.review import FlaggedBy
 from dbas.review.queue import max_votes, min_difference, key_delete
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_base_subpage_dict, \
@@ -181,3 +182,15 @@ class DeleteQueue(QueueABC):
         DBDiscussionSession.flush()
         transaction.commit()
         return True
+
+    def element_in_queue(self, db_user: User, **kwargs):
+        db_review = DBDiscussionSession.query(ReviewDelete).filter_by(
+            argument_uid=kwargs.get('argument_uid'),
+            statement_uid=kwargs.get('statement_uid'),
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None

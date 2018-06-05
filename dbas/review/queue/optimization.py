@@ -9,6 +9,7 @@ from dbas.database.discussion_model import User, LastReviewerOptimization, Revie
     ReviewEditValue, Statement, Issue, Argument, Premise, ReviewCanceled, OptimizationReviewLocks, get_now
 from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, get_text_for_statement_uid
 from dbas.logger import logger
+from dbas.review import FlaggedBy
 from dbas.review.queue import max_votes, key_optimization, max_lock_time_in_sec
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_issues_for_statement_uids, \
@@ -107,6 +108,189 @@ class OptimizationQueue(QueueABC):
             'session': session
         }
 
+    def add_vote(self, db_user: User, db_review: ReviewOptimization, is_okay: bool, application_url: str,
+                 translator: Translator, **kwargs):
+        """
+        Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged element will be
+        a new edit element
+
+        :param db_user: current user who votes
+        :param db_review: the review, which is voted vor
+        :param is_okay: True, if the element is rightly flagged
+        :param application_url: the app url
+        :param translator: a instance of a translator
+        :param kwargs: optional, keyworded arguments
+        :return:
+        """
+        logger('OptimizationQueue', 'main')
+        # add new review
+        db_new_review = LastReviewerOptimization(db_user.uid, db_review.uid, not is_okay)
+        DBDiscussionSession.add(db_new_review)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+        if is_okay:
+            self.__proposal_for_the_element(db_review, kwargs['new_data'], db_user)
+        else:
+            self.__keep_the_element_of_optimization_review(db_review, application_url, translator)
+
+        DBDiscussionSession.add(db_review)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+        return True
+
+    def add_review(self, db_user: User):
+        """
+        Just adds a new element
+
+        :param db_user:
+        :return:
+        """
+        pass
+
+    def get_review_count(self, review_uid: int):
+        db_reviews = DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=review_uid)
+        count_of_okay = db_reviews.filter_by(is_okay=True).count()
+        count_of_not_okay = db_reviews.filter_by(is_okay=False).count()
+
+        return count_of_okay, count_of_not_okay
+
+    def cancel_ballot(self, db_user: User, db_review: ReviewOptimization):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        DBDiscussionSession.query(ReviewOptimization).get(db_review.uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_optimization: db_review.uid},
+                                            was_ongoing=True)
+
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return True
+
+    def revoke_ballot(self, db_user: User, db_review: ReviewOptimization):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, db_review.uid)
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_optimization: db_review.uid})
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return True
+
+    def element_in_queue(self, db_user: User, **kwargs):
+        db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(
+            argument_uid=kwargs.get('argument_uid'),
+            statement_uid=kwargs.get('statement_uid'),
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None
+
+    def lock_optimization_review(self, db_user: User, db_review: ReviewOptimization, translator: Translator):
+        """
+        Locks a ReviewOptimization
+
+        :param db_user:
+        :param db_review:
+        :param translator:
+        :return:
+        """
+        logger('ReviewQueues', 'main')
+        # check if author locked an item and maybe tidy up old locks
+        db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
+        if db_locks:
+            if self.is_review_locked(db_locks.review_optimization_uid):
+                logger('ReviewQueues', 'review already locked')
+                return {
+                    'success': '',
+                    'info': translator.get(_.dataAlreadyLockedByYou),
+                    'is_locked': True
+                }
+            else:
+                DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).delete()
+
+        # is already locked?
+        if self.is_review_locked(db_review.uid):
+            logger('ReviewQueues', 'already locked', warning=True)
+            return {
+                'success': '',
+                'info': translator.get(_.dataAlreadyLockedByOthers),
+                'is_locked': True
+            }
+
+        DBDiscussionSession.add(OptimizationReviewLocks(db_user.uid, db_review.uid))
+        DBDiscussionSession.flush()
+        transaction.commit()
+        success = translator.get(_.dataAlreadyLockedByYou)
+
+        logger('ReviewQueues', 'review locked')
+        return {
+            'success': success,
+            'info': '',
+            'is_locked': True
+        }
+
+    def unlock_optimization_review(self, db_review: ReviewOptimization, translator: Translator):
+        """
+        Unlock the OptimizationReviewLocks
+
+        :param db_review:
+        :param translator:
+        :return:
+        """
+        self.tidy_up_optimization_locks()
+        logger('ReviewQueues', 'main')
+        DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=db_review.uid).delete()
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return {
+            'is_locked': False,
+            'success': translator.get(_.dataUnlocked),
+            'info': ''
+        }
+
+    def is_review_locked(self, review_uid):
+        """
+        Is the OptimizationReviewLocks set?
+
+        :param review_uid: OptimizationReviewLocks.uid
+        :return: Boolean
+        """
+        self.tidy_up_optimization_locks()
+        logger('ReviewQueues', 'main')
+        db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
+            review_optimization_uid=review_uid).first()
+        if not db_lock:
+            return False
+        return (get_now() - db_lock.locked_since).seconds < max_lock_time_in_sec
+
+    @staticmethod
+    def tidy_up_optimization_locks():
+        """
+        Tidy up all expired locks
+
+        :return: None
+        """
+        logger('ReviewQueues', 'main')
+        db_locks = DBDiscussionSession.query(OptimizationReviewLocks).all()
+        for lock in db_locks:
+            if (get_now() - lock.locked_since).seconds >= max_lock_time_in_sec:
+                DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
+                    review_optimization_uid=lock.review_optimization_uid).delete()
+
     def __get_text_parts_of_argument(self, db_argument: Argument):
         """
         Get all parts of an argument as string
@@ -169,38 +353,6 @@ class OptimizationQueue(QueueABC):
             'argument_uid': argument_uid,
             'statement_uid': conclusion_uid
         }
-
-    def add_vote(self, db_user: User, db_review: ReviewOptimization, is_okay: bool, application_url: str,
-                 translator: Translator, **kwargs):
-        """
-        Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged element will be
-        a new edit element
-
-        :param db_user: current user who votes
-        :param db_review: the review, which is voted vor
-        :param is_okay: True, if the element is rightly flagged
-        :param application_url: the app url
-        :param translator: a instance of a translator
-        :param kwargs: optional, keyworded arguments
-        :return:
-        """
-        logger('OptimizationQueue', 'main')
-        # add new review
-        db_new_review = LastReviewerOptimization(db_user.uid, db_review.uid, not is_okay)
-        DBDiscussionSession.add(db_new_review)
-        DBDiscussionSession.flush()
-        transaction.commit()
-
-        if is_okay:
-            self.__proposal_for_the_element(db_review, kwargs['new_data'], db_user)
-        else:
-            self.__keep_the_element_of_optimization_review(db_review, application_url, translator)
-
-        DBDiscussionSession.add(db_review)
-        DBDiscussionSession.flush()
-        transaction.commit()
-
-        return True
 
     @staticmethod
     def __keep_the_element_of_optimization_review(db_review: ReviewOptimization, main_page: str,
@@ -311,142 +463,3 @@ class OptimizationQueue(QueueABC):
                 else:
                     statement_dict[d['statement']] = [d]
         return argument_dict, statement_dict
-
-    def add_review(self, db_user: User):
-        """
-        Just adds a new element
-
-        :param db_user:
-        :return:
-        """
-        pass
-
-    def get_review_count(self, review_uid: int):
-        db_reviews = DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=review_uid)
-        count_of_okay = db_reviews.filter_by(is_okay=True).count()
-        count_of_not_okay = db_reviews.filter_by(is_okay=False).count()
-
-        return count_of_okay, count_of_not_okay
-
-    def cancel_ballot(self, db_user: User, db_review: ReviewOptimization):
-        """
-
-        :param db_user:
-        :param db_review:
-        :return:
-        """
-        DBDiscussionSession.query(ReviewOptimization).get(db_review.uid).set_revoked(True)
-        DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid).delete()
-        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_optimization: db_review.uid},
-                                            was_ongoing=True)
-
-        DBDiscussionSession.add(db_review_canceled)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return True
-
-    def revoke_ballot(self, db_user: User, db_review: ReviewOptimization):
-        """
-
-        :param db_user:
-        :param db_review:
-        :return:
-        """
-        revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, db_review.uid)
-        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_optimization: db_review.uid})
-        DBDiscussionSession.add(db_review_canceled)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return True
-
-    def lock_optimization_review(self, db_user: User, db_review: ReviewOptimization, translator: Translator):
-        """
-        Locks a ReviewOptimization
-
-        :param db_user:
-        :param db_review:
-        :param translator:
-        :return:
-        """
-        logger('ReviewQueues', 'main')
-        # check if author locked an item and maybe tidy up old locks
-        db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
-        if db_locks:
-            if self.is_review_locked(db_locks.review_optimization_uid):
-                logger('ReviewQueues', 'review already locked')
-                return {
-                    'success': '',
-                    'info': translator.get(_.dataAlreadyLockedByYou),
-                    'is_locked': True
-                }
-            else:
-                DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).delete()
-
-        # is already locked?
-        if self.is_review_locked(db_review.uid):
-            logger('ReviewQueues', 'already locked', warning=True)
-            return {
-                'success': '',
-                'info': translator.get(_.dataAlreadyLockedByOthers),
-                'is_locked': True
-            }
-
-        DBDiscussionSession.add(OptimizationReviewLocks(db_user.uid, db_review.uid))
-        DBDiscussionSession.flush()
-        transaction.commit()
-        success = translator.get(_.dataAlreadyLockedByYou)
-
-        logger('ReviewQueues', 'review locked')
-        return {
-            'success': success,
-            'info': '',
-            'is_locked': True
-        }
-
-    def unlock_optimization_review(self, db_review: ReviewOptimization, translator: Translator):
-        """
-        Unlock the OptimizationReviewLocks
-
-        :param db_review:
-        :param translator:
-        :return:
-        """
-        self.tidy_up_optimization_locks()
-        logger('ReviewQueues', 'main')
-        DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=db_review.uid).delete()
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return {
-            'is_locked': False,
-            'success': translator.get(_.dataUnlocked),
-            'info': ''
-        }
-
-    def is_review_locked(self, review_uid):
-        """
-        Is the OptimizationReviewLocks set?
-
-        :param review_uid: OptimizationReviewLocks.uid
-        :return: Boolean
-        """
-        self.tidy_up_optimization_locks()
-        logger('ReviewQueues', 'main')
-        db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
-            review_optimization_uid=review_uid).first()
-        if not db_lock:
-            return False
-        return (get_now() - db_lock.locked_since).seconds < max_lock_time_in_sec
-
-    @staticmethod
-    def tidy_up_optimization_locks():
-        """
-        Tidy up all expired locks
-
-        :return: None
-        """
-        logger('ReviewQueues', 'main')
-        db_locks = DBDiscussionSession.query(OptimizationReviewLocks).all()
-        for lock in db_locks:
-            if (get_now() - lock.locked_since).seconds >= max_lock_time_in_sec:
-                DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
-                    review_optimization_uid=lock.review_optimization_uid).delete()

@@ -9,6 +9,7 @@ from dbas.database.discussion_model import User, LastReviewerDuplicate, ReviewDu
     Premise, ReviewCanceled, Argument, LastReviewerDelete
 from dbas.lib import get_all_arguments_by_statement, get_text_for_statement_uid
 from dbas.logger import logger
+from dbas.review import FlaggedBy
 from dbas.review.queue import min_difference, max_votes, key_duplicate
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_reporter_stats_for_review, \
@@ -126,7 +127,7 @@ class DuplicateQueue(QueueABC):
         reached_max = max(count_of_keep, count_of_reset) >= max_votes
         if reached_max:
             if count_of_reset > count_of_keep:  # disable the flagged part
-                self.__bend_objects_of_duplicate_review(db_review)
+                self.__bend_objects_of_review(db_review)
                 rep_reason = get_reason_by_action(ReputationReasons.success_duplicate)
             else:  # just close the review
                 rep_reason = get_reason_by_action(ReputationReasons.bad_duplicate)
@@ -139,7 +140,7 @@ class DuplicateQueue(QueueABC):
             db_review.update_timestamp()
 
         elif count_of_reset - count_of_keep >= min_difference:  # disable the flagged part
-            self.__bend_objects_of_duplicate_review(db_review)
+            self.__bend_objects_of_review(db_review)
             rep_reason = get_reason_by_action(ReputationReasons.success_duplicate)
             db_review.set_executed(True)
             db_review.update_timestamp()
@@ -152,8 +153,68 @@ class DuplicateQueue(QueueABC):
 
         return True
 
+    def add_review(self, db_user: User):
+        """
+        Just adds a new element
+
+        :param db_user:
+        :return:
+        """
+        pass
+
+    def get_review_count(self, review_uid: int):
+        db_reviews = DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=review_uid)
+        count_of_okay = db_reviews.filter_by(is_okay=True).count()
+        count_of_not_okay = db_reviews.filter_by(is_okay=False).count()
+
+        return count_of_okay, count_of_not_okay
+
+    def cancel_ballot(self, db_user: User, db_review: ReviewDuplicate):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        DBDiscussionSession.query(ReviewDuplicate).get(db_review.uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_duplicate: db_review.uid},
+                                            was_ongoing=True)
+
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return True
+
+    def revoke_ballot(self, db_user: User, db_review: ReviewDuplicate):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        db_review = DBDiscussionSession.query(ReviewDuplicate).get(db_review.uid)
+        db_review.set_revoked(True)
+        self.__rebend_objects_of_review(db_review)
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_duplicate: db_review.uid})
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return True
+
+    def element_in_queue(self, db_user: User, **kwargs):
+        db_review = DBDiscussionSession.query(ReviewDuplicate).filter_by(
+            duplicate_statement_uid=kwargs.get('statement_uid'),
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None
+
     @staticmethod
-    def __bend_objects_of_duplicate_review(db_review):
+    def __bend_objects_of_review(db_review):
         """
         If an argument is a duplicate, we have to bend the objects of argument, which are no duplicates
 
@@ -210,57 +271,8 @@ class DuplicateQueue(QueueABC):
         DBDiscussionSession.flush()
         transaction.commit()
 
-    def add_review(self, db_user: User):
-        """
-        Just adds a new element
-
-        :param db_user:
-        :return:
-        """
-        pass
-
-    def get_review_count(self, review_uid: int):
-        db_reviews = DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=review_uid)
-        count_of_okay = db_reviews.filter_by(is_okay=True).count()
-        count_of_not_okay = db_reviews.filter_by(is_okay=False).count()
-
-        return count_of_okay, count_of_not_okay
-
-    def cancel_ballot(self, db_user: User, db_review: ReviewDuplicate):
-        """
-
-        :param db_user:
-        :param db_review:
-        :return:
-        """
-        DBDiscussionSession.query(ReviewDuplicate).get(db_review.uid).set_revoked(True)
-        DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).delete()
-        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_duplicate: db_review.uid},
-                                            was_ongoing=True)
-
-        DBDiscussionSession.add(db_review_canceled)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return True
-
-    def revoke_ballot(self, db_user: User, db_review: ReviewDuplicate):
-        """
-
-        :param db_user:
-        :param db_review:
-        :return:
-        """
-        db_review = DBDiscussionSession.query(ReviewDuplicate).get(db_review.uid)
-        db_review.set_revoked(True)
-        self.__rebend_objects_of_duplicate_review(db_review)
-        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_duplicate: db_review.uid})
-        DBDiscussionSession.add(db_review_canceled)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return True
-
     @staticmethod
-    def __rebend_objects_of_duplicate_review(db_review):
+    def __rebend_objects_of_review(db_review):
         """
         If something was bend (due to duplicates), lets rebend this
 

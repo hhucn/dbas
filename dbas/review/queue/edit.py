@@ -10,6 +10,7 @@ from dbas.database.discussion_model import User, LastReviewerEdit, ReviewEdit, R
     ReviewCanceled, Statement, Argument, Premise
 from dbas.handler.textversion import propose_new_textversion_for_statement
 from dbas.logger import logger
+from dbas.review import FlaggedBy
 from dbas.review.queue import max_votes, min_difference, key_edit, Code
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_base_subpage_dict, \
@@ -105,32 +106,6 @@ class EditQueue(QueueABC):
             'session': session
         }
 
-    @staticmethod
-    def __difference_between_string(a: str, b: str, correction_list: List[str]):
-        """
-        Colors the difference between two strings
-
-        :param a: first string
-        :param b: second string
-        :param correction_list: character list of the first string
-        :return: modified correction list with html strings around the modified characters
-        """
-        base = '<strong><span class="text-{}">'
-        tag_p = base.format('success')
-        tag_m = base.format('danger')
-        tag_e = '</span></strong>'
-
-        for i, s in enumerate(difflib.ndiff(a, b)):
-            if i >= len(correction_list):
-                correction_list.append('')
-            if s[0] == ' ':
-                correction_list[i] = s[-1]
-                continue
-            elif s[0] == '-':
-                correction_list[i] = tag_m + s[-1] + tag_e
-            elif s[0] == '+':
-                correction_list[i] = tag_p + s[-1] + tag_e
-
     def add_vote(self, db_user: User, db_review: ReviewEdit, is_okay: bool, application_url: str,
                  translator: Translator,
                  **kwargs):
@@ -185,19 +160,6 @@ class EditQueue(QueueABC):
         transaction.commit()
 
         return True
-
-    @staticmethod
-    def __accept_edit_review(db_review: ReviewEdit):
-        """
-        Add correction for each value affected by the review
-
-        :param db_review: Review
-        :return: None
-        """
-        db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_review.uid).all()
-        db_user = DBDiscussionSession.query(User).get(db_review.detector_uid)
-        for value in db_values:
-            propose_new_textversion_for_statement(db_user, value.statement_uid, value.content)
 
     def add_review(self, db_user: User):
         """
@@ -257,6 +219,18 @@ class EditQueue(QueueABC):
         DBDiscussionSession.flush()
         transaction.commit()
         return True
+
+    def element_in_queue(self, db_user: User, **kwargs):
+        db_review = DBDiscussionSession.query(ReviewEdit).filter_by(
+            argument_uid=kwargs.get('argument_uid'),
+            statement_uid=kwargs.get('statement_uid'),
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None
 
     def add_edit_reviews(self, db_user: User, uid: int, text: str):
         """
@@ -343,3 +317,42 @@ class EditQueue(QueueABC):
             ReviewEdit.statement_uid.in_(statement_uids),
             ReviewEdit.is_executed == is_executed).count()
         return db_already_edit_count > 0
+
+    @staticmethod
+    def __difference_between_string(a: str, b: str, correction_list: List[str]):
+        """
+        Colors the difference between two strings
+
+        :param a: first string
+        :param b: second string
+        :param correction_list: character list of the first string
+        :return: modified correction list with html strings around the modified characters
+        """
+        base = '<strong><span class="text-{}">'
+        tag_p = base.format('success')
+        tag_m = base.format('danger')
+        tag_e = '</span></strong>'
+
+        for i, s in enumerate(difflib.ndiff(a, b)):
+            if i >= len(correction_list):
+                correction_list.append('')
+            if s[0] == ' ':
+                correction_list[i] = s[-1]
+                continue
+            elif s[0] == '-':
+                correction_list[i] = tag_m + s[-1] + tag_e
+            elif s[0] == '+':
+                correction_list[i] = tag_p + s[-1] + tag_e
+
+    @staticmethod
+    def __accept_edit_review(db_review: ReviewEdit):
+        """
+        Add correction for each value affected by the review
+
+        :param db_review: Review
+        :return: None
+        """
+        db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_review.uid).all()
+        db_user = DBDiscussionSession.query(User).get(db_review.detector_uid)
+        for value in db_values:
+            propose_new_textversion_for_statement(db_user, value.statement_uid, value.content)

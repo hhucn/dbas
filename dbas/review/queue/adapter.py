@@ -119,13 +119,14 @@ class QueueAdapter():
         :param premisegroup_uid:
         :return:
         """
-
-        status = [self.__is_anything_flagged_for_delete(argument_uid, statement_uid, self.db_user),
-                  self.__is_anything_flagged_for_duplication(statement_uid, self.db_user),
-                  self.__is_anything_flagged_for_edit(argument_uid, statement_uid, self.db_user),
-                  self.__is_anything_flagged_for_optimization(argument_uid, statement_uid, self.db_user),
-                  self.__is_anything_flagged_for_merge(premisegroup_uid, self.db_user),
-                  self.__is_anything_flagged_for_split(premisegroup_uid, self.db_user)]
+        # tables = [get_review_model_by_key(key) for key in review_queues]
+        # status = [table().element_in_queue(self.db_user, argument_uid=argument_uid, statement_uid=statement_uid, premisegroup_uid=premisegroup_uid) for table in tables]
+        status = [DeleteQueue().element_in_queue(self.db_user, argument_uid=argument_uid, statement_uid=statement_uid),
+                  DuplicateQueue().element_in_queue(self.db_user, statement_uid=statement_uid),
+                  EditQueue().element_in_queue(self.db_user, argument_uid=argument_uid, statement_uid=statement_uid),
+                  OptimizationQueue().element_in_queue(self.db_user, argument_uid=argument_uid, statement_uid=statement_uid),
+                  MergeQueue().element_in_queue(self.db_user, premisegroup_uid=premisegroup_uid),
+                  SplitQueue().element_in_queue(self.db_user, premisegroup_uid=premisegroup_uid)]
 
         if FlaggedBy.user in status:
             return FlaggedBy.user
@@ -266,78 +267,3 @@ class QueueAdapter():
             'button_set': button_set,
             'session': session
         }
-
-    @staticmethod
-    def __is_anything_flagged_for_delete(argument_uid, statement_uid, db_user):
-        db_review = DBDiscussionSession.query(ReviewDelete).filter_by(
-            argument_uid=argument_uid,
-            statement_uid=statement_uid,
-            is_executed=False,
-            is_revoked=False)
-        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
-            return FlaggedBy.user
-        if db_review.count() > 0:
-            return FlaggedBy.other
-        return None
-
-    @staticmethod
-    def __is_anything_flagged_for_duplication(statement_uid, db_user):
-        db_review = DBDiscussionSession.query(ReviewDuplicate).filter_by(
-            duplicate_statement_uid=statement_uid,
-            is_executed=False,
-            is_revoked=False)
-        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
-            return FlaggedBy.user
-        if db_review.count() > 0:
-            return FlaggedBy.other
-        return None
-
-    @staticmethod
-    def __is_anything_flagged_for_edit(argument_uid, statement_uid, db_user):
-        db_review = DBDiscussionSession.query(ReviewEdit).filter_by(
-            argument_uid=argument_uid,
-            statement_uid=statement_uid,
-            is_executed=False,
-            is_revoked=False)
-        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
-            return FlaggedBy.user
-        if db_review.count() > 0:
-            return FlaggedBy.other
-        return None
-
-    @staticmethod
-    def __is_anything_flagged_for_merge(pgroup_uid, db_user):
-        db_review = DBDiscussionSession.query(ReviewMerge).filter_by(
-            premisegroup_uid=pgroup_uid,
-            is_executed=False,
-            is_revoked=False)
-        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
-            return FlaggedBy.user
-        if db_review.count() > 0:
-            return FlaggedBy.other
-        return None
-
-    @staticmethod
-    def __is_anything_flagged_for_optimization(argument_uid, statement_uid, db_user):
-        db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(
-            argument_uid=argument_uid,
-            statement_uid=statement_uid,
-            is_executed=False,
-            is_revoked=False)
-        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
-            return FlaggedBy.user
-        if db_review.count() > 0:
-            return FlaggedBy.other
-        return None
-
-    @staticmethod
-    def __is_anything_flagged_for_split(pgroup_uid, db_user):
-        db_review = DBDiscussionSession.query(ReviewSplit).filter_by(
-            premisegroup_uid=pgroup_uid,
-            is_executed=False,
-            is_revoked=False)
-        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
-            return FlaggedBy.user
-        if db_review.count() > 0:
-            return FlaggedBy.other
-        return None

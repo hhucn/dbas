@@ -10,6 +10,7 @@ from dbas.database.discussion_model import User, LastReviewerSplit, ReviewSplit,
     StatementReplacementsByPremiseGroupSplit, ReviewCanceled, ReviewMergeValues, LastReviewerMerge
 from dbas.handler.statements import set_statement
 from dbas.logger import logger
+from dbas.review import FlaggedBy
 from dbas.review.queue import max_votes, min_difference, key_split
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, \
@@ -162,6 +163,75 @@ class SplitQueue(QueueABC):
 
         return True
 
+    def add_review(self, db_user: User):
+        """
+        Just adds a new element
+
+        :param db_user:
+        :return:
+        """
+        pass
+
+    def get_review_count(self, review_uid: int):
+        db_reviews = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=review_uid)
+        count_of_okay = db_reviews.filter_by(should_split=True).count()
+        count_of_not_okay = db_reviews.filter_by(should_split=False).count()
+
+        return count_of_okay, count_of_not_okay
+
+    def cancel_ballot(self, db_user: User, db_review: ReviewSplit):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        DBDiscussionSession.query(ReviewSplit).get(db_review.uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review.uid).delete()
+        DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={'split': db_review.uid}, was_ongoing=True)
+
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return True
+
+    def revoke_ballot(self, db_user: User, db_review: ReviewSplit):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        db_review = DBDiscussionSession.query(ReviewSplit).get(db_review.uid)
+        db_review.set_revoked(True)
+        db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).all()
+        replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(
+            review_uid=db_review.uid).all()
+        disable_args = [arg.uid for arg in DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(
+            review_uid=db_review.uid).all()]
+        undo_premisegroups(db_pgroup_splitted, replacements)
+        self.__disable_arguments_by_id(disable_args)
+        DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
+        DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).delete()
+        DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_split: db_review.uid})
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return True
+
+    def element_in_queue(self, db_user: User, **kwargs):
+        db_review = DBDiscussionSession.query(ReviewSplit).filter_by(
+            premisegroup_uid=kwargs.get('premisegroup_uid'),
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None
+
     @staticmethod
     def __split_premisegroup(db_review: ReviewSplit):
         """
@@ -242,64 +312,6 @@ class SplitQueue(QueueABC):
         # finish
         DBDiscussionSession.flush()
         transaction.commit()
-
-    def add_review(self, db_user: User):
-        """
-        Just adds a new element
-
-        :param db_user:
-        :return:
-        """
-        pass
-
-    def get_review_count(self, review_uid: int):
-        db_reviews = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=review_uid)
-        count_of_okay = db_reviews.filter_by(should_split=True).count()
-        count_of_not_okay = db_reviews.filter_by(should_split=False).count()
-
-        return count_of_okay, count_of_not_okay
-
-    def cancel_ballot(self, db_user: User, db_review: ReviewSplit):
-        """
-
-        :param db_user:
-        :param db_review:
-        :return:
-        """
-        DBDiscussionSession.query(ReviewSplit).get(db_review.uid).set_revoked(True)
-        DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review.uid).delete()
-        DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).delete()
-        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={'split': db_review.uid}, was_ongoing=True)
-
-        DBDiscussionSession.add(db_review_canceled)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return True
-
-    def revoke_ballot(self, db_user: User, db_review: ReviewSplit):
-        """
-
-        :param db_user:
-        :param db_review:
-        :return:
-        """
-        db_review = DBDiscussionSession.query(ReviewSplit).get(db_review.uid)
-        db_review.set_revoked(True)
-        db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).all()
-        replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(
-            review_uid=db_review.uid).all()
-        disable_args = [arg.uid for arg in DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(
-            review_uid=db_review.uid).all()]
-        undo_premisegroups(db_pgroup_splitted, replacements)
-        self.__disable_arguments_by_id(disable_args)
-        DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
-        DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).delete()
-        DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(review_uid=db_review.uid).delete()
-        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_split: db_review.uid})
-        DBDiscussionSession.add(db_review_canceled)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return True
 
     @staticmethod
     def __disable_arguments_by_id(argument_uids):

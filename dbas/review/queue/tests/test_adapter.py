@@ -6,6 +6,7 @@ import dbas.review.queue.lib
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewOptimization
 from dbas.database.discussion_model import User
+from dbas.review import FlaggedBy
 from dbas.review.queue import review_queues
 from dbas.review.queue.abc_queue import subclass_by_name
 from dbas.review.queue.adapter import QueueAdapter
@@ -17,6 +18,7 @@ class AdapterTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.user = DBDiscussionSession.query(User).get(2)
+        self.other_user = DBDiscussionSession.query(User).get(21)
 
     def tearDown(self):
         testing.tearDown()
@@ -98,3 +100,16 @@ class AdapterTest(unittest.TestCase):
             self.assertIsNotNone(subpage_dict['elements'])
             self.assertFalse(subpage_dict['no_arguments_to_review'])
             self.assertTrue(f'is_{key}' in subpage_dict['button_set'].keys())
+
+    def test_is_element_flagged(self):
+        adapter = QueueAdapter(db_user=self.user, application_url='url', translator=Translator('en'))
+
+        status = adapter.is_element_flagged(30, None, None)
+        self.assertIsNone(status)
+
+        status = adapter.is_element_flagged(None, 9, None)
+        self.assertEqual(FlaggedBy.other, status)
+
+        adapter = QueueAdapter(db_user=self.other_user, application_url='url', translator=Translator('en'))
+        status = adapter.is_element_flagged(None, 9, None)
+        self.assertEqual(FlaggedBy.user, status)

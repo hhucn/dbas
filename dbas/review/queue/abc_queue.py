@@ -92,3 +92,12 @@ class QueueABC(metaclass=ABCMeta):
         :return:
         """
         pass
+
+    def element_in_queue(self, db_user: User, **kwargs):
+        """
+
+        :param db_user:
+        :param kwargs:
+        :return:
+        """
+        pass

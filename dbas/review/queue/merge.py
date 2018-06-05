@@ -10,6 +10,7 @@ from dbas.database.discussion_model import User, LastReviewerMerge, ReviewMerge,
     ReviewMergeValues, Statement, ReviewCanceled
 from dbas.handler.statements import set_statement
 from dbas.logger import logger
+from dbas.review import FlaggedBy
 from dbas.review.queue import max_votes, min_difference, key_merge
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_issues_for_statement_uids, \
@@ -165,6 +166,73 @@ class MergeQueue(QueueABC):
 
         return True
 
+    def add_review(self, db_user: User):
+        """
+        Just adds a new element
+
+        :param db_user:
+        :return:
+        """
+        pass
+
+    def get_review_count(self, review_uid: int):
+        db_reviews = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=review_uid)
+        count_of_okay = db_reviews.filter_by(should_merge=True).count()
+        count_of_not_okay = db_reviews.filter_by(should_merge=False).count()
+
+        return count_of_okay, count_of_not_okay
+
+    def cancel_ballot(self, db_user: User, db_review: ReviewMerge):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        DBDiscussionSession.query(ReviewMerge).get(db_review.uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
+        DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_merge: db_review.uid},
+                                            was_ongoing=True)
+
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return True
+
+    def revoke_ballot(self, db_user: User, db_review: ReviewMerge):
+        """
+
+        :param db_user:
+        :param db_review:
+        :return:
+        """
+        db_review = DBDiscussionSession.query(ReviewMerge).get(db_review.uid)
+        db_review.set_revoked(True)
+        db_pgroup_merged = DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review.uid).all()
+        replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(
+            review_uid=db_review.uid).all()
+        undo_premisegroups(db_pgroup_merged, replacements)
+        DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
+        DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).delete()
+        DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(review_uid=db_review.uid).delete()
+        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_merge: db_review.uid})
+        DBDiscussionSession.add(db_review_canceled)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return True
+
+    def element_in_queue(self, db_user: User, **kwargs):
+        db_review = DBDiscussionSession.query(ReviewMerge).filter_by(
+            premisegroup_uid=kwargs.get('premisegroup_uid'),
+            is_executed=False,
+            is_revoked=False)
+        if db_review.filter_by(detector_uid=db_user.uid).count() > 0:
+            return FlaggedBy.user
+        if db_review.count() > 0:
+            return FlaggedBy.other
+        return None
+
     @staticmethod
     def __merge_premisegroup(db_review: ReviewMerge):
         """
@@ -236,59 +304,3 @@ class MergeQueue(QueueABC):
         # finish
         DBDiscussionSession.flush()
         transaction.commit()
-
-    def add_review(self, db_user: User):
-        """
-        Just adds a new element
-
-        :param db_user:
-        :return:
-        """
-        pass
-
-    def get_review_count(self, review_uid: int):
-        db_reviews = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=review_uid)
-        count_of_okay = db_reviews.filter_by(should_merge=True).count()
-        count_of_not_okay = db_reviews.filter_by(should_merge=False).count()
-
-        return count_of_okay, count_of_not_okay
-
-    def cancel_ballot(self, db_user: User, db_review: ReviewMerge):
-        """
-
-        :param db_user:
-        :param db_review:
-        :return:
-        """
-        DBDiscussionSession.query(ReviewMerge).get(db_review.uid).set_revoked(True)
-        DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
-        DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review.uid).delete()
-        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_merge: db_review.uid},
-                                            was_ongoing=True)
-
-        DBDiscussionSession.add(db_review_canceled)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return True
-
-    def revoke_ballot(self, db_user: User, db_review: ReviewMerge):
-        """
-
-        :param db_user:
-        :param db_review:
-        :return:
-        """
-        db_review = DBDiscussionSession.query(ReviewMerge).get(db_review.uid)
-        db_review.set_revoked(True)
-        db_pgroup_merged = DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review.uid).all()
-        replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(
-            review_uid=db_review.uid).all()
-        undo_premisegroups(db_pgroup_merged, replacements)
-        DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
-        DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).delete()
-        DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(review_uid=db_review.uid).delete()
-        db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_merge: db_review.uid})
-        DBDiscussionSession.add(db_review_canceled)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return True

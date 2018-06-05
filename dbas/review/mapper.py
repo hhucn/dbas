@@ -18,8 +18,6 @@ def __get_table_by_key(prefix: str, key: str):
             return c
 
 
-# key value pairs of the queue key and a title string
-
 def get_title_by_key(key: str):
     """
     Get the title of a queue page
@@ -30,7 +28,6 @@ def get_title_by_key(key: str):
     return _.get_key_by_string(_.queue.value + start_with_capital(key))
 
 
-# key value pairs of the queue key and the table object
 def get_review_model_by_key(key: str):
     """
     Get the review table by key, because all tables are named by review_{key}
@@ -50,7 +47,6 @@ def get_review_modal_mapping():
     return {key: __get_table_by_key('review_', key) for key in review_queues}
 
 
-# key value pairs of the queue key and the queue object
 def get_queue_by_key(key):
     """
     Returns any queue with given key in its name, derivated from the abc_queue
@@ -61,7 +57,6 @@ def get_queue_by_key(key):
     return subclass_by_name(key)
 
 
-# key value pairs of the queue key and the last reviewer object
 def get_last_reviewer_by_key(key):
     """
     Get the last reviewer  table by key, because all tables are named by last_reviewers_{key}
