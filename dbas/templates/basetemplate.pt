@@ -16,6 +16,7 @@
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css')}" rel="stylesheet">
+  <link type="text/css" href="${request.static_url('dbas:static/node_modules/cookieconsent/build/cookieconsent.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">
   <script src="${request.static_url('dbas:static/node_modules/jquery/dist/jquery.min.js')}"></script>
 </head>
@@ -88,10 +89,8 @@
 <script src="${request.static_url('dbas:static/node_modules/chart.js/dist/Chart.min.js')}"></script>
 <script src="${request.static_url('dbas:static/node_modules/d3/d3.min.js')}"></script>
 <script src="${request.static_url('dbas:static/node_modules/socket.io-client/dist/socket.io.js')}"></script>
-<script src="${request.static_url('dbas:static/js/libs/cookie.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/libs/cookie.min.js')}" tal:condition="not:extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}" tal:condition="not:extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/node_modules/js-cookie/src/js.cookie.js')}"></script>
+<script src="${request.static_url('dbas:static/node_modules/cookieconsent/build/cookieconsent.min.js')}"></script>
 
 <!-- PRODUCTION -->
 <script src="${request.static_url('dbas:static/js/dbas.min.js')}" tal:condition="not:extras.development_mode"></script>
