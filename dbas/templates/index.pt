@@ -42,6 +42,9 @@
           <a class="nav-link js-scroll-trigger" href="#about" i18n:translate="about">About</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#requirements" i18n:translate="requirements">Requirements</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="#services" i18n:translate="services">Services</a>
         </li>
         <li class="nav-item">
@@ -113,19 +116,46 @@
           We've got what you need!
         </h2>
         <hr class="light">
-        <p class="text-faded" i18n:translate="landing_page_intro">
+        <p class="text-faded lead" i18n:translate="landing_page_intro">
           With the rise of the Internet, we now have a basic infrastructure, which makes participation easier for
           everyone and independent of space and time. Online participation offers many possibilities for users as
           well as operators, has an impact on political and administrative decisions and has the potential to
           strengthen the acceptance and the quality of them. We offer a novel approach for large scale
           online-discussion. Feel free to try it out now!
         </p>
-        <a class="btn btn-default btn-xl js-scroll-trigger"
-           href="/discuss" i18n:translate="get_started">
-          Get Started
-        </a>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="requirements" class="bg-bright">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto text-center">
+        <h2 class="section-heading" i18n:translate="requirements">
+          Requirements
+        </h2>
+        <hr class="primary">
+        <p class="lead" i18n:translate="requirements_text">
+          We are aware of the fact, that D-BAS is not suitable for every online discussion, of course! But we give our best to deliver a software which can
+          support rational online argumentations! You should give D-BAS a try if:
+        </p>
+        <ul class="mr-auto col-lg-7 ml-auto text-center lead">
+          <li class="pull-left"><span i18n:translate="discussion_is_controversy">your discussion is very controversy</span>;</li>
+          <li class="pull-left"><span i18n:translate="participants_willing_debate">your participants are willing to debate</span>;</li>
+          <li class="pull-left"><span i18n:translate="participants_come_back">some participants will come back</span>;</li>
+          <li class="pull-left"><span i18n:translate="need_support_the_discussion">you need to support the discussion</span> <span i18n:translate="and"></span></li>
+          <li class="pull-left"><span i18n:translate="want_structured_result">you want a structured result of given arguments</span>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="requirements" class="call-to-action bg-dark">
+  <div class="container text-center">
+    <h2 i18n:translate="thats_interessting_isnt_it">That's interesting, isn't it?</h2>
+    <a class="btn btn-default btn-xl sr-button" href="/discuss" i18n:translate="get_started">Get Started</a>
   </div>
 </section>
 
@@ -393,16 +423,11 @@
       <div class="col-lg-8 mx-auto text-center">
         <h2 class="section-heading" i18n:translate="get_in_touch">Let's Get In Touch!</h2>
         <hr class="primary">
-        <p i18n:translate="ready_to_start_with_us">Ready to start your next discussion with us? That's great! Give us a
-          call or send us an email and we will get back to you as soon as possible!</p>
+        <p i18n:translate="ready_to_start_with_us">Ready to start your next discussion with us? That's great! Send us an email and we will get back to you as soon as possible!</p>
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-4 ml-auto text-center">
-        <i class="fa fa-phone fa-3x sr-contact"></i>
-        <p>+49 211 81-13461</p>
-      </div>
-      <div class="col-lg-4 mr-auto text-center">
+      <div class="mr-auto col-lg-4 ml-auto text-center">
         <i class="fa fa-envelope-o fa-3x sr-contact"></i>
         <p>
           <a href="mailto:dbas@cs.uni-duesseldorf.de">dbas@cs.uni-duesseldorf.de</a>
