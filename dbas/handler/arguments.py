@@ -26,7 +26,13 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
     """
     Set new premise for a given conclusion and returns dictionary with url for the next step of the discussion
 
-    :param data: dict if requests came via the API
+    :param db_issue:
+    :param db_user:
+    :param db_argument:
+    :param premisegroups:
+    :param attack_type:
+    :param history:
+    :param mailer:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
@@ -51,10 +57,11 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
         return prepared_dict
 
     # add reputation
+    had_access = has_access_to_review_system(db_user)
     rep_added = add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_new_argument))
     if not rep_added:
         add_reputation_for(db_user, get_reason_by_action(ReputationReasons.new_statement))
-    broke_limit = has_access_to_review_system(db_user)
+    broke_limit = has_access_to_review_system(db_user) and not had_access
     if broke_limit:
         url += '#access-review'
         prepared_dict['url'] = url

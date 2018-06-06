@@ -46,9 +46,10 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
     rep_added = add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_position))
+    had_access = has_access_to_review_system(db_user)
     if not rep_added:
         add_reputation_for(db_user, get_reason_by_action(ReputationReasons.new_statement))
-    broke_limit = has_access_to_review_system(db_user)
+    broke_limit = has_access_to_review_system(db_user) and not had_access
     if broke_limit:
         url += '#access-review'
 
@@ -96,10 +97,11 @@ def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: di
     :param prepared_dict:
     :return:
     """
+    had_access = has_access_to_review_system(db_user)
     rep_added = add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_justification))
     if not rep_added:
         add_reputation_for(db_user, get_reason_by_action(ReputationReasons.new_statement))
-    broke_limit = has_access_to_review_system(db_user)
+    broke_limit = has_access_to_review_system(db_user) and not had_access
     if broke_limit:
         _t = Translator(db_issue.lang)
         send_request_for_info_popup_to_socketio(db_user.nickname, _t.get(_.youAreAbleToReviewNow), '/review')

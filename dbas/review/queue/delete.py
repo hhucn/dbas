@@ -15,7 +15,8 @@ from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_base_subpage_dict, \
     get_all_allowed_reviews_for_user, get_reporter_stats_for_review, set_able_object_of_review, \
     revoke_decision_and_implications, add_vote_for, get_user_dict_for_review
-from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
+from dbas.review.reputation import get_reason_by_action, ReputationReasons, \
+    add_reputation_and_send_popup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -34,7 +35,7 @@ class DeleteQueue(QueueABC):
         :return:
         """
         if not key:
-            return key
+            return self.key
         else:
             self.key = key
 
@@ -134,7 +135,7 @@ class DeleteQueue(QueueABC):
             db_review.update_timestamp()
 
         if rep_reason:
-            add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
+            add_reputation_and_send_popup(db_user_created_flag, rep_reason, application_url, translator)
             DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()

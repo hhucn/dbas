@@ -150,7 +150,7 @@ def add_reputation_for(db_user: User, db_reason: ReputationReason):
             logger('Reputation', 'karma already farmed')
             return False
 
-    logger('Reputation', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
+    logger('Reputation', f'add {db_reason.points} for {db_user.nickname}')
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()
@@ -241,10 +241,23 @@ def get_history_of(db_user: User, translator: Translator):
     }
 
 
-def add_reputation_and_check_review_access(db_user: User, db_rep_reason: Union[None, ReputationReason], main_page: str,
-                                           translator: Translator):
+def add_reputation_and_check_review_access(db_user: User, reason: ReputationReasons) -> bool:
     """
-    Adds reputation to a specific user and checks (send info popup) to this user
+
+    :param db_user:
+    :param reason:
+    :return:
+    """
+    had_access = has_access_to_review_system(db_user)
+    add_reputation_for(db_user, get_reason_by_action(reason))
+    broke_limit = has_access_to_review_system(db_user) and not had_access
+    return broke_limit
+
+
+def add_reputation_and_send_popup(db_user: User, db_rep_reason: Union[None, ReputationReason], main_page: str,
+                                  translator: Translator) -> bool:
+    """
+    Adds reputation to a specific user and checks (send info popup) to this user. Returns true if the user now has access
 
     :param db_user: user, which should get reputation
     :param db_rep_reason: Any reputation reason
@@ -252,8 +265,11 @@ def add_reputation_and_check_review_access(db_user: User, db_rep_reason: Union[N
     :param translator: Instance of a translator
     :return:
     """
+    has_access = has_access_to_review_system(db_user)
     add_reputation_for(db_user, db_rep_reason)
 
-    if has_access_to_review_system(db_user):
-        send_request_for_info_popup_to_socketio(db_user.nickname, translator.get(_.youAreAbleToReviewNow),
-                                                main_page + '/review')
+    # send popup if the user had not access but not she has
+    if not has_access and has_access_to_review_system(db_user):
+        send_request_for_info_popup_to_socketio(db_user.nickname, translator.get(_.youAreAbleToReviewNow), f'{main_page}/review')
+        return True
+    return False

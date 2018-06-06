@@ -16,7 +16,8 @@ from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_issues_for_statement_uids, \
     get_reporter_stats_for_review, get_all_allowed_reviews_for_user, revoke_decision_and_implications, \
     get_user_dict_for_review
-from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
+from dbas.review.reputation import get_reason_by_action, ReputationReasons, \
+    add_reputation_and_send_popup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -35,7 +36,7 @@ class OptimizationQueue(QueueABC):
         :return:
         """
         if not key:
-            return key
+            return self.key
         else:
             self.key = key
 
@@ -429,9 +430,8 @@ class OptimizationQueue(QueueABC):
             LastReviewerOptimization.is_okay == True).all()
 
         if len(db_keep_version) > max_votes:
-            add_reputation_and_check_review_access(db_user_created_flag,
-                                                   get_reason_by_action(ReputationReasons.bad_flag),
-                                                   main_page, translator)
+            add_reputation_and_send_popup(db_user_created_flag, get_reason_by_action(ReputationReasons.bad_flag),
+                                          main_page, translator)
 
             db_review.set_executed(True)
             db_review.update_timestamp()

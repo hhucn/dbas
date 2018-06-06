@@ -16,7 +16,8 @@ from dbas.review.queue import max_votes, min_difference, key_edit, Code
 from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_all_allowed_reviews_for_user, get_base_subpage_dict, \
     get_reporter_stats_for_review, add_vote_for, get_user_dict_for_review
-from dbas.review.reputation import get_reason_by_action, add_reputation_and_check_review_access, ReputationReasons
+from dbas.review.reputation import get_reason_by_action, ReputationReasons, \
+    add_reputation_and_send_popup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -35,7 +36,7 @@ class EditQueue(QueueABC):
         :return:
         """
         if not key:
-            return key
+            return self.key
         else:
             self.key = key
 
@@ -156,7 +157,7 @@ class EditQueue(QueueABC):
             db_review.update_timestamp()
 
         if rep_reason:
-            add_reputation_and_check_review_access(db_user_created_flag, rep_reason, application_url, translator)
+            add_reputation_and_send_popup(db_user_created_flag, rep_reason, application_url, translator)
             DBDiscussionSession.add(db_review)
         DBDiscussionSession.flush()
         transaction.commit()

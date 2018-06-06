@@ -7,7 +7,7 @@ from dbas.database.discussion_model import User, ReputationHistory
 from dbas.lib import nick_of_anonymous_user
 from dbas.review.reputation import get_reputation_reasons_list, get_privilege_list, get_reputation_of, \
     ReputationReasons, get_reason_by_action, add_reputation_for, has_access_to_review_system, get_history_of, \
-    add_reputation_and_check_review_access
+    add_reputation_and_check_review_access, add_reputation_and_send_popup
 from dbas.strings.translator import Translator
 
 
@@ -62,6 +62,15 @@ class TestReviewReputationHelper(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).get(3)
         self.assertTrue(has_access_to_review_system(db_user))
 
+    def test_add_reputation_and_send_popup(self):
+        db_user = DBDiscussionSession.query(User).get(9)
+        db_reason = get_reason_by_action(ReputationReasons.success_flag)
+        self.assertFalse(add_reputation_and_send_popup(db_user, db_reason, 'asd', Translator('en')))
+
+        DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=9).delete()
+        DBDiscussionSession.flush()
+        transaction.commit()
+
     def test_get_history_of(self):
         db_user = DBDiscussionSession.query(User).get(3)
         response = get_history_of(db_user, Translator('en'))
@@ -80,8 +89,8 @@ class TestReviewReputationHelper(unittest.TestCase):
         self.assertFalse(has_access_to_review_system(db_user))
 
         # add points
-        db_reason = get_reason_by_action(ReputationReasons.success_flag)
-        add_reputation_and_check_review_access(db_user, db_reason, 'page', Translator('en'))
+        broke_limit = add_reputation_and_check_review_access(db_user, ReputationReasons.success_flag)
+        self.assertTrue(broke_limit)
 
         # now we have access
         self.assertTrue(has_access_to_review_system(db_user))

@@ -155,13 +155,10 @@ def __handle_table_of_review_element(table_key, review, short_text, full_text, i
     pdict['argument_fulltext'] = full_text
     pdict['is_innocent'] = True
 
-    if table_key in review_queues:
-        queue = get_queue_by_key(table_key)
-        adapter = QueueAdapter(queue())
-        return adapter.get_history_table_row(review, pdict, is_executed=is_executed, short_text=short_text,
-                                             full_text=full_text)
-
-    return pdict
+    queue = get_queue_by_key(table_key)
+    adapter = QueueAdapter(queue())
+    return adapter.get_history_table_row(review, pdict, is_executed=is_executed, short_text=short_text,
+                                         full_text=full_text)
 
 
 def __get_user_dict_for_review(user_id, main_page):
