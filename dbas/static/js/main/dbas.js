@@ -41,6 +41,36 @@ function addBorderToActiveNavbar() {
 }
 
 /**
+ *
+ */
+function addCookieConsent() {
+    'use strict';
+    
+    window.addEventListener("load", function () {
+        window.cookieconsent.initialise({
+            "palette": {
+                "popup": {
+                    "background": "#2196F3"
+                },
+                "button": {
+                    "background": "#fff",
+                    "text": "#2196F3"
+                }
+            },
+            "content": {
+                "message": _t(euCookiePopupText),
+                "dismiss": _t(euCookiePopoupButton1),
+                "link": _t(euCookiePopoupButton2),
+                "href": "/privacy_policy",
+            },
+            "cookie": {
+                "name": EU_COOKIE_LAW_CONSENT
+            },
+        });
+    });
+}
+
+/**
  * Display smiley as fallback on (connection) errors
  */
 function setGravatarFallback() {
@@ -655,6 +685,7 @@ $(document).ready(function () {
     var path = window.location.href;
     var lang = $('#hidden_language').val();
     
+    addCookieConsent();
     setAnalyticsOptOutLink(lang);
     setEasterEggs();
     setGravatarFallback();

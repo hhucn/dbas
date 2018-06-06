@@ -266,6 +266,7 @@ var BUBBLE_INFOS = 'SPEECH_BUBBLE_INFOS';
 var GUIDED_TOUR = 'PASSED_GUIDED_TOUR';
 var ADMIN_WARNING = 'hide-admin-caution-warning';
 var LANG_SWITCH_WARNING = 'LANG_SWITCH_WARNING';
+var EU_COOKIE_LAW_CONSENT = 'EU_COOKIE_LAW_CONSENT';
 
 /**
  * URL's
@@ -343,7 +344,7 @@ var dbas_en = {
     'euCookiePopupTitle': 'This website uses cookies.',
     'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll ' +
     'assume that you are happy to receive all cookies.',
-    'euCookiePopoupButton1': 'Okay',
+    'euCookiePopoupButton1': 'Got it!',
     'euCookiePopoupButton2': 'Learn&nbsp;more',
     'empty_news_input': 'News title or text is empty or too short!',
     'email': 'E-Mail',
@@ -607,7 +608,7 @@ var dbas_de = {
     'euCookiePopupTitle': 'Diese Seite nutzt Cookies.',
     'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen,' +
     ' nehmen Sie alle Cookies unserer Seite an und sind glücklich damit.',
-    'euCookiePopoupButton1': 'Okay',
+    'euCookiePopoupButton1': 'Alles klar!',
     'euCookiePopoupButton2': 'Mehr&nbsp;Infos',
     'empty_news_input': 'Nachrichten-Titel oder Text ist leer oder zu kurz!',
     'email': 'E-Mail',
