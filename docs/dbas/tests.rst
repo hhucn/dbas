@@ -29,7 +29,11 @@ If you want to stay very clean on your machine, you could just run the tests in 
     docker exec dbas_web_1 nosetests
 
 
-Please note, that every module has its own tests and if you call::
+Please note, that every module has its own tests
+
+Note
+====
+If you call::
 
     def setUp(self):
         self.config = testing.setUp()
@@ -39,7 +43,7 @@ Please also call::
     def tearDown(self):
         testing.tearDown()
 
-Otherwise the transactions for the database will brake.
+Or even if you add or delete some entries, flush and commit your actions. Otherwise the transactions for the database will brake.
 
 Code
 ====

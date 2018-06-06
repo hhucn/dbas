@@ -247,6 +247,7 @@ class OptimizationQueue(QueueABC):
 
     def get_history_table_row(self, db_review: ReviewOptimization, entry, **kwargs):
         """
+        Returns nothing because this reviews SHOULD NOT be in the history!
 
         :param db_review:
         :param entry:

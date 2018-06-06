@@ -253,10 +253,11 @@ class MergeQueue(QueueABC):
 
     def get_history_table_row(self, db_review: ReviewMerge, entry, **kwargs):
         """
+        Returns a row the the history/ongoing page for the given review element
 
-        :param db_review:
-        :param entry:
-        :param kwargs:
+        :param db_review: current element which is the source of the row
+        :param entry: dictionary with some values which were already set
+        :param kwargs: "magic" -> atm keywords like is_executed, short_text and full_text. Please update this!
         :return:
         """
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_review.premisegroup_uid).all()

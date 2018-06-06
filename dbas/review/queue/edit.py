@@ -194,8 +194,8 @@ class EditQueue(QueueABC):
         :param db_review: any element from a review queue
         :return:
         """
-        DBDiscussionSession.query(ReviewEdit).filter_by(uid=db_review.uid).delete()
-        DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).first().set_revoked(True)
+        DBDiscussionSession.query(ReviewEdit).get(db_review.uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).delete()
         DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_review.uid).delete()
         db_review_canceled = ReviewCanceled(author=db_user.uid, review_data={key_edit: db_review.uid}, was_ongoing=True)
 
@@ -246,10 +246,11 @@ class EditQueue(QueueABC):
 
     def get_history_table_row(self, db_review: ReviewEdit, entry, **kwargs):
         """
+        Returns a row the the history/ongoing page for the given review element
 
-        :param db_review:
-        :param entry:
-        :param kwargs:
+        :param db_review: current element which is the source of the row
+        :param entry: dictionary with some values which were already set
+        :param kwargs: "magic" -> atm keywords like is_executed, short_text and full_text. Please update this!
         :return:
         """
         if kwargs.get('is_executed'):
