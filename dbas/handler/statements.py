@@ -5,7 +5,6 @@ from typing import List, Tuple, Dict, Union, Any
 import transaction
 from sqlalchemy import func
 
-import dbas.review.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
@@ -19,8 +18,10 @@ from dbas.input_validator import is_integer
 from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_string, get_text_for_argument_uid, \
     Relations, Attitudes
 from dbas.logger import logger
-from dbas.review.reputation import add_reputation_for, rep_reason_first_position, \
-    rep_reason_first_justification, rep_reason_new_statement
+from dbas.review.queue import Code
+from dbas.review.queue.edit import EditQueue
+from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
+    ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
@@ -44,10 +45,11 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
-    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_position)
-    if not add_rep:
-        add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
-        # send message if the user is now able to review
+    rep_added = add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_position))
+    had_access = has_access_to_review_system(db_user)
+    if not rep_added:
+        add_reputation_for(db_user, get_reason_by_action(ReputationReasons.new_statement))
+    broke_limit = has_access_to_review_system(db_user) and not had_access
     if broke_limit:
         url += '#access-review'
 
@@ -88,8 +90,6 @@ def set_positions_premise(db_issue: Issue, db_user: User, db_conclusion: Stateme
 
 def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: dict):
     """
-<<<<<<< HEAD
-=======
 
     :param db_user:
     :param db_issue:
@@ -97,10 +97,11 @@ def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: di
     :param prepared_dict:
     :return:
     """
-    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_justification)
-    if not add_rep:
-        add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
-        # send message if the user is now able to review
+    had_access = has_access_to_review_system(db_user)
+    rep_added = add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_justification))
+    if not rep_added:
+        add_reputation_for(db_user, get_reason_by_action(ReputationReasons.new_statement))
+    broke_limit = has_access_to_review_system(db_user) and not had_access
     if broke_limit:
         _t = Translator(db_issue.lang)
         send_request_for_info_popup_to_socketio(db_user.nickname, _t.get(_.youAreAbleToReviewNow), '/review')
@@ -109,7 +110,6 @@ def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: di
 
 def set_correction_of_statement(elements, db_user, translator) -> dict:
     """
->>>>>>> development
     Adds a proposal for a statements correction and returns info if the proposal could be set
 
     :param elements: List of dicts with text and uids for proposals of edits for new statements
@@ -119,9 +119,47 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     :return: Dictionary with info and/or error
     """
     db_user.update_last_action()
-    msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, db_user, translator)
+
+    review_count = len(elements)
+    added_reviews = [EditQueue().add_edit_reviews(db_user, el['uid'], el['text']) for el in elements]
+
+    if added_reviews.count(Code.SUCCESS) == 0:  # no edits set
+        if added_reviews.count(Code.DOESNT_EXISTS) > 0:
+            logger('StatementsHelper', 'internal key error')
+            return {
+                'info': translator.get(_.internalKeyError),
+                'error': True
+            }
+        if added_reviews.count(Code.DUPLICATE) > 0:
+            logger('StatementsHelper', 'already edit proposals')
+            return {
+                'info': translator.get(_.alreadyEditProposals),
+                'error': True
+            }
+        logger('StatementsHelper', 'no corrections given')
+        return {
+            'info': translator.get(_.noCorrections),
+            'error': True
+        }
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+    added_values = [EditQueue().add_edit_values_review(db_user, el['uid'], el['text']) for el in elements]
+    if Code.SUCCESS not in added_values:
+        return {
+            'info': translator.get(_.alreadyEditProposals),
+            'error': True
+        }
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+    msg = ''
+    if review_count > added_values.count(Code.SUCCESS) \
+            or added_reviews.count(Code.SUCCESS) != added_values.count(Code.SUCCESS):
+        msg = translator.get(_.alreadyEditProposals)
     return {
-        'error': error,
+        'error': False,
         'info': msg
     }
 
@@ -147,43 +185,6 @@ def set_seen_statements(uids, path, db_user) -> dict:
         if is_integer(uid):
             add_seen_statement(uid, db_user)
     return {'status': 'success'}
-
-
-def correct_statement(db_user, uid, corrected_text):
-    """
-    Corrects a statement
-
-    :param db_user: User requesting user
-    :param uid: requested statement uid
-    :param corrected_text: new text
-    :return: dict()
-    """
-    logger('StatementsHelper', 'def ' + str(uid))
-
-    while corrected_text.endswith(('.', '?', '!')):
-        corrected_text = corrected_text[:-1]
-
-    # duplicate check
-    return_dict = dict()
-    db_statement = DBDiscussionSession.query(Statement).get(uid)
-    db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(
-        TextVersion.uid.desc()).all()
-
-    # not a duplicate?
-    if not db_textversion:
-        textversion = TextVersion(content=corrected_text, author=db_user.uid)
-        textversion.set_statement(db_statement.uid)
-        DBDiscussionSession.add(textversion)
-        DBDiscussionSession.flush()
-
-    # if request:
-    #     nh.send_edit_text_notification(db_user, textversion, url, request)
-
-    # transaction.commit() # # 207
-
-    return_dict['uid'] = uid
-    return_dict['text'] = corrected_text
-    return return_dict
 
 
 def get_logfile_for_statements(uids, lang, main_page):

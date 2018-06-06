@@ -24,6 +24,7 @@ from dbas.database.discussion_model import Argument, Premise, Statement, TextVer
     ClickedArgument, ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.translator import Translator
 
 nick_of_anonymous_user = 'anonymous'
@@ -435,7 +436,7 @@ def __build_val_for_jump(db_argument, tag_premise, tag_conclusion, tag_end, _t):
     ret_value = '{} {} {} {}'.format(conclusion, intro, because, premises)
     if _t.get_lang() == 'de':
         intro = _t.get(_.itIsTrueThatAnonymous) if db_argument.is_supportive else _t.get(_.itIsFalseThatAnonymous)
-        intro = intro[0:1].upper() + intro[1:]
+        intro = start_with_capital(intro)
         intro = (start_pro if db_argument.is_supportive else start_con) + intro + end_tag
         ret_value = '{} {}, {} {}'.format(intro, conclusion, because, premises)
 
@@ -483,7 +484,7 @@ def __build_val_for_undercutted_undercut(arg_array: List[Argument], tag_premise,
 
 def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_html_tag: bool, colored_position: bool,
                             attack_type: str, _t: Translator, start_with_intro: bool, is_users_opinion: bool,
-                            anonymous_style: bool, support_counter_argument: bool=False, author_uid=None):
+                            anonymous_style: bool, support_counter_argument: bool = False, author_uid=None):
     """
     Build up argument text for a single argument
 
@@ -507,13 +508,15 @@ def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_h
     lang = db_argument.lang
 
     if lang != 'de':
-        premises_text = premises_text[0:1].lower() + premises_text[1:]  # pretty print
+        premises_text = start_with_small(premises_text)
 
-    premises_text, conclusion_text, sb, sb_none, se = __get_tags_for_building_single_argument(with_html_tag,
-                                                                                              attack_type,
-                                                                                              colored_position,
-                                                                                              premises_text,
-                                                                                              conclusion_text)
+    tag_dict = __get_tags_for_building_single_argument(with_html_tag, attack_type, colored_position, premises_text,
+                                                       conclusion_text)
+    premises_text = tag_dict['premise']
+    conclusion_text = tag_dict['conclusion']
+    sb = tag_dict['tag_begin']
+    sb_none = tag_dict['tag_none']
+    se = tag_dict['tag_end']
 
     marked_element = False
     if author_uid:
@@ -553,7 +556,13 @@ def __get_tags_for_building_single_argument(with_html_tag, attack_type, colored_
         sb_tmp = start_attack if with_html_tag else ''
         premises = sb + premises + se
         conclusion = sb_tmp + conclusion + se
-    return premises, conclusion, sb, sb_none, se
+    return {
+        'premise': premises,
+        'conclusion': conclusion,
+        'tag_begin': sb,
+        'tag_none': sb_none,
+        'tag_end': se
+    }
 
 
 def __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro, anonymous_style,
@@ -637,7 +646,7 @@ def __build_nested_argument(arg_array: List[Argument], first_arg_by_user, user_c
     elif not anonymous_style:  # user starts
         ret_value = (_t.get(_.soYourOpinionIsThat) + ': ') if start_with_intro else ''
         tmp_users_opinion = False  # system after user
-        conclusion = se + conclusion[0:1].upper() + conclusion[1:]  # pretty print
+        conclusion = se + start_with_capital(conclusion)  # pretty print
 
     else:
         ret_value = _t.get(_.someoneArgued) + ' '
@@ -846,7 +855,7 @@ def pretty_print_options(message):
         pos = message.index('>')
         message = message[0:pos + 1] + message[pos + 1:pos + 2].upper() + message[pos + 2:]
     else:
-        message = message[0:1].upper() + message[1:]
+        message = start_with_capital(message)
 
     # check for html
     if message[-1] == '>':
@@ -859,10 +868,13 @@ def pretty_print_options(message):
     return message
 
 
-def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool=False, is_author: bool=False, uid: str='',
-                             bubble_url: str= '', content: str= '', omit_bubble_url: bool=False, omit_vote_info: bool=False,
-                             argument_uid: int=None, statement_uid: int=None, is_supportive: bool=False,
-                             nickname: str='anonymous', lang: str='en', is_users_opinion: bool=False, other_author: User=None):
+def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False, is_author: bool = False,
+                             uid: str = '',
+                             bubble_url: str = '', content: str = '', omit_bubble_url: bool = False,
+                             omit_vote_info: bool = False,
+                             argument_uid: int = None, statement_uid: int = None, is_supportive: bool = False,
+                             nickname: str = 'anonymous', lang: str = 'en', is_users_opinion: bool = False,
+                             other_author: User = None):
     """
     Creates an dictionary which includes every information needed for a bubble.
 

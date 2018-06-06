@@ -13,6 +13,7 @@ from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_
 from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid, get_profile_picture, Relations
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, \
     get_author_or_first_supporter_of_element
 from dbas.strings.translator import Translator
@@ -57,7 +58,7 @@ def get_user_and_opinions_for_argument(argument_uid, db_user, lang, main_page, p
     # getting votes for every reaction
     ret_list = __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user, _t, main_page)
 
-    return {'opinions': ret_list, 'title': title[0:1].upper() + title[1:]}
+    return {'opinions': ret_list, 'title': start_with_capital(title)}
 
 
 def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user, _t, main_page):
@@ -153,7 +154,7 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, db_
         statement_dict = __get_opinions_for_uid(statement_uid, is_supportive, db_user, lang, _t, main_page)
         opinions.append(statement_dict)
 
-    return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
+    return {'opinions': opinions, 'title': start_with_capital(title)}
 
 
 def __get_opinions_for_uid(uid, is_supportive, db_user, lang, _t, main_page):
@@ -234,7 +235,7 @@ def get_user_with_same_opinion_for_premisegroups_of_args(argument_uids, db_user,
         if db_premises:
             opinions.append(get_user_with_same_opinion_for_premisegroups_of_arg(db_argument, db_premises, db_user, lang, main_page))
 
-    return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
+    return {'opinions': opinions, 'title': start_with_capital(title)}
 
 
 def get_user_with_same_opinion_for_premisegroups_of_arg(db_argument: Argument, db_premises: List[Premise],
@@ -298,7 +299,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, db_user, lang, main_pa
     all_users = []
     _t = Translator(lang)
     text = get_text_for_argument_uid(argument_uid, lang)
-    title = _t.get(_.reactionFor) + ': ' + text[0:1].upper() + text[1:]
+    title = _t.get(_.reactionFor) + ': ' + start_with_capital(text)
 
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     if not db_argument:
@@ -306,7 +307,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, db_user, lang, main_pa
 
     opinions['uid'] = str(argument_uid)
     text = get_text_for_argument_uid(argument_uid, lang)
-    opinions['text'] = text[0:1].upper() + text[1:]
+    opinions['text'] = start_with_capital(text)
 
     db_clicks = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.argument_uid == argument_uid,
                                                                   ClickedArgument.is_up_vote == True,
@@ -323,7 +324,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, db_user, lang, main_pa
     db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(argument_uid)).all()
     opinions['seen_by'] = len(db_seen_by) if db_seen_by else 0
 
-    return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
+    return {'opinions': opinions, 'title': start_with_capital(title)}
 
 
 def get_user_with_opinions_for_attitude(statement_uid, db_user, lang, main_page):
@@ -350,7 +351,7 @@ def get_user_with_opinions_for_attitude(statement_uid, db_user, lang, main_page)
     title += ' ' + text
 
     ret_dict = dict()
-    ret_dict['text'] = text[0:1].upper() + text[1:]
+    ret_dict['text'] = start_with_capital(text)
     ret_dict['agree'] = None
     ret_dict['disagree'] = None
     ret_dict['title'] = title

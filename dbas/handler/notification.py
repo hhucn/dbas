@@ -392,10 +392,8 @@ def delete_notifications(uids_list, db_user, ui_locales, application_url) -> dic
     :param db_user: User
     :param ui_locales: Language of current users session
     :param application_url Url of the App
-    :rtype: dict
     :return: Dictionary with info and/or error
     """
-
     user.update_last_action(db_user)
     _tn = Translator(ui_locales)
 

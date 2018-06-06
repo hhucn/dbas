@@ -106,6 +106,7 @@ def main(global_config, **settings):
     config.add_route('main_privacy', '/privacy_policy')
     config.add_route('main_rss', '/rss')
     config.add_route('main_faq', '/faq')
+    config.add_route('main_batman', '/batman')
     config.add_route('main_docs', '/docs')
     config.add_route('main_experiment', '/fieldexperiment')
     config.add_route('main_user', '/user/{uid:\d+}')
@@ -190,7 +191,7 @@ def main(global_config, **settings):
     config.add_route('review_reputation', '/review/reputation')
     config.add_route('review_history', '/review/history')
     config.add_route('review_ongoing', '/review/ongoing')
-    config.add_route('review_content', '/review/{queue}')
+    config.add_route('review_queue', '/review/{queue}')
 
     config.scan()
 

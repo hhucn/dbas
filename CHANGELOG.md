@@ -1,3 +1,6 @@
+### 1.8.0 (2018-05-30)
+ - Refactored the review queues. IMPORTANT: Now some logic is switched, so that old discussions are not
+
 ### 1.7.0 (2018-05-24)
  - Statements are no longer bounded to one issue. Noe we have a many-to-many relationship between statements and issues.
 
@@ -51,7 +54,7 @@
 
 ### 1.4.3 (2017-08-24)
 - Entering position and premise at once
-- Queue for split and merge statements
+- QueueAdapter for split and merge statements
 - Discussion for Meta-D-BAS
 
 ### 1.4.2 (2017-06-07)
@@ -68,7 +71,7 @@
 - Corrections for the user interface
 - Language fixes
 - Improvements on many smaller details
-- Base version for our fieldtest
+- QueueABC version for our fieldtest
 
 ### 1.3.4 (2017-05-01)
 - Corrections for the user interface
@@ -98,7 +101,7 @@
 - Dockerization
 
 ### 1.2.3 (2017-02-08)
-- Queue for duplicates
+- QueueAdapter for duplicates
 - New step, where the user gets another support/attack for the same conclusion
 - Mark statements/arguments as your opinion
 

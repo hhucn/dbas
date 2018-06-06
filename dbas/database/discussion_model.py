@@ -1288,7 +1288,7 @@ class ReviewDelete(DiscussionBase):
     statements = relationship('Statement', foreign_keys=[statement_uid])
     reasons = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
 
-    def __init__(self, detector, argument=None, statement=None, reason='', is_executed=False, is_revoked=False):
+    def __init__(self, detector, argument=None, statement=None, reason=None, is_executed=False, is_revoked=False):
         """
         Inits a row in current review delete table
 

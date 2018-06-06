@@ -3,13 +3,20 @@ from pyramid.view import view_config
 
 from dbas.database.discussion_model import ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewOptimization, ReviewSplit, \
     ReviewMerge
+from dbas.handler.language import get_language_from_cookie
 from dbas.helper.query import revoke_author_of_statement_content, revoke_author_of_argument_content
 from dbas.lib import get_discussion_language
 from dbas.logger import logger
-from dbas.review import flags as review_flag_helper, history as review_history_helper, queues as review_queue_helper
-from dbas.review.opinions import add_review_opinion_for_delete, add_review_opinion_for_duplicate, \
-    add_review_opinion_for_edit, add_review_opinion_for_merge, add_review_opinion_for_optimization, \
-    add_review_opinion_for_split
+from dbas.review.flags import flag_element, flag_statement_for_merge_or_split, flag_pgroup_for_merge_or_split
+from dbas.review.mapper import get_queue_by_key
+from dbas.review.queue import key_edit, key_delete, key_duplicate, key_optimization, key_merge, key_split
+from dbas.review.queue.adapter import QueueAdapter
+from dbas.review.queue.delete import DeleteQueue
+from dbas.review.queue.duplicate import DuplicateQueue
+from dbas.review.queue.edit import EditQueue
+from dbas.review.queue.merge import MergeQueue
+from dbas.review.queue.optimization import OptimizationQueue
+from dbas.review.queue.split import SplitQueue
 from dbas.strings.translator import Translator
 from dbas.validators.core import validate, has_keywords, has_maybe_keywords
 from dbas.validators.database import valid_database_model
@@ -37,7 +44,7 @@ def flag_argument_or_statement(request):
     extra_uid = request.validated['extra_uid']
     is_argument = request.validated['is_argument']
     db_user = request.validated['user']
-    return review_flag_helper.flag_element(uid, reason, db_user, is_argument, ui_locales, extra_uid)
+    return flag_element(uid, reason, db_user, is_argument, ui_locales, extra_uid)
 
 
 @view_config(route_name='split_or_merge_statement', renderer='json')
@@ -57,9 +64,9 @@ def split_or_merge_statement(request):
     key = request.validated['key']
     tvalues = request.validated['text_values']
 
-    if key not in ['merge', 'split']:
+    if key not in [key_merge, key_split]:
         raise HTTPBadRequest()
-    return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, tvalues, db_user, _tn)
+    return flag_statement_for_merge_or_split(key, pgroup, tvalues, db_user, _tn)
 
 
 @view_config(route_name='split_or_merge_premisegroup', renderer='json')
@@ -78,9 +85,9 @@ def split_or_merge_premisegroup(request):
     pgroup = request.validated['pgroup']
     key = request.validated['key']
 
-    if key not in ['merge', 'split']:
+    if key not in [key_merge, key_split]:
         raise HTTPBadRequest()
-    return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, db_user, _tn)
+    return flag_pgroup_for_merge_or_split(key, pgroup, db_user, _tn)
 
 
 @view_config(route_name='review_delete_argument', renderer='json')
@@ -100,8 +107,8 @@ def review_delete_argument(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    add_review_opinion_for_delete(db_user, main_page, db_review, should_delete, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'deletes')
+    QueueAdapter(DeleteQueue(), db_user, main_page, _t).add_vote(db_review, should_delete)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_delete)
     return True
 
 
@@ -120,10 +127,10 @@ def review_edit_argument(request):
     db_user = request.validated['user']
     is_edit_okay = request.validated['is_edit_okay']
     main_page = request.application_url
-
     _t = Translator(ui_locales)
-    add_review_opinion_for_edit(db_user, main_page, db_review, is_edit_okay, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'edits')
+
+    QueueAdapter(EditQueue(), db_user, main_page, _t).add_vote(db_review, is_edit_okay)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_edit)
     return True
 
 
@@ -142,10 +149,10 @@ def review_duplicate_statement(request):
     db_user = request.validated['user']
     is_duplicate = request.validated['is_duplicate']
     main_page = request.application_url
-
     _t = Translator(ui_locales)
-    add_review_opinion_for_duplicate(db_user, main_page, db_review, is_duplicate, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'duplicates')
+
+    QueueAdapter(DuplicateQueue(), db_user, main_page, _t).add_vote(db_review, is_duplicate)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_duplicate)
     return True
 
 
@@ -166,11 +173,10 @@ def review_optimization_argument(request):
     should_optimized = request.validated['should_optimized']
     new_data = request.validated['new_data']
     main_page = request.application_url
-
     _t = Translator(ui_locales)
-    add_review_opinion_for_optimization(db_user, main_page, db_review, should_optimized, new_data,
-                                        _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'optimizations')
+
+    QueueAdapter(OptimizationQueue(), db_user, main_page, _t, new_data=new_data).add_vote(db_review, should_optimized)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_optimization)
     return True
 
 
@@ -191,8 +197,8 @@ def review_splitted_premisegroup(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    add_review_opinion_for_split(db_user, main_page, db_review, should_split, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'splits')
+    QueueAdapter(SplitQueue(), db_user, main_page, _t).add_vote(db_review, should_split)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_split)
     return True
 
 
@@ -213,8 +219,8 @@ def review_merged_premisegroup(request):
     main_page = request.application_url
     _t = Translator(ui_locales)
 
-    add_review_opinion_for_merge(db_user, main_page, db_review, should_merge, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'merges')
+    QueueAdapter(MergeQueue(), db_user, main_page, _t).add_vote(db_review, should_merge)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, key_merge)
     return True
 
 
@@ -231,7 +237,11 @@ def undo_review(request):
     db_user = request.validated['user']
     queue = request.validated['queue']
     db_review = request.validated['review']
-    return review_history_helper.revoke_old_decision(queue, db_review, db_user)
+    _tn = Translator(get_language_from_cookie(request))
+
+    queue = get_queue_by_key(queue)
+    adapter = QueueAdapter(queue(), db_user, request.application_url, _tn)
+    return adapter.revoke_ballot(db_review)
 
 
 @view_config(route_name='cancel_review', renderer='json')
@@ -247,7 +257,11 @@ def cancel_review(request):
     db_user = request.validated['user']
     queue = request.validated['queue']
     db_review = request.validated['review']
-    return review_history_helper.cancel_ongoing_decision(queue, db_review, db_user)
+    _tn = Translator(get_language_from_cookie(request))
+
+    queue = get_queue_by_key(queue)
+    adapter = QueueAdapter(queue(), db_user, request.application_url, _tn)
+    return adapter.cancel_ballot(db_review)
 
 
 @view_config(route_name='review_lock', renderer='json', require_csrf=False)
@@ -267,9 +281,9 @@ def review_lock(request):
     db_user = request.validated['user']
 
     if lock:
-        return review_queue_helper.lock_optimization_review(db_user, db_review, _tn)
+        return OptimizationQueue().lock_optimization_review(db_user, db_review, _tn)
     else:
-        return review_queue_helper.unlock_optimization_review(db_review, _tn)
+        return OptimizationQueue().unlock_optimization_review(db_review, _tn)
 
 
 @view_config(route_name='revoke_statement_content', renderer='json', require_csrf=False)

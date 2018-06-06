@@ -3,6 +3,7 @@ from dbas.database.discussion_model import MarkedStatement
 from dbas.lib import get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital
 
 
 def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive, _tn):
@@ -20,7 +21,7 @@ def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive,
 
     if _tn.get_lang() == 'de':
         intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
-        add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
+        add_premise_text = start_with_capital(intro[0:1]) + ' ' + text
     else:
         add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea).strip()
     add_premise_text += ', ...'
@@ -72,7 +73,7 @@ def get_system_bubble_text_for_justify_statement(is_supportive, _tn, tag_start, 
 
     if _tn.get_lang() != 'de':
         question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)
-    because = _tn.get(_.because)[0:1].upper() + _tn.get(_.because)[1:].lower() + '...'
+    because = start_with_capital(_tn.get(_.because)) + '...'
     question += '? <br>' + because
 
     return question

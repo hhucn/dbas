@@ -19,7 +19,7 @@ from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_state
     is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_enabled_arguments_as_query
-from dbas.review.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
+from dbas.review.queue.edit import EditQueue
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \
     get_support_to_argument_text_list, nick_of_anonymous_user
@@ -85,6 +85,7 @@ class ItemDictHelper(object):
         statements_array = []
         _um = UrlManager(slug, history=self.path)
 
+        ed = EditQueue()
         for statement in db_statements:
             if statement.uid in uids:  # add seen by if the statement is visible
                 add_seen_statement(statement.uid, db_user)
@@ -93,7 +94,8 @@ class ItemDictHelper(object):
                                                                 'id': statement.uid}],
                                                               'start',
                                                               _um.get_url_for_statement_attitude(statement.uid),
-                                                              is_editable=not is_statement_in_edit_queue(statement.uid),
+                                                              is_editable=not ed.is_statement_in_edit_queue(
+                                                                  statement.uid),
                                                               is_markable=True,
                                                               is_author=is_author_of_statement(db_user, statement.uid),
                                                               is_visible=statement.uid in uids))
@@ -210,7 +212,7 @@ class ItemDictHelper(object):
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
                                                               already_used=already_used,
                                                               already_used_text=additional_text,
-                                                              is_editable=not is_arguments_premise_in_edit_queue(
+                                                              is_editable=not EditQueue().is_arguments_premise_in_edit_queue(
                                                                   argument),
                                                               is_markable=True,
                                                               is_author=is_author_of_argument(db_user, argument.uid),
@@ -289,7 +291,7 @@ class ItemDictHelper(object):
 
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
                                                               is_markable=True,
-                                                              is_editable=not is_arguments_premise_in_edit_queue(
+                                                              is_editable=not EditQueue().is_arguments_premise_in_edit_queue(
                                                                   argument),
                                                               is_author=is_author_of_argument(db_user, argument.uid),
                                                               is_visible=argument.uid in uids,

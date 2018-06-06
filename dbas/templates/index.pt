@@ -439,9 +439,9 @@
 
 <div class="eupopup eupopup-bottomright"></div>
 
-<div metal:use-macro="load: snippet-popups.pt"></div>
+<div metal:use-macro="load: snippet/popups.pt"></div>
 <div class="call-to-action-small bg-dark">
-  <div metal:use-macro="load: snippet-footer.pt"></div>
+  <div metal:use-macro="load: snippet/footer.pt"></div>
 </div>
 
 <script src="${request.static_url('dbas:static/node_modules/bootstrap/dist/js/bootstrap.js')}"></script>

@@ -1,0 +1,136 @@
+<tal:block i18n:domain="dbas" metal:define-macro="layout">
+
+  <div class="row" style="margin-bottom: 1em;">
+    <div class="col-md-12">
+      <ul class="breadcrumb">
+        <li><a href="/review" i18n:translate="review">Review</a></li>
+        <li class="active" i18n:translate="split">Split</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom: 1em;">
+    <div class="col-md-7">
+      <h6>${structure:subpage.elements.reviewed_element.reason}
+        <a id="more_about_reason" href="#" i18n:translate="wrapped_more">(more)</a>
+        <a id="less_about_reason" href="#" i18n:translate="wrapped_less" style="display: none;">(less)</a>
+      </h6>
+    </div>
+    <div class="col-md-5" tal:condition="subpage.button_set.is_split">
+      <div class="btn-group pull-right">
+        <a id="split_ack" href="#" class="review-btn-split btn btn-success btn-sm"
+           data-queue="splits" i18n:translate="change_okay"
+           data-id="${subpage.elements.reviewed_element.stats.id}">
+          Change is okay
+        </a>
+        <a id="split_nack" href="#" class="review-btn-split btn btn-danger btn-sm"
+           data-queue="splits" i18n:translate="reject_it"
+           data-id="${subpage.elements.reviewed_element.stats.id}">
+          Reject it
+        </a>
+        <a id="split_skip" href="#" class="review-btn-split btn btn-info btn-sm"
+           data-queue="splits" i18n:translate="skip_it" data-id="${subpage.elements.reviewed_element.stats.id}">
+          Skip it
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" id="more_about_reason_content" style="display:none; margin-bottom: 1em;">
+    <div class="col-md-7">
+    </div>
+    <div class="col-md-5">
+      <blockquote class="blockquote-reverse" style="text-align: left;">
+        <p class="lead" i18n:translate="information_for_the_different_buttons">
+          Information for the different buttons
+        </p>
+        <ul tal:condition="subpage.button_set.is_split" style="padding-left: 0.5em">
+          <li>
+            <span class="text-success" i18n:translate="split_it">Split it</span>
+            <span i18n:translate="marked_statement_to_slit">, if the selected statement is a set of than one statement and the given proposals match to the original content.</span>
+          </li>
+          <li>
+            <span class="text-danger" i18n:translate="reject_it">Reject it</span>
+            <span i18n:translate="statement_not_to_split">for marked statements, which are unique.</span>
+          </li>
+          <li>
+            <span class="text-info" i18n:translate="skip_it">Skip it</span>
+            <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next statement.</span>
+          </li>
+        </ul>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom: 1em;">
+
+    <div class="col-md-offset-1 col-md-6">
+
+      <div class="well well-sm center" style="text-align: justify;">
+        <div tal:omit-tag="">
+          <div style="margin-bottom: 1em;">
+                  <span tal:omit-tag="" tal:switch="len(subpage.elements.reviewed_element.issue_titles) > 1">
+                    <span tal:case="False" i18n:translate="in_the_discussion_about">In the discussion about</span>
+                    <span tal:case="True" i18n:translate="in_the_discussions_about">In the discussions about</span>
+                  </span>
+            <i tal:repeat="title subpage.elements.reviewed_element.issue_titles">${structure:title}
+              <span tal:condition="not:repeat.title.end">,</span></i>
+            <span i18n:translate="following_statement_was_flagged">following statement was flagged.</span>
+          </div>
+          <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+          <span class="lead" id="reviewed-argument-text">
+                  ${structure:subpage.elements.reviewed_element.text}
+          </span>
+          <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+          <br>
+        </div>
+      </div>
+
+      <div class="well well-sm center"
+           style="text-align: justify;">
+        <span i18n:translate="this_statement_should_be_splitted">This statement should be splitted into:</span>
+        <ul>
+          <li tal:repeat="text subpage.elements.reviewed_element.splitted_text">
+            <span class="lead">${text}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-offset-2 col-md-3">
+      <table id="stats-table" class="table table-condensed pull-right"
+             style="font-size: 14px;" data-extra-info="${subpage.elements.reviewed_element.extra_info}">
+        <tbody>
+        <tr>
+          <td i18n:translate="reported">Reported</td>
+          <td>${subpage.elements.reviewed_element.stats.reported}</td>
+        </tr>
+        <tr>
+          <td i18n:translate="reported_by">Reported by</td>
+          <td>
+            <a href="${subpage.elements.reviewed_element.stats.reporter_url}">
+              <img class="img-circle" src="${subpage.elements.reviewed_element.stats.reporter_gravatar}">
+              <span>${subpage.elements.reviewed_element.stats.reporter}</span>
+            </a>
+          </td>
+        </tr>
+        <tal:comment replace="nothing">
+          <tr>
+            <td i18n:translate="viewed">Viewed</td>
+            <td>${subpage.elements.reviewed_element.stats.viewed}</td>
+          </tr>
+          <tr>
+            <td i18n:translate="attacks">Relations</td>
+            <td>${subpage.elements.reviewed_element.stats.attacks}</td>
+          </tr>
+          <tr>
+            <td i18n:translate="supports">Supports</td>
+            <td>${subpage.elements.reviewed_element.stats.supports}</td>
+          </tr>
+        </tal:comment>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</tal:block>
