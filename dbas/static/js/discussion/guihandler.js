@@ -942,7 +942,7 @@ function GuiHandler() {
      * @param lang
      */
     this.lang_switch = function (lang) {
-        if (Cookies.get(LANG_SWITCH_WARNING)) {
+        if (Cookies.get(LANG_SWITCH_WARNING) || window.location.href.indexOf('/discuss') === -1) {
             new AjaxMainHandler().switchDisplayLanguage(lang);
         } else {
             displayConfirmationDialogWithoutCancelAndFunction(get_it(lang, languageSwitchModalTitle), get_it(lang, languageSwitchModalBody));
