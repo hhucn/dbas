@@ -1,3 +1,6 @@
+### 1.8.1 (2018-06-06)
+ - Update yarn packages
+
 ### 1.8.0 (2018-05-30)
  - Refactored the review queues. IMPORTANT: Now some logic is switched, so that old discussions are not
 
