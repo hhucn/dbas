@@ -55,11 +55,48 @@ Source-Code Docstrings
 Queues
 ======
 
-.. automodule:: dbas.review.queues
+.. automodule:: dbas.review.queue.abc_queue
     :members:
+
+.. automodule:: dbas.review.queue.adapter
+    :members:
+
+.. automodule:: dbas.review.queue.delete
+    :members:
+
+.. automodule:: dbas.review.queue.duplicate
+    :members:
+
+.. automodule:: dbas.review.queue.edit
+    :members:
+
+.. automodule:: dbas.review.queue.lib
+    :members:
+
+.. automodule:: dbas.review.queue.merge
+    :members:
+
+.. automodule:: dbas.review.queue.optimization
+    :members:
+
+.. automodule:: dbas.review.queue.split
+    :members:
+
+
+
 
 Stuff
 =====
 
-.. automodule:: dbas.review
+.. automodule:: dbas.review.flags
     :members:
+
+.. automodule:: dbas.review.history
+    :members:
+
+.. automodule:: dbas.review.mapper
+    :members:
+
+.. automodule:: dbas.review.reputation
+    :members:
+

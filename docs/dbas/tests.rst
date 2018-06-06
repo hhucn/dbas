@@ -60,9 +60,6 @@ Code
 .. automodule:: dbas.handler.tests
     :members:
 
-.. automodule:: dbas.handler.dictionary.tests
-    :members:
-
 .. automodule:: dbas.review.tests
     :members:
 
