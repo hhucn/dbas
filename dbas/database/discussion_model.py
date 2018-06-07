@@ -2335,3 +2335,34 @@ class APIToken(DiscussionBase):
 
     def __str__(self):
         return "API-Token for {} created {}".format(self.owner, self.created)
+
+
+class ShortLinks(DiscussionBase):
+    """
+    Shortened link with several columns.
+    """
+    __tablename__ = 'short_links'
+    uid = Column(Integer, primary_key=True)
+    service = Column(Text, nullable=False)
+    long_url = Column(Text, nullable=False)
+    short_url = Column(Text, nullable=False)
+    timestamp = Column(ArrowType, default=get_now())
+
+    def __init__(self, service, long_url, short_url):
+        """
+        Initializes a row in current news-table
+        """
+        self.service = service
+        self.long_url = long_url
+        self.short_url = short_url
+        self.timestamp = get_now()
+
+    def update_short_url(self, short_url):
+        """
+
+        :param url:
+        :return:
+        """
+        self.short_url = short_url
+        self.timestamp = get_now()
+

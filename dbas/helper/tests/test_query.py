@@ -1,8 +1,8 @@
 import unittest
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
-from dbas.helper.query import set_user_language
+from dbas.database.discussion_model import User, ShortLinks
+from dbas.helper.query import set_user_language, get_short_url
 
 
 class QueryHelperTest(unittest.TestCase):
@@ -22,3 +22,19 @@ class QueryHelperTest(unittest.TestCase):
         self.assertTrue('current_lang' in result)
         self.assertTrue('error' in result)
         self.assertTrue(len(result['error']) == 0)
+
+    def test_get_short_url(self):
+        url = 'https://dbas.cs.uni-duesseldorf.de'
+        db_url = DBDiscussionSession.query(ShortLinks).filter_by(long_url=url).first()
+        self.assertIsNone(db_url)
+
+        pdict = get_short_url(url)
+        self.assertIn('url', pdict)
+        self.assertIn('service', pdict)
+        self.assertIn('service_url', pdict)
+        self.assertIn('service_text', pdict)
+        self.assertNotEqual(0, pdict.get('url'))
+        self.assertNotEqual(0, pdict.get('service_text'))
+
+        db_url = DBDiscussionSession.query(ShortLinks).filter_by(long_url=url).first()
+        self.assertIsNotNone(db_url)
