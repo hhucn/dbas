@@ -7,6 +7,7 @@ from dbas.database.discussion_model import SeenStatement, ClickedStatement, Seen
     ReputationHistory, User
 from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, clear_reputation_of_user
 from dbas.lib import Relations
+from dbas.tests.utils import construct_dummy_request
 from dbas.views import reaction
 
 
@@ -14,7 +15,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        self.default_request = testing.DummyRequest(matchdict={
+        self.default_request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
             'relation': Relations.UNDERMINE.value,
@@ -113,7 +114,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
                          'No rep on second visit')
 
     def test_invalid_slug_returns_error(self):
-        request = testing.DummyRequest(matchdict={
+        request = construct_dummy_request(match_dict={
             'slug': 'cat-or-doggy_dog',
             'arg_id_user': 2,
             'relation': Relations.UNDERMINE.value,
@@ -123,7 +124,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_user_argument_does_not_belong_to_issue_returns_error(self):
-        request = testing.DummyRequest(matchdict={
+        request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
             'arg_id_user': 45,
             'relation': Relations.UNDERMINE.value,
@@ -133,7 +134,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_sys_argument_does_not_belong_to_issue_returns_error(self):
-        request = testing.DummyRequest(matchdict={
+        request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
             'relation': Relations.UNDERMINE.value,
@@ -143,7 +144,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_page_failure_mode(self):
-        request = testing.DummyRequest(matchdict={
+        request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
             'relation': 'invalid-relation',

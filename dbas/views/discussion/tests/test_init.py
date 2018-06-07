@@ -6,6 +6,7 @@ from pyramid import testing
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, User
 from dbas.helper.test import verify_dictionary_of_view
+from dbas.tests.utils import construct_dummy_request
 from dbas.views.discussion.rendered import init, discussion_overview
 
 
@@ -21,7 +22,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         # check count of seen by statements
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
 
-        request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'})
+        request = construct_dummy_request(match_dict={'slug': 'cat-or-dog'})
         response = init(request)
         verify_dictionary_of_view(response)
 
@@ -36,7 +37,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
 
-        request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'})
+        request = construct_dummy_request(match_dict={'slug': 'cat-or-dog'})
         response = init(request)
         verify_dictionary_of_view(response)
 
@@ -54,7 +55,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
 
-        request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'})
+        request = construct_dummy_request(match_dict={'slug': 'cat-or-dog'})
         response = init(request)
         verify_dictionary_of_view(response)
 
