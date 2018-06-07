@@ -6,6 +6,7 @@ from pyramid import testing
 from admin.views import main_table, main_admin
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
+from dbas.tests.utils import construct_dummy_request
 
 
 class AdminViewTest(unittest.TestCase):
@@ -47,13 +48,13 @@ class AdminViewTest(unittest.TestCase):
 
     def test_main_table_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(matchdict={'table': 'fu'})
+        request = construct_dummy_request(match_dict={'table': 'fu'})
         response = main_table(request)
         self.assertEqual(400, response.status_code)
 
     def test_main_table(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(matchdict={'table': 'User'})
+        request = construct_dummy_request(match_dict={'table': 'User'})
         response = main_table(request)
         self.assertIn('title', response)
         self.assertIn('project', response)

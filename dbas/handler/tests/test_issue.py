@@ -8,6 +8,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Language
 from dbas.lib import nick_of_anonymous_user
 from dbas.strings.translator import Translator
+from dbas.tests.utils import construct_dummy_request
 
 
 class IssueHandlerTests(unittest.TestCase):
@@ -60,7 +61,7 @@ class IssueHandlerTests(unittest.TestCase):
         self.assertEqual(response.uid, issue.uid)
 
     def test_get_issue_id(self):
-        request = testing.DummyRequest(matchdict={'issue': 1})
+        request = construct_dummy_request(match_dict={'issue': 1})
         response = ih.get_issue_id(request)
         self.assertEqual(1, response)
 
