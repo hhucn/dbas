@@ -12,6 +12,7 @@ $(document).ready(function() {
 	try {
 		doConnect();
 	} catch (e) {
+		console.log('error ' + e);
 	}
 
 	// delete subscription on page unload events
@@ -28,9 +29,13 @@ $(document).ready(function() {
  */
 function doConnect(){
 	'use strict';
+	var error_count = 0;
 
 	// switch between a local (http) and a global (https) mode
-	var dict = {query: 'nickname=' + $('#' + headerNicknameId).text(), secure: true};
+	var dict = {
+	    query: 'nickname=' + $('#' + headerNicknameId).text(),
+        secure: true
+	};
 	var address =  'http://localhost';
 	if (mainpage.indexOf('localhost') === -1) {
 		address = location.origin;
@@ -42,10 +47,21 @@ function doConnect(){
 
 	socket.on('publish', function(data){
 		doPublish(data);
-	});
-
-	socket.on('recent_review', function(data){
+	}).on('recent_review', function(data){
 		doRecentReview(data);
+	}).on('connect', function(){
+	    error_count = 0;
+		console.log('Reseting error counter');
+	}).on('connect_error', function(){
+	    error_count += 1;
+	}).on('reconnect_error', function(){
+	    error_count += 1;
+		if (error_count > 5){
+		    console.log('Too many failed consecutive attempts to reconnect.');
+		    console.log('Polling will be closed.');
+		    console.log('Please reload the page to start polling again.');
+		    socket.close();
+        }
 	});
 
 	enableTesting();

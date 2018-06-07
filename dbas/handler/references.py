@@ -15,7 +15,7 @@ def get_references_for_argument(uid, main_page):
     Returns all references for the premises group of given argument
 
     :param uid: uid of the argument
-    :param main_page: current main page
+    :param main_page: current overview page
     :return: dict
     """
     logger('ReferenceHelper', str(uid))
@@ -57,7 +57,7 @@ def get_references_for_statements(uids, main_page):
     Returns all references for the current given statements
 
     :param uid: uids of the statement
-    :param main_page: current main page
+    :param main_page: current overview page
     :return: dict
     """
     data = {}
@@ -74,7 +74,7 @@ def __get_references_for_statement(uid, main_page):
     Returns all references for the current given statement
 
     :param uid: uid of the statement
-    :param main_page: current main page
+    :param main_page: current overview page
     :return: dict
     """
     logger('ReferenceHelper', str(uid))
@@ -88,7 +88,7 @@ def __get_values_of_reference(reference: StatementReferences, main_page):
     Creates dictionary with all values of the column
 
     :param reference: Current database row
-    :param main_page: current main page
+    :param main_page: current overview page
     :return: Dictionary with all columns
     """
     db_user = DBDiscussionSession.query(User).get(int(reference.author_uid))

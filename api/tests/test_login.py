@@ -44,3 +44,12 @@ class ValidTokenTest(unittest.TestCase):
         valid_token(request)
         self.assertEqual(len(request.errors), 0)
         self.assertIn('user', request.validated)
+
+    def test_invalid_nickname(self):
+        nickname = 'Walter_not_in_db'
+        token = 'mytoken'
+        request = construct_dummy_request()
+        request.headers[self.header] = json.dumps({'nickname': nickname, 'token': token})
+        valid_token(request)
+        self.assertGreater(len(request.errors), 0)
+        self.assertNotIn('user', request.validated)

@@ -10,13 +10,15 @@ function AjaxReferenceHandler() {
      * @param uid
      * @param reference
      * @param ref_source
+     * @param issue
      */
-    this.setReference = function (uid, reference, ref_source) {
+    this.setReference = function (uid, reference, ref_source, issue) {
         var url = 'set_references';
         var d = {
             statement_id: uid,
             ref_source: ref_source,
-            reference: reference
+            reference: reference,
+            issue: issue,
         };
         var done = function () {
             setGlobalSuccessHandler('Yeah!', _t_discussion(dataAdded));

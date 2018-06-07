@@ -5,7 +5,7 @@ Provides helping function for dictionaries, which are used in discussions.
 """
 from typing import Union, List
 
-import dbas.handler.history as history_helper
+import dbas.handler.history as history_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, User
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement, \
@@ -15,8 +15,8 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_conclusion, create_
     is_author_of_argument, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, \
     get_text_for_statement_uid, Relations
 from dbas.logger import logger
-from dbas.review.queues import get_complete_review_count
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.text_generator import tag_type, get_header_for_users_confrontation_response, \
     get_text_for_add_premise_container, get_text_for_confrontation, get_text_for_support, \
     get_name_link_of_arguments_author
@@ -119,7 +119,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'at_justify')
         _tn = Translator(self.lang)
 
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
 
         save_statement_url = 'set_new_start_statement'
         text = db_statement.get_text()
@@ -140,7 +140,8 @@ class DiscussionDictHelper(object):
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=system_question, omit_bubble_url=True,
                                                    lang=self.lang)
         url = UrlManager(slug).get_url_for_statement_attitude(db_statement.uid)
-        select_bubble = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=user_text, omit_bubble_url=False,
+        select_bubble = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=user_text,
+                                                 omit_bubble_url=False,
                                                  statement_uid=db_statement.uid, is_supportive=is_supportive,
                                                  nickname=nickname,
                                                  lang=self.lang)
@@ -193,7 +194,7 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', 'def')
         _tn = Translator(self.lang)
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
         save_statement_url = 'set_new_premises_for_argument'
 
@@ -212,7 +213,7 @@ class DiscussionDictHelper(object):
         conclusion = get_text_for_conclusion(db_argument, is_users_opinion=False)
 
         if db_argument.conclusion_uid is None:
-            conclusion = conclusion[0:1].lower() + conclusion[1:]
+            conclusion = start_with_small(conclusion)
 
         while premise.endswith(('.', '?', '!')):
             premise = premise[:-1]
@@ -281,7 +282,7 @@ class DiscussionDictHelper(object):
         if attack == Relations.UNDERMINE:
             add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack,
                                                                   conclusion, db_argument.is_supportive)
-            add_premise_text = add_premise_text[0:1].upper() + add_premise_text[1:]
+            add_premise_text = start_with_capital(add_premise_text)
 
         elif attack == Relations.SUPPORT:
             is_supportive = not is_supportive
@@ -310,7 +311,7 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', 'at_dont_know')
         _tn = Translator(self.lang)
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
         gender = ''
@@ -330,9 +331,10 @@ class DiscussionDictHelper(object):
                 intro = data['link'] + ' ' + b + _tn.get(_.thinksThat) + e
             else:
                 intro = b + _tn.get(_.otherParticipantsThinkThat) + e
-            sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
+            sys_text = intro + ' ' + start_with_small(text) + '. '
             sys_text += '<br><br>' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, uid=uid, is_markable=True, other_author=data['user'])
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, uid=uid, is_markable=True,
+                                                  other_author=data['user'])
             if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
                 bubbles_array.append(bubble_sys)
 
@@ -367,11 +369,11 @@ class DiscussionDictHelper(object):
             db_user = None
             nickname = None
 
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, nickname, self.lang, self.slug)
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
         bubble_mid = ''
-        splitted_history = history_helper.get_splitted_history(self.history)
+        splitted_history = history_handler.split(self.history)
         user_changed_opinion = splitted_history[-1].endswith(str(db_user_argument.uid))
         statement_list = list()
         db_argument = DBDiscussionSession.query(Argument).get(db_user_argument.uid)
@@ -394,7 +396,8 @@ class DiscussionDictHelper(object):
                 db_argument, arg_sys_id, history, attack, nickname, db_user_argument.is_supportive)
             quid = 'question-bubble-' + str(arg_sys_id) if int(arg_sys_id) > 0 else ''
             is_author = is_author_of_argument(db_user, prep_dict['confrontation'].uid)
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, uid=quid, content=prep_dict['sys'], omit_bubble_url=True,
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, uid=quid, content=prep_dict['sys'],
+                                                  omit_bubble_url=True,
                                                   lang=self.lang, is_markable=True,
                                                   is_author=is_author, other_author=db_enemy)
             statement_list = self.__get_all_statement_texts_by_argument(prep_dict['confrontation'])
@@ -441,24 +444,16 @@ class DiscussionDictHelper(object):
         _tn = Translator(self.lang)
         text = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion,
                                          minimize_on_undercut=True, nickname=nickname)
-        user_text = text[0:1].upper() + text[1:]
+        user_text = start_with_capital(text)
         sys_text = _tn.get(_.otherParticipantsDontHaveCounterForThat) + '.'
         trophy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
         mid_text = '{} {} {} <br>{}'.format(trophy, _tn.get(_.congratulation), trophy,
                                             _tn.get(_.discussionCongratulationEnd))
 
-        # do we have task in the queue?
-        count = get_complete_review_count(db_user)
-        if count > 0:
-            if nickname is not None:
-                mid_text += _tn.get(_.discussionEndLinkTextWithQueueLoggedIn)
-            else:
-                mid_text += _tn.get(_.discussionEndLinkTextWithQueueNotLoggedIn)
+        if nickname is not None:
+            mid_text += _tn.get(_.discussionEndLinkTextWithQueueLoggedIn)
         else:
-            if nickname is not None:
-                mid_text += _tn.get(_.discussionEndLinkTextLoggedIn)
-            else:
-                mid_text += _tn.get(_.discussionEndLinkTextNotLoggedIn)
+            mid_text += _tn.get(_.discussionEndLinkTextWithQueueNotLoggedIn)
 
         return {
             'user': user_text,
@@ -492,7 +487,7 @@ class DiscussionDictHelper(object):
                                                     attack_type=attack)
 
         # did the user changed his opinion?
-        history = history_helper.get_splitted_history(history)
+        history = history_handler.split(history)
         user_changed_opinion = len(history) > 1 and '/undercut/' in history[-2]
 
         # argumentation is a reply for an argument, if the arguments conclusion of the user is no position
@@ -512,9 +507,9 @@ class DiscussionDictHelper(object):
                                                      minimize_on_undercut=True,
                                                      support_counter_argument=support_counter_argument)
 
-        current_argument = current_argument[0:1].upper() + current_argument[1:]
+        current_argument = start_with_capital(current_argument)
         if self.lang != 'de':
-            premise = premise[0:1].lower() + premise[1:]
+            premise = start_with_small(premise)
 
         # check for support and build text
         _tn = Translator(self.lang)
@@ -543,7 +538,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'argument ' + str(uid))
         _tn = Translator(self.lang)
         argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
 
         coming_from_jump = False
         if self.history:
@@ -590,7 +585,7 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', str(uid_system_arg))
         _tn = Translator(self.lang)
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, nickname, self.lang, self.slug)
         db_arg_system = DBDiscussionSession.query(Argument).get(uid_system_arg)
         db_arg_user = DBDiscussionSession.query(Argument).get(uid_user_arg)
 
@@ -668,7 +663,7 @@ class DiscussionDictHelper(object):
         :return:
         """
         _tn = Translator(self.lang)
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
 

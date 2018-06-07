@@ -4,17 +4,18 @@ Provides helping function for database querys.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
+from typing import Union, Tuple
+
 import transaction
 from pyshorteners import Shorteners, Shortener
 from pyshorteners.exceptions import ShorteningErrorException
 from requests.exceptions import ReadTimeout, ConnectionError
-from typing import Union
 from urllib3.exceptions import NewConnectionError
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, RevokedContent, \
-    RevokedContentHistory, MarkedArgument, MarkedStatement, Language
-from dbas.handler.history import get_bubble_from_reaction_step, get_splitted_history
+    RevokedContentHistory, MarkedArgument, MarkedStatement, Language, ShortLinks, get_now
+from dbas.handler.history import get_bubble_from_reaction_step, split
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid
@@ -118,7 +119,7 @@ def __get_text_for_justification_or_reaction_bubble(stmt_or_arg: Union[Statement
     :return: String
     """
     if isinstance(stmt_or_arg, Argument):
-        splitted_history = get_splitted_history(history)
+        splitted_history = split(history)
         bubbles = get_bubble_from_reaction_step(step, db_user, _tn.get_lang(), splitted_history, '', color_steps=True)
         text = bubbles[0]['message'] if bubbles else ''
     else:
@@ -256,7 +257,6 @@ def __disable_textversions(statement_uid, author_uid):
     :param author_uid: User.uid
     :return: None
     """
-    # TODO #432
     db_textversion = DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == statement_uid,
                                                                    TextVersion.author_uid == author_uid).all()
     for textversion in db_textversion:
@@ -279,7 +279,6 @@ def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_auth
     """
     logger('QueryHelper',
            'Textversion of {} will change author from {} to {}'.format(statement_uid, old_author_uid, new_author_uid))
-    # TODO #432
     db_textversion = DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == statement_uid,
                                                                    TextVersion.author_uid == old_author_uid).all()
     if not db_textversion:
@@ -316,21 +315,37 @@ def get_default_locale_name(registry):
 
 def get_short_url(url) -> dict:
     """
-    Shortens the url via external service.
+    Shortens the url via external service and uses our database as cache (7 days)
 
     :param url: Url as string, which should be shortened
     :rtype: dict
     :return: dictionary with the url, services name and the url of the service or an error
     """
     service = Shorteners.TINYURL
-    service_text = service
     service_url = 'http://tinyurl.com/'
-    short_url = ''
-    try:
-        short_url = format(Shortener(service).short(url))
-    except (ReadTimeout, ConnectionError, NewConnectionError, ShorteningErrorException) as e:
-        logger('getter', repr(e), error=True)
-        service_text = Translator('en').get(_.serviceNotAvailable)
+
+    db_url = DBDiscussionSession.query(ShortLinks).filter_by(long_url=url).first()
+
+    if db_url and (get_now() - db_url.timestamp).days < 7:
+        short_url = db_url.short_url
+
+        return {
+            'url': short_url,
+            'service': service,
+            'service_url': service_url,
+            'service_text': service,
+        }
+
+    # no or old url, so fetch and set it
+    short_url, service_text = __fetch_url(service, url)
+    if len(short_url) > 0:
+        if db_url:
+            db_url.update_short_url(short_url)
+        else:
+            db_url = ShortLinks(service, url, short_url)
+        DBDiscussionSession.add(db_url)
+        DBDiscussionSession.flush()
+        transaction.commit()
 
     return {
         'url': short_url,
@@ -338,3 +353,21 @@ def get_short_url(url) -> dict:
         'service_url': service_url,
         'service_text': service_text,
     }
+
+
+def __fetch_url(service: str, long_url: str) -> Tuple[str, str]:
+    """
+    Just shortens the url
+
+    :param service: str of eny service to shorten urls for our Shortener
+    :param long_url: the long version of the url
+    :return: tuple of the shortened url and a service text
+    """
+    short_url, service_text = '', service
+    try:
+        short_url = format(Shortener(service).short(long_url))
+    except (ReadTimeout, ConnectionError, NewConnectionError, ShorteningErrorException) as e:
+        logger('query', repr(e), error=True)
+        service_text = Translator('en').get(_.serviceNotAvailable)
+
+    return short_url, service_text

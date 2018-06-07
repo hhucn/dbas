@@ -1,0 +1,23 @@
+<!-- overview of discussions created by the user herself and by other users -->
+<tal:block metal:use-macro="load: ../basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
+  <tal:block metal:fill-slot="content_page">
+
+    <section>
+      <div class="text-center big-header">
+        <h3 class="text-center">
+          <span i18n:translate="overview_of_discussion=">Overview of the Discussions</span></h3>
+        <p i18n:translate="page_contains_overview_all_created" class="lead text-center">This page contains an over of
+          discussions you have created as well as other participants created</p>
+      </div>
+    </section>
+
+    <div class="wrapper-container">
+
+      <div metal:use-macro="load: organism/overview-user.pt"></div>
+
+      <div metal:use-macro="load: organism/overview-other.pt"></div>
+
+
+    <span tal:condition="extras.logged_in" class="icon-badge blue-btn bottom-right" id="add-topic">+</span>
+  </tal:block>
+</tal:block>

@@ -25,8 +25,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.abspath('..'))
 
 try:
-    from dbas.views import version as short_v
-    from dbas.views import full_version as long_v
+    from dbas.views.helper import version as short_v, full_version as long_v
     import sphinx_rtd_theme
 except ImportError:
     try:

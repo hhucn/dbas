@@ -11,6 +11,8 @@ import sys
 
 import arrow
 import transaction
+from pyramid.paster import get_appsettings, setup_logging
+
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, get_dbas_db_configuration
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, SeenArgument, SeenStatement, \
@@ -18,12 +20,11 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     ReputationReason, ReviewMerge, ReviewSplit, ReviewSplitValues, ReviewMergeValues, \
     ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument, \
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
-    ReviewCanceled, RSS, OptimizationReviewLocks, History, News
+    ReviewCanceled, RSS, OptimizationReviewLocks, History, News, StatementToIssue
+from dbas.handler.password import get_hashed_password
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url, nick_of_anonymous_user
 from dbas.logger import logger
-from pyramid.paster import get_appsettings, setup_logging
-from dbas.handler.password import get_hashed_password
 
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
@@ -46,7 +47,7 @@ def usage(argv):
 
 def main_discussion(argv=sys.argv):
     """
-    Inits the main dummy discussion
+    Inits the overview dummy discussion
 
     :param argv: standard argv
     :return: None
@@ -137,6 +138,7 @@ def drop_it(argv=sys.argv):
         DBDiscussionSession.query(SeenStatement).delete()
         DBDiscussionSession.query(ClickedArgument).delete()
         DBDiscussionSession.query(ClickedStatement).delete()
+        DBDiscussionSession.query(StatementToIssue).delete()
         DBDiscussionSession.query(Message).delete()
         DBDiscussionSession.query(StatementReferences).delete()
         DBDiscussionSession.query(Premise).delete()
@@ -762,7 +764,7 @@ def __set_up_issue(session, lang1, lang2, is_field_test=False):
     :param is_field_test: Boolean
     :return: None
     """
-    # adding our main issue
+    # adding our overview issue
     db_user = session.query(User).filter_by(nickname='Tobias').first()
     issue1 = Issue(title='Town has to cut spending ',
                    info='Our town needs to cut spending. Please discuss ideas how this should be done.',
@@ -1036,38 +1038,62 @@ def __setup_fieltests_de_discussion_database(session, db_issue):
     # behauptung 1
     textversion0 = TextVersion(content="eine Zulassungsbeschränkung eingeführt werden soll", author=db_user.uid)
     # pro
-    textversion1 = TextVersion(content="die Nachfrage nach dem Fach zu groß ist, sodass eine Beschränkung eingeführt werden muss.", author=db_user.uid)
-    textversion2 = TextVersion(content="viele Studierenden sich einschreiben, ohne die notwendigen Kompetenzen zu besitzen.", author=db_user.uid)
+    textversion1 = TextVersion(
+        content="die Nachfrage nach dem Fach zu groß ist, sodass eine Beschränkung eingeführt werden muss.",
+        author=db_user.uid)
+    textversion2 = TextVersion(
+        content="viele Studierenden sich einschreiben, ohne die notwendigen Kompetenzen zu besitzen.",
+        author=db_user.uid)
     # contra
     textversion3 = TextVersion(content="die Vergleichbarkeit des Abiturschnitts nicht gegeben ist.", author=db_user.uid)
-    textversion4 = TextVersion(content="man lieber die Kapazitäten der Universität erhöhen sollte anstatt neue Studierende vom Studium auszuschließen.", author=db_user.uid)
+    textversion4 = TextVersion(
+        content="man lieber die Kapazitäten der Universität erhöhen sollte anstatt neue Studierende vom Studium auszuschließen.",
+        author=db_user.uid)
 
     # behauptung 2
     textversion5 = TextVersion(content="das Anforderungsniveau des Studiums erhöht werden sollte", author=db_user.uid)
     # pro
-    textversion6 = TextVersion(content="die Studierenden damit einen fachlich höheren Abschluss erlangen.", author=db_user.uid)
-    textversion7 = TextVersion(content="dann die Anzahl an Studierenden auf eine natürliche Weise gesenkt werden kann.", author=db_user.uid)
+    textversion6 = TextVersion(content="die Studierenden damit einen fachlich höheren Abschluss erlangen.",
+                               author=db_user.uid)
+    textversion7 = TextVersion(content="dann die Anzahl an Studierenden auf eine natürliche Weise gesenkt werden kann.",
+                               author=db_user.uid)
     # contra
     textversion8 = TextVersion(content="bereits jetzt viele Studierende das Studium abbrechen.", author=db_user.uid)
-    textversion9 = TextVersion(content="nicht die Abbrecherquote erhöht, sondern die Anzahl an weniger begabten Erstsemestern gesenkt werden sollte.", author=db_user.uid)
+    textversion9 = TextVersion(
+        content="nicht die Abbrecherquote erhöht, sondern die Anzahl an weniger begabten Erstsemestern gesenkt werden sollte.",
+        author=db_user.uid)
 
     session.add_all([textversion0, textversion1, textversion2, textversion3, textversion4, textversion5,
                      textversion6, textversion7, textversion8, textversion9])
     session.flush()
 
     # adding all statements
-    statement0 = Statement(is_position=True, issue=db_issue.uid)
-    statement1 = Statement(is_position=False, issue=db_issue.uid)
-    statement2 = Statement(is_position=False, issue=db_issue.uid)
-    statement3 = Statement(is_position=False, issue=db_issue.uid)
-    statement4 = Statement(is_position=False, issue=db_issue.uid)
-    statement5 = Statement(is_position=True, issue=db_issue.uid)
-    statement6 = Statement(is_position=False, issue=db_issue.uid)
-    statement7 = Statement(is_position=False, issue=db_issue.uid)
-    statement8 = Statement(is_position=False, issue=db_issue.uid)
-    statement9 = Statement(is_position=False, issue=db_issue.uid)
+    statement0 = Statement(is_position=True)
+    statement1 = Statement(is_position=False)
+    statement2 = Statement(is_position=False)
+    statement3 = Statement(is_position=False)
+    statement4 = Statement(is_position=False)
+    statement5 = Statement(is_position=True)
+    statement6 = Statement(is_position=False)
+    statement7 = Statement(is_position=False)
+    statement8 = Statement(is_position=False)
+    statement9 = Statement(is_position=False)
     session.add_all([statement0, statement1, statement2, statement3, statement4, statement5, statement6,
                      statement7, statement8, statement9])
+    session.flush()
+
+    statement2issue0 = StatementToIssue(statement=statement0.uid, issue=db_issue.uid)
+    statement2issue1 = StatementToIssue(statement=statement1.uid, issue=db_issue.uid)
+    statement2issue2 = StatementToIssue(statement=statement2.uid, issue=db_issue.uid)
+    statement2issue3 = StatementToIssue(statement=statement3.uid, issue=db_issue.uid)
+    statement2issue4 = StatementToIssue(statement=statement4.uid, issue=db_issue.uid)
+    statement2issue5 = StatementToIssue(statement=statement5.uid, issue=db_issue.uid)
+    statement2issue6 = StatementToIssue(statement=statement6.uid, issue=db_issue.uid)
+    statement2issue7 = StatementToIssue(statement=statement7.uid, issue=db_issue.uid)
+    statement2issue8 = StatementToIssue(statement=statement8.uid, issue=db_issue.uid)
+    statement2issue9 = StatementToIssue(statement=statement9.uid, issue=db_issue.uid)
+    session.add_all([statement2issue0, statement2issue1, statement2issue2, statement2issue3, statement2issue4,
+                     statement2issue5, statement2issue6, statement2issue7, statement2issue8, statement2issue9])
     session.flush()
 
     # set textversions
@@ -1095,14 +1121,22 @@ def __setup_fieltests_de_discussion_database(session, db_issue):
                      premisegroup8, premisegroup9])
     session.flush()
 
-    premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement1.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise2 = Premise(premisesgroup=premisegroup2.uid, statement=statement2.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise3 = Premise(premisesgroup=premisegroup3.uid, statement=statement3.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise4 = Premise(premisesgroup=premisegroup4.uid, statement=statement4.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise6 = Premise(premisesgroup=premisegroup6.uid, statement=statement6.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise7 = Premise(premisesgroup=premisegroup7.uid, statement=statement7.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise8 = Premise(premisesgroup=premisegroup8.uid, statement=statement8.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise9 = Premise(premisesgroup=premisegroup9.uid, statement=statement9.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement1.uid, is_negated=False, author=db_user.uid,
+                       issue=db_issue.uid)
+    premise2 = Premise(premisesgroup=premisegroup2.uid, statement=statement2.uid, is_negated=False, author=db_user.uid,
+                       issue=db_issue.uid)
+    premise3 = Premise(premisesgroup=premisegroup3.uid, statement=statement3.uid, is_negated=False, author=db_user.uid,
+                       issue=db_issue.uid)
+    premise4 = Premise(premisesgroup=premisegroup4.uid, statement=statement4.uid, is_negated=False, author=db_user.uid,
+                       issue=db_issue.uid)
+    premise6 = Premise(premisesgroup=premisegroup6.uid, statement=statement6.uid, is_negated=False, author=db_user.uid,
+                       issue=db_issue.uid)
+    premise7 = Premise(premisesgroup=premisegroup7.uid, statement=statement7.uid, is_negated=False, author=db_user.uid,
+                       issue=db_issue.uid)
+    premise8 = Premise(premisesgroup=premisegroup8.uid, statement=statement8.uid, is_negated=False, author=db_user.uid,
+                       issue=db_issue.uid)
+    premise9 = Premise(premisesgroup=premisegroup9.uid, statement=statement9.uid, is_negated=False, author=db_user.uid,
+                       issue=db_issue.uid)
     session.add_all([premise1, premise2, premise3, premise4, premise6, premise7, premise8, premise9])
     session.flush()
 
@@ -1190,32 +1224,62 @@ def __setup_fieltests_en_discussion_database(session, db_issue):
     session.flush()
 
     # adding all statements
-    statement101 = Statement(is_position=True, issue=db_issue.uid)
-    statement102 = Statement(is_position=True, issue=db_issue.uid)
-    statement103 = Statement(is_position=True, issue=db_issue.uid)
-    statement105 = Statement(is_position=False, issue=db_issue.uid)
-    statement106 = Statement(is_position=False, issue=db_issue.uid)
-    statement107 = Statement(is_position=False, issue=db_issue.uid)
-    statement108 = Statement(is_position=False, issue=db_issue.uid)
-    statement109 = Statement(is_position=False, issue=db_issue.uid)
-    statement110 = Statement(is_position=False, issue=db_issue.uid)
-    statement111 = Statement(is_position=False, issue=db_issue.uid)
-    statement112 = Statement(is_position=False, issue=db_issue.uid)
-    statement113 = Statement(is_position=False, issue=db_issue.uid)
-    statement114 = Statement(is_position=False, issue=db_issue.uid)
-    statement115 = Statement(is_position=False, issue=db_issue.uid)
-    statement116 = Statement(is_position=False, issue=db_issue.uid)
-    statement117 = Statement(is_position=False, issue=db_issue.uid)
-    statement118 = Statement(is_position=False, issue=db_issue.uid)
-    statement119 = Statement(is_position=False, issue=db_issue.uid)
-    statement120 = Statement(is_position=False, issue=db_issue.uid)
-    statement121 = Statement(is_position=False, issue=db_issue.uid)
-    statement122 = Statement(is_position=False, issue=db_issue.uid)
-    statement123 = Statement(is_position=False, issue=db_issue.uid)
+    statement101 = Statement(is_position=True)
+    statement102 = Statement(is_position=True)
+    statement103 = Statement(is_position=True)
+    statement105 = Statement(is_position=False)
+    statement106 = Statement(is_position=False)
+    statement107 = Statement(is_position=False)
+    statement108 = Statement(is_position=False)
+    statement109 = Statement(is_position=False)
+    statement110 = Statement(is_position=False)
+    statement111 = Statement(is_position=False)
+    statement112 = Statement(is_position=False)
+    statement113 = Statement(is_position=False)
+    statement114 = Statement(is_position=False)
+    statement115 = Statement(is_position=False)
+    statement116 = Statement(is_position=False)
+    statement117 = Statement(is_position=False)
+    statement118 = Statement(is_position=False)
+    statement119 = Statement(is_position=False)
+    statement120 = Statement(is_position=False)
+    statement121 = Statement(is_position=False)
+    statement122 = Statement(is_position=False)
+    statement123 = Statement(is_position=False)
     session.add_all([statement101, statement102, statement103, statement105, statement106, statement107, statement108])
     session.add_all([statement109, statement110, statement111, statement112, statement113, statement114, statement115])
     session.add_all([statement116, statement117, statement118, statement119, statement120, statement121, statement122])
     session.add_all([statement123])
+    session.flush()
+    statement2issue101 = StatementToIssue(statement=statement101.uid, issue=db_issue.uid)
+    statement2issue102 = StatementToIssue(statement=statement102.uid, issue=db_issue.uid)
+    statement2issue103 = StatementToIssue(statement=statement103.uid, issue=db_issue.uid)
+    statement2issue105 = StatementToIssue(statement=statement105.uid, issue=db_issue.uid)
+    statement2issue106 = StatementToIssue(statement=statement106.uid, issue=db_issue.uid)
+    statement2issue107 = StatementToIssue(statement=statement107.uid, issue=db_issue.uid)
+    statement2issue108 = StatementToIssue(statement=statement108.uid, issue=db_issue.uid)
+    statement2issue109 = StatementToIssue(statement=statement109.uid, issue=db_issue.uid)
+    statement2issue110 = StatementToIssue(statement=statement110.uid, issue=db_issue.uid)
+    statement2issue111 = StatementToIssue(statement=statement111.uid, issue=db_issue.uid)
+    statement2issue112 = StatementToIssue(statement=statement112.uid, issue=db_issue.uid)
+    statement2issue113 = StatementToIssue(statement=statement113.uid, issue=db_issue.uid)
+    statement2issue114 = StatementToIssue(statement=statement114.uid, issue=db_issue.uid)
+    statement2issue115 = StatementToIssue(statement=statement115.uid, issue=db_issue.uid)
+    statement2issue116 = StatementToIssue(statement=statement116.uid, issue=db_issue.uid)
+    statement2issue117 = StatementToIssue(statement=statement117.uid, issue=db_issue.uid)
+    statement2issue118 = StatementToIssue(statement=statement118.uid, issue=db_issue.uid)
+    statement2issue119 = StatementToIssue(statement=statement119.uid, issue=db_issue.uid)
+    statement2issue120 = StatementToIssue(statement=statement120.uid, issue=db_issue.uid)
+    statement2issue121 = StatementToIssue(statement=statement121.uid, issue=db_issue.uid)
+    statement2issue122 = StatementToIssue(statement=statement122.uid, issue=db_issue.uid)
+    statement2issue123 = StatementToIssue(statement=statement123.uid, issue=db_issue.uid)
+    session.add_all([statement2issue101, statement2issue102, statement2issue103, statement2issue105, statement2issue106,
+                     statement2issue107, statement2issue108])
+    session.add_all([statement2issue109, statement2issue110, statement2issue111, statement2issue112, statement2issue113,
+                     statement2issue114, statement2issue115])
+    session.add_all([statement2issue116, statement2issue117, statement2issue118, statement2issue119, statement2issue120,
+                     statement2issue121, statement2issue122])
+    session.add_all([statement2issue123])
     session.flush()
 
     # set textversions
@@ -1268,25 +1332,44 @@ def __setup_fieltests_en_discussion_database(session, db_issue):
     session.add_all([premisegroup120, premisegroup121, premisegroup122, premisegroup123])
     session.flush()
 
-    premise105 = Premise(premisesgroup=premisegroup105.uid, statement=statement105.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise106 = Premise(premisesgroup=premisegroup106.uid, statement=statement106.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise107 = Premise(premisesgroup=premisegroup107.uid, statement=statement107.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise108 = Premise(premisesgroup=premisegroup108.uid, statement=statement108.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise109 = Premise(premisesgroup=premisegroup109.uid, statement=statement109.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise110 = Premise(premisesgroup=premisegroup110.uid, statement=statement110.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise111 = Premise(premisesgroup=premisegroup111.uid, statement=statement111.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise112 = Premise(premisesgroup=premisegroup112.uid, statement=statement112.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise113 = Premise(premisesgroup=premisegroup113.uid, statement=statement113.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise114 = Premise(premisesgroup=premisegroup114.uid, statement=statement114.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise115 = Premise(premisesgroup=premisegroup115.uid, statement=statement115.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise116 = Premise(premisesgroup=premisegroup116.uid, statement=statement116.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise117 = Premise(premisesgroup=premisegroup117.uid, statement=statement117.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise118 = Premise(premisesgroup=premisegroup118.uid, statement=statement118.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise119 = Premise(premisesgroup=premisegroup119.uid, statement=statement119.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise120 = Premise(premisesgroup=premisegroup120.uid, statement=statement120.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise121 = Premise(premisesgroup=premisegroup121.uid, statement=statement121.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise122 = Premise(premisesgroup=premisegroup122.uid, statement=statement122.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise123 = Premise(premisesgroup=premisegroup123.uid, statement=statement123.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise105 = Premise(premisesgroup=premisegroup105.uid, statement=statement105.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise106 = Premise(premisesgroup=premisegroup106.uid, statement=statement106.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise107 = Premise(premisesgroup=premisegroup107.uid, statement=statement107.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise108 = Premise(premisesgroup=premisegroup108.uid, statement=statement108.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise109 = Premise(premisesgroup=premisegroup109.uid, statement=statement109.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise110 = Premise(premisesgroup=premisegroup110.uid, statement=statement110.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise111 = Premise(premisesgroup=premisegroup111.uid, statement=statement111.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise112 = Premise(premisesgroup=premisegroup112.uid, statement=statement112.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise113 = Premise(premisesgroup=premisegroup113.uid, statement=statement113.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise114 = Premise(premisesgroup=premisegroup114.uid, statement=statement114.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise115 = Premise(premisesgroup=premisegroup115.uid, statement=statement115.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise116 = Premise(premisesgroup=premisegroup116.uid, statement=statement116.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise117 = Premise(premisesgroup=premisegroup117.uid, statement=statement117.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise118 = Premise(premisesgroup=premisegroup118.uid, statement=statement118.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise119 = Premise(premisesgroup=premisegroup119.uid, statement=statement119.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise120 = Premise(premisesgroup=premisegroup120.uid, statement=statement120.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise121 = Premise(premisesgroup=premisegroup121.uid, statement=statement121.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise122 = Premise(premisesgroup=premisegroup122.uid, statement=statement122.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise123 = Premise(premisesgroup=premisegroup123.uid, statement=statement123.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
     session.add_all([premise105, premise106, premise107, premise108, premise109, premise110, premise111, premise112])
     session.add_all([premise113, premise114, premise115, premise116, premise117, premise118, premise119, premise120])
     session.add_all([premise121, premise122, premise123])
@@ -1350,7 +1433,7 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
     Fills the database with dummy date, created by given user
 
     :param session: database session
-    :param user: main author
+    :param user: overview author
     :param issue1: issue1
     :param issue2: issue2
     :param issue4: issue4
@@ -1478,8 +1561,9 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
                                  author=user.uid)
     textversion405 = TextVersion(content="die Einnahmen der Kommune durch Straßenfeste nur gering sind",
                                  author=user.uid)
-    textversion406 = TextVersion(content="Straßenfeste der Kommune hohe Kosten verursachen durch Polizeieinsätze, Säuberung, etc.",
-                                 author=user.uid)
+    textversion406 = TextVersion(
+        content="Straßenfeste der Kommune hohe Kosten verursachen durch Polizeieinsätze, Säuberung, etc.",
+        author=user.uid)
     textversion407 = TextVersion(content="die Innenstadt ohnehin sehr laut ist",
                                  author=user.uid)
 
@@ -1507,89 +1591,88 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
         tv.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
     # adding all statements
-    statement0 = Statement(is_position=True, issue=issue2.uid, is_disabled=True)
-    statement1 = Statement(is_position=True, issue=issue2.uid)
-    statement2 = Statement(is_position=True, issue=issue2.uid)
-    statement3 = Statement(is_position=True, issue=issue2.uid)
-    statement4 = Statement(is_position=False, issue=issue2.uid)
-    statement5 = Statement(is_position=False, issue=issue2.uid)
-    statement6 = Statement(is_position=False, issue=issue2.uid)
-    statement7 = Statement(is_position=False, issue=issue2.uid)
-    statement8 = Statement(is_position=False, issue=issue2.uid)
-    statement9 = Statement(is_position=False, issue=issue2.uid)
-    statement10 = Statement(is_position=False, issue=issue2.uid)
-    statement11 = Statement(is_position=False, issue=issue2.uid)
-    statement12 = Statement(is_position=False, issue=issue2.uid)
-    statement13 = Statement(is_position=False, issue=issue2.uid)
-    statement14 = Statement(is_position=False, issue=issue2.uid)
-    statement15 = Statement(is_position=False, issue=issue2.uid)
-    statement16 = Statement(is_position=False, issue=issue2.uid)
-    statement17 = Statement(is_position=False, issue=issue2.uid)
-    statement18 = Statement(is_position=False, issue=issue2.uid)
-    statement19 = Statement(is_position=False, issue=issue2.uid)
-    statement20 = Statement(is_position=False, issue=issue2.uid)
-    statement21 = Statement(is_position=False, issue=issue2.uid)
-    statement22 = Statement(is_position=False, issue=issue2.uid)
-    statement23 = Statement(is_position=False, issue=issue2.uid)
-    statement24 = Statement(is_position=False, issue=issue2.uid)
-    statement25 = Statement(is_position=False, issue=issue2.uid)
-    statement26 = Statement(is_position=False, issue=issue2.uid)
-    statement27 = Statement(is_position=False, issue=issue2.uid)
-    statement29 = Statement(is_position=False, issue=issue2.uid)
-    statement30 = Statement(is_position=False, issue=issue2.uid)
-    statement31 = Statement(is_position=False, issue=issue2.uid)
-    statement32 = Statement(is_position=False, issue=issue2.uid)
-    statement33 = Statement(is_position=False, issue=issue2.uid)
-    statement34 = Statement(is_position=False, issue=issue2.uid)
-    statement36 = Statement(is_position=False, issue=issue2.uid)
-    statement101 = Statement(is_position=True, issue=issue1.uid)
-    statement102 = Statement(is_position=True, issue=issue1.uid)
-    statement103 = Statement(is_position=True, issue=issue1.uid)
-    statement105 = Statement(is_position=False, issue=issue1.uid)
-    statement106 = Statement(is_position=False, issue=issue1.uid)
-    statement107 = Statement(is_position=False, issue=issue1.uid)
-    statement108 = Statement(is_position=False, issue=issue1.uid)
-    statement109 = Statement(is_position=False, issue=issue1.uid)
-    statement110 = Statement(is_position=False, issue=issue1.uid)
-    statement111 = Statement(is_position=False, issue=issue1.uid)
-    statement112 = Statement(is_position=False, issue=issue1.uid)
-    statement113 = Statement(is_position=False, issue=issue1.uid)
-    statement114 = Statement(is_position=False, issue=issue1.uid)
-    statement115 = Statement(is_position=False, issue=issue1.uid)
-    statement116 = Statement(is_position=False, issue=issue1.uid)
-    statement117 = Statement(is_position=False, issue=issue1.uid)
-    statement118 = Statement(is_position=False, issue=issue1.uid)
-    statement119 = Statement(is_position=False, issue=issue1.uid)
-    statement120 = Statement(is_position=False, issue=issue1.uid)
-    statement121 = Statement(is_position=False, issue=issue1.uid)
-    statement122 = Statement(is_position=False, issue=issue1.uid)
-    statement123 = Statement(is_position=False, issue=issue1.uid)
-    statement200 = Statement(is_position=True, issue=issue4.uid)
-    statement201 = Statement(is_position=False, issue=issue4.uid)
-    statement202 = Statement(is_position=False, issue=issue4.uid)
-    statement203 = Statement(is_position=False, issue=issue4.uid)
-    statement204 = Statement(is_position=False, issue=issue4.uid)
-    statement205 = Statement(is_position=False, issue=issue4.uid)
-    statement206 = Statement(is_position=False, issue=issue4.uid)
-    statement207 = Statement(is_position=False, issue=issue4.uid)
-    statement208 = Statement(is_position=False, issue=issue4.uid)
-    statement212 = Statement(is_position=True, issue=issue4.uid)
-    statement213 = Statement(is_position=False, issue=issue4.uid)
-    statement301 = Statement(is_position=True, issue=issue5.uid)
-    statement302 = Statement(is_position=True, issue=issue5.uid)
-    statement303 = Statement(is_position=False, issue=issue5.uid)
-    statement304 = Statement(is_position=False, issue=issue5.uid)
-    statement305 = Statement(is_position=False, issue=issue5.uid)
-    statement306 = Statement(is_position=False, issue=issue5.uid)
-    statement307 = Statement(is_position=False, issue=issue5.uid)
-
-    statement401 = Statement(is_position=True, issue=issue7.uid)
-    statement402 = Statement(is_position=False, issue=issue7.uid)
-    statement403 = Statement(is_position=False, issue=issue7.uid)
-    statement404 = Statement(is_position=False, issue=issue7.uid)
-    statement405 = Statement(is_position=False, issue=issue7.uid)
-    statement406 = Statement(is_position=False, issue=issue7.uid)
-    statement407 = Statement(is_position=False, issue=issue7.uid)
+    statement0 = Statement(is_position=True, is_disabled=True)
+    statement1 = Statement(is_position=True)
+    statement2 = Statement(is_position=True)
+    statement3 = Statement(is_position=True)
+    statement4 = Statement(is_position=False)
+    statement5 = Statement(is_position=False)
+    statement6 = Statement(is_position=False)
+    statement7 = Statement(is_position=False)
+    statement8 = Statement(is_position=False)
+    statement9 = Statement(is_position=False)
+    statement10 = Statement(is_position=False)
+    statement11 = Statement(is_position=False)
+    statement12 = Statement(is_position=False)
+    statement13 = Statement(is_position=False)
+    statement14 = Statement(is_position=False)
+    statement15 = Statement(is_position=False)
+    statement16 = Statement(is_position=False)
+    statement17 = Statement(is_position=False)
+    statement18 = Statement(is_position=False)
+    statement19 = Statement(is_position=False)
+    statement20 = Statement(is_position=False)
+    statement21 = Statement(is_position=False)
+    statement22 = Statement(is_position=False)
+    statement23 = Statement(is_position=False)
+    statement24 = Statement(is_position=False)
+    statement25 = Statement(is_position=False)
+    statement26 = Statement(is_position=False)
+    statement27 = Statement(is_position=False)
+    statement29 = Statement(is_position=False)
+    statement30 = Statement(is_position=False)
+    statement31 = Statement(is_position=False)
+    statement32 = Statement(is_position=False)
+    statement33 = Statement(is_position=False)
+    statement34 = Statement(is_position=False)
+    statement36 = Statement(is_position=False)
+    statement101 = Statement(is_position=True)
+    statement102 = Statement(is_position=True)
+    statement103 = Statement(is_position=True)
+    statement105 = Statement(is_position=False)
+    statement106 = Statement(is_position=False)
+    statement107 = Statement(is_position=False)
+    statement108 = Statement(is_position=False)
+    statement109 = Statement(is_position=False)
+    statement110 = Statement(is_position=False)
+    statement111 = Statement(is_position=False)
+    statement112 = Statement(is_position=False)
+    statement113 = Statement(is_position=False)
+    statement114 = Statement(is_position=False)
+    statement115 = Statement(is_position=False)
+    statement116 = Statement(is_position=False)
+    statement117 = Statement(is_position=False)
+    statement118 = Statement(is_position=False)
+    statement119 = Statement(is_position=False)
+    statement120 = Statement(is_position=False)
+    statement121 = Statement(is_position=False)
+    statement122 = Statement(is_position=False)
+    statement123 = Statement(is_position=False)
+    statement200 = Statement(is_position=True)
+    statement201 = Statement(is_position=False)
+    statement202 = Statement(is_position=False)
+    statement203 = Statement(is_position=False)
+    statement204 = Statement(is_position=False)
+    statement205 = Statement(is_position=False)
+    statement206 = Statement(is_position=False)
+    statement207 = Statement(is_position=False)
+    statement208 = Statement(is_position=False)
+    statement212 = Statement(is_position=True)
+    statement213 = Statement(is_position=False)
+    statement301 = Statement(is_position=True)
+    statement302 = Statement(is_position=True)
+    statement303 = Statement(is_position=False)
+    statement304 = Statement(is_position=False)
+    statement305 = Statement(is_position=False)
+    statement306 = Statement(is_position=False)
+    statement307 = Statement(is_position=False)
+    statement401 = Statement(is_position=True)
+    statement402 = Statement(is_position=False)
+    statement403 = Statement(is_position=False)
+    statement404 = Statement(is_position=False)
+    statement405 = Statement(is_position=False)
+    statement406 = Statement(is_position=False)
+    statement407 = Statement(is_position=False)
 
     session.add_all([statement0, statement1, statement2, statement3, statement4, statement5, statement6, statement7])
     session.add_all([statement8, statement9, statement10, statement11, statement12, statement13, statement14])
@@ -1605,6 +1688,117 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
     session.add_all([statement301, statement302, statement303, statement304, statement305, statement306, statement307])
     session.add_all([statement401, statement402, statement403, statement404, statement405, statement406, statement407])
 
+    session.flush()
+
+    statement2issue0 = StatementToIssue(statement=statement0.uid, issue=issue2.uid)
+    statement2issue1 = StatementToIssue(statement=statement1.uid, issue=issue2.uid)
+    statement2issue2 = StatementToIssue(statement=statement2.uid, issue=issue2.uid)
+    statement2issue3 = StatementToIssue(statement=statement3.uid, issue=issue2.uid)
+    statement2issue4 = StatementToIssue(statement=statement4.uid, issue=issue2.uid)
+    statement2issue5 = StatementToIssue(statement=statement5.uid, issue=issue2.uid)
+    statement2issue6 = StatementToIssue(statement=statement6.uid, issue=issue2.uid)
+    statement2issue7 = StatementToIssue(statement=statement7.uid, issue=issue2.uid)
+    statement2issue8 = StatementToIssue(statement=statement8.uid, issue=issue2.uid)
+    statement2issue9 = StatementToIssue(statement=statement9.uid, issue=issue2.uid)
+    statement2issue10 = StatementToIssue(statement=statement10.uid, issue=issue2.uid)
+    statement2issue11 = StatementToIssue(statement=statement11.uid, issue=issue2.uid)
+    statement2issue12 = StatementToIssue(statement=statement12.uid, issue=issue2.uid)
+    statement2issue13 = StatementToIssue(statement=statement13.uid, issue=issue2.uid)
+    statement2issue14 = StatementToIssue(statement=statement14.uid, issue=issue2.uid)
+    statement2issue15 = StatementToIssue(statement=statement15.uid, issue=issue2.uid)
+    statement2issue16 = StatementToIssue(statement=statement16.uid, issue=issue2.uid)
+    statement2issue17 = StatementToIssue(statement=statement17.uid, issue=issue2.uid)
+    statement2issue18 = StatementToIssue(statement=statement18.uid, issue=issue2.uid)
+    statement2issue19 = StatementToIssue(statement=statement19.uid, issue=issue2.uid)
+    statement2issue20 = StatementToIssue(statement=statement20.uid, issue=issue2.uid)
+    statement2issue21 = StatementToIssue(statement=statement21.uid, issue=issue2.uid)
+    statement2issue22 = StatementToIssue(statement=statement22.uid, issue=issue2.uid)
+    statement2issue23 = StatementToIssue(statement=statement23.uid, issue=issue2.uid)
+    statement2issue24 = StatementToIssue(statement=statement24.uid, issue=issue2.uid)
+    statement2issue25 = StatementToIssue(statement=statement25.uid, issue=issue2.uid)
+    statement2issue26 = StatementToIssue(statement=statement26.uid, issue=issue2.uid)
+    statement2issue27 = StatementToIssue(statement=statement27.uid, issue=issue2.uid)
+    statement2issue29 = StatementToIssue(statement=statement29.uid, issue=issue2.uid)
+    statement2issue30 = StatementToIssue(statement=statement30.uid, issue=issue2.uid)
+    statement2issue31 = StatementToIssue(statement=statement31.uid, issue=issue2.uid)
+    statement2issue32 = StatementToIssue(statement=statement32.uid, issue=issue2.uid)
+    statement2issue33 = StatementToIssue(statement=statement33.uid, issue=issue2.uid)
+    statement2issue34 = StatementToIssue(statement=statement34.uid, issue=issue2.uid)
+    statement2issue36 = StatementToIssue(statement=statement36.uid, issue=issue2.uid)
+    statement2issue101 = StatementToIssue(statement=statement101.uid, issue=issue1.uid)
+    statement2issue102 = StatementToIssue(statement=statement102.uid, issue=issue1.uid)
+    statement2issue103 = StatementToIssue(statement=statement103.uid, issue=issue1.uid)
+    statement2issue105 = StatementToIssue(statement=statement105.uid, issue=issue1.uid)
+    statement2issue106 = StatementToIssue(statement=statement106.uid, issue=issue1.uid)
+    statement2issue107 = StatementToIssue(statement=statement107.uid, issue=issue1.uid)
+    statement2issue108 = StatementToIssue(statement=statement108.uid, issue=issue1.uid)
+    statement2issue109 = StatementToIssue(statement=statement109.uid, issue=issue1.uid)
+    statement2issue110 = StatementToIssue(statement=statement110.uid, issue=issue1.uid)
+    statement2issue111 = StatementToIssue(statement=statement111.uid, issue=issue1.uid)
+    statement2issue112 = StatementToIssue(statement=statement112.uid, issue=issue1.uid)
+    statement2issue113 = StatementToIssue(statement=statement113.uid, issue=issue1.uid)
+    statement2issue114 = StatementToIssue(statement=statement114.uid, issue=issue1.uid)
+    statement2issue115 = StatementToIssue(statement=statement115.uid, issue=issue1.uid)
+    statement2issue116 = StatementToIssue(statement=statement116.uid, issue=issue1.uid)
+    statement2issue117 = StatementToIssue(statement=statement117.uid, issue=issue1.uid)
+    statement2issue118 = StatementToIssue(statement=statement118.uid, issue=issue1.uid)
+    statement2issue119 = StatementToIssue(statement=statement119.uid, issue=issue1.uid)
+    statement2issue120 = StatementToIssue(statement=statement120.uid, issue=issue1.uid)
+    statement2issue121 = StatementToIssue(statement=statement121.uid, issue=issue1.uid)
+    statement2issue122 = StatementToIssue(statement=statement122.uid, issue=issue1.uid)
+    statement2issue123 = StatementToIssue(statement=statement123.uid, issue=issue1.uid)
+    statement2issue200 = StatementToIssue(statement=statement200.uid, issue=issue4.uid)
+    statement2issue201 = StatementToIssue(statement=statement201.uid, issue=issue4.uid)
+    statement2issue202 = StatementToIssue(statement=statement202.uid, issue=issue4.uid)
+    statement2issue203 = StatementToIssue(statement=statement203.uid, issue=issue4.uid)
+    statement2issue204 = StatementToIssue(statement=statement204.uid, issue=issue4.uid)
+    statement2issue205 = StatementToIssue(statement=statement205.uid, issue=issue4.uid)
+    statement2issue206 = StatementToIssue(statement=statement206.uid, issue=issue4.uid)
+    statement2issue207 = StatementToIssue(statement=statement207.uid, issue=issue4.uid)
+    statement2issue208 = StatementToIssue(statement=statement208.uid, issue=issue4.uid)
+    statement2issue212 = StatementToIssue(statement=statement212.uid, issue=issue4.uid)
+    statement2issue213 = StatementToIssue(statement=statement213.uid, issue=issue4.uid)
+    statement2issue301 = StatementToIssue(statement=statement301.uid, issue=issue5.uid)
+    statement2issue302 = StatementToIssue(statement=statement302.uid, issue=issue5.uid)
+    statement2issue303 = StatementToIssue(statement=statement303.uid, issue=issue5.uid)
+    statement2issue304 = StatementToIssue(statement=statement304.uid, issue=issue5.uid)
+    statement2issue305 = StatementToIssue(statement=statement305.uid, issue=issue5.uid)
+    statement2issue306 = StatementToIssue(statement=statement306.uid, issue=issue5.uid)
+    statement2issue307 = StatementToIssue(statement=statement307.uid, issue=issue5.uid)
+    statement2issue401 = StatementToIssue(statement=statement401.uid, issue=issue7.uid)
+    statement2issue402 = StatementToIssue(statement=statement402.uid, issue=issue7.uid)
+    statement2issue403 = StatementToIssue(statement=statement403.uid, issue=issue7.uid)
+    statement2issue404 = StatementToIssue(statement=statement404.uid, issue=issue7.uid)
+    statement2issue405 = StatementToIssue(statement=statement405.uid, issue=issue7.uid)
+    statement2issue406 = StatementToIssue(statement=statement406.uid, issue=issue7.uid)
+    statement2issue407 = StatementToIssue(statement=statement407.uid, issue=issue7.uid)
+
+    session.add_all(
+        [statement2issue0, statement2issue1, statement2issue2, statement2issue3, statement2issue4, statement2issue5,
+         statement2issue6, statement2issue7])
+    session.add_all(
+        [statement2issue8, statement2issue9, statement2issue10, statement2issue11, statement2issue12, statement2issue13,
+         statement2issue14])
+    session.add_all([statement2issue15, statement2issue16, statement2issue17, statement2issue18, statement2issue19,
+                     statement2issue20, statement2issue21])
+    session.add_all([statement2issue22, statement2issue23, statement2issue24, statement2issue25, statement2issue26,
+                     statement2issue27, statement2issue29])
+    session.add_all([statement2issue30, statement2issue31, statement2issue32, statement2issue33, statement2issue36,
+                     statement2issue34])
+    session.add_all([statement2issue101, statement2issue102, statement2issue103, statement2issue105, statement2issue106,
+                     statement2issue107, statement2issue108])
+    session.add_all([statement2issue109, statement2issue110, statement2issue111, statement2issue112, statement2issue113,
+                     statement2issue114, statement2issue115])
+    session.add_all([statement2issue116, statement2issue117, statement2issue118, statement2issue119, statement2issue120,
+                     statement2issue121, statement2issue122])
+    session.add_all([statement2issue123])
+    session.add_all([statement2issue200, statement2issue201, statement2issue202, statement2issue203, statement2issue204,
+                     statement2issue205, statement2issue206])
+    session.add_all([statement2issue207, statement2issue208, statement2issue212, statement2issue213])
+    session.add_all([statement2issue301, statement2issue302, statement2issue303, statement2issue304, statement2issue305,
+                     statement2issue306, statement2issue307])
+    session.add_all([statement2issue401, statement2issue402, statement2issue403, statement2issue404, statement2issue405,
+                     statement2issue406, statement2issue407])
     session.flush()
 
     # set textversions
@@ -2195,12 +2389,17 @@ def __setup_review_dummy_database(session):
     review16 = ReviewOptimization(detector=user[3], statement=random.randint(int_start, int_end))
     review04 = ReviewOptimization(detector=user[4], argument=random.randint(int_start, int_end))
     review05 = ReviewOptimization(detector=user[5], argument=random.randint(int_start, int_end))
-    review06 = ReviewDelete(detector=user[6], argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
-    review07 = ReviewDelete(detector=user[7], argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
-    review08 = ReviewDelete(detector=user[8], statement=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review06 = ReviewDelete(detector=user[6], argument=random.randint(int_start, int_end), reason=random.randint(1, 2),
+                            is_executed=True)
+    review07 = ReviewDelete(detector=user[7], argument=random.randint(int_start, int_end), reason=random.randint(1, 2),
+                            is_executed=True)
+    review08 = ReviewDelete(detector=user[8], statement=random.randint(int_start, int_end), reason=random.randint(1, 2),
+                            is_executed=True)
     review09 = ReviewDelete(detector=user[9], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review10 = ReviewDelete(detector=user[10], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review11 = ReviewDelete(detector=user[11], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review10 = ReviewDelete(detector=user[10], statement=random.randint(int_start, int_end),
+                            reason=random.randint(1, 2))
+    review11 = ReviewDelete(detector=user[11], statement=random.randint(int_start, int_end),
+                            reason=random.randint(1, 2))
     review12 = ReviewDelete(detector=user[12], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review13 = ReviewDelete(detector=user[13], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review14 = ReviewDelete(detector=user[14], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))

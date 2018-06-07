@@ -16,6 +16,7 @@
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css')}" rel="stylesheet">
+  <link type="text/css" href="${request.static_url('dbas:static/node_modules/cookieconsent/build/cookieconsent.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">
   <script src="${request.static_url('dbas:static/node_modules/jquery/dist/jquery.min.js')}"></script>
 </head>
@@ -56,19 +57,19 @@
     <span id="request_info_container_close" aria-hidden="true">×</span></button>
 </div>
 
-<div metal:use-macro="load: snippet-header.pt"></div>
+<div metal:use-macro="load: snippet/header.pt"></div>
 
 <div id="wrapper-content">
   <div metal:define-slot="content_page"></div>
 </div>
 
-<div metal:use-macro="load: snippet-popups.pt"></div>
+<div metal:use-macro="load: snippet/popups.pt"></div>
 
 <a href="#top" class="back-to-top">
   <img class="center" id="back-to-top-img" alt="back-to-top-img"
        src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
 
-<div metal:use-macro="load: snippet-footer.pt"></div>
+<div metal:use-macro="load: snippet/footer.pt"></div>
 
 <div class="ajaxloader">
   <img class="center rotating" src="${request.static_url('dbas:static/images/icon.png')}" alt="loading">
@@ -88,10 +89,8 @@
 <script src="${request.static_url('dbas:static/node_modules/chart.js/dist/Chart.min.js')}"></script>
 <script src="${request.static_url('dbas:static/node_modules/d3/d3.min.js')}"></script>
 <script src="${request.static_url('dbas:static/node_modules/socket.io-client/dist/socket.io.js')}"></script>
-<script src="${request.static_url('dbas:static/js/libs/cookie.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/libs/cookie.min.js')}" tal:condition="not:extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}" tal:condition="not:extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/node_modules/js-cookie/src/js.cookie.js')}"></script>
+<script src="${request.static_url('dbas:static/node_modules/cookieconsent/build/cookieconsent.min.js')}"></script>
 
 <!-- PRODUCTION -->
 <script src="${request.static_url('dbas:static/js/dbas.min.js')}" tal:condition="not:extras.development_mode"></script>
@@ -124,6 +123,7 @@
 <script src="${request.static_url('dbas:static/js/ajax/discussion.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/ajax/graph.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/ajax/main.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/ajax/login.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/ajax/notification.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/ajax/reference.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/ajax/review.js')}" tal:condition="extras.development_mode"></script>

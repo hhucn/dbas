@@ -13,8 +13,8 @@ from pyramid.request import Request
 from slugify import slugify
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, \
-    ClickedStatement, TextVersion
+from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
+    ClickedStatement, TextVersion, StatementToIssue
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
@@ -24,8 +24,6 @@ from dbas.lib import python_datetime_pretty_print
 from dbas.query_wrapper import get_enabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-
-rep_limit_to_open_issues = 10
 
 
 def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Language, is_public: bool,
@@ -124,7 +122,7 @@ def get_number_of_statements(issue_uid: int) -> int:
     :param issue_uid: Issue Issue.uid
     :return: Integer
     """
-    return DBDiscussionSession.query(Statement).filter_by(issue_uid=issue_uid).count()
+    return DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=issue_uid).count()
 
 
 def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict():
@@ -234,7 +232,7 @@ def get_title_for_slug(slug):
     return None
 
 
-def get_issues_overiew(db_user: User, app_url: str) -> dict:
+def get_issues_overiew_for(db_user: User, app_url: str) -> dict:
     """
     Returns dictionary with keywords 'user' and 'others', which got lists with dicts with infos
     IMPORTANT: URL's are generated for the frontend!
@@ -257,7 +255,9 @@ def get_issues_overiew(db_user: User, app_url: str) -> dict:
         db_issues_other_users = get_visible_issues_for_user_as_query(db_user.uid).filter(
             Issue.author_uid != db_user.uid).all()
 
-    db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).order_by(Issue.uid.asc()).all()
+    db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).order_by(
+        Issue.uid.asc()).all()
+
     return {
         'user': [__create_issue_dict(issue, app_url) for issue in db_issues_of_user],
         'other': [__create_issue_dict(issue, app_url) for issue in db_issues_other_users]
@@ -365,7 +365,8 @@ def __create_issue_dict(db_issue: Issue, app_url: str) -> dict:
     url = short_url_dict['url'] if len(short_url_dict['url']) > 0 else app_url + '/discuss/' + db_issue.slug
 
     # we do nto have to check for clicked arguments, cause arguments consist out of statements
-    statements = [s.uid for s in DBDiscussionSession.query(Statement).filter_by(issue_uid=db_issue.uid).all()]
+    statements = [el.statement_uid for el in
+                  DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
     db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(
         ClickedStatement.statement_uid.in_(statements)).all()
 

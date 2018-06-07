@@ -4,11 +4,11 @@ from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.helper.views import handle_justification_statement, handle_justification_dontknow, \
+from dbas.helper.steps import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
-from dbas.lib import Attitudes, Relations
+from dbas.lib import Relations
 from dbas.logger import logger
-from dbas.review.reputation import add_reputation_for, rep_reason_first_argument_click
+from dbas.review.reputation import ReputationReasons, add_reputation_and_check_review_access
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -89,20 +89,17 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, a
     logger('Justify statement discussion', 'main')
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-    if attitude in [Attitudes.AGREE, Attitudes.DISAGREE]:
-        item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, attitude,
-                                                                    history, path)
-        return {
-            'issues': issue_dict,
-            'discussion': discussion_dict,
-            'items': item_dict,
-            'title': issue_dict['title']
-        }
-    else:
-        return dont_know_argument(db_issue, db_user, db_statement, attitude, history, path)
+    item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, attitude,
+                                                                history, path)
+    return {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'title': issue_dict['title']
+    }
 
 
-def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, attitude: str, history, path) -> dict:
+def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, history: str, path: str) -> dict:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
@@ -118,7 +115,7 @@ def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, at
     logger('Justify statement discussion', 'main')
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-    item_dict, discussion_dict = handle_justification_dontknow(db_issue, db_user, db_argument, attitude, history, path)
+    item_dict, discussion_dict = handle_justification_dontknow(db_issue, db_user, db_argument, history, path)
 
     return {
         'issues': issue_dict,
@@ -174,7 +171,8 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     """
     logger('Core', 'Entering discussion.reaction')
     # set votes and reputation
-    add_rep, broke_limit = add_reputation_for(db_user, reason=rep_reason_first_argument_click)
+    broke_limit = add_reputation_and_check_review_access(db_user, ReputationReasons.first_argument_click)
+
     add_click_for_argument(db_arg_user, db_user)
 
     _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history, slug=db_issue.slug, broke_limit=broke_limit)

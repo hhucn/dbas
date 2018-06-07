@@ -79,8 +79,8 @@ class APITokenTest(unittest.TestCase):
 
     def test_generate_check(self):
         token = admin.generate_application_token("test")
-        self.assertTrue(admin.check_token(token))
+        self.assertTrue(admin.check_api_token(token))
 
     def test_fail_check(self):
         token = "hglug8o7aug458oghag8o7h5o87gao87ha47z"  # contains non hex symbols
-        self.assertFalse(admin.check_token(token))
+        self.assertFalse(admin.check_api_token(token))

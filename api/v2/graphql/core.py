@@ -16,7 +16,7 @@ from sqlalchemy_utils import ArrowType
 from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReferences, \
-    PremiseGroup, Premise, Argument
+    StatementOrigins, PremiseGroup, Premise, Argument
 
 
 class ArrowTypeScalar(Scalar):
@@ -128,6 +128,12 @@ class StatementReferencesGraph(SQLAlchemyObjectType):
         model = StatementReferences
 
 
+class StatementOriginsGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = StatementOrigins
+        exclude_fields = "created"
+
+
 class IssueGraph(SQLAlchemyObjectType):
     position = StatementGraph.singular()
     positions = StatementGraph.plural()
@@ -208,6 +214,7 @@ class Query(graphene.ObjectType):
     arguments = ArgumentGraph.plural()
     statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
     statement_references = graphene.List(StatementReferencesGraph)
+    statement_origin = graphene.Field(StatementOriginsGraph, uid=graphene.Int(), statement_uid=graphene.Int())
     issue = IssueGraph.singular()
     issues = IssueGraph.plural()
     premise = graphene.Field(PremiseGraph, uid=graphene.Int())
@@ -234,6 +241,9 @@ class Query(graphene.ObjectType):
 
     def resolve_statement_references(self, info, **kwargs):
         return StatementReferencesGraph.get_query(info).all()
+
+    def resolve_statement_origin(self, info, **kwargs):
+        return resolve_field_query(kwargs, info,  StatementOriginsGraph)
 
     def resolve_issue(self, info, **kwargs):
         return resolve_field_query(kwargs, info, IssueGraph)

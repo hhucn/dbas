@@ -1,0 +1,39 @@
+<tal:block metal:use-macro="load: ../basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
+  <tal:block metal:fill-slot="content_page">
+
+    <section>
+      <div class="text-center big-header">
+        <h3 i18n:translate="decentralized_moderation_system" class="text-center">
+          Decentralized Moderation System
+        </h3>
+        <p i18n:translate="moderation_of_dbas_is_decentralized" class="lead text-center">
+          The moderation of D-BAS is decentralized, so that you are able to maintain the content
+        </p>
+      </div>
+    </section>
+
+    <div class="wrapper-container">
+
+      <div class="container colored-container" tal:condition="subpage.no_arguments_to_review">
+        <h5 class="center" i18n:translate="no_arguments_to_review">No arguments to review in this queue!</h5>
+      </div>
+
+      <div tal:condition="not:subpage.no_arguments_to_review">
+        <div class="container colored-container">
+          <div tal:condition="subpage.button_set.is_delete" metal:use-macro="load: type/delete.pt"></div>
+          <div tal:condition="subpage.button_set.is_optimization" metal:use-macro="load: type/optimize.pt"></div>
+          <div tal:condition="subpage.button_set.is_edit" metal:use-macro="load: type/edit.pt"></div>
+          <div tal:condition="subpage.button_set.is_duplicate" metal:use-macro="load: type/duplicate.pt"></div>
+          <div tal:condition="subpage.button_set.is_merge" metal:use-macro="load: type/merge.pt"></div>
+          <div tal:condition="subpage.button_set.is_split" metal:use-macro="load: type/split.pt"></div>
+
+          <small id="review-id"
+                 class="text-muted pull-right" data-id="${subpage.elements.reviewed_element.stats.id}">
+            ID: ${subpage.elements.reviewed_element.stats.id}</small>
+        </div>
+      </div>
+
+    </div>
+
+  </tal:block>
+</tal:block>

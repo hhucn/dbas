@@ -17,11 +17,11 @@ from pyramid.httpexceptions import HTTPSeeOther
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
-import dbas.views as dbas
+import dbas.views.discussion as dbas
 from api.lib import extract_items_and_bubbles
 from api.models import Item, Bubble
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, User, Argument
+from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
@@ -81,6 +81,11 @@ justify_statement = Service(name='api_justify_statement',
                             path='/{slug}/justify/{statement_id:\d+}/{attitude:(' + '|'.join(
                                 map(str, Attitudes)) + ')}',
                             description='Discussion Justify',
+                            cors_policy=cors_policy)
+
+dontknow_argument = Service(name='api_dontknow_argument',
+                            path='/{slug}/justify/{argument_id:\d+}/dontknow',
+                            description='Discussion Dont Know',
                             cors_policy=cors_policy)
 
 justify_argument = Service(name='api_justify_argument',
@@ -249,14 +254,17 @@ def discussion_init(request):
     intro = get_translation(_.initialPositionInterest, db_issue.lang)
 
     bubbles = [
-        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', content=intro, omit_bubble_url=True, lang=db_issue.lang)
+        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', content=intro, omit_bubble_url=True,
+                                 lang=db_issue.lang)
     ]
 
+    issues_statements = [el.statement_uid for el in
+                         DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
     db_positions = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
-                                                               Statement.issue_uid == db_issue.uid,
+                                                               Statement.uid.in_(issues_statements),
                                                                Statement.is_position == True).all()
 
-    items = [Item([pos.get_textversion().content], "{}/attitude/{}".format(db_issue.slug, pos.uid))
+    items = [Item([pos.get_textversion().content], "/{}/attitude/{}".format(db_issue.slug, pos.uid))
              for pos in db_positions]
 
     return {
@@ -279,7 +287,7 @@ def discussion_attitude(request):
     db_position = request.validated['position']
     db_issue = request.validated['issue']
     db_user = request.validated['user']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
@@ -305,10 +313,35 @@ def discussion_justify_statement(request) -> dict:
     """
     db_user = request.validated['user']
     db_issue = request.validated['issue']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
-    prepared_discussion = dbas.discussion.justify_statement(db_issue, db_user, request.validated['statement'],
-                                                            request.validated['attitude'], history, request.path)
+    prepared_discussion = discussion.justify_statement(db_issue, db_user, request.validated['statement'],
+                                                       request.validated['attitude'], history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    return {
+        'bubbles': bubbles,
+        'items': items
+    }
+
+
+@dontknow_argument.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_argument(location='path'))
+def discussion_dontknow_argument(request) -> dict:
+    """
+    Dont know an argument.
+
+    /{slug}/justify/{argument_id}/dontknow
+
+    :param request:
+    :return:
+    """
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    hist = history_handler.save_and_set_cookie(request, db_user, db_issue)
+
+    prepared_discussion = discussion.dont_know_argument(db_issue, db_user, request.validated['argument'], hist,
+                                                        request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     return {
@@ -330,11 +363,11 @@ def discussion_justify_argument(request) -> dict:
     """
     db_user = request.validated['user']
     db_issue = request.validated['issue']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
-    prepared_discussion = dbas.discussion.justify_argument(db_issue, db_user, request.validated['argument'],
-                                                           request.validated['attitude'], request.validated['relation'],
-                                                           history, request.path)
+    prepared_discussion = discussion.justify_argument(db_issue, db_user, request.validated['argument'],
+                                                      request.validated['attitude'], request.validated['relation'],
+                                                      history, request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     return {
@@ -356,13 +389,13 @@ def discussion_reaction(request):
     """
     db_user = request.validated['user']
     db_issue = request.validated['issue']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
-    prepared_discussion = dbas.discussion.reaction(db_issue, db_user,
-                                                   request.validated['arg_user'],
-                                                   request.validated['arg_sys'],
-                                                   request.validated['relation'],
-                                                   history, request.path)
+    prepared_discussion = discussion.reaction(db_issue, db_user,
+                                              request.validated['arg_user'],
+                                              request.validated['arg_sys'],
+                                              request.validated['relation'],
+                                              history, request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
@@ -378,10 +411,10 @@ def discussion_reaction(request):
 def discussion_finish(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
-    prepared_discussion = dbas.discussion.finish(db_issue, db_user,
-                                                 request.validated['argument'], history)
+    prepared_discussion = discussion.finish(db_issue, db_user,
+                                            request.validated['argument'], history)
 
     return {'bubbles': extract_items_and_bubbles(prepared_discussion)[0]}
 
@@ -471,7 +504,6 @@ def add_start_statement(request):
 
     :param request:
     :return:
-
     """
     return prepare_data_assign_reference(request, set_position)
 
@@ -483,18 +515,17 @@ def add_start_premise(request):
 
     :param request:
     :return:
-
     """
     return prepare_data_assign_reference(request, set_positions_premise)
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
 def add_justify_premise(request):
-    """Add new justifying premise group.
+    """
+    Add new justifying premise group.
 
     :param request:
     :return:
-
     """
     return prepare_data_assign_reference(request, set_arguments_premises)
 
@@ -646,7 +677,7 @@ def jump_to_argument_fn(request):
 
     """
     # api_data = jump_preparation(request)
-    return dbas.discussion.jump(request)
+    return dbas.jump(request)
 
 
 # =============================================================================
@@ -697,7 +728,7 @@ def get_issues(_request):
 def add_position_with_premise(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
 
@@ -718,7 +749,7 @@ def add_premise_to_statement(request):
     db_issue: Issue = request.validated['issue']
     db_statement: Statement = request.validated['statement']
     is_supportive = request.validated['attitude'] == Attitudes.AGREE
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
                                history,
@@ -735,7 +766,7 @@ def add_premise_to_argument(request):
     db_issue: Issue = request.validated['issue']
     db_argument: Argument = request.validated['argument']
     relation: Relations = request.validated['relation']
-    history = history_handler.handle_history(request, db_user, db_issue)
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
                                 history,

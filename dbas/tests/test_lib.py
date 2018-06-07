@@ -5,7 +5,7 @@ import transaction
 
 from dbas import lib
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Argument, Statement, Issue, TextVersion
+from dbas.database.discussion_model import User, Argument, Statement, TextVersion
 from dbas.helper.url import UrlManager
 
 
@@ -112,7 +112,8 @@ class LibTests(unittest.TestCase):
         broken_history = "/attitude/60/justify/60/agree/broooken/52/rebut/53"
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(correct_history), ['53'], "Missing element")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(broken_history), [], "Should match nothing")
-        self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [], "No history has no elements in list")
+        self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [],
+                         "No history has no elements in list")
 
     def test_get_all_arguments_by_statement(self):
         argument_list = lib.get_all_arguments_by_statement(3)
@@ -234,16 +235,12 @@ class LibTests(unittest.TestCase):
         matchdict, params, session, current_issue_uid = {}, {}, {'issue': 1}, {}
         self.assertEqual('en', lib.get_discussion_language(matchdict, params, session, current_issue_uid))
 
-    def test_get_slug_by_statement_uid(self):
-        statement = DBDiscussionSession.query(Statement).get(1)
-        issue = DBDiscussionSession.query(Issue).get(statement.issue_uid)
-        self.assertEqual(issue.slug, lib.get_slug_by_statement_uid(1))
-
     def test_get_text_for_premise(self):
         self.assertIsNone(lib.get_text_for_premise(0))
         self.assertEqual(lib.get_text_for_premise(12), 'cats are fluffy')
         self.assertNotIn('data-argumentation-type', lib.get_text_for_premise(12, False))
-        self.assertEqual(lib.get_text_for_premise(52), 'das Unfallrisiko steigt, da die Autos kaum Geräusche verursachen')
+        self.assertEqual(lib.get_text_for_premise(52),
+                         'das Unfallrisiko steigt, da die Autos kaum Geräusche verursachen')
         self.assertIn('data-argumentation-type', lib.get_text_for_premise(12, True))
 
     def test_is_argument_disabled_due_to_disabled_statements(self):
@@ -310,7 +307,8 @@ class LibTests(unittest.TestCase):
         }
 
         db_statement = DBDiscussionSession.query(Statement).get(38)
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True, is_jump=True)
+        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True,
+                                                                      is_jump=True)
         self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)

@@ -4,6 +4,7 @@
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement
 from dbas.lib import get_author_data, Relations
+from dbas.strings.lib import start_with_capital, start_with_small
 from .keywords import Keywords as _
 from .translator import Translator
 
@@ -41,7 +42,7 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
     while conclusion[-1] in ['.', ' ']:
         conclusion = premise[:-1]
 
-    confrontation = confrontation[0:1].upper() + confrontation[1:]
+    confrontation = start_with_capital(confrontation)
 
     # different cases
     if attack_type == Relations.UNDERMINE:
@@ -105,8 +106,8 @@ def get_header_for_users_confrontation_response(db_argument, lang, premise, atta
     t += _t.get(_.itIsTrueThat)[1:]
 
     if lang == 'de':
-        r += _t.get(_.itIsTrueThat)[0:1].lower() + _t.get(_.itIsTrueThat)[1:] + ' '
-        f = _t.get(_.wrong) + ', ' + _t.get(_.itIsFalseThat)[0:1].lower() + _t.get(_.itIsFalseThat)[1:] + ' '
+        r += start_with_small(_t.get(_.itIsTrueThat)) + ' '
+        f = _t.get(_.wrong) + ', ' + start_with_small(_t.get(_.itIsFalseThat)) + ' '
 
     if redirect_from_jump:
         r = _t.get(_.maybeItIsTrueThat) + ' '
@@ -517,7 +518,7 @@ def __get_text_for_add_something(nickname, lang, url, keyword, for_html=True):
     nl = '<br>' if for_html else '\n'
     _t = Translator(lang)
     intro = _t.get(keyword).format(nickname)
-    w = _t.get(_.where)[0:1].upper() + _t.get(_.where)[1:]
+    w = start_with_capital(_t.get(_.where))
     if for_html:
         url = '<a href="{}">{}</a>'.format(url, url)
 

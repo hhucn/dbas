@@ -66,7 +66,7 @@ def send_mail_due_to_edit_text(statement_uid: int, previous_author: User, curren
     :return: duple with boolean for sent message, message-string
     """
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
-    db_textversion_old = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid)  # TODO #432
+    db_textversion_old = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid)
     db_textversion_new = DBDiscussionSession.query(TextVersion).get(db_statement.uid)
 
     db_previous_author = DBDiscussionSession.query(User).get(previous_author)

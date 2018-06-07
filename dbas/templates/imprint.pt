@@ -49,8 +49,8 @@
                                         </li>
                                         <li>
                                             <a target="_blank"
-                                               href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">
-                                                EU Cookie Popup
+                                               href="https://github.com/insites/cookieconsent">
+                                                Cookie Consent
                                             </a>
                                         </li>
                                         <li>
@@ -61,7 +61,7 @@
                                                 Button</a>
                                         </li>
                                         <li>
-                                            <a target="_blank" href="https://bootswatch.com/">Bootswatch  Theme</a>
+                                            <a target="_blank" href="https://bootswatch.com/">Bootswatch Theme</a>
                                         </li>
                                         <li>
                                             <a target="_blank" href="http://bootstraptour.com/">Bootstrap Tour</a>
@@ -69,17 +69,10 @@
                                         <li>
                                             <a target="_blank" href="https://github.com/seiyria/bootstrap-slider">Bootstrap
                                                 Slider</a>
-                                        <li>
-                                            <a target="_blank" href="http://fontawesome.io/icons/">Font Awesome Icon</a>
-                                        </li>
                                     </ul>
                                 </div>
                                 <div class="col-md-6">
                                     <ul>
-                                        <li tal:condition="extras.usage_of_matomo">
-                                            <a target="_blank" href="http://matomo.org/">Matomo Open-Source
-                                                Analytics</a>
-                                        </li>
                                         <li>
                                             <a target="_blank" href="http://www.gravatar.com/">Gravatar </a>
                                         </li>
@@ -103,6 +96,9 @@
                                                href="http://startbootstrap.com/template-overviews/creative">
                                                 Creative Template
                                             </a>
+                                        </li>
+                                        <li>
+                                            <a target="_blank" href="http://fontawesome.io/icons/">Font Awesome Icon</a>
                                         </li>
                                     </ul>
                                 </div>

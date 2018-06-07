@@ -744,8 +744,9 @@ function PopupHandler() {
             var uid = $(this).data('id');
             var reference = referenceText.val();
             var refSource = referenceSource.val();
+            var issue_uid = $('#issue_info').data('issue');
             
-            new AjaxReferenceHandler().setReference(uid, reference, refSource);
+            new AjaxReferenceHandler().setReference(uid, reference, refSource, issue_uid);
         });
 
         this.createReferencesPopupBody(data);

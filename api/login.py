@@ -14,7 +14,7 @@ from typing import Union
 
 import transaction
 
-from admin.lib import check_token
+from admin.lib import check_api_token
 from dbas.auth.login import login_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
@@ -66,14 +66,20 @@ def token_to_database(db_user: User, token: Union[str, None]) -> None:
 # #############################################################################
 # Dispatch API attempts by type
 
-def __process_user_token(request, nickname, token):
+def check_auth_token(request, nickname, token):
     log.info("[API] Login Attempt from user {}".format(nickname))
     db_user = get_user_by_case_insensitive_nickname(nickname)
 
-    if not db_user.token or not db_user.token == token and not check_token(token):
+    if not db_user:
+        add_error(request, "Unknown user", status_code=401, location="header")
+        return False
+
+    if (db_user.token and db_user.token == token) or check_api_token(token):
+        request.validated['user'] = db_user
+        return True
+    else:
         add_error(request, "Invalid token", status_code=401, location="header")
-        return
-    request.validated['user'] = db_user
+        return False
 
 
 # #############################################################################
@@ -116,7 +122,7 @@ def valid_token(request, **_kwargs):
 
     try:
         payload = json_to_dict(htoken)
-        __process_user_token(request, payload.get('nickname'), payload.get('token'))
+        return check_auth_token(request, payload.get('nickname'), payload.get('token'))
     except json.decoder.JSONDecodeError:
         add_error(request, "Invalid JSON in token")
 

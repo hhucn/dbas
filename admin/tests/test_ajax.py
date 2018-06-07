@@ -3,7 +3,7 @@ import unittest
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import TextVersion, Statement
+from dbas.database.discussion_model import TextVersion, Statement, StatementToIssue
 
 
 class AjaxTest(unittest.TestCase):
@@ -53,6 +53,7 @@ class AjaxTest(unittest.TestCase):
             'table': 'statement',
             'uids': [db_s1[-1].uid]
         }, validated={})
+        DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=db_s1[-1].uid).delete()
         # db_s2 = DBDiscussionSession.query(Statement).count()
         self.assertIsNotNone(ajax(request))
         # self.assertGreater(len(db_s1), db_s2)
@@ -74,7 +75,6 @@ class AjaxTest(unittest.TestCase):
             'table': 'Statement',
             'new_data': {
                 'is_position': False,
-                'issue': 2,
                 'is_disabled': False
             }
         }, validated={})

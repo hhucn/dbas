@@ -5,7 +5,7 @@
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
-    SeenStatement
+    SeenStatement, StatementToIssue
 from dbas.lib import get_profile_picture
 from dbas.logger import logger
 from dbas.query_wrapper import get_enabled_arguments_as_query, get_enabled_statement_as_query
@@ -36,7 +36,8 @@ def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     if all_statements is None:
-        all_statements = get_enabled_statement_as_query().filter_by(issue_uid=db_issue.uid).all()
+        issues_statements_uids = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
+        all_statements = get_enabled_statement_as_query().filter(Statement.uid.in_(issues_statements_uids)).all()
 
     if all_arguments is None:
         all_arguments = get_enabled_arguments_as_query().filter_by(issue_uid=db_issue.uid).all()
@@ -77,7 +78,8 @@ def get_opinion_data(db_issue: Issue) -> dict:
     :param db_issue:
     :return:
     """
-    db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=db_issue.uid).all()
+    statements = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
+    db_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(statements)).all()
     db_all_seen = DBDiscussionSession.query(SeenStatement)
     db_all_votes = DBDiscussionSession.query(ClickedStatement)
     ret_dict = dict()
@@ -324,7 +326,7 @@ def __get_author_of_statement(uid):
     :return:
     """
     db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(
-        TextVersion.uid.asc()).first()  # TODO #432
+        TextVersion.uid.asc()).first()
     db_author = DBDiscussionSession.query(User).get(db_tv.author_uid)
     gravatar = get_profile_picture(db_author, 40)
     name = db_author.global_nickname
@@ -338,7 +340,7 @@ def __get_editor_of_statement(uid):
     :return:
     """
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(
-        TextVersion.uid.desc()).first()  # TODO #432
+        TextVersion.uid.desc()).first()
     db_editor = DBDiscussionSession.query(User).get(db_statement.author_uid)
     gravatar = get_profile_picture(db_editor, 40)
     name = db_editor.global_nickname

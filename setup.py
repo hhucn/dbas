@@ -1,7 +1,7 @@
 import os
 
 from setuptools import setup, find_packages
-from dbas.views import version
+from dbas.views.helper import version
 
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de

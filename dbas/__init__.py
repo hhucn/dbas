@@ -106,12 +106,13 @@ def main(global_config, **settings):
     config.add_route('main_privacy', '/privacy_policy')
     config.add_route('main_rss', '/rss')
     config.add_route('main_faq', '/faq')
+    config.add_route('main_batman', '/batman')
     config.add_route('main_docs', '/docs')
     config.add_route('main_experiment', '/fieldexperiment')
-    config.add_route('main_discussions_overview', '/mydiscussions')
     config.add_route('main_user', '/user/{uid:\d+}')
     config.add_route('main_graphiql', '/graphiql')
     config.add_route('main_api', '/api')
+    config.add_route('discussion_overview', '/mydiscussions')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('user_login', '{url:.*}user_login')
@@ -176,7 +177,6 @@ def main(global_config, **settings):
     config.add_route('discussion_dontknow_argument', '/discuss/{slug}/justify/{argument_id:\d+}/dontknow')
     config.add_route('discussion_justify_statement', '/discuss/{slug}/justify/{statement_id:\d+}/{attitude}')
     config.add_route('discussion_justify_argument', '/discuss/{slug}/justify/{argument_id:\d+}/{attitude}/{relation}')
-
     config.add_route('discussion_attitude', '/discuss/{slug}/attitude/{statement_id:\d+}')
     config.add_route('discussion_choose', '/discuss/{slug}/choose/{is_argument}/{is_supportive}/{id:\d+}*pgroup_ids')
     config.add_route('discussion_jump', '/discuss/{slug}/jump/{argument_id:\d+}')
@@ -191,7 +191,7 @@ def main(global_config, **settings):
     config.add_route('review_reputation', '/review/reputation')
     config.add_route('review_history', '/review/history')
     config.add_route('review_ongoing', '/review/ongoing')
-    config.add_route('review_content', '/review/{queue}')
+    config.add_route('review_queue', '/review/{queue}')
 
     config.scan()
 

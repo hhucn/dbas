@@ -14,8 +14,10 @@ from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, get_profile_picture, Relations, \
     get_text_for_argument_uid, resolve_issue_uid_to_slug
 from dbas.logger import logger
-from dbas.review.reputation import add_reputation_for, rep_reason_new_statement, rep_reason_first_new_argument
+from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
+    ReputationReasons
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
 
 
@@ -24,7 +26,13 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
     """
     Set new premise for a given conclusion and returns dictionary with url for the next step of the discussion
 
-    :param data: dict if requests came via the API
+    :param db_issue:
+    :param db_user:
+    :param db_argument:
+    :param premisegroups:
+    :param attack_type:
+    :param history:
+    :param mailer:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
@@ -49,10 +57,11 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
         return prepared_dict
 
     # add reputation
-    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_new_argument)
-    if not add_rep:
-        add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
-        # send message if the user is now able to review
+    had_access = has_access_to_review_system(db_user)
+    rep_added = add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_new_argument))
+    if not rep_added:
+        add_reputation_for(db_user, get_reason_by_action(ReputationReasons.new_statement))
+    broke_limit = has_access_to_review_system(db_user) and not had_access
     if broke_limit:
         url += '#access-review'
         prepared_dict['url'] = url
@@ -88,7 +97,7 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
     return_dict['gravatar'] = get_profile_picture(db_author)
     return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, db_argument.lang)
     text = get_text_for_argument_uid(db_argument.uid)
-    return_dict['text'] = text[0:1].upper() + text[1:] + '.'
+    return_dict['text'] = start_with_capital(text)
 
     supporters = []
     gravatars = dict()
@@ -109,15 +118,16 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
     return return_dict
 
 
-def get_arguments_by_statement_uid(db_statement: Statement) -> dict:
+def get_arguments_by_statement_uid(db_statement: Statement, db_issue: Issue) -> dict:
     """
     Collects every argument which uses the given statement
 
     :param db_statement: Statement
+    :param db_issue: issue
     :rtype: dict
     :return: prepared collection with several arguments
     """
-    slug = resolve_issue_uid_to_slug(db_statement.issue_uid)
+    slug = resolve_issue_uid_to_slug(db_issue.uid)
     _um = UrlManager(slug)
     return {'arguments': get_all_arguments_with_text_and_url_by_statement_id(db_statement, _um, True, is_jump=True)}
 
@@ -228,9 +238,9 @@ def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_ar
 
     current_argument = DBDiscussionSession.query(Argument).get(arg_id)
     # relation to the arguments premise group
-    if attack_type == Relations.UNDERMINE or attack_type == Relations.SUPPORT:  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
+    if attack_type == Relations.UNDERMINE or attack_type == Relations.SUPPORT:
         db_premise = DBDiscussionSession.query(Premise).filter_by(
-            premisegroup_uid=current_argument.premisegroup_uid).first()
+            premisegroup_uid=current_argument.premisegroup_uid).first()  # TODO what happens with |pgroups| > 1?
         db_statement = DBDiscussionSession.query(Statement).get(db_premise.statement_uid)
         url = _um.get_url_for_choosing_premisegroup(False, supportive, db_statement.uid, pgroups)
 
@@ -240,7 +250,6 @@ def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_ar
 
     # relation to the arguments conclusion
     elif attack_type == Relations.REBUT:
-        # TODO WHAT IS WITH ARGUMENT AS CONCLUSION?
         is_argument = current_argument.conclusion_uid is not None
         uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
         url = _um.get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)

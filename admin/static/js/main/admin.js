@@ -9,7 +9,7 @@ $(document).ready(function () {
 	$('#admin-login-button').click(function () {
 		var user = $('#admin-login-user').val();
 		var pw = $('#admin-login-pw').val();
-		new AjaxMainHandler().login(user, pw, true);
+		new AjaxLoginHandler().login(user, pw, true);
 	});
 	
 	// gui modification for the caution row

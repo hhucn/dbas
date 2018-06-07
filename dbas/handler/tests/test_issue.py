@@ -84,14 +84,14 @@ class IssueHandlerTests(unittest.TestCase):
 
     def test_get_issues_overiew(self):
         db_user = DBDiscussionSession.query(User).get(2)
-        response = ih.get_issues_overiew(db_user, 'http://test.url')
+        response = ih.get_issues_overiew_for(db_user, 'http://test.url')
         self.assertIn('user', response)
         self.assertIn('other', response)
         self.assertTrue(len(response['user']) > 0)
         self.assertTrue(len(response['other']) == 0)
 
         db_user = DBDiscussionSession.query(User).get(3)
-        response = ih.get_issues_overiew(db_user, 'http://test.url')
+        response = ih.get_issues_overiew_for(db_user, 'http://test.url')
         self.assertIn('user', response)
         self.assertIn('other', response)
         self.assertTrue(len(response['user']) == 0)

@@ -5,10 +5,9 @@ from typing import List, Tuple, Dict, Union, Any
 import transaction
 from sqlalchemy import func
 
-import dbas.review.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
-    sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement
+    sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
 from dbas.handler import user, notification as nh
 from dbas.handler.rss import append_action_to_issue_rss
 from dbas.handler.voting import add_seen_argument, add_seen_statement
@@ -19,8 +18,10 @@ from dbas.input_validator import is_integer
 from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_string, get_text_for_argument_uid, \
     Relations, Attitudes
 from dbas.logger import logger
-from dbas.review.reputation import add_reputation_for, rep_reason_first_position, \
-    rep_reason_first_justification, rep_reason_new_statement
+from dbas.review.queue import Code
+from dbas.review.queue.edit import EditQueue
+from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
+    ReputationReasons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
@@ -44,10 +45,11 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
-    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_position)
-    if not add_rep:
-        add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
-        # send message if the user is now able to review
+    rep_added = add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_position))
+    had_access = has_access_to_review_system(db_user)
+    if not rep_added:
+        add_reputation_for(db_user, get_reason_by_action(ReputationReasons.new_statement))
+    broke_limit = has_access_to_review_system(db_user) and not had_access
     if broke_limit:
         url += '#access-review'
 
@@ -95,10 +97,11 @@ def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: di
     :param prepared_dict:
     :return:
     """
-    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_justification)
-    if not add_rep:
-        add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
-        # send message if the user is now able to review
+    had_access = has_access_to_review_system(db_user)
+    rep_added = add_reputation_for(db_user, get_reason_by_action(ReputationReasons.first_justification))
+    if not rep_added:
+        add_reputation_for(db_user, get_reason_by_action(ReputationReasons.new_statement))
+    broke_limit = has_access_to_review_system(db_user) and not had_access
     if broke_limit:
         _t = Translator(db_issue.lang)
         send_request_for_info_popup_to_socketio(db_user.nickname, _t.get(_.youAreAbleToReviewNow), '/review')
@@ -116,9 +119,47 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     :return: Dictionary with info and/or error
     """
     db_user.update_last_action()
-    msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, db_user, translator)
+
+    review_count = len(elements)
+    added_reviews = [EditQueue().add_edit_reviews(db_user, el['uid'], el['text']) for el in elements]
+
+    if added_reviews.count(Code.SUCCESS) == 0:  # no edits set
+        if added_reviews.count(Code.DOESNT_EXISTS) > 0:
+            logger('StatementsHelper', 'internal key error')
+            return {
+                'info': translator.get(_.internalKeyError),
+                'error': True
+            }
+        if added_reviews.count(Code.DUPLICATE) > 0:
+            logger('StatementsHelper', 'already edit proposals')
+            return {
+                'info': translator.get(_.alreadyEditProposals),
+                'error': True
+            }
+        logger('StatementsHelper', 'no corrections given')
+        return {
+            'info': translator.get(_.noCorrections),
+            'error': True
+        }
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+    added_values = [EditQueue().add_edit_values_review(db_user, el['uid'], el['text']) for el in elements]
+    if Code.SUCCESS not in added_values:
+        return {
+            'info': translator.get(_.alreadyEditProposals),
+            'error': True
+        }
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+    msg = ''
+    if review_count > added_values.count(Code.SUCCESS) \
+            or added_reviews.count(Code.SUCCESS) != added_values.count(Code.SUCCESS):
+        msg = translator.get(_.alreadyEditProposals)
     return {
-        'error': error,
+        'error': False,
         'info': msg
     }
 
@@ -146,43 +187,6 @@ def set_seen_statements(uids, path, db_user) -> dict:
     return {'status': 'success'}
 
 
-def correct_statement(db_user, uid, corrected_text):
-    """
-    Corrects a statement
-
-    :param db_user: User requesting user
-    :param uid: requested statement uid
-    :param corrected_text: new text
-    :return: dict()
-    """
-    logger('StatementsHelper', 'def ' + str(uid))
-
-    while corrected_text.endswith(('.', '?', '!')):
-        corrected_text = corrected_text[:-1]
-
-    # duplicate check
-    return_dict = dict()
-    db_statement = DBDiscussionSession.query(Statement).get(uid)
-    db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(
-        TextVersion.uid.desc()).all()
-
-    # not a duplicate?
-    if not db_textversion:
-        textversion = TextVersion(content=corrected_text, author=db_user.uid)
-        textversion.set_statement(db_statement.uid)
-        DBDiscussionSession.add(textversion)
-        DBDiscussionSession.flush()
-
-    # if request:
-    #     nh.send_edit_text_notification(db_user, textversion, url, request)
-
-    # transaction.commit() # # 207
-
-    return_dict['uid'] = uid
-    return_dict['text'] = corrected_text
-    return return_dict
-
-
 def get_logfile_for_statements(uids, lang, main_page):
     """
     Returns the logfile for the given statement uid
@@ -197,7 +201,7 @@ def get_logfile_for_statements(uids, lang, main_page):
     main_dict = dict()
     for uid in uids:
         db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(
-            TextVersion.uid.asc()).all()  # TODO #432
+            TextVersion.uid.asc()).all()
         if len(db_textversions) == 0:
             continue
         return_dict = dict()
@@ -258,24 +262,21 @@ def insert_as_statement(text: str, db_user: User, db_issue: Issue, is_start=Fals
     return new_statement
 
 
-def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> Tuple[Statement, bool]:
+def set_statement(text: str, db_user: User, is_position: bool, db_issue: Issue) -> Tuple[Statement, bool]:
     """
     Saves statement for user
 
     :param text: given statement
     :param db_user: User of given user
-    :param is_start: if it is a start statement
+    :param is_position: if it is a start statement
     :param db_issue: Issue
     :return: Statement, is_duplicate or -1, False on error
     """
 
-    logger('StatementsHelper', 'user: ' + str(db_user.nickname) + ', user_id: ' + str(db_user.uid) +
-           ', text: ' + str(text) + ', issue: ' + str(db_issue.uid))
+    logger('StatementsHelper', 'user_id: {}, text: {}, issue: {}'.format(db_user.uid, text, db_issue.uid))
 
     # escaping and cleaning
-    text = text.strip()
-    text = ' '.join(text.split())
-    text = escape_string(text)
+    text = escape_string(' '.join(text.strip().split()))
     _tn = Translator(db_issue.lang)
     if text.startswith(_tn.get(_.because).lower() + ' '):
         text = text[len(_tn.get(_.because) + ' '):]
@@ -283,25 +284,83 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> 
         text = text[:-1]
 
     # check, if the text already exists
-    db_duplicate = DBDiscussionSession.query(TextVersion).filter(
-        func.lower(TextVersion.content) == text.lower()).first()
-    if db_duplicate:
-        db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == db_duplicate.statement_uid,
-                                                                   Statement.issue_uid == db_issue.uid).one()
-        return db_statement, True
+    db_dupl = __check_duplicate(db_issue, text)
+    if db_dupl:
+        return db_dupl, True
 
-    # add text
-    statement = Statement(is_position=is_start, issue=db_issue.uid)
-    DBDiscussionSession.add(statement)
+    db_statement = __add_statement(is_position)
+    __add_textversion(text, db_user.uid, db_statement.uid)
+    __add_statement2issue(db_statement.uid, db_issue.uid)
+
+    return db_statement, False
+
+
+def __check_duplicate(db_issue: Issue, text: str) -> Union[Statement, None]:
+    """
+    Check if there is already a textversion with the given text. If true the statement2issue relation will be
+    checked and set and the duplicate (Statement) returned
+
+    :param db_issue: related Issue
+    :param text: the text
+    :return:
+    """
+    db_tv = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
+    if not db_tv:
+        return None
+
+    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
+        StatementToIssue.issue_uid == db_issue.uid,
+        StatementToIssue.statement_uid == db_tv.statement_uid).all()
+
+    if not db_statement2issue:
+        __add_statement2issue(db_tv.statement_uid, db_issue.uid)
+
+    db_statement = DBDiscussionSession.query(Statement).get(db_tv.statement_uid)
+    return db_statement
+
+
+def __add_statement(is_position: bool) -> Statement:
+    """
+    Adds a new statement to the database
+
+    :param is_position: True if the statement should be a position
+    :return: New statement object
+    """
+    db_statement = Statement(is_position=is_position)
+    DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
-
-    # add textversion
-    textversion = TextVersion(content=text, author=db_user.uid, statement_uid=statement.uid)
-    DBDiscussionSession.add(textversion)
-    DBDiscussionSession.flush()
-
     transaction.commit()
-    return statement, False
+    return db_statement
+
+
+def __add_textversion(text: str, user_uid: int, statement_uid: int) -> TextVersion:
+    """
+    Adds a new statement to the database
+
+    :param text: content of the textversion
+    :param user_uid: uid of the author
+    :param statement_uid: id of the related statement
+    :return: New textversion object
+    """
+    db_textversion = TextVersion(content=text, author=user_uid, statement_uid=statement_uid)
+    DBDiscussionSession.add(db_textversion)
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return db_textversion
+
+
+def __add_statement2issue(statement_uid: int, issue_uid: int) -> StatementToIssue:
+    """
+    Adds a new statement to issue link to the database
+
+    :param statement_uid: id of the related statement
+    :param issue_uid: id of the related issue
+    :return: New statement to issue object
+    """
+    db_statement2issue = StatementToIssue(statement=statement_uid, issue=issue_uid)
+    DBDiscussionSession.add(db_statement2issue)
+    DBDiscussionSession.flush()
+    return db_statement2issue
 
 
 def __is_conclusion_in_premisegroups(premisegroups: list, db_conclusion: Statement) -> bool:
@@ -377,7 +436,8 @@ def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, s
         url = _um.get_url_for_choosing_premisegroup(False, supportive, db_conclusion.uid, pgroups)
 
     # send notifications and mails
-    email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, Attitudes.AGREE if supportive else Attitudes.DISAGREE)
+    email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid,
+                                                          Attitudes.AGREE if supportive else Attitudes.DISAGREE)
     nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, mailer)
 
     prepared_dict['url'] = url
@@ -554,7 +614,6 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
 
-        # TODO This should be redundant code! new_argument should be the new argument
         new_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == premisegroup_uid,
                                                                   Argument.is_supportive == is_supportive,
                                                                   Argument.author_uid == db_user.uid,

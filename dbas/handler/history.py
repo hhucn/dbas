@@ -16,6 +16,7 @@ from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_te
     relation_mapper
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
 from dbas.strings.translator import Translator
 
@@ -34,7 +35,7 @@ def save_issue_uid(issue_uid: int, db_user: User):
     transaction.commit()
 
 
-def get_saved_issue(db_user: User):
+def get_last_issue_of(db_user: User):
     """
     Returns the last used issue of the user or None
 
@@ -50,7 +51,7 @@ def get_saved_issue(db_user: User):
     return None if db_issue.is_disabled else db_issue
 
 
-def get_splitted_history(history):
+def split(history):
     """
     Splits history by specific keyword and removes leading '/'
 
@@ -60,7 +61,7 @@ def get_splitted_history(history):
     return [his[1:] if his[0:1] == '/' else his for his in history.split('-')]
 
 
-def create_bubbles_from_history(history, nickname='', lang='', slug=''):
+def create_bubbles(history, nickname='', lang='', slug=''):
     """
     Creates the bubbles for every history step
 
@@ -74,7 +75,7 @@ def create_bubbles_from_history(history, nickname='', lang='', slug=''):
         return []
 
     logger('history_handler', 'nickname: ' + str(nickname) + ', history: ' + history)
-    splitted_history = get_splitted_history(history)
+    splitted_history = split(history)
 
     bubble_array = []
     consumed_history = ''
@@ -268,7 +269,7 @@ def __get_bubble_from_attitude_step(step, nickname, lang, url):
     uid = int(steps[1])
     text = get_text_for_statement_uid(uid)
     if lang != 'de':
-        text = text[0:1].upper() + text[1:]
+        text = start_with_capital(text)
     bubble = create_speechbubble_dict(BubbleTypes.USER, content=text, omit_bubble_url=False, statement_uid=uid,
                                       nickname=nickname,
                                       lang=lang, bubble_url=url)
@@ -303,7 +304,7 @@ def __get_bubble_from_dont_know_step(step, db_user, lang):
         intro = data['link'] + ' ' + _tn.get(_.thinksThat)
     else:
         intro = _tn.get(_.otherParticipantsThinkThat)
-    sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
+    sys_text = intro + ' ' + start_with_small(text) + '. '
     sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
     sys_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, nickname=db_user.nickname, other_author=data['user'])
 
@@ -373,12 +374,12 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     user_is_attacking = not db_argument.is_supportive
 
     if lang != 'de':
-        current_arg = current_arg[0:1].upper() + current_arg[1:]
+        current_arg = start_with_capital(current_arg)
         if current_arg.startswith('<'):
             pos = current_arg.index('>')
             current_arg = current_arg[0:pos] + current_arg[pos:pos + 1].upper() + current_arg[pos + 1:]
 
-    premise = premise[0:1].lower() + premise[1:]
+    premise = start_with_small(premise)
 
     _tn = Translator(lang)
     user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if last_relation == Relations.SUPPORT else ''
@@ -401,7 +402,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     return [bubble_user, bubble_syst]
 
 
-def save_path_in_database(db_user: User, slug: str, path: str, history: str = '') -> None:
+def save_database(db_user: User, slug: str, path: str, history: str = '') -> None:
     """
     Saves a path into the database
 
@@ -432,7 +433,7 @@ def save_path_in_database(db_user: User, slug: str, path: str, history: str = ''
     # transaction.commit()  # 207
 
 
-def get_history_from_database(db_user: User, lang: str):
+def get_from_database(db_user: User, lang: str):
     """
     Returns history from database
 
@@ -449,7 +450,7 @@ def get_history_from_database(db_user: User, lang: str):
     return return_array
 
 
-def delete_history_in_database(db_user):
+def delete_in_database(db_user):
     """
     Deletes history from database
 
@@ -462,7 +463,7 @@ def delete_history_in_database(db_user):
     return True
 
 
-def handle_history(request: Request, db_user: User, issue: Issue) -> str:
+def save_and_set_cookie(request: Request, db_user: User, issue: Issue) -> str:
     """
 
     :param request: pyramid's request object
@@ -473,7 +474,7 @@ def handle_history(request: Request, db_user: User, issue: Issue) -> str:
     """
     history = request.params.get('history', '')
     if db_user and db_user.nickname != nick_of_anonymous_user:
-        save_path_in_database(db_user, issue.slug, request.path, history)
+        save_database(db_user, issue.slug, request.path, history)
         save_issue_uid(issue.uid, db_user)
 
     if request.path.startswith('/discuss/'):

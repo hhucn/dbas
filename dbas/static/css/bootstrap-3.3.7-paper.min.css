@@ -1,4 +1,8 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700");/*!
+@font-face {
+    font-family: Roboto;
+    src: url(""../fonts/roboto/Roboto-Regular.ttf"");
+}
+/*!
  * bootswatch v3.3.7
  * Homepage: http://bootswatch.com
  * Copyright 2012-2016 Thomas Park

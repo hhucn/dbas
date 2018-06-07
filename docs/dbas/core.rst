@@ -116,9 +116,6 @@ Helper
 .. automodule:: dbas.helper.url
     :members:
 
-.. automodule:: dbas.helper.views
-    :members:
-
 .. automodule:: dbas.helper.dictionary.bubbles
     :members:
 
@@ -163,9 +160,35 @@ Validators
 Views
 =====
 
+.. automodule:: dbas.views.discussion.rendered
+    :members:
+
+.. automodule:: dbas.views.discussion.json
+    :members:
+
 .. automodule:: dbas.views.json
+    :members:
+
+.. automodule:: dbas.views.main.rendered
+    :members:
+
+.. automodule:: dbas.views.main.json
     :members:
 
 .. automodule:: dbas.views.rendered
     :members:
+
+.. automodule:: dbas.views.review.rendered
+    :members:
+
+.. automodule:: dbas.views.review.json
+    :members:
+
+.. automodule:: dbas.views.user.rendered
+    :members:
+
+.. automodule:: dbas.views.user.json
+    :members:
+
+
 
