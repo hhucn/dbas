@@ -7,6 +7,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, get_now
 from dbas.helper.test import verify_dictionary_of_view, clear_clicks_of, clear_seen_by_of
 from dbas.review.queue import review_queues
+from dbas.tests.utils import construct_dummy_request
 from dbas.views.review.rendered import index, reputation, ongoing, history, queue_details
 
 
@@ -98,19 +99,19 @@ class ReviewContentViewTests(unittest.TestCase):
 
     def test_queue_pages_not_logged_in(self):
         for key in review_queues:
-            request = testing.DummyRequest(matchdict={'queue': key})
+            request = construct_dummy_request(match_dict={'queue': key})
             response = queue_details(request)
             self.assertEqual(400, response.status_code)
 
     def test_queue_pages_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = testing.DummyRequest(matchdict={'queue': 'foobaar'})
+        request = construct_dummy_request(match_dict={'queue': 'foobaar'})
         response = queue_details(request)
         self.assertEqual(400, response.status_code)
 
         for key in review_queues:
-            request = testing.DummyRequest(matchdict={'queue': key})
+            request = construct_dummy_request(match_dict={'queue': key})
             response = queue_details(request)
             self.assertEqual(dict, type(response))
             verify_dictionary_of_view(response)

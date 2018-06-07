@@ -11,6 +11,7 @@ from dbas.database.discussion_model import Issue, Statement, TextVersion, Argume
     ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument, \
     ClickedStatement, SeenStatement, SeenArgument, StatementToIssue
 from dbas.lib import Relations
+from dbas.tests.utils import construct_dummy_request
 from dbas.views import set_new_premises_for_argument, set_new_start_premise, set_correction_of_some_statements, \
     set_new_issue, set_statements_as_seen
 
@@ -50,7 +51,8 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
     def __set_multiple_start_premises(self, view):
-        statement_in_issue2_uids = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=2).all()]
+        statement_in_issue2_uids = [el.statement_uid for el in
+                                    DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=2).all()]
         db_conclusion = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
                                                                     Statement.uid.in_(statement_in_issue2_uids)).first()
         db_arg = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == db_conclusion.uid,
@@ -129,7 +131,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         db_review1 = DBDiscussionSession.query(ReviewEdit).count()
         db_value1 = DBDiscussionSession.query(ReviewEditValue).count()
         elements = [{'text': 'some new text for a correction', 'uid': 19}]
-        request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'}, params={}, json_body={
+        request = construct_dummy_request(match_dict={'slug': 'cat-or-dog'}, params={}, json_body={
             'elements': elements
         })
         response = set_correction_of_some_statements(request)
@@ -147,7 +149,7 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_correction_of_statement_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
-        request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'}, params={}, json_body={
+        request = construct_dummy_request(match_dict={'slug': 'cat-or-dog'}, params={}, json_body={
             'elements': [{}]
         }, )
         response = set_correction_of_some_statements(request)

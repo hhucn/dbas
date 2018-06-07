@@ -72,5 +72,6 @@ def set_language_for_visit(request):
     logger('Language', 'User is first time here')
     ui_locales = get_language_from_header(request)
     lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
-    DictionaryHelper(ui_locales).add_language_options_for_extra_dict(request.decorated['extras'])
+    if hasattr(request, 'request'):
+        DictionaryHelper(ui_locales).add_language_options_for_extra_dict(request.decorated['extras'])
     return set_language(request, lang)
