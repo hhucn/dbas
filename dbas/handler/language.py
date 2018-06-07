@@ -4,9 +4,9 @@ Provides helping function for language changes.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Language
+from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.logger import logger
 
 
@@ -65,11 +65,12 @@ def set_language_for_visit(request):
     """
 
     if '_LOCALE_' in request.cookies:
-        logger('ViewHelper', 'User was already here')
+        logger('Language', 'User was already here')
         # user was already here
         return
 
-    logger('ViewHelper', 'User is first time here')
+    logger('Language', 'User is first time here')
     ui_locales = get_language_from_header(request)
     lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
-    set_language(request, lang)
+    DictionaryHelper(ui_locales).add_language_options_for_extra_dict(request.decorated['extras'])
+    return set_language(request, lang)
