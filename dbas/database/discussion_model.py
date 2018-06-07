@@ -2365,4 +2365,3 @@ class ShortLinks(DiscussionBase):
         """
         self.short_url = short_url
         self.timestamp = get_now()
-
