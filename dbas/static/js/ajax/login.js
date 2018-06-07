@@ -16,9 +16,8 @@ function invalid_recaptcha() {
     return answer !== sum || isNaN(answer);
 }
 
-function AjaxLoginHandler(){
+function AjaxLoginHandler() {
     "use strict";
-
     /**
      *
      */
@@ -28,7 +27,6 @@ function AjaxLoginHandler(){
         $('#' + popupLoginFailed + '-message').text('');
         $('#' + popupLoginInfo).hide();
         $('#' + popupLoginInfo + '-message').text('');
-
         var url = mainpage + 'user_login';
         var d = {
             user: user,
@@ -52,7 +50,7 @@ function AjaxLoginHandler(){
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      *
      * @param service
@@ -63,7 +61,6 @@ function AjaxLoginHandler(){
         $('#' + popupLoginFailed + '-message').text('');
         $('#' + popupLoginInfo).hide();
         $('#' + popupLoginInfo + '-message').text('');
-
         var url = mainpage + 'user_login_oauth';
         var d = {
             service: service,
@@ -87,58 +84,36 @@ function AjaxLoginHandler(){
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      *
      */
     this.logout = function () {
-        var url = mainpage + 'user_logout';
-        var done = function ajaxLogoutDone() {
-            location.reload(true);
-        };
-        var fail = function ajaxLogoutFail(xhr) {
-            if (xhr.status === 200) {
-                if (window.location.href.indexOf('settings') !== 0) {
-                    window.location.href = mainpage + 'discuss';
-                } else {
-                    location.reload(true);
-                }
-            } else if (xhr.status === 403) {
-                window.location.href = mainpage + 'discuss';
-            } else {
-                location.reload(true);
-            }
-        };
-        ajaxSkeleton(url, 'POST', {}, done, fail);
+        redirectAfterAjax(mainpage + 'user_logout');
     };
-    
     /**
      *
      */
     this.registration = function () {
         $('#' + popupLoginRegistrationFailed).hide();
-        if ($('#' + popupLoginInlineRadioGenderN).is(':checked')) {
-            gender = 'n';
-        }
+        var gender = 'n';
         if ($('#' + popupLoginInlineRadioGenderM).is(':checked')) {
             gender = 'm';
         }
         if ($('#' + popupLoginInlineRadioGenderF).is(':checked')) {
             gender = 'f';
         }
-
         if (invalid_recaptcha()) {
             $('#' + popupLoginRegistrationFailed).show();
             $('#' + popupLoginRegistrationFailed + '-message').text(_t(wrongCaptcha));
             return;
         }
-
         var url = 'user_registration';
         var d = {
             firstname: $('#userfirstname-input').val(),
             lastname: $('#userlastname-input').val(),
             nickname: $('#nick-input').val(),
-            gender: '',
+            gender: gender,
             email: $('#email-input').val(),
             password: $('#' + popupLoginPasswordInputId).val(),
             passwordconfirm: $('#' + popupLoginPasswordconfirmInputId).val(),
@@ -157,7 +132,7 @@ function AjaxLoginHandler(){
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      *
      */
