@@ -1,3 +1,4 @@
+<!-- exit view after the user leaves via sidbar -->
 <tal:block metal:use-macro="load: ../basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
   <tal:block metal:fill-slot="content_page">
 

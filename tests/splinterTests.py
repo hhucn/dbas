@@ -576,7 +576,7 @@ class FrontendTests:
         # new premise
         success = success and Helper.check_for_present_text(b, 'Let me enter my reason', 'check for new window premise')
         reason1 = 'some new reason'
-        b.find_by_id('add-premise-container-main-input').fill(reason1)
+        b.find_by_id('add-position-container-main-input').fill(reason1)
         b.find_by_id('send-new-premise').click()
         time.sleep(wait_time)
 
@@ -597,7 +597,7 @@ class FrontendTests:
         # add new premise
         success = success and Helper.check_for_present_text(b, 'me enter my reason', 'check for new premise window again')
         reason2 = 'some new reason 1 and some new reason 2'
-        b.find_by_id('add-premise-container-main-input').fill(reason2)
+        b.find_by_id('add-position-container-main-input').fill(reason2)
         # add another input field
         b.find_by_css('.icon-add-premise').click()
         time.sleep(wait_time)

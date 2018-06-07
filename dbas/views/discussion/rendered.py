@@ -68,7 +68,7 @@ def start(request):
     return prep_dict
 
 
-@view_config(route_name='discussion_init_with_slug', renderer='../../templates/discussion/index.pt',
+@view_config(route_name='discussion_init_with_slug', renderer='../../templates/discussion/main.pt',
              permission='everybody')
 @validate(check_authentication, valid_issue_by_slug, valid_user_optional)
 def init(request):
@@ -101,7 +101,7 @@ def init(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_attitude', renderer='../../templates/discussion/index.pt', permission='everybody')
+@view_config(route_name='discussion_attitude', renderer='../../templates/discussion/main.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}))
 def attitude(request):
     """
@@ -129,7 +129,7 @@ def attitude(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_justify_statement', renderer='../../templates/discussion/index.pt',
+@view_config(route_name='discussion_justify_statement', renderer='../../templates/discussion/main.pt',
              permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}),
           valid_attitude)
@@ -161,7 +161,7 @@ def justify_statement(request) -> dict:
     return prepared_discussion
 
 
-@view_config(route_name='discussion_dontknow_argument', renderer='../../templates/discussion/index.pt',
+@view_config(route_name='discussion_dontknow_argument', renderer='../../templates/discussion/main.pt',
              permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def dontknow_argument(request) -> dict:
@@ -190,7 +190,7 @@ def dontknow_argument(request) -> dict:
     return prepared_discussion
 
 
-@view_config(route_name='discussion_justify_argument', renderer='../../templates/discussion/index.pt',
+@view_config(route_name='discussion_justify_argument', renderer='../../templates/discussion/main.pt',
              permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}),
           valid_attitude, valid_relation)
@@ -222,7 +222,7 @@ def justify_argument(request) -> dict:
     return prepared_discussion
 
 
-@view_config(route_name='discussion_reaction', renderer='../../templates/discussion/index.pt', permission='everybody')
+@view_config(route_name='discussion_reaction', renderer='../../templates/discussion/main.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_reaction_arguments, valid_relation)
 def reaction(request):
     """
@@ -253,7 +253,7 @@ def reaction(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_support', renderer='../../templates/discussion/index.pt', permission='everybody')
+@view_config(route_name='discussion_support', renderer='../../templates/discussion/main.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_support)
 def support(request):
     """
@@ -281,7 +281,7 @@ def support(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_finish', renderer='../../templates/discussion/index.pt', permission='everybody')
+@view_config(route_name='discussion_finish', renderer='../../templates/discussion/main.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def finish(request):
     """
@@ -331,7 +331,7 @@ def dexit(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_choose', renderer='../../templates/discussion/index.pt', permission='everybody')
+@view_config(route_name='discussion_choose', renderer='../../templates/discussion/main.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_issue_by_slug, valid_premisegroup_in_path,
           valid_list_of_premisegroups_in_path, has_keywords_in_path(('is_argument', bool), ('is_supportive', bool)))
 def choose(request):
@@ -366,7 +366,7 @@ def choose(request):
     return prepared_discussion
 
 
-@view_config(route_name='discussion_jump', renderer='../../templates/discussion/index.pt', permission='everybody')
+@view_config(route_name='discussion_jump', renderer='../../templates/discussion/main.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def jump(request):
     """

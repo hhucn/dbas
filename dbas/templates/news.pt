@@ -17,14 +17,14 @@
       <div id="news-body">
         <div id="dummy-news" class="container">
           <div class="row">
-            <div metal:use-macro="load: dummy-news.pt"></div>
-            <div metal:use-macro="load: dummy-news.pt"></div>
-            <div metal:use-macro="load: dummy-news.pt"></div>
+            <div metal:use-macro="load: snippet/news.pt"></div>
+            <div metal:use-macro="load: snippet/news.pt"></div>
+            <div metal:use-macro="load: snippet/news.pt"></div>
           </div>
           <div class="row">
-            <div metal:use-macro="load: dummy-news.pt"></div>
-            <div metal:use-macro="load: dummy-news.pt"></div>
-            <div metal:use-macro="load: dummy-news.pt"></div>
+            <div metal:use-macro="load: snippet/news.pt"></div>
+            <div metal:use-macro="load: snippet/news.pt"></div>
+            <div metal:use-macro="load: snippet/news.pt"></div>
           </div>
         </div>
       </div>

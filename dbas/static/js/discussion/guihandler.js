@@ -13,9 +13,9 @@ function GuiHandler() {
      * Adds a premise row in the 'add premise'-container
      */
     this.appendAddPremiseRow = function () {
-        var body = $('#' + addPremiseContainerBodyId);
+        var body = $('#' + addPositionContainerBodyId);
         var send = $('#' + sendNewPremiseId);
-        var id = addPremiseContainerMainInputId + '-' + new Date().getTime();
+        var id = addPositionContainerMainInputId + '-' + new Date().getTime();
 
         var copy_div = $('.container-three-divs:first').clone();
         copy_div.find('input').attr('id', id).val('');
@@ -83,7 +83,7 @@ function GuiHandler() {
     this.setDisplayStyleAsIsland = function () {
         $('#' + islandViewContainerId).fadeIn('slow');
         this.hideAddPositionContainer();
-        this.hideAddPremiseContainer();
+        this.hideaddPositionContainer();
     };
 
     /**
@@ -98,7 +98,7 @@ function GuiHandler() {
         $('#' + islandViewContainerId).hide();
         $('#' + discussionContainerId).hide();
         $('#' + headerContainerId).hide();
-        $('#' + addPremiseContainerId).hide();
+        $('#' + addPositionContainerId).hide();
 
         // text
         header.html($('#issue_info').data('title'));
@@ -112,7 +112,7 @@ function GuiHandler() {
         main.setSidebarStyle(graphViewContainer, tacked_sidebar);
         main.setSidebarClicks(graphViewContainer, tacked_sidebar);
         // this.hideAddPositionContainer();
-        // this.hideAddPremiseContainer();
+        // this.hideaddPositionContainer();
     };
 
     /**
@@ -196,8 +196,8 @@ function GuiHandler() {
     /**
      * Shows the 'add premise'-container
      */
-    this.showAddPremiseContainer = function () {
-        $('#' + addPremiseContainerId).show();
+    this.showaddPositionContainer = function () {
+        $('#' + addPositionContainerId).show();
     };
 
     /**
@@ -211,8 +211,8 @@ function GuiHandler() {
     /**
      * Hides the 'add premise'-container
      */
-    this.hideAddPremiseContainer = function () {
-        $('#' + addPremiseContainerId).hide();
+    this.hideaddPositionContainer = function () {
+        $('#' + addPositionContainerId).hide();
         $('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
     };
 
@@ -505,7 +505,7 @@ function GuiHandler() {
         var div_page = src.clone();
         var id = src.attr('id');
         var splitted = text.split(' ' + _t_discussion(and) + ' ');
-        var topic = $('#' + addPremiseContainerMainInputIntroId).text();
+        var topic = $('#' + addPositionContainerMainInputIntroId).text();
         var input1, input2, input3, list, bigText, bigTextSpan, connection, i, infix;
         topic = topic.substr(0, topic.length - 3);
 
@@ -844,22 +844,22 @@ function GuiHandler() {
     this.hoverInputListOf = function (list) {
         list.find('input').each(function () {
             $(this).hover(function () {
-                if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+                if (!($('#' + addPositionContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
                     $(this).prop('checked', true);
                 }
             }, function () {
-                if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+                if (!($('#' + addPositionContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
                     $(this).prop('checked', false);
                 }
             });
         });
         list.find('label').each(function () {
             $(this).hover(function () {
-                if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+                if (!($('#' + addPositionContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
                     $(this).prev().prop('checked', true);
                 }
             }, function () {
-                if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+                if (!($('#' + addPositionContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
                     $(this).prev().prop('checked', false);
                 }
             });

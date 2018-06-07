@@ -272,7 +272,7 @@ function AjaxDiscussionHandler() {
         }
 
         if (!$.inArray(type, [fuzzy_find_user, fuzzy_find_statement, fuzzy_duplicate])) {
-            var opener = $('#' + addPremiseContainerMainInputIntroId).text().replace('...', _t_discussion(because) + ' ');
+            var opener = $('#' + addPositionContainerMainInputIntroId).text().replace('...', _t_discussion(because) + ' ');
             // add or remove bubble only iff we are not in an popup
             if (type !== fuzzy_statement_popup) {
                 if (bubbleSpace.find('#current_' + tmpid).length === 0) {

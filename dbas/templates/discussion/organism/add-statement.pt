@@ -1,0 +1,50 @@
+<!-- little container to add a single statement/premise -->
+<tal:block i18n:domain="dbas" metal:define-macro="layout">
+
+  <div class="container colored-container" id="add-statement-container"
+       style="${extras.add_statement_container_style}">
+    <button tal:condition="extras.close_statement_container" id="close-statement-container" type="button"
+                                                             class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <br>
+    <div class="col-lg-12 text-center">
+      <!--<p class="lead">${structure:discussion.add_premise_text}</p>-->
+      <div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+        <span id="add-statement-error-msg"></span>
+      </div>
+      <div id="add-statement-container-body">
+        <fieldset>
+          <div class="form-group">
+            <label for="add-statement-container-main-input-position"
+                   class="col-lg-3 col-md-5 col-sm-6 control-label"
+                   style="color: #666; font-size: 17px; margin-top: 0.4em;">${structure:discussion.add_premise_text}</label>
+            <div class="col-lg-9 col-md-7 col-sm-6">
+              <input id="add-statement-container-main-input-position"
+                     placeholder="${extras.tag.placeholder_position}"
+                     class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
+            </div>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="add-statement-container-main-input-reason" class="col-lg-3 col-md-5 col-sm-6 control-label"
+                   style="color: #666; font-size: 17px; margin-top: 0.4em;">${extras.title.because}</label>
+            <div class="col-lg-9 col-md-7 col-sm-6">
+              <input id="add-statement-container-main-input-reason" placeholder="${extras.tag.placeholder_reason}"
+                     class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <div class="list-group" id="proposal-statement-list-group"></div>
+      <input id="send-new-statement" type="button" class="btn btn-primary" data-dismiss="modal"
+             data-toggle="tooltip" data-placement="bottom" value="${extras.buttons.save_my_statement}"
+             name="${discussion.mode}"/>
+    </div>
+  </div>
+
+</tal:block>

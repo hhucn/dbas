@@ -1,0 +1,43 @@
+<!-- sidebar of the disussion -->
+<tal:block i18n:domain="dbas" metal:define-macro="layout">
+
+  <div class="pull-right sidebar-wrapper" style="min-height: 200px;">
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <ul class="sidebar">
+      <li id="share-url">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+        <span class="sidebar-element">${extras.buttons.share_url}</span>
+      </li>
+      <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon">
+        <i class="fa fa-bar-chart" aria-hidden="true"></i>
+        <span class="sidebar-element">${extras.title.barometer}</span>
+      </li>
+      <li id="display-style-icon-graph-img" tal:condition="extras.show_graph_icon">
+        <i class="fa fa-sitemap" aria-hidden="true"></i>
+        <span class="sidebar-element">${extras.title.graph_view}</span>
+      </li>
+      <li id="sidebar-search-statement">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <span class="sidebar-element">${extras.tag.search}</span>
+      </li>
+      <li id="sidebar-ask-a-friend" tal:condition="extras.logged_in">
+        <i class="fa fa-users" aria-hidden="true"></i>
+        <span class="sidebar-element">${extras.title.ask_friend}</span>
+      </li>
+      <li id="finish-button" onclick="window.location='/discuss/exit'" tal:condition="extras.logged_in">
+        <i class="fa fa-sign-out" aria-hidden="true"></i>
+        <span class="sidebar-element">${extras.title.finish_title}</span>
+      </li>
+    </ul>
+
+    <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
+      <i class="tack fa fa-thumb-tack" aria-hidden="true"></i>
+    </div>
+  </div>
+</tal:block>
