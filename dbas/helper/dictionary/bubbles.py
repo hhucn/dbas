@@ -8,7 +8,7 @@ from dbas.strings.lib import start_with_capital
 
 def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive, _tn):
     """
-    Returns user text for a bubble when the user has to justify a statement and text for the add-premise-container
+    Returns user text for a bubble when the user has to justify a statement and text for the add-position-container
 
     :param stmt_uid: Statement.uid
     :param db_user: User
@@ -52,7 +52,7 @@ def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive,
 
 def get_system_bubble_text_for_justify_statement(is_supportive, _tn, tag_start, text, tag_end):
     """
-    Returns system text for a bubble when the user has to justify a statement and text for the add-premise-container
+    Returns system text for a bubble when the user has to justify a statement and text for the add-position-container
 
     :param is_supportive: Boolean
     :param _tn: Translator

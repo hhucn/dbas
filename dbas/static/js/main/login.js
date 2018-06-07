@@ -1,13 +1,127 @@
 /**
  * main function
  */
+
+/**
+ *
+ * @param data
+ * @param showGlobalError
+ */
+function callbackIfDoneForLogin(data, showGlobalError) {
+    'use strict';
+    try {
+        if ('error' in data && data.error.length !== 0) {
+            if (showGlobalError) {
+                setGlobalErrorHandler('Ohh!', data.error);
+            } else {
+                $('#' + popupLoginFailed).show();
+                $('#' + popupLoginFailed + '-message').html(data.error);
+            }
+        } else if ('info' in data && data.info.length !== 0) {
+            $('#' + popupLoginInfo).show();
+            $('#' + popupLoginInfo + '-message').html(data.info);
+        } else {
+            $('#' + popupLogin).modal('hide');
+        }
+    } catch (err) {
+        // session expired
+    }
+}
+
+/**
+ *
+ * @param data
+ */
+function callbackIfDoneForRegistration(data) {
+    'use strict';
+    
+    var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
+    var failed = $('#' + popupLoginRegistrationFailed);
+    var info = $('#' + popupLoginRegistrationInfo);
+    success.hide();
+    failed.hide();
+    info.hide();
+    
+    if (data.success.length > 0) {
+        // trigger click
+        $('a[href="#login"]').trigger('click');
+        success.show();
+        $('#' + popupLoginSuccess + '-message').text(data.success);
+    }
+    if (data.error.length > 0) {
+        failed.show();
+        $('#' + popupLoginRegistrationFailed + '-message').text(data.error);
+    }
+    if (data.info.length > 0) {
+        info.show();
+        $('#' + popupLoginRegistrationInfo + '-message').text(data.info);
+        $('#popup-login-spamanswer-input').attr('placeholder', data.spamquestion).val('');
+    }
+}
+
+/**
+ *
+ * @param data
+ */
+function callbackIfDoneForRegistrationViaOauth(data) {
+    'use strict';
+    
+    var success = $('#' + popupLoginSuccess);
+    var failed = $('#popup-complete-login-failed');
+    var info = $('#popup-complete-login-info');
+    success.hide();
+    info.hide();
+    failed.hide();
+    
+    if ('success' in data && data.success.length > 0) {
+        $('#popup-complete-login').modal('hide');
+        $('#popup-login').modal('show');
+        // trigger click
+        $('a[href="#login"]').trigger('click');
+        success.show();
+        $('#' + popupLoginSuccess + '-message').text(data.success);
+    }
+    if ('error' in data && data.error.length > 0) {
+        failed.show();
+        $('#popup-complete-login-failed-message').text(data.error);
+    }
+    if ('info' in data && data.info.length > 0) {
+        info.show();
+        $('#popup-complete-login-info-message').text(data.info);
+    }
+}
+
+/**
+ *
+ * @param data
+ */
+function callbackIfDoneForPasswordRequest(data) {
+    'use strict';
+    
+    var success = $('#' + popupLoginSuccess);
+    var failed = $('#' + popupLoginFailed);
+    var info = $('#' + popupLoginInfo);
+    success.hide();
+    failed.hide();
+    info.hide();
+    if (data.success) {
+        $('#' + popupLoginForgotPasswordBody).hide();
+        $('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
+        success.show();
+        $('#' + popupLoginSuccess + '-message').text(data.message);
+    } else {
+        info.show();
+        $('#' + popupLoginInfo + '-message').text(data.message);
+    }
+}
+
 $(document).ready(function mainDocumentReady() {
     'use strict';
 
     var classes = ['.btn-google', '.btn-facebook', '.btn-twitter', '.btn-github'];
     $.each(classes, function (key, value) {
         $(value).click(function () {
-            new AjaxMainHandler().oauthLogin($(this).data('service'), window.location.href);
+            new AjaxLoginHandler().oauthLogin($(this).data('service'), window.location.href);
         });
     });
 
@@ -39,7 +153,7 @@ $(document).ready(function mainDocumentReady() {
     $.each(services, function (key, value) {
         if (url.indexOf('service=' + value + '&') !== -1) {
             url = url.replace('service=' + value + '&', '');
-            new AjaxMainHandler().oauthLogin(value, url);
+            new AjaxLoginHandler().oauthLogin(value, url);
         }
     });
 });

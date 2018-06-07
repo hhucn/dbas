@@ -1,0 +1,32 @@
+<!-- the core of D-BAS. here the bubbles, the radio buttons and everything else are embedded -->
+<tal:block metal:use-macro="load: ../basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
+  <tal:block metal:fill-slot="content_page">
+
+    <section>
+      <div class="text-center big-header">
+        <h3 class="text-center">
+          <span id="issue_info" data-discussion-language="${extras.tag.language}" data-title="${issues.title}"
+                data-issue="${issues.uid}" style="text-align: justify;">${structure:issues.info}</span>
+        </h3>
+        <p class="lead text-center">
+          <span tal:omit-tag="" tal:condition="len(issues.long_info)>0">${issues.long_info}</span>
+          <br tal:condition="len(issues.long_info)>0">
+          <span>${issues.tooltip}</span>
+        </p>
+      </div>
+    </section>
+
+    <div class="wrapper-container">
+
+      <div metal:use-macro="load: organism/dialog-space.pt"></div>
+
+      <div metal:use-macro="load: organism/graph-view.pt"></div>
+
+      <div metal:use-macro="load: organism/add-statement.pt"></div>
+
+      <div metal:use-macro="load: organism/add-position.pt"></div>
+
+    </div>
+
+  </tal:block>
+</tal:block>

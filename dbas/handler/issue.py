@@ -257,6 +257,7 @@ def get_issues_overiew_for(db_user: User, app_url: str) -> dict:
 
     db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).order_by(
         Issue.uid.asc()).all()
+
     return {
         'user': [__create_issue_dict(issue, app_url) for issue in db_issues_of_user],
         'other': [__create_issue_dict(issue, app_url) for issue in db_issues_other_users]

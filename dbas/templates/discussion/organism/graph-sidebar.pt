@@ -1,0 +1,62 @@
+<!-- navigation sidebar of the graph -->
+<tal:block i18n:domain="dbas" metal:define-macro="layout">
+
+  <div class="pull-right sidebar-wrapper">
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <ul class="sidebar">
+      <li id="global-view" class="hidden">
+        <i class="fa fa-globe" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="complete_view">Complete View</span>
+      </li>
+      <li id="default-view" class="hidden">
+        <i class="fa fa-fast-backward" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="default_view">Default View</span>
+      </li>
+      <li id="labels" class="hidden">
+        <i class="fa fa-square-o" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="labels">Labels</span>
+      </li>
+      <li id="positions" class="hidden indented-button">
+        <i class="fa fa-square-o" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="positions">Positions</span>
+      </li>
+      <li id="statements" class="hidden indented-button">
+        <i class="fa fa-square-o" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="statements">Statements</span>
+      </li>
+      <li id="show-my-path" class="hidden reset-slider">
+        <i class="fa fa-square-o" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="my_path">My path</span>
+      </li>
+      <li id="hide-my-path" class="hidden reset-slider">
+        <i class="fa fa-check-square-o" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="my_path">My path</span>
+      </li>
+      <li id="my-statements" tal:condition="extras.logged_in" class="hidden">
+        <i class="fa fa-square-o" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="my_statements">My statements</span>
+      </li>
+      <li id="supports-on-my-statements" tal:condition="extras.logged_in"
+          class="hidden indented-button reset-slider">
+        <i class="fa fa-square-o" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span>
+      </li>
+      <li id="attacks-on-my-statements" tal:condition="extras.logged_in"
+          class="hidden indented-button reset-slider">
+        <i class="fa fa-square-o" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="attacks_on_my_statements">Relations</span>
+      </li>
+    </ul>
+
+    <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
+      <i class="tack fa fa-thumb-tack" aria-hidden="true"></i>
+    </div>
+  </div>
+
+</tal:block>

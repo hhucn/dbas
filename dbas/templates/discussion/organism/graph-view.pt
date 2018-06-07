@@ -1,0 +1,22 @@
+<!-- our magic graph -->
+<tal:block i18n:domain="dbas" metal:define-macro="layout">
+  <div class="colored-container" id="graph-view-container" style="display:none">
+    <div class="pull-left content-wrapper">
+      <button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 id="graph-view-container-header" class="center"></h4>
+      <div style="position: absolute;">
+        <span i18n:translate="start">Start</span>:
+        <span style="margin-right: 1em;">${issues.date}</span>
+        <input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1"
+               data-slider-max="${issues.duration}" data-start-ms="${issues.date_ms}"
+               data-slider-value="${issues.duration}"/>
+        <span i18n:translate="now" style="margin-left: 1em;">Now</span>
+      </div>
+      <div id="graph-view-container-space" style="height:95%;"></div>
+    </div>
+
+    <div metal:use-macro="load: graph-sidebar.pt"></div>
+  </div>
+</tal:block>
