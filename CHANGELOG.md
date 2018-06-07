@@ -1,3 +1,6 @@
+### 1.8.2 (2018-06-07)
+ - Fix language set which is derived from the requests header
+
 ### 1.8.1 (2018-06-06)
  - Update yarn packages
 
