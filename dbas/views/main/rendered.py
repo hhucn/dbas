@@ -25,7 +25,7 @@ def index(request):
     :param request: current request of the server
     :return: HTTP 200 with several information
     """
-    logger('page', 'request.matchdict: {}'.format(request.matchdict))
+    logger('index', 'request.matchdict: {}'.format(request.matchdict))
 
     set_language_for_visit(request)
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'

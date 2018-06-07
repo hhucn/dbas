@@ -9,7 +9,6 @@
  */
 function levensthein(s1, s2) {
     'use strict';
-    
     var rowTwo = [];
     if (s1 === s2) {
         return 0;
@@ -62,7 +61,6 @@ function emToPx(em) {
  */
 function decodeString(encodedString) {
     'use strict';
-    
     return decodeURIComponent(encodedString);
 }
 
@@ -76,7 +74,6 @@ function decodeString(encodedString) {
  */
 function displayConfirmationDialog(titleText, bodyText, functionForAccept, functionForRefuse, smallDialog) {
     'use strict';
-    
     // display dialog
     var dialog = $('#' + popupConfirmDialogId);
     dialog.find('#confirm-dialog-accept-btn').show();
@@ -107,7 +104,6 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
         // unload buttons
         $('#' + popupConfirmDialogAcceptBtn).off('click');
         $('#' + popupConfirmDialogRefuseBtn).off('click');
-        
     });
 }
 
@@ -119,7 +115,6 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
  */
 function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) {
     'use strict';
-    
     // display dialog
     $('#' + popupConfirmDialogId).modal('show');
     $('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
@@ -140,7 +135,6 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
  */
 function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
     'use strict';
-    
     // display dialog only if the cookie was not set yet
     if (Cookies.get(WARNING_CHANGE_DISCUSSION_POPUP)) {
         window.location.href = functionForAccept;
@@ -155,13 +149,11 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
             if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
                 Cookies.set(WARNING_CHANGE_DISCUSSION_POPUP, true, {expires: 7});
             }
-            
             if (isRestartingDiscussion) {
                 window.location.href = functionForAccept;
             } else {
                 functionForAccept();
             }
-            
         });
         $('#' + popupConfirmChecbkoxDialogRefuseBtn).click(function () {
             $('#' + popupConfirmChecbkoxDialogId).modal('hide');
@@ -177,7 +169,6 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
  */
 function setGlobalErrorHandler(heading, body) {
     'use strict';
-    
     $('#' + requestFailedContainer).fadeIn();
     $('#' + requestFailedContainerClose).click(function () {
         $('#' + requestFailedContainer).fadeOut();
@@ -197,7 +188,6 @@ function setGlobalErrorHandler(heading, body) {
  */
 function setGlobalSuccessHandler(heading, body) {
     'use strict';
-    
     $('#' + requestSuccessContainer).fadeIn();
     $('#' + requestSuccessContainerClose).click(function () {
         $('#' + requestSuccessContainer).fadeOut();
@@ -217,7 +207,6 @@ function setGlobalSuccessHandler(heading, body) {
  */
 function setGlobalInfoHandler(heading, body) {
     'use strict';
-    
     $('#' + requestInfoContainer).fadeIn();
     $('#' + requestInfoContainerClose).click(function () {
         $('#' + requestInfoContainer).fadeOut();
@@ -227,4 +216,25 @@ function setGlobalInfoHandler(heading, body) {
     setTimeout(function () {
         $('#' + requestInfoContainer).fadeOut();
     }, 5000);
+}
+
+function redirectAfterAjax(url) {
+    'use strict';
+    var done = function () {
+        location.reload(true);
+    };
+    var fail = function (xhr) {
+        if (xhr.status === 200) {
+            if (window.location.href.indexOf('settings') !== 0) {
+                window.location.href = mainpage + 'discuss';
+            } else {
+                location.reload(true);
+            }
+        } else if (xhr.status === 403) {
+            window.location.href = mainpage + 'discuss';
+        } else {
+            location.reload(true);
+        }
+    };
+    ajaxSkeleton(url, 'POST', {}, done, fail);
 }

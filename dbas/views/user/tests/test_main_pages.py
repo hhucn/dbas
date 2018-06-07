@@ -8,6 +8,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.handler.password import get_hashed_password
 from dbas.helper.test import verify_dictionary_of_view
+from dbas.tests.utils import construct_dummy_request
 from dbas.views.user.rendered import notifications, settings, user
 
 
@@ -123,7 +124,7 @@ class MainUserView(unittest.TestCase):
     def test_page(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
-        request = testing.DummyRequest(matchdict={'uid': db_user.uid})
+        request = construct_dummy_request(match_dict={'uid': db_user.uid})
         response = user(request)
         verify_dictionary_of_view(response)
         self.assertIn('user', response)
@@ -134,7 +135,7 @@ class MainUserView(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
-        request = testing.DummyRequest(matchdict={'uid': db_user.uid})
+        request = construct_dummy_request(match_dict={'uid': db_user.uid})
         response = user(request)
         verify_dictionary_of_view(response)
         self.assertIn('user', response)
@@ -145,7 +146,7 @@ class MainUserView(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Christian').first()
 
-        request = testing.DummyRequest(matchdict={'uid': db_user.uid})
+        request = construct_dummy_request(match_dict={'uid': db_user.uid})
         response = user(request)
         verify_dictionary_of_view(response)
         self.assertIn('user', response)
@@ -155,7 +156,7 @@ class MainUserView(unittest.TestCase):
     def test_page_error1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = testing.DummyRequest(matchdict={'uid': 0})
+        request = construct_dummy_request(match_dict={'uid': 0})
         try:
             user(request)
         except HTTPNotFound:
@@ -164,7 +165,7 @@ class MainUserView(unittest.TestCase):
     def test_page_error2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = testing.DummyRequest(matchdict={'uid': 1000})
+        request = construct_dummy_request(match_dict={'uid': 1000})
         try:
             user(request)
         except HTTPNotFound:
@@ -173,7 +174,7 @@ class MainUserView(unittest.TestCase):
     def test_page_error3(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = testing.DummyRequest(matchdict={'uid1': 3})
+        request = construct_dummy_request(match_dict={'uid1': 3})
         try:
             user(request)
         except HTTPNotFound:
@@ -182,7 +183,7 @@ class MainUserView(unittest.TestCase):
     def test_page_error4(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = testing.DummyRequest(matchdict={'uid': 'a'})
+        request = construct_dummy_request(match_dict={'uid': 'a'})
         try:
             user(request)
         except HTTPNotFound:

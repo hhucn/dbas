@@ -149,7 +149,7 @@ class DictionaryHelper(object):
         return_dict['de_discussion_link'] = link_de
         return_dict['en_discussion_link'] = link_en
 
-        self.__add_language_options_for_extra_dict(return_dict)
+        self.add_language_options_for_extra_dict(return_dict)
         is_author, points = get_reputation_of(db_user)
         is_author_bool = is_author or points > limit_to_open_issues
 
@@ -438,7 +438,7 @@ class DictionaryHelper(object):
         extras_dict['is_editable'] = False
         extras_dict['is_reportable'] = False
 
-    def __add_language_options_for_extra_dict(self, extras_dict):
+    def add_language_options_for_extra_dict(self, extras_dict):
         """
         Adds language options to the extra-dictionary
 

@@ -42,7 +42,7 @@
         </div>
       </div>
       <div class="list-group" id="proposal-premise-list-group"></div>
-      <input id="send-new-premise" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip"
+      <input id="send-new-position" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip"
              data-placement="bottom" value="${extras.buttons.save_my_statement}" name="${discussion.mode}"/>
     </div>
   </div>
