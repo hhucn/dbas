@@ -41,7 +41,7 @@ function addBorderToActiveNavbar() {
 }
 
 /**
- *
+ * add the cookie consent popup for new users
  */
 function addCookieConsent() {
     'use strict';
@@ -124,109 +124,6 @@ function replaceGravtarWithDefaultImage(onlyOnError) {
 
 /**
  *
- * @param titleText
- * @param bodyText
- * @param functionForAccept
- * @param functionForRefuse
- * @param smallDialog
- */
-function displayConfirmationDialog(titleText, bodyText, functionForAccept, functionForRefuse, smallDialog) {
-    'use strict';
-    
-    // display dialog
-    var dialog = $('#' + popupConfirmDialogId);
-    dialog.find('#confirm-dialog-accept-btn').show();
-    dialog.find('#confirm-dialog-refuse-btn').show();
-    if (smallDialog) {
-        dialog.find('.modal-dialog').addClass('modal-sm');
-    }
-    dialog.modal('show');
-    $('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
-    $('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
-    $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
-        $('#' + popupConfirmDialogId).modal('hide');
-        if (functionForAccept) {
-            functionForAccept();
-        }
-    });
-    $('#' + popupConfirmDialogRefuseBtn).show().click(function () {
-        $('#' + popupConfirmDialogId).modal('hide');
-        if (functionForRefuse) {
-            functionForRefuse();
-        }
-    });
-    dialog.on('hidden.bs.modal', function () {
-        $('#' + popupConfirmDialogRefuseBtn).show();
-        dialog.find('.modal-dialog').removeClass('modal-sm');
-        dialog.find('#confirm-dialog-accept-btn').text(_t(okay));
-        dialog.find('#confirm-dialog-refuse-btn').text(_t(cancel));
-        // unload buttons
-        $('#' + popupConfirmDialogAcceptBtn).off('click');
-        $('#' + popupConfirmDialogRefuseBtn).off('click');
-        
-    });
-}
-
-/**
- * Displays dialog
- *
- * @param titleText
- * @param bodyText
- */
-function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) {
-    'use strict';
-    
-    // display dialog
-    $('#' + popupConfirmDialogId).modal('show');
-    $('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
-    $('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
-    $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
-        $('#' + popupConfirmDialogId).modal('hide').find('.modal-dialog').removeClass('modal-sm');
-    }).removeClass('btn-success');
-    $('#' + popupConfirmDialogRefuseBtn).hide();
-}
-
-/**
- * Displays dialog with checkbox
- * @param titleText
- * @param bodyText
- * @param checkboxText
- * @param functionForAccept
- * @param isRestartingDiscussion
- */
-function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
-    'use strict';
-    
-    // display dialog only if the cookie was not set yet
-    if (Cookies.get(WARNING_CHANGE_DISCUSSION_POPUP)) {
-        window.location.href = functionForAccept;
-    } else {
-        $('#' + popupConfirmChecbkoxDialogId).modal('show');
-        $('#' + popupConfirmChecbkoxDialogId + ' h4.modal-title').text(titleText);
-        $('#' + popupConfirmChecbkoxDialogId + ' div.modal-body').html(bodyText);
-        $('#' + popupConfirmChecbkoxDialogTextId).text(checkboxText);
-        $('#' + popupConfirmChecbkoxDialogAcceptBtn).click(function () {
-            $('#' + popupConfirmChecbkoxDialogId).modal('hide');
-            // maybe set a cookie
-            if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
-                Cookies.set(WARNING_CHANGE_DISCUSSION_POPUP, true, {expires: 7});
-            }
-            
-            if (isRestartingDiscussion) {
-                window.location.href = functionForAccept;
-            } else {
-                functionForAccept();
-            }
-            
-        });
-        $('#' + popupConfirmChecbkoxDialogRefuseBtn).click(function () {
-            $('#' + popupConfirmChecbkoxDialogId).modal('hide');
-        });
-    }
-}
-
-/**
- *
  * @param lang
  */
 function setAnalyticsOptOutLink(lang) {
@@ -236,6 +133,9 @@ function setAnalyticsOptOutLink(lang) {
     $('#analytics-opt-out-iframe').attr('src', src);
 }
 
+/**
+ *
+ */
 function setScrollTrigger() {
     'use strict';
     // Smooth scrolling using jQuery easing by https://css-tricks.com/snippets/jquery/smooth-scrolling/
@@ -332,10 +232,10 @@ function prepareLoginRegistrationPopup() {
     });
     
     $('#' + popupLoginButtonLogin).show().click(function () {
-        new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+        new AjaxLoginHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
     }).keypress(function (e) {
         if (e.which === 13) {
-            new AjaxMainHandler().registration();
+            new AjaxLoginHandler().registration();
         }
     });
     
@@ -382,7 +282,7 @@ function prepareLoginRegistrationPopup() {
         
         if (text === '') {
             $('#' + popupLoginWarningMessage).hide();
-            new AjaxMainHandler().registration();
+            new AjaxLoginHandler().registration();
         } else {
             $('#' + popupLoginWarningMessage).fadeIn("slow");
             $('#' + popupLoginWarningMessageText).text(text);
@@ -400,7 +300,7 @@ function prepareLoginRegistrationPopup() {
     ].forEach(function (id) {
         $(id).keypress(function (e) {
             if (e.which === enterKey) {
-                new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+                new AjaxLoginHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
             }
         });
         
@@ -413,13 +313,13 @@ function prepareLoginRegistrationPopup() {
     ].forEach(function (id) {
         $(id).keypress(function (e) {
             if (e.which === enterKey) {
-                new AjaxMainHandler().registration();
+                new AjaxLoginHandler().registration();
             }
         });
     });
     
     $('#' + popupLoginButtonRequest).click(function () {
-        new AjaxMainHandler().passwordRequest();
+        new AjaxLoginHandler().passwordRequest();
     });
 }
 
@@ -474,192 +374,6 @@ function setTextWatcherInputLength(element, displayAtTop) {
     });
 }
 
-/**
- * Sets data for the global success field
- *
- * @param heading text
- * @param body text
- */
-function setGlobalErrorHandler(heading, body) {
-    'use strict';
-    
-    $('#' + requestFailedContainer).fadeIn();
-    $('#' + requestFailedContainerClose).click(function () {
-        $('#' + requestFailedContainer).fadeOut();
-    });
-    $('#' + requestFailedContainerHeading).html(decodeString(heading));
-    $('#' + requestFailedContainerMessage).html(decodeString(body));
-    setTimeout(function () {
-        $('#' + requestFailedContainer).fadeOut();
-    }, 5000);
-}
-
-/**
- * Sets data for the global success field
- *
- * @param heading text
- * @param body text
- */
-function setGlobalSuccessHandler(heading, body) {
-    'use strict';
-    
-    $('#' + requestSuccessContainer).fadeIn();
-    $('#' + requestSuccessContainerClose).click(function () {
-        $('#' + requestSuccessContainer).fadeOut();
-    });
-    $('#' + requestSuccessContainerHeading).html(decodeString(heading));
-    $('#' + requestSuccessContainerMessage).html(decodeString(body));
-    setTimeout(function () {
-        $('#' + requestSuccessContainer).fadeOut();
-    }, 5000);
-}
-
-/**
- * Sets data for the global info field
- *
- * @param heading text
- * @param body text
- */
-function setGlobalInfoHandler(heading, body) {
-    'use strict';
-    
-    $('#' + requestInfoContainer).fadeIn();
-    $('#' + requestInfoContainerClose).click(function () {
-        $('#' + requestInfoContainer).fadeOut();
-    });
-    $('#' + requestInfoContainerHeading).html(decodeString(heading));
-    $('#' + requestInfoContainerMessage).html(decodeString(body));
-    setTimeout(function () {
-        $('#' + requestInfoContainer).fadeOut();
-    }, 5000);
-}
-
-/**
- *
- * @param encodedString
- */
-function decodeString(encodedString) {
-    'use strict';
-    
-    return decodeURIComponent(encodedString);
-}
-
-// *********************
-//	CALLBACKS
-// *********************
-
-/**
- *
- * @param data
- * @param showGlobalError
- */
-function callbackIfDoneForLogin(data, showGlobalError) {
-    'use strict';
-    try {
-        if ('error' in data && data.error.length !== 0) {
-            if (showGlobalError) {
-                setGlobalErrorHandler('Ohh!', data.error);
-            } else {
-                $('#' + popupLoginFailed).show();
-                $('#' + popupLoginFailed + '-message').html(data.error);
-            }
-        } else if ('info' in data && data.info.length !== 0) {
-            $('#' + popupLoginInfo).show();
-            $('#' + popupLoginInfo + '-message').html(data.info);
-        } else {
-            $('#' + popupLogin).modal('hide');
-        }
-    } catch (err) {
-        // session expired
-    }
-}
-
-/**
- *
- * @param data
- */
-function callbackIfDoneForRegistration(data) {
-    'use strict';
-    
-    var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
-    var failed = $('#' + popupLoginRegistrationFailed);
-    var info = $('#' + popupLoginRegistrationInfo);
-    success.hide();
-    failed.hide();
-    info.hide();
-    
-    if (data.success.length > 0) {
-        // trigger click
-        $('a[href="#login"]').trigger('click');
-        success.show();
-        $('#' + popupLoginSuccess + '-message').text(data.success);
-    }
-    if (data.error.length > 0) {
-        failed.show();
-        $('#' + popupLoginRegistrationFailed + '-message').text(data.error);
-    }
-    if (data.info.length > 0) {
-        info.show();
-        $('#' + popupLoginRegistrationInfo + '-message').text(data.info);
-        $('#popup-login-spamanswer-input').attr('placeholder', data.spamquestion).val('');
-    }
-}
-
-/**
- *
- * @param data
- */
-function callbackIfDoneForRegistrationViaOauth(data) {
-    'use strict';
-    
-    var success = $('#' + popupLoginSuccess);
-    var failed = $('#popup-complete-login-failed');
-    var info = $('#popup-complete-login-info');
-    success.hide();
-    info.hide();
-    failed.hide();
-    
-    if ('success' in data && data.success.length > 0) {
-        $('#popup-complete-login').modal('hide');
-        $('#popup-login').modal('show');
-        // trigger click
-        $('a[href="#login"]').trigger('click');
-        success.show();
-        $('#' + popupLoginSuccess + '-message').text(data.success);
-    }
-    if ('error' in data && data.error.length > 0) {
-        failed.show();
-        $('#popup-complete-login-failed-message').text(data.error);
-    }
-    if ('info' in data && data.info.length > 0) {
-        info.show();
-        $('#popup-complete-login-info-message').text(data.info);
-    }
-}
-
-/**
- *
- * @param data
- */
-function callbackIfDoneForPasswordRequest(data) {
-    'use strict';
-    
-    var success = $('#' + popupLoginSuccess);
-    var failed = $('#' + popupLoginFailed);
-    var info = $('#' + popupLoginInfo);
-    success.hide();
-    failed.hide();
-    info.hide();
-    if (data.success) {
-        $('#' + popupLoginForgotPasswordBody).hide();
-        $('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
-        success.show();
-        $('#' + popupLoginSuccess + '-message').text(data.message);
-    } else {
-        info.show();
-        $('#' + popupLoginInfo + '-message').text(data.message);
-    }
-}
 
 // *********************
 //	MAIN
@@ -765,7 +479,7 @@ $(document).ready(function () {
     });
     $('#' + logoutLinkId).click(function (e) {
         e.preventDefault();
-        new AjaxMainHandler().logout();
+        new AjaxLoginHandler().logout();
     });
     
     $(window).scroll(function () {

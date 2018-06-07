@@ -51,7 +51,7 @@ function Main() {
 
         // hides container
         $('#' + closePremiseContainerId).click(function closeStatementContainerId() {
-            $('#' + addPremiseContainerId).hide();
+            $('#' + addPositionContainerId).hide();
             $('#' + addPremiseErrorContainer).hide();
             $('#' + discussionSpaceId + ' li:last-child input').prop('checked', false).enable = true;
         });
@@ -513,10 +513,10 @@ function Main() {
         });
 
         // gui for the fuzzy search (premises)
-        $('#' + addPremiseContainerMainInputId).keyup(function () {
+        $('#' + addPositionContainerMainInputId).keyup(function () {
             setTimeout(function () {
-                var escapedText = escapeHtml($('#' + addPremiseContainerMainInputId).val());
-                ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '', '');
+                var escapedText = escapeHtml($('#' + addPositionContainerMainInputId).val());
+                ajaxHandler.fuzzySearch(escapedText, addPositionContainerMainInputId, fuzzy_add_reason, '', '');
             }, 200);
         });
     };
@@ -664,7 +664,7 @@ function Main() {
             conclusion = splits[splits.length - 2];
             supportive = splits[splits.length - 1] === 'agree';
             textArray = [];
-            $('#' + addPremiseContainerBodyId + ' input').each(function () {
+            $('#' + addPositionContainerBodyId + ' input').each(function () {
                 if ($(this).val().length > 0) {
                     textArray.push($(this).val());
                 }
@@ -673,7 +673,7 @@ function Main() {
         };
         var sendArgumentsPremise = function () {
             textArray = [];
-            $('#' + addPremiseContainerBodyId + ' input').each(function () {
+            $('#' + addPositionContainerBodyId + ' input').each(function () {
                 if ($(this).val().length > 0) {
                     textArray.push($(this).val());
                 }
@@ -765,14 +765,14 @@ function Main() {
         }
         // new premise for the start
         else if (input.attr('id').indexOf('start_premise') !== -1) {
-            guiHandler.showAddPremiseContainer();
+            guiHandler.showaddPositionContainer();
             $('#' + sendNewPremiseId).off("click").click(function () {
                 sendStartPremise();
             });
         }
         // new premise while judging
         else if (input.attr('id').indexOf('justify_premise') !== -1) {
-            guiHandler.showAddPremiseContainer();
+            guiHandler.showaddPositionContainer();
             $('#' + sendNewPremiseId).off("click").click(function () {
                 sendArgumentsPremise();
             });
