@@ -32,7 +32,6 @@ from dbas.strings.translator import Keywords as _, get_translation
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
-from dbas.validators.lib import add_error
 from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
 from .references import (get_all_references_by_reference_text,
@@ -55,11 +54,6 @@ cors_policy = dict(enabled=True,
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
-
-empty_route = Service(name='empty',
-                      path='',
-                      description="Empty route",
-                      cors_policy=cors_policy)
 
 ahello = Service(name='hello',
                  path='/hello',
@@ -195,15 +189,6 @@ logout = Service(name='logout',
 # =============================================================================
 # SYSTEM: Say hello to new visitors
 # =============================================================================
-
-@empty_route.get()
-def empty(request):
-    """
-    Returns 404 because no route is given
-
-    :return: 404
-    """
-    add_error(request, 'Route not found', 'There was no route given')
 
 
 @ahello.get()
