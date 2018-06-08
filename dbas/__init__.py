@@ -209,7 +209,7 @@ def __write_rss_feeds():
 
 def get_dbas_environs(prefix=""):
     """
-    Fetches all environment variables beginning with `prefix` (default: ``).
+    Fetches all environment variables beginning with the given prefix (default is empty).
 
     Returns a dictionary where the keys are substituted versions of their corresponding environment variables.
     Substitution rules:
