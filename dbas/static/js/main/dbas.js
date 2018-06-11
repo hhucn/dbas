@@ -10,7 +10,7 @@
  */
 function setLinkActive(linkname) {
     'use strict';
-    
+
     $('#navbar-right').find('>li').each(function () {
         $(this).removeClass('active');
     });
@@ -22,20 +22,20 @@ function setLinkActive(linkname) {
  */
 function addBorderToActiveNavbar() {
     'use strict';
-    
+
     var activeElement = $('.navbar-right > .active');
     if (activeElement.length === 0) {
         return;
     }
     var borderSize = '2';
-    
+
     // replace padding of the inner element
     var innerElement = activeElement.find('a');
     var padTop = parseInt(innerElement.css('padding-top').replace('px', ''));
     var padBottom = parseInt(innerElement.css('padding-bottom').replace('px', ''));
     innerElement.css('padding-top', (padTop - borderSize / 2) + 'px');
     innerElement.css('padding-bottom', (padBottom - borderSize / 2) + 'px');
-    
+
     // add border to the navbar element
     activeElement.css('border-top', borderSize + 'px solid #2196F3');
 }
@@ -45,7 +45,7 @@ function addBorderToActiveNavbar() {
  */
 function addCookieConsent() {
     'use strict';
-    
+
     window.addEventListener("load", function () {
         window.cookieconsent.initialise({
             "palette": {
@@ -75,13 +75,13 @@ function addCookieConsent() {
  */
 function setGravatarFallback() {
     'use strict';
-    
+
     var body = $('body');
     var img = body.find('.img-circle');
     if (img.length === 0) {
         return true;
     }
-    
+
     var src = body.find('.img-circle')[0].src;
     $.get(src, function () {
         replaceGravtarWithDefaultImage(true);
@@ -97,7 +97,7 @@ function setGravatarFallback() {
  */
 function replaceGravtarWithDefaultImage(onlyOnError) {
     'use strict';
-    
+
     $('body').find('.img-circle').each(function () {
         var icons =
             [{
@@ -110,7 +110,7 @@ function replaceGravtarWithDefaultImage(onlyOnError) {
         var t = 3;
         var no = Math.floor(Math.random() * icons[t].length);
         var src = mainpage + 'static/images/fallback-' + icons[t].name + '/' + no + '.svg';
-        
+
         if (onlyOnError) {
             $(this).attr('onerror', 'this.src="' + src + '"');
         } else {
@@ -129,7 +129,7 @@ function replaceGravtarWithDefaultImage(onlyOnError) {
  */
 function setAnalyticsOptOutLink(lang) {
     'use strict';
-    
+
     var src = mainpage + 'analytics/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
     $('#analytics-opt-out-iframe').attr('src', src);
 }
@@ -167,7 +167,7 @@ function setScrollTrigger() {
  */
 function setEasterEggs() {
     'use strict';
-    
+
     $('#roundhousekick').click(function () {
         new AjaxMainHandler().roundhouseKick();
     });
@@ -207,10 +207,10 @@ function fillCaptcha() {
  */
 function prepareLoginRegistrationPopup() {
     'use strict';
-    
+
     // hide on startup
     new PopupHandler().hideExtraViewsOfLoginPopup();
-    
+
     // switching tabs
     $('.tab-login a').on('click', function (e) {
         e.preventDefault();
@@ -219,12 +219,12 @@ function prepareLoginRegistrationPopup() {
         var target = $(this).attr('href');
         $('.tab-content > div').not(target).hide();
         $(target).fadeIn(600);
-        
+
         if ($(this).attr('href').indexOf('signup') === -1) {
             $('#' + popupLoginButtonLogin).show();
             $('#' + popupLoginButtonRegister).hide();
             $('#popup-login-registration-oauth-footer').show();
-            
+
         } else {
             $('#' + popupLoginButtonLogin).hide();
             $('#' + popupLoginButtonRegister).show();
@@ -232,7 +232,7 @@ function prepareLoginRegistrationPopup() {
             $('#popup-login-registration-oauth-footer').hide();
         }
     });
-    
+
     $('#' + popupLoginButtonLogin).show().click(function () {
         new AjaxLoginHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
     }).keypress(function (e) {
@@ -240,7 +240,7 @@ function prepareLoginRegistrationPopup() {
             new AjaxLoginHandler().registration();
         }
     });
-    
+
     $('#' + popupLoginForgotPasswordText).click(function () {
         var body = $('#' + popupLoginForgotPasswordBody);
         if (body.is(':visible')) {
@@ -254,13 +254,13 @@ function prepareLoginRegistrationPopup() {
             $('#' + popupLoginForgotPasswordText).text(_t(hidePasswordRequest));
         }
     });
-    
+
     $('#' + popupLoginCloseButton1 + ',#' + popupLoginCloseButton2).click(function () {
         new PopupHandler().hideExtraViewsOfLoginPopup();
         $('#' + popupLogin).modal('hide');
         $('#' + popupLoginButtonLogin).show();
     });
-    
+
     $('#' + popupLoginButtonRegister).click(function () {
         var userfirstname = $('#' + popupLoginUserfirstnameInputId).val();
         var userlastname = $('#' + popupLoginUserlastnameInputId).val();
@@ -273,7 +273,7 @@ function prepareLoginRegistrationPopup() {
         var fields = [userfirstname, userlastname, nick, email, password, passwordconfirm];
         var tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail), _t(checkPassword),
             _t(checkConfirmation), _t(checkPasswordConfirm)];
-        
+
         // check all fields for obivous errors
         for (i = 0; i < fields.length; i++) {
             if (!fields[i] || /^\s*$/.test(fields[i]) || 0 === fields[i].length) {
@@ -281,7 +281,7 @@ function prepareLoginRegistrationPopup() {
                 break;
             }
         }
-        
+
         if (text === '') {
             $('#' + popupLoginWarningMessage).hide();
             new AjaxLoginHandler().registration();
@@ -289,9 +289,9 @@ function prepareLoginRegistrationPopup() {
             $('#' + popupLoginWarningMessage).fadeIn("slow");
             $('#' + popupLoginWarningMessageText).text(text);
         }
-        
+
     });
-    
+
     // bind enter key
     var enterKey = 13;
     [
@@ -305,7 +305,7 @@ function prepareLoginRegistrationPopup() {
                 new AjaxLoginHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
             }
         });
-        
+
     });
     [
         '#' + popupLoginUserfirstnameInputId,
@@ -319,7 +319,7 @@ function prepareLoginRegistrationPopup() {
             }
         });
     });
-    
+
     $('#' + popupLoginButtonRequest).click(function () {
         new AjaxLoginHandler().passwordRequest();
     });
@@ -332,7 +332,7 @@ function prepareLoginRegistrationPopup() {
  */
 function setTextWatcherInputLength(element, displayAtTop) {
     'use strict';
-    
+
     var minLength = element.data('min-length');
     var maxLength = element.data('max-length');
     if (!maxLength) {
@@ -346,11 +346,11 @@ function setTextWatcherInputLength(element, displayAtTop) {
     } else {
         field.insertAfter(element);
     }
-    
+
     element.keyup(function () {
         var text = element.val().trim();
         var currentLength = text.length;
-        
+
         if (currentLength === 0) {
             field.addClass('text-info');
             field.removeClass('text-danger');
@@ -381,7 +381,7 @@ function setTextWatcherInputLength(element, displayAtTop) {
 // *********************
 $(document).ready(function () {
     'use strict';
-    
+
     // ajax loading animation
     var timer;
     $(document).on({
@@ -396,10 +396,10 @@ $(document).ready(function () {
             $('body').removeClass('loading');
         }
     });
-    
+
     var path = window.location.href;
     var lang = $('#hidden_language').val();
-    
+
     addCookieConsent();
     setAnalyticsOptOutLink(lang);
     setEasterEggs();
@@ -415,7 +415,7 @@ $(document).ready(function () {
     if (counter.length > 0) {
         counter.counterUp({delay: 5, time: 1000});
     }
-    
+
     // set current file to active
     if (path.indexOf(urlContact) !== -1) {
         setLinkActive('#' + contactLink);
@@ -435,10 +435,10 @@ $(document).ready(function () {
     else {
         setLinkActive('');
     }
-    
+
     // gui preparation
     prepareLoginRegistrationPopup();
-    
+
     // add minimal text length field
     $('input[data-min-length]').each(function () {
         setTextWatcherInputLength($(this), false);
@@ -446,25 +446,25 @@ $(document).ready(function () {
     $('textarea[data-min-length]').each(function () {
         setTextWatcherInputLength($(this), false);
     });
-    
+
     // session expired popup
     if ($('#' + sessionExpiredContainer).length === 1) {
         setTimeout(function () {
             $('#' + sessionExpiredContainer).fadeOut();
         }, 3000);
     }
-    
+
     // start guided tour, if the cookie is not set
     var href = window.location.href;
     var index = href.indexOf('/discuss/');
     if (!Cookies.get(GUIDED_TOUR) && index !== -1 && href.length > index + '/discuss/'.length + 1) {
         new GuidedTour().start();
     }
-    
+
     $('#contact_on_error').click(function () {
         window.location.href = $('#contact-link').find('a').attr('href');
     });
-    
+
     // language switch
     $('#' + translationLinkDe).click(function () {
         new GuiHandler().lang_switch('de');
@@ -482,7 +482,7 @@ $(document).ready(function () {
         e.preventDefault();
         new AjaxLoginHandler().logout();
     });
-    
+
     $(window).scroll(function () {
         if ($(document).scrollTop() > 50) {
             $('nav').addClass('shrink');

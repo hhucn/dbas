@@ -79,16 +79,10 @@ class AjaxTest(unittest.TestCase):
             }
         }, validated={})
 
-        # db_s1 = DBDiscussionSession.query(Statement).count()
         self.assertTrue(ajax_add(request_add))
-        # db_s2 = DBDiscussionSession.query(Statement).count()
 
         request_del = testing.DummyRequest(json_body={
             'table': '',
             'uids': DBDiscussionSession.query(Statement).order_by(Statement.uid.desc()).first().uid
         }, validated={})
         self.assertTrue(ajax_del(request_del))
-        # db_s3 = DBDiscussionSession.query(Statement).count()
-        # self.assertLess(db_s1, db_s2)
-        # self.assertGreater(db_s2, db_s3)
-        # self.assertEqual(db_s1, db_s3)

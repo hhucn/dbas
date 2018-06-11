@@ -48,7 +48,6 @@ def get_now():
     :return: arrow data type
     """
     return arrow.utcnow().to('local')
-    # return arrow.get(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class Issue(DiscussionBase):

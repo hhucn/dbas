@@ -1,4 +1,3 @@
-# coding=utf-8
 from os import environ
 from typing import List, Tuple, Dict, Union, Any
 

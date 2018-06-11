@@ -230,7 +230,7 @@ function Colors() {
         900: '#263238'
     };
     var all = [red, pink, purple, deepPurple, indigo, blue, lightBlue, cyan, teal, green, lightGreen, lime, yellow, amber, orange, deepOrange, brown, grey, blueGrey];
-    
+
     /**
      *
      * @param shade is 50, 100, 200, 300, 400, 500, 600, 700, 800 or 900
@@ -243,7 +243,7 @@ function Colors() {
         });
         return color_array;
     };
-    
+
     /**
      *
      * @param shade is 50, 100, 200, 300, 400, 500, 600, 700, 800 or 900
@@ -259,7 +259,7 @@ function Colors() {
         });
         return color_array;
     };
-    
+
     this.hexToRGB = function (hex, alpha) {
         var r = parseInt(hex.slice(1, 3), 16);
         var g = parseInt(hex.slice(3, 5), 16);

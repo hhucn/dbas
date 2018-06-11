@@ -1,4 +1,4 @@
-# coding=utf-8
+
 """
 When testing for valid / authenticated users, use these functions.
 """
