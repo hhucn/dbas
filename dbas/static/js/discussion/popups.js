@@ -34,13 +34,13 @@ PopupHandler.prototype.showEditStatementsPopup = function (statements_uids) {
         var innerInputGroup = $('<div>').addClass('input-group-addon');
         var groupIcon = $('<i>').addClass('fa').addClass('fa-2x').addClass('fa-pencil-square-o').attr('aria-hidden', '"true"');
         var input = $('<input>')
-            .addClass('form-control')
-            .attr('id', 'popup-edit-statement-input-' + index)
-            .attr('name', 'popup-edit-statement-input-' + index)
-            .attr('type', text)
-            .attr('placeholder', statement)
-            .attr('data-statement-uid', value)
-            .val(statement);
+        .addClass('form-control')
+        .attr('id', 'popup-edit-statement-input-' + index)
+        .attr('name', 'popup-edit-statement-input-' + index)
+        .attr('type', text)
+        .attr('placeholder', statement)
+        .attr('data-statement-uid', value)
+        .val(statement);
 
         innerInputGroup.append(groupIcon);
         outerInputGroup.append(innerInputGroup).append(input);
@@ -206,62 +206,85 @@ PopupHandler.prototype.showFlagStatementPopup = function (uid, is_argument, text
         popup.find('fieldset').children().eq(2).show();
     });
 
+    var _this = this;
     // everything but not duplicates not splits or merges
     popup.find('input').not('#dupl').not('#split').not('#merge').click(function () {
-        var reason = $(this).attr('value');
-        if (reason === 'optimization' && is_argument) {
-            // do not mark arguments for optimizations
-            return false;
-        }
-        new AjaxReviewHandler().flagArgumentOrStatement(uid, reason, is_argument, null);
-        popup.find('input').prop('checked', false);
-        popup.modal('hide');
-        return true;
+        _this.__flagStatementOtherClick(this, popup, uid, is_argument);
     });
 
     // duplicate action
     popup.find('#dupl').click(function () {
-        popup.find('input').prop('checked', false);
-        popup.modal('hide');
-        var reason = $(this).attr('value');
-        // check for premisegroup
-        if ($('#item_' + uid).parent().find('label').length > 1) {
-            new PopupHandler().showPopupForSelectingDuplicateFromPrgroup(uid, reason);
-        } else {
-            // correct uid
-            var is_premisegroup = window.location.href.split('?')[0].indexOf('justify') !== -1;
-            if (is_premisegroup) {
-                uid = $('label[for="item_' + uid + '"]').attr('id');
-            }
-            new PopupHandler().showStatementDuplicatePopup(uid, text, reason);
-        }
+        _this.__flagStatementDuplClick(this, popup, uid, is_argument, text);
     });
 
     // split action
     popup.find('#split').click(function () {
-        popup.find('input').prop('checked', false);
-        popup.modal('hide');
-        var reason = $(this).attr('value');
-        // check for premisegroup
-        if ($('#item_' + uid).parent().find('label').length > 1) {
-            new PopupHandler().showSplitPremisegroupPopup(uid, reason, text);
-        } else {
-            new PopupHandler().showSplitStatementPopup(uid, reason, text);
-        }
+        _this.__flagStatementSplitClick(this, popup, uid, is_argument, text);
     });
 
     // merge action
     popup.find('#merge').click(function () {
-        popup.find('input').prop('checked', false);
-        popup.modal('hide');
-        var reason = $(this).attr('value');
-        // check for premisegroup
-        if ($('#item_' + uid).parent().find('label').length > 1) {
-            new PopupHandler().showMergePremisegroupPopup(uid, reason, text);
-        } else {
-            new PopupHandler().showMergeStatementPopup(uid, reason, text);
-        }
+        _this.__flagStatementMergClick(this, popup, uid, is_argument, text);
     });
+};
+
+PopupHandler.prototype.__flagStatementOtherClick = function (_this, popup, uid, is_argument) {
+    'use strict';
+    var reason = $(_this).attr('value');
+    if (reason === 'optimization' && is_argument) {
+        // do not mark arguments for optimizations
+        return false;
+    }
+    new AjaxReviewHandler().flagArgumentOrStatement(uid, reason, is_argument, null);
+    popup.find('input').prop('checked', false);
+    popup.modal('hide');
+    return true;
+};
+
+PopupHandler.prototype.__flagStatementDuplClick = function (_this, popup, uid, is_argument, text) {
+    'use strict';
+    popup.find('input').prop('checked', false);
+    popup.modal('hide');
+    var reason = $(_this).attr('value');
+    // check for premisegroup
+    if ($('#item_' + uid).parent().find('label').length > 1) {
+        new PopupHandler().showPopupForSelectingDuplicateFromPrgroup(uid, reason);
+    } else {
+        // correct uid
+        var is_premisegroup = window.location.href.split('?')[0].indexOf('justify') !== -1;
+        if (is_premisegroup) {
+            uid = $('label[for="item_' + uid + '"]').attr('id');
+        }
+        new PopupHandler().showStatementDuplicatePopup(uid, text, reason);
+    }
+};
+
+PopupHandler.prototype.__flagStatementSplitClick = function (_this, popup, uid, is_argument, text) {
+    'use strict';
+    popup.find('input').prop('checked', false);
+    popup.modal('hide');
+    var reason = $(_this).attr('value');
+    // check for premisegroup
+    if ($('#item_' + uid).parent().find('label').length > 1) {
+        new PopupHandler().showSplitPremisegroupPopup(uid, reason, text);
+    } else {
+        new PopupHandler().showSplitStatementPopup(uid, reason, text);
+    }
+
+};
+
+PopupHandler.prototype.__flagStatementMergClick = function (_this, popup, uid, is_argument, text) {
+    'use strict';
+    popup.find('input').prop('checked', false);
+    popup.modal('hide');
+    var reason = $(_this).attr('value');
+    // check for premisegroup
+    if ($('#item_' + uid).parent().find('label').length > 1) {
+        new PopupHandler().showMergePremisegroupPopup(uid, reason, text);
+    } else {
+        new PopupHandler().showMergeStatementPopup(uid, reason, text);
+    }
+
 };
 
 /**
@@ -297,8 +320,8 @@ PopupHandler.prototype.__prettifyOnHover = function (text) {
     var current = $(this).find('em').text().trim();
     $(this).hover(function () {
         var moddedText = text
-            .replace(new RegExp("(" + (current + '')
-                .replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
+        .replace(new RegExp("(" + (current + '')
+        .replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
         $('#popup-flag-argument-text').html(moddedText);
         $(this).find('em').html("<span class='text-primary'>" + current + "</span>");
     }, function () {
@@ -827,8 +850,8 @@ PopupHandler.prototype.createReferencesPopupBody = function (data) {
         array.forEach(function (dict) {
             text = dict.statement_text;
             var author = $('<a>').attr({'href': dict.author.link, 'target': '_blank'}).addClass('pull-right')
-                .append($('<span>').text(dict.author.name).css('padding-right', '0.5em'))
-                .append($('<img>').addClass('img-circle').attr('src', dict.author.img));
+            .append($('<span>').text(dict.author.name).css('padding-right', '0.5em'))
+            .append($('<img>').addClass('img-circle').attr('src', dict.author.img));
 
             var link = $('<a>').attr({
                 'href': dict.host + dict.path,

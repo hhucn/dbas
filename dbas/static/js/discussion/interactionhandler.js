@@ -223,58 +223,76 @@ InteractionHandler.prototype.sendStatement = function (t_array, conclusion, supp
     if (t_array.length === 0) {
         $('#' + addPremiseErrorContainer).show();
         $('#' + addPremiseErrorMsg).text(_t(inputEmpty));
-    } else {
-        var undecidedTexts = [], decidedTexts = [];
-        if ($.isArray(t_array)) {
-            for (var i = 0; i < t_array.length; i++) {
-                // replace multiple whitespaces
-                t_array[i] = t_array[i].replace(/\s\s+/g, ' ');
+        return false;
+    }
+    var undecidedTexts = [], decidedTexts = [];
+    if ($.isArray(t_array)) {
+        for (var i = 0; i < t_array.length; i++) {
+            // replace multiple whitespaces
+            t_array[i] = t_array[i].replace(/\s\s+/g, ' ');
 
-                // cutting all 'and ' and 'and'
-                while (t_array[i].indexOf((_t_discussion(and) + ' '), t_array[i].length - (_t_discussion(and) + ' ').length) !== -1 ||
-                t_array[i].indexOf((_t_discussion(and)), t_array[i].length - (_t_discussion(and)).length) !== -1) {
-                    if (t_array[i].indexOf((_t_discussion(and) + ' '), t_array[i].length - (_t_discussion(and) + ' ').length) !== -1) {
-                        t_array[i] = t_array[i].substr(0, t_array[i].length - (_t_discussion(and) + ' ').length);
-                    } else {
-                        t_array[i] = t_array[i].substr(0, t_array[i].length - (_t_discussion(and)).length);
-                    }
-                }
+            // cutting all 'and ' and 'and'
+            this.__cuttingAnds (t_array);
 
-                // whitespace at the end
-                while (t_array[i].indexOf((' '), t_array[i].length - (' ').length) !== -1) {
-                    t_array[i] = t_array[i].substr(0, t_array[i].length - (' ').length);
-                }
+            // whitespace at the end
+            this.__cuttingWhitespaces (t_array);
 
-                // sorting the statements, whether they include the keyword 'AND'
-                if (t_array[i].toLocaleLowerCase().indexOf(' ' + _t_discussion(and) + ' ') === -1) {
-                    decidedTexts.push(t_array[i]);
-                } else {
-                    undecidedTexts.push(t_array[i]);
-                }
-            }
-        }
-
-        if (undecidedTexts.length > 0) {
-            for (var j = 0; j < undecidedTexts.length; j++) {
-                if (undecidedTexts[j].match(/\.$/)) {
-                    undecidedTexts[j] = undecidedTexts[j].substr(0, undecidedTexts[j].length - 1);
-                }
-            }
-            new GuiHandler().showSetStatementContainer(undecidedTexts, decidedTexts, supportive, type, arg, relation, conclusion);
-        } else {
-
-            // pack the data
-            $.each(t_array, function (index, value) {
-                if ($.type(value) !== "array") {
-                    t_array[index] = [value];
-                }
-            });
-
-            if (type === fuzzy_start_premise) {
-                new AjaxDiscussionHandler().sendNewStartPremise(t_array, conclusion, supportive);
-            } else if (type === fuzzy_add_reason) {
-                new AjaxDiscussionHandler().sendNewPremiseForArgument(parseInt(arg), relation, t_array);
-            }
+            // sorting the statements, whether they include the keyword 'AND'
+            this.__sortStatement (t_array, decidedTexts, undecidedTexts);
         }
     }
+
+    if (undecidedTexts.length > 0) {
+        for (var j = 0; j < undecidedTexts.length; j++) {
+            if (undecidedTexts[j].match(/\.$/)) {
+                undecidedTexts[j] = undecidedTexts[j].substr(0, undecidedTexts[j].length - 1);
+            }
+        }
+        new GuiHandler().showSetStatementContainer(undecidedTexts, decidedTexts, supportive, type, arg, relation, conclusion);
+        return true;
+    }
+
+    // pack the data
+    $.each(t_array, function (index, value) {
+        if ($.type(value) !== "array") {
+            t_array[index] = [value];
+        }
+    });
+
+    if (type === fuzzy_start_premise) {
+        new AjaxDiscussionHandler().sendNewStartPremise(t_array, conclusion, supportive);
+    } else if (type === fuzzy_add_reason) {
+        new AjaxDiscussionHandler().sendNewPremiseForArgument(parseInt(arg), relation, t_array);
+    }
+    return true;
+};
+
+InteractionHandler.prototype.__cuttingAnds = function (t_array){
+    'use strict';
+    // cutting all 'and ' and 'and'
+    while (t_array[i].indexOf((_t_discussion(and) + ' '), t_array[i].length - (_t_discussion(and) + ' ').length) !== -1 ||
+    t_array[i].indexOf((_t_discussion(and)), t_array[i].length - (_t_discussion(and)).length) !== -1) {
+        if (t_array[i].indexOf((_t_discussion(and) + ' '), t_array[i].length - (_t_discussion(and) + ' ').length) !== -1) {
+            t_array[i] = t_array[i].substr(0, t_array[i].length - (_t_discussion(and) + ' ').length);
+        } else {
+            t_array[i] = t_array[i].substr(0, t_array[i].length - (_t_discussion(and)).length);
+        }
+    }
+};
+
+InteractionHandler.prototype.__cuttingWhitespaces = function (t_array) {
+    'use strict';
+    while (t_array[i].indexOf((' '), t_array[i].length - (' ').length) !== -1) {
+        t_array[i] = t_array[i].substr(0, t_array[i].length - (' ').length);
+    }
+
+};
+InteractionHandler.prototype.__sortStatement = function (t_array, decidedTexts, undecidedTexts) {
+    'use strict';
+    if (t_array[i].toLocaleLowerCase().indexOf(' ' + _t_discussion(and) + ' ') === -1) {
+        decidedTexts.push(t_array[i]);
+    } else {
+        undecidedTexts.push(t_array[i]);
+    }
+
 };

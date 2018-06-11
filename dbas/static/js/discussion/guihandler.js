@@ -362,38 +362,7 @@ GuiHandler.prototype.showSetStatementContainer = function (undecided_texts, deci
     var warning = $('#' + popupSetPremiseGroupsWarningText).hide();
 
     send.click(function sendClick() {
-        var selections = body.find('input:checked'), i, j, splitted;
-
-        // merge every text part to one array
-        for (i = 0; i < undecided_texts.length; i++) {
-            splitted = undecided_texts[i].split(' ' + _t_discussion(and) + ' ');
-
-            if (selections[i].id.indexOf(attr_more_args) !== -1) { // each splitted text part is one argument
-                for (j = 0; j < splitted.length; j++) {
-                    decided_texts.push([splitted[j]]);
-                }
-
-            } else if (selections[i].id.indexOf(attr_one_arg) !== -1) { // one argument with big premise group
-                decided_texts.push(splitted);
-
-            } else { // just take it!
-                decided_texts.push([undecided_texts[i]]);
-            }
-        }
-
-        // pack the data
-        $.each(decided_texts, function (index, value) {
-            if ($.type(value) !== "array") {
-                decided_texts[index] = [value];
-            }
-        });
-
-        if (type === fuzzy_add_reason) {
-            new AjaxDiscussionHandler().sendNewPremiseForArgument(parseInt(arg), relation, decided_texts);
-        } else if (type === fuzzy_start_premise) {
-            new AjaxDiscussionHandler().sendNewStartPremise(decided_texts, parseInt(conclusion), supportive);
-        }
-        $('#' + popupSetPremiseGroups).modal('hide');
+        this.__setStatementContainerSendClick(undecided_texts, decided_texts, supportive, type, arg, relation, conclusion);
     });
 
     if (undecided_texts.length === 1) { // we only need one page div
@@ -444,6 +413,42 @@ GuiHandler.prototype.showSetStatementContainer = function (undecided_texts, deci
 
     popup.find('strong').text(body.data('text-0'));
     popup.modal('show');
+};
+
+GuiHandler.prototype.__setStatementContainerSendClick = function (undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
+    'use strict';
+    var selections = body.find('input:checked'), i, j, splitted;
+
+    // merge every text part to one array
+    for (i = 0; i < undecided_texts.length; i++) {
+        splitted = undecided_texts[i].split(' ' + _t_discussion(and) + ' ');
+
+        if (selections[i].id.indexOf(attr_more_args) !== -1) { // each splitted text part is one argument
+            for (j = 0; j < splitted.length; j++) {
+                decided_texts.push([splitted[j]]);
+            }
+
+        } else if (selections[i].id.indexOf(attr_one_arg) !== -1) { // one argument with big premise group
+            decided_texts.push(splitted);
+
+        } else { // just take it!
+            decided_texts.push([undecided_texts[i]]);
+        }
+    }
+
+    // pack the data
+    $.each(decided_texts, function (index, value) {
+        if ($.type(value) !== "array") {
+            decided_texts[index] = [value];
+        }
+    });
+
+    if (type === fuzzy_add_reason) {
+        new AjaxDiscussionHandler().sendNewPremiseForArgument(parseInt(arg), relation, decided_texts);
+    } else if (type === fuzzy_start_premise) {
+        new AjaxDiscussionHandler().sendNewStartPremise(decided_texts, parseInt(conclusion), supportive);
+    }
+    $('#' + popupSetPremiseGroups).modal('hide');
 };
 
 /**
@@ -618,16 +623,16 @@ GuiHandler.prototype.setStatementsAsProposal = function (data, callbackId, type,
         index = val.index;
 
         button = $('<button>')
-            .attr('type', 'button')
-            .attr('class', 'list-group-item')
-            .attr('id', 'proposal_' + index)
-            .attr('text', val.text)
-            .hover(function () {
-                    $(this).addClass('active');
-                },
-                function () {
-                    $(this).removeClass('active');
-                });
+        .attr('type', 'button')
+        .attr('class', 'list-group-item')
+        .attr('id', 'proposal_' + index)
+        .attr('text', val.text)
+        .hover(function () {
+                $(this).addClass('active');
+            },
+            function () {
+                $(this).removeClass('active');
+            });
 
         if (type === fuzzy_find_statement) {
             button.attr('data-url', val.url);
@@ -651,31 +656,37 @@ GuiHandler.prototype.setStatementsAsProposal = function (data, callbackId, type,
             }
         });
 
-        if (type === fuzzy_start_premise) {
-            $('#' + proposalStatementListGroupId).append(button);
-        }
-        else if (type === fuzzy_start_statement) {
-            $('#' + proposalStatementListGroupId).append(button);
-        }
-        else if (type === fuzzy_add_reason) {
-            $('#' + proposalPremiseListGroupId).append(button);
-        }
-        else if (type === fuzzy_statement_popup) {
-            $('#' + proposalEditListGroupId).append(button);
-        }
-        else if (type === fuzzy_find_user) {
-            $('#' + proposalUserListGroupId).append(button);
-        }
-        else if (type === fuzzy_find_statement) {
-            $('#' + proposalStatementSearchGroupId).append(button);
-        }
-        else if (type === fuzzy_duplicate) {
-            $('#' + proposalDuplicateSearchGroupId).append(button);
-        }
-        else if (type === fuzzy_find_mergesplit) {
-            $('#proposal-mergesplit-list-group-' + callbackId).append(button);
-        }
+        _this.__appendProposal(type, button, callbackId);
     });
+};
+
+GuiHandler.prototype.__appendProposal = function (type, button, callbackId) {
+    'use strict';
+
+    if (type === fuzzy_start_premise) {
+        $('#' + proposalStatementListGroupId).append(button);
+    }
+    else if (type === fuzzy_start_statement) {
+        $('#' + proposalStatementListGroupId).append(button);
+    }
+    else if (type === fuzzy_add_reason) {
+        $('#' + proposalPremiseListGroupId).append(button);
+    }
+    else if (type === fuzzy_statement_popup) {
+        $('#' + proposalEditListGroupId).append(button);
+    }
+    else if (type === fuzzy_find_user) {
+        $('#' + proposalUserListGroupId).append(button);
+    }
+    else if (type === fuzzy_find_statement) {
+        $('#' + proposalStatementSearchGroupId).append(button);
+    }
+    else if (type === fuzzy_duplicate) {
+        $('#' + proposalDuplicateSearchGroupId).append(button);
+    }
+    else if (type === fuzzy_find_mergesplit) {
+        $('#proposal-mergesplit-list-group-' + callbackId).append(button);
+    }
 };
 
 /**
@@ -701,27 +712,27 @@ GuiHandler.prototype.showLogfileOfPremisegroup = function (jsonData) {
 
         var table = $('<table>');
         table.attr('class', 'table table-condensed table-collapsed table-striped table-hover')
-            .attr('border', '0');
+        .attr('border', '0');
         var tbody = $('<tbody>');
 
         var thead = $('<thead>')
-            .append($('<td>').text(_t(text)))
-            .append($('<td>').text(_t(author)))
-            .append($('<td>').text(_t(date)));
+        .append($('<td>').text(_t(text)))
+        .append($('<td>').text(_t(author)))
+        .append($('<td>').text(_t(date)));
         table.append(thead);
 
         var counter = 0;
         $.each(value.content, function (key, val) {
             var tr = $('<tr>')
-                .append($('<td>').text(val.text))
-                .append($('<td>')
-                    .append($('<img>').attr('src', val.author_gravatar).css('margin-right', '1em').addClass('img-circle'))
-                    .append($('<a>')
-                        .addClass('img-circle')
-                        .attr('target', '_blank')
-                        .attr('href', val.author_url)
-                        .text(val.author)))
-                .append($('<td>').text(val.date));
+            .append($('<td>').text(val.text))
+            .append($('<td>')
+            .append($('<img>').attr('src', val.author_gravatar).css('margin-right', '1em').addClass('img-circle'))
+            .append($('<a>')
+            .addClass('img-circle')
+            .attr('target', '_blank')
+            .attr('href', val.author_url)
+            .text(val.author)))
+            .append($('<td>').text(val.date));
             tbody.append(tr);
             counter += 1;
         });
@@ -807,8 +818,8 @@ GuiHandler.prototype.closePrepareTableForOpinionDialog = function (users_array, 
     'use strict';
     var body = $('<div>');
     var table = $('<table>')
-        .attr('class', 'table table-condensed table-collapsed table-hover center')
-        .attr('border', '0');
+    .attr('class', 'table table-condensed table-collapsed table-hover center')
+    .attr('border', '0');
 
     if (Object.keys(users_array).length === 0) {
         body.append(gh.getNoDecisionsAlert());
@@ -950,8 +961,8 @@ GuiHandler.prototype.getPaddingOfElement = function (element) {
 GuiHandler.prototype.rotateElement = function (element, degree) {
     'use strict';
     element.css('-ms-transform', 'rotate(' + degree + 'deg)')
-        .css('-webkit-transform', 'rotate(' + degree + 'deg)')
-        .css('transform', 'rotate(' + degree + 'deg)');
+    .css('-webkit-transform', 'rotate(' + degree + 'deg)')
+    .css('transform', 'rotate(' + degree + 'deg)');
 };
 
 /**
@@ -962,9 +973,9 @@ GuiHandler.prototype.rotateElement = function (element, degree) {
 GuiHandler.prototype.setAnimationSpeed = function (element, speed) {
     'use strict';
     element.css('-webkit-transition', 'all ' + speed + 's ease')
-        .css('-moz-transition', 'all ' + speed + 's ease')
-        .css('-o-transition', 'all ' + speed + 's ease')
-        .css('transition', 'all ' + speed + 's ease');
+    .css('-moz-transition', 'all ' + speed + 's ease')
+    .css('-o-transition', 'all ' + speed + 's ease')
+    .css('transition', 'all ' + speed + 's ease');
 };
 
 /**

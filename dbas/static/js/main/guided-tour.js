@@ -76,7 +76,6 @@ function GuidedTour() {
 
     // function on end
     this.endFn = function () {
-        console.log('end');
         Cookies.set(GUIDED_TOUR, true, {expires: 60});
     };
 }
@@ -153,7 +152,7 @@ GuidedTour.prototype.__prepareSteps = function () {
         template: this.guided_tour_template_end
     };
 
-    var stepList = [
+    return[
         issue,
         startDiscussion,
         markOpinion,
@@ -162,12 +161,11 @@ GuidedTour.prototype.__prepareSteps = function () {
         statementAction,
         haveFun
     ];
-    return stepList;
-}
+};
 
-    /**
-     * Starts tour from the beginning
-     */
+/**
+ * Starts tour from the beginning
+ */
 GuidedTour.prototype.start = function () {
     'use strict';
 

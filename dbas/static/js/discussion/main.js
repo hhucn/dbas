@@ -16,7 +16,7 @@ function Main() {
 Main.prototype.setClickFunctions = function (guiHandler, popupHandler, ajaxHandler) {
     'use strict';
 
-    this.__setClickFunctionsListElements(guiHandler);
+    this.__setClFunctionsSomeElements(guiHandler);
     this.__setClickFunctionsPopupElements(guiHandler, popupHandler);
     this.__setClickFunctionsShareElements(guiHandler, popupHandler);
     this.__setClickFunctionsDisplayElements(guiHandler);
@@ -25,7 +25,7 @@ Main.prototype.setClickFunctions = function (guiHandler, popupHandler, ajaxHandl
     this.__setClickFunctionsDiscussionSpace(guiHandler, popupHandler, ajaxHandler);
 };
 
-Main.prototype.__setClickFunctionsListElements = function (guiHandler) {
+Main.prototype.__setClFunctionsSomeElements = function (guiHandler) {
     'use strict';
     $('.icon-add-premise').each(function () {
         $(this).click(function () {

@@ -30,7 +30,7 @@ $(document).ready(function () {
     var md = new MyDiscussion();
 
     var adh = new AjaxDiscussionHandler();
-    var change_func = function(_this){
+    var change_func = function(_this, key){
         $(_this).change(function () {
             adh.setDiscussionSettings($(_this), button_dict[key]);
         });
@@ -40,7 +40,7 @@ $(document).ready(function () {
             continue;
         }
         $.each($(key), function(){
-            change_func(this);
+            change_func(this, key);
         });
     }
 
