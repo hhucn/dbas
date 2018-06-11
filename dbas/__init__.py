@@ -22,8 +22,7 @@ from sqlalchemy import engine_from_config
 
 from dbas.database import get_db_environs
 from dbas.handler.rss import rewrite_issue_rss, create_news_rss
-from dbas.lib import get_global_url
-from dbas.query_wrapper import get_enabled_issues_as_query
+from dbas.lib import get_global_url, get_enabled_issues_as_query
 from .database import load_discussion_database
 from .security import groupfinder
 

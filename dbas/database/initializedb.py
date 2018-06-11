@@ -77,7 +77,7 @@ def main_discussion(argv=sys.argv):
         __setup_dummy_clicks(DBDiscussionSession)
         __setup_review_dummy_database(DBDiscussionSession)
         transaction.commit()
-        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
+        create_initial_issue_rss(get_global_url())
 
 
 def main_field_test(argv=sys.argv):
@@ -107,7 +107,7 @@ def main_field_test(argv=sys.argv):
         transaction.commit()
         __add_reputation_and_delete_reason(DBDiscussionSession)
         transaction.commit()
-        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
+        create_initial_issue_rss(get_global_url())
 
 
 def drop_it(argv=sys.argv):
@@ -246,7 +246,7 @@ def blank_file(argv=sys.argv):
         DBDiscussionSession.add_all([settings0, settings1])
 
         transaction.commit()
-        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
+        create_initial_issue_rss(get_global_url())
 
 
 def init_dummy_votes(argv=sys.argv):
