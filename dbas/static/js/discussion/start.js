@@ -4,7 +4,7 @@
 
 $(function () {
     'use strict';
-    
+
     // execute only in the users page
     if (window.location.href === mainpage + 'discuss/' ||
         window.location.href === mainpage + 'discuss') {
@@ -12,26 +12,25 @@ $(function () {
     }
 });
 
-
 function OverviewCharts() {
     'use strict';
-    
+
     this.create = function () {
         var input = $("#hidden-chart-data").text().replace(/'/g, "\"");
         var data = JSON.parse(input);
         var _this = this;
-        
+
         $.each(data, function (val) {
             _this.__createChart(data[val], val);
         });
     };
-    
+
     this.__createChart = function (input, id) {
         var colors = new Colors();
         var color_100_rgba = colors.getAllAsRGB(100, 0.4);
         var color_500_hex = colors.getAllAsHEX(500);
         var clen = color_100_rgba.length;
-        
+
         var space = $('#' + id);
         var canvas = $('<canvas>').attr({
             'id': 'c' + id,
@@ -39,7 +38,7 @@ function OverviewCharts() {
             'height': space.parent().height()
         });
         space.append(canvas);
-        
+
         var ctx = document.getElementById('c' + id).getContext('2d');
         var chart_data = {
             type: 'line',

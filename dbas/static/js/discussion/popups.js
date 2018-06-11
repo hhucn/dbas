@@ -745,7 +745,7 @@ function PopupHandler() {
             var reference = referenceText.val();
             var refSource = referenceSource.val();
             var issue_uid = $('#issue_info').data('issue');
-            
+
             new AjaxReferenceHandler().setReference(uid, reference, refSource, issue_uid);
         });
 
@@ -847,7 +847,7 @@ function PopupHandler() {
         $('#' + popupUrlSharingId).modal('hide');
         $('#' + popupUrlSharingInputId).val('');
     };
-    
+
     /**
      *
      * @returns {number}
@@ -874,7 +874,7 @@ function PopupHandler() {
         $('#' + popupLoginForgotPasswordBody).hide();
         $('#' + generatePasswordBodyId).hide();
     };
-    
+
     /**
      *
      */

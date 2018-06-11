@@ -166,7 +166,8 @@ def switch_language(request):
     :return: json-dict()
     """
     logger('switch_language', 'main: {}'.format(request.json_body))
-    return set_language(request, request.validated['lang'])
+    lang = set_language(request, request.validated['lang'])
+    return {'_LOCALE_': lang}
 
 
 # ajax - for sending news

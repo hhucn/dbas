@@ -5,7 +5,7 @@
 
 function Main() {
     'use strict';
-    
+
     /**
      * Sets all click functions
      *
@@ -21,7 +21,7 @@ function Main() {
                 $('#' + sendNewPositionId).val(_t(saveMyStatements));
             });
         });
-        
+
         // admin list all users button
         $('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
             if ($(this).val() === _t(showAllUsers)) {
@@ -32,7 +32,7 @@ function Main() {
                 $(this).val(_t(showAllUsers));
             }
         });
-        
+
         // admin list all attacks button
         $('#' + listAllArgumentId).click(function listAllUsersAttacksId() {
             if ($(this).val() === _t(showAllAttacks)) {
@@ -41,32 +41,32 @@ function Main() {
                 $('#' + adminsSpaceForArgumentsId).empty();
             }
         });
-        
+
         // hiding the argument container, when the X button is clicked
         $('#' + closeStatementContainerId).click(function closeStatementContainerId() {
             $('#' + addStatementContainerId).hide();
             $('#' + addStatementErrorContainer).hide();
             $('#' + discussionSpaceId + ' li:last-child input').prop('checked', false).enable = true;
         });
-        
+
         // hides container
         $('#' + closePremiseContainerId).click(function closeStatementContainerId() {
             $('#' + addPositionContainerId).hide();
             $('#' + addPremiseErrorContainer).hide();
             $('#' + discussionSpaceId + ' li:last-child input').prop('checked', false).enable = true;
         });
-        
+
         // hiding the island view, when the X button is clicked
         $('#' + closeIslandViewContainerId).click(function () {
             guiHandler.resetChangeDisplayStyleBox();
             $('#li_' + addReasonButtonId).prop('checked', true);
         });
-        
+
         // hiding the island view, when the X button is clicked
         $('#' + closeGraphViewContainerId).click(function () {
             guiHandler.resetChangeDisplayStyleBox();
         });
-        
+
         // close popups
         $('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId() {
             popupHandler.hideAndClearEditStatementsPopup();
@@ -80,7 +80,7 @@ function Main() {
         $('#' + popupUrlSharingCloseButtonId).click(function popupUrlSharingCloseButtonId() {
             popupHandler.hideAndClearUrlSharingPopup();
         });
-        
+
         $('#' + popupEditStatementSubmitButtonId).click(function popupEditStatementSubmitButton() {
             var elements = [];
             $('#' + popupEditStatementInputSpaceId).find('input').each(function () {
@@ -88,18 +88,18 @@ function Main() {
             });
             new AjaxDiscussionHandler().sendCorrectionOfStatement(elements);
         });
-        
+
         // share url for argument blogging
         $('#' + shareUrlId).click(function shareUrlClick() {
             popupHandler.showUrlSharingPopup();
         });
-        
+
         /**
          * Switch between shortened and long url
          */
         $('#' + popupUrlSharingLongUrlButtonID).click(function () {
             var input_field = $('#' + popupUrlSharingInputId);
-            
+
             if ($(this).data('is-short-url') === '0') {
                 input_field.val(input_field.data('short-url'));
                 $(this).data('is-short-url', '1').text(_t_discussion(fetchLongUrl));
@@ -108,28 +108,28 @@ function Main() {
                 $(this).data('is-short-url', '0').text(_t_discussion(fetchShortUrl));
             }
         });
-        
+
         /**
          * Sharing shortened url with mail
          */
         $('#' + shareUrlButtonMail).click(function shareUrlButtonMail() {
             new Sharing().emailShare('user@example.com', _t(interestingOnDBAS), _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val());
         });
-        
+
         /**
          * Sharing shortened url on twitter
          */
         $('#' + shareUrlButtonTwitter).click(function shareUrlButtonTwitter() {
             new Sharing().twitterShare($('#' + popupUrlSharingInputId).val(), '');
         });
-        
+
         /**
          * Sharing shortened url on google
          */
         $('#' + shareUrlButtonGoogle).click(function shareUrlButtonGoogle() {
             new Sharing().googlePlusShare($('#' + popupUrlSharingInputId).val());
         });
-        
+
         /**
          * Sharing shortened url on facebook
          */
@@ -138,7 +138,7 @@ function Main() {
             new Sharing().facebookShare(val, "FB Sharing", _t(haveALookAt) + ' ' + val,
                 mainpage + "static/images/logo.png");
         });
-        
+
         $('#' + displayStyleIconGuidedId).click(function displayStyleIconGuidedFct() {
             guiHandler.setDisplayStyleAsDiscussion();
             clearAnchor();
@@ -151,13 +151,13 @@ function Main() {
             guiHandler.setDisplayStyleAsGraphView();
             setAnchor('graph');
         });
-        
+
         // opinion barometer
         $('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
             new DiscussionBarometer().showBarometer();
             setAnchor('barometer');
         });
-        
+
         // issues
         $('#' + issueDropdownListID + ' .enabled').each(function () {
             if ($(this).children().length > 0) {
@@ -170,7 +170,7 @@ function Main() {
             }
         });
         $('#' + issueDropdownListID + ' .disabled a').off('click').unbind('click').removeAttr('href');
-        
+
         // get infos about the author
         var trianglel = $('.triangle-l');
         var uid;
@@ -188,7 +188,7 @@ function Main() {
                 }
             }
         });
-        
+
         // do not hover the other spans on hovering the name
         trianglel.find('.triangle-content a').hover(function () {
             trianglel.find('.triangle-content-text').each(function () {
@@ -203,39 +203,39 @@ function Main() {
                 }
             });
         });
-        
+
         var splitted_url = window.location.href.split('/');
         if (splitted_url.length > 5) {
             if (window.location.href.split('/')[5].indexOf('jump') !== -1) {
                 trianglel.find('.triangle-content').hover(function () {
                     $(this).css('color', '#000').css('cursor', 'default');
-                    
+
                 }, function () {
                     $(this).css('color', '');
                 });
             }
         }
-        
+
         // remove hover on start
         if (trianglel.length === 1 && trianglel.attr('id') === 'start') {
             trianglel.html(trianglel.text().trim());
         }
-        
+
         trianglel.find('.triangle-flag').click(function () {
             var uid = $(this).closest('.triangle-l').attr('id').replace(questionBubbleId + '-', '');
             popupHandler.showFlagArgumentPopup(parseInt(uid));
         });
-        
+
         trianglel.find('.triangle-reference').click(function () {
             var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
             new AjaxReferenceHandler().getReferences([parseInt(uid)], true);
         });
-        
+
         trianglel.find('.triangle-trash').click(function () {
             var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
             popupHandler.showDeleteContentPopup(uid, true);
         });
-        
+
         var list = $('#' + discussionSpaceListId);
         list.find('.item-flag').click(function () {
             var uid = $(this).parent().find('input').attr('id').replace('item_', '');
@@ -250,7 +250,7 @@ function Main() {
             });
             popupHandler.showFlagStatementPopup(parseInt(uid), false, text.join(' '));
         });
-        
+
         list.find('.item-edit').click(function () {
             var uids = [];
             $(this).parent().find('label:nth-child(even)').each(function () {
@@ -258,12 +258,12 @@ function Main() {
             });
             popupHandler.showEditStatementsPopup(uids);
         });
-        
+
         list.find('.item-trash').click(function () {
             var uid = $(this).parent().find('label').attr('id');
             popupHandler.showDeleteContentPopup(uid, false);
         });
-        
+
         list.find('.item-reference').click(function () {
             var uids = [];
             $(this).parent().find('label:nth-child(even)').each(function () {
@@ -271,12 +271,12 @@ function Main() {
             });
             new AjaxReferenceHandler().getReferences(uids, false);
         });
-        
+
         // adding issues
         $('#' + addTopicButtonId).click(function () {
             popupHandler.showAddTopicPopup();
         });
-        
+
         // user info click
         $('.triangle-r-info').each(function () {
             if ($(this).data('votecount') > 0) {
@@ -290,7 +290,7 @@ function Main() {
                 $(this).removeClass('triangle-r-info').addClass('triangle-r-info-nohover');
             }
         });
-        
+
         $('#' + discussionSpaceShowItems).click(function () {
             $(this).hide();
             var hide_btn = $('#' + discussionSpaceHideItems);
@@ -308,19 +308,19 @@ function Main() {
             }
             // fade in after we collected the missed id's!
             space.find('li[style="display: none;"]').addClass('cropped').fadeIn();
-            
+
             // guification, resize main container and sidebar
             var container = $('#' + discussionContainerId);
             var add_height = space.find('li.cropped').length * space.find('li:visible:first').outerHeight() + hide_btn.outerHeight();
             var container_height = parseInt(container.css('max-height').replace('px', ''));
             container.css('max-height', (add_height + container_height) + 'px');
             container.attr('data-add-height', add_height);
-            
+
             var sidebar = $('.sidebar-wrapper:first');
             sidebar.height(sidebar.height() + add_height);
-            
+
         });
-        
+
         $('#' + discussionSpaceHideItems).click(function () {
             $(this).hide();
             $('#' + discussionSpaceShowItems).show();
@@ -335,7 +335,7 @@ function Main() {
                 sidebar.height(sidebar.height() - parseInt(container.attr('data-add-height')));
             }, 400);
         });
-        
+
         // star click
         $('.' + checkAsUsersOpinion).click(function () {
             var id = 'star-' + new Date().getTime();
@@ -348,7 +348,7 @@ function Main() {
             var current_history = location.href.split('#')[0].split('?')[1];
             ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, true, step, current_history, id);
         });
-        
+
         $('.' + uncheckAsUsersOpinion).click(function () {
             var id = 'star-' + new Date().getTime();
             $(this).attr('id', id);
@@ -360,16 +360,16 @@ function Main() {
             var current_history = location.href.split('#')[0].split('?')[1];
             ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, false, step, current_history, id);
         });
-        
+
         // styling
         $('.fa-star[data-is-users-opinion="True"]').show();
         $('.fa-star-o[data-is-users-opinion="False"]').show();
-        
+
         // search statement
         $('#sidebar-search-statement').click(function () {
             popupHandler.showSearchStatementPop();
         });
-        
+
         // search statement
         $('#sidebar-ask-a-friend').click(function () {
             new PopupHandler().showNotificationPopup();
@@ -378,7 +378,7 @@ function Main() {
             new Notifications().setGui();
         });
     };
-    
+
     /**
      * Sets click functions for the elements in the sidebar
      * @param maincontainer - main container which contains the content on the left and the sidebar on the rigt
@@ -393,11 +393,11 @@ function Main() {
         var tack = sidebarwrapper.find('.' + sidebarTackClass);
         var sidebar = sidebarwrapper.find('.' + sidebarClass);
         var bgColor = new Colors().hexToRGB('#F3F3F3');
-        
+
         $(hamburger).click(function () {
             $(this).toggleClass('open');
             var width = wrapper.width();
-            
+
             if (sidebar.is(':visible')) {
                 tackwrapper.fadeOut();
                 sidebar.toggle('slide');
@@ -424,16 +424,16 @@ function Main() {
                 }, 200);
             }
         });
-        
+
         // action for tacking the sidebar
         tackwrapper.click(function () {
             var shouldShowSidebar = getLocalStorage(localStorageId) === 'true';
             if (shouldShowSidebar) {
                 gui.rotateElement(tack, '0');
                 setLocalStorage(localStorageId, 'false');
-                
+
                 tack.data('title', _t_discussion(pinNavigation));
-                
+
                 // hide sidebar if it is visible
                 if (sidebar.is(':visible')) {
                     hamburger.click();
@@ -444,9 +444,9 @@ function Main() {
                 tack.data('title', _t_discussion(unpinNavigation));
             }
         });
-        
+
     };
-    
+
     /**
      * Sets style options for the elements in the sidebar
      * @param maincontainer - main container which contains the content on the left and the sidebar on the rigt
@@ -461,16 +461,16 @@ function Main() {
         var tack = sidebarwrapper.find('.' + sidebarTackClass);
         var sidebar = sidebarwrapper.find('.' + sidebarClass);
         var gui = new GuiHandler();
-        
+
         if (shouldShowSidebar) {
             var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
-            
+
             gui.rotateElement(tack, '90');
             gui.setAnimationSpeed(wrapper, '0.0');
             gui.setAnimationSpeed(hamburger, '0.0');
-            
+
             hamburger.addClass('open');
-            
+
             wrapper.width(maincontainer.width() - sidebar.outerWidth());
             maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
             sidebar.show();
@@ -480,16 +480,16 @@ function Main() {
             sidebarwrapper.css('background-color', new Colors().hexToRGB('#F3F3F3'))
                 .css('height', maincontainer.outerHeight() + 'px');
             tackwrapper.fadeIn();
-            
+
             gui.setAnimationSpeed(wrapper, '0.5');
             gui.setAnimationSpeed(hamburger, '0.5');
-            
+
             tackwrapper.data('title', _t_discussion(unpinNavigation));
         } else {
             tackwrapper.data('title', _t_discussion(pinNavigation));
         }
     };
-    
+
     /**
      * Sets all keyUp functions
      * @param guiHandler
@@ -503,7 +503,7 @@ function Main() {
                 ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputPosId, fuzzy_start_statement, '', '');
             }, 200);
         });
-        
+
         // gui for the fuzzy search (positions premise)
         $('#' + addStatementContainerMainInputResId).keyup(function () {
             setTimeout(function () {
@@ -511,7 +511,7 @@ function Main() {
                 ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputResId, fuzzy_start_premise, '', '');
             }, 200);
         });
-        
+
         // gui for the fuzzy search (premises)
         $('#' + addPositionContainerMainInputId).keyup(function () {
             setTimeout(function () {
@@ -520,7 +520,7 @@ function Main() {
             }, 200);
         });
     };
-    
+
     /**
      *
      * @param guiHandler
@@ -529,7 +529,7 @@ function Main() {
         guiHandler.setMaxHeightForBubbleSpace();
         guiHandler.hideSuccessDescription();
         guiHandler.hideErrorDescription();
-        
+
         // no hover action on the systems bubble during the attitude question
         var trianglel = $('.triangle-l');
         var url = window.location.href.split('?')[0];
@@ -542,12 +542,12 @@ function Main() {
                 });
             });
         }
-        
+
         // focus text of input elements
         $('#' + popupUrlSharingInputId).on("click", function () {
             $(this).select();
         });
-        
+
         // hover effects on text elements
         var data = 'data-argumentation-type';
         var list = $('#' + discussionSpaceListId);
@@ -587,12 +587,12 @@ function Main() {
                 }
             );
         });
-        
+
         // hover on radio buttons
         guiHandler.hoverInputListOf($('#popup-flag-argument'));
         guiHandler.hoverInputListOf($('#popup-flag-statement'));
         guiHandler.hoverInputListOf(list);
-        
+
         list.find('li').find('.fa').parent().hide();
         list.find('li').each(function () {
             $(this).hover(function () {
@@ -602,22 +602,22 @@ function Main() {
             });
         });
     };
-    
+
     /**
      * Sets some style options for the window
      */
     this.setWindowOptions = function () {
         // some hack
         $('#navbar-left').empty();
-        
+
         var container = $('#' + discussionContainerId);
         var oldContainerSize = container.outerWidth();
         var burger = $('.hamburger');
         var wrapper = $('#dialog-wrapper');
-        
+
         $(window).resize(function () {
             new GuiHandler().setMaxHeightForBubbleSpace();
-            
+
             // resize main container
             var difference = oldContainerSize - container.outerWidth();
             if (difference > 0 && burger.hasClass('open')) {
@@ -628,12 +628,12 @@ function Main() {
             oldContainerSize = container.width();
         });
     };
-    
+
     /**
      *
      */
     this.setGuiOptions = function () {
-        
+
         // highlight edited statement
         var pos = window.location.href.indexOf('edited_statement=');
         if (pos !== -1) {
@@ -644,7 +644,7 @@ function Main() {
             });
         }
     };
-    
+
     /**
      *
      * @param guiHandler
@@ -685,13 +685,13 @@ function Main() {
             relation = splits[splits.length - 1 - add];
             interactionHandler.sendStatement(textArray, '', supportive, arg, relation, fuzzy_add_reason);
         };
-        
+
         if (window.location.href.indexOf('/r/') !== -1) {
             $('#' + discussionSpaceId + ' label').each(function () {
                 $(this).css('width', '95%');
             });
         }
-        
+
         $('#' + sendNewStatementId).off("click").click(function () {
             if ($(this).attr('name').indexOf('start') !== -1) {
                 sendStartStatement();
@@ -706,7 +706,7 @@ function Main() {
                 sendArgumentsPremise();
             }
         });
-        
+
         // hide one line options
         var children = spaceList.find('input');
         var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
@@ -715,7 +715,7 @@ function Main() {
         if (children.length > 0) {
             id = children.eq(0).attr('id');
             id = id.replace('item_', '');
-            
+
             // if we have just one list element AND the list element has a special function AND we are logged in
             if (children.length === 1 && $.inArray(id, ids) !== -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) === -1) {
                 var container = $('#' + discussionContainerId);
@@ -725,7 +725,7 @@ function Main() {
                 children.eq(0).prop('checked', true).parent().hide();
             }
         }
-        
+
         // options for the extra buttons, where the user can add input!
         if (input.length === 0) {
             var el = $('.line-wrapper-l').last().find('span');
@@ -746,7 +746,7 @@ function Main() {
             }
         }
     };
-    
+
     /**
      *
      * @param input
@@ -790,7 +790,7 @@ function Main() {
  */
 $(document).ready(function mainDocumentReady() {
     'use strict';
-    
+
     var tacked_sidebar = 'tacked_sidebar';
     var guiHandler = new GuiHandler();
     var ajaxHandler = new AjaxDiscussionHandler();
@@ -799,7 +799,7 @@ $(document).ready(function mainDocumentReady() {
     var main = new Main();
     var tmp;
     var discussionContainer = $('#' + discussionContainerId);
-    
+
     main.setStyleOptions(guiHandler);
     main.setSidebarStyle(discussionContainer, tacked_sidebar);
     main.setSidebarClicks(discussionContainer, tacked_sidebar);
@@ -809,7 +809,7 @@ $(document).ready(function mainDocumentReady() {
     main.setWindowOptions();
     main.setGuiOptions();
     main.setInputExtraOptions(guiHandler, interactionHandler);
-    
+
     // some extras
     // get restart url and cut the quotes
     var btn = $('#discussion-restart-btn');
@@ -819,7 +819,7 @@ $(document).ready(function mainDocumentReady() {
         $('#' + discussionEndRestart).attr('href', tmp);
         $('#' + discussionEndReview).attr('href', mainpage + 'review');
     }
-    
+
     tmp = window.location.href.split('?');
     if (tmp[0].indexOf('/reaction/') !== -1) {
         $('#island-view-undermine-button').attr('onclick', $('#item_undermine').attr('onclick'));
@@ -827,7 +827,7 @@ $(document).ready(function mainDocumentReady() {
         $('#island-view-undercut-button').attr('onclick', $('#item_undercut').attr('onclick'));
         $('#island-view-rebut-button').attr('onclick', $('#item_rebut').attr('onclick'));
     }
-    
+
     // check anchors
     if (location.hash.indexOf('graph') !== -1) {
         guiHandler.setDisplayStyleAsGraphView();
@@ -845,7 +845,7 @@ $(document).ready(function mainDocumentReady() {
         var link = '<a href="' + mainpage + 'review">' + _t(youAreAbleToReviewNow) + '</a>';
         setGlobalInfoHandler('Hey!', link);
     }
-    
+
     $(document).delegate('.open', 'click', function (event) {
         $(this).addClass('opened');
         event.stopPropagation();

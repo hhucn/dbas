@@ -4,7 +4,7 @@
 
 function AjaxSettingsHandler() {
     "use strict";
-    
+
     /**
      * Ajax request for getting the users history
      */
@@ -18,7 +18,7 @@ function AjaxSettingsHandler() {
         };
         ajaxSkeleton(url, 'GET', {}, done, fail);
     };
-    
+
     /**
      * Ajax request for deleting the users history
      */
@@ -32,7 +32,7 @@ function AjaxSettingsHandler() {
         };
         ajaxSkeleton(url, 'GET', {}, done, fail);
     };
-    
+
     /**
      * Ajax request for setting a setting
      *
@@ -54,7 +54,7 @@ function AjaxSettingsHandler() {
         };
         ajaxSkeleton(url, 'POST', data, done, fail);
     };
-    
+
     /**
      * Ajax request for the change of the notification language
      *
@@ -94,7 +94,7 @@ function AjaxSettingsHandler() {
         };
         ajaxSkeleton(url, 'POST', data, done, fail);
     };
-    
+
     /**
      * Ajax request for getting all edits done by the user
      */
@@ -103,7 +103,7 @@ function AjaxSettingsHandler() {
             new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
             return;
         }
-        
+
         var url = 'get_all_edits';
         var done = function getEditsDoneDone(data) {
             new StatisticsHandler().callbackGetStatisticsDone(data, _t(allEditsDone), false);
@@ -113,7 +113,7 @@ function AjaxSettingsHandler() {
         };
         ajaxSkeleton(url, 'GET', {}, done, fail);
     };
-    
+
     /**
      * Ajax request for getting all statements send by the user
      */
@@ -122,7 +122,7 @@ function AjaxSettingsHandler() {
             new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
             return;
         }
-        
+
         var url = 'get_all_posted_statements';
         var done = function getStatementsSendDone(data) {
             new StatisticsHandler().callbackGetStatisticsDone(data, _t(allStatementsPosted), false);
@@ -132,13 +132,13 @@ function AjaxSettingsHandler() {
         };
         ajaxSkeleton(url, 'GET', {}, done, fail);
     };
-    
+
     this.__getInfoWrapper = function (id, url, is_clicked_element) {
         if ($('#' + id).text() === '0') {
             new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
             return;
         }
-        
+
         var done = function __getInfoWrapperDone(data) {
             new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenInterests), is_clicked_element);
         };
@@ -147,35 +147,35 @@ function AjaxSettingsHandler() {
         };
         ajaxSkeleton(url, 'GET', {}, done, fail);
     };
-    
+
     /**
      * Ajax request for getting all arguments, which the user voted for
      */
     this.getArgumentClicks = function () {
         this.__getInfoWrapper(discussionArgClickCountId, 'get_all_argument_clicks', true);
     };
-    
+
     /**
      * Ajax request for getting all edits done by the user
      */
     this.getStatementClicks = function () {
         this.__getInfoWrapper(discussionStatClickCountId, 'get_all_statement_clicks', true);
     };
-    
+
     /**
      * Ajax request for getting all arguments, which the user voted for
      */
     this.getMarkedArguments = function () {
         this.__getInfoWrapper(discussionArgVoteCountId, 'get_all_marked_arguments', false);
     };
-    
+
     /**
      * Ajax request for getting all edits done by the user
      */
     this.getMarkedStatements = function () {
         this.__getInfoWrapper(discussionStatVoteCountId, 'get_all_marked_statements', false);
     };
-    
+
     /**
      * Ajax request for deleting the statistics
      */
@@ -189,7 +189,7 @@ function AjaxSettingsHandler() {
         };
         ajaxSkeleton(url, 'GET', {}, done, fail);
     };
-    
+
     /**
      *
      */

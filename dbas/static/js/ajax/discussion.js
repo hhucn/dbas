@@ -230,7 +230,7 @@ function AjaxDiscussionHandler() {
         var fail = function ajaxGetMoreInfosAboutOpinionFail(data) {
             setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
         };
-        
+
         ajaxSkeleton(url, 'POST', d, done, fail);
 
     };
@@ -390,7 +390,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-    
+
     /**
      * Set properties for every discussion on the private discussion page
      * @param toggle_element
@@ -416,7 +416,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-    
+
     this.replaceTitleOfDiscussionOverview = function(checked, toggle_element){
         var tr = $('tr[data-uid="' + toggle_element.data('uid') + '"]');
         var child = $(tr.find('td:first'));
@@ -428,7 +428,7 @@ function AjaxDiscussionHandler() {
             child.find('a').replaceWith('<span>' + text + '</span>');
         }
     };
-    
+
     this.replaceShortLinkOfDiscussionOverview = function(checked, toggle_element){
         var tr = $('tr[data-uid="' + toggle_element.data('uid') + '"]');
         var child = $(tr.find('td:last'));
