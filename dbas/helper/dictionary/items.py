@@ -14,11 +14,10 @@ from dbas.handler import attacks
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.url import UrlManager
-from dbas.lib import Relations, Attitudes
+from dbas.lib import Relations, Attitudes, get_enabled_arguments_as_query
 from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_statement, \
     is_author_of_argument
 from dbas.logger import logger
-from dbas.query_wrapper import get_enabled_arguments_as_query
 from dbas.review.queue.edit import EditQueue
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \

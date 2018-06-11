@@ -158,43 +158,43 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     return return_array
 
 
-def revoke_author_of_statement_content(statement, db_user):
+def revoke_author_of_statement_content(db_statement: Statement, db_user: User):
     """
     Revokes the statement - e.g. the user is not the author anymore
 
-    :param statement: Statement
+    :param db_statement: Statement
     :param db_user: User
     :return:
     """
-    logger('QueryHelper', str(statement.uid))
+    logger('QueryHelper', str(db_statement.uid))
 
     # get element, which should be revoked
-    db_element = __revoke_statement(db_user, statement)
+    db_element = __revoke_statement(db_statement, db_user)
     DBDiscussionSession.add(RevokedContent(db_user.uid, statement=db_element.uid))
     DBDiscussionSession.flush()
     transaction.commit()
     return True
 
 
-def revoke_author_of_argument_content(argument, db_user):
+def revoke_author_of_argument_content(db_argument: Argument, db_user: User):
     """
     Revokes the argument - e.g. the user is not the author anymore
 
-    :param argument: Argument
+    :param db_argument: Argument
     :param db_user: User
     :return:
     """
-    logger('QueryHelper', str(argument.uid))
+    logger('QueryHelper', str(db_argument.uid))
 
     # get element, which should be revoked
-    db_element = __revoke_argument(db_user, argument)
+    db_element = __revoke_argument(db_argument, db_user)
     DBDiscussionSession.add(RevokedContent(db_user.uid, argument=db_element.uid))
     DBDiscussionSession.flush()
     transaction.commit()
     return True
 
 
-def __revoke_statement(db_user, db_statement):
+def __revoke_statement(db_statement: Statement, db_user: User):
     """
     Revokes the user as author of the statement
 
@@ -219,7 +219,7 @@ def __revoke_statement(db_user, db_statement):
     return db_statement
 
 
-def __revoke_argument(db_user, db_argument):
+def __revoke_argument(db_argument: Argument, db_user: User):
     """
     Revokes the user as author of the argument
 
@@ -294,7 +294,7 @@ def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_auth
     return True
 
 
-def __remove_user_from_arguments_with_statement(db_statement, db_user):
+def __remove_user_from_arguments_with_statement(db_statement: Statement, db_user: User):
     """
     Calls revoke_content(...) for all arguments, where the Statement.uid is used
 
@@ -325,16 +325,16 @@ def get_short_url(url) -> dict:
     service_url = 'http://tinyurl.com/'
 
     db_url = DBDiscussionSession.query(ShortLinks).filter_by(long_url=url).first()
+    rdict = {
+        'url': '',
+        'service': service,
+        'service_url': service_url,
+        'service_text': service,
+    }
 
     if db_url and (get_now() - db_url.timestamp).days < 7:
-        short_url = db_url.short_url
-
-        return {
-            'url': short_url,
-            'service': service,
-            'service_url': service_url,
-            'service_text': service,
-        }
+        rdict['url'] = db_url.short_url
+        return rdict
 
     # no or old url, so fetch and set it
     short_url, service_text = __fetch_url(service, url)
@@ -347,12 +347,9 @@ def get_short_url(url) -> dict:
         DBDiscussionSession.flush()
         transaction.commit()
 
-    return {
-        'url': short_url,
-        'service': service,
-        'service_url': service_url,
-        'service_text': service_text,
-    }
+    rdict['url'] = db_url.short_url
+    rdict['service_text'] = service_text
+    return rdict
 
 
 def __fetch_url(service: str, long_url: str) -> Tuple[str, str]:
