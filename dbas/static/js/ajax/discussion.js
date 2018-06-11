@@ -4,7 +4,7 @@
 
 function AjaxDiscussionHandler() {
     'use strict';
-
+    
     /**
      * Sends new premises to the server. Answer will be given to a callback
      * @param arg_uid
@@ -34,7 +34,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      *
      * @param position
@@ -55,7 +55,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      * Sends new premises to the server. Answer will be given to a callback
      * @param premisegroups List of premisegroups
@@ -85,7 +85,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      *
      * @param info
@@ -119,7 +119,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      * Requests the logfile for the given uid
      * @param statements_uids current uid of the statement
@@ -142,7 +142,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      * Sends a correction of statements
      * @param elements
@@ -161,7 +161,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      * Shortens url
      * @param long_url for shortening
@@ -183,7 +183,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      *
      * @param uid
@@ -203,7 +203,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      *
      * @param type
@@ -214,7 +214,7 @@ function AjaxDiscussionHandler() {
         var is_argument = type === 'argument';
         var is_position = type === 'position' || type === 'statement';
         var uid = typeof argument_uid === 'undefined' ? statement_uid : argument_uid;
-
+        
         var url = 'get_user_with_same_opinion';
         var d = {
             uid: uid,
@@ -230,11 +230,11 @@ function AjaxDiscussionHandler() {
         var fail = function ajaxGetMoreInfosAboutOpinionFail(data) {
             setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
         };
-
+        
         ajaxSkeleton(url, 'POST', d, done, fail);
-
+        
     };
-
+    
     /***
      * Ajax request for the fuzzy search
      * @param value
@@ -257,11 +257,11 @@ function AjaxDiscussionHandler() {
             tmpid = 'reason_position';
         }
         var bubbleSpace = $('#' + discussionBubbleSpaceId);
-
+        
         if (statement_uid.length === 0) {
             statement_uid = 0;
         }
-
+        
         // clear lists if input is empty
         if (callback.val().length === 0) {
             new GuiHandler().clearProposalSpace(callbackId);
@@ -270,7 +270,7 @@ function AjaxDiscussionHandler() {
             });
             return;
         }
-
+        
         if (!$.inArray(type, [fuzzy_find_user, fuzzy_find_statement, fuzzy_duplicate])) {
             var opener = $('#' + addPositionContainerMainInputIntroId).text().replace('...', _t_discussion(because) + ' ');
             // add or remove bubble only iff we are not in an popup
@@ -293,7 +293,7 @@ function AjaxDiscussionHandler() {
             var resize = gh.setMaxHeightForBubbleSpace();
             gh.setMaxHeightForDiscussionContainer(resize);
         }
-
+        
         var url = type === fuzzy_find_user ? 'fuzzy_nickname_search' : 'fuzzy_search';
         var d = {
             value: value,
@@ -310,7 +310,7 @@ function AjaxDiscussionHandler() {
         callback.focus();
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      *
      * @param uid
@@ -332,7 +332,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      * Marks given statements as read
      *
@@ -351,7 +351,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      *
      * @param uid
@@ -390,7 +390,7 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
+    
     /**
      * Set properties for every discussion on the private discussion page
      * @param toggle_element
@@ -406,7 +406,7 @@ function AjaxDiscussionHandler() {
         };
         var done = function setDiscussionSettingsDone(data) {
             new InteractionHandler().callbackForSetAvailabilityOfDiscussion(toggle_element, data);
-            if (toggle_element.attr('class') === 'discussion-enable-toggle'){
+            if (toggle_element.attr('class') === 'discussion-enable-toggle') {
                 _this.replaceTitleOfDiscussionOverview(checked, toggle_element);
                 _this.replaceShortLinkOfDiscussionOverview(checked, toggle_element);
             }
@@ -416,20 +416,20 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
-    this.replaceTitleOfDiscussionOverview = function(checked, toggle_element){
+    
+    this.replaceTitleOfDiscussionOverview = function (checked, toggle_element) {
         var tr = $('tr[data-uid="' + toggle_element.data('uid') + '"]');
         var child = $(tr.find('td:first'));
         var url = child.data('url');
         var text = child.text().trim();
-        if (checked){
+        if (checked) {
             child.find('span').replaceWith('<a href="' + url + '">' + text + '</a>');
         } else {
             child.find('a').replaceWith('<span>' + text + '</span>');
         }
     };
-
-    this.replaceShortLinkOfDiscussionOverview = function(checked, toggle_element){
+    
+    this.replaceShortLinkOfDiscussionOverview = function (checked, toggle_element) {
         var tr = $('tr[data-uid="' + toggle_element.data('uid') + '"]');
         var child = $(tr.find('td:last'));
         var clipboard = $('<i>').attr({
@@ -438,7 +438,7 @@ function AjaxDiscussionHandler() {
                 'margin-left: 0.5em; cursor: pointer;'
         });
         var text = child.text().trim();
-        if (checked){
+        if (checked) {
             child.empty();
             child.append($('<a>').attr('href', text).text(text));
             child.append(clipboard);
