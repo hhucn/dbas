@@ -4,7 +4,7 @@
 
 function ReviewCallbacks() {
     'use strict';
-    
+
     /**
      *
      * @param jsonData
@@ -25,32 +25,32 @@ function ReviewCallbacks() {
         $('#request-lock').hide();
         $('#request-not-lock-text').hide();
         $('#send_edit').removeClass('disabled');
-        
+
         var reviewArgumentText = $('#reviewed-argument-text');
         reviewArgumentText.attr('data-oem', reviewArgumentText.text());
-        
+
         $.each($('#argument-part-table').find('input'), function () {
             var htmlText = reviewArgumentText.html();
             var pos = htmlText.toLowerCase().indexOf($(this).attr('placeholder').toLowerCase());
             var replacement = '<span id="text' + $(this).data('id') + '">' + $(this).attr('placeholder') + '</span>';
             var replText = htmlText.substr(0, pos) + replacement + htmlText.substr(pos + $(this).attr('placeholder').length);
             reviewArgumentText.html(replText);
-            
+
             $(this).focusin(function () {
                 $('#text' + $(this).data('id')).addClass('text-warning');
             });
-            
+
             $(this).focusout(function () {
                 $('#text' + $(this).data('id')).removeClass('text-warning');
             });
-            
+
             $(this).on('input', function () {
                 $('#text' + $(this).data('id')).text($(this).val());
             });
         });
         return true;
     };
-    
+
     /**
      *
      * @param data

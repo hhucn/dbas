@@ -51,22 +51,6 @@ def main(global_config, **settings):
     session_factory = session_factory_from_settings(settings)
     set_cache_regions_from_settings(settings)
 
-    # PLEASE USE THIS CODE TO READ CUSTOM SETTINGS FROM THE INI FILES
-    # include custom parts
-    # sections = ['service']
-    # log settings
-    # log = logging.getLogger(__name__)
-    # for s in sections:
-    #     try:
-    #         parser = ConfigParser()
-    #         parser.read(global_config['__file__'])
-    #         custom_settings = dict()
-    #         for k, v in parser.items('settings:{}'.format(s)):
-    #             custom_settings['settings:{}:{}'.format(s, k)] = v
-    #         settings.update(custom_settings)
-    #     except NoSectionError as e:
-    #         log.debug('__init__() '.upper() + 'main() <No ' + s + '-Section> ' + str(e))
-
     # creating the configurator
     config = Configurator(settings=settings,
                           authentication_policy=authn_policy,

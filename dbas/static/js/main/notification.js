@@ -6,12 +6,12 @@
 
 $(function () {
     'use strict';
-    
+
     // execute only in the notifications page
     if (window.location.href.indexOf(mainpage + 'notifications') === -1) {
         return;
     }
-    
+
     var not = new Notifications();
     not.setGui();
     not.setPanelClickFunctions();
@@ -24,7 +24,7 @@ $(function () {
 
 function Notifications() {
     'use strict';
-    
+
     this.setGui = function () {
         // proposals for user while typing the recipient
         $('#popup-writing-notification-recipient').off('keyup').keyup(function () {
@@ -33,28 +33,28 @@ function Notifications() {
                 new AjaxDiscussionHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
             }, 200);
         });
-        
+
         // clear proposals on focus change
         $('#popup-writing-notification-title').focusin(function () {
             $('#proposal-user-list-group').empty();
         });
-        
+
         // clear proposals on focus change
         $('#popup-writing-notification-text').focusin(function () {
             $('#proposal-user-list-group').empty();
         });
-        
+
         if (parseInt($('#total_in_counter').text()) > 0) {
             $('#read-inbox').removeClass('hidden');
             $('#delete-inbox').removeClass('hidden');
         }
-        
+
         if (parseInt($('#total_out_counter').text()) > 0) {
             $('#delete-outbox').removeClass('hidden');
         }
-        
+
     };
-    
+
     /**
      *
      */
@@ -67,7 +67,7 @@ function Notifications() {
                 }
             });
         });
-        
+
         $.each($('.fa-trash'), function ajaxLinksDelete() {
             $(this).off('click').click(function () {
                 $(this).parent().parent().attr('href', '');
@@ -75,7 +75,7 @@ function Notifications() {
             });
         });
     };
-    
+
     /**
      *
      */
@@ -85,7 +85,7 @@ function Notifications() {
             new PopupHandler().showNotificationPopup();
         });
     };
-    
+
     /**
      *
      */
@@ -107,7 +107,7 @@ function Notifications() {
                 });
             });
         });
-        
+
         $('.new-notification').each(function () {
             $(this).click(function () {
                 $('#popup-writing-notification-recipient').hide();
@@ -128,7 +128,7 @@ function Notifications() {
             });
         });
     };
-    
+
     /**
      * Collect all messages and return their uids.
      */
@@ -145,26 +145,26 @@ function Notifications() {
         }
         return uids;
     }
-    
+
     this.setClickFunctionsForRead = function () {
         $('#read-inbox').click(function () {
             var uids = collectMessages('#inbox');
             new AjaxNotificationHandler().readMessages(uids);
         });
     };
-    
+
     this.setClickFunctionsForDelete = function () {
         $('#delete-inbox').click(function () {
             var uids = collectMessages('#inbox');
             new AjaxNotificationHandler().deleteMessages(uids);
         });
-        
+
         $('#delete-outbox').click(function () {
             var uids = collectMessages('#outbox');
             new AjaxNotificationHandler().deleteMessages(uids);
         });
     };
-    
+
     /**
      *
      */
@@ -190,7 +190,7 @@ function Notifications() {
             });
         });
     };
-    
+
     /**
      *
      */
@@ -198,7 +198,7 @@ function Notifications() {
         $('#error-space').hide();
         $('#error-description').text('');
     };
-    
+
     /**
      *
      * @param counter

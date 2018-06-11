@@ -871,7 +871,7 @@ var get_it = function (val, id) {
         value = dbas_en[id];
     }
     return value;
-    
+
 };
 
 /**
@@ -893,7 +893,7 @@ function _t(id) {
  */
 function _t_discussion(id) {
     'use strict';
-    
+
     var info = $('#issue_info');
     if (typeof info === 'undefined') {
         return get_it('en', id);
@@ -917,7 +917,7 @@ function getLanguage() {
  */
 function getDiscussionLanguage() {
     'use strict';
-    
+
     var lang = $('#issue_info').data('discussion-language'), value;
     if (lang.indexOf('en') !== -1) {
         value = 'en';

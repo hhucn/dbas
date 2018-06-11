@@ -9,8 +9,6 @@ from dbas.logger import logger
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
 from sqlalchemy.exc import InternalError
-# from sqlalchemy.exc import OperationalError
-# from sqlalchemy.exc import StatementError
 
 
 class RootFactory(object):

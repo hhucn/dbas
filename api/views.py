@@ -661,7 +661,6 @@ def jump_to_argument_fn(request):
     :return: Argument with a list of possible interactions
 
     """
-    # api_data = jump_preparation(request)
     return dbas.jump(request)
 
 

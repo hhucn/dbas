@@ -29,14 +29,18 @@ $(document).ready(function () {
     };
     var md = new MyDiscussion();
 
+    var adh = new AjaxDiscussionHandler();
+    var change_func = function(_this){
+        $(_this).change(function () {
+            adh.setDiscussionSettings($(_this), button_dict[key]);
+        });
+    };
     for (var key in button_dict) {
         if (!{}.hasOwnProperty.call(button_dict, key)) {
             continue;
         }
-        $.each($(key), function () {
-            $(this).change(function () {
-                new AjaxDiscussionHandler().setDiscussionSettings($(this), button_dict[key]);
-            });
+        $.each($(key), function(){
+            change_func(this);
         });
     }
 

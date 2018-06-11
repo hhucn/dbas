@@ -956,7 +956,6 @@ DiscussionBarometer.prototype.getDarkColorFor = function (index) {
     return google_colors[index % google_colors.length][9];
 };
 
-
 // doughnut chart
 
 /**

@@ -6,12 +6,12 @@
 
 $(function () {
     'use strict';
-    
+
     // execute only in the users page
     if (window.location.href.indexOf(mainpage + 'user/') === -1) {
         return;
     }
-    
+
     var u = new User();
     u.setNotificationBtn();
     u.getPublicUserData();
@@ -19,7 +19,7 @@ $(function () {
 
 function User() {
     'use strict';
-    
+
     // https://www.google.com/design/spec/style/color.html#color-color-palette
     var blue = 'rgba(187,222,251,0.4)';
     var teal = 'rgba(178,223,219,0.4)';
@@ -27,7 +27,7 @@ function User() {
     var brown = 'rgba(215,204,200,0.4';
     var color_100_rgba = [blue, teal, deepOrange, brown]; // 100
     var color_500_hex = ['#2196F3', '#009688', '#FF5722', '#795548']; // 500
-    
+
     /**
      * Sets click listener to send notifications to a user
      */
@@ -53,7 +53,7 @@ function User() {
             });
         });
     };
-    
+
     /**
      * Requests specific user data and will display these in charts
      */
@@ -73,7 +73,7 @@ function User() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-    
+
     /**
      *
      * @param parsedData
@@ -105,13 +105,13 @@ function User() {
             //
         }
     };
-    
+
     /**
      *
      */
     this.setLegendCSS = function () {
         var legend = $('.chart-legend');
-        
+
         legend.find('ul').css({
             'list-style-type': 'none'
         });
