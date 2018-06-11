@@ -111,8 +111,6 @@ function GuiHandler() {
         new DiscussionGraph({}, false).showGraph(false);
         main.setSidebarStyle(graphViewContainer, tacked_sidebar);
         main.setSidebarClicks(graphViewContainer, tacked_sidebar);
-        // this.hideAddPositionContainer();
-        // this.hideaddPositionContainer();
     };
     
     /**

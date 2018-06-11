@@ -145,13 +145,11 @@ def get_strings_for_edits(search_value: str, statement_uid: int) -> list:
     db_tvs = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).all()
 
     return_array = []
-    index = 1
     for textversion in db_tvs:
         if search_value.lower() in textversion.content.lower():
             rd = __get_fuzzy_string_dict(current_text=search_value, return_text=textversion.content,
                                          uid=textversion.statement_uid)
             return_array.append(rd)
-            index += 1
 
     return_array = __sort_array(return_array)
 

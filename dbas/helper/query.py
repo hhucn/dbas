@@ -142,7 +142,6 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     db_related_arguments = DBDiscussionSession.query(Argument).filter(Argument.is_supportive == is_supportive,
                                                                       Argument.argument_uid == argument_uid).all()
     given_relations = set()
-    index = 0
 
     if not db_related_arguments:
         return None
@@ -154,7 +153,6 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
             tmp_dict['id'] = relation.uid
             tmp_dict['text'] = relation.get_premisegroup_text()
             return_array.append(tmp_dict)
-            index += 1
     return return_array
 
 
@@ -347,7 +345,7 @@ def get_short_url(url) -> dict:
         DBDiscussionSession.flush()
         transaction.commit()
 
-    rdict['url'] = db_url.short_url
+    rdict['url'] = short_url
     rdict['service_text'] = service_text
     return rdict
 

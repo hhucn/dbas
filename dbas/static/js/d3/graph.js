@@ -543,7 +543,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     $('#' + graphViewContainerSpaceId).find('.node').each(function () {
                         var id = $(this).attr('id').replace(rescaleGraph.node_id_prefix, '');
                         var label = $('#label-' + id);
-                        // var rect = $('#rect-' + id);
                         label.attr({
                             'y': -label.height() / rescaleGraph.zoom_scale + 45 / rescaleGraph.zoom_scale
                         });
@@ -800,9 +799,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function setRectProperties() {
         rect.each(function (d) {
-            // var row_count = $("#label-" + d.id + " [x='0']").length;
-            var width = 0; // 140;
-            var height = 0; // row_count * emToPx(1.2) + 10;
+            var width = 0;
+            var height = 0;
             var pos = calculateRectPos(width, height);
             
             // if d is a virtual node do not show label

@@ -55,7 +55,7 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
 
     return {
         'status': 'success',
-        'url': 'url',
+        'url': url,
         'statement_uids': [new_statement.uid],
         'error': ''
     }
