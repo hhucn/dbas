@@ -54,7 +54,7 @@ function DiscussionBarometer() {
             _address = 'attitude';
             uid = parseInt(splitted[splitted.length - 1]);
             new AjaxGraphHandler().getUserGraphData([uid], _address);
-        
+
         } else if (url.indexOf('/justify/') !== -1 || url.indexOf('/choose/') !== -1) {
             _address = 'justify';
             // dont know step
@@ -68,13 +68,13 @@ function DiscussionBarometer() {
                 });
             }
             new AjaxGraphHandler().getUserGraphData(uid_array, _address);
-        
+
         } else if (url.indexOf('/reaction/') !== -1) {
             _address = 'argument';
             uid_array.push(parseInt(splitted[splitted.length - 3]));
             uid_array.push(parseInt(splitted[splitted.length - 1]));
             new AjaxGraphHandler().getUserGraphData(uid_array, _address);
-        
+
         } else {
             _address = 'position';
             inputs.each(function () {

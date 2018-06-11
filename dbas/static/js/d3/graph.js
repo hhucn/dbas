@@ -1587,7 +1587,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         return splitted[splitted.length - 1];
     }
 
-
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
@@ -1628,7 +1627,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
 
     /**
      * Highlight incoming and outgoing edges of selected node.
