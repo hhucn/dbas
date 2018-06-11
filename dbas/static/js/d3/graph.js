@@ -803,12 +803,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             var height = 0;
             var pos = calculateRectPos(width, height);
             
-            // if d is a virtual node do not show label
-            if (d.label === '') {
-                width = 0;
-                height = 0;
-            }
-            
             d3.select(this).attr({
                 'width': width,
                 'height': height,
