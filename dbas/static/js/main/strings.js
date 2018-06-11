@@ -883,7 +883,7 @@ var get_it = function (val, id) {
 function _t(id) {
     'use strict';
     return get_it(getLanguage(), id);
-};
+}
 
 /**
  * Returns a translated string in the discussion language
@@ -900,7 +900,7 @@ function _t_discussion(id) {
     }
     var lang = info.data('discussion-language');
     return get_it(lang, id);
-};
+}
 
 /**
  * Returns the tag of current language. This is either {en,de} or 'unknown value' *
@@ -909,7 +909,7 @@ function _t_discussion(id) {
 function getLanguage() {
     'use strict';
     return $('#hidden_language').val();
-};
+}
 
 /**
  * Returns the tag of current discussion language. This is either {en,de} or 'unknown value' *
@@ -927,4 +927,4 @@ function getDiscussionLanguage() {
         value = 'unknown value';
     }
     return value;
-};
+}

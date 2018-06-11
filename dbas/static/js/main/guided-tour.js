@@ -2,15 +2,7 @@
  * Created by tobias on 26.01.17.
  */
 
-function GuidedTour() {
-    'use strict';
-    
-    var langSwitcher = '';
-    var tour = '';
-    var stepList = [];
-    
-    // override default template for i18n
-    var template =
+var guided_tour_template =
         '<div class="popover tour">' +
         '<div class="arrow"></div>' +
         '<h3 class="popover-title"></h3>' +
@@ -22,8 +14,8 @@ function GuidedTour() {
         '</div>' +
         '<button class="btn btn-sm btn-secondary" data-role="end">' + _t(tourEnd) + '</button>' +
         '</div>';
-    
-    var template_end =
+
+var guided_tour_template_end =
         '<div class="popover tour">' +
         '<div class="arrow"></div>' +
         '<h3 class="popover-title"></h3>' +
@@ -31,10 +23,17 @@ function GuidedTour() {
         '<div class="popover-navigation">' +
         '<div class="btn-group">' +
         '<button class="btn btn-sm btn-secondary" data-role="prev">&#xab; ' + _t(prev) + '</button>' +
-        '<button class="btn btn-sm btn-secondary" data-role="next">' + _t(next) + ' &#xbb;</button>' +
+        '<button class="btn btn-sm btn-success" data-role="next">' + _t(next) + ' &#xbb;</button>' +
         '</div>' +
-        '<button class="btn btn-sm btn-success" data-role="end">' + _t(tourEnd) + '</button>' +
+        '<button class="btn btn-sm btn-secondary" data-role="end">' + _t(tourEnd) + '</button>' +
         '</div>';
+
+function GuidedTour() {
+    'use strict';
+    
+    var langSwitcher = '';
+    var tour = '';
+    var stepList = [];
     
     // click function for lang switch
     var setLangClick = function () {
@@ -154,12 +153,10 @@ function GuidedTour() {
             title: _t(tourHaveFunTitle) + langSwitcher,
             content: _t(tourHaveFunContent),
             placement: 'bottom',
-            template: template_end
+            template: guided_tour_template_end
         };
         
         stepList = [
-            // overview,
-            // infos,
             issue,
             startDiscussion,
             markOpinion,
@@ -169,15 +166,13 @@ function GuidedTour() {
             haveFun
         ];
         
-        //data-placement="bottom"
         tour = new Tour({
             steps: stepList,
             backdrop: true,
             backdropPadding: 5,
-            template: template,
+            template: guided_tour_template,
             onEnd: endFn
         });
-        
     };
     
     /**
