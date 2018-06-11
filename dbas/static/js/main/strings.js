@@ -871,7 +871,7 @@ var get_it = function (val, id) {
         value = dbas_en[id];
     }
     return value;
-
+    
 };
 
 /**
@@ -880,7 +880,7 @@ var get_it = function (val, id) {
  * @returns {string} which is translated or unknown value
  * @private
  */
-_t = function (id) {
+function _t(id) {
     'use strict';
     return get_it(getLanguage(), id);
 };
@@ -891,9 +891,9 @@ _t = function (id) {
  * @returns {string} which is translated or unknown value
  * @private
  */
-_t_discussion = function (id) {
+function _t_discussion(id) {
     'use strict';
-
+    
     var info = $('#issue_info');
     if (typeof info === 'undefined') {
         return get_it('en', id);
@@ -906,7 +906,7 @@ _t_discussion = function (id) {
  * Returns the tag of current language. This is either {en,de} or 'unknown value' *
  * @returns {string} language tag
  */
-getLanguage = function () {
+function getLanguage() {
     'use strict';
     return $('#hidden_language').val();
 };
@@ -915,9 +915,9 @@ getLanguage = function () {
  * Returns the tag of current discussion language. This is either {en,de} or 'unknown value' *
  * @returns {string} language tag
  */
-getDiscussionLanguage = function () {
+function getDiscussionLanguage() {
     'use strict';
-
+    
     var lang = $('#issue_info').data('discussion-language'), value;
     if (lang.indexOf('en') !== -1) {
         value = 'en';

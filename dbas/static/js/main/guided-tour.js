@@ -4,11 +4,11 @@
 
 function GuidedTour() {
     'use strict';
-
+    
     var langSwitcher = '';
     var tour = '';
     var stepList = [];
-
+    
     // override default template for i18n
     var template =
         '<div class="popover tour">' +
@@ -22,7 +22,7 @@ function GuidedTour() {
         '</div>' +
         '<button class="btn btn-sm btn-secondary" data-role="end">' + _t(tourEnd) + '</button>' +
         '</div>';
-
+    
     var template_end =
         '<div class="popover tour">' +
         '<div class="arrow"></div>' +
@@ -35,7 +35,7 @@ function GuidedTour() {
         '</div>' +
         '<button class="btn btn-sm btn-success" data-role="end">' + _t(tourEnd) + '</button>' +
         '</div>';
-
+    
     // click function for lang switch
     var setLangClick = function () {
         setTimeout(function () {
@@ -50,19 +50,19 @@ function GuidedTour() {
             });
         }, 500);
     };
-
+    
     // function on start
     var startFn = function () {
         tour.init(); // Initialize the tour
         tour.restart(); // Start the tour
         setLangClick();
     };
-
+    
     // function on end
     var endFn = function () {
         Cookies.set(GUIDED_TOUR, true, {expires: 60});
     };
-
+    
     /**
      * Prepares the steps of the tour as well as the tour itself
      */
@@ -76,7 +76,7 @@ function GuidedTour() {
             langSwitcher = '<a id="switch-to-en" class="pull-right" style="cursor: pointer;">' +
                 '<img class="language_selector_img" src="' + flag + '" alt="flag_us-gb" style="width:25px;"></a>';
         }
-
+        
         // steps
         var overview = {
             element: '.colored-container table',
@@ -130,7 +130,7 @@ function GuidedTour() {
             placement: 'bottom'
         };
         var firstChild = $('#discussions-space-list li:first');
-
+        
         var statementAction = {
             element: '#discussions-space-list li:first',
             title: _t(tourStatementActionTitle) + langSwitcher,
@@ -156,7 +156,7 @@ function GuidedTour() {
             placement: 'bottom',
             template: template_end
         };
-
+        
         stepList = [
             // overview,
             // infos,
@@ -168,7 +168,7 @@ function GuidedTour() {
             statementAction,
             haveFun
         ];
-
+        
         //data-placement="bottom"
         tour = new Tour({
             steps: stepList,
@@ -177,20 +177,20 @@ function GuidedTour() {
             template: template,
             onEnd: endFn
         });
-
+        
     };
-
+    
     /**
      * Starts tour from the beginning
      */
     this.start = function () {
         this.prepareSteps();
-
+        
         // build dialog
         var title = _t(tourWelcomeTitle);
         var text = '<p class="lead">' + _t(welcomeDialogBody) + '</p>' + langSwitcher.replace('style="', 'style="display: none; ');
         var dialog = $('#' + popupConfirmDialogId);
-
+        
         // add language switcher
         dialog.on('shown.bs.modal', function () {
             var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
@@ -202,7 +202,7 @@ function GuidedTour() {
             var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
             switcher.remove();
         });
-
+        
         // display dialog and set click events
         displayConfirmationDialog(title, text, startFn, endFn, false);
         dialog.find('#confirm-dialog-accept-btn').text(_t(yes));
