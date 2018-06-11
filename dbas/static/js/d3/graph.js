@@ -12,20 +12,20 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     var force;
     var size;
     var change;
-
+    
     // edges
     var edges;
     var link;
     var rect;
     var label;
-
+    
     // nodes
     var node;
     var circle;
     var selectedCircleId;
     var circleIds;
     var currentColorOfCircle;
-
+    
     /**
      * Displays a graph of current discussion
      */
@@ -56,8 +56,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             });
         }
         new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);
+        return true;
     };
-
+    
     /**
      * Initialize global dictionaries.
      */
@@ -67,7 +68,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         setRescaleGraphDict();
         setSizeDict();
     }
-
+    
     /**
      * Initialize dict "isVisible".
      */
@@ -82,7 +83,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             'defaultView': false
         };
     }
-
+    
     /**
      * Initialize dict "colors".
      */
@@ -98,7 +99,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             'dark_grey': '#424242'
         };
     }
-
+    
     /**
      * Initialize dict "rescaleGraph".
      */
@@ -111,7 +112,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             'zoom_scale': 0
         };
     }
-
+    
     /**
      * Initialize dict "size".
      */
@@ -126,7 +127,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             'edge_virtual_node': 45
         };
     }
-
+    
     function setSlider() {
         var slider = $('#graph-slider');
         var start_date_ms = slider.data('start-ms');
@@ -149,7 +150,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         w -= slider.parent().width() - slider.parent().find('.slider').width();
         slider.prev().css('width', w);
     }
-
+    
     /**
      * Callback if ajax request was successful.
      *
@@ -164,7 +165,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
         new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, data, null, request_for_complete);
     };
-
+    
     /**
      * If ajax request was successful show modal with data for jump into discussion.
      *
@@ -177,7 +178,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             popup.find('div.modal-body div').empty();
             createContentOfModalBody(data, list);
             popup.find('div.modal-body div').append(list);
-
+            
             // jump to url
             popup.find('input').click(function () {
                 window.location = $(this).attr('value');
@@ -185,11 +186,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         } else {
             popup.modal('hide');
         }
-
+        
         // add hover effects
         new GuiHandler().hoverInputListOf(popup.find('div.modal-body div'));
     };
-
+    
     /**
      * Create content for modal to jump into discussion.
      *
@@ -198,7 +199,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function createContentOfModalBody(jsonData, list) {
         var label, input, element, counter = 0;
-
+        
         $.each(jsonData.arguments, function (key, value) {
             input = $('<input>').attr('type', 'radio').attr('value', value.url).attr('id', 'jump_' + counter);
             label = $('<label>').html(value.text).attr('for', 'jump_' + counter);
@@ -207,7 +208,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             counter += 1;
         });
     }
-
+    
     /**
      * Set parameters for default view of graph.
      *
@@ -223,7 +224,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         initialDicts();
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
-
+        
         if (startD3) {
             if (!this.getD3Graph(jsonData)) {
                 dg.setDefaultViewParams(false, null, d3, request_for_complete);
@@ -232,7 +233,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             container.empty();
         }
     };
-
+    
     /**
      * Set default settings of buttons in sidebar.
      *
@@ -243,13 +244,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         $('#graph-view-container').find('.sidebar').find('li').each(function () {
             $(this).removeClass('hidden');
         });
-
+        
         if ((request_for_complete || typeof request_for_complete === 'undefined') && !isPartialGraphMode) {
             $('#global-view').hide();
         } else {
             $('#global-view').show();
         }
-
+        
         // show or hide my path
         $('#hide-my-path').hide();
         if (jsonData.path.length === 0) {
@@ -258,7 +259,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             $('#show-my-path').show();
         }
     };
-
+    
     /**
      * Create a graph.
      *
@@ -268,47 +269,47 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
         size.rel_node_factor = {};
-
+        
         // height of the header (offset per line count)
         var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1) * 26;
-
+        
         var width = container.width();
         var height = container.outerHeight() - offset;
-
+        
         var svg = getGraphSvg(width, height);
         force = getForce(jsonData, width, height);
-
+        
         // zoom and pan
         var zoom = d3.behavior.zoom();
         zoomAndPan(zoom);
         var drag = enableDrag();
-
+        
         // resize
         resizeGraph(container);
-
+        
         setEdges(jsonData, svg);
-
+        
         // node
         node = createNodes(svg, drag);
         circle = setNodeProperties().attr('class', 'circle');
-
+        
         setTooltip();
-
+        
         setLegend();
-
+        
         // buttons of sidebar
         addListenersForSidebarButtons(jsonData, zoom);
         // add listener to show/hide tooltip on mouse over
         addListenerForTooltip();
-
+        
         force.start();
-
+        
         // highlight nodes and edges
         addListenerForNodes();
-
+        
         return true;
     };
-
+    
     /**
      * Set edges of graph.
      *
@@ -324,7 +325,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var marker = createArrows(svg, edgesTypeArrow);
         link = createLinks(svg, marker);
     }
-
+    
     /**
      * Create tooltip.
      */
@@ -334,18 +335,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var tooltip = node.append('g');
         rect = tooltip.append('rect').attr('class', 'labelBox');
         label = createLabel(tooltip);
-
+        
         // reorder the elements so that the tooltips appear in front of the nodes
         tooltip.order();
         setRectProperties();
     }
-
+    
     /**
      * Create legend.
      */
     function setLegend() {
         var container = $('#' + graphViewContainerSpaceId);
-
+        
         // legend
         createLegend();
         // call updated legend
@@ -353,9 +354,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // create div for legend
         container.append("<div id = 'graphViewLegendId'></div>");
         getLegendSvg().call(legend);
-
+        
     }
-
+    
     /**
      * Set position of graph elements.
      *
@@ -364,7 +365,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function setPositionOfGraphElements(jsonData) {
         // create arrays of links, nodes and move layout forward one step
         force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
-
+        
         // update force layout calculations
         function forceTick() {
             // update position of nodes
@@ -380,10 +381,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";
             });
         }
-
+        
         setSlider();
     }
-
+    
     /**
      * Calculate position of circles.
      *
@@ -399,7 +400,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
+    
     /**
      * Calculate position of links.
      */
@@ -419,7 +420,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
+    
     /**
      * Get position of nodes.
      *
@@ -441,13 +442,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
             return (edge_source.y + edge_target.y) / 2;
         }
-
+        
         if (coordinate === 'x') {
             return d.x;
         }
         return d.y;
     }
-
+    
     /**
      * Create svg-element.
      *
@@ -461,7 +462,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             .append('g')
             .attr("class", "zoom");
     }
-
+    
     /**
      * Create force-directed network diagram and define properties.
      *
@@ -485,20 +486,20 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 return size.edge;
             });
     }
-
+    
     /**
      * Enable zoom and pan functionality on graph.
      */
     function zoomAndPan(zoom) {
         zoom.on("zoom", redraw).scaleExtent([0.5, 5]);
-
+        
         d3.select("#graph-svg").call(zoom).on("dblclick.zoom", null);
-
+        
         // if default view button is clicked redraw graph once
         if (isVisible.defaultView) {
             redraw();
         }
-
+        
         function redraw() {
             var change_scale = true;
             if (isVisible.defaultView) {
@@ -508,11 +509,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 rescaleGraph.zoom_scale = zoom.scale();
                 change_scale = Math.abs(rescaleGraph.old_scale - rescaleGraph.zoom_scale) > 0.02;
             }
-
+            
             rescaleGraph.old_scale = rescaleGraph.zoom_scale;
-
+            
             d3.selectAll("g.zoom").attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + rescaleGraph.zoom_scale + ")");
-
+            
             if (change_scale) {
                 var svg = $('#graph-svg');
                 // resizing of font size, line height and the complete rectangle
@@ -534,7 +535,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                         });
                     }
                 });
-
+                
                 // dirty hack to accept new line height and label position
                 svg.css({'line-height': '1.0'});
                 setTimeout(function () {
@@ -542,7 +543,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     $('#' + graphViewContainerSpaceId).find('.node').each(function () {
                         var id = $(this).attr('id').replace(rescaleGraph.node_id_prefix, '');
                         var label = $('#label-' + id);
-                        // var rect = $('#rect-' + id);
                         label.attr({
                             'y': -label.height() / rescaleGraph.zoom_scale + 45 / rescaleGraph.zoom_scale
                         });
@@ -551,7 +551,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         }
     }
-
+    
     /**
      * Enable drag functionality, because pan functionality overrides drag.
      *
@@ -563,7 +563,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 d3.event.sourceEvent.stopPropagation();
             });
     }
-
+    
     /**
      * Resize graph on window event.
      *
@@ -571,7 +571,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function resizeGraph(container) {
         d3.select(window).on("resize", resize);
-
+        
         function resize() {
             var graphSvg = $('#graph-svg');
             graphSvg.width(container.width());
@@ -580,7 +580,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             force.size([container.width(), container.outerHeight()]).resume();
         }
     }
-
+    
     /**
      * Sets the color in the json Data
      *
@@ -602,7 +602,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
+    
     /**
      * Create dictionary for edges.
      *
@@ -630,7 +630,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         });
         return edges;
     }
-
+    
     /**
      * Select edges with type of arrow.
      *
@@ -640,12 +640,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var edgesTypeArrow = [];
         edges.forEach(function (d) {
             if (d.edge_type === 'arrow') {
-                return edgesTypeArrow.push(d);
+                edgesTypeArrow.push(d);
+                return edgesTypeArrow;
             }
         });
         return edgesTypeArrow;
     }
-
+    
     /**
      * Create arrows for edges.
      *
@@ -678,7 +679,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             .append("svg:path")
             .attr("d", "M0,-3L7,0L0,3");
     }
-
+    
     /**
      * Create links between nodes.
      *
@@ -705,7 +706,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 return "url(#marker_" + d.edge_type + d.id + ")";
             });
     }
-
+    
     /**
      * Create node as svg circle and enable drag functionality.
      *
@@ -725,7 +726,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             })
             .call(drag);
     }
-
+    
     /**
      * Define properties for nodes.
      *
@@ -745,7 +746,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 }
             });
     }
-
+    
     /**
      * Calculates the node size in respect to the DOJ
      *
@@ -767,7 +768,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
         return size.issue;
     }
-
+    
     /**
      * Wrap text.
      *
@@ -788,27 +789,20 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     .attr(attr);
             }
             // set position of label
-            var height = $("#label-" + d.id).length > 0 ? 45 - $("#label-" + d.id).height() : - 20;
-            d3.select(this).attr({'id': 'label-' + d.id, 'y': height });
+            var height = $("#label-" + d.id).length > 0 ? 45 - $("#label-" + d.id).height() : -20;
+            d3.select(this).attr({'id': 'label-' + d.id, 'y': height});
         });
     }
-
+    
     /**
      * Set properties for rect.
      */
     function setRectProperties() {
         rect.each(function (d) {
-            // var row_count = $("#label-" + d.id + " [x='0']").length;
-            var width = 0; // 140;
-            var height = 0; // row_count * emToPx(1.2) + 10;
+            var width = 0;
+            var height = 0;
             var pos = calculateRectPos(width, height);
-
-            // if d is a virtual node do not show label
-            if (d.label === '') {
-                width = 0;
-                height = 0;
-            }
-
+            
             d3.select(this).attr({
                 'width': width,
                 'height': height,
@@ -816,13 +810,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 'y': pos[1],
                 'id': 'rect-' + d.id
             });
-
+            
             if (d.id.indexOf('statement') !== -1 || d.id.indexOf('issue') !== -1) {
                 box_sizes[d.id] = {'width': width, 'height': height};
             }
         });
     }
-
+    
     /**
      * Calculate the rectangle position depending on the rectangle width and height
      *
@@ -833,7 +827,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function calculateRectPos(width, height) {
         return [-width / 2, -height + 36];
     }
-
+    
     /**
      * Create svg for legend.
      */
@@ -850,7 +844,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 'transform': "translate(10,20)"
             });
     }
-
+    
     /**
      * Listen whether a node is clicked.
      */
@@ -876,7 +870,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             selectedCircleId = d.id;
         });
     }
-
+    
     /**
      * Create legend and update legend.
      */
@@ -886,7 +880,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             legendLabelRect = [_t_discussion("support"), _t_discussion("attack")],
             legendColorCircle = [colors.grey, colors.blue, colors.yellow],
             legendColorRect = [colors.green, colors.red];
-
+        
         // set properties for legend
         d3.svg.legend = function () {
             function legend(selection) {
@@ -894,11 +888,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 createEdgeSymbols(selection, legendLabelRect, legendColorRect);
                 createLabelsForSymbols(selection, legendLabelCircle, legendLabelRect);
             }
-
+            
             return legend;
         };
     }
-
+    
     /**
      * Create symbols for nodes.
      *
@@ -920,7 +914,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 }
             });
     }
-
+    
     /**
      * Create symbols for edges.
      *
@@ -943,7 +937,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 }
             });
     }
-
+    
     /**
      * Create labels for symbols.
      *
@@ -964,7 +958,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 }
             });
     }
-
+    
     /**
      * Add listeners for buttons of sidebar.
      *
@@ -989,7 +983,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);
             }
         });
-
+        
         var mapper = {
             'labels': [showLabels, hideLabels],
             'positions': [showPositions, hidePositions],
@@ -998,7 +992,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             'supports-on-my-statements': [showSupportsOnMyStatements, hideSupportsOnMyStatements],
             'attacks-on-my-statements': [showAttacksOnMyStatements, hideAttacksOnMyStatements]
         };
-
+        
         // get all buttons in the sidebar
         $('#graph-view-container').find('.sidebar').find('li').each(function (index, element) {
             var id = $(element).attr('id');
@@ -1018,16 +1012,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 });
             }
         });
-
+        
         $('#show-my-path').click(function () {
             showPath(jsonData);
         });
-
+        
         $('#hide-my-path').click(function () {
             hidePath();
         });
     }
-
+    
     /**
      * Restore initial state of graph.
      *
@@ -1036,23 +1030,23 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function showDefaultView(jsonData, zoom) {
         isVisible.defaultView = true;
-
+        
         // reset buttons
         new DiscussionGraph(box_sizes, isPartialGraphMode).setButtonDefaultSettings(jsonData);
-
+        
         // set position of graph and set scale
         d3.selectAll("g.zoom").attr("transform", "translate(" + 0 + ")" + " scale(" + 1 + ")");
-
+        
         // stop zoom event
         zoom.on("zoom", null);
-
+        
         // create new zoom event listener
         var zoomDefaultView = d3.behavior.zoom();
         zoomAndPan(zoomDefaultView);
-
+        
         resetButtons();
     }
-
+    
     /**
      * Reset graph if button default view is clicked.
      */
@@ -1061,7 +1055,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.content = true;
         isVisible.support = true;
         isVisible.attack = true;
-
+        
         hideLabels();
         hidePositions();
         hidePath();
@@ -1069,12 +1063,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         hideSupportsOnMyStatements();
         hideAttacksOnMyStatements();
     }
-
+    
     function resetSlider() {
         var slider = $('#graph-slider');
         slider.slider('setValue', slider.data('slider-max'));
     }
-
+    
     /**
      * Show all labels of graph.
      */
@@ -1082,17 +1076,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.content = true;
         isVisible.position = true;
         isVisible.statements = true;
-
+        
         label.style("display", 'inline');
         rect.style("display", 'inline');
-
+        
         hideLabelsOfNotSelectedNodes();
-
+        
         // also show content of positions and statements
         $('#positions').find('i').removeClass().addClass("fa fa-check-square-o");
         $('#statements').find('i').removeClass().addClass("fa fa-check-square-o");
     }
-
+    
     /**
      * Hide labels of not selected nodes
      */
@@ -1105,7 +1099,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
+    
     /**
      * Hide all labels of graph.
      */
@@ -1121,7 +1115,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.position = false;
         isVisible.statements = false;
     }
-
+    
     /**
      * Show labels for positions.
      */
@@ -1137,7 +1131,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             setDisplayStyleOfNodes('inline', 'none');
         }
     }
-
+    
     /**
      * Hide labels for positions.
      */
@@ -1153,7 +1147,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             setDisplayStyleOfNodes('none', 'inline');
         }
     }
-
+    
     /**
      * Show labels for statements.
      */
@@ -1168,7 +1162,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             setDisplayStyleOfNodes('none', 'inline');
         }
     }
-
+    
     /**
      * Hide labels for statements.
      */
@@ -1184,7 +1178,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             setDisplayStyleOfNodes('inline', 'none');
         }
     }
-
+    
     /**
      * Get id of node.
      *
@@ -1197,14 +1191,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
         return "statement_" + node;
     }
-
+    
     /**
      * Show all statements, which the current user has created.
      */
     function showMyStatements() {
         isVisible.attack = true;
         isVisible.support = true;
-
+        
         // show supports and attacks on statements
         if (isVisible.support) {
             $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
@@ -1214,42 +1208,42 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
             isVisible.attack = true;
         }
-
+        
         // graying all elements of graph
         edges.forEach(function (d) {
             grayingElements(d);
         });
-
+        
         selectSupportsAttacks();
     }
-
+    
     /**
      * Hide all statements, which the current user has created.
      */
     function hideMyStatements() {
         isVisible.attack = false;
         isVisible.support = false;
-
+        
         // hide supports and attacks on statements
         $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-square-o");
         $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-square-o");
-
+        
         highlightAllElements();
-
+        
         // delete border of nodes
         deleteBorderOfCircle();
     }
-
+    
     /**
      * Show all supports on the statements, which the current user has created.
      */
     function showSupportsOnMyStatements() {
         isVisible.support = true;
-
+        
         // hide statements
         // delete border of nodes
         deleteBorderOfCircle();
-
+        
         // if attacks on statements of current user are visible, highlight additionally the supports
         if (!isVisible.attack) {
             $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
@@ -1261,18 +1255,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         else {
             $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
         }
-
+        
         selectSupportsAttacks();
     }
-
+    
     /**
      * Hide all supports on the statements, which the current user has created.
      */
     function hideSupportsOnMyStatements() {
         isVisible.support = false;
-
+        
         deleteBorderOfCircle();
-
+        
         // if attacks are not visible, show the default view of the graph
         // else make them visible
         if (!isVisible.attack) {
@@ -1284,17 +1278,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             showAttacksOnMyStatements();
         }
     }
-
+    
     /**
      * Show all attacks on the statements, which the current user has created.
      */
     function showAttacksOnMyStatements() {
         isVisible.attack = true;
-
+        
         // hide statements
         // delete border of nodes
         deleteBorderOfCircle();
-
+        
         // if supports on statements of current user are visible, highlight additionally the attacks
         if (!isVisible.support) {
             $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
@@ -1306,18 +1300,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         else {
             $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
         }
-
+        
         selectSupportsAttacks();
     }
-
+    
     /**
      * Hide all attacks on the statements, which the current user has created.
      */
     function hideAttacksOnMyStatements() {
         isVisible.attack = false;
-
+        
         deleteBorderOfCircle();
-
+        
         if (!isVisible.support) {
             $('#my-statements').find('i').removeClass().addClass("fa fa-square-o");
             highlightAllElements();
@@ -1327,7 +1321,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             showSupportsOnMyStatements();
         }
     }
-
+    
     /**
      *
      * @param new_limit
@@ -1352,7 +1346,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             highlightElements(edge);
         });
     }
-
+    
     /**
      * Select supports or attacks on statements of current user.
      */
@@ -1367,10 +1361,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 circleIds.push(selectUid(d.id));
             }
         });
-
+        
         showPartOfGraph(circleIds);
     }
-
+    
     /**
      * Show current path.
      *
@@ -1379,18 +1373,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function showPath(jsonData) {
         $('#show-my-path').hide();
         $('#hide-my-path').show();
-
+        
         edges.forEach(function (d) {
             grayingElements(d);
         });
-
+        
         if (jsonData.path.length !== 0) { // if jsonData.path is not empty highlight path
             highlightPath(jsonData);
         } else { // if jsonData.path is empty color issue
             d3.select('#circle-issue').attr('fill', colors.grey);
         }
     }
-
+    
     /**
      * Hide current path.
      */
@@ -1401,7 +1395,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             highlightElements(d);
         });
     }
-
+    
     /**
      * Highlight path.
      *
@@ -1409,7 +1403,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function highlightPath(jsonData) {
         var edgesCircleId = [];
-
+        
         // run through all values in jsonData.path
         jsonData.path.forEach(function (d) {
             edges.forEach(function (edge) {
@@ -1423,13 +1417,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 }
             });
         });
-
+        
         // highlight path
         edgesCircleId.forEach(function (d) {
             highlightElements(d);
         });
     }
-
+    
     /**
      * Find two edges which connect source and target.
      *
@@ -1446,7 +1440,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
+    
     /**
      * Highlight all elements of graph.
      */
@@ -1455,7 +1449,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             highlightElements(d);
         });
     }
-
+    
     /**
      * Delete border of circle.
      */
@@ -1465,7 +1459,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             d3.select('#circle-' + d.id).attr('stroke', 'none');
         });
     }
-
+    
     /**
      * Set display style of nodes.
      *
@@ -1490,7 +1484,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             });
         });
     }
-
+    
     /**
      * Show/hide tooltips on mouse event.
      */
@@ -1501,7 +1495,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             determineShowOrHideTooltip(d, false);
         });
     }
-
+    
     /**
      * Show or hide tooltip of node dependent on selected side-bar buttons.
      *
@@ -1520,7 +1514,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             showHideTooltip(d, mouseover);
         }
     }
-
+    
     /**
      * Test whether the selected node is a position.
      *
@@ -1535,7 +1529,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         });
         return isPosition;
     }
-
+    
     /**
      * Show or hide tooltip of node dependent on mouse event.
      *
@@ -1565,7 +1559,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         }
     }
-
+    
     /**
      * Show modal.
      */
@@ -1578,7 +1572,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             new AjaxGraphHandler().getJumpDataForGraph(uid);
         }
     }
-
+    
     /**
      * Select uid.
      */
@@ -1586,7 +1580,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var splitted = id.split('-');
         return splitted[splitted.length - 1];
     }
-
+    
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
@@ -1606,7 +1600,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 edgesCircleId.push(d);
             }
         });
-
+        
         // if isMyStatementsClicked is false gray all elements at each function call,
         // else the graph is colored once gray
         if (!isVisible.my_statements && !isVisible.support && !isVisible.attack) {
@@ -1627,7 +1621,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
+    
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
@@ -1652,7 +1646,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 nodeId.push(d);
             }
         });
-
+        
         // if isMyStatementsClicked is false gray all elements at each function call,
         // else the graph is colored once gray
         var nothing = !isVisible.my_statements && !isVisible.support && !isVisible.attack;
@@ -1680,7 +1674,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
+    
     /**
      * Highlight incoming and outgoing edges of virtual node.
      *
@@ -1700,7 +1694,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
         while (change);
     }
-
+    
     /**
      * Create array with virtual nodes.
      *
@@ -1726,7 +1720,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
+    
     /**
      * Create array which contains edges with virtual node as source or as target.
      *
@@ -1744,7 +1738,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             });
         });
     }
-
+    
     /**
      * Highlighting components of graph.
      *
@@ -1755,7 +1749,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         highlightEdgeSource(edge);
         hightlightEdgeTarget(edge);
     }
-
+    
     /**
      *
      * @param edge
@@ -1764,7 +1758,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         d3.select('#link-' + edge.id).style('stroke', edge.color);
         d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
     }
-
+    
     /**
      *
      * @param edge
@@ -1775,7 +1769,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             d3.select('#circle-' + edge.source.id).attr({fill: edge.source.color, stroke: 'black'});
         }
     }
-
+    
     /**
      *
      * @param edge
@@ -1786,7 +1780,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             d3.select('#circle-' + edge.target.id).attr({fill: edge.target.color, stroke: 'black'});
         }
     }
-
+    
     /**
      * Graying components of graph.
      *

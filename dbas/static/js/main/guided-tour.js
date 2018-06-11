@@ -2,15 +2,7 @@
  * Created by tobias on 26.01.17.
  */
 
-function GuidedTour() {
-    'use strict';
-
-    var langSwitcher = '';
-    var tour = '';
-    var stepList = [];
-
-    // override default template for i18n
-    var template =
+var guided_tour_template =
         '<div class="popover tour">' +
         '<div class="arrow"></div>' +
         '<h3 class="popover-title"></h3>' +
@@ -23,7 +15,7 @@ function GuidedTour() {
         '<button class="btn btn-sm btn-secondary" data-role="end">' + _t(tourEnd) + '</button>' +
         '</div>';
 
-    var template_end =
+var guided_tour_template_end =
         '<div class="popover tour">' +
         '<div class="arrow"></div>' +
         '<h3 class="popover-title"></h3>' +
@@ -31,11 +23,18 @@ function GuidedTour() {
         '<div class="popover-navigation">' +
         '<div class="btn-group">' +
         '<button class="btn btn-sm btn-secondary" data-role="prev">&#xab; ' + _t(prev) + '</button>' +
-        '<button class="btn btn-sm btn-secondary" data-role="next">' + _t(next) + ' &#xbb;</button>' +
+        '<button class="btn btn-sm btn-success" data-role="next">' + _t(next) + ' &#xbb;</button>' +
         '</div>' +
-        '<button class="btn btn-sm btn-success" data-role="end">' + _t(tourEnd) + '</button>' +
+        '<button class="btn btn-sm btn-secondary" data-role="end">' + _t(tourEnd) + '</button>' +
         '</div>';
 
+function GuidedTour() {
+    'use strict';
+    
+    var langSwitcher = '';
+    var tour = '';
+    var stepList = [];
+    
     // click function for lang switch
     var setLangClick = function () {
         setTimeout(function () {
@@ -50,19 +49,19 @@ function GuidedTour() {
             });
         }, 500);
     };
-
+    
     // function on start
     var startFn = function () {
         tour.init(); // Initialize the tour
         tour.restart(); // Start the tour
         setLangClick();
     };
-
+    
     // function on end
     var endFn = function () {
         Cookies.set(GUIDED_TOUR, true, {expires: 60});
     };
-
+    
     /**
      * Prepares the steps of the tour as well as the tour itself
      */
@@ -70,11 +69,13 @@ function GuidedTour() {
         // lang switcher
         var flag = $('#header-language-selector').find('img').attr('src');
         if (getLanguage() === 'en') {
-            langSwitcher = '<a id="switch-to-de" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + flag + '" alt="flag_ge" style="width:25px;"></a>';
+            langSwitcher = '<a id="switch-to-de" class="pull-right" style="cursor: pointer;">' +
+                '<img class="language_selector_img" src="' + flag + '" alt="flag_ge" style="width:25px;"></a>';
         } else {
-            langSwitcher = '<a id="switch-to-en" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + flag + '" alt="flag_us-gb" style="width:25px;"></a>';
+            langSwitcher = '<a id="switch-to-en" class="pull-right" style="cursor: pointer;">' +
+                '<img class="language_selector_img" src="' + flag + '" alt="flag_us-gb" style="width:25px;"></a>';
         }
-
+        
         // steps
         var overview = {
             element: '.colored-container table',
@@ -128,7 +129,7 @@ function GuidedTour() {
             placement: 'bottom'
         };
         var firstChild = $('#discussions-space-list li:first');
-
+        
         var statementAction = {
             element: '#discussions-space-list li:first',
             title: _t(tourStatementActionTitle) + langSwitcher,
@@ -152,12 +153,10 @@ function GuidedTour() {
             title: _t(tourHaveFunTitle) + langSwitcher,
             content: _t(tourHaveFunContent),
             placement: 'bottom',
-            template: template_end
+            template: guided_tour_template_end
         };
-
+        
         stepList = [
-            // overview,
-            // infos,
             issue,
             startDiscussion,
             markOpinion,
@@ -166,29 +165,27 @@ function GuidedTour() {
             statementAction,
             haveFun
         ];
-
-        //data-placement="bottom"
+        
         tour = new Tour({
             steps: stepList,
             backdrop: true,
             backdropPadding: 5,
-            template: template,
+            template: guided_tour_template,
             onEnd: endFn
         });
-
     };
-
+    
     /**
      * Starts tour from the beginning
      */
     this.start = function () {
         this.prepareSteps();
-
+        
         // build dialog
         var title = _t(tourWelcomeTitle);
         var text = '<p class="lead">' + _t(welcomeDialogBody) + '</p>' + langSwitcher.replace('style="', 'style="display: none; ');
         var dialog = $('#' + popupConfirmDialogId);
-
+        
         // add language switcher
         dialog.on('shown.bs.modal', function () {
             var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
@@ -200,7 +197,7 @@ function GuidedTour() {
             var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
             switcher.remove();
         });
-
+        
         // display dialog and set click events
         displayConfirmationDialog(title, text, startFn, endFn, false);
         dialog.find('#confirm-dialog-accept-btn').text(_t(yes));
