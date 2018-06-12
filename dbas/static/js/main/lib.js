@@ -13,41 +13,30 @@ function levensthein(s1, s2) {
     if (s1 === s2) {
         return 0;
     }
-
-    var s1Len = s1.length,
-        s2Len = s2.length;
-
-    if (!s1Len  || !s2Len) {
+    var s1Len = s1.length, s2Len = s2.length;
+    if (!s1Len || !s2Len) {
         return s1Len + s2Len;
     }
-
-    var i1 = 0, i2 = 0, a = 0, b = 0, c = 0, c2 = 0, row = rowTwo;
+    var i1 = 0, i2 = 0, a, b, c, c2, row = rowTwo;
     while (i1 < s1Len) {
         ++i1;
         row[i1] = i1;
     }
-
     while (i2 < s2Len) {
-        __helper_levensthein(i1, i2, a, b, c, c2, row, s1, s2, s1Len);
-    }
-    return b;
-}
-
-function __helper_levensthein(i1, i2, a, b, c, c2, row, s1, s2, s1Len){
-    'use strict';
-    c2 = s2.charCodeAt(i2);
-    a = i2;
-    ++i2;
-    b = i2;
-    for (i1 = 0; i1 < s1Len; ++i1) {
-        c = a + (s1.charCodeAt(i1) === c2 ? 0 : 1);
-        a = row[i1];
-        if (b < a) {
-            b = b < c ? b + 1 : c;
-        } else {
-            b = a < c ? a + 1 : c;
+        c2 = s2.charCodeAt(i2);
+        a = i2;
+        ++i2;
+        b = i2;
+        for (i1 = 0; i1 < s1Len; ++i1) {
+            c = a + (s1.charCodeAt(i1) === c2 ? 0 : 1);
+            a = row[i1];
+            if (b < a) {
+                b = b < c ? b + 1 : c;
+            } else {
+                b = a < c ? a + 1 : c;
+            }
+            row[i1] = b;
         }
-        row[i1] = b;
     }
     return b;
 }
