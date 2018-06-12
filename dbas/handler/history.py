@@ -216,7 +216,8 @@ def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
     msg, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
 
     bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=msg, omit_bubble_url=False, statement_uid=uid,
-                                           is_supportive=is_supportive, nickname=db_user.nickname, lang=lang, bubble_url=url)
+                                           is_supportive=is_supportive, nickname=db_user.nickname, lang=lang,
+                                           bubble_url=url)
     return [bubble_user]
 
 
@@ -238,7 +239,8 @@ def __get_bubble_from_support_step(uid_user, uid_system, nickname, lang):
         return None
 
     user_text = get_text_for_argument_uid(uid_user)
-    bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=user_text, omit_bubble_url=True, argument_uid=uid_user,
+    bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=user_text, omit_bubble_url=True,
+                                           argument_uid=uid_user,
                                            is_supportive=db_arg_user.is_supportive, lang=lang, nickname=nickname)
 
     argument_text = get_text_for_argument_uid(uid_system, colored_position=True, with_html_tag=True, attack_type='jump')
@@ -249,7 +251,8 @@ def __get_bubble_from_support_step(uid_user, uid_system, nickname, lang):
 
     text = get_text_for_support(db_arg_system, argument_text, nickname, Translator(lang))
     db_tmp = DBDiscussionSession.query(User).get(DBDiscussionSession.query(Argument).get(db_arg_system).author_uid)
-    bubble_system = create_speechbubble_dict(BubbleTypes.SYSTEM, content=text, omit_bubble_url=True, lang=lang, other_author=db_tmp)
+    bubble_system = create_speechbubble_dict(BubbleTypes.SYSTEM, content=text, omit_bubble_url=True, lang=lang,
+                                             other_author=db_tmp)
 
     return [bubble_user, bubble_system]
 
@@ -306,7 +309,8 @@ def __get_bubble_from_dont_know_step(step, db_user, lang):
         intro = _tn.get(_.otherParticipantsThinkThat)
     sys_text = intro + ' ' + start_with_small(text) + '. '
     sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
-    sys_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, nickname=db_user.nickname, other_author=data['user'])
+    sys_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, nickname=db_user.nickname,
+                                          other_author=data['user'])
 
     text = _tn.get(_.showMeAnArgumentFor) + (' ' if lang == 'de' else ': ') + get_text_for_conclusion(db_argument)
     user_bubble = create_speechbubble_dict(BubbleTypes.USER, content=text, nickname=db_user.nickname)
@@ -341,9 +345,12 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
         logger('history_handler', 'wrong reaction')
         return None
 
-    return __create_reaction_history_bubbles(step, db_user, lang, splitted_history, url, color_steps, uid, additional_uid, attack)
+    return __create_reaction_history_bubbles(step, db_user, lang, splitted_history, url, color_steps, uid,
+                                             additional_uid, attack)
 
-def __create_reaction_history_bubbles(step, db_user, lang, splitted_history, url, color_steps, uid, additional_uid, attack):
+
+def __create_reaction_history_bubbles(step, db_user, lang, splitted_history, url, color_steps, uid, additional_uid,
+                                      attack):
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
     last_relation = splitted_history[-1].split('/')[2] if len(splitted_history) > 1 else ''
 
@@ -396,7 +403,8 @@ def __create_reaction_history_bubbles(step, db_user, lang, splitted_history, url
                                                db_argument, db_confrontation, color_html=False)
 
     bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=user_text, omit_bubble_url=False, argument_uid=uid,
-                                           is_supportive=is_supportive, nickname=db_user.nickname, lang=lang, bubble_url=url)
+                                           is_supportive=is_supportive, nickname=db_user.nickname, lang=lang,
+                                           bubble_url=url)
     db_tmp = DBDiscussionSession.query(User).get(db_confrontation.author_uid)
     if not attack:
         bubble_syst = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, omit_bubble_url=True,

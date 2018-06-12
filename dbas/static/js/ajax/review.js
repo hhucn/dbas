@@ -216,18 +216,7 @@ AjaxReviewHandler.prototype.undoReview = function (queue, uid) {
         queue: queue,
         uid: parseInt(uid)
     };
-    var done = function reviewUndoDone(data) {
-        if (data.info.length !== 0) {
-            setGlobalInfoHandler(_t(ohsnap), data.info);
-        } else {
-            setGlobalSuccessHandler('Yep!', data.success);
-            $('#' + queue + uid).remove();
-        }
-    };
-    var fail = function reviewUndoFail(data) {
-        setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
-    };
-    ajaxSkeleton(url, 'POST', data, done, fail);
+    this.__ajax_skeleton(url, data);
 };
 
 /**
@@ -242,7 +231,12 @@ AjaxReviewHandler.prototype.cancelReview = function (queue, uid) {
         queue: queue,
         uid: parseInt(uid)
     };
-    var done = function reviewCancelDone(data) {
+    this.__ajax_skeleton(url, data);
+};
+
+AjaxReviewHandler.prototype.__ajax_skeleton = function (url, data) {
+    'use strict';
+    var done = function (data) {
         if (data.info.length !== 0) {
             setGlobalInfoHandler(_t(ohsnap), data.info);
         } else {
@@ -250,7 +244,7 @@ AjaxReviewHandler.prototype.cancelReview = function (queue, uid) {
             $('#' + queue + uid).remove();
         }
     };
-    var fail = function reviewCancelFail(data) {
+    var fail = function (data) {
         setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
     };
     ajaxSkeleton(url, 'POST', data, done, fail);
