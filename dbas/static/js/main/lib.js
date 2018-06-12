@@ -28,6 +28,13 @@ function levensthein(s1, s2) {
     }
 
     while (i2 < s2Len) {
+        __helper_levensthein(i1, i2, a, b, c, c2, row, s1, s2, s1Len);
+    }
+    return b;
+}
+
+function __helper_levensthein(i1, i2, a, b, c, c2, row, s1, s2, s1Len){
+    'use strict';
     c2 = s2.charCodeAt(i2);
     a = i2;
     ++i2;
@@ -41,7 +48,6 @@ function levensthein(s1, s2) {
             b = a < c ? a + 1 : c;
         }
         row[i1] = b;
-    }
     }
     return b;
 }
