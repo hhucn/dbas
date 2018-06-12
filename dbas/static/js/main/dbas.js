@@ -349,32 +349,36 @@ function setTextWatcherInputLength(element, displayAtTop) {
     }
 
     element.keyup(function () {
-        var text = element.val().trim();
-        var currentLength = text.length;
-
-        if (currentLength === 0) {
-            field.addClass('text-info');
-            field.removeClass('text-danger');
-            field.text(msg);
-        } else if (currentLength < minLength) {
-            field.removeClass('text-danger');
-            field.text((minLength - currentLength) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
-        } else {
-            field.removeClass('text-info');
-            if (currentLength > maxLength * 3 / 4) {
-                field.addClass('text-danger');
-            } else {
-                field.removeClass('text-danger');
-            }
-            var left = maxLength < currentLength ? 0 : maxLength - currentLength;
-            field.text(left + ' ' + _t_discussion(textMaxCountMessage));
-            if (maxLength <= currentLength) {
-                field.removeClass('text-danger');
-                field.addClass('text-info');
-                field.text(_t_discussion(textMaxCountMessageError));
-            }
-        }
+        __keyUpFuncForTextwatcher(element, field, minLength, maxLength, msg);
     });
+}
+
+function __keyUpFuncForTextwatcher(element, field, minLength, maxLength, msg){
+    var text = element.val().trim();
+    var currentLength = text.length;
+
+    if (currentLength === 0) {
+        field.addClass('text-info');
+        field.removeClass('text-danger');
+        field.text(msg);
+    } else if (currentLength < minLength) {
+        field.removeClass('text-danger');
+        field.text((minLength - currentLength) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
+    } else {
+        field.removeClass('text-info');
+        if (currentLength > maxLength * 3 / 4) {
+            field.addClass('text-danger');
+        } else {
+            field.removeClass('text-danger');
+        }
+        var left = maxLength < currentLength ? 0 : maxLength - currentLength;
+        field.text(left + ' ' + _t_discussion(textMaxCountMessage));
+        if (maxLength <= currentLength) {
+            field.removeClass('text-danger');
+            field.addClass('text-info');
+            field.text(_t_discussion(textMaxCountMessageError));
+        }
+    }
 }
 
 // *********************

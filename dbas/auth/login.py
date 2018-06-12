@@ -211,13 +211,7 @@ def __set_oauth_user(request, user_data, service, ui_locales):
         logger('Auth.Login', 'Error occured')
         return {'error': _tn.get(_.errorTryLateOrContant)}
 
-    ret_dict = user.set_new_oauth_user(user_data['firstname'],
-                                       user_data['lastname'],
-                                       user_data['nickname'],
-                                       user_data['email'],
-                                       user_data['gender'],
-                                       user_data['id'],
-                                       service, _tn)
+    ret_dict = user.set_new_oauth_user(user_data, user_data['id'], service, _tn)
 
     if ret_dict['success']:
         url = request.session['oauth_redirect_url']
@@ -242,8 +236,9 @@ def __register_user_with_ldap_data(mailer, nickname, password, _tn) -> dict:
         return {'error': ldap_data['error']}
 
     # register the new user
-    ret_dict = user.set_new_user(mailer, ldap_data['firstname'], ldap_data['lastname'], nickname, ldap_data['gender'],
-                                 ldap_data['email'], 'NO_PW_BECAUSE_LDAP', _tn)
+
+    ldap_data['nickname'] = nickname
+    ret_dict = user.set_new_user(mailer, ldap_data, 'NO_PW_BECAUSE_LDAP', _tn)
     if 'success' not in ret_dict:
         return {'error': _tn.get(_.internalKeyError)}
 
@@ -322,7 +317,14 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
         logger('Auth.Login', 'Error occured')
         return success, msg, db_new_user
 
-    ret_dict = user.set_new_user(mailer, firstname, lastname, nickname, gender, email, password, _tn)
+    user_data = {
+        'firstname': firstname,
+        'lastname': lastname,
+        'nickname': nickname,
+        'gender': gender,
+        'email': email
+    }
+    ret_dict = user.set_new_user(mailer, user_data, password, _tn)
     success = ret_dict['success']
     error = ret_dict['error']
     db_new_user = ret_dict['user']

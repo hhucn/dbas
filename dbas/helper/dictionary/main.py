@@ -107,11 +107,14 @@ class DictionaryHelper(object):
         """
         logger('DictionaryHelper', 'def')
 
-        is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP') if db_user else None
-        is_logged_in = True if db_user else False
-        if db_user and db_user.nickname == nick_of_anonymous_user:
-            db_user = None
-            is_logged_in = False
+        is_user_from_ldap = None
+        is_logged_in = False
+        if db_user:
+            is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP')
+            is_logged_in = True
+            if db_user.nickname == nick_of_anonymous_user:
+                db_user = None
+                is_logged_in = False
 
         return_dict = dict()
         return_dict['url'] = get_global_url()
