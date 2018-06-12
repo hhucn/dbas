@@ -49,6 +49,7 @@ function __helper_levensthein(i1, i2, a, b, c, c2, row, s1, s2, s1Len){
         }
         row[i1] = b;
     }
+    return b;
 }
 
 function pxToEm(px) {

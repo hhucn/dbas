@@ -354,6 +354,7 @@ function setTextWatcherInputLength(element, displayAtTop) {
 }
 
 function __keyUpFuncForTextwatcher(element, field, minLength, maxLength, msg){
+    'use strict';
     var text = element.val().trim();
     var currentLength = text.length;
 

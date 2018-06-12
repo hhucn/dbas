@@ -109,9 +109,20 @@ class DictionaryHelper(object):
 
         is_user_from_ldap = None
         is_logged_in = False
+        nickname = None
+        public_nickname = None
+        is_user_male = False
+        is_user_female = False
+        is_admin = False
+
         if db_user:
             is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP')
             is_logged_in = True
+            nickname = db_user.nickname
+            public_nickname = db_user.public_nickname
+            is_user_male = db_user.gender == 'm'
+            is_user_female = db_user.gender == 'f'
+            is_admin = db_user.is_admin()
             if db_user.nickname == nick_of_anonymous_user:
                 db_user = None
                 is_logged_in = False
@@ -122,15 +133,15 @@ class DictionaryHelper(object):
         return_dict['restart_url'] = current_slug
         return_dict['is_in_discussion'] = 'discuss' in path
         return_dict['logged_in'] = is_logged_in
-        return_dict['nickname'] = db_user.nickname if db_user else None
-        return_dict['public_nickname'] = db_user.public_nickname if db_user else None
+        return_dict['nickname'] = nickname
+        return_dict['public_nickname'] = public_nickname
         return_dict['add_premise_container_style'] = add_premise_container_style
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar'] = get_profile_picture(db_user, 25)
         return_dict['ongoing_discussion'] = ongoing_discussion
         return_dict['slug'] = current_slug
-        return_dict['is_user_male'] = db_user.gender == 'm' if db_user else False
-        return_dict['is_user_female'] = db_user.gender == 'f' if db_user else False
+        return_dict['is_user_male'] = is_user_male
+        return_dict['is_user_female'] = is_user_female
         return_dict['is_user_neutral'] = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit'] = 'true' if broke_limit else 'false'
         return_dict['use_with_ldap'] = is_user_from_ldap
@@ -157,7 +168,7 @@ class DictionaryHelper(object):
         is_author_bool = is_author or points > limit_to_open_issues
 
         return_dict['is_reportable'] = is_reportable
-        return_dict['is_admin'] = db_user.is_admin() if db_user else False
+        return_dict['is_admin'] = is_admin
         return_dict['is_author'] = is_author_bool
         return_dict['show_bar_icon'] = show_bar_icon
         return_dict['show_graph_icon'] = show_graph_icon
