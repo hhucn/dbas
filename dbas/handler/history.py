@@ -330,17 +330,20 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     steps = step.split('/')
     uid = int(steps[1])
 
-    attack = Relations.SUPPORT
     if 'reaction' in step:
         additional_uid = int(steps[3])
         attack = relation_mapper[steps[2]]
     else:
+        attack = Relations.SUPPORT
         additional_uid = int(steps[2])
 
     if not check_reaction(uid, additional_uid, attack):
         logger('history_handler', 'wrong reaction')
         return None
 
+    return __create_reaction_history_bubbles(step, db_user, lang, splitted_history, url, color_steps, uid, additional_uid, attack)
+
+def __create_reaction_history_bubbles(step, db_user, lang, splitted_history, url, color_steps, uid, additional_uid, attack):
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
     last_relation = splitted_history[-1].split('/')[2] if len(splitted_history) > 1 else ''
 
@@ -382,7 +385,10 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     premise = start_with_small(premise)
 
     _tn = Translator(lang)
-    user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if last_relation == Relations.SUPPORT else ''
+    user_text = ''
+    if last_relation == Relations.SUPPORT:
+        user_text = _tn.get(_.otherParticipantsConvincedYouThat) + ': '
+
     user_text += '<{}>{}</{}>'.format(tag_type, current_arg if current_arg != '' else premise, tag_type)
 
     sys_text, tmp = get_text_for_confrontation(lang, db_user.nickname, premise, conclusion, sys_conclusion,

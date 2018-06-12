@@ -540,22 +540,42 @@ def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_h
 
 
 def __get_tags_for_building_single_argument(with_html_tag, attack_type, colored_position, premises, conclusion):
+    if attack_type in ['dont_know', 'jump']:
+        return __get_tags_for_building_single_unknown_argument(with_html_tag, premises, conclusion)
+    else:
+        return __get_tags_for_building_single_user_argument(with_html_tag, premises, conclusion, colored_position,
+                                                            attack_type)
+
+
+def __get_tags_for_building_single_unknown_argument(with_html_tag, premises, conclusion):
+    sb = start_argument if with_html_tag else ''
+    sb_tmp = start_attack if with_html_tag else ''
     sb_none = start_tag if with_html_tag else ''
     se = end_tag if with_html_tag else ''
-    if attack_type not in ['dont_know', 'jump']:
-        sb = start_tag if with_html_tag else ''
-        if colored_position:
-            sb = start_position if with_html_tag else ''
+    premises = sb + premises + se
+    conclusion = sb_tmp + conclusion + se
 
-        if attack_type == Relations.UNDERMINE:
-            premises = sb + premises + se
-        else:
-            conclusion = sb + conclusion + se
-    else:
-        sb = start_argument if with_html_tag else ''
-        sb_tmp = start_attack if with_html_tag else ''
+    return {
+        'premise': premises,
+        'conclusion': conclusion,
+        'tag_begin': sb,
+        'tag_none': sb_none,
+        'tag_end': se
+    }
+
+
+def __get_tags_for_building_single_user_argument(with_html_tag, premises, conclusion, colored_position, attack_type):
+    sb_none = start_tag if with_html_tag else ''
+    se = end_tag if with_html_tag else ''
+    sb = start_tag if with_html_tag else ''
+    if colored_position:
+        sb = start_position if with_html_tag else ''
+
+    if attack_type == Relations.UNDERMINE:
         premises = sb + premises + se
-        conclusion = sb_tmp + conclusion + se
+    else:
+        conclusion = sb + conclusion + se
+
     return {
         'premise': premises,
         'conclusion': conclusion,

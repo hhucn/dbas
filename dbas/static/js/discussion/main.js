@@ -218,19 +218,7 @@ Main.prototype.__setClickFunctionsTriangleElements = function (guiHandler, popup
     });
 
     // do not hover the other spans on hovering the name
-    trianglel.find('.triangle-content a').hover(function () {
-        trianglel.find('.triangle-content-text').each(function () {
-            if (!('argumentationType' in $(this).data())) {
-                $(this).css('color', '#000');
-            }
-        });
-    }, function () {
-        trianglel.find('.triangle-content-text').each(function () {
-            if (!('argumentationType' in $(this).data())) {
-                $(this).css('color', '');
-            }
-        });
-    });
+    this.__setTriangleHoverFunc(trianglel);
 
     var splitted_url = window.location.href.split('/');
     if (splitted_url.length > 5) {
@@ -279,6 +267,24 @@ Main.prototype.__setClickFunctionsTriangleElements = function (guiHandler, popup
     });
 
 };
+
+Main.prototype.__setTriangleHoverFunc = function(trianglel){
+    'use strict';
+    trianglel.find('.triangle-content a').hover(function () {
+        trianglel.find('.triangle-content-text').each(function () {
+            if (!('argumentationType' in $(this).data())) {
+                $(this).css('color', '#000');
+            }
+        });
+    }, function () {
+        trianglel.find('.triangle-content-text').each(function () {
+            if (!('argumentationType' in $(this).data())) {
+                $(this).css('color', '');
+            }
+        });
+    });
+};
+
 
 Main.prototype.__setClickFunctionsShareElements = function (guiHandler, popupHandler) {
     'use strict';
@@ -747,6 +753,7 @@ Main.prototype.__setInputExtraFuncs = function (guiHandler, sendStartStatement, 
             sendStartStatement();
         }
     });
+
     $('#' + sendNewPositionId).off("click").click(function () {
         if (input.attr('id').indexOf('start_statement') !== -1) {
             sendStartStatement();
@@ -761,19 +768,11 @@ Main.prototype.__setInputExtraFuncs = function (guiHandler, sendStartStatement, 
     var children = spaceList.find('input');
     var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
     var id;
-    var ctx = this;
+    var _this = this;
     if (children.length > 0) {
         id = children.eq(0).attr('id');
         id = id.replace('item_', '');
-
-        // if we have just one list element AND the list element has a special function AND we are logged in
-        if (children.length === 1 && $.inArray(id, ids) !== -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) === -1) {
-            var container = $('#' + discussionContainerId);
-            var sidebar = $('.sidebar-wrapper');
-            container.height(container.height() - 50);
-            sidebar.height(sidebar.height() - 50);
-            children.eq(0).prop('checked', true).parent().hide();
-        }
+        _this.__setContainerSidebarForOneLiner(children, id, ids);
     }
 
     // options for the extra buttons, where the user can add input!
@@ -783,17 +782,30 @@ Main.prototype.__setInputExtraFuncs = function (guiHandler, sendStartStatement, 
             $(this).css('color', '#000').css('pointer', 'default');
         });
         el.off('click');
-    } else {
-        if (spaceList.find('li').length === 1 && input.data('url') === 'add') {
-            input.prop('checked', true);
-        }
-        id = input.attr('id').indexOf('item_') === 0 ? input.attr('id').substr('item_'.length) : input.attr('id');
-        if ($.inArray(id, ids) !== -1) {
-            input.attr('onclick', '');
-            input.click(function () {
-                ctx.setInputExtraBox(input, guiHandler, sendStartStatement, sendStartPremise, sendArgumentsPremise);
-            });
-        }
+        return true;
+    }
+    if (spaceList.find('li').length === 1 && input.data('url') === 'add') {
+        input.prop('checked', true);
+    }
+    id = input.attr('id').indexOf('item_') === 0 ? input.attr('id').substr('item_'.length) : input.attr('id');
+    if ($.inArray(id, ids) !== -1) {
+        input.attr('onclick', '');
+        input.click(function () {
+            _this.setInputExtraBox(input, guiHandler, sendStartStatement, sendStartPremise, sendArgumentsPremise);
+        });
+    }
+    return true;
+};
+
+Main.prototype.__setContainerSidebarForOneLiner = function(children, id, ids){
+    'use strict';
+    // if we have just one list element AND the list element has a special function AND we are logged in
+    if (children.length === 1 && $.inArray(id, ids) !== -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) === -1) {
+        var container = $('#' + discussionContainerId);
+        container.height(container.height() - 50);
+        var sidebar = $('.sidebar-wrapper');
+        sidebar.height(sidebar.height() - 50);
+        children.eq(0).prop('checked', true).parent().hide();
     }
 };
 
