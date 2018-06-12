@@ -350,12 +350,14 @@ def choose(request):
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
+    pgroups = {
+        'pgroup_uid': request.validated['pgroup_uid'],
+        'pgroup_uids': request.validated['pgroup_uids'],
+    }
     prepared_discussion = discussion.choose(db_issue, db_user,
                                             request.validated['is_argument'],
                                             request.validated['is_supportive'],
-                                            request.validated['pgroup_uid'],
-                                            request.validated['pgroup_uids'],
-                                            history, request.path)
+                                            pgroups, history, request.path)
 
     rdict = prepare_request_dict(request)
 

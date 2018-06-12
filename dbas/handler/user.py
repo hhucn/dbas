@@ -675,21 +675,22 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
     return success, info, db_user
 
 
-def set_new_user(mailer, firstname, lastname, nickname, gender, email, password, _tn):
+def set_new_user(mailer, user_data, password, _tn):
     """
-    Let's create a new user
 
-    :param mailer: instance of pyramid mailer
-    :param firstname: String
-    :param lastname: String
-    :param nickname: String
-    :param gender: String
-    :param email: String
-    :param password: String
-    :param _tn: Translaator
-    :return: Boolean, msg
+    :param mailer:
+    :param firstname:
+    :param user_data: dict with firstname, lastname, nickname, email, gender
+    :param password:
+    :param _tn:
+    :return:
     """
     # getting the authors group
+    firstname = user_data.get('firstname')
+    lastname = user_data.get('lastname')
+    nickname = user_data.get('nickname')
+    email = user_data.get('email')
+    gender = user_data.get('gender')
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
 
     # does the group exists?
@@ -732,20 +733,22 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
     }
 
 
-def set_new_oauth_user(firstname, lastname, nickname, email, gender, uid, provider, _tn):
+def set_new_oauth_user(user_data, uid, provider, _tn):
     """
-    Let's create a new user
+    Create a new user
 
-    :param firstname: String
-    :param lastname: String
-    :param nickname: String
-    :param email: String
-    :param gender: String
-    :param uid: String
-    :param provider: String
-    :param _tn: Translator
-    :return: Boolean, msg
+    :param firstname:
+    :param user_data: dict with firstname, lastname, nickname, email, gender
+    :param uid:
+    :param provider:
+    :param _tn:
+    :return:
     """
+    firstname = user_data.get('firstname')
+    lastname = user_data.get('lastname')
+    nickname = user_data.get('nickname')
+    email = user_data.get('email')
+    gender = user_data.get('gender')
     # getting the authors group
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
 
