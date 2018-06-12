@@ -53,6 +53,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     isPartialGraphMode = true;
                     return false;
                 }
+                return true;
             });
         }
         new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);

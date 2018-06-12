@@ -7,8 +7,6 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 .. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-# from wsgiref.simple_server import make_server
-
 import os
 import re
 import time
