@@ -446,7 +446,6 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
 
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
     DBDiscussionSession.flush()
-    # transaction.commit()  # 207
 
 
 def get_from_database(db_user: User, lang: str):
