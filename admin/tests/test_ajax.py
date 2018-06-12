@@ -54,9 +54,7 @@ class AjaxTest(unittest.TestCase):
             'uids': [db_s1[-1].uid]
         }, validated={})
         DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=db_s1[-1].uid).delete()
-        # db_s2 = DBDiscussionSession.query(Statement).count()
         self.assertIsNotNone(ajax(request))
-        # self.assertGreater(len(db_s1), db_s2)
 
     def test_main_add_and_delete_error(self):
         from admin.views import main_add as ajax_add

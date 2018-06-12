@@ -696,10 +696,13 @@ Main.prototype.setGuiOptions = function () {
  */
 Main.prototype.setInputExtraOptions = function (guiHandler, interactionHandler) {
     'use strict';
-    var spaceList = $('#' + discussionSpaceListId);
-    var input = spaceList.find('li:last-child input');
     var textArray = [], splits, conclusion, supportive, arg, relation;
     splits = window.location.href.split('?')[0].split('/');
+    var push = function(_this) {
+        if ($(_this).val().length > 0) {
+            textArray.push($(this).val());
+        }
+    };
     var sendStartStatement = function () {
         var position = $('#' + addStatementContainerMainInputPosId).val();
         var reason = $('#' + addStatementContainerMainInputResId).val();
@@ -710,18 +713,14 @@ Main.prototype.setInputExtraOptions = function (guiHandler, interactionHandler) 
         supportive = splits[splits.length - 1] === 'agree';
         textArray = [];
         $('#' + addPositionContainerBodyId + ' input').each(function () {
-            if ($(this).val().length > 0) {
-                textArray.push($(this).val());
-            }
+            push(_this);
         });
         interactionHandler.sendStatement(textArray, conclusion, supportive, '', '', fuzzy_start_premise);
     };
     var sendArgumentsPremise = function () {
         textArray = [];
         $('#' + addPositionContainerBodyId + ' input').each(function () {
-            if ($(this).val().length > 0) {
-                textArray.push($(this).val());
-            }
+            push(_this);
         });
         var url = window.location.href.split('?')[0];
         var add = url.indexOf('support') === -1 ? 0 : 1;
@@ -736,7 +735,13 @@ Main.prototype.setInputExtraOptions = function (guiHandler, interactionHandler) 
             $(this).css('width', '95%');
         });
     }
+    this.__setInputExtraFuncs(guiHandler, sendStartStatement, sendStartPremise, sendArgumentsPremise);
+};
 
+Main.prototype.__setInputExtraFuncs = function (guiHandler, sendStartStatement, sendStartPremise, sendArgumentsPremise) {
+    'use strict';
+    var spaceList = $('#' + discussionSpaceListId);
+    var input = spaceList.find('li:last-child input');
     $('#' + sendNewStatementId).off("click").click(function () {
         if ($(this).attr('name').indexOf('start') !== -1) {
             sendStartStatement();
