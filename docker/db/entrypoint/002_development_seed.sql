@@ -4615,6 +4615,7 @@ COPY groups (uid, name) FROM stdin;
 1	admins
 2	authors
 3	users
+4	specials
 \.
 
 
@@ -4622,7 +4623,7 @@ COPY groups (uid, name) FROM stdin;
 -- Name: groups_uid_seq; Type: SEQUENCE SET; Schema: public; Owner: dbas
 --
 
-SELECT pg_catalog.setval('groups_uid_seq', 3, true);
+SELECT pg_catalog.setval('groups_uid_seq', 4, true);
 
 
 --

@@ -889,12 +889,10 @@ def pretty_print_options(message):
 
 
 def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False, is_author: bool = False,
-                             uid: str = '',
-                             bubble_url: str = '', content: str = '', omit_bubble_url: bool = False,
-                             omit_vote_info: bool = False,
-                             argument_uid: int = None, statement_uid: int = None, is_supportive: bool = False,
-                             nickname: str = 'anonymous', lang: str = 'en', is_users_opinion: bool = False,
-                             other_author: User = None):
+                             uid: str = '', bubble_url: str = '', content: str = '', omit_bubble_url: bool = False,
+                             omit_vote_info: bool = False, argument_uid: int = None, statement_uid: int = None,
+                             is_supportive: bool = False, db_user: User = None, lang: str = 'en',
+                             is_users_opinion: bool = False, other_author: User = None):
     """
     Creates an dictionary which includes every information needed for a bubble.
 
@@ -909,14 +907,21 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
     :param argument_uid: Argument.uid
     :param statement_uid: Statement.uid
     :param is_supportive: Boolean
-    :param nickname: String
+    :param db_user: current
     :param omit_bubble_url: Boolean
     :param lang: is_users_opinion
     :param is_users_opinion: Boolean
+    :param other_author:
     :return: dict()
     """
     gravatar_link = get_global_url() + '/static/images/icon.png'
     profile = None
+
+    is_enemy_user = {
+        'admin': False,
+        'author': False,
+        'special': False
+    }
 
     if uid is not 'now':
         content = pretty_print_options(content)
@@ -924,10 +929,12 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
     if bubble_type is BubbleTypes.SYSTEM and other_author is not None:
         gravatar_link = get_profile_picture(other_author, 25)
         profile = '/user/{}'.format(other_author.uid),
+        is_enemy_user['admin'] = other_author.is_admin()
+        is_enemy_user['author'] = other_author.is_author()
+        is_enemy_user['special'] = other_author.is_special()
 
     # check for users opinion
-    if bubble_type is BubbleTypes.USER and nickname != 'anonymous':
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if bubble_type is BubbleTypes.USER and db_user and db_user.nickname != nick_of_anonymous_user:
         db_marked = None
         gravatar_link = get_profile_picture(db_user, 25)
         if argument_uid is not None and db_user is not None:
@@ -949,6 +956,7 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
         'is_info': bubble_type is BubbleTypes.INFO,
         'is_markable': is_markable,
         'is_author': is_author,
+        'is_enemy_user': is_enemy_user,
         'id': uid if len(str(uid)) > 0 else uuid4().hex,
         'bubble_url': bubble_url,
         'message': content,
@@ -966,7 +974,7 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
         }
     }
 
-    votecount_keys = __get_text_for_click_and_mark_count(nickname, bubble_type is BubbleTypes.USER, argument_uid,
+    votecount_keys = __get_text_for_click_and_mark_count(db_user, bubble_type is BubbleTypes.USER, argument_uid,
                                                          statement_uid, speech, lang)
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
@@ -974,7 +982,8 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
     return speech
 
 
-def __get_text_for_click_and_mark_count(nickname, is_user, argument_uid, statement_uid, speech, lang):
+def __get_text_for_click_and_mark_count(db_user: User, is_user: bool, argument_uid: int, statement_uid: int,
+                                        speech: dict, lang: str):
     """
     Build text for a bubble, how many other participants have the same interest?
 
@@ -986,14 +995,8 @@ def __get_text_for_click_and_mark_count(nickname, is_user, argument_uid, stateme
     :param lang: ui_locales
     :return: [String]
     """
-
-    if not nickname:
-        nickname = 'anonymous'
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
-
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     db_clicks, db_marks = __get_clicks_and_marks(argument_uid, statement_uid, db_user)
 
     _t = Translator(lang)
