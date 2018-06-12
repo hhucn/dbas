@@ -160,6 +160,7 @@ function setScrollTrigger() {
         }
         return true;
     });
+    return true;
 }
 
 /**

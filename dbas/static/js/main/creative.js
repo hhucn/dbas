@@ -16,7 +16,7 @@
     $(window).scroll(function () {
         var nav = $("#mainNav");
         if (nav.length !== 0) {
-            if (typeof nav !== 'undefined' && $(document).scrollTop() > 100) {
+            if (nav !== null && $(document).scrollTop() > 100) {
                 nav.addClass("navbar-shrink");
             } else {
                 nav.removeClass("navbar-shrink");

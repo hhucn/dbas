@@ -326,7 +326,6 @@ AjaxDiscussionHandler.prototype.__someGuiModification = function(tmpid, bubble_v
     gh.setMaxHeightForDiscussionContainer(resize);
 };
 
-
 /**
  *
  * @param uid
