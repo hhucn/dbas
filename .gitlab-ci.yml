@@ -74,7 +74,7 @@ frontend:
     - docker run -di --name frontendtest_$CI_JOB_ID --net=dbas_$CI_JOB_ID $CI_REGISTRY_IMAGE/frontendtest
   script:
     - docker exec frontendtest_$CI_JOB_ID bash -c "node_modules/.bin/cypress run --env WEB_HOST=web_$CI_JOB_ID,WEB_PORT=$DBAS_PORT,WEB_PROTOCOL=$DBAS_PROTOCOL --spec cypress/integration/discussion.js"
-    #- docker exec frontendtest_$CI_JOB_ID bash -c "node_modules/.bin/cypress run --env WEB_HOST=web_$CI_JOB_ID,WEB_PORT=$DBAS_PORT,WEB_PROTOCOL=$DBAS_PROTOCOL --browser chrome"
+    - docker exec frontendtest_$CI_JOB_ID bash -c "node_modules/.bin/cypress run --env WEB_HOST=web_$CI_JOB_ID,WEB_PORT=$DBAS_PORT,WEB_PROTOCOL=$DBAS_PROTOCOL --spec cypress/integration/discussion.js --browser chrome"
     #- docker exec frontendtest_$CI_JOB_ID bash -c "node_modules/.bin/cypress run --env WEB_HOST=web_$CI_JOB_ID,WEB_PORT=$DBAS_PORT,WEB_PROTOCOL=$DBAS_PROTOCOL --browser firefox"
 
   after_script:
