@@ -20,7 +20,7 @@ beforeEach('Visit /discuss', function () {
 });
 
 describe('Test if login activates user menu', function () {
-    it('Check if user menu is visible', function () {
+    it('checks if user menu is visible', function () {
         cy.get('#user-menu-dropdown')
             .should('not.exist');
         login(valid_user, valid_pw);
@@ -28,11 +28,11 @@ describe('Test if login activates user menu', function () {
             .should('exist');
         cy.get('#user-menu-dropdown')
             .should('contain', valid_user);
-    })
+    });
 });
 
 describe('Test if user can logout', function () {
-    it('Check if user menu disables if user is logged out', function () {
+    it('checks if the user menu is disables if the user is logged out', function () {
         cy.get('#user-menu-dropdown')
             .should('not.exist');
         login(valid_user, valid_pw);
@@ -46,21 +46,21 @@ describe('Test if user can logout', function () {
             .click();
         cy.get('#user-menu-dropdown')
             .should('not.exist');
-    })
+    });
 });
 
 describe('Test if invalid user cant login', function () {
-    it('Check if a invalid user can not login', function () {
+    it('checks if a invalid user can not login', function () {
         cy.get('#user-menu-dropdown')
             .should('not.exist');
         login(invalid_user, invalid_pw);
         cy.get('#popup-login-failed')
             .should('exist');
-    })
+    });
 });
 
 describe('Test if invalid user can not use user menu', function () {
-    it('Check if a invalid user has no user menu', function () {
+    it('checks if a invalid user has no user menu', function () {
         cy.get('#user-menu-dropdown')
             .should('not.exist');
         login(invalid_user, invalid_pw);
@@ -70,5 +70,5 @@ describe('Test if invalid user can not use user menu', function () {
             .click();
         cy.get('#user-menu-dropdown')
             .should('not.exist');
-    })
+    });
 });
