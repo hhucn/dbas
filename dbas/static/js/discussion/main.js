@@ -706,7 +706,7 @@ Main.prototype.setInputExtraOptions = function (guiHandler, interactionHandler) 
     splits = window.location.href.split('?')[0].split('/');
     var push = function(_this) {
         if ($(_this).val().length > 0) {
-            textArray.push($(this).val());
+            textArray.push($(_this).val());
         }
     };
     var sendStartStatement = function () {
@@ -719,14 +719,14 @@ Main.prototype.setInputExtraOptions = function (guiHandler, interactionHandler) 
         supportive = splits[splits.length - 1] === 'agree';
         textArray = [];
         $('#' + addPositionContainerBodyId + ' input').each(function () {
-            push(_this);
+            push(this);
         });
         interactionHandler.sendStatement(textArray, conclusion, supportive, '', '', fuzzy_start_premise);
     };
     var sendArgumentsPremise = function () {
         textArray = [];
         $('#' + addPositionContainerBodyId + ' input').each(function () {
-            push(_this);
+            push(this);
         });
         var url = window.location.href.split('?')[0];
         var add = url.indexOf('support') === -1 ? 0 : 1;

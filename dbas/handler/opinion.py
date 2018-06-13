@@ -3,7 +3,6 @@ Provides helping function for getting some opinions.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from pprint import pprint
 from typing import List
 
 from dbas.database import DBDiscussionSession

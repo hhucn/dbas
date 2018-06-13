@@ -351,7 +351,7 @@ GuiHandler.prototype.fireJsonUserRegistration = function () {
  */
 GuiHandler.prototype.showSetStatementContainer = function (undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
     'use strict';
-    var gh = new GuiHandler(), page, page_no;
+    var gh = new GuiHandler(), page, page_no, _this = this;
     var body = $('#' + popupSetPremiseGroupsBodyContent).empty();
     var prev = $('#' + popupSetPremiseGroupsPreviousButton).hide();
     var next = $('#' + popupSetPremiseGroupsNextButton).hide();
@@ -362,7 +362,7 @@ GuiHandler.prototype.showSetStatementContainer = function (undecided_texts, deci
     var warning = $('#' + popupSetPremiseGroupsWarningText).hide();
 
     send.click(function sendClick() {
-        this.__setStatementContainerSendClick(undecided_texts, decided_texts, supportive, type, arg, relation, conclusion);
+        _this.__setStatementContainerSendClick(body, undecided_texts, decided_texts, supportive, type, arg, relation, conclusion);
     });
 
     if (undecided_texts.length === 1) { // we only need one page div
@@ -415,7 +415,7 @@ GuiHandler.prototype.showSetStatementContainer = function (undecided_texts, deci
     popup.modal('show');
 };
 
-GuiHandler.prototype.__setStatementContainerSendClick = function (undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
+GuiHandler.prototype.__setStatementContainerSendClick = function (body, undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
     'use strict';
     var selections = body.find('input:checked'), i, j, splitted;
 
