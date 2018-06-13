@@ -85,7 +85,6 @@ frontend:
       - cypress_artifacts/
     expire_in: 30 mins
     when: on_failure
-  retry: 2
 
 flake8:
   stage: test
