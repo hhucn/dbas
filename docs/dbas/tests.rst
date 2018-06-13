@@ -49,88 +49,43 @@ Code
 ====
 
 .. automodule:: dbas.tests
-:members:
+    :members:
 
 .. automodule:: dbas.auth.tests
-:members:
+    :members:
 
 .. automodule:: dbas.auth.oauth.tests
-:members:
+    :members:
 
 .. automodule:: dbas.handler.tests
-:members:
+    :members:
 
 .. automodule:: dbas.review.tests
-:members:
+    :members:
 
 .. automodule:: dbas.review.queue.tests
-:members:
+    :members:
 
 .. automodule:: dbas.strings.tests
-:members:
+    :members:
 
 .. automodule:: dbas.validators.tests
-:members:
+    :members:
 
 .. automodule:: dbas.views.tests
-:members:
+    :members:
 
 .. automodule:: dbas.views.discussion.tests
-:members:
+    :members:
 
 .. automodule:: dbas.views.main.tests
-:members:
+    :members:
 
 .. automodule:: dbas.views.review.tests
-:members:
+    :members:
 
 .. automodule:: dbas.views.user.tests
-:members:
-
-
-Frontend with Splinter
-======================
-**DEPRECATED**
-
-Frontend tests are done by *Splinter* and are regardless of DBAS/Pyramid. Splinter is an open source tool for testing web
-applications using Python. It lets you automate browser actions, such as visiting URLs and interacting with their items.
-If you want to use splinter, please install the latest version of `chromedriver <https://sites.google.com/a/chromium.org/chromedriver/downloads>`_
-For running these tests, just execute::
-
-    $ cd tests/
-    $ python splinterTests.py
-
-If you want to add a tests, please follow these steps:
-
-    1. Open tests/splinterTests.py
-
-    2. Add your test into the test list.
-
-
-    3. Define your test function in Webtests by using this skeleton::
-
-        def __test_YOUR_TEST_METHOD(self, browser):
-            """
-            Please enter a description here
-            :param browser: current browser
-            :return: 1 if success else 0
-            """
-            print('Starting tests for XYZ:')
-            b = Browser(browser)
-            success = True
-
-            # your test routine
-
-            b.quit()
-            return 1 if success else 0
-
-        Please:
-            * replace the name with the chosen name out of 2.
-            * enter a short description
-            * use the *success*-parameter
-
-    4. Have fun!
-
+    :members:
 
 Frontend with Cypress
 =====================
