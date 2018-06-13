@@ -1,12 +1,9 @@
-from dbas.database import DBDiscussionSession, get_dbas_db_configuration
-from dbas.helper.test import add_settings_to_appconfig
+from dbas.tests.utils import TestCaseWithDatabase
 
 
 def setup_package():
-    settings = add_settings_to_appconfig()
-    DBDiscussionSession.remove()
-    DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
+    TestCaseWithDatabase().setUpDb()
 
 
 def teardown_package():
-    pass
+    TestCaseWithDatabase().tearDownTest()
