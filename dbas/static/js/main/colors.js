@@ -9,6 +9,12 @@ function Colors() {
         this.get_deepOrange(), this.get_brown(), this.get_grey(), this.get_blueGrey()];
 }
 
+/**
+ * Returns a value in the range of 50, 100, 200, ... 900 if index is out of 0-9
+ *
+ * @param index integer between 0 and 9
+ * @returns {*}
+ */
 Colors.prototype.index_matcher = function(index){
     'use strict';
     var scales = {
