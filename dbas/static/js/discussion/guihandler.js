@@ -3,7 +3,6 @@
 /**
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
-
 function GuiHandler() {
     'use strict';
     this.maxHeightOfBubbleSpace = 300;

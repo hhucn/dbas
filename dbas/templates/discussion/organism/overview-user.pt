@@ -1,83 +1,89 @@
 <!-- snippet of discussion created by the user. here options like the ab can be set -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
   <div class="container colored-container">
-        <div class="row">
-          <div class="col-md-12">
-            <h4 i18n:translate="my_discussions" class="text-center">My Discussions</h4>
-            <p i18n:translate="summary_your_discussions"
-                    class="lead text-center" tal:condition="len(issues.user)>0">This is a summary of the
-              discussions you have created:</p>
-            <p i18n:translate="you_created_no_discussion"
-                    class="lead text-center" tal:condition="len(issues.user)<1">You had not creaty any
-              discussion yet, but you can use the add button in the bottom left to create your own
-              discussion.</p>
+    <div class="row">
+      <div class="col-md-12">
+        <h4 i18n:translate="my_discussions" class="text-center">My Discussions</h4>
+        <p i18n:translate="summary_your_discussions"
+                class="lead text-center" tal:condition="len(issues.user)>0">This is a summary of the
+          discussions you have created:</p>
+        <p i18n:translate="you_created_no_discussion"
+                class="lead text-center" tal:condition="len(issues.user)<1">You had not creaty any
+          discussion yet, but you can use the add button in the bottom left to create your own
+          discussion.</p>
 
-            <table class="table table-striped table-hover" tal:condition="len(issues.user)>0">
-              <thead>
-              <tr>
-                <th i18n:translate="title">Titel</th>
-                <th i18n:translate="statements">Statements</th>
-                <th i18n:translate="participants">Participants</th>
-                <th i18n:translate="language">Language</th>
-                <th i18n:translate="creation">Creation</th>
-                <th><span i18n:translate="enabled">Enabled</span>
-                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
-                     title="${extras.tag.issue_enabled}"></i>
-                </th>
-                <th><span i18n:translate="public">Public</span>
-                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
-                     title="${extras.tag.issue_public}"></i>
-                </th>
-                <th><span i18n:translate="writable">Writable</span>
-                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
-                     title="${extras.tag.issue_writable}"></i>
-                </th>
-                <th i18n:translate="short_link">Short Link</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr tal:repeat="issue issues.user" data-uid="${issue.uid}" data-url="${issue.url}">
-                <td tal:condition="issue.is_enabled" data-url="${issue.url}">
-                    <a href="${issue.url}">${issue.title}</a>
-                </td>
-                <td tal:condition="not:issue.is_enabled">
-                    <span>${issue.title}</span>
-                </td>
-                <td>${issue.count_of_statements}</td>
-                <td>${issue.participants}</td>
-                <td>
-                  <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_de">
-                  <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_us-gb">
-                </td>
-                <td>${issue.date}</td>
-                <td>
-                  <input class="discussion-enable-toggle" type="checkbox" data-toggle="toggle"
-                         data-keyword="enable"
-                         data-size="mini"
-                         data-onstyle="success"
-                         data-offstyle="danger" checked="${issue.is_enabled}" data-uid="${issue.uid}" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
-                </td>
-                <td>
-                  <input class="discussion-public-toggle" type="checkbox" data-toggle="toggle"
-                         data-keyword="public"
-                         data-size="mini"
-                         data-onstyle="success"
-                         data-offstyle="danger" checked="${issue.is_public}" data-uid="${issue.uid}" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
-                <td>
-                  <input class="discussion-writable-toggle" type="checkbox" data-toggle="toggle"
-                         data-keyword="writable"
-                         data-size="mini"
-                         data-onstyle="success"
-                         data-offstyle="danger" checked="${issue.is_writable}" data-uid="${issue.uid}" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
-                <td>
-                  <a tal:condition="issue.is_enabled" href="${issue.short_url}" title="${issue.url}">${issue.short_url}</a>
-                  <span tal:condition="not:issue.is_enabled">${issue.short_url}</span>
-                  <i tal:condition="issue.is_enabled" class="fa fa-clipboard" aria-hidden="true" style="margin-left: 0.5em; cursor: pointer;"></i></td>
-              </tr>
-              </tbody>
-            </table>
+        <table class="table table-striped table-hover" tal:condition="len(issues.user)>0">
+          <thead>
+          <tr>
+            <th i18n:translate="title">Titel</th>
+            <th i18n:translate="statements">Statements</th>
+            <th i18n:translate="participants">Participants</th>
+            <th i18n:translate="language">Language</th>
+            <th i18n:translate="creation">Creation</th>
+            <th><span i18n:translate="enabled">Enabled</span>
+              <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
+                 title="${extras.tag.issue_enabled}"></i>
+            </th>
+            <th><span i18n:translate="public">Public</span>
+              <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
+                 title="${extras.tag.issue_public}"></i>
+            </th>
+            <th><span i18n:translate="writable">Writable</span>
+              <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
+                 title="${extras.tag.issue_writable}"></i>
+            </th>
+            <th i18n:translate="short_link">Short Link</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr tal:repeat="issue issues.user" data-uid="${issue.uid}" data-url="${issue.url}">
+            <td tal:condition="issue.is_enabled" data-url="${issue.url}">
+              <a href="${issue.url}">${issue.title}</a>
+            </td>
+            <td tal:condition="not:issue.is_enabled">
+              <span>${issue.title}</span>
+            </td>
+            <td>${issue.count_of_statements}</td>
+            <td>${issue.participants}</td>
+            <td>
+              <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flag-de-24.png')}"
+                                                    alt="flag_de">
+              <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}"
+                                                    alt="flag_us-gb">
+            </td>
+            <td>${issue.date}</td>
+            <td>
+              <input class="discussion-enable-toggle issue-property" type="checkbox" data-toggle="toggle"
+                     data-keyword="enable"
+                     data-size="mini"
+                     data-onstyle="success"
+                     data-offstyle="danger" checked="${issue.is_enabled}" data-uid="${issue.uid}"
+                     data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
+            </td>
+            <td>
+              <input class="discussion-public-toggle issue-property" type="checkbox" data-toggle="toggle"
+                     data-keyword="public"
+                     data-size="mini"
+                     data-onstyle="success"
+                     data-offstyle="danger" checked="${issue.is_public}" data-uid="${issue.uid}"
+                     data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
+            <td>
+              <input class="discussion-writable-toggle issue-property" type="checkbox" data-toggle="toggle"
+                     data-keyword="writable"
+                     data-size="mini"
+                     data-onstyle="success"
+                     data-offstyle="danger" checked="${issue.is_writable}" data-uid="${issue.uid}"
+                     data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
+            <td>
+              <a tal:condition="issue.is_enabled" href="${issue.short_url}" title="${issue.url}">${issue.short_url}</a>
+              <span tal:condition="not:issue.is_enabled">${issue.short_url}</span>
+              <i tal:condition="issue.is_enabled" class="fa fa-clipboard" aria-hidden="true"
+                                                  style="margin-left: 0.5em; cursor: pointer;"></i></td>
+          </tr>
+          </tbody>
+        </table>
 
-          </div>
-        </div>
       </div>
+    </div>
+  </div>
 </tal:block>
