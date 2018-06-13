@@ -3,12 +3,36 @@ function Colors() {
     // https://www.google.com/design/spec/style/color.html#color-color-palette
 
     this.all = [
-        this.__red, this.__pink, this.__purple, this.__deepPurple, this.__indigo, this.__blue, this.__lightBlue,
-        this.__cyan, this.__teal, this.__green, this.__lightGreen, this.__lime, this.__yellow, this.__amber,
-        this.__orange, this.__deepOrange, this.__brown, this.__grey, this.__blueGrey];
+        this.get_red(), this.get_pink(), this.get_purple(), this.get_deepPurple(), this.get_indigo(),
+        this.get_blue(), this.get_lightBlue(), this.get_cyan(), this.get_teal(), this.get_green(),
+        this.get_lightGreen(), this.get_lime(), this.get_yellow(), this.get_amber(), this.get_orange(),
+        this.get_deepOrange(), this.get_brown(), this.get_grey(), this.get_blueGrey()];
 }
 
-Colors.prototype.__red = function () {
+/**
+ * Returns a value in the range of 50, 100, 200, ... 900 if index is out of 0-9
+ *
+ * @param index integer between 0 and 9
+ * @returns {*}
+ */
+Colors.prototype.index_matcher = function(index){
+    'use strict';
+    var scales = {
+        0: 50,
+        1: 100,
+        2: 200,
+        3: 300,
+        4: 400,
+        5: 500,
+        6: 600,
+        7: 700,
+        8: 800,
+        9: 900,
+    };
+    return scales[index];
+};
+
+Colors.prototype.get_red = function () {
     'use strict';
     return {
         50: '#ffebee',
@@ -23,7 +47,7 @@ Colors.prototype.__red = function () {
         900: '#b71c1c'
     };
 };
-Colors.prototype.__pink = function () {
+Colors.prototype.get_pink = function () {
     'use strict';
     return {
         50: '#fce4ec',
@@ -38,7 +62,7 @@ Colors.prototype.__pink = function () {
         900: '#880e4f'
     };
 };
-Colors.prototype.__purple = function () {
+Colors.prototype.get_purple = function () {
     'use strict';
     return {
         50: '#f3e5f5',
@@ -53,7 +77,7 @@ Colors.prototype.__purple = function () {
         900: '#4a148c'
     };
 };
-Colors.prototype.__deepPurple = function () {
+Colors.prototype.get_deepPurple = function () {
     'use strict';
     return {
         50: '#ede7f6',
@@ -68,7 +92,7 @@ Colors.prototype.__deepPurple = function () {
         900: '#311b92'
     };
 };
-Colors.prototype.__indigo = function () {
+Colors.prototype.get_indigo = function () {
     'use strict';
     return {
         50: '#e8eaf6',
@@ -83,7 +107,7 @@ Colors.prototype.__indigo = function () {
         900: '#1a237e'
     };
 };
-Colors.prototype.__blue = function () {
+Colors.prototype.get_blue = function () {
     'use strict';
     return {
         50: '#e3f2fd',
@@ -98,7 +122,7 @@ Colors.prototype.__blue = function () {
         900: '#0d47a1'
     };
 };
-Colors.prototype.__lightBlue = function () {
+Colors.prototype.get_lightBlue = function () {
     'use strict';
     return {
         50: '#e1f5fe',
@@ -113,7 +137,7 @@ Colors.prototype.__lightBlue = function () {
         900: '#01579b'
     };
 };
-Colors.prototype.__cyan = function () {
+Colors.prototype.get_cyan = function () {
     'use strict';
     return {
         50: '#e0f7fa',
@@ -128,7 +152,7 @@ Colors.prototype.__cyan = function () {
         900: '#006064'
     };
 };
-Colors.prototype.__teal = function () {
+Colors.prototype.get_teal = function () {
     'use strict';
     return {
         50: '#e0f2f1',
@@ -143,7 +167,7 @@ Colors.prototype.__teal = function () {
         900: '#004d40'
     };
 };
-Colors.prototype.__green = function () {
+Colors.prototype.get_green = function () {
     'use strict';
     return {
         50: '#e8f5e9',
@@ -158,7 +182,7 @@ Colors.prototype.__green = function () {
         900: '#1b5e20'
     };
 };
-Colors.prototype.__lightGreen = function () {
+Colors.prototype.get_lightGreen = function () {
     'use strict';
     return {
         50: '#f1f8e9',
@@ -173,7 +197,7 @@ Colors.prototype.__lightGreen = function () {
         900: '#33691e'
     };
 };
-Colors.prototype.__lime = function () {
+Colors.prototype.get_lime = function () {
     'use strict';
     return {
         50: '#f9fbe7',
@@ -188,7 +212,7 @@ Colors.prototype.__lime = function () {
         900: '#827717'
     };
 };
-Colors.prototype.__yellow = function () {
+Colors.prototype.get_yellow = function () {
     'use strict';
     return {
         50: '#fffde7',
@@ -203,7 +227,7 @@ Colors.prototype.__yellow = function () {
         900: '#f57f17'
     };
 };
-Colors.prototype.__amber = function () {
+Colors.prototype.get_amber = function () {
     'use strict';
     return {
         50: '#fff8e1',
@@ -218,7 +242,7 @@ Colors.prototype.__amber = function () {
         900: '#ff6f00'
     };
 };
-Colors.prototype.__orange = function () {
+Colors.prototype.get_orange = function () {
     'use strict';
     return {
         50: '#fff3e0',
@@ -233,7 +257,7 @@ Colors.prototype.__orange = function () {
         900: '#e65100'
     };
 };
-Colors.prototype.__deepOrange = function () {
+Colors.prototype.get_deepOrange = function () {
     'use strict';
     return {
         50: '#fbe9e7',
@@ -248,7 +272,7 @@ Colors.prototype.__deepOrange = function () {
         900: '#bf360c'
     };
 };
-Colors.prototype.__brown = function () {
+Colors.prototype.get_brown = function () {
     'use strict';
     return {
         50: '#efebe9',
@@ -263,7 +287,7 @@ Colors.prototype.__brown = function () {
         900: '#3e2723'
     };
 };
-Colors.prototype.__grey = function () {
+Colors.prototype.get_grey = function () {
     'use strict';
     return {
         50: '#fafafa',
@@ -278,7 +302,7 @@ Colors.prototype.__grey = function () {
         900: '#212121'
     };
 };
-Colors.prototype.__blueGrey = function () {
+Colors.prototype.get_blueGrey = function () {
     'use strict';
     return {
         50: '#eceff1',
@@ -302,6 +326,7 @@ Colors.prototype.__blueGrey = function () {
 Colors.prototype.getAllAsHEX = function (shade) {
     'use strict';
     var color_array = [];
+    console.log(this.all);
     $.each(this.all, function (index, color) {
         color_array.push(color[shade]);
     });

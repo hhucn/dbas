@@ -1,39 +1,37 @@
-// colors from https://www.google.com/design/spec/style/color.html#color-color-palette
-
-// green, red, blue, yellow, deep purple, indigo, light blue, cyan, pink, purple, teal, light green, lime, amber, orange, deep orange
-var google_colors = [
-    //0          1          2          3          4          5          6          7          8          9          10         11         12         13         14
-    ['#4caf50', '#e8f5e9', '#c8e6c9', '#a5d6a7', '#81c784', '#66bb6a', '#4caf50', '#43a047', '#388e3c', '#2e7d32', '#1b5e20', '#b9f6ca', '#69f0ae', '#00e676', '#00c853'],
-    ['#f44336', '#ffebee', '#ffcdd2', '#ef9a9a', '#e57373', '#ef5350', '#f44336', '#e53935', '#d32f2f', '#c62828', '#b71c1c', '#ff8a80', '#ff5252', '#ff1744', '#d50000'],
-    ['#2196f3', '#e3f2fd', '#bbdefb', '#90caf9', '#64b5f6', '#42a5f5', '#2196f3', '#1e88e5', '#1976d2', '#1565c0', '#0d47a1', '#82b1ff', '#448aff', '#2979ff', '#2962ff'],
-    ['#ffeb3b', '#fffde7', '#fff9c4', '#fff59d', '#fff176', '#ffee58', '#ffeb3b', '#fdd835', '#fbc02d', '#f9a825', '#f57f17', '#ffff8d', '#ffff00', '#ffea00', '#ffd600'],
-    ['#673ab7', '#ede7f6', '#d1c4e9', '#b39ddb', '#9575cd', '#7e57c2', '#673ab7', '#5e35b1', '#512da8', '#4527a0', '#311b92', '#b388ff', '#7c4dff', '#651fff', '#6200ea'],
-    ['#3f51b5', '#e8eaf6', '#c5cae9', '#9fa8da', '#7986cb', '#5c6bc0', '#3f51b5', '#3949ab', '#303f9f', '#283593', '#1a237e', '#8c9eff', '#536dfe', '#3d5afe', '#304ffe'],
-    ['#03a9f4', '#e1f5fe', '#b3e5fc', '#81d4fa', '#4fc3f7', '#29b6f6', '#03a9f4', '#039be5', '#0288d1', '#0277bd', '#01579b', '#80d8ff', '#40c4ff', '#00b0ff', '#0091ea'],
-    ['#00bcd4', '#e0f7fa', '#b2ebf2', '#80deea', '#4dd0e1', '#26c6da', '#00bcd4', '#00acc1', '#0097a7', '#00838f', '#006064', '#84ffff', '#18ffff', '#00e5ff', '#00b8d4'],
-    ['#e91e63', '#fce4ec', '#f8bbd0', '#f48fb1', '#f06292', '#ec407a', '#e91e63', '#d81b60', '#c2185b', '#ad1457', '#880e4f', '#ff80ab', '#ff4081', '#f50057', '#c51162'],
-    ['#9c27b0', '#f3e5f5', '#e1bee7', '#ce93d8', '#ba68c8', '#ab47bc', '#9c27b0', '#8e24aa', '#7b1fa2', '#6a1b9a', '#4a148c', '#ea80fc', '#e040fb', '#d500f9', '#aa00ff'],
-    ['#009688', '#e0f2f1', '#b2dfdb', '#80cbc4', '#4db6ac', '#26a69a', '#009688', '#00897b', '#00796b', '#00695c', '#004d40', '#a7ffeb', '#64ffda', '#1de9b6', '#00bfa5'],
-    ['#8bc34a', '#f1f8e9', '#dcedc8', '#c5e1a5', '#aed581', '#9ccc65', '#8bc34a', '#7cb342', '#689f38', '#558b2f', '#33691e', '#ccff90', '#b2ff59', '#76ff03', '#64dd17'],
-    ['#cddc39', '#f9fbe7', '#f0f4c3', '#e6ee9c', '#dce775', '#d4e157', '#cddc39', '#c0ca33', '#afb42b', '#9e9d24', '#827717', '#f4ff81', '#eeff41', '#c6ff00', '#aeea00'],
-    ['#ffc107', '#fff8e1', '#ffecb3', '#ffe082', '#ffd54f', '#ffca28', '#ffc107', '#ffb300', '#ffa000', '#ff8f00', '#ff6f00', '#ffe57f', '#ffd740', '#ffc400', '#ffab00'],
-    ['#ff9800', '#fff3e0', '#ffe0b2', '#ffcc80', '#ffb74d', '#ffa726', '#ff9800', '#fb8c00', '#f57c00', '#ef6c00', '#e65100', '#ffd180', '#ffab40', '#ff9100', '#ff6d00'],
-    ['#ff5722', '#fbe9e7', '#ffccbc', '#ffab91', '#ff8a65', '#ff7043', '#ff5722', '#f4511e', '#e64a19', '#d84315', '#bf360c', '#ff9e80', '#ff6e40', '#ff3d00', '#dd2c00']
-];
-
 function DiscussionBarometer() {
     'use strict';
     this._is_attitude = false;
     this._data = [];
     this._address = 'position';
     this._barWidth = 0;
-    this.this._modeEnum = {
+    this._modeEnum = {
         'attitude': 1,
         'justify': 2,
         'argument': 3,
         'position': 4,
     };
     this._mode = 0;
+    // colors from https://www.google.com/design/spec/style/color.html#color-color-palette
+    // green, red, blue, yellow, deep purple, indigo, light blue, cyan, pink, purple, teal, light green, lime, amber, orange, deep orange
+    this.google_colors = [
+        //0          1          2          3          4          5          6          7          8          9          10         11         12         13         14
+        ['#4caf50', '#e8f5e9', '#c8e6c9', '#a5d6a7', '#81c784', '#66bb6a', '#4caf50', '#43a047', '#388e3c', '#2e7d32', '#1b5e20', '#b9f6ca', '#69f0ae', '#00e676', '#00c853'],
+        ['#f44336', '#ffebee', '#ffcdd2', '#ef9a9a', '#e57373', '#ef5350', '#f44336', '#e53935', '#d32f2f', '#c62828', '#b71c1c', '#ff8a80', '#ff5252', '#ff1744', '#d50000'],
+        ['#2196f3', '#e3f2fd', '#bbdefb', '#90caf9', '#64b5f6', '#42a5f5', '#2196f3', '#1e88e5', '#1976d2', '#1565c0', '#0d47a1', '#82b1ff', '#448aff', '#2979ff', '#2962ff'],
+        ['#ffeb3b', '#fffde7', '#fff9c4', '#fff59d', '#fff176', '#ffee58', '#ffeb3b', '#fdd835', '#fbc02d', '#f9a825', '#f57f17', '#ffff8d', '#ffff00', '#ffea00', '#ffd600'],
+        ['#673ab7', '#ede7f6', '#d1c4e9', '#b39ddb', '#9575cd', '#7e57c2', '#673ab7', '#5e35b1', '#512da8', '#4527a0', '#311b92', '#b388ff', '#7c4dff', '#651fff', '#6200ea'],
+        ['#3f51b5', '#e8eaf6', '#c5cae9', '#9fa8da', '#7986cb', '#5c6bc0', '#3f51b5', '#3949ab', '#303f9f', '#283593', '#1a237e', '#8c9eff', '#536dfe', '#3d5afe', '#304ffe'],
+        ['#03a9f4', '#e1f5fe', '#b3e5fc', '#81d4fa', '#4fc3f7', '#29b6f6', '#03a9f4', '#039be5', '#0288d1', '#0277bd', '#01579b', '#80d8ff', '#40c4ff', '#00b0ff', '#0091ea'],
+        ['#00bcd4', '#e0f7fa', '#b2ebf2', '#80deea', '#4dd0e1', '#26c6da', '#00bcd4', '#00acc1', '#0097a7', '#00838f', '#006064', '#84ffff', '#18ffff', '#00e5ff', '#00b8d4'],
+        ['#e91e63', '#fce4ec', '#f8bbd0', '#f48fb1', '#f06292', '#ec407a', '#e91e63', '#d81b60', '#c2185b', '#ad1457', '#880e4f', '#ff80ab', '#ff4081', '#f50057', '#c51162'],
+        ['#9c27b0', '#f3e5f5', '#e1bee7', '#ce93d8', '#ba68c8', '#ab47bc', '#9c27b0', '#8e24aa', '#7b1fa2', '#6a1b9a', '#4a148c', '#ea80fc', '#e040fb', '#d500f9', '#aa00ff'],
+        ['#009688', '#e0f2f1', '#b2dfdb', '#80cbc4', '#4db6ac', '#26a69a', '#009688', '#00897b', '#00796b', '#00695c', '#004d40', '#a7ffeb', '#64ffda', '#1de9b6', '#00bfa5'],
+        ['#8bc34a', '#f1f8e9', '#dcedc8', '#c5e1a5', '#aed581', '#9ccc65', '#8bc34a', '#7cb342', '#689f38', '#558b2f', '#33691e', '#ccff90', '#b2ff59', '#76ff03', '#64dd17'],
+        ['#cddc39', '#f9fbe7', '#f0f4c3', '#e6ee9c', '#dce775', '#d4e157', '#cddc39', '#c0ca33', '#afb42b', '#9e9d24', '#827717', '#f4ff81', '#eeff41', '#c6ff00', '#aeea00'],
+        ['#ffc107', '#fff8e1', '#ffecb3', '#ffe082', '#ffd54f', '#ffca28', '#ffc107', '#ffb300', '#ffa000', '#ff8f00', '#ff6f00', '#ffe57f', '#ffd740', '#ffc400', '#ffab00'],
+        ['#ff9800', '#fff3e0', '#ffe0b2', '#ffcc80', '#ffb74d', '#ffa726', '#ff9800', '#fb8c00', '#f57c00', '#ef6c00', '#e65100', '#ffd180', '#ffab40', '#ff9100', '#ff6d00'],
+        ['#ff5722', '#fbe9e7', '#ffccbc', '#ffab91', '#ff8a65', '#ff7043', '#ff5722', '#f4511e', '#e64a19', '#d84315', '#bf360c', '#ff9e80', '#ff6e40', '#ff3d00', '#dd2c00']
+    ];
 }
 
 /**
@@ -95,7 +93,7 @@ DiscussionBarometer.prototype.callbackIfDoneForGetDictionary = function (inputda
     'use strict';
     this._address = addressUrl;
     try {
-        this._mode = this.this._modeEnum[this._address];
+        this._mode = this._modeEnum[this._address];
     } catch (e) {
         setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
         return;
@@ -107,21 +105,21 @@ DiscussionBarometer.prototype.callbackIfDoneForGetDictionary = function (inputda
     }
 
     // fetch zero users
-    if (self.isEverythingZero(inputdata)) {
+    if (this.isEverythingZero(inputdata)) {
         setGlobalInfoHandler('Hey', _t_discussion(otherParticipantsDontHaveOpinionForThis));
         return -1;
     }
 
     this._data = inputdata;
 
-    self.removeContentOfModal();
+    this.removeContentOfModal();
 
     // change status of toggle
     $('#chart-btn').bootstrapToggle('off');
     // add listener for buttons to change the type of chart
-    self.addListenerForChartButtons();
+    this.addListenerForChartButtons();
     // create bar chart as default view
-    getD3BarometerBarChart();
+    this.getD3BarometerBarChart();
 
     $('#' + popupBarometerId).modal('show').on('hidden.bs.modal', function () {
         clearAnchor();
@@ -150,14 +148,15 @@ DiscussionBarometer.prototype.removeContentOfModal = function () {
 DiscussionBarometer.prototype.addListenerForChartButtons = function () {
     'use strict';
     // show chart which refers to state of toggle-button
+    var _this = this;
     $('#chart-btn-div').click(function () {
         // bar chart icon is visible
         if ($('#chart-btn').is(':checked')) {
-            self.getD3BarometerBarChart();
+            _this.getD3BarometerBarChart();
         }
         // doughnut chart icon is visible
         else {
-            self.getD3BarometerDoughnutChart();
+            _this.getD3BarometerDoughnutChart();
         }
     });
 };
@@ -167,37 +166,37 @@ DiscussionBarometer.prototype.addListenerForChartButtons = function () {
  */
 DiscussionBarometer.prototype.getD3BarometerBarChart = function () {
     'use strict';
-    removeContentOfModal();
+    this.removeContentOfModal();
 
     // create div for barometer
     $('#modal-body-chart-place').append('<div id="barometer-div"></div>');
     // width and height of chart
     var width = 400;
     var height = this._mode === this._modeEnum.attitude ? 300 : 400;
-    var barChartSvg = self.getSvg(width + 70, height + 50).attr("id", "barometer-svg");
+    var barChartSvg = this.getSvg(width + 70, height + 50).attr("id", "barometer-svg");
 
-    var usersDict = self.getUsersDict([]);
+    var usersDict = this.getUsersDict([]);
 
     // create bars of chart
     // selector = inner-rect: clicks on statement relative to seen_by value
-    self.createBar(usersDict, width, height - 50, barChartSvg, "inner-rect");
+    this.createBar(usersDict, width, height - 50, barChartSvg, "inner-rect");
     if (this._address !== 'argument' && this._address !== 'attitude') {
-        self.createBar(usersDict, width, height - 50, barChartSvg, "outer-rect");
+        this.createBar(usersDict, width, height - 50, barChartSvg, "outer-rect");
     }
 
     // create axis
     if (this._address === 'argument' || this._address === 'attitude') {
-        self.createXAxis(usersDict, barChartSvg, width, height + 10);
+        this.createXAxis(usersDict, barChartSvg, width, height + 10);
     } else {
-        self.createYAxis(barChartSvg, height - 50);
+        this.createYAxis(barChartSvg, height - 50);
     }
 
     // if length of usersDict is greater then 0 add legend and tooltip
     if (usersDict.length > 0) {
         // create legend for chart
-        createLegend(usersDict);
+        this.createLegend(usersDict);
         // tooltip
-        addListenerForTooltip(usersDict, barChartSvg, "rect");
+        this.addListenerForTooltip(usersDict, barChartSvg, "rect");
     }
 };
 
@@ -231,9 +230,9 @@ DiscussionBarometer.prototype.getUsersDict = function (usersDict) {
     // create dictionary depending on address
     this._is_attitude = this._address === 'attitude';
     if (this._is_attitude) {
-        usersDict = self.createDictForAttitude(usersDict);
+        usersDict = this.createDictForAttitude(usersDict);
     } else {
-        usersDict = self.createDictForArgumentAndStatement(usersDict);
+        usersDict = this.createDictForArgumentAndStatement(usersDict);
     }
     return usersDict;
 };
@@ -260,7 +259,7 @@ DiscussionBarometer.prototype.getSvg = function (width, height) {
  */
 DiscussionBarometer.prototype.createXAxis = function (usersDict, svg, width, height) {
     'use strict';
-    var maxUsersNumber = self.getMaximum(usersDict);
+    var maxUsersNumber = this.getMaximum(usersDict);
     // add offset on scale
     var offset = 5 / 100 * maxUsersNumber;
 
@@ -366,7 +365,7 @@ DiscussionBarometer.prototype.createBar = function (usersDict, width, height, ba
     'use strict';
     // if the chart is a bar chart, subtract offset on scale from width
     if (this._address === "argument" || this._address === "attitude") {
-        var maxUsersNumber = self.getMaximum(usersDict);
+        var maxUsersNumber = this.getMaximum(usersDict);
         var offset = 5 / 100 * maxUsersNumber;
         width = width - (width / (maxUsersNumber + offset) * offset);
     }
@@ -382,8 +381,8 @@ DiscussionBarometer.prototype.createBar = function (usersDict, width, height, ba
         y_offset_height = height - usersDict.length * this._barWidth;
     }
 
-    self.testNoArgumentsCreateRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
-    self.createRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
+    this.testNoArgumentsCreateRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
+    this.createRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
 };
 
 /**
@@ -399,15 +398,15 @@ DiscussionBarometer.prototype.createBar = function (usersDict, width, height, ba
 DiscussionBarometer.prototype.testNoArgumentsCreateRects = function (usersDict, barChartSvg, width, height, y_offset_height, selector) {
     'use strict';
     // if there are no arguments show one thin bar
-    var maxUsersNumber = self.getMaximum(usersDict);
+    var maxUsersNumber = this.getMaximum(usersDict);
     if (usersDict.length === 0) {
         barChartSvg.append("rect")
             .attr({
-                width: self.getRectWidth(0, width, maxUsersNumber),
-                height: self.getRectHeight(0, 0, height, selector),
-                x: self.getRectX(0),
-                y: self.getRectY(0, 0, 0, y_offset_height, height, selector),
-                fill: self.getRectColor(0, selector),
+                width: this.getRectWidth(0, width, maxUsersNumber),
+                height: this.getRectHeight(0, 0, height, selector),
+                x: this.getRectX(0),
+                y: this.getRectY(0, 0, 0, y_offset_height, height, selector),
+                fill: this.getRectColor(0, selector),
                 id: selector + "-" + 0
             });
     }
@@ -425,25 +424,26 @@ DiscussionBarometer.prototype.testNoArgumentsCreateRects = function (usersDict, 
  */
 DiscussionBarometer.prototype.createRects = function (usersDict, barChartSvg, width, height, y_offset_height, selector) {
     'use strict';
-    var maxUsersNumber = self.getMaximum(usersDict);
+    var maxUsersNumber = this.getMaximum(usersDict);
+    var _this = this;
     barChartSvg.selectAll(selector)
         .data(usersDict)
         .enter().append("rect")
         .attr({
             width: function (d) {
-                return self.getRectWidth(d.usersNumber, width, maxUsersNumber);
+                return _this.getRectWidth(d.usersNumber, width, maxUsersNumber);
             },
             height: function (d) {
-                return self.getRectHeight(d.usersNumber, d.seenBy, height, selector);
+                return _this.getRectHeight(d.usersNumber, d.seenBy, height, selector);
             },
             x: function (d, i) {
-                return self.getRectX(i);
+                return _this.getRectX(i);
             },
             y: function (d, i) {
-                return self.getRectY(d.usersNumber, d.seenBy, i, y_offset_height, height, selector);
+                return _this.getRectY(d.usersNumber, d.seenBy, i, y_offset_height, height, selector);
             },
             fill: function (d, i) {
-                return self.getRectColor(i, selector);
+                return _this.getRectColor(i, selector);
             },
             id: function (d, i) {
                 return selector + "-" + i;
@@ -463,7 +463,7 @@ DiscussionBarometer.prototype.getRectWidth = function (usersNumber, width, maxUs
     'use strict';
     // height in percent: length/seen_by = x/height
     if (this._address === "argument" || this._address === "attitude") {
-        return self.divideWrapperIfZero(usersNumber, maxUsersNumber) * width;
+        return this.divideWrapperIfZero(usersNumber, maxUsersNumber) * width;
     } else {
         return this._barWidth;
     }
@@ -485,9 +485,9 @@ DiscussionBarometer.prototype.getRectHeight = function (usersNumber, seenBy, hei
         return this._barWidth;
     }
     if (selector === 'inner-rect') {
-        return self.divideWrapperIfZero(usersNumber, seenBy) * height;
+        return this.divideWrapperIfZero(usersNumber, seenBy) * height;
     }
-    return height - (self.divideWrapperIfZero(usersNumber, seenBy) * height);
+    return height - (this.divideWrapperIfZero(usersNumber, seenBy) * height);
 };
 
 /**
@@ -522,7 +522,7 @@ DiscussionBarometer.prototype.getRectY = function (usersNumber, seenBy, i, y_off
         return i * this._barWidth + y_offset_height + i * 10;
     }
     if (selector === 'inner-rect') {
-        return height - (self.divideWrapperIfZero(usersNumber, seenBy) * height - 50);
+        return height - (this.divideWrapperIfZero(usersNumber, seenBy) * height - 50);
     }
     return 50;
 };
@@ -537,9 +537,9 @@ DiscussionBarometer.prototype.getRectY = function (usersNumber, seenBy, i, y_off
 DiscussionBarometer.prototype.getRectColor = function (i, selector) {
     'use strict';
     if (selector === 'inner-rect') {
-        return self.getBaseColorFor(i);
+        return this.getBaseColorFor(i);
     }
-    return self.getLightColorFor(i);
+    return this.getLightColorFor(i);
 };
 
 /**
@@ -566,7 +566,7 @@ DiscussionBarometer.prototype.createDoughnutChart = function (doughnutChartSvg, 
         outerRadius = Math.min(width, height) / 2,
         innerRadius = 0.3 * outerRadius;
 
-    var doughnut = self.getDoughnut(usersDict);
+    var doughnut = this.getDoughnut(usersDict);
 
     var ldata = [];
     // if there is no argument create donut-chart with one sector with small radius
@@ -579,10 +579,10 @@ DiscussionBarometer.prototype.createDoughnutChart = function (doughnutChartSvg, 
         ldata = usersDict;
     }
 
-    var innerCircle = self.getInnerCircle(innerRadius, outerRadius, ldata);
-    var outerCircle = self.getOuterCircle(innerRadius, outerRadius);
-    self.createOuterPath(doughnutChartSvg, outerCircle, doughnut, ldata);
-    self.createInnerPath(doughnutChartSvg, innerCircle, doughnut, ldata);
+    var innerCircle = this.getInnerCircle(innerRadius, outerRadius, ldata);
+    var outerCircle = this.getOuterCircle(innerRadius, outerRadius);
+    this.createOuterPath(doughnutChartSvg, outerCircle, doughnut, ldata);
+    this.createInnerPath(doughnutChartSvg, innerCircle, doughnut, ldata);
 };
 
 /**
@@ -663,12 +663,13 @@ DiscussionBarometer.prototype.getOuterCircle = function (innerRadius, outerRadiu
  */
 DiscussionBarometer.prototype.createInnerPath = function (doughnutChartSvg, innerCircle, doughnut, data) {
     'use strict';
+    var _this = this;
     doughnutChartSvg.selectAll(".innerCircle")
         .data(doughnut(data))
         .enter().append("path")
         .attr({
             'fill': function (d, i) {
-                return getBaseColorFor(i);
+                return _this.getBaseColorFor(i);
             },
             'stroke': "gray", d: innerCircle,
             'transform': "translate(240,230)",
@@ -689,12 +690,13 @@ DiscussionBarometer.prototype.createInnerPath = function (doughnutChartSvg, inne
  */
 DiscussionBarometer.prototype.createOuterPath = function (doughnutChartSvg, outerCircle, doughnut, data) {
     'use strict';
+    var _this = this;
     doughnutChartSvg.selectAll(".outerCircle")
         .data(doughnut(data))
         .enter().append("path")
         .attr({
             'fill': function (d, i) {
-                return self.getLightColorFor(i);
+                return _this.getLightColorFor(i);
             },
             'stroke': "gray", d: outerCircle,
             'transform': "translate(240,230)",
@@ -753,6 +755,7 @@ DiscussionBarometer.prototype.addListenerForTooltip = function (usersDict, chart
     // save index and id of object of last click event
     var elementIndex;
     var _index;
+    var _this = this;
 
     // add listener for click event
     chartSvg.selectAll(selector).on('click', function (d, index) {
@@ -760,18 +763,18 @@ DiscussionBarometer.prototype.addListenerForTooltip = function (usersDict, chart
         elementIndex = index % usersDict.length;
         if (isClicked) {
             if (_index !== elementIndex) {
-                self.hideTooltip(selector, _index);
-                self.showTooltip(usersDict, elementIndex, chartSvg, selector);
+                _this.hideTooltip(selector, _index);
+                _this.showTooltip(usersDict, elementIndex, chartSvg, selector);
                 isClicked = true;
                 tooltipIsVisible = true;
             } else { // if the user clicks on the same tooltip for a second time hide the tooltip
-                self.hideTooltip(selector, elementIndex);
+                _this.hideTooltip(selector, elementIndex);
                 isClicked = false;
                 tooltipIsVisible = false;
             }
         } else {
             if (!tooltipIsVisible) {
-                self.showTooltip(usersDict, elementIndex, chartSvg, selector);
+                _this.showTooltip(usersDict, elementIndex, chartSvg, selector);
             }
             isClicked = true;
             tooltipIsVisible = true;
@@ -781,14 +784,14 @@ DiscussionBarometer.prototype.addListenerForTooltip = function (usersDict, chart
         if (!isClicked) {
             elementIndex = index % usersDict.length;
 
-            self.showTooltip(usersDict, elementIndex, chartSvg, selector);
+            _this.showTooltip(usersDict, elementIndex, chartSvg, selector);
             tooltipIsVisible = true;
         }
     }).on("mouseout", function (d, index) { // add listener for mouse out event
         if (!isClicked) {
             elementIndex = index % usersDict.length;
 
-            self.hideTooltip(selector, elementIndex);
+            _this.hideTooltip(selector, elementIndex);
             tooltipIsVisible = false;
         }
     });
@@ -803,7 +806,7 @@ DiscussionBarometer.prototype.addListenerForTooltip = function (usersDict, chart
         // select area of popup without tooltip and listen for click event
         // if tooltip is visible hide tooltip
         if (d.target.id.indexOf("path") === -1 && d.target.id.indexOf("rect") === -1 && tooltipIsVisible === true) {
-            self.hideTooltip(selector, elementIndex);
+            _this.hideTooltip(selector, elementIndex);
             isClicked = false;
             tooltipIsVisible = false;
         }
@@ -820,17 +823,17 @@ DiscussionBarometer.prototype.addListenerForTooltip = function (usersDict, chart
  */
 DiscussionBarometer.prototype.showTooltip = function (usersDict, index, chartSvg, selector) {
     'use strict';
-    self.getTooltip(usersDict, index);
+    this.getTooltip(usersDict, index);
     // if doughnut chart is selected add short tooltip in middle of chart
     var el = '';
     if (selector === ".chart-sector") {
-        self.createShortTooltipDoughnutChart(chartSvg, usersDict, index);
+        this.createShortTooltipDoughnutChart(chartSvg, usersDict, index);
         el = 'path'; // highlight whole sector on hover
     } else {
         el = 'rect'; // highlight sector on hover
     }
-    d3.select('#inner-' + el + '-' + index).attr('fill', self.getDarkColorFor(index));
-    d3.select('#outer-' + el + '-' + index).attr('fill', self.getNormalColorFor(index));
+    d3.select('#inner-' + el + '-' + index).attr('fill', this.getDarkColorFor(index));
+    d3.select('#outer-' + el + '-' + index).attr('fill', this.getNormalColorFor(index));
     $('#legendLi_' + index).css('background', '#CFD8DC');
 };
 
@@ -857,8 +860,8 @@ DiscussionBarometer.prototype.hideTooltip = function (selector, index) {
     } else {
         el = 'rect'; // fill chart element with originally color
     }
-    d3.select('#inner-' + el + '-' + index).attr('fill', self.getBaseColorFor(index));
-    d3.select('#outer-' + el + '-' + index).attr('fill', self.getLightColorFor(index));
+    d3.select('#inner-' + el + '-' + index).attr('fill', this.getBaseColorFor(index));
+    d3.select('#outer-' + el + '-' + index).attr('fill', this.getLightColorFor(index));
 };
 
 /**
@@ -877,12 +880,12 @@ DiscussionBarometer.prototype.getTooltip = function (usersDict, index) {
     // make tooltip visible
     tooltip.css("opacity", 1).css('border-radius', '0.2em');
 
-    self.createTooltipContent(usersDict, index);
+    this.createTooltipContent(usersDict, index);
 
     // fill background of tooltip with color of selected sector of barometer
-    tooltip.css('background-color', self.getVeryLightColorFor(index));
+    tooltip.css('background-color', this.getVeryLightColorFor(index));
     // fill border of tooltip with the same color as the sector of barometer
-    tooltip.css('border-color', self.getDarkColorFor(index));
+    tooltip.css('border-color', this.getDarkColorFor(index));
 };
 
 /**
@@ -926,10 +929,10 @@ DiscussionBarometer.prototype.createTooltipContent = function (usersDict, index)
  */
 DiscussionBarometer.prototype.createLegend = function (usersDict) {
     'use strict';
-    var div, label, ul;
+    var div, label, ul, _this = this;
     ul = $('<ul>').attr({'class': 'legendUl', 'style': 'padding-left: 0em; list-style-type: none;'});
     $.each(usersDict, function (key, value) {
-        div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', self.getBaseColorFor(key)).css('border-radius', '0.2em');
+        div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', _this.getBaseColorFor(key)).css('border-radius', '0.2em');
         label = $('<label>').attr('class', 'legendLabel').html(value.text);
         ul.append($('<li>').attr('id', 'legendLi_' + key).css('border-radius', '0.2em').append(div).append(label));
     });
@@ -937,23 +940,23 @@ DiscussionBarometer.prototype.createLegend = function (usersDict) {
 };
 DiscussionBarometer.prototype.getBaseColorFor = function (index) {
     'use strict';
-    return google_colors[index % google_colors.length][0];
+    return this.google_colors[index % this.google_colors.length][0];
 };
 DiscussionBarometer.prototype.getVeryLightColorFor = function (index) {
     'use strict';
-    return google_colors[index % google_colors.length][1];
+    return this.google_colors[index % this.google_colors.length][1];
 };
 DiscussionBarometer.prototype.getLightColorFor = function (index) {
     'use strict';
-    return google_colors[index % google_colors.length][2];
+    return this.google_colors[index % this.google_colors.length][2];
 };
 DiscussionBarometer.prototype.getNormalColorFor = function (index) {
     'use strict';
-    return google_colors[index % google_colors.length][3];
+    return this.google_colors[index % this.google_colors.length][3];
 };
 DiscussionBarometer.prototype.getDarkColorFor = function (index) {
     'use strict';
-    return google_colors[index % google_colors.length][9];
+    return this.google_colors[index % this.google_colors.length][9];
 };
 
 // doughnut chart
@@ -964,25 +967,25 @@ DiscussionBarometer.prototype.getDarkColorFor = function (index) {
 DiscussionBarometer.prototype.getD3BarometerDoughnutChart = function () {
     'use strict';
     var usersDict = [];
-    self.removeContentOfModal();
+    this.removeContentOfModal();
 
     // create div for barometer
     $('#modal-body-chart-place').append('<div id="barometer-div"></div>');
 
     // width and height of chart
     var width = 500, height = 410;
-    var doughnutChartSvg = self.getSvg(width, height + 40).attr('id', "barometer-svg");
+    var doughnutChartSvg = this.getSvg(width, height + 40).attr('id', "barometer-svg");
 
-    self.getUsersDict(usersDict);
+    this.getUsersDict(usersDict);
 
     // create doughnut of chart
-    self.createDoughnutChart(doughnutChartSvg, usersDict);
+    this.createDoughnutChart(doughnutChartSvg, usersDict);
 
     // if length of usersDict is greater then 0 add legend and tooltip
     if (usersDict.length > 0) {
         // create legend for chart
-        self.createLegend(usersDict);
+        this.createLegend(usersDict);
         // tooltip
-        self.addListenerForTooltip(usersDict, doughnutChartSvg, ".chart-sector");
+        this.addListenerForTooltip(usersDict, doughnutChartSvg, ".chart-sector");
     }
 };
