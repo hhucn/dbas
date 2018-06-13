@@ -25,7 +25,7 @@ def set_language(request, db_lang) -> str:
     # we have to set 'ui_locales = get_language_from_cookie(request)' in each view again, because D-BAS is no object
     logger('LanguageHelper', 'switched to {}'.format(db_lang.ui_locales))
 
-    return {'_LOCALE_': db_lang.ui_locales}
+    return db_lang.ui_locales
 
 
 def get_language_from_header(request):
