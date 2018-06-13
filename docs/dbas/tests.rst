@@ -49,43 +49,43 @@ Code
 ====
 
 .. automodule:: dbas.tests
-    :members:
+:members:
 
 .. automodule:: dbas.auth.tests
-    :members:
+:members:
 
 .. automodule:: dbas.auth.oauth.tests
-    :members:
+:members:
 
 .. automodule:: dbas.handler.tests
-    :members:
+:members:
 
 .. automodule:: dbas.review.tests
-    :members:
+:members:
 
 .. automodule:: dbas.review.queue.tests
-    :members:
+:members:
 
 .. automodule:: dbas.strings.tests
-    :members:
+:members:
 
 .. automodule:: dbas.validators.tests
-    :members:
+:members:
 
 .. automodule:: dbas.views.tests
-    :members:
+:members:
 
 .. automodule:: dbas.views.discussion.tests
-    :members:
+:members:
 
 .. automodule:: dbas.views.main.tests
-    :members:
+:members:
 
 .. automodule:: dbas.views.review.tests
-    :members:
+:members:
 
 .. automodule:: dbas.views.user.tests
-    :members:
+:members:
 
 
 Frontend with Splinter
@@ -130,3 +130,47 @@ If you want to add a tests, please follow these steps:
             * use the *success*-parameter
 
     4. Have fun!
+
+
+Frontend with Cypress
+=====================
+**Up to date**
+
+First of all you have to add the *cypress.env.json* into the frontendtest folder.
+
+The folder structure will look like this::
+
+    frontendtest/
+        -> cypress/
+            -> fixtures
+            -> integration
+            -> plugins
+            -> support
+        -> cypress.json
+        -> cypress.env.json
+
+
+Fill *cypress.env.json* with the environment variables used in development.env::
+
+    {
+        "WEB_PROTOCOL": <the protocol which is used by D-BAS>,
+        "WEB_HOST": <the host of the running D-BAS container>,
+        "WEB_PORT": <the port on which you can enter D-BAS>
+    }
+
+If you have added all environment variables to the *cypress.env.json* you have two options to run the tests stored in *integration/*::
+
+    // navigate into frontendtest
+
+    // this command will open the cypress IDE where you can see and interact with the tests
+    $ cypress open
+
+    // this will run the tests on the console
+    $ cypress run
+
+    // to run a specific test use the --spec flag
+    $ cypress run --spec /path/to/the/test
+
+    // to run the tests in a specific browser use the --browser flag and make sure that this browser is installed
+    // cypress will use the Electron-Browser for default
+    $ cypress run --browser chrome
