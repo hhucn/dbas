@@ -4,8 +4,8 @@ MAINTAINER Tobias Krauhoff <krauthoff@cs.uni-duesseldorf.de>
 
 WORKDIR /dbas/docs
 
-RUN apk add --no-cache install make && \
-    make html
+RUN apt-get install make
+RUN make html
 
 WORKDIR /dbas/docs/_build/html/
 

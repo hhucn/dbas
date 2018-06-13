@@ -7,8 +7,6 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 .. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-# from wsgiref.simple_server import make_server
-
 import os
 import re
 import time
@@ -22,8 +20,7 @@ from sqlalchemy import engine_from_config
 
 from dbas.database import get_db_environs
 from dbas.handler.rss import rewrite_issue_rss, create_news_rss
-from dbas.lib import get_global_url
-from dbas.query_wrapper import get_enabled_issues_as_query
+from dbas.lib import get_global_url, get_enabled_issues_as_query
 from .database import load_discussion_database
 from .security import groupfinder
 
@@ -51,22 +48,6 @@ def main(global_config, **settings):
     # session management and cache region support
     session_factory = session_factory_from_settings(settings)
     set_cache_regions_from_settings(settings)
-
-    # PLEASE USE THIS CODE TO READ CUSTOM SETTINGS FROM THE INI FILES
-    # include custom parts
-    # sections = ['service']
-    # log settings
-    # log = logging.getLogger(__name__)
-    # for s in sections:
-    #     try:
-    #         parser = ConfigParser()
-    #         parser.read(global_config['__file__'])
-    #         custom_settings = dict()
-    #         for k, v in parser.items('settings:{}'.format(s)):
-    #             custom_settings['settings:{}:{}'.format(s, k)] = v
-    #         settings.update(custom_settings)
-    #     except NoSectionError as e:
-    #         log.debug('__init__() '.upper() + 'main() <No ' + s + '-Section> ' + str(e))
 
     # creating the configurator
     config = Configurator(settings=settings,
@@ -209,7 +190,7 @@ def __write_rss_feeds():
 
 def get_dbas_environs(prefix=""):
     """
-    Fetches all environment variables beginning with `prefix` (default: ``).
+    Fetches all environment variables beginning with the given prefix (default is empty).
 
     Returns a dictionary where the keys are substituted versions of their corresponding environment variables.
     Substitution rules:

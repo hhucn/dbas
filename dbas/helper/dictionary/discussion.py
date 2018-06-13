@@ -141,10 +141,8 @@ class DiscussionDictHelper(object):
                                                    lang=self.lang)
         url = UrlManager(slug).get_url_for_statement_attitude(db_statement.uid)
         select_bubble = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=user_text,
-                                                 omit_bubble_url=False,
-                                                 statement_uid=db_statement.uid, is_supportive=is_supportive,
-                                                 nickname=nickname,
-                                                 lang=self.lang)
+                                                 omit_bubble_url=False, statement_uid=db_statement.uid,
+                                                 is_supportive=is_supportive, db_user=db_user, lang=self.lang)
 
         if not bubbles_already_last_in_list(bubbles_array, select_bubble):
             bubbles_array.append(select_bubble)
@@ -333,7 +331,7 @@ class DiscussionDictHelper(object):
                 intro = b + _tn.get(_.otherParticipantsThinkThat) + e
             sys_text = intro + ' ' + start_with_small(text) + '. '
             sys_text += '<br><br>' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, uid=uid, is_markable=True,
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, uid=uid, content=sys_text,
                                                   other_author=data['user'])
             if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
                 bubbles_array.append(bubble_sys)
@@ -396,17 +394,16 @@ class DiscussionDictHelper(object):
                 db_argument, arg_sys_id, history, attack, nickname, db_user_argument.is_supportive)
             quid = 'question-bubble-' + str(arg_sys_id) if int(arg_sys_id) > 0 else ''
             is_author = is_author_of_argument(db_user, prep_dict['confrontation'].uid)
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, uid=quid, content=prep_dict['sys'],
-                                                  omit_bubble_url=True,
-                                                  lang=self.lang, is_markable=True,
-                                                  is_author=is_author, other_author=db_enemy)
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, is_author=is_author, uid=quid,
+                                                  content=prep_dict['sys'], omit_bubble_url=True, lang=self.lang,
+                                                  other_author=db_enemy)
             statement_list = self.__get_all_statement_texts_by_argument(prep_dict['confrontation'])
             gender_of_counter_arg = prep_dict['gender']
 
         bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=prep_dict['user'], omit_bubble_url=True,
                                                argument_uid=db_user_argument.uid,
-                                               is_supportive=db_user_argument.is_supportive, lang=self.lang,
-                                               nickname=nickname, other_author=db_enemy)
+                                               is_supportive=db_user_argument.is_supportive, db_user=db_user,
+                                               lang=self.lang, other_author=db_enemy)
 
         # dirty fixes
         if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
@@ -558,8 +555,8 @@ class DiscussionDictHelper(object):
             argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
 
         text = intro + argument_text + '?'
-        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=text, omit_bubble_url=True, lang=self.lang,
-                                          uid='question-bubble-{}'.format(uid), is_markable=True)
+        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, uid='question-bubble-{}'.format(uid),
+                                          content=text, omit_bubble_url=True, lang=self.lang)
         bubbles_array.append(bubble)
 
         # add statements of discussion to report them
@@ -601,10 +598,10 @@ class DiscussionDictHelper(object):
         self.__append_now_bubble(bubbles_array)
 
         user_text = get_text_for_argument_uid(uid_user_arg, nickname=nickname)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=user_text, omit_bubble_url=True,
-                                               argument_uid=uid_user_arg,
-                                               is_supportive=db_arg_user.is_supportive, lang=self.lang,
-                                               nickname=nickname)
+                                               argument_uid=uid_user_arg, is_supportive=db_arg_user.is_supportive,
+                                               db_user=db_user, lang=self.lang)
         bubbles_array.append(bubble_user)
 
         bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, uid='question-bubble-{}'.format(uid_system_arg),
@@ -745,9 +742,6 @@ class DiscussionDictHelper(object):
         """
         if len(bubbles_array) > 0:
             _tn = Translator(self.lang)
-            bubble = create_speechbubble_dict(BubbleTypes.STATUS,
-                                              uid='now',
-                                              content=_tn.get(_.now),
-                                              lang=self.lang,
-                                              omit_bubble_url=True)
+            bubble = create_speechbubble_dict(BubbleTypes.STATUS, uid='now', content=_tn.get(_.now),
+                                              omit_bubble_url=True, lang=self.lang)
             bubbles_array.append(bubble)

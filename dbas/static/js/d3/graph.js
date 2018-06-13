@@ -53,9 +53,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     isPartialGraphMode = true;
                     return false;
                 }
+                return true;
             });
         }
         new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);
+        return true;
     };
 
     /**
@@ -542,7 +544,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     $('#' + graphViewContainerSpaceId).find('.node').each(function () {
                         var id = $(this).attr('id').replace(rescaleGraph.node_id_prefix, '');
                         var label = $('#label-' + id);
-                        // var rect = $('#rect-' + id);
                         label.attr({
                             'y': -label.height() / rescaleGraph.zoom_scale + 45 / rescaleGraph.zoom_scale
                         });
@@ -640,7 +641,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var edgesTypeArrow = [];
         edges.forEach(function (d) {
             if (d.edge_type === 'arrow') {
-                return edgesTypeArrow.push(d);
+                edgesTypeArrow.push(d);
+                return edgesTypeArrow;
             }
         });
         return edgesTypeArrow;
@@ -788,8 +790,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     .attr(attr);
             }
             // set position of label
-            var height = $("#label-" + d.id).length > 0 ? 45 - $("#label-" + d.id).height() : - 20;
-            d3.select(this).attr({'id': 'label-' + d.id, 'y': height });
+            var height = $("#label-" + d.id).length > 0 ? 45 - $("#label-" + d.id).height() : -20;
+            d3.select(this).attr({'id': 'label-' + d.id, 'y': height});
         });
     }
 
@@ -798,16 +800,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function setRectProperties() {
         rect.each(function (d) {
-            // var row_count = $("#label-" + d.id + " [x='0']").length;
-            var width = 0; // 140;
-            var height = 0; // row_count * emToPx(1.2) + 10;
+            var width = 0;
+            var height = 0;
             var pos = calculateRectPos(width, height);
-
-            // if d is a virtual node do not show label
-            if (d.label === '') {
-                width = 0;
-                height = 0;
-            }
 
             d3.select(this).attr({
                 'width': width,
@@ -1587,7 +1582,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         return splitted[splitted.length - 1];
     }
 
-
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
@@ -1628,7 +1622,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
 
     /**
      * Highlight incoming and outgoing edges of selected node.

@@ -336,11 +336,13 @@ $(function () {
     $('#' + settingsPublicNick).change(function publicNickChange() {
         new AjaxSettingsHandler().setUserSetting($(this), 'public_nick');
     });
-    
-    $('#' + settingsDeleteAccount).click(function deleteUserAccount(){
+
+    $('#' + settingsDeleteAccount).click(function deleteUserAccount() {
         var titleText = '<i class="fa fa-trash"></i> ' + _t(deleteAccount);
         var bodyText = '<p class="lead">' + _t(stepCannotBeUndone) + '<br>' + _t(mayTakeAWhile) + '</p>';
-        var functionForAccept = function(){ new AjaxSettingsHandler().deleteAccount(); };
+        var functionForAccept = function () {
+            new AjaxSettingsHandler().deleteAccount();
+        };
         displayConfirmationDialog(titleText, bodyText, functionForAccept, null, true);
     });
 

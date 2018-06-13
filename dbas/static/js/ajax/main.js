@@ -20,15 +20,15 @@ function ajaxSkeleton(url, method, data, ajaxDone, ajaxFail) {
         contentType: 'application/json',
         data: JSON.stringify(data),
         headers: {'X-CSRF-Token': $('#' + hiddenCSRFTokenId).val()}
-    }).done(function (data) {
-        ajaxDone(data);
-    }).fail(function (data) {
-        if (data.status === 200) {
+    }).done(function (data_done) {
+        ajaxDone(data_done);
+    }).fail(function (data_fail) {
+        if (data_fail.status === 200) {
             location.reload(true);
-        } else if (data.statusText === 'Bad CSRF Token' || data.responseJSON && !('errors' in data.responseJSON)) {
+        } else if (data_fail.statusText === 'Bad CSRF Token' || data_fail.responseJSON && !('errors' in data_fail.responseJSON)) {
             setGlobalErrorHandler(_t(ohsnap), _t(requestFailedBadToken));
         } else {
-            ajaxFail(data);
+            ajaxFail(data_fail);
         }
     });
 }

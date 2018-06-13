@@ -64,5 +64,4 @@ def get_last_reviewer_by_key(key):
     :param key: suffix of the table
     :return:
     """
-    # reviewer_mapping = {key: __get_table_by_key('last_reviewers_', key) for key in review_queues}
     return __get_table_by_key('last_reviewers_', key)

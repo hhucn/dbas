@@ -1,13 +1,13 @@
-import transaction
-
 from urllib.parse import urlparse
+
+import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User
-from dbas.query_wrapper import get_enabled_arguments_as_query, get_enabled_premises_as_query
-from dbas.lib import get_text_for_statement_uid, get_profile_picture
-from dbas.logger import logger
 from dbas.input_validator import is_integer
+from dbas.lib import get_text_for_statement_uid, get_profile_picture, get_enabled_arguments_as_query, \
+    get_enabled_premises_as_query
+from dbas.logger import logger
 
 
 def get_references_for_argument(uid, main_page):

@@ -54,9 +54,7 @@ class AjaxTest(unittest.TestCase):
             'uids': [db_s1[-1].uid]
         }, validated={})
         DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=db_s1[-1].uid).delete()
-        # db_s2 = DBDiscussionSession.query(Statement).count()
         self.assertIsNotNone(ajax(request))
-        # self.assertGreater(len(db_s1), db_s2)
 
     def test_main_add_and_delete_error(self):
         from admin.views import main_add as ajax_add
@@ -79,16 +77,10 @@ class AjaxTest(unittest.TestCase):
             }
         }, validated={})
 
-        # db_s1 = DBDiscussionSession.query(Statement).count()
         self.assertTrue(ajax_add(request_add))
-        # db_s2 = DBDiscussionSession.query(Statement).count()
 
         request_del = testing.DummyRequest(json_body={
             'table': '',
             'uids': DBDiscussionSession.query(Statement).order_by(Statement.uid.desc()).first().uid
         }, validated={})
         self.assertTrue(ajax_del(request_del))
-        # db_s3 = DBDiscussionSession.query(Statement).count()
-        # self.assertLess(db_s1, db_s2)
-        # self.assertGreater(db_s2, db_s3)
-        # self.assertEqual(db_s1, db_s3)

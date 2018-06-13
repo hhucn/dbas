@@ -12,9 +12,8 @@ from dbas.database.discussion_model import Argument
 from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for_argument_uid, \
     get_undercuts_for_argument_uid
 from dbas.input_validator import is_integer
-from dbas.lib import Relations
+from dbas.lib import Relations, get_enabled_arguments_as_query
 from dbas.logger import logger
-from dbas.query_wrapper import get_enabled_arguments_as_query
 
 
 def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relations] = None,
@@ -182,9 +181,8 @@ def __filter_malicious_steps(seq: List[dict], restriction_on_args: List[Relation
                 yield el
 
 
-def __get_attacks(attack: Relations, argument_uid: int, last_attack: Relations, is_supportive: bool) -> Tuple[List[dict],
-                                                                                                              bool,
-                                                                                                              Relations]:
+def __get_attacks(attack: Relations, argument_uid: int, last_attack: Relations,
+                  is_supportive: bool) -> Tuple[List[dict], bool, Relations]:
     """
     Returns a list of all attacking arguments based on input...
 

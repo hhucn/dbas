@@ -1415,14 +1415,6 @@ class FrontendTests:
         b.find_by_css('#discussions-space-list li:last-child input').click()
         time.sleep(wait_time)
         b.find_by_id('add-statement-container-main-input-position').fill(position)
-        # this is the old interface
-        # b.find_by_id('send-new-position').click()
-        # time.sleep(wait_time)
-        # b.find_by_css('#discussions-space-list li:first-child input').click()
-        # time.sleep(wait_time).click()
-
-        # b.find_by_css('#discussions-space-list li:last-child input').click()
-        # time.sleep(wait_time)
         b.find_by_id('add-statement-container-main-input-reason').fill(reason)
         b.find_by_id('send-new-position').click()
         time.sleep(wait_time)

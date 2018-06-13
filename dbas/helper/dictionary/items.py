@@ -14,11 +14,10 @@ from dbas.handler import attacks
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.url import UrlManager
-from dbas.lib import Relations, Attitudes
+from dbas.lib import Relations, Attitudes, get_enabled_arguments_as_query
 from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_statement, \
     is_author_of_argument
 from dbas.logger import logger
-from dbas.query_wrapper import get_enabled_arguments_as_query
 from dbas.review.queue.edit import EditQueue
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \
@@ -179,45 +178,9 @@ class ItemDictHelper(object):
         _um = UrlManager(slug, history=self.path)
 
         for argument in db_arguments:
-            if db_user and argument.uid in uids:  # add seen by if the statement is visible
-                add_seen_argument(argument.uid, db_user)
+            sarray = self.__get_statement_array_for_justify_statement(db_user, history, argument, uids, _tn, _um)
 
-            # get all premises in the premisegroup of this argument
-            db_premises = DBDiscussionSession.query(Premise).filter_by(
-                premisegroup_uid=argument.premisegroup_uid).all()
-            premise_array = []
-            for premise in db_premises:
-                text = premise.get_text()
-                premise_array.append({'title': text, 'id': premise.statement_uid})
-
-            # filter forbidden attacks
-            forbidden_attacks = attacks.get_forbidden_attacks_based_on_history(self.path)
-
-            # get attack for each premise, so the urls will be unique
-            arg_id_sys, attack = attacks.get_attack_for_argument(argument.uid, history=self.path,
-                                                                 restrictive_arg_uids=forbidden_attacks)
-            already_used = 'reaction/' + str(argument.uid) + '/' in self.path
-            additional_text = '(' + _tn.get(_.youUsedThisEarlier) + ')'
-
-            new_arg = None
-            url = None
-            if not attack:
-                new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
-                if new_arg:
-                    url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
-
-            if attack or new_arg is None or url is None:
-                url = _um.get_url_for_reaction_on_argument(argument.uid, attack.value, arg_id_sys)
-
-            statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
-                                                              already_used=already_used,
-                                                              already_used_text=additional_text,
-                                                              is_editable=not EditQueue().is_arguments_premise_in_edit_queue(
-                                                                  argument),
-                                                              is_markable=True,
-                                                              is_author=is_author_of_argument(db_user, argument.uid),
-                                                              is_visible=argument.uid in uids,
-                                                              attack_url=_um.get_url_for_jump(argument.uid)))
+            statements_array.append(sarray)
 
         shuffle_list_by_user(db_user, statements_array)
 
@@ -235,6 +198,46 @@ class ItemDictHelper(object):
                                                                   'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
+
+    def __get_statement_array_for_justify_statement(self, db_user, history, argument, uids, _tn, _um):
+        if db_user and argument.uid in uids:  # add seen by if the statement is visible
+            add_seen_argument(argument.uid, db_user)
+
+        # get all premises in the premisegroup of this argument
+        db_premises = DBDiscussionSession.query(Premise).filter_by(
+            premisegroup_uid=argument.premisegroup_uid).all()
+        premise_array = []
+        for premise in db_premises:
+            text = premise.get_text()
+            premise_array.append({'title': text, 'id': premise.statement_uid})
+
+        # filter forbidden attacks
+        forbidden_attacks = attacks.get_forbidden_attacks_based_on_history(self.path)
+
+        # get attack for each premise, so the urls will be unique
+        arg_id_sys, attack = attacks.get_attack_for_argument(argument.uid, history=self.path,
+                                                             restrictive_arg_uids=forbidden_attacks)
+        already_used = 'reaction/' + str(argument.uid) + '/' in self.path
+        additional_text = '(' + _tn.get(_.youUsedThisEarlier) + ')'
+
+        new_arg = None
+        url = None
+        if not attack:
+            new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
+            if new_arg:
+                url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
+
+        if attack or new_arg is None or url is None:
+            url = _um.get_url_for_reaction_on_argument(argument.uid, attack.value, arg_id_sys)
+
+        return self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
+                                         already_used=already_used,
+                                         already_used_text=additional_text,
+                                         is_editable=not EditQueue().is_arguments_premise_in_edit_queue(argument),
+                                         is_markable=True,
+                                         is_author=is_author_of_argument(db_user, argument.uid),
+                                         is_visible=argument.uid in uids,
+                                         attack_url=_um.get_url_for_jump(argument.uid))
 
     def get_array_for_justify_argument(self, argument_uid, attack_type, db_user, history):
         """
@@ -257,45 +260,9 @@ class ItemDictHelper(object):
         _um = UrlManager(slug, history=self.path)
 
         for argument in db_arguments:
-            if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
-                add_seen_argument(argument_uid, db_user)
-            # get all premises in this group
-            db_premises = DBDiscussionSession.query(Premise).filter_by(
-                premisegroup_uid=argument.premisegroup_uid).all()
-            premises_array = []
-            for premise in db_premises:
-                text = premise.get_text()
-                premises_array.append({'id': premise.statement_uid,
-                                       'title': text})
-
-            # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
-            is_undermine = Relations.UNDERMINE if attack_type == Relations.UNDERMINE else None
-            attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-
-            arg_id_sys, attack = attacks.get_attack_for_argument(argument.uid, last_attack=is_undermine,
-                                                                 restrictive_arg_uids=attacking_arg_uids,
-                                                                 history=self.path)
-            the_other_one = True
-            url = ''
-
-            # with a chance of 50% or at the end we will seed the new "support step"
-            if not attack:
-                new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
-                the_other_one = new_arg is None
-                if new_arg:
-                    the_other_one = False
-                    url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
-
-            if the_other_one:
-                url = _um.get_url_for_reaction_on_argument(argument.uid, attack, arg_id_sys)
-
-            statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
-                                                              is_markable=True,
-                                                              is_editable=not EditQueue().is_arguments_premise_in_edit_queue(
-                                                                  argument),
-                                                              is_author=is_author_of_argument(db_user, argument.uid),
-                                                              is_visible=argument.uid in uids,
-                                                              attack_url=_um.get_url_for_jump(argument.uid)))
+            sarray = self.__get_statement_array_for_justify_argument(argument_uid, attack_type, db_user, history,
+                                                                     argument, uids, _um)
+            statements_array.append(sarray)
 
         shuffle_list_by_user(db_user, statements_array)
 
@@ -314,6 +281,46 @@ class ItemDictHelper(object):
                 statements_array.append(a_dict)
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
+
+    def __get_statement_array_for_justify_argument(self, argument_uid, attack_type, db_user, history, argument, uids,
+                                                   _um):
+        if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
+            add_seen_argument(argument_uid, db_user)
+        # get all premises in this group
+        db_premises = DBDiscussionSession.query(Premise).filter_by(
+            premisegroup_uid=argument.premisegroup_uid).all()
+        premises_array = []
+        for premise in db_premises:
+            text = premise.get_text()
+            premises_array.append({'id': premise.statement_uid,
+                                   'title': text})
+
+        # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
+        is_undermine = Relations.UNDERMINE if attack_type == Relations.UNDERMINE else None
+        attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+
+        arg_id_sys, attack = attacks.get_attack_for_argument(argument.uid, last_attack=is_undermine,
+                                                             restrictive_arg_uids=attacking_arg_uids,
+                                                             history=self.path)
+        the_other_one = True
+        url = ''
+
+        # with a chance of 50% or at the end we will seed the new "support step"
+        if not attack:
+            new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
+            the_other_one = new_arg is None
+            if new_arg:
+                the_other_one = False
+                url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
+
+        if the_other_one:
+            url = _um.get_url_for_reaction_on_argument(argument.uid, attack, arg_id_sys)
+        return self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
+                                         is_markable=True,
+                                         is_editable=not EditQueue().is_arguments_premise_in_edit_queue(argument),
+                                         is_author=is_author_of_argument(db_user, argument.uid),
+                                         is_visible=argument.uid in uids,
+                                         attack_url=_um.get_url_for_jump(argument.uid))
 
     def __get_arguments_based_on_attack(self, attack_type, argument_uid):
         """
@@ -646,38 +653,47 @@ class ItemDictHelper(object):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for group_id in pgroup_ids:
-            db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=group_id).all()
-            premise_array = []
-            for premise in db_premises:
-                text = premise.get_text()
-                premise_array.append({'title': text, 'id': premise.statement_uid})
-                if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
-                    add_seen_statement(premise.statement_uid, db_user)
-
-            # get attack for each premise, so the urls will be unique
-            db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == group_id,
-                                                                     Argument.is_supportive == is_supportive)
-            if conclusion_uid and not is_argument:
-                db_argument = db_argument.filter_by(conclusion_uid=conclusion_uid).first()
-            else:
-                db_argument = db_argument.filter_by(argument_uid=argument_uid).first()
-
-            if not db_argument:
+            sarray = self.__get_choose_array_for_pgroup(is_argument, is_supportive, conclusion_uid, argument_uid,
+                                                        db_user, group_id, _um)
+            if not sarray:
                 return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-            attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-            arg_id_sys, attack = attacks.get_attack_for_argument(db_argument.uid,
-                                                                 restrictive_arg_uids=attacking_arg_uids)
-            url = _um.get_url_for_reaction_on_argument(db_argument.uid, attack, arg_id_sys)
-
-            if is_argument:
-                is_author = is_author_of_argument(db_user, argument_uid)
-            else:
-                is_author = is_author_of_statement(db_user, conclusion_uid)
-            statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
-                                                              is_markable=True, is_editable=True, is_author=is_author))
+            statements_array.append(sarray)
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
+
+    def __get_choose_array_for_pgroup(self, is_argument: bool, is_supportive: bool, conclusion_uid: int,
+                                      argument_uid: int, db_user: User, group_id: int, _um: UrlManager):
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=group_id).all()
+        premise_array = []
+        for premise in db_premises:
+            text = premise.get_text()
+            premise_array.append({'title': text, 'id': premise.statement_uid})
+            if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
+                add_seen_statement(premise.statement_uid, db_user)
+
+        # get attack for each premise, so the urls will be unique
+        db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == group_id,
+                                                                 Argument.is_supportive == is_supportive)
+        if conclusion_uid and not is_argument:
+            db_argument = db_argument.filter_by(conclusion_uid=conclusion_uid).first()
+        else:
+            db_argument = db_argument.filter_by(argument_uid=argument_uid).first()
+
+        if not db_argument:
+            return None
+
+        attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+        arg_id_sys, attack = attacks.get_attack_for_argument(db_argument.uid,
+                                                             restrictive_arg_uids=attacking_arg_uids)
+        url = _um.get_url_for_reaction_on_argument(db_argument.uid, attack, arg_id_sys)
+
+        if is_argument:
+            is_author = is_author_of_argument(db_user, argument_uid)
+        else:
+            is_author = is_author_of_statement(db_user, conclusion_uid)
+        return self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
+                                         is_markable=True, is_editable=True, is_author=is_author)
 
     def get_array_for_jump(self, arg_uid, slug):
         """
