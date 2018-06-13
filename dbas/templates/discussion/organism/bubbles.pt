@@ -29,23 +29,22 @@
       </div>
       <div tal:condition="bubble.is_system" class="line-wrapper-l">
         <div tal:switch="bubble.enemy.available" tal:omit-tag="" tal:condition="extras.logged_in and extras.modern_bubbles">
-          <a tal:case="True" class="pull-left" href="${bubble.enemy.profile}"><img src="${bubble.enemy.avatar}"
-                                                                                   class="img-circle" alt="gravatar"
-                                                                                   style="max-width: 25px; margin-top: 0.3em"></a>
-          <img tal:case="False" src="${bubble.enemy.avatar}" class="img-circle pull-left" alt="gravatar"
-                                style="max-width: 25px; margin-top: 0.3em">
+          <a tal:case="True" class="pull-left" href="${bubble.enemy.profile}">
+            <img src="${bubble.enemy.avatar}" class="img-circle" alt="gravatar" style="max-width: 25px; margin-top: 0.3em"></a>
+          <img tal:case="False" src="${bubble.enemy.avatar}" class="img-circle pull-left" alt="gravatar" style="max-width: 25px; margin-top: 0.3em">
         </div>
         <p class="triangle-l" id="${bubble.id}">
           <span class="triangle-content">${structure:bubble.message}</span>
           <br tal:condition="bubble.is_markable and extras.logged_in">
           <span class="triangle-trash pull-right" tal:condition="bubble.is_author and extras.logged_in">
-                    <i class="fa fa-trash" aria-hidden="true"
-                       title="${extras.title.delete_statement}"></i>
-                  </span>
+            <i class="fa fa-trash" aria-hidden="true" title="${extras.title.delete_statement}"></i>
+          </span>
+          <i tal:condition="bubble.is_enemy_user.admin" class="user-group-fa fa fa-bullhorn" aria-hidden="true" title="${extras.title.user_is_admin}"></i>
+          <i tal:condition="bubble.is_enemy_user.special" class="user-group-fa fa fa-space-shuttle" aria-hidden="true" title="${extras.title.user_is_special}"></i>
+          <i tal:condition="bubble.is_enemy_user.author" class="user-group-fa fa fa-smile-o" aria-hidden="true" title="${extras.title.user_is_author}"></i>
           <span class="triangle-flag pull-right" tal:condition="bubble.is_markable and extras.logged_in">
-                    <i class="fa fa-flag" aria-hidden="true"
-                       title="${extras.title.report_statement}"></i>
-                  </span>
+            <i class="fa fa-flag" aria-hidden="true" title="${extras.title.report_statement}"></i>
+          </span>
         </p>
       </div>
       <div tal:condition="bubble.is_status" class="line-wrapper-m">

@@ -48,6 +48,7 @@ function ReviewCallbacks() {
                 $('#text' + $(this).data('id')).text($(this).val());
             });
         });
+        return true;
     };
 
     /**

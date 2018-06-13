@@ -114,11 +114,11 @@ function createChart(label, labels, displaydata, space, id, count) {
         'style': 'display: block; margin: 0 auto;'
     });
     space.append(canvas);
-    
+
     var colors = new Colors();
     var color_100_rgba = colors.getAllAsRGB(100, 0.4);
     var color_500_hex = colors.getAllAsHEX(500);
-    
+
     var ctx = document.getElementById(id).getContext('2d');
     var chart_data = {
         type: 'line',

@@ -59,8 +59,10 @@ function News() {
             return;
         }
 
-        var setHeight = function (ctx, mh) {
-            ctx.children().eq(0).css({'min-height': mh + 'px'});
+        var setHeight = function (children, mh) {
+            $.each(children, function () {
+                $(this).children().eq(0).css({'min-height': mh + 'px'});
+            });
         };
         // find max height of each row and set it
         for (counter = 0; counter < row; counter++) {
@@ -70,9 +72,7 @@ function News() {
             }).get();
             maxHeight = Math.max.apply(Math, heights);
 
-            $.each(children, function () {
-                setHeight($(this), maxHeight);
-            });
+            setHeight(children, maxHeight);
         }
     };
 
