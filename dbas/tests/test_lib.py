@@ -3,12 +3,10 @@ from datetime import date
 
 import transaction
 
-from dbas import lib, get_enabled_issues_as_query
+from dbas import lib
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Argument, Statement, TextVersion, Issue, Premise
+from dbas.database.discussion_model import User, Argument, Statement, TextVersion
 from dbas.helper.url import UrlManager
-from dbas.lib import get_enabled_statement_as_query, get_enabled_arguments_as_query, get_enabled_premises_as_query, \
-    get_visible_issues_for_user_as_query
 
 
 class LibTests(unittest.TestCase):
@@ -370,30 +368,3 @@ class LibTests(unittest.TestCase):
         self.assertTrue(lib.get_text_for_argument_uid(47, user_changed_opinion=True), s47)
         self.assertTrue(lib.get_text_for_argument_uid(48, user_changed_opinion=True), s48)
         self.assertTrue(lib.get_text_for_argument_uid(49, user_changed_opinion=True), s49)
-
-    def test_get_enabled_statement_as_query(self):
-        query_len = get_enabled_statement_as_query().count()
-        res_len = DBDiscussionSession.query(Statement).filter_by(is_disabled=False).count()
-        self.assertEqual(res_len, query_len)
-
-    def test_get_enabled_arguments_as_query(self):
-        query_len = get_enabled_arguments_as_query().count()
-        res_len = DBDiscussionSession.query(Argument).filter_by(is_disabled=False).count()
-        self.assertEqual(res_len, query_len)
-
-    def test_get_enabled_premises_as_query(self):
-        query_len = get_enabled_premises_as_query().count()
-        res_len = DBDiscussionSession.query(Premise).filter_by(is_disabled=False).count()
-        self.assertEqual(res_len, query_len)
-
-    def test_get_enabled_issues_as_query(self):
-        query_len = get_enabled_issues_as_query().count()
-        res_len = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).count()
-        self.assertEqual(res_len, query_len)
-
-    def test_get_visible_issues_for_user_as_query(self):
-        issue_uids = sorted([issue.uid for issue in get_visible_issues_for_user_as_query(2).all()])
-        self.assertEqual([2, 3, 4, 5, 7, 8], issue_uids)
-
-        issue_uids = sorted([issue.uid for issue in get_visible_issues_for_user_as_query(10).all()])
-        self.assertEqual([2, 3, 4, 5, 7, 8], issue_uids)

@@ -13,8 +13,9 @@ import transaction
 
 from dbas.database import DBDiscussionSession as Session
 from dbas.database.discussion_model import Issue, RSS, User, News
-from dbas.lib import get_enabled_issues_as_query, get_global_url
+from dbas.lib import get_global_url
 from dbas.logger import logger
+from dbas.query_wrapper import get_enabled_issues_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -51,7 +52,7 @@ def create_news_rss(main_page: str, ui_locale: str) -> bool:
     return True
 
 
-def create_initial_issue_rss(main_page: str) -> bool:
+def create_initial_issue_rss(main_page: str, ui_locale: str) -> bool:
     """
     Creates the initial RSS entry for an issue
 

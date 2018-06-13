@@ -4,7 +4,7 @@
 
 function AdminAjaxHandler() {
 	'use strict';
-
+	
 	/**
 	 *
 	 * @param uids
@@ -26,7 +26,7 @@ function AdminAjaxHandler() {
 		};
 		ajaxSkeleton(url, 'POST', data, done, fail);
 	};
-
+	
 	/**
 	 *
 	 * @param new_data
@@ -61,7 +61,7 @@ function AdminAjaxHandler() {
 		};
 		ajaxSkeleton(url, 'POST', data, done, fail);
 	};
-
+	
 	/**
 	 *
 	 * @param element
@@ -90,7 +90,7 @@ function AdminAjaxHandler() {
 		};
 		ajaxSkeleton(url, 'POST', data, done, fail);
 	};
-
+	
 	this.revokeToken = function (id) {
 		console.log("Revoking " + id);
 		var csrf_token = $('#hidden_csrf_token').val();
@@ -107,7 +107,7 @@ function AdminAjaxHandler() {
 			}
 		});
 	};
-
+	
 	this.generateToken = function (owner) {
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({

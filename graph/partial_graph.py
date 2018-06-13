@@ -75,6 +75,7 @@ def get_partial_graph_for_argument(uid: int, db_issue: Issue):
     db_positions = __find_position_for_conclusion_of_argument(db_argument, [], [], [])
     logger('PartialGraph', 'positions are: ' + str([pos.uid for pos in db_positions]))
     graph_arg_lists = __climb_graph_down(db_positions)
+    # return __get_all_nodes_for_pos_dict(graph_arg_lists)
 
     return __return_d3_data(graph_arg_lists, db_issue)
 

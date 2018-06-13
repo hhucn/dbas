@@ -146,6 +146,7 @@ def set_references(request):
     source = escape_string(request.validated['ref_source'])
     db_user = request.validated['user']
     db_issue = request.validated['issue']
+    # db_statement2issue = DBDiscussionSession.query(StatementToIssue)
     return set_reference(reference, source, db_user, db_statement, db_issue.uid)
 
 
@@ -165,8 +166,7 @@ def switch_language(request):
     :return: json-dict()
     """
     logger('switch_language', 'main: {}'.format(request.json_body))
-    lang = set_language(request, request.validated['lang'])
-    return {'_LOCALE_': lang}
+    return set_language(request, request.validated['lang'])
 
 
 # ajax - for sending news

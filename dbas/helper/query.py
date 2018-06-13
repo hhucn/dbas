@@ -142,6 +142,7 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     db_related_arguments = DBDiscussionSession.query(Argument).filter(Argument.is_supportive == is_supportive,
                                                                       Argument.argument_uid == argument_uid).all()
     given_relations = set()
+    index = 0
 
     if not db_related_arguments:
         return None
@@ -153,46 +154,47 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
             tmp_dict['id'] = relation.uid
             tmp_dict['text'] = relation.get_premisegroup_text()
             return_array.append(tmp_dict)
+            index += 1
     return return_array
 
 
-def revoke_author_of_statement_content(db_statement: Statement, db_user: User):
+def revoke_author_of_statement_content(statement, db_user):
     """
     Revokes the statement - e.g. the user is not the author anymore
 
-    :param db_statement: Statement
+    :param statement: Statement
     :param db_user: User
     :return:
     """
-    logger('QueryHelper', str(db_statement.uid))
+    logger('QueryHelper', str(statement.uid))
 
     # get element, which should be revoked
-    db_element = __revoke_statement(db_statement, db_user)
+    db_element = __revoke_statement(db_user, statement)
     DBDiscussionSession.add(RevokedContent(db_user.uid, statement=db_element.uid))
     DBDiscussionSession.flush()
     transaction.commit()
     return True
 
 
-def revoke_author_of_argument_content(db_argument: Argument, db_user: User):
+def revoke_author_of_argument_content(argument, db_user):
     """
     Revokes the argument - e.g. the user is not the author anymore
 
-    :param db_argument: Argument
+    :param argument: Argument
     :param db_user: User
     :return:
     """
-    logger('QueryHelper', str(db_argument.uid))
+    logger('QueryHelper', str(argument.uid))
 
     # get element, which should be revoked
-    db_element = __revoke_argument(db_argument, db_user)
+    db_element = __revoke_argument(db_user, argument)
     DBDiscussionSession.add(RevokedContent(db_user.uid, argument=db_element.uid))
     DBDiscussionSession.flush()
     transaction.commit()
     return True
 
 
-def __revoke_statement(db_statement: Statement, db_user: User):
+def __revoke_statement(db_user, db_statement):
     """
     Revokes the user as author of the statement
 
@@ -217,7 +219,7 @@ def __revoke_statement(db_statement: Statement, db_user: User):
     return db_statement
 
 
-def __revoke_argument(db_argument: Argument, db_user: User):
+def __revoke_argument(db_user, db_argument):
     """
     Revokes the user as author of the argument
 
@@ -292,7 +294,7 @@ def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_auth
     return True
 
 
-def __remove_user_from_arguments_with_statement(db_statement: Statement, db_user: User):
+def __remove_user_from_arguments_with_statement(db_statement, db_user):
     """
     Calls revoke_content(...) for all arguments, where the Statement.uid is used
 
@@ -323,16 +325,16 @@ def get_short_url(url) -> dict:
     service_url = 'http://tinyurl.com/'
 
     db_url = DBDiscussionSession.query(ShortLinks).filter_by(long_url=url).first()
-    rdict = {
-        'url': '',
-        'service': service,
-        'service_url': service_url,
-        'service_text': service,
-    }
 
     if db_url and (get_now() - db_url.timestamp).days < 7:
-        rdict['url'] = db_url.short_url
-        return rdict
+        short_url = db_url.short_url
+
+        return {
+            'url': short_url,
+            'service': service,
+            'service_url': service_url,
+            'service_text': service,
+        }
 
     # no or old url, so fetch and set it
     short_url, service_text = __fetch_url(service, url)
@@ -345,9 +347,12 @@ def get_short_url(url) -> dict:
         DBDiscussionSession.flush()
         transaction.commit()
 
-    rdict['url'] = short_url
-    rdict['service_text'] = service_text
-    return rdict
+    return {
+        'url': short_url,
+        'service': service,
+        'service_url': service_url,
+        'service_text': service_text,
+    }
 
 
 def __fetch_url(service: str, long_url: str) -> Tuple[str, str]:

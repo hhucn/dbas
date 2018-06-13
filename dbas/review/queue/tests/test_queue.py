@@ -56,78 +56,73 @@ class QueueTest(unittest.TestCase):
 
     def test_cancel_ballot(self):
         for key in review_queues:
-            self.__test_cancel_ballot(key)
+            queue = get_queue_by_key(key)
+            adapter = QueueAdapter(queue=queue(), db_user=self.user, application_url='main', translator=self.tn)
+            review_table = get_review_model_by_key(key)
+            last_reviewer_table = get_last_reviewer_by_key(key)
 
-    def __test_cancel_ballot(self, key):
-        queue = get_queue_by_key(key)
-        adapter = QueueAdapter(queue=queue(), db_user=self.user, application_url='main', translator=self.tn)
-        review_table = get_review_model_by_key(key)
-        last_reviewer_table = get_last_reviewer_by_key(key)
+            # count of elements before we add new things to cancel
+            review_count_1 = DBDiscussionSession.query(review_table).count()
 
-        # count of elements before we add new things to cancel
-        review_count_1 = DBDiscussionSession.query(review_table).count()
+            # add things which we can cancel
+            if key in [key_merge, key_split]:
+                db_new_review = review_table(detector=4, premisegroup=5)
+            elif key is key_duplicate:
+                db_new_review = review_table(detector=4, duplicate_statement=5, original_statement=4)
+            else:
+                db_new_review = review_table(detector=4)
 
-        # add things which we can cancel
-        if key in [key_merge, key_split]:
-            db_new_review = review_table(detector=4, premisegroup=5)
-        elif key is key_duplicate:
-            db_new_review = review_table(detector=4, duplicate_statement=5, original_statement=4)
-        else:
-            db_new_review = review_table(detector=4)
+            DBDiscussionSession.add(db_new_review)
+            DBDiscussionSession.flush()
 
-        DBDiscussionSession.add(db_new_review)
-        DBDiscussionSession.flush()
+            if key == key_split:
+                DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, should_split=True))
+            elif key == key_merge:
+                DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, should_merge=True))
+            else:
+                DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, is_okay=True))
 
-        if key == key_split:
-            DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, should_split=True))
-        elif key == key_merge:
-            DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, should_merge=True))
-        else:
-            DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, is_okay=True))
+            DBDiscussionSession.flush()
 
-        DBDiscussionSession.flush()
+            # count of elements after we add new things to cancel
+            review_count_2 = DBDiscussionSession.query(review_table).count()
+            review_canceled_1 = DBDiscussionSession.query(ReviewCanceled).count()
 
-        # count of elements after we add new things to cancel
-        review_count_2 = DBDiscussionSession.query(review_table).count()
-        review_canceled_1 = DBDiscussionSession.query(ReviewCanceled).count()
+            # cancel things
+            adapter.cancel_ballot(db_new_review)
 
-        # cancel things
-        adapter.cancel_ballot(db_new_review)
+            # count of elements after we canceled
+            review_count_3 = DBDiscussionSession.query(review_table).count()
+            review_canceled_2 = DBDiscussionSession.query(ReviewCanceled).count()
 
-        # count of elements after we canceled
-        review_count_3 = DBDiscussionSession.query(review_table).count()
-        review_canceled_2 = DBDiscussionSession.query(ReviewCanceled).count()
+            self.assertLess(review_count_1, review_count_2)
+            self.assertEqual(review_count_3, review_count_2)
+            self.assertTrue(db_new_review.is_revoked)
 
-        self.assertLess(review_count_1, review_count_2)
-        self.assertEqual(review_count_3, review_count_2)
-        self.assertTrue(db_new_review.is_revoked)
+            self.assertLess(review_canceled_1, review_canceled_2)
 
-        self.assertLess(review_canceled_1, review_canceled_2)
-        self.__delete_review_in_test_cancel_ballot(key, db_new_review, last_reviewer_table, review_table)
-
-    def __delete_review_in_test_cancel_ballot(self, key, db_new_review, last_reviewer_table, review_table):
-        if key == key_edit:
-            DBDiscussionSession.query(ReviewCanceled).filter_by(review_edit_uid=db_new_review.uid).delete()
-        if key == key_delete:
-            DBDiscussionSession.query(ReviewCanceled).filter_by(review_delete_uid=db_new_review.uid).delete()
-        if key == key_optimization:
-            DBDiscussionSession.query(ReviewCanceled).filter_by(review_optimization_uid=db_new_review.uid).delete()
-        if key == key_duplicate:
-            DBDiscussionSession.query(ReviewCanceled).filter_by(review_duplicate_uid=db_new_review.uid).delete()
-        if key == key_merge:
-            DBDiscussionSession.query(ReviewCanceled).filter_by(review_merge_uid=db_new_review.uid).delete()
-        if key == key_split:
-            DBDiscussionSession.query(ReviewCanceled).filter_by(review_split_uid=db_new_review.uid).delete()
-        if key is key_edit:
-            DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_new_review.uid).delete()
-        if key is key_split:
-            DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_new_review.uid).delete()
-        if key is key_merge:
-            DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_new_review.uid).delete()
-        DBDiscussionSession.query(last_reviewer_table).filter_by(review_uid=db_new_review.uid).delete()
-        DBDiscussionSession.query(review_table).filter_by(uid=db_new_review.uid).delete()
-        DBDiscussionSession.flush()
-        transaction.commit()
+            if key == key_edit:
+                DBDiscussionSession.query(ReviewCanceled).filter_by(review_edit_uid=db_new_review.uid).delete()
+            if key == key_delete:
+                DBDiscussionSession.query(ReviewCanceled).filter_by(review_delete_uid=db_new_review.uid).delete()
+            if key == key_optimization:
+                DBDiscussionSession.query(ReviewCanceled).filter_by(review_optimization_uid=db_new_review.uid).delete()
+            if key == key_duplicate:
+                DBDiscussionSession.query(ReviewCanceled).filter_by(review_duplicate_uid=db_new_review.uid).delete()
+            if key == key_merge:
+                DBDiscussionSession.query(ReviewCanceled).filter_by(review_merge_uid=db_new_review.uid).delete()
+            if key == key_split:
+                DBDiscussionSession.query(ReviewCanceled).filter_by(review_split_uid=db_new_review.uid).delete()
+            if key is key_edit:
+                DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_new_review.uid).delete()
+            if key is key_split:
+                DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_new_review.uid).delete()
+            if key is key_merge:
+                DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_new_review.uid).delete()
+            DBDiscussionSession.query(last_reviewer_table).filter_by(review_uid=db_new_review.uid).delete()
+            DBDiscussionSession.query(review_table).filter_by(uid=db_new_review.uid).delete()
+            DBDiscussionSession.flush()
+            transaction.commit()
 
     def test_revoke_ballot(self):
         # function is called in a more complex test/setting

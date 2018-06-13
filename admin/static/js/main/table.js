@@ -209,14 +209,7 @@ $(document).ready(function () {
 
 	try{
 		var dict = getLanguage() === 'de'? dataTables_german_lang : dataTables_english_lang;
-		var options = {
-			language: dict,
-			ordering: true
-		};
-		if ($('#table_name') === 'History'){
-			options.ordering = false;
-		}
-		data.DataTable(options);
+		data.DataTable({"language": dict});
 	} catch(e){
 	}
 });

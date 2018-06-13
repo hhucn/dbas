@@ -76,24 +76,24 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user, _
     relations = [relation.value for relation in Relations]
 
     ret_list = []
-
-    for relation in relations:
-        d = __build_reaction_dict_by_relation(relation, relation, relation_text, arg_uids_for_reactions, db_user,
-                                              main_page, _t)
-        ret_list.append(d)
-    return ret_list
-
-
-def __build_reaction_dict_by_relation(relations, current_relation, relation_text, arg_uids_for_reactions,
-                                      db_user, main_page, _t):
-    all_users = []
-    message = ''
-    seen_by = 0
-
+    user_query = DBDiscussionSession.query(User)
     if db_user.gender == 'f':
         msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
     else:
         msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+
+    for relation in relations:
+        d = __build_reaction_dict_by_relation(relation, relation, relation_text, msg, arg_uids_for_reactions, db_user,
+                                              main_page, _t, user_query)
+        ret_list.append(d)
+    return ret_list
+
+
+def __build_reaction_dict_by_relation(relations, current_relation, relation_text, msg, arg_uids_for_reactions,
+                                      db_user, main_page, _t, user_query):
+    all_users = []
+    message = ''
+    seen_by = 0
 
     if not arg_uids_for_reactions[relations.index(current_relation)]:
         return {
@@ -110,7 +110,7 @@ def __build_reaction_dict_by_relation(relations, current_relation, relation_text
                                                                      ClickedArgument.author_uid != db_user.uid).all()
 
         for vote in db_votes:
-            voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
+            voted_user = user_query.get(vote.author_uid)
             users_dict = create_users_dict(voted_user, vote.timestamp, main_page, _t.get_lang())
             all_users.append(users_dict)
 

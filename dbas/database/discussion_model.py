@@ -48,6 +48,7 @@ def get_now():
     :return: arrow data type
     """
     return arrow.utcnow().to('local')
+    # return arrow.get(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class Issue(DiscussionBase):
@@ -305,14 +306,6 @@ class User(DiscussionBase):
         :return: True, if the user is member of the admin group
         """
         return DBDiscussionSession.query(Group).filter_by(name='admins').first().uid == self.group_uid
-
-    def is_special(self):
-        """
-        Check, if the user is member of the special group
-
-        :return: True, if the user is member of the admin group
-        """
-        return DBDiscussionSession.query(Group).filter_by(name='specials').first().uid == self.group_uid
 
     def is_author(self):
         """

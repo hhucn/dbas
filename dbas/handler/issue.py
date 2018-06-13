@@ -12,7 +12,6 @@ import transaction
 from pyramid.request import Request
 from slugify import slugify
 
-from dbas import get_enabled_issues_as_query
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
     ClickedStatement, TextVersion, StatementToIssue
@@ -20,8 +19,9 @@ from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
 from dbas.helper.url import UrlManager
-from dbas.lib import nick_of_anonymous_user, get_visible_issues_for_user_as_query
+from dbas.lib import nick_of_anonymous_user
 from dbas.lib import python_datetime_pretty_print
+from dbas.query_wrapper import get_enabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 

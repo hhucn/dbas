@@ -12,7 +12,7 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User, Issue
 from dbas.input_validator import is_integer
-from dbas.lib import get_enabled_arguments_as_query, get_enabled_premises_as_query
+from dbas.query_wrapper import get_enabled_arguments_as_query, get_enabled_premises_as_query
 from dbas.strings.lib import start_with_capital
 
 

@@ -9,6 +9,8 @@ from dbas.logger import logger
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
 from sqlalchemy.exc import InternalError
+# from sqlalchemy.exc import OperationalError
+# from sqlalchemy.exc import StatementError
 
 
 class RootFactory(object):
@@ -18,8 +20,7 @@ class RootFactory(object):
     __acl__ = [(Allow, Everyone, 'everybody'),
                (Allow, 'group:admins', ('admin', 'edit', 'use')),
                (Allow, 'group:authors', ('edit', 'use')),
-               (Allow, 'group:users', 'use'),
-               (Allow, 'group:special', 'use')]
+               (Allow, 'group:users', 'use')]
 
     def __init__(self, _):
         pass

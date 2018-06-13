@@ -110,6 +110,17 @@ def verify_structure_of_argument_dictionary(self, response):
     self.assertTrue('text' in response['opinions'][undercut])
     self.assertTrue('seen_by' in response['opinions'][rebut])
 
+    # ... value of key 'users' in {'opinions': {'attack_type': {'users': ...}}}
+    # self.assertTrue(len(response['opinions'][rebut]['users']) > 0)
+    # self.assertTrue(len(response['opinions'][undercut]['users']) > 0)
+    # self.assertTrue(len(response['opinions'][support]['users']) > 0)
+    # self.assertTrue(len(response['opinions'][undermine]['users']) > 0)
+
+    # self.assertTrue('nickname' in response['opinions'][rebut]['users'][0])
+    # self.assertTrue('public_profile_url' in response['opinions'][undercut]['users'][0])
+    # self.assertTrue('avatar_url' in response['opinions'][support]['users'][0])
+    # self.assertTrue('vote_timestamp' in response['opinions'][undermine]['users'][0])
+
     # wrong structure
     self.assertTrue('' not in response)
     self.assertTrue('opinion' not in response)

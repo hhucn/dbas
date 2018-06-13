@@ -391,7 +391,7 @@ def delete_notifications(uids_list, db_user, ui_locales, application_url) -> dic
     :param uids_list: List of message ids which should be deleted
     :param db_user: User
     :param ui_locales: Language of current users session
-    :param application_url: Url of the App
+    :param application_url Url of the App
     :return: Dictionary with info and/or error
     """
     user.update_last_action(db_user)

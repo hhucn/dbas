@@ -50,6 +50,7 @@ function AjaxLoginHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
+    
     /**
      *
      * @param service
@@ -83,6 +84,7 @@ function AjaxLoginHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
+    
     /**
      *
      */
@@ -130,6 +132,7 @@ function AjaxLoginHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
+    
     /**
      *
      */

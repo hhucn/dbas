@@ -5,7 +5,7 @@ Installation
 ============
 
 The preferred way to install D-BAS is via Docker. You can find some installation
-instructions `on the Dockers index site <docker/index.html>`_.
+instructions `on this site <docker/index.html>`_.
 
 
 The Docker Way
@@ -55,11 +55,9 @@ You may want to configure options as environment variables instead of config ent
 
 D-BAS
 -----
-
-You can configure all entries in the env-file in environment variables (instead of adding variables via code and ini-files in pyramid).
-By default D-BAS takes all environment variables with empty prefix and adds them to the configuration, after parsing the .ini file itself.
-The name of the environment variable will be the key of the new configuration entry, after some transformations. For more
-information please have a look at https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html.
+You can configure all entries in the ``app:main`` section of the ini-file in environment variables.
+By default D-BAS takes all environment variables with prefix ```` and adds them to the configuration, after parsing the .ini file itself.
+The name of the environment variable will be the key of the new configuration entry, after some transformations.
 
 1. The prefix will be stripped.
 2. All single underscores will be substituted with a dot.
@@ -72,44 +70,21 @@ Example::
     => foo.bar_baz = fizz
 
 
-Also you can add pyramid specific variables in the ini-files with `[a:b]` as section parameter. Please add the following
-snippet with your keywords to the config in file `dbas/__init__py`::
-
-    sections = ['service']
-    log = logging.getLogger(__name__)
-    for s in sections:
-        try:
-            parser = ConfigParser()
-            parser.read(global_config['__file__'])
-            custom_settings = dict()
-            for k, v in parser.items('settings:{}'.format(s)):
-                custom_settings['settings:{}:{}'.format(s, k)] = v
-            settings.update(custom_settings)
-        except NoSectionError as e:
-            log.debug(f'__init__(): main() <No {s}-Section> ->{e})
-
-The parameters can now be accessed  via::
-
-    def includeme(config):
-        settings = config.registry.settings
-        its_something = settings['your_keyword']
-
-
 Special Variables
 -----------------
 
 There are some special variables for the database connection.
 These **have** to be set, otherwise an error will be raised explaining which variables aren't configured.
 
-+---------+------------------------------------------------------------------+
++--------------+-------------------------------------------------------------+
 | DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
-+---------+------------------------------------------------------------------+
++--------------+-------------------------------------------------------------+
 | DB_PORT | The port of the database (example: 5432).                        |
-+---------+------------------------------------------------------------------+
++--------------+-------------------------------------------------------------+
 | DB_USER | The database username. (example: dbas)                           |
-+---------+------------------------------------------------------------------+
++--------------+-------------------------------------------------------------+
 | DB_PW   | The passwort of the DB_USER (example: passw0rt123)               |
-+---------+------------------------------------------------------------------+
++--------------+-------------------------------------------------------------+
 
 These variables are accessible like any other via the normal substitutions (DB.HOST, ...)
 
@@ -120,7 +95,7 @@ D-BAS offers the possibility to use the open authentication protocoll implemente
 Github and Twitter. Please add the variables ``OAUTH_service_CLIENTID`` and ``OAUTH_service_CLIENTKEY``
 for each service you want to use, wherey you have to replace **service** with e.g. GOOGLE (important: uppercase).
 
-The login buttons will be displayed automatically. For mroe information, have a look `on D-BAS' OAuth site <dbas/oauth.html>`_.
+The login buttons will be displayed automatically. For mroe information, have a look `on this site <dbas/oauth.html>`_.
 
 
 Pyramid & UWSGI

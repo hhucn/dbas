@@ -1,6 +1,6 @@
 <!-- snippet of discussion created by the user. here options like the ab can be set -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-  <div class="container colored-container">
+<div class="container colored-container">
         <div class="row">
           <div class="col-md-12">
             <h4 i18n:translate="my_discussions" class="text-center">My Discussions</h4>

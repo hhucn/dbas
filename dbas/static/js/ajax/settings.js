@@ -189,7 +189,7 @@ function AjaxSettingsHandler() {
         };
         ajaxSkeleton(url, 'GET', {}, done, fail);
     };
-
+    
     /**
      *
      */

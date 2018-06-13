@@ -83,7 +83,10 @@ def test_page_source():
 
     :return: Test in the page_source if the national flag changed from english to english to german to german to english
     """
-    pass
+    # __language_img_test_wrapper('ENGLISH')
+    # __language_img_test_wrapper('GERMAN')
+    # __language_img_test_wrapper('GERMAN')
+    # __language_img_test_wrapper('ENGLISH')
 
 
 def test_english_to_english_cookies():
@@ -94,4 +97,7 @@ def test_english_to_english_cookies():
 
     :return: Test in the cookies if the language changed from english to english to german to german to english again
     """
-    pass
+    # __language_code_test_wrapper('ENGLISH')
+    # __language_code_test_wrapper('GERMAN')
+    # __language_code_test_wrapper('GERMAN')
+    # __language_code_test_wrapper('ENGLISH')

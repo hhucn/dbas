@@ -34,14 +34,14 @@ function callbackIfDoneForLogin(data, showGlobalError) {
  */
 function callbackIfDoneForRegistration(data) {
     'use strict';
-
+    
     var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
     var failed = $('#' + popupLoginRegistrationFailed);
     var info = $('#' + popupLoginRegistrationInfo);
     success.hide();
     failed.hide();
     info.hide();
-
+    
     if (data.success.length > 0) {
         // trigger click
         $('a[href="#login"]').trigger('click');
@@ -65,14 +65,14 @@ function callbackIfDoneForRegistration(data) {
  */
 function callbackIfDoneForRegistrationViaOauth(data) {
     'use strict';
-
+    
     var success = $('#' + popupLoginSuccess);
     var failed = $('#popup-complete-login-failed');
     var info = $('#popup-complete-login-info');
     success.hide();
     info.hide();
     failed.hide();
-
+    
     if ('success' in data && data.success.length > 0) {
         $('#popup-complete-login').modal('hide');
         $('#popup-login').modal('show');
@@ -97,7 +97,7 @@ function callbackIfDoneForRegistrationViaOauth(data) {
  */
 function callbackIfDoneForPasswordRequest(data) {
     'use strict';
-
+    
     var success = $('#' + popupLoginSuccess);
     var failed = $('#' + popupLoginFailed);
     var info = $('#' + popupLoginInfo);

@@ -10,7 +10,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.logger import logger
 
 
-def set_language(request, db_lang) -> str:
+def set_language(request, db_lang):
     """
     Saves the new language in the request
 
@@ -44,7 +44,7 @@ def get_language_from_header(request):
     return lang
 
 
-def get_language_from_cookie(request) -> str:
+def get_language_from_cookie(request):
     """
     Returns current ui locales code which is saved in current cookie or the registry.
 
@@ -60,7 +60,7 @@ def get_language_from_cookie(request) -> str:
     return str(lang)
 
 
-def set_language_for_visit(request) -> str:
+def set_language_for_visit(request):
     """
     Sets language and issue uid based on the requests header if there is no _LOCALE_ attribute in the cookie
 

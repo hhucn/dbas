@@ -212,8 +212,7 @@ def get_table_dict(table_name, main_page):
     logger('AdminLib', str(table_name))
 
     # check for elements
-    table = table_mapper[table_name.lower()]['table']
-    db_elements = DBDiscussionSession.query(table).all()
+    db_elements = DBDiscussionSession.query(table_mapper[table_name.lower()]['table']).all()
 
     count = len(db_elements)
     if count == 0:
@@ -224,6 +223,7 @@ def get_table_dict(table_name, main_page):
         }
 
     # getting all keys
+    table = table_mapper[table_name.lower()]['table']
     columns = [r.key for r in table.__table__.columns]
     # remove all unnecessary columns
     for bad in _forbidden_columns:
@@ -233,8 +233,6 @@ def get_table_dict(table_name, main_page):
     # getting data
     # data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
     data = get_rows_of(columns, db_elements, main_page)
-    if table_mapper[table_name.lower()]['name'] == 'History':
-        data = data[::-1]
 
     # save it
     return {
