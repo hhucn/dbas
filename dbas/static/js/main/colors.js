@@ -326,7 +326,6 @@ Colors.prototype.get_blueGrey = function () {
 Colors.prototype.getAllAsHEX = function (shade) {
     'use strict';
     var color_array = [];
-    console.log(this.all);
     $.each(this.all, function (index, color) {
         color_array.push(color[shade]);
     });

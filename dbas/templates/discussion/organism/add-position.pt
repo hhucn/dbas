@@ -33,10 +33,10 @@
           </div>
           <div>
             <img class="icon-badge icon-rem-premise" alt="rem"
-                 src="${request.static_url('dbas:static/images/icon_minus1.png')}"
+                 src="${request.static_url('dbas:static/images/icons/minus.png')}"
                  title="${extras.title.rem_statement_row_title}"/>
             <img class="icon-badge icon-add-premise" alt="add"
-                 src="${request.static_url('dbas:static/images/icon_plus1.png')}"
+                 src="${request.static_url('dbas:static/images/icons/plus.png')}"
                  title="${extras.title.add_statement_row_title}"/>
           </div>
         </div>

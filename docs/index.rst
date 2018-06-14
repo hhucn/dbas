@@ -9,7 +9,7 @@
 Welcome to the documentation of D-BAS!
 ======================================
 
-.. image:: ../dbas/static/images/logo.png
+.. image:: ../dbas/static/images/logo/logo.png
    :scale: 80
    :alt: D-BAS Logo
    :target: https://dbas.cs.uni-duesseldorf.de

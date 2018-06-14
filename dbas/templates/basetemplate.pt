@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="dialog based discussion online participation tool argumentation argument">
   <meta name="author" content="Tobias Krauthoff">
-  <link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
+  <link rel="shortcut icon" href="${request.static_url('dbas:static/images/icons/favicon-16x16.png')}">
   <title>${title}</title>
   <!-- Bootstrap core CSS/JS -->
   <link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.7-paper.min.css')}" rel="stylesheet">
@@ -67,12 +67,12 @@
 
 <a href="#top" class="back-to-top">
   <img class="center" id="back-to-top-img" alt="back-to-top-img"
-       src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
+       src="${request.static_url('dbas:static/images/icons/chevron_up.png')}"></a>
 
 <div metal:use-macro="load: snippet/footer.pt"></div>
 
 <div class="ajaxloader">
-  <img class="center rotating" src="${request.static_url('dbas:static/images/icon.png')}" alt="loading">
+  <img class="center rotating" src="${request.static_url('dbas:static/images/icons/ajax-icon.png')}" alt="loading">
 </div>
 
 <div class="eupopup eupopup-bottomright"></div>
