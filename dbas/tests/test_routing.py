@@ -54,7 +54,7 @@ class RoutingTests(unittest.TestCase):
     def test_user(self):
         self.testapp.get('/user', status=404)
         self.testapp.get('/user/0', status=404)
-        self.testapp.get('/user/1', status=404)
+        self.testapp.get('/user/9000', status=404)
         self.testapp.get('/user/2', status=200)
 
     def test_discussion_start(self):
