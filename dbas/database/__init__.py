@@ -33,7 +33,7 @@ def load_discussion_database(engine: Engine):
     DiscussionBase.metadata.create_all(db_discussion_engine)
 
 
-def get_dbas_db_configuration(db_name, settings={}):
+def get_dbas_db_configuration(db_name: str = 'discussion', settings: dict = None):
     """
     Gets a database name and settings and looks up database connection configurations in four environment variables
     These are:
@@ -53,22 +53,26 @@ def get_dbas_db_configuration(db_name, settings={}):
     :param settings: A dict containing settings for the database connection. (optional)
     :return: A sqlalchemy engine from environment variables and settings.
     """
+    if not settings:
+        settings = {}
     prefix = 'sqlalchemy.{}.'.format(db_name)
     settings.update(get_db_environs(prefix + 'url', db_name))
 
     return engine_from_config(settings, prefix)
 
 
-def get_db_environs(key, db_name, settings={}):
+def get_db_environs(key, db_name: str, settings: dict = None):
+    if not settings:
+        settings = {}
     db_user = os.environ.get("DB_USER", None)
     db_pw = os.environ.get("DB_PW", None)
     db_host = os.environ.get("DB_HOST", None)
     db_host_port = os.environ.get("DB_PORT", None)
 
     if all([db_user, db_pw, db_host, db_host_port]):
-        settings.update(
-            {key: "postgresql+psycopg2://{}:{}@{}:{}/{}?client_encoding=utf8".format(
-                db_user, db_pw, db_host, db_host_port, db_name)})
+        driver = 'postgresql+psycopg2'
+        encoding = 'client_encoding=utf8'
+        settings.update({key: f'{driver}://{db_user}:{db_pw}@{db_host}:{db_host_port}/{db_name}?{encoding}'})
         return settings
     else:
         errors = "Following variables are missing:\n"
@@ -81,4 +85,5 @@ def get_db_environs(key, db_name, settings={}):
         if not db_host_port:
             errors += "DB_PORT\n"
 
-        raise EnvironmentError("Misconfigured environment variables for database. Result the installation instructions.\n" + errors)
+        raise EnvironmentError(
+            "Misconfigured environment variables for database. Result the installation instructions.\n" + errors)
