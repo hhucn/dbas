@@ -26,7 +26,7 @@ from dbas.handler.notification import send_welcome_notification
 from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups_of_args, get_user_and_opinions_for_argument
-from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid, \
+from dbas.lib import pretty_print_timestamp, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.review.reputation import get_reputation_of
@@ -243,13 +243,16 @@ def get_public_data(nickname, lang):
     return_dict['label3'] = _tn.get(_.statementIndex)
     return_dict['label4'] = _tn.get(_.editIndex)
 
+    if nickname == 'Son Goku':
+        return __special_public_data(return_dict, lang)
+
     for days_diff in range(30, -1, -1):
         date_begin = date.today() - timedelta(days=days_diff)
         date_end = date.today() - timedelta(days=days_diff - 1)
         begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
         end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
 
-        ts = python_datetime_pretty_print(date_begin, lang)
+        ts = pretty_print_timestamp(date_begin, lang)
         labels_decision_30.append(ts)
         labels_statement_30.append(ts)
         labels_edit_30.append(ts)
@@ -282,6 +285,18 @@ def get_public_data(nickname, lang):
     return_dict['data4'] = data_edit_30
 
     return return_dict
+
+
+def __special_public_data(rdict, lang):
+    rdict['labels1'] = [pretty_print_timestamp(date.today() - timedelta(days=dd), lang) for dd in range(7, -1, -1)]
+    rdict['labels2'] = [pretty_print_timestamp(date.today() - timedelta(days=dd), lang) for dd in range(30, -1, -1)]
+    rdict['labels3'] = rdict['labels2']
+    rdict['labels4'] = rdict['labels2']
+    rdict['data1'] = [9000.1] * 7
+    rdict['data2'] = [9000.1] * 30
+    rdict['data3'] = rdict['data2']
+    rdict['data4'] = rdict['data2']
+    return rdict
 
 
 def get_reviews_of(user, only_today):
@@ -509,6 +524,8 @@ def get_information_of(db_user: User, lang):
     :param lang: ui_locales
     :return: dict()
     """
+    if db_user.nickname == nick_of_anonymous_user:
+        return __get_special_infos(lang)
     db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
     ret_dict = dict()
     ret_dict['public_nick'] = db_user.global_nickname
@@ -538,6 +555,26 @@ def get_information_of(db_user: User, lang):
     ret_dict['discussion_stat_rep'], trash = get_reputation_of(db_user)
 
     return ret_dict
+
+
+def __get_special_infos(lang):
+    return {
+        'public_nick': 'Son Goku',
+        'last_action': sql_timestamp_pretty_print(get_now(), lang),
+        'last_login': sql_timestamp_pretty_print(get_now(), lang),
+        'registered': sql_timestamp_pretty_print(get_now(), lang),
+        'group': 'Saiyajin',
+        'is_male': True,
+        'is_female': False,
+        'is_neutral': False,
+        'statements_posted': '>9000',
+        'edits_done': '>9000',
+        'reviews_proposed': '>9000',
+        'discussion_arg_votes': '>9000',
+        'discussion_stat_votes': '>9000',
+        'avatar_url': '/static/images/goku.jpg',
+        'discussion_stat_rep': '>9000',
+    }
 
 
 def get_summary_of_today(db_user: User) -> dict:

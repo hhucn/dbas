@@ -38,12 +38,12 @@ class LibTests(unittest.TestCase):
         d = date.fromordinal(736132)
 
         # Verify, that if 'lang' is 'de' format of date is 'day. month.'
-        self.assertEqual(lib.python_datetime_pretty_print(ts=d, lang='de'), '17. Jun.')
+        self.assertEqual(lib.pretty_print_timestamp(ts=d, lang='de'), '17. Jun.')
 
         # Verify, that if 'lang' is not 'de' format of date is 'month. day. '
-        self.assertEqual(lib.python_datetime_pretty_print(ts=d, lang='en'), 'Jun. 17.')
+        self.assertEqual(lib.pretty_print_timestamp(ts=d, lang='en'), 'Jun. 17.')
 
-        self.assertEqual(lib.python_datetime_pretty_print(ts='2016-01-01', lang=''), 'Jan. 01.')
+        self.assertEqual(lib.pretty_print_timestamp(ts='2016-01-01', lang=''), 'Jan. 01.')
 
     def test_get_text_for_premisegroup_uid(self):
         # premise, which is in db_premises and premise_group contains only one premise

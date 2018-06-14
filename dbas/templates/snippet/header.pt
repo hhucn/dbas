@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right">
-          <img src="${request.static_url('dbas:static/images/logo_black.svg')}" alt="D-BAS Logo"><span>D-BAS</span>
+          <img src="${request.static_url('dbas:static/images/logo/black.svg')}" alt="D-BAS Logo"><span>D-BAS</span>
         </a>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
           <span class="sr-only" i18n:translate="Toggle Navigation">Toggle navigation</span>
@@ -127,13 +127,13 @@
 
           <li id="header-language-selector" tal:condition="extras.lang_is_en">
             <a id="link-trans-de" style="cursor:pointer">
-              <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}"
+              <img class="language_selector_img" src="${request.static_url('dbas:static/images/flags/de-24.png')}"
                    alt="flag_ge">
             </a>
           </li>
           <li id="header-language-selector" tal:condition="extras.lang_is_de">
             <a id="link-trans-en" style="cursor:pointer">
-              <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}"
+              <img class="language_selector_img" src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}"
                    alt="flag_us-gb">
             </a>
           </li>

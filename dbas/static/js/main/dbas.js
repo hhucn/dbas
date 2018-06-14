@@ -109,7 +109,7 @@ function replaceGravtarWithDefaultImage(onlyOnError) {
             }, {'name': 'lego', 'length': 10}];
         var t = 3;
         var no = Math.floor(Math.random() * icons[t].length);
-        var src = mainpage + 'static/images/fallback-' + icons[t].name + '/' + no + '.svg';
+        var src = mainpage + 'static/images/fallback/' + icons[t].name + '/' + no + '.svg';
 
         if (onlyOnError) {
             $(this).attr('onerror', 'this.src="' + src + '"');

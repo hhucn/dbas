@@ -21,7 +21,7 @@ from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
 from dbas.helper.url import UrlManager
 from dbas.lib import nick_of_anonymous_user, get_visible_issues_for_user_as_query
-from dbas.lib import python_datetime_pretty_print
+from dbas.lib import pretty_print_timestamp
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -312,7 +312,7 @@ def __get_dict_for_charts(db_issue: Issue) -> dict:
         date_end = date.today() - timedelta(days=days_diff - 1)
         begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
         end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
-        label.append(python_datetime_pretty_print(date_begin, db_issue.lang))
+        label.append(pretty_print_timestamp(date_begin, db_issue.lang))
         count = DBDiscussionSession.query(TextVersion).filter(
             TextVersion.timestamp >= begin,
             TextVersion.timestamp < end).count()
