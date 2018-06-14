@@ -27,7 +27,7 @@ class TestCaseWithDatabase(unittest.TestCase):
         testing.tearDown()
 
 
-class TestCaseWithChameleon(TestCaseWithDatabase):
+class __TestCaseWithChameleon(TestCaseWithDatabase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
@@ -36,7 +36,7 @@ class TestCaseWithChameleon(TestCaseWithDatabase):
         testing.tearDown()
 
 
-class TestCaseWithConfig(TestCaseWithChameleon):
+class TestCaseWithConfig(__TestCaseWithChameleon):
     def setUp(self):
         self.config = testing.setUp()
 
