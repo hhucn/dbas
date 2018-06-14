@@ -30,14 +30,18 @@ def set_language(request, db_lang) -> str:
 
 def get_language_from_header(request):
     """
-    Returns 'de' if 'de' is in requests headers else 'en'
+    Returns the header lang attribute if D-BAS has this one else the default lang
 
     :param request: current request
     :return: String
     """
-    lang = request.headers.get('Accept-Language', '')
-    logger('ViewHelper', 'Accept-Language: {}'.format(lang))
-    return 'de' if 'de' in lang else 'en'
+    lang = request.headers.get('Accept-Language')
+    all_lang = [lang.ui_locales for lang in DBDiscussionSession.query(Language).all()]
+    if not lang or lang not in all_lang:
+        logger('LanguageHelper', 'No accepted language found in header -> get default lang')
+        lang = request.registry.settings['pyramid.default_locale_name']
+    logger('LanguageHelper', f'Return {lang}')
+    return lang
 
 
 def get_language_from_cookie(request) -> str:
@@ -65,10 +69,11 @@ def set_language_for_visit(request) -> str:
     """
 
     if '_LOCALE_' in request.cookies:
-        logger('Language', 'User was already here')
-        return request.cookies.get('_LOCALE', 'en')
+        logger('LanguageHelper', 'User was already here')
+        # user was already here
+        return
 
-    logger('Language', 'User is here for the first time')
+    logger('LanguageHelper', 'User is first time here')
     ui_locales = get_language_from_header(request)
     lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
     if hasattr(request, 'request'):

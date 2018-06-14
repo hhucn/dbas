@@ -1,3 +1,6 @@
+### 1.9.0 (2018-06-13)
+ - Introduced Cypress for frontend tests
+
 ### 1.8.2 (2018-06-07)
  - Fix language set which is derived from the requests header
 

@@ -81,3 +81,7 @@ docker/db/entrypoint/.*.sql
 
 .hypothesis/
 cover/
+
+cypress.env.json
+frontendtest/cypress/screenshots/
+frontendtest/cypress/videos/
