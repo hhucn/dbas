@@ -3,12 +3,12 @@ from pyramid.view import view_config
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.handler import user as user_handler
 from dbas.handler.language import get_language_from_cookie
+from dbas.handler.user import get_information_of, change_password
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string, nick_of_anonymous_user
+from dbas.lib import escape_string
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -37,17 +37,17 @@ def user(request):
         raise HTTPNotFound
 
     current_user = DBDiscussionSession.query(User).get(uid)
-    if current_user is None or current_user.nickname == nick_of_anonymous_user:
+    if current_user is None:
         logger('user', 'no user: {}'.format(uid), error=True)
         raise HTTPNotFound()
 
     ui_locales = get_language_from_cookie(request)
-    user_dict = user_handler.get_information_of(current_user, ui_locales)
+    user_dict = get_information_of(current_user, ui_locales)
 
     db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     can_send_notification = False
     if db_user_of_request:
-        can_send_notification = current_user.uid != db_user_of_request.uid
+        can_send_notification = current_user.uid not in [db_user_of_request.uid, 1]
 
     prep_dict = main_dict(request, user_dict['public_nick'])
     prep_dict.update({
@@ -78,7 +78,7 @@ def settings(request):
         new_pw = escape_string(request.params['password'])
         confirm_pw = escape_string(request.params['passwordconfirm'])
 
-        message, success = user_handler.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
+        message, success = change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
         error = not success
 
     settings_dict = DictionaryHelper(ui_locales).prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error,

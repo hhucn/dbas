@@ -11,6 +11,8 @@ $(function () {
     if (window.location.href.indexOf(mainpage + 'user/') === -1) {
         return;
     }
+    var url = '/static/images/westcapitalsuper.jpg';
+    $('.big-header').css('background-image', 'url(' + url + ')');
 
     var u = new User();
     u.setNotificationBtn();
@@ -44,7 +46,7 @@ function User() {
                     var splitted = url.split('/');
                     var recipient;
                     if (url.indexOf('/user/') === -1) {
-                        recipient = $(this).prev().text();
+                        recipient = $("#public_nick").text();
                     } else {
                         recipient = splitted[splitted.length - 1];
                     }
@@ -83,6 +85,10 @@ function User() {
      */
     this.createChart = function (parsedData, space, id, count) {
         space.append('<canvas id="' + id + '" width="' + space.width() + '" height="300"></canvas>');
+        if (document.getElementById(id) === null){
+            // 404 page
+            return false;
+        }
         var ctx = document.getElementById(id).getContext('2d');
         var chart_data = {
             type: 'line',
@@ -102,8 +108,9 @@ function User() {
         try {
             new Chart(ctx, chart_data);
         } catch (err) {
-            //
+            return false;
         }
+        return true;
     };
 
     /**
