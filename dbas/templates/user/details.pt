@@ -37,7 +37,7 @@
             </table>
             <div>
               <div class="center text-center" style="margin: 2em;">
-                <img class="img-circle" src="${user.avatar_url}">
+                <img class="img-circle" src="${user.avatar_url}" style="max-width: 120px">
                 <br>
                 <span i18n:translate="profile_picture_of">Profile Picture of</span> ${user.public_nick}
               </div>
@@ -73,8 +73,8 @@
                 <td class="text-right" id="discussion-stat-reputation">${user.discussion_stat_rep}</td>
               </tr>
             </table>
-            <img class="pull-right" style="width: 50px;" id="send-notification"
-                 class="icon-badge" tal:condition="can_send_notification"
+            <img class="pull-right icon-badge" style="width: 50px;" id="send-notification"
+                 tal:condition="can_send_notification"
                  src="${request.static_url('dbas:static/images/icons/mail.png')}"/>
           </div>
         </div>

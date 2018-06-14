@@ -180,7 +180,7 @@ def get_discussion_language(matchdict, params, session, current_issue_uid=None):
     return db_issue.lang if db_issue else 'en'
 
 
-def python_datetime_pretty_print(ts, lang):
+def pretty_print_timestamp(ts, lang):
     """
     Pretty print of a locale
 
