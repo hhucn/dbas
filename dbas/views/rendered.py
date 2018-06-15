@@ -5,7 +5,7 @@ Collection of pyramids views components of D-BAS' core.
 """
 
 import graphene
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config, notfound_view_config
 from webob_graphql import serve_graphql_request
 
@@ -48,12 +48,22 @@ def notfound(request):
             'message': 'Not Found'
         })
 
+    # check cornice routes
+    cornice_services = ['/admin', '/docs']
+    for service in cornice_services:
+        if request.path.startswith(service):
+            logger('notfound', f'Redirect to {service}/')
+            return HTTPFound(location=service + '/')
+
     logger('notfound', f'main in {request.method}-request, path: {request.path}, view name: {request.view_name}, '
                        f'matchdict: {request.matchdict}, params: {request.params}')
+
+    # clear url
     path = request.path
     if path.startswith('/404/'):
         path = path[4:]
 
+    # prepare return dict
     param_error = 'param_error' in request.params and request.params['param_error'] == 'true'
     revoked_content = 'revoked_content' in request.params and request.params['revoked_content'] == 'true'
 

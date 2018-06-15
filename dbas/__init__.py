@@ -62,7 +62,6 @@ def main(global_config, **settings):
     # Include apps
     config.include('api', route_prefix='/api')
     config.include('api.v2', route_prefix='/api/v2')
-    config.include('graph', route_prefix='/graph')
     config.include('admin', route_prefix='/admin')
     config.include('websocket', route_prefix='/websocket')
 
