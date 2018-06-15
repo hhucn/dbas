@@ -70,6 +70,8 @@ def start(request):
 
 @view_config(route_name='discussion_init_with_slug', renderer='../../templates/discussion/main.pt',
              permission='everybody')
+@view_config(route_name='discussion_init_with_slug_with_slash', renderer='../../templates/discussion/main.pt',
+             permission='everybody')
 @validate(check_authentication, valid_issue_by_slug, valid_user_optional)
 def init(request):
     """

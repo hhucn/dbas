@@ -166,6 +166,7 @@ def main(global_config, **settings):
     config.add_route('discussion_start', '/discuss')
     config.add_route('discussion_start_with_slash', '/discuss/')
     config.add_route('discussion_init_with_slug', '/discuss/{slug}')
+    config.add_route('discussion_init_with_slug_with_slash', '/discuss/{slug}/')
 
     # review section
     config.add_route('review_index', '/review')
