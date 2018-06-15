@@ -18,7 +18,7 @@ from admin.lib import check_api_token
 from dbas.auth.login import login_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.lib import get_user_by_case_insensitive_nickname
+from dbas.lib import get_user_by_case_insensitive_nickname, nick_of_anonymous_user
 from dbas.validators.lib import add_error
 from .lib import HTTP401, json_to_dict, logger
 
@@ -102,7 +102,7 @@ def valid_token_optional(request, **_kwargs):
         try:
             payload = json_to_dict(request.headers.get('X-Authentication'))
 
-            if payload.get('nickname') == 'anonymous':
+            if payload.get('nickname') == nick_of_anonymous_user:
                 request.validated['user'] = DBDiscussionSession.query(User).get(1)
             else:
                 valid_token(request)
