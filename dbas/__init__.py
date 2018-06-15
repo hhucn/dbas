@@ -62,7 +62,6 @@ def main(global_config, **settings):
     # Include apps
     config.include('api', route_prefix='/api')
     config.include('api.v2', route_prefix='/api/v2')
-    config.include('graph', route_prefix='/graph')
     config.include('admin', route_prefix='/admin')
     config.include('websocket', route_prefix='/websocket')
 
@@ -166,6 +165,7 @@ def main(global_config, **settings):
     config.add_route('discussion_start', '/discuss')
     config.add_route('discussion_start_with_slash', '/discuss/')
     config.add_route('discussion_init_with_slug', '/discuss/{slug}')
+    config.add_route('discussion_init_with_slug_with_slash', '/discuss/{slug}/')
 
     # review section
     config.add_route('review_index', '/review')
