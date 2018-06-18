@@ -94,6 +94,7 @@ def main(global_config, **settings):
     config.add_route('main_graphiql', '/graphiql')
     config.add_route('main_api', '/api')
     config.add_route('discussion_overview', '/mydiscussions')
+    config.add_route('health', '/health')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('user_login', '{url:.*}user_login')
