@@ -1,8 +1,6 @@
 import time
 import unittest
 
-from dbas.database import DBDiscussionSession, get_dbas_db_configuration
-from dbas.helper.tests import add_settings_to_appconfig
 from search import ROUTE_API
 from search.requester import get_suggestions, get_duplicates_or_reasons, get_statements_with_value, get_edits, \
     response_as_dict
@@ -11,8 +9,6 @@ from search.requester import get_suggestions, get_duplicates_or_reasons, get_sta
 class TestRequester(unittest.TestCase):
     def setUp(self):
         time.sleep(8)
-        settings = add_settings_to_appconfig()
-        DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
     def test_request_as_dict_returns_dict(self):
         result = response_as_dict(ROUTE_API + '/suggestions?id=2')

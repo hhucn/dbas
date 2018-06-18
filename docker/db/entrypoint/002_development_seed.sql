@@ -38,6 +38,8 @@ GRANT writer TO dbas GRANTED BY postgres;
 CREATE DATABASE beaker WITH TEMPLATE = template0 OWNER = postgres;
 CREATE DATABASE discussion WITH TEMPLATE = template0 OWNER = postgres;
 GRANT CONNECT ON DATABASE discussion TO read_only_discussion;
+CREATE DATABASE test_discussion WITH TEMPLATE = template0 OWNER = postgres;
+GRANT CONNECT ON DATABASE test_discussion TO read_only_discussion;
 REVOKE CONNECT,TEMPORARY ON DATABASE template1 FROM PUBLIC;
 GRANT CONNECT ON DATABASE template1 TO PUBLIC;
 
