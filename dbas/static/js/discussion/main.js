@@ -498,16 +498,21 @@ Main.prototype.setSidebarClicks = function (maincontainer, localStorageId) {
 Main.prototype.setSidebarStyle = function (maincontainer, localStorageId) {
     'use strict';
     // read local storage for pinning the bar / set title
-    var shouldShowSidebar = getLocalStorage(localStorageId) === 'true';
+    var shouldHideSidebar = getLocalStorage(localStorageId) === 'false';
     var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
     var wrapper = maincontainer.find('.' + contentWrapperClass);
     var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
     var tack = sidebarwrapper.find('.' + sidebarTackClass);
     var sidebar = sidebarwrapper.find('.' + sidebarClass);
     var gui = new GuiHandler();
+    var maincontainer_height = maincontainer.outerHeight() + 'px';
+    var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
+    var sidebar_width = (sidebarwrapper.width() - hamburger.width()) / 2;
+    var bgcolor = new Colors().hexToRGB('#F3F3F3');
 
-    if (shouldShowSidebar) {
-        var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
+    if (shouldHideSidebar) {
+        tackwrapper.data('title', _t_discussion(pinNavigation));
+    } else {
 
         gui.rotateElement(tack, '90');
         gui.setAnimationSpeed(wrapper, '0.0');
@@ -516,21 +521,16 @@ Main.prototype.setSidebarStyle = function (maincontainer, localStorageId) {
         hamburger.addClass('open');
 
         wrapper.width(maincontainer.width() - sidebar.outerWidth());
-        maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
+        maincontainer.css('max-height', maincontainer_height);
         sidebar.show();
-        hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
-            .css('margin-left', 'auto')
-            .css('background-color', sidebar.css('background-color'));
-        sidebarwrapper.css('background-color', new Colors().hexToRGB('#F3F3F3'))
-            .css('height', maincontainer.outerHeight() + 'px');
+        hamburger.css({'margin-right': sidebar_width, 'margin-left': 'auto', 'background-color': sidebar.css('background-color')});
+        sidebarwrapper.css({'background-color': bgcolor, 'height': maincontainer_height});
         tackwrapper.fadeIn();
 
         gui.setAnimationSpeed(wrapper, '0.5');
         gui.setAnimationSpeed(hamburger, '0.5');
 
         tackwrapper.data('title', _t_discussion(unpinNavigation));
-    } else {
-        tackwrapper.data('title', _t_discussion(pinNavigation));
     }
 };
 
