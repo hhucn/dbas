@@ -218,11 +218,11 @@ def get_public_data(nickname, lang):
     :param lang:
     :return: dict()
     """
-    logger('User', 'User {}'.format(nickname))
+    logger('User', f'User: "{nickname}"')
     return_dict = dict()
     current_user = get_user_by_private_or_public_nickname(nickname)
 
-    if current_user is None:
+    if current_user is None and nickname != 'Son Goku':
         return return_dict
 
     _tn = Translator(lang)

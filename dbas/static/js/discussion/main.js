@@ -438,33 +438,32 @@ Main.prototype.setSidebarClicks = function (maincontainer, localStorageId) {
     var tack = sidebarwrapper.find('.' + sidebarTackClass);
     var sidebar = sidebarwrapper.find('.' + sidebarClass);
     var bgColor = new Colors().hexToRGB('#F3F3F3');
+    var sidebar_width = 0;
+    var maincontainer_height = 0;
 
     $(hamburger).click(function () {
         $(this).toggleClass('open');
         var width = wrapper.width();
 
         if (sidebar.is(':visible')) {
-            tackwrapper.fadeOut();
             sidebar.toggle('slide');
-            hamburger.css('margin-right', '0.5em')
-                .css('background-color', '');
+            hamburger.css({'margin-right': '0.5em', 'background-color': ''});
             maincontainer.css('max-height', '');
-            sidebarwrapper.css('background-color', '')
-                .css('height', '');
+            sidebarwrapper.css({'background-color': '', 'height': ''});
+            tackwrapper.fadeOut();
             setTimeout(function () {
                 wrapper.width('');
-            }, 300);
+            }, 450);
             setLocalStorage(localStorageId, 'false');
         } else {
+            maincontainer_height = maincontainer.outerHeight() + 'px';
             wrapper.width(width - sidebar.outerWidth());
-            maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
+            maincontainer.css('max-height', maincontainer_height);
             setTimeout(function () {
                 sidebar.toggle('slide');
-                hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
-                    .css('margin-left', 'auto')
-                    .css('background-color', sidebar.css('background-color'));
-                sidebarwrapper.css('background-color', bgColor)
-                    .css('height', maincontainer.outerHeight() + 'px');
+                sidebar_width = (sidebarwrapper.width() - hamburger.width()) / 2;
+                hamburger.css({'margin-right': sidebar_width + 'px', 'margin-left': 'auto', 'background-color': sidebar.css('background-color')});
+                sidebarwrapper.css({'background-color': bgColor, 'height': maincontainer_height});
                 tackwrapper.fadeIn();
             }, 200);
         }
@@ -489,7 +488,6 @@ Main.prototype.setSidebarClicks = function (maincontainer, localStorageId) {
             tack.data('title', _t_discussion(unpinNavigation));
         }
     });
-
 };
 
 /**
