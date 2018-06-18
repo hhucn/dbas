@@ -11,8 +11,10 @@ $(function () {
     if (window.location.href.indexOf(mainpage + 'user/') === -1) {
         return;
     }
-    var url = '/static/images/westcapitalsuper.jpg';
-    $('.big-header').css('background-image', 'url(' + url + ')');
+    if ($('#user_publick_nick').text() ==='Son Goku'){
+        var url = '/static/images/westcapitalsuper.jpg';
+        $('.big-header').css('background-image', 'url(' + url + ')');
+    }
 
     var u = new User();
     u.setNotificationBtn();
