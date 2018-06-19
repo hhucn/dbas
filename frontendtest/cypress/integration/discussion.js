@@ -53,7 +53,7 @@ function no_input_msg() {
 describe('Test if not logged in user can not contribute', function () {
     it('checks if cat-or-dog denies contribution', function () {
         cy.visit(url + '/discuss');
-        cy.get('tbody > :nth-child(1) > :nth-child(1) > a')
+        cy.get('tbody:first > :nth-child(1) > :nth-child(1) > a')
             .click();
         cy.get('#confirm-dialog-refuse-btn')
             .click();
@@ -80,7 +80,7 @@ describe('Test if user can login and can contribute', function () {
 
     beforeEach('checks if a user can login and contribute', function () {
         cy.visit(url + '/discuss');
-        cy.get('tbody > :nth-child(1) > :nth-child(1) > a')
+        cy.get('tbody:first > :nth-child(1) > :nth-child(1) > a')
             .click();
         cy.get('#confirm-dialog-refuse-btn')
             .click();
@@ -125,7 +125,7 @@ describe('Test if user can login and can contribute', function () {
 describe('Test for leaks while adding new statements', function () {
     before(function () {
         cy.visit(url + '/discuss');
-        cy.get('tbody > :nth-child(1) > :nth-child(1) > a')
+        cy.get('tbody:first > :nth-child(1) > :nth-child(1) > a')
             .click();
         cy.get('#confirm-dialog-refuse-btn')
             .click();

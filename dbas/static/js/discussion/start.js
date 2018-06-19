@@ -31,7 +31,7 @@ function OverviewCharts() {
         var color_500_hex = colors.getAllAsHEX(500);
         var clen = color_100_rgba.length;
 
-        var space = $('#' + id);
+        var space = $('#issue_activity_chart_' + id);
         var canvas = $('<canvas>').attr({
             'id': 'c' + id,
             'width': space.width(),
