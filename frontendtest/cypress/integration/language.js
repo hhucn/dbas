@@ -22,9 +22,6 @@ describe('Test language at /', function () {
         cy.visit(url);
         cy.setCookie('_LOCALE_', 'de')
             .reload();
-        cy.reload()
-            .getCookies()
-            .should('have.length', 2);
     });
     it('switches from german to english', function () {
         switch_language('de', 'en');
@@ -40,9 +37,6 @@ describe('Test language at /discussion', function () {
         cy.visit(url + '/discuss');
         cy.setCookie('_LOCALE_', 'de')
             .reload();
-        cy.reload()
-            .getCookies()
-            .should('have.length', 2);
     });
     it('switches from german to english', function () {
         switch_language('de', 'en');
