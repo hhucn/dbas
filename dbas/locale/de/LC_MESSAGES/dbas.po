@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-06-14 14:53+0200\n"
+"POT-Creation-Date: 2018-06-19 14:16+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Christian Meter <meter@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1422,7 +1422,7 @@ msgstr "Sprache"
 #. Default: Statements
 #: templates/discussion/start.pt:25
 #: templates/discussion/organism/overview-user.pt:19
-#: templates/discussion/organism/graph-sidebar.pt:31
+#: templates/discussion/organism/graph-sidebar.pt:23
 #: templates/discussion/organism/overview-other.pt:27
 msgid "statements"
 msgstr "Aussagen"
@@ -1558,45 +1558,45 @@ msgid "short_link"
 msgstr "Kurzlink"
 
 #. Default: Complete View
-#: templates/discussion/organism/graph-sidebar.pt:15
+#: templates/discussion/organism/graph-sidebar.pt:7
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Default View
-#: templates/discussion/organism/graph-sidebar.pt:19
+#: templates/discussion/organism/graph-sidebar.pt:11
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/discussion/organism/graph-sidebar.pt:23
+#: templates/discussion/organism/graph-sidebar.pt:15
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/discussion/organism/graph-sidebar.pt:27
+#: templates/discussion/organism/graph-sidebar.pt:19
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: My path
-#: templates/discussion/organism/graph-sidebar.pt:35
-#: templates/discussion/organism/graph-sidebar.pt:39
+#: templates/discussion/organism/graph-sidebar.pt:27
+#: templates/discussion/organism/graph-sidebar.pt:31
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/discussion/organism/graph-sidebar.pt:43
+#: templates/discussion/organism/graph-sidebar.pt:35
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/discussion/organism/graph-sidebar.pt:48
+#: templates/discussion/organism/graph-sidebar.pt:40
 msgid "supports_on_my_statements"
-msgstr "Unterstützungen"
+msgstr "Meine Unterstützungen"
 
 #. Default: Relations
-#: templates/discussion/organism/graph-sidebar.pt:53
+#: templates/discussion/organism/graph-sidebar.pt:45
 msgid "attacks_on_my_statements"
-msgstr "Angriffe"
+msgstr "Meine Angriffe"
 
 #. Default: More Discussions
 #: templates/discussion/organism/overview-other.pt:6
@@ -1629,12 +1629,12 @@ msgid "Writable"
 msgstr "Schreibbar"
 
 #. Default: Start
-#: templates/discussion/organism/graph-view.pt:10
+#: templates/discussion/organism/graph-view.pt:9
 msgid "start"
 msgstr "Start"
 
 #. Default: Now
-#: templates/discussion/organism/graph-view.pt:15
+#: templates/discussion/organism/graph-view.pt:14
 msgid "now"
 msgstr "Jetzt"
 

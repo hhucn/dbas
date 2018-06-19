@@ -1,63 +1,25 @@
-.sidebar-wrapper
-  position: relative
-  padding-top: 10px
-  right: -14px
-  top: -14px
-  border-radius: 5px
-
-#site-navigation
-  padding-left: 0
-  .tooltip
-    width: 150px
-
 .sidebar
-  text-align: left
-  padding-left: 0
   list-style-type: none
-  position: relative
-  min-width: 180px
-  display: none
-  ul
-    list-style-type: none
-  li
-    padding: 5px 0 5px 15px
-    width: 100%
-    min-height: 35px
-    cursor: hand
-    &:hover
-      background-color: $system-bubble
-      color: $primary-color
-  i.fa
-    margin-right: 0.5em
-
-.context-wrapper
-  -webkit-transition: all 0.5s ease
-  -moz-transition: all 0.5s ease
-  -o-transition: all 0.5s ease
-  transition: all 0.5s ease
-
-.tack-wrapper
-  display: none
-  position: absolute
-  bottom: 0
-  text-align: center
-  margin: 0.5em 0 0.5em 0
+  float: left
+  margin: 1em auto 0 auto
   width: 100%
-  &:hover
-    color: $primary-color
-
-.sidebar li
-  cursor: pointer
+  padding: 0
+  hr
+    margin: 0 0 1em 0
+  li
+    display: inline
+    padding: 0 1em
+    &:hover
+      color: $primary-color
+      cursor: pointer
 
 @media (max-width: 767px)
   #discussions-space ul
     display: block
     li
       display: block
-
-@media (max-width: 991px)
   .sidebar-element
     display: none
-
-  .sidebar-wrapper .sidebar, .sidebar
-    min-width: 40px
+  .sidebar
+    li
+      padding: 0 0.5em
