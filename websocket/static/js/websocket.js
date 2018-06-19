@@ -56,7 +56,7 @@ function doConnect(){
 	    error_count += 1;
 	}).on('reconnect_error', function(){
 	    error_count += 1;
-		if (error_count > 5){
+		if (error_count > 3){
 		    console.log('Too many failed consecutive attempts to reconnect.');
 		    console.log('Polling will be closed.');
 		    console.log('Please reload the page to start polling again.');

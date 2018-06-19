@@ -356,7 +356,7 @@ msgstr "manche Teilnehmenden zurückkehren werden"
 #. Default: you need to support the discussion
 #: templates/index.pt:148
 msgid "need_support_the_discussion"
-msgstr "Sie Unterstützung bei der Diskussion selbst brauchen und"
+msgstr "Sie Unterstützung bei der Diskussion brauchen und"
 
 #. Default: you want a structured result of given arguments
 #: templates/index.pt:149

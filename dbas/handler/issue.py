@@ -302,20 +302,17 @@ def __get_dict_for_charts(db_issue: Issue) -> dict:
     :param db_issue:
     :return:
     """
-    days_since_start = (arrow.utcnow() - db_issue.date).days
-    if days_since_start > 30:
-        days_since_start = 30
-    label = []
-    data = []
+    days_since_start = min((arrow.utcnow() - db_issue.date).days, 30)
+    label, data = [], []
+    today = date.today()
     for days_diff in range(days_since_start, -1, -1):
-        date_begin = date.today() - timedelta(days=days_diff)
-        date_end = date.today() - timedelta(days=days_diff - 1)
-        begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
-        end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+        date_begin = today - timedelta(days=days_diff)
+        date_end = today - timedelta(days=days_diff - 1)
+
         label.append(pretty_print_timestamp(date_begin, db_issue.lang))
         count = DBDiscussionSession.query(TextVersion).filter(
-            TextVersion.timestamp >= begin,
-            TextVersion.timestamp < end).count()
+            TextVersion.timestamp >= arrow.get(date_begin),
+            TextVersion.timestamp < arrow.get(date_end)).count()
         data.append(count)
 
     return {
