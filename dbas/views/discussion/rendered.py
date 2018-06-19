@@ -330,6 +330,7 @@ def dexit(request):
                                                                            request.path, db_user)
     prepared_discussion['language'] = str(get_language_from_cookie(request))
     prepared_discussion['show_summary'] = len(prepared_discussion['summary']) != 0
+    prepared_discussion['discussion'] = {'broke_limit': False}
     return prepared_discussion
 
 
