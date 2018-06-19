@@ -28,7 +28,7 @@ function OverviewCharts() {
     this.__createChart = function (input, id) {
         var colors = new Colors();
         var color_100_rgba = colors.getAllAsRGB(100, 0.4);
-        var color_500_hex = colors.getAllAsHEX(500);
+        var color_500_hex = colors.getAllAsHEX(300);
         var clen = color_100_rgba.length;
 
         var space = $('#issue_activity_chart_' + id);
@@ -62,10 +62,16 @@ function OverviewCharts() {
                         ticks: {
                             display: false,
                             suggestedMin: 0
+                        },
+                        gridLines: {
+                            display:false
                         }
                     }],
                     xAxes: [{
                         ticks: {
+                            display: false
+                        },
+                        gridLines: {
                             display: false
                         }
                     }]
@@ -74,7 +80,7 @@ function OverviewCharts() {
                     display: false
                 },
                 tooltips: {
-                    enabled: false
+                    enabled: false,
                 }
             }
         };

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-06-19 14:16+0200\n"
+"POT-Creation-Date: 2018-06-19 16:02+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -1396,39 +1396,49 @@ msgstr "Overview of the Discussions"
 msgid "page_contains_overview"
 msgstr "This page contains an overview of discussions:"
 
+#. Default: Current discussions:
+#: templates/discussion/start.pt:19
+msgid "current_discussion"
+msgstr "Current discussions:"
+
 #. Default: Titel
-#: templates/discussion/start.pt:23
+#: templates/discussion/start.pt:23 templates/discussion/start.pt:58
 #: templates/discussion/organism/overview-user.pt:18
 #: templates/discussion/organism/overview-other.pt:26
 msgid "title"
 msgstr "Title"
 
 #. Default: Language
-#: templates/discussion/start.pt:24
+#: templates/discussion/start.pt:24 templates/discussion/start.pt:59
 #: templates/discussion/organism/overview-user.pt:21
 #: templates/discussion/organism/overview-other.pt:29
 msgid "language"
 msgstr "Language"
 
 #. Default: Statements
-#: templates/discussion/start.pt:25
+#: templates/discussion/start.pt:25 templates/discussion/start.pt:60
 #: templates/discussion/organism/overview-user.pt:19
 #: templates/discussion/organism/graph-sidebar.pt:23
 #: templates/discussion/organism/overview-other.pt:27
 msgid "statements"
 msgstr "Statements"
 
-#. Default: Activity (Last 30 days)
-#: templates/discussion/start.pt:26
-msgid "activity_last_30_days"
+#. Default: Activity (Last 14 days)
+#: templates/discussion/start.pt:26 templates/discussion/start.pt:61
+msgid "activity_last_14_days"
 msgstr "Activity (Last 30 days)"
 
 #. Default: Creation
-#: templates/discussion/start.pt:27
+#: templates/discussion/start.pt:27 templates/discussion/start.pt:62
 #: templates/discussion/organism/overview-user.pt:22
 #: templates/discussion/organism/overview-other.pt:30
 msgid "creation"
 msgstr "Creation"
+
+#. Default: Closed discussions:
+#: templates/discussion/start.pt:54
+msgid "closed_discussion"
+msgstr "Closed discussions:"
 
 #. Default: Thank you
 #: templates/discussion/exit.pt:8

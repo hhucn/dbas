@@ -310,7 +310,7 @@ def __get_dict_for_charts(db_issue: Issue) -> dict:
     :param db_issue:
     :return:
     """
-    days_since_start = min((arrow.utcnow() - db_issue.date).days, 30)
+    days_since_start = min((arrow.utcnow() - db_issue.date).days, 14)
     label, data = [], []
     today = date.today()
     for days_diff in range(days_since_start, -1, -1):
