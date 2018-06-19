@@ -271,11 +271,12 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     :param db_user: User
     :return:
     """
-    prepared_list = []
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).order_by(Issue.uid.asc()).all()
     date_dict = {}
+    readable = []
+    writable = []
     for index, db_issue in enumerate(db_issues):
-        prepared_list.append({
+        issue_dict = {
             'uid': db_issue.uid,
             'url': '/' + db_issue.slug,
             'statements': get_number_of_statements(db_issue.uid),
@@ -284,14 +285,21 @@ def get_issues_overview_on_start(db_user: User) -> dict:
             'lang': {
                 'is_de': db_issue.lang == 'de',
                 'is_en': db_issue.lang == 'en',
-            },
-        })
+            }
+        }
+        if db_issue.is_read_only:
+            readable.append(issue_dict)
+        else:
+            writable.append(issue_dict)
 
         # key needs to be a str to be parsed in the frontend as json
         date_dict[str(db_issue.uid)] = __get_dict_for_charts(db_issue)
 
     return {
-        'issues': prepared_list,
+        'issues': {
+            'readable': readable,
+            'writable': writable
+        },
         'data': date_dict
     }
 
