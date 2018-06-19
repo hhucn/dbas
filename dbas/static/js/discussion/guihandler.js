@@ -94,26 +94,18 @@ GuiHandler.prototype.setDisplayStyleAsIsland = function () {
 GuiHandler.prototype.setDisplayStyleAsGraphView = function () {
     'use strict';
     var graphViewContainer = $('#' + graphViewContainerId);
-    var tacked_sidebar = 'tacked_graph_sidebar';
-    var header = $('#' + graphViewContainerHeaderId);
-    var main = new Main();
 
     $('#' + islandViewContainerId).hide();
     $('#' + discussionContainerId).hide();
     $('#' + headerContainerId).hide();
     $('#' + addPositionContainerId).hide();
 
-    // text
-    header.html($('#issue_info').data('title'));
-
     // height
     var innerHeight = this.getMaxSizeOfGraphViewContainer();
     graphViewContainer.attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; margin-bottom: 1em;');
-    innerHeight -= header.outerHeight(true) + 20;
-    $('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 95%');
+    innerHeight -= 1.5 * $('#graph-sidebar').outerHeight();
+    $('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 97%');
     new DiscussionGraph({}, false).showGraph(false);
-    main.setSidebarStyle(graphViewContainer, tacked_sidebar);
-    main.setSidebarClicks(graphViewContainer, tacked_sidebar);
 };
 
 /**
@@ -124,12 +116,10 @@ GuiHandler.prototype.setMaxHeightForDiscussionContainer = function (resize) {
     'use strict';
     var maincontainer = $('#' + discussionContainerId);
     if ($('#dialog-wrapper').height() > maincontainer.outerHeight()) {
-        var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
         maincontainer.css({
             'height': maincontainer.outerHeight(true) + resize + 'px',
             'max-height': maincontainer.outerHeight(true) + resize + 'px'
         });
-        sidebarwrapper.css('height', maincontainer.outerHeight() + 'px');
     }
 };
 

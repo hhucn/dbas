@@ -441,7 +441,7 @@
 <div class="eupopup eupopup-bottomright"></div>
 
 <div metal:use-macro="load: snippet/popups.pt"></div>
-<div class="call-to-action-small bg-dark">
+<div class="call-to-action-small bg-light">
   <div metal:use-macro="load: snippet/footer.pt"></div>
 </div>
 

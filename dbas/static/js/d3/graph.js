@@ -147,7 +147,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 showNodesUntilMoment(start_date_ms + add_ms);
             }
         });
-        var w = $('#' + graphViewContainerHeaderId).width();
+        var w = $('.colored-container').width();
         w -= slider.parent().width() - slider.parent().find('.slider').width();
         slider.prev().css('width', w);
     }
@@ -233,6 +233,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         } else {
             container.empty();
         }
+        $("html, body").animate({ scrollTop: $(document).height() }, "slow");
     };
 
     /**
@@ -271,11 +272,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         container.empty();
         size.rel_node_factor = {};
 
-        // height of the header (offset per line count)
-        var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1) * 26;
-
         var width = container.width();
-        var height = container.outerHeight() - offset;
+        var height = container.outerHeight();
 
         var svg = getGraphSvg(width, height);
         force = getForce(jsonData, width, height);
@@ -577,7 +575,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             var graphSvg = $('#graph-svg');
             graphSvg.width(container.width());
             // height of space between header and bottom of container
-            graphSvg.height(container.outerHeight() - $('#graph-view-container-header').height() + 20);
+            graphSvg.height(container.outerHeight() - $('#graph-sidebar').height() + 20);
             force.size([container.width(), container.outerHeight()]).resume();
         }
     }
@@ -995,7 +993,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         };
 
         // get all buttons in the sidebar
-        $('#graph-view-container').find('.sidebar').find('li').each(function (index, element) {
+        $('#graph-sidebar').find('li').each(function (index, element) {
             var id = $(element).attr('id');
             // check if the button is mentioned in mapper array
             if (id in mapper) {
