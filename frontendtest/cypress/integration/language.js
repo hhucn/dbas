@@ -17,7 +17,6 @@ function switch_language(from, to) {
         .should('have.property', 'value', to);
 }
 
-
 describe('Test language at /', function () {
     beforeEach('Visit /', function () {
         cy.visit(url);

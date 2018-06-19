@@ -49,27 +49,21 @@ function no_input_msg() {
     return 'Enter at least 10 characters';
 }
 
-
 describe('Test if not logged in user can not contribute', function () {
     it('checks if cat-or-dog denies contribution', function () {
         cy.visit(url + '/discuss');
         cy.get('tbody > :nth-child(1) > :nth-child(1) > a')
-            .click();
-        cy.get('#confirm-dialog-refuse-btn')
-            .click();
+            .click({force: true});
         cy.get('#item_login')
             .should('exist');
-    });
-    it('checks if the contribution is really disabled', function () {
         cy.get('#item_2')
-            .click();
-        cy.get('#confirm-dialog-refuse-btn')
-            .click();
+            .click({force: true});
         cy.get('#item_disagree')
-            .click();
+            .click({force: true});
         cy.get('#item_login')
             .should('exist');
     });
+
 });
 
 describe('Test if user can login and can contribute', function () {
@@ -81,41 +75,52 @@ describe('Test if user can login and can contribute', function () {
     beforeEach('checks if a user can login and contribute', function () {
         cy.visit(url + '/discuss');
         cy.get('tbody > :nth-child(1) > :nth-child(1) > a')
-            .click();
-        cy.get('#confirm-dialog-refuse-btn')
-            .click();
+            .click({force: true});
         cy.get('#item_login')
             .should('exist')
-            .click();
+            .click({force: true});
         login(valid_user, valid_pw);
         cy.get('#item_login')
             .should('not.exist');
         cy.get('#item_start_statement')
             .should('exist');
+
+        cy.get('#confirm-dialog-refuse-btn')
+            .then(($btn) => {
+                if ($btn) {
+                    $btn.click();
+                }
+            });
     });
     it('checks if new position can be contributed', function () {
-        cy.get('#item_start_statement').click();
+        cy.get('#item_start_statement').click({force: true});
         cy.get('#add-statement-container-main-input-position').type(position);
         cy.get('#add-statement-container-main-input-reason').type(reason);
         cy.get('#send-new-statement').click({force: true});
+
+
         cy.contains(capitalizeFirstLetter(position));
         cy.contains(lowercaseFirstLetter(reason));
     });
     it('checks if an user can disagree to new position', function () {
-        cy.contains(position).click();
-        cy.get('#item_disagree').click();
+        cy.contains(position).click({force: true});
+        cy.get('#item_disagree').click({force: true});
         cy.get('#add-position-container-main-input').type(disagreement);
-        cy.get('#send-new-position').click();
+        cy.get('#send-new-position').click({force: true});
+
+
         cy.contains(capitalizeFirstLetter(position));
         cy.contains(lowercaseFirstLetter(disagreement));
     });
     it('checks if an user can agree to new position and adds premise', function () {
-        cy.contains(position).click();
-        cy.get('#item_agree').click();
+        cy.contains(position).click({force: true});
+        cy.get('#item_agree').click({force: true});
         cy.contains(reason);
-        cy.get('#item_start_premise').click();
+        cy.get('#item_start_premise').click({force: true});
         cy.get('#add-position-container-main-input').type(premise);
-        cy.get('#send-new-position').click();
+        cy.get('#send-new-position').click({force: true});
+
+
         cy.contains(capitalizeFirstLetter(position));
         cy.contains(lowercaseFirstLetter(premise));
     });
@@ -123,22 +128,20 @@ describe('Test if user can login and can contribute', function () {
 });
 
 describe('Test for leaks while adding new statements', function () {
-    before(function () {
+    beforeEach(function () {
         cy.visit(url + '/discuss');
         cy.get('tbody > :nth-child(1) > :nth-child(1) > a')
-            .click();
-        cy.get('#confirm-dialog-refuse-btn')
-            .click();
+            .click({force: true});
         cy.get('#item_login')
             .should('exist')
-            .click();
+            .click({force: true});
         login(valid_user, valid_pw);
 
         cy.get('#item_login')
             .should('not.exist');
         cy.get('#item_start_statement')
             .should('exist')
-            .click();
+            .click({force: true});
     });
     afterEach(function () {
         cy.get('#add-statement-container-main-input-position')

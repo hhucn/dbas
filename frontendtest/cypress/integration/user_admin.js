@@ -18,10 +18,11 @@ describe('Test admin rights', function () {
     var elements = ['General', 'Users', 'Content', 'Voting', 'Reviews', 'Reviewer', 'Reputation'];
     var contents = ['Issue', 'Language', 'RSS', 'History', 'Group', 'User', 'Settings', 'Message', 'Statement',
         'StatementOrigins', 'StatementToIssue', 'TextVersion', 'StatementReferences', 'PremiseGroup', 'Premise',
-        'Argument', 'ClickedArgument', 'ClickedStatement', 'MarkedArgument', 'MarkedStatement', 'SeenArgument', 'SeenStatement',
-        'ReviewDelete', 'ReviewEdit', 'ReviewEditValue', 'ReviewOptimization', 'ReviewDeleteReason', 'ReviewDuplicate',
-        'LastReviewerDelete', 'LastReviewerEdit', 'LastReviewerOptimization', 'LastReviewerDuplicate', 'ReputationHistory',
-        'ReputationReason', 'OptimizationReviewLocks', 'ReviewCanceled', 'RevokedContent', 'RevokedContentHistory', 'RevokedDuplicate'];
+        'Argument', 'ClickedArgument', 'ClickedStatement', 'MarkedArgument', 'MarkedStatement', 'SeenArgument',
+        'SeenStatement', 'ReviewDelete', 'ReviewEdit', 'ReviewEditValue', 'ReviewOptimization', 'ReviewDeleteReason',
+        'ReviewDuplicate', 'LastReviewerDelete', 'LastReviewerEdit', 'LastReviewerOptimization', 'LastReviewerDuplicate',
+        'ReputationHistory', 'ReputationReason', 'OptimizationReviewLocks', 'ReviewCanceled', 'RevokedContent',
+        'RevokedContentHistory', 'RevokedDuplicate'];
 
     it('visits /admin and logs in as admin', function () {
         cy.visit(url + '/admin/');
@@ -38,11 +39,7 @@ describe('Test admin rights', function () {
         for (var i = 0; i < contents.length; i++) {
             cy.get('#' + contents[i])
                 .should('exist')
-                .should('be.visible')
-                .click();
-            cy.url()
-                .should('eq', url + '/admin/' + contents[i]);
-            cy.go('back');
+                .should('be.visible');
         }
     });
     it('checks if each element in /admin return 200 response', function () {
@@ -54,6 +51,5 @@ describe('Test admin rights', function () {
                     expect(resp.status).to.eq(200);
                 });
         }
-
     });
 });
