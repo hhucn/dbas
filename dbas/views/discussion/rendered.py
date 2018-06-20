@@ -59,8 +59,9 @@ def start(request):
     logger('start', 'main')
     ui_locales = get_language_from_cookie(request)
     issue_dict = issue_handler.get_issues_overview_on_start(request.validated['user'])
-    for i in range(len(issue_dict['issues'])):
-        issue_dict['issues'][i]['url'] = '/discuss' + issue_dict['issues'][i]['url']
+    for key in issue_dict['issues']:
+        for i in range(len(issue_dict['issues'][key])):
+            issue_dict['issues'][key][i]['url'] = '/discuss' + issue_dict['issues'][key][i]['url']
 
     prep_dict = main_dict(request, Translator(ui_locales).get(_.discussionStart))
 
@@ -69,6 +70,8 @@ def start(request):
 
 
 @view_config(route_name='discussion_init_with_slug', renderer='../../templates/discussion/main.pt',
+             permission='everybody')
+@view_config(route_name='discussion_init_with_slug_with_slash', renderer='../../templates/discussion/main.pt',
              permission='everybody')
 @validate(check_authentication, valid_issue_by_slug, valid_user_optional)
 def init(request):
@@ -328,6 +331,7 @@ def dexit(request):
                                                                            request.path, db_user)
     prepared_discussion['language'] = str(get_language_from_cookie(request))
     prepared_discussion['show_summary'] = len(prepared_discussion['summary']) != 0
+    prepared_discussion['discussion'] = {'broke_limit': False}
     return prepared_discussion
 
 

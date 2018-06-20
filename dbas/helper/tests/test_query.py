@@ -29,12 +29,17 @@ class QueryHelperTest(unittest.TestCase):
         self.assertIsNone(db_url)
 
         pdict = get_short_url(url)
+
+        from pprint import pprint
+        pprint(pdict)
         self.assertIn('url', pdict)
         self.assertIn('service', pdict)
         self.assertIn('service_url', pdict)
         self.assertIn('service_text', pdict)
-        self.assertNotEqual(0, pdict.get('url'))
-        self.assertNotEqual(0, pdict.get('service_text'))
+        self.assertNotEqual(0, len(pdict['service_text']))
 
         db_url = DBDiscussionSession.query(ShortLinks).filter_by(long_url=url).first()
-        self.assertIsNotNone(db_url)
+        if len(pdict['url']) > 0:
+            self.assertIsNotNone(db_url)
+        else:
+            self.assertIsNone(db_url)

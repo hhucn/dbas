@@ -3,7 +3,7 @@ import unittest
 from pyramid import testing
 
 from dbas.helper.test import verify_dictionary_of_view
-from dbas.views.main.rendered import imprint, news, privacy, experiment, index
+from dbas.views.main.rendered import imprint, news, privacy, experiment, index, faq, docs, rss, health
 
 
 class MainImprintViewTests(unittest.TestCase):
@@ -74,3 +74,59 @@ class MainPageViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         response = index(request)
         verify_dictionary_of_view(response)
+
+
+class MainFaqViewTests(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('pyramid_chameleon')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_page(self):
+        request = testing.DummyRequest()
+        response = faq(request)
+        verify_dictionary_of_view(response)
+
+
+class MainDocsViewTests(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('pyramid_chameleon')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_page(self):
+        request = testing.DummyRequest()
+        response = docs(request)
+        verify_dictionary_of_view(response)
+
+
+class MainRssViewTests(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('pyramid_chameleon')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_page(self):
+        request = testing.DummyRequest()
+        response = rss(request)
+        verify_dictionary_of_view(response)
+
+
+class MainHealthViewTests(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('pyramid_chameleon')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_page(self):
+        request = testing.DummyRequest()
+        response = health(request)
+        self.assertEqual(200, response.status_code)

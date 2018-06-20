@@ -171,7 +171,7 @@ def append_extras_dict_during_justification_argument(request: Request, db_user: 
     item_len = len(pdict['items']['elements'])
     _dh = DictionaryHelper(system_lang, db_issue.lang)
     logged_in = (db_user and db_user.nickname != nick_of_anonymous_user) is not None
-    extras_dict = _dh.prepare_extras_dict(db_issue.slug, False, True, False, request.registry,
+    extras_dict = _dh.prepare_extras_dict(db_issue.slug, False, True, True, request.registry,
                                           request.application_url, request.path, db_user=db_user)
     # is the discussion at the end?
     if item_len == 0 or item_len == 1 and logged_in or 'login' in pdict['items']['elements'][0].get('id'):

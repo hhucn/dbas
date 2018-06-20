@@ -13,7 +13,7 @@ from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
-from typing import List
+from typing import List, Union
 from urllib import parse
 from uuid import uuid4
 
@@ -715,7 +715,7 @@ def get_text_for_premisegroup_uid(uid):
     return ' {} '.format(_t.get(_.aand)).join(texts)
 
 
-def get_text_for_statement_uid(uid: int, colored_position=False):
+def get_text_for_statement_uid(uid: int, colored_position=False) -> Union[None, str]:
     """
     Returns text of statement with given uid
 
@@ -731,22 +731,20 @@ def get_text_for_statement_uid(uid: int, colored_position=False):
     if not db_statement:
         return None
 
-    db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).get(
-        db_statement.textversion_uid)
-    content = db_textversion.content
+    content = db_statement.get_text()
 
     while content.endswith(('.', '?', '!')):
         content = content[:-1]
 
     sb, se = '', ''
     if colored_position:
-        sb = '<{} data-argumentation-type="position">'.format(tag_type)
-        se = '</{}>'.format(tag_type)
+        sb = f'<{tag_type} data-argumentation-type="position">'
+        se = f'</{tag_type}>'
 
     return sb + content + se
 
 
-def get_text_for_premise(uid: int, colored_position: bool = False):
+def get_text_for_premise(uid: int, colored_position: bool = False) -> Union[None, str]:
     """
     Returns text of premise with given uid
 
