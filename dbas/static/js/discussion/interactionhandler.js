@@ -287,6 +287,7 @@ InteractionHandler.prototype.__cuttingWhitespaces = function (t_array, i) {
     }
 
 };
+
 InteractionHandler.prototype.__sortStatement = function (t_array, i, decidedTexts, undecidedTexts) {
     'use strict';
     if (t_array[i].toLocaleLowerCase().indexOf(' ' + _t_discussion(and) + ' ') === -1) {
