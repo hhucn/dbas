@@ -5,6 +5,8 @@ const invalid_position = 'coconut';
 const invalid_reason = 'cocofruit';
 const valid_position = 'coconuts are awesome';
 const valid_reason = 'they have hairs';
+const discussions = ['Cat or Dog', 'Make the world better',
+    'Elektroautos', 'Unterstützung der Sekretariate', 'Read only Issue'];
 
 function login(user, pw) {
     cy.get('#login-user')
@@ -50,54 +52,49 @@ function no_input_msg() {
 }
 
 describe('Test if not logged in user can not contribute', function () {
-    it('checks if cat-or-dog denies contribution', function () {
-        cy.visit(url + '/discuss');
-        cy.get('tbody > :nth-child(1) > :nth-child(1) > a')
-            .click({force: true});
-        cy.get('#item_login')
-            .should('exist');
-        cy.get('#item_2')
-            .click({force: true});
-        cy.get('#item_disagree')
-            .click({force: true});
-        cy.get('#item_login')
-            .should('exist');
+    it('checks if every discussion denies contribution', function () {
+        for (var i = 0; i < discussions.length; i++) {
+            cy.visit(url + '/discuss');
+            cy.contains(discussions[i])
+                .click({force: true});
+            cy.get('#item_login')
+                .should('exist');
+        }
     });
 
 });
 
-describe('Test if user can login and can contribute', function () {
+describe('Test if user can login and can contribute at ' + discussions[0], function () {
     var position = randomString(10);
     var reason = randomString(10);
     var disagreement = randomString(10);
     var premise = randomString(10);
-
     beforeEach('checks if a user can login and contribute', function () {
-        cy.visit(url + '/discuss');
-        cy.get('tbody > :nth-child(1) > :nth-child(1) > a')
-            .click({force: true});
-        cy.get('#item_login')
-            .should('exist')
-            .click({force: true});
-        login(valid_user, valid_pw);
-        cy.get('#item_login')
-            .should('not.exist');
-        cy.get('#item_start_statement')
-            .should('exist');
+            cy.visit(url + '/discuss');
+            cy.contains(discussions[0])
+                .click({force: true});
+            cy.get('#item_login')
+                .should('exist')
+                .click({force: true});
+            login(valid_user, valid_pw);
+            cy.get('#item_login')
+                .should('not.exist');
+            cy.get('#item_start_statement')
+                .should('exist');
+            cy.get('#confirm-dialog-refuse-btn')
+                .then(($btn) => {
+                    if ($btn) {
+                        $btn.click({force: true});
+                    }
+                });
+        }
+    );
 
-        cy.get('#confirm-dialog-refuse-btn')
-            .then(($btn) => {
-                if ($btn) {
-                    $btn.click();
-                }
-            });
-    });
     it('checks if new position can be contributed', function () {
         cy.get('#item_start_statement').click({force: true});
-        cy.get('#add-statement-container-main-input-position').type(position);
-        cy.get('#add-statement-container-main-input-reason').type(reason);
+        cy.get('#add-statement-container-main-input-position').type(position, {force: true});
+        cy.get('#add-statement-container-main-input-reason').type(reason, {force: true});
         cy.get('#send-new-statement').click({force: true});
-
 
         cy.contains(capitalizeFirstLetter(position));
         cy.contains(lowercaseFirstLetter(reason));
@@ -105,9 +102,8 @@ describe('Test if user can login and can contribute', function () {
     it('checks if an user can disagree to new position', function () {
         cy.contains(position).click({force: true});
         cy.get('#item_disagree').click({force: true});
-        cy.get('#add-position-container-main-input').type(disagreement);
+        cy.get('#add-position-container-main-input').type(disagreement, {force: true});
         cy.get('#send-new-position').click({force: true});
-
 
         cy.contains(capitalizeFirstLetter(position));
         cy.contains(lowercaseFirstLetter(disagreement));
@@ -117,37 +113,38 @@ describe('Test if user can login and can contribute', function () {
         cy.get('#item_agree').click({force: true});
         cy.contains(reason);
         cy.get('#item_start_premise').click({force: true});
-        cy.get('#add-position-container-main-input').type(premise);
+        cy.get('#add-position-container-main-input').type(premise, {force: true});
         cy.get('#send-new-position').click({force: true});
-
 
         cy.contains(capitalizeFirstLetter(position));
         cy.contains(lowercaseFirstLetter(premise));
     });
-
 });
 
-describe('Test for leaks while adding new statements', function () {
+describe('Test for leaks while adding new statements at ' + discussions[0], function () {
     beforeEach(function () {
         cy.visit(url + '/discuss');
-        cy.get('tbody > :nth-child(1) > :nth-child(1) > a')
+        cy.contains(discussions[0])
             .click({force: true});
         cy.get('#item_login')
             .should('exist')
             .click({force: true});
         login(valid_user, valid_pw);
-
         cy.get('#item_login')
             .should('not.exist');
         cy.get('#item_start_statement')
             .should('exist')
             .click({force: true});
     });
+
     afterEach(function () {
+        cy.get('#send-new-position').click({force: true});
+        cy.get('#add-statement-error-container')
+            .should('exist');
         cy.get('#add-statement-container-main-input-position')
-            .clear();
+            .clear({force: true});
         cy.get('#add-statement-container-main-input-reason')
-            .clear();
+            .clear({force: true});
     });
     it('writes no position and no reason ', function () {
         cy.get('#add-statement-container-main-input-position-text-counter')
@@ -157,10 +154,11 @@ describe('Test for leaks while adding new statements', function () {
             .should('be.visible')
             .contains(no_input_msg());
     });
+
     it('writes an valid position and no reason', function () {
 
         cy.get('#add-statement-container-main-input-position')
-            .type(valid_position);
+            .type(valid_position, {force: true});
         var remaining = remaining_input_msg(valid_position);
         cy.get('#add-statement-container-main-input-position-text-counter')
             .should('be.visible')
@@ -171,9 +169,9 @@ describe('Test for leaks while adding new statements', function () {
     });
     it('writes an invalid position and an valid reason', function () {
         cy.get('#add-statement-container-main-input-position')
-            .type(invalid_position);
+            .type(invalid_position, {force: true});
         cy.get('#add-statement-container-main-input-reason')
-            .type(valid_reason);
+            .type(valid_reason, {force: true});
         var remaining = remaining_input_msg(valid_reason);
         var not_enough = input_not_enough_msg(invalid_position);
         cy.get('#add-statement-container-main-input-position-text-counter')
@@ -185,9 +183,9 @@ describe('Test for leaks while adding new statements', function () {
     });
     it('writes an invalid position and an invalid reason', function () {
         cy.get('#add-statement-container-main-input-position')
-            .type(invalid_position);
+            .type(invalid_position, {force: true});
         cy.get('#add-statement-container-main-input-reason')
-            .type(invalid_reason);
+            .type(invalid_reason, {force: true});
         var not_enough_p = input_not_enough_msg(invalid_position);
         var not_enough_r = input_not_enough_msg(invalid_reason);
         cy.get('#add-statement-container-main-input-position-text-counter')
@@ -199,7 +197,7 @@ describe('Test for leaks while adding new statements', function () {
     });
     it('writes no position and an valid reason', function () {
         cy.get('#add-statement-container-main-input-reason')
-            .type(valid_reason);
+            .type(valid_reason, {force: true});
         var remaining = remaining_input_msg(valid_reason);
         cy.get('#add-statement-container-main-input-reason-text-counter')
             .should('be.visible')
@@ -210,7 +208,7 @@ describe('Test for leaks while adding new statements', function () {
     });
     it('writes no position and an invalid reason', function () {
         cy.get('#add-statement-container-main-input-reason')
-            .type(invalid_reason);
+            .type(invalid_reason, {force: true});
         var not_enough = input_not_enough_msg(invalid_reason);
         cy.get('#add-statement-container-main-input-reason-text-counter')
             .should('be.visible')
@@ -221,7 +219,7 @@ describe('Test for leaks while adding new statements', function () {
     });
     it('writes an invalid position and no reason ', function () {
         cy.get('#add-statement-container-main-input-position')
-            .type(invalid_position);
+            .type(invalid_position, {force: true});
         var remaining = diff(10, invalid_position) + ' more to go ...';
         cy.get('#add-statement-container-main-input-position-text-counter')
             .should('be.visible')
@@ -232,9 +230,9 @@ describe('Test for leaks while adding new statements', function () {
     });
     it('writes an valid position and an invalid reason', function () {
         cy.get('#add-statement-container-main-input-position')
-            .type(valid_position);
+            .type(valid_position, {force: true});
         cy.get('#add-statement-container-main-input-reason')
-            .type(invalid_reason);
+            .type(invalid_reason, {force: true});
         var remaining = remaining_input_msg(valid_position);
         var not_enough = input_not_enough_msg(invalid_reason);
         cy.get('#add-statement-container-main-input-position-text-counter')
