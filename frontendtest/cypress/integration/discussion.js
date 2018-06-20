@@ -14,7 +14,7 @@ function login(user, pw) {
     cy.get('#login-pw')
         .type(pw);
     cy.get('#popup-login-button-login')
-        .click();
+        .click({force: true});
 }
 
 function randomString(length) {
@@ -49,6 +49,10 @@ function remaining_input_msg(str) {
 
 function no_input_msg() {
     return 'Enter at least 10 characters';
+}
+
+function slugify(str) {
+    return str.replace(/ /g, '-').toLowerCase();
 }
 
 describe('Test if not logged in user can not contribute', function () {
@@ -243,3 +247,56 @@ describe('Test for leaks while adding new statements at ' + discussions[0], func
             .contains(not_enough);
     });
 });
+
+describe('Test the functions while discussing', function () {
+    beforeEach(function () {
+        cy.visit(url + '/discuss');
+        cy.contains(discussions[0])
+            .click({force: true});
+        cy.get('#item_login')
+            .should('exist')
+            .click({force: true});
+        login(valid_user, valid_pw);
+        cy.get('#item_login')
+            .should('not.exist');
+        cy.get('#item_start_statement')
+            .should('exist')
+            .click({force: true});
+    });
+
+    it('choose position and restart discussion', function () {
+        cy.url()
+            .should('eq', url + '/discuss/' + slugify(discussions[0]));
+        cy.get('#discussion-restart-btn')
+            .click({force: true});
+        cy.url()
+            .should('eq', url + '/discuss/' + slugify(discussions[0]));
+    });
+
+    it('add more then one reason', function () {
+        cy.contains(valid_position)
+            .click({force: true});
+        cy.get('#item_disagree')
+            .click({force: true});
+        cy.get('.icon-add-premise')
+            .click({force: true});
+        cy.get(':nth-child(2) > .flex-div')
+            .should('exist');
+        cy.get(':nth-child(2) > :nth-child(2) > .icon-add-premise')
+            .click({force: true});
+        cy.get(':nth-child(3) > .flex-div')
+            .should('exist');
+        cy.get(':nth-child(3) > :nth-child(2) > .icon-rem-premise')
+            .click({force: true});
+        cy.get(':nth-child(3) > .flex-div')
+            .should('not.exist');
+        cy.get(':nth-child(2) > :nth-child(2) > .icon-add-premise')
+            .should('exist');
+        cy.get(':nth-child(2) > :nth-child(2) > .icon-rem-premise')
+            .click({force: true});
+        cy.get('.icon-add-premise')
+            .should('exist');
+    });
+
+});
+
