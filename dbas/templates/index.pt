@@ -441,7 +441,7 @@
 <div class="eupopup eupopup-bottomright"></div>
 
 <div metal:use-macro="load: snippet/popups.pt"></div>
-<div class="call-to-action-small bg-dark">
+<div class="call-to-action-small bg-light">
   <div metal:use-macro="load: snippet/footer.pt"></div>
 </div>
 
@@ -480,7 +480,7 @@
 <script src="${request.static_url('dbas:static/js/ajax/settings.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/discussion/guihandler.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/discussion/popups.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/discussion/helper.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/discussion/lib.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/discussion/main.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/discussion/start.js')}" tal:condition="extras.development_mode"></script>

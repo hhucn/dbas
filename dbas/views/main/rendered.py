@@ -1,6 +1,9 @@
 import pkg_resources
+from pyramid.httpexceptions import HTTPInternalServerError, HTTPOk
 from pyramid.view import view_config, forbidden_view_config
 
+from admin.lib import table_mapper
+from dbas.database import DBDiscussionSession
 from dbas.handler import news as news_handler
 from dbas.handler.language import set_language_for_visit, get_language_from_cookie
 from dbas.handler.rss import get_list_of_all_feeds
@@ -149,3 +152,17 @@ def rss(request):
     prep_dict = main_dict(request, 'RSS')
     prep_dict.update({'rss': rss})
     return prep_dict
+
+
+@view_config(route_name='health', permission='everybody')
+def health(_):
+    """Traefik health check"""
+    try:
+        tables = [t['table'] for t in table_mapper.values()]
+        list(map(lambda x: DBDiscussionSession.query(x).all(), tables))
+    except Exception as e:
+        logger('health', f'Fatal error: {e}', error=True)
+        return HTTPInternalServerError()
+
+    logger('health', 'Everythings fine')
+    return HTTPOk(detail='Database can be queried successful')

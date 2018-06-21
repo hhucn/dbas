@@ -197,7 +197,7 @@ class QueueAdapter():
         visit_key_str = _.get_key_by_string('visit{}Queue'.format(start_with_capital(queue_name)))
         visit_limit_key_str = _.get_key_by_string('visit{}QueueLimitation'.format(start_with_capital(queue_name)))
         return {
-            'task_name': get_title_by_key(queue_name),
+            'task_name': self.translator.get(get_title_by_key(queue_name)),
             'id': queue_name,
             'url': f'{self.application_url}/review/{queue_name}',
             'icon': reputation_icons[queue_name],

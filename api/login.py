@@ -18,7 +18,7 @@ from admin.lib import check_api_token
 from dbas.auth.login import login_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.lib import get_user_by_case_insensitive_nickname
+from dbas.lib import get_user_by_case_insensitive_nickname, nick_of_anonymous_user
 from dbas.validators.lib import add_error
 from .lib import HTTP401, json_to_dict, logger
 
@@ -67,10 +67,10 @@ def token_to_database(db_user: User, token: Union[str, None]) -> None:
 # Dispatch API attempts by type
 
 def check_auth_token(request, nickname, token):
-    log.info("[API] Login Attempt from user {}".format(nickname))
-    db_user = get_user_by_case_insensitive_nickname(nickname)
+    log.info("[API] Login attempt from user {}".format(nickname))
+    db_user: User = get_user_by_case_insensitive_nickname(nickname)
 
-    if not db_user:
+    if not db_user or db_user.uid == 1:
         add_error(request, "Unknown user", status_code=401, location="header")
         return False
 
@@ -99,7 +99,17 @@ def valid_token_optional(request, **_kwargs):
     :return:
     """
     if 'X-Authentication' in request.headers:
-        valid_token(request)
+        try:
+            payload = json_to_dict(request.headers.get('X-Authentication'))
+
+            if payload.get('nickname') == nick_of_anonymous_user:
+                request.validated['user'] = DBDiscussionSession.query(User).get(1)
+            else:
+                valid_token(request)
+
+        except json.decoder.JSONDecodeError:
+            add_error(request, "Invalid JSON in token")
+            return False
     else:
         request.validated['user'] = DBDiscussionSession.query(User).get(1)
 

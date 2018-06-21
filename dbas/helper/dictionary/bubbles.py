@@ -21,9 +21,9 @@ def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive,
 
     if _tn.get_lang() == 'de':
         intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
-        add_premise_text = start_with_capital(intro[0:1]) + ' ' + text
+        add_premise_text = start_with_capital(intro) + ' ' + text
     else:
-        add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea).strip()
+        add_premise_text = start_with_capital(text) + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea).strip()
     add_premise_text += ', ...'
 
     is_users_opinion = False

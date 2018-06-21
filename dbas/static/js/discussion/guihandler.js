@@ -85,7 +85,6 @@ GuiHandler.prototype.setDisplayStyleAsIsland = function () {
     'use strict';
     $('#' + islandViewContainerId).fadeIn('slow');
     GuiHandler.prototype.hideAddPositionContainer();
-    GuiHandler.prototype.hideaddPositionContainer();
 };
 
 /**
@@ -94,26 +93,18 @@ GuiHandler.prototype.setDisplayStyleAsIsland = function () {
 GuiHandler.prototype.setDisplayStyleAsGraphView = function () {
     'use strict';
     var graphViewContainer = $('#' + graphViewContainerId);
-    var tacked_sidebar = 'tacked_graph_sidebar';
-    var header = $('#' + graphViewContainerHeaderId);
-    var main = new Main();
 
     $('#' + islandViewContainerId).hide();
     $('#' + discussionContainerId).hide();
     $('#' + headerContainerId).hide();
     $('#' + addPositionContainerId).hide();
 
-    // text
-    header.html($('#issue_info').data('title'));
-
     // height
     var innerHeight = this.getMaxSizeOfGraphViewContainer();
     graphViewContainer.attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; margin-bottom: 1em;');
-    innerHeight -= header.outerHeight(true) + 20;
-    $('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 95%');
+    innerHeight -= 1.5 * $('#graph-sidebar').outerHeight();
+    $('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 97%');
     new DiscussionGraph({}, false).showGraph(false);
-    main.setSidebarStyle(graphViewContainer, tacked_sidebar);
-    main.setSidebarClicks(graphViewContainer, tacked_sidebar);
 };
 
 /**
@@ -124,12 +115,10 @@ GuiHandler.prototype.setMaxHeightForDiscussionContainer = function (resize) {
     'use strict';
     var maincontainer = $('#' + discussionContainerId);
     if ($('#dialog-wrapper').height() > maincontainer.outerHeight()) {
-        var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
         maincontainer.css({
             'height': maincontainer.outerHeight(true) + resize + 'px',
             'max-height': maincontainer.outerHeight(true) + resize + 'px'
         });
-        sidebarwrapper.css('height', maincontainer.outerHeight() + 'px');
     }
 };
 
@@ -211,15 +200,6 @@ GuiHandler.prototype.showaddPositionContainer = function () {
 GuiHandler.prototype.hideAddPositionContainer = function () {
     'use strict';
     $('#' + addStatementContainerId).hide();
-    $('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
-};
-
-/**
- * Hides the 'add premise'-container
- */
-GuiHandler.prototype.hideaddPositionContainer = function () {
-    'use strict';
-    $('#' + addPositionContainerId).hide();
     $('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
 };
 
@@ -914,8 +894,8 @@ GuiHandler.prototype.getMaxSizeOfGraphViewContainer = function () {
     innerHeight = window.innerHeight;
     innerHeight -= header.outerHeight(true);
     innerHeight -= footer.outerHeight(true);
-    innerHeight -= this.getPaddingOfElement(header);
-    innerHeight -= this.getPaddingOfElement(footer);
+    innerHeight -= getPaddingOfElement(header);
+    innerHeight -= getPaddingOfElement(footer);
     return innerHeight;
 };
 
@@ -931,51 +911,10 @@ GuiHandler.prototype.getMaxSizeOfDiscussionViewContainer = function () {
     var innerHeight = this.getMaxSizeOfGraphViewContainer();
     innerHeight += wrapper.css('top') ? parseInt(wrapper.css('top').replace('px')) : 0;
     innerHeight -= list.outerHeight(true);
-    innerHeight -= this.getPaddingOfElement(header);
-    innerHeight -= this.getPaddingOfElement(list);
+    innerHeight -= getPaddingOfElement(header);
+    innerHeight -= getPaddingOfElement(list);
     return innerHeight - emToPx(2);
 
-};
-
-/**
- *
- * @param element
- * @returns {number}
- */
-GuiHandler.prototype.getPaddingOfElement = function (element) {
-    'use strict';
-    if (typeof element !== "undefined" && typeof element.css('padding') !== "undefined") {
-        var pt = parseInt(element.css('padding-top').replace('px', ''));
-        var pb = parseInt(element.css('padding-bottom').replace('px', ''));
-        return pt + pb;
-    } else {
-        return 0;
-    }
-};
-
-/**
- * Rotates the little pin icon in the sidebar
- * @param element
- * @param degree
- */
-GuiHandler.prototype.rotateElement = function (element, degree) {
-    'use strict';
-    element.css('-ms-transform', 'rotate(' + degree + 'deg)')
-    .css('-webkit-transform', 'rotate(' + degree + 'deg)')
-    .css('transform', 'rotate(' + degree + 'deg)');
-};
-
-/**
- * Sets an animation speed for a specific element
- * @param element
- * @param speed
- */
-GuiHandler.prototype.setAnimationSpeed = function (element, speed) {
-    'use strict';
-    element.css('-webkit-transition', 'all ' + speed + 's ease')
-    .css('-moz-transition', 'all ' + speed + 's ease')
-    .css('-o-transition', 'all ' + speed + 's ease')
-    .css('transition', 'all ' + speed + 's ease');
 };
 
 /**

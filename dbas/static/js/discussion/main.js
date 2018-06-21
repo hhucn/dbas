@@ -285,7 +285,6 @@ Main.prototype.__setTriangleHoverFunc = function(trianglel){
     });
 };
 
-
 Main.prototype.__setClickFunctionsShareElements = function (guiHandler, popupHandler) {
     'use strict';
 
@@ -358,10 +357,6 @@ Main.prototype.__setClickFunctionsDiscussionSpace = function (guiHandler, popupH
         var container_height = parseInt(container.css('max-height').replace('px', ''));
         container.css('max-height', (add_height + container_height) + 'px');
         container.attr('data-add-height', add_height);
-
-        var sidebar = $('.sidebar-wrapper:first');
-        sidebar.height(sidebar.height() + add_height);
-
     });
 
     $('#' + discussionSpaceHideItems).click(function () {
@@ -374,8 +369,6 @@ Main.prototype.__setClickFunctionsDiscussionSpace = function (guiHandler, popupH
         // guification, resize main container and sidebar
         setTimeout(function () {
             container.css('max-height', new_height + 'px');
-            var sidebar = $('.sidebar-wrapper:first');
-            sidebar.height(sidebar.height() - parseInt(container.attr('data-add-height')));
         }, 400);
     });
 
@@ -421,119 +414,6 @@ Main.prototype.__setClickFunctionsDiscussionSpace = function (guiHandler, popupH
         new Notifications().setGui();
     });
 
-};
-
-/**
- * Sets click functions for the elements in the sidebar
- * @param maincontainer - main container which contains the content on the left and the sidebar on the rigt
- * @param localStorageId - id of the parameter in the local storage
- */
-Main.prototype.setSidebarClicks = function (maincontainer, localStorageId) {
-    'use strict';
-    var gui = new GuiHandler();
-    var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
-    var wrapper = maincontainer.find('.' + contentWrapperClass);
-    var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
-    var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
-    var tack = sidebarwrapper.find('.' + sidebarTackClass);
-    var sidebar = sidebarwrapper.find('.' + sidebarClass);
-    var bgColor = new Colors().hexToRGB('#F3F3F3');
-
-    $(hamburger).click(function () {
-        $(this).toggleClass('open');
-        var width = wrapper.width();
-
-        if (sidebar.is(':visible')) {
-            tackwrapper.fadeOut();
-            sidebar.toggle('slide');
-            hamburger.css('margin-right', '0.5em')
-                .css('background-color', '');
-            maincontainer.css('max-height', '');
-            sidebarwrapper.css('background-color', '')
-                .css('height', '');
-            setTimeout(function () {
-                wrapper.width('');
-            }, 300);
-            setLocalStorage(localStorageId, 'false');
-        } else {
-            wrapper.width(width - sidebar.outerWidth());
-            maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
-            setTimeout(function () {
-                sidebar.toggle('slide');
-                hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
-                    .css('margin-left', 'auto')
-                    .css('background-color', sidebar.css('background-color'));
-                sidebarwrapper.css('background-color', bgColor)
-                    .css('height', maincontainer.outerHeight() + 'px');
-                tackwrapper.fadeIn();
-            }, 200);
-        }
-    });
-
-    // action for tacking the sidebar
-    tackwrapper.click(function () {
-        var shouldShowSidebar = getLocalStorage(localStorageId) === 'true';
-        if (shouldShowSidebar) {
-            gui.rotateElement(tack, '0');
-            setLocalStorage(localStorageId, 'false');
-
-            tack.data('title', _t_discussion(pinNavigation));
-
-            // hide sidebar if it is visible
-            if (sidebar.is(':visible')) {
-                hamburger.click();
-            }
-        } else {
-            gui.rotateElement(tack, '90');
-            setLocalStorage(localStorageId, 'true');
-            tack.data('title', _t_discussion(unpinNavigation));
-        }
-    });
-
-};
-
-/**
- * Sets style options for the elements in the sidebar
- * @param maincontainer - main container which contains the content on the left and the sidebar on the rigt
- * @param localStorageId - id of the parameter in the local storage
- */
-Main.prototype.setSidebarStyle = function (maincontainer, localStorageId) {
-    'use strict';
-    // read local storage for pinning the bar / set title
-    var shouldShowSidebar = getLocalStorage(localStorageId) === 'true';
-    var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
-    var wrapper = maincontainer.find('.' + contentWrapperClass);
-    var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
-    var tack = sidebarwrapper.find('.' + sidebarTackClass);
-    var sidebar = sidebarwrapper.find('.' + sidebarClass);
-    var gui = new GuiHandler();
-
-    if (shouldShowSidebar) {
-        var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
-
-        gui.rotateElement(tack, '90');
-        gui.setAnimationSpeed(wrapper, '0.0');
-        gui.setAnimationSpeed(hamburger, '0.0');
-
-        hamburger.addClass('open');
-
-        wrapper.width(maincontainer.width() - sidebar.outerWidth());
-        maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
-        sidebar.show();
-        hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
-            .css('margin-left', 'auto')
-            .css('background-color', sidebar.css('background-color'));
-        sidebarwrapper.css('background-color', new Colors().hexToRGB('#F3F3F3'))
-            .css('height', maincontainer.outerHeight() + 'px');
-        tackwrapper.fadeIn();
-
-        gui.setAnimationSpeed(wrapper, '0.5');
-        gui.setAnimationSpeed(hamburger, '0.5');
-
-        tackwrapper.data('title', _t_discussion(unpinNavigation));
-    } else {
-        tackwrapper.data('title', _t_discussion(pinNavigation));
-    }
 };
 
 /**
@@ -803,8 +683,6 @@ Main.prototype.__setContainerSidebarForOneLiner = function(children, id, ids){
     if (children.length === 1 && $.inArray(id, ids) !== -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) === -1) {
         var container = $('#' + discussionContainerId);
         container.height(container.height() - 50);
-        var sidebar = $('.sidebar-wrapper');
-        sidebar.height(sidebar.height() - 50);
         children.eq(0).prop('checked', true).parent().hide();
     }
 };
@@ -851,19 +729,14 @@ Main.prototype.setInputExtraBox = function (input, guiHandler, sendStartStatemen
  */
 $(document).ready(function mainDocumentReady() {
     'use strict';
-
-    var tacked_sidebar = 'tacked_sidebar';
     var guiHandler = new GuiHandler();
     var ajaxHandler = new AjaxDiscussionHandler();
     var interactionHandler = new InteractionHandler();
     var popupHandler = new PopupHandler();
     var main = new Main();
     var tmp;
-    var discussionContainer = $('#' + discussionContainerId);
 
     main.setStyleOptions(guiHandler);
-    main.setSidebarStyle(discussionContainer, tacked_sidebar);
-    main.setSidebarClicks(discussionContainer, tacked_sidebar);
     // sidebar of the graphview is set in GuiHandler:setDisplayStyleAsGraphView()
     main.setClickFunctions(guiHandler, popupHandler, ajaxHandler);
     main.setKeyUpFunctions(guiHandler, ajaxHandler);
