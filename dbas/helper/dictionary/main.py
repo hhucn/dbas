@@ -531,7 +531,6 @@ class DictionaryHelper(object):
             'add_issue_info': _tn_sys.get(_.addIssueInfo).format(
                 limit_to_open_issues) if logged_in else _tn_sys.get(_.notLoggedIn),
             'guided_view': _tn_sys.get(_.displayControlDialogGuidedTitle),
-            'island_view': _tn_sys.get(_.displayControlDialogIslandTitle),
             'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
             'edit_statement': _tn_dis.get(_.editTitle),
             'edit_statement_already': _tn_dis.get(_.editAlreadyTitle),
@@ -594,7 +593,6 @@ class DictionaryHelper(object):
             'url_sharing_description': _tn_dis.get(_.urlSharingDescription),
             'fetchurl': _tn_dis.get(_.fetchLongUrl),
             'warning': _tn_dis.get(_.warning),
-            'island_view_for': _tn_dis.get(_.islandViewFor),
             'language': self.discussion_lang,
             'aand': _tn_dis.get(_.aand),
             'add_premise_title': _tn_dis.get(_.addPremiseRadioButtonText),
