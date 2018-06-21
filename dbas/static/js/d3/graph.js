@@ -147,8 +147,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 showNodesUntilMoment(start_date_ms + add_ms);
             }
         });
-        var w = $('.colored-container').width();
-        w -= slider.parent().width() - slider.parent().find('.slider').width();
+        var w = $('#graph-view-container-space').width() - 24;
+        w -= slider.parent().width();
+        w += slider.parent().find('.slider').width();
         slider.prev().css('width', w);
     }
 
@@ -165,6 +166,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             return;
         }
         new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, data, null, request_for_complete);
+
     };
 
     /**
@@ -296,6 +298,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
         setLegend();
 
+        setSlider();
+
         // buttons of sidebar
         addListenersForSidebarButtons(jsonData, zoom);
         // add listener to show/hide tooltip on mouse over
@@ -380,8 +384,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";
             });
         }
-
-        setSlider();
     }
 
     /**
@@ -575,7 +577,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             var graphSvg = $('#graph-svg');
             graphSvg.width(container.width());
             // height of space between header and bottom of container
-            graphSvg.height(container.outerHeight() - $('#graph-sidebar').height() + 20);
+            graphSvg.height(container.outerHeight() - $('#graph-sidebar').height());
             force.size([container.width(), container.outerHeight()]).resume();
         }
     }
