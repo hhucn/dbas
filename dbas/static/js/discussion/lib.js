@@ -89,3 +89,19 @@ function isMobileAgent() {
     'use strict';
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
+
+/**
+ *
+ * @param element
+ * @returns {number}
+ */
+function getPaddingOfElement (element) {
+    'use strict';
+    if (typeof element !== "undefined" && typeof element.css('padding') !== "undefined") {
+        var pt = parseInt(element.css('padding-top').replace('px', ''));
+        var pb = parseInt(element.css('padding-bottom').replace('px', ''));
+        return pt + pb;
+    } else {
+        return 0;
+    }
+}
