@@ -249,6 +249,19 @@ describe('Test for leaks while adding new statements at ' + discussions[0], func
 });
 
 describe('Test the functions while discussing', function () {
+
+    const options = ['#labels', '#positions', '#statements', '#my-statements', '#supports-on-my-statements'];
+
+    function visit_graph() {
+        cy.get('#display-style-icon-graph-img')
+            .should('exist')
+            .click({force: true});
+        cy.get('#confirm-dialog-refuse-btn')
+            .click({force: true});
+        cy.get('#circle-issue')
+            .should('exist');
+    }
+
     beforeEach(function () {
         cy.visit(url + '/discuss');
         cy.contains(discussions[0])
@@ -257,13 +270,10 @@ describe('Test the functions while discussing', function () {
             .should('exist')
             .click({force: true});
         login(valid_user, valid_pw);
-        cy.get('#item_login')
-            .should('not.exist');
         cy.get('#item_start_statement')
             .should('exist')
             .click({force: true});
     });
-
     it('choose position and restart discussion', function () {
         cy.url()
             .should('eq', url + '/discuss/' + slugify(discussions[0]));
@@ -298,5 +308,49 @@ describe('Test the functions while discussing', function () {
             .should('exist');
     });
 
+    it('tests if the discussion can be shared', function () {
+        cy.get('#share-url')
+            .should('exist')
+            .click({force: true});
+        cy.get('#popup-url-sharing')
+            .should('exist');
+    });
+    it('tests if the barometer can be used', function () {
+        cy.get('#opinion-barometer-img')
+            .should('exist')
+            .click({force: true});
+        cy.get('#barometer-popup')
+            .should('exist');
+    });
+    it('tests if the graph can be used', function () {
+        visit_graph();
+    });
+    it('tests all options of the graph', function () {
+        visit_graph();
+        for (var i = 0; i < options.length; i++) {
+            cy.get(options[i])
+                .click({force: true});
+            if ('#labels' === options[i]) {
+                cy.contains('we should get a cat');
+            }
+        }
+    });
+
+    it('tests if new statement is added to the graph', function () {
+        const position = randomString(10);
+        const reason = randomString(10);
+        cy.get('#add-statement-container-main-input-position').type(position, {force: true});
+        cy.get('#add-statement-container-main-input-reason').type(reason, {force: true});
+        cy.get('#send-new-statement')
+            .click({force: true});
+        cy.visit(url + '/discuss');
+        cy.contains(discussions[0])
+            .click({force: true});
+        visit_graph();
+        cy.get(options[0])
+            .click({force: true});
+        cy.contains(position);
+        cy.contains(reason);
+    });
 });
 
