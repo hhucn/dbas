@@ -38,6 +38,8 @@ GRANT writer TO dbas GRANTED BY postgres;
 CREATE DATABASE beaker WITH TEMPLATE = template0 OWNER = postgres;
 CREATE DATABASE discussion WITH TEMPLATE = template0 OWNER = postgres;
 GRANT CONNECT ON DATABASE discussion TO read_only_discussion;
+CREATE DATABASE test_discussion WITH TEMPLATE = template0 OWNER = postgres;
+GRANT CONNECT ON DATABASE test_discussion TO read_only_discussion;
 REVOKE CONNECT,TEMPORARY ON DATABASE template1 FROM PUBLIC;
 GRANT CONNECT ON DATABASE template1 TO PUBLIC;
 
@@ -4615,6 +4617,7 @@ COPY groups (uid, name) FROM stdin;
 1	admins
 2	authors
 3	users
+4	specials
 \.
 
 
@@ -4622,7 +4625,7 @@ COPY groups (uid, name) FROM stdin;
 -- Name: groups_uid_seq; Type: SEQUENCE SET; Schema: public; Owner: dbas
 --
 
-SELECT pg_catalog.setval('groups_uid_seq', 3, true);
+SELECT pg_catalog.setval('groups_uid_seq', 4, true);
 
 
 --

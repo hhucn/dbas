@@ -6,12 +6,16 @@
 
 $(function () {
     'use strict';
-    
+
     // execute only in the users page
     if (window.location.href.indexOf(mainpage + 'user/') === -1) {
         return;
     }
-    
+    if ($('#user_publick_nick').text() ==='Son Goku'){
+        var url = '/static/images/westcapitalsuper.jpg';
+        $('.big-header').css('background-image', 'url(' + url + ')');
+    }
+
     var u = new User();
     u.setNotificationBtn();
     u.getPublicUserData();
@@ -27,8 +31,7 @@ function User() {
     var brown = 'rgba(215,204,200,0.4';
     var color_100_rgba = [blue, teal, deepOrange, brown]; // 100
     var color_500_hex = ['#2196F3', '#009688', '#FF5722', '#795548']; // 500
-    // var color_800_hex = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
-    
+
     /**
      * Sets click listener to send notifications to a user
      */
@@ -45,7 +48,7 @@ function User() {
                     var splitted = url.split('/');
                     var recipient;
                     if (url.indexOf('/user/') === -1) {
-                        recipient = $(this).prev().text();
+                        recipient = $("#public_nick").text();
                     } else {
                         recipient = splitted[splitted.length - 1];
                     }
@@ -54,7 +57,7 @@ function User() {
             });
         });
     };
-    
+
     /**
      * Requests specific user data and will display these in charts
      */
@@ -84,6 +87,10 @@ function User() {
      */
     this.createChart = function (parsedData, space, id, count) {
         space.append('<canvas id="' + id + '" width="' + space.width() + '" height="300"></canvas>');
+        if (document.getElementById(id) === null){
+            // 404 page
+            return false;
+        }
         var ctx = document.getElementById(id).getContext('2d');
         var chart_data = {
             type: 'line',
@@ -103,8 +110,9 @@ function User() {
         try {
             new Chart(ctx, chart_data);
         } catch (err) {
-            //
+            return false;
         }
+        return true;
     };
 
     /**

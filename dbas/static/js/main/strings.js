@@ -880,10 +880,10 @@ var get_it = function (val, id) {
  * @returns {string} which is translated or unknown value
  * @private
  */
-_t = function (id) {
+function _t(id) {
     'use strict';
     return get_it(getLanguage(), id);
-};
+}
 
 /**
  * Returns a translated string in the discussion language
@@ -891,7 +891,7 @@ _t = function (id) {
  * @returns {string} which is translated or unknown value
  * @private
  */
-_t_discussion = function (id) {
+function _t_discussion(id) {
     'use strict';
 
     var info = $('#issue_info');
@@ -900,22 +900,22 @@ _t_discussion = function (id) {
     }
     var lang = info.data('discussion-language');
     return get_it(lang, id);
-};
+}
 
 /**
  * Returns the tag of current language. This is either {en,de} or 'unknown value' *
  * @returns {string} language tag
  */
-getLanguage = function () {
+function getLanguage() {
     'use strict';
     return $('#hidden_language').val();
-};
+}
 
 /**
  * Returns the tag of current discussion language. This is either {en,de} or 'unknown value' *
  * @returns {string} language tag
  */
-getDiscussionLanguage = function () {
+function getDiscussionLanguage() {
     'use strict';
 
     var lang = $('#issue_info').data('discussion-language'), value;
@@ -927,4 +927,4 @@ getDiscussionLanguage = function () {
         value = 'unknown value';
     }
     return value;
-};
+}

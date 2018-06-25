@@ -28,8 +28,8 @@ TEST_STRING = {
 
 # english page has a german flag and vice versa
 TEST_IMG = {
-    'GERMAN': 'flag-us-gb',
-    'ENGLISH': 'flag-de'
+    'GERMAN': 'flags/us-gb',
+    'ENGLISH': 'flags/de'
 }  # to check if the flag in the source_page(html) had changed
 
 TIME_TO_PREPARE = 1  # used in setup() of test_LanguageSwitch.py to make sure everything had loaded (important but ugly)

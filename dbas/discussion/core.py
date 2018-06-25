@@ -1,5 +1,5 @@
 import dbas.handler.issue as issue_helper
-from dbas.database.discussion_model import Argument, User, Issue, Statement, PremiseGroup
+from dbas.database.discussion_model import Argument, User, Issue, Statement
 from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
@@ -220,8 +220,8 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     }
 
 
-def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: bool, pgroup: PremiseGroup,
-           pgroup_ids: list, history: str, path: str) -> dict:
+def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: bool, pgroups: dict, history: str,
+           path: str) -> dict:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
     containing several feedback options regarding this argument.
@@ -230,8 +230,7 @@ def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: boo
     :param db_user:
     :param is_argument:
     :param is_supportive:
-    :param uid:
-    :param pgroup:
+    :param pgroups:
     :param history:
     :param path:
     :return:
@@ -239,6 +238,9 @@ def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: boo
     logger('Core', 'Entering discussion.choose')
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
+
+    pgroup = pgroups.get('pgroup_uid')
+    pgroup_ids = pgroups.get('pgroup_uids')
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)

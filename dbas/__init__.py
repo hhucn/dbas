@@ -7,8 +7,6 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 .. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-# from wsgiref.simple_server import make_server
-
 import os
 import re
 import time
@@ -22,8 +20,7 @@ from sqlalchemy import engine_from_config
 
 from dbas.database import get_db_environs
 from dbas.handler.rss import rewrite_issue_rss, create_news_rss
-from dbas.lib import get_global_url
-from dbas.query_wrapper import get_enabled_issues_as_query
+from dbas.lib import get_global_url, get_enabled_issues_as_query
 from .database import load_discussion_database
 from .security import groupfinder
 
@@ -52,22 +49,6 @@ def main(global_config, **settings):
     session_factory = session_factory_from_settings(settings)
     set_cache_regions_from_settings(settings)
 
-    # PLEASE USE THIS CODE TO READ CUSTOM SETTINGS FROM THE INI FILES
-    # include custom parts
-    # sections = ['service']
-    # log settings
-    # log = logging.getLogger(__name__)
-    # for s in sections:
-    #     try:
-    #         parser = ConfigParser()
-    #         parser.read(global_config['__file__'])
-    #         custom_settings = dict()
-    #         for k, v in parser.items('settings:{}'.format(s)):
-    #             custom_settings['settings:{}:{}'.format(s, k)] = v
-    #         settings.update(custom_settings)
-    #     except NoSectionError as e:
-    #         log.debug('__init__() '.upper() + 'main() <No ' + s + '-Section> ' + str(e))
-
     # creating the configurator
     config = Configurator(settings=settings,
                           authentication_policy=authn_policy,
@@ -81,8 +62,8 @@ def main(global_config, **settings):
     # Include apps
     config.include('api', route_prefix='/api')
     config.include('api.v2', route_prefix='/api/v2')
-    config.include('graph', route_prefix='/graph')
     config.include('admin', route_prefix='/admin')
+    config.include('graph', route_prefix='/graph')
     config.include('websocket', route_prefix='/websocket')
 
     # more includes are in the config
@@ -113,6 +94,7 @@ def main(global_config, **settings):
     config.add_route('main_graphiql', '/graphiql')
     config.add_route('main_api', '/api')
     config.add_route('discussion_overview', '/mydiscussions')
+    config.add_route('health', '/health')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('user_login', '{url:.*}user_login')
@@ -185,6 +167,7 @@ def main(global_config, **settings):
     config.add_route('discussion_start', '/discuss')
     config.add_route('discussion_start_with_slash', '/discuss/')
     config.add_route('discussion_init_with_slug', '/discuss/{slug}')
+    config.add_route('discussion_init_with_slug_with_slash', '/discuss/{slug}/')
 
     # review section
     config.add_route('review_index', '/review')

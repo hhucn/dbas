@@ -26,7 +26,7 @@ from dbas.handler.notification import send_welcome_notification
 from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups_of_args, get_user_and_opinions_for_argument
-from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid, \
+from dbas.lib import pretty_print_timestamp, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.review.reputation import get_reputation_of
@@ -218,11 +218,11 @@ def get_public_data(nickname, lang):
     :param lang:
     :return: dict()
     """
-    logger('User', 'User {}'.format(nickname))
+    logger('User', f'User: "{nickname}"')
     return_dict = dict()
     current_user = get_user_by_private_or_public_nickname(nickname)
 
-    if current_user is None:
+    if current_user is None and nickname != 'Son Goku':
         return return_dict
 
     _tn = Translator(lang)
@@ -243,13 +243,16 @@ def get_public_data(nickname, lang):
     return_dict['label3'] = _tn.get(_.statementIndex)
     return_dict['label4'] = _tn.get(_.editIndex)
 
+    if nickname == 'Son Goku':
+        return __special_public_data(return_dict, lang)
+
     for days_diff in range(30, -1, -1):
         date_begin = date.today() - timedelta(days=days_diff)
         date_end = date.today() - timedelta(days=days_diff - 1)
         begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
         end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
 
-        ts = python_datetime_pretty_print(date_begin, lang)
+        ts = pretty_print_timestamp(date_begin, lang)
         labels_decision_30.append(ts)
         labels_statement_30.append(ts)
         labels_edit_30.append(ts)
@@ -282,6 +285,18 @@ def get_public_data(nickname, lang):
     return_dict['data4'] = data_edit_30
 
     return return_dict
+
+
+def __special_public_data(rdict, lang):
+    rdict['labels1'] = [pretty_print_timestamp(date.today() - timedelta(days=dd), lang) for dd in range(7, -1, -1)]
+    rdict['labels2'] = [pretty_print_timestamp(date.today() - timedelta(days=dd), lang) for dd in range(30, -1, -1)]
+    rdict['labels3'] = rdict['labels2']
+    rdict['labels4'] = rdict['labels2']
+    rdict['data1'] = [9000.1] * 7
+    rdict['data2'] = [9000.1] * 30
+    rdict['data3'] = rdict['data2']
+    rdict['data4'] = rdict['data2']
+    return rdict
 
 
 def get_reviews_of(user, only_today):
@@ -509,6 +524,8 @@ def get_information_of(db_user: User, lang):
     :param lang: ui_locales
     :return: dict()
     """
+    if db_user.nickname == nick_of_anonymous_user:
+        return __get_special_infos(lang)
     db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
     ret_dict = dict()
     ret_dict['public_nick'] = db_user.global_nickname
@@ -538,6 +555,26 @@ def get_information_of(db_user: User, lang):
     ret_dict['discussion_stat_rep'], trash = get_reputation_of(db_user)
 
     return ret_dict
+
+
+def __get_special_infos(lang):
+    return {
+        'public_nick': 'Son Goku',
+        'last_action': sql_timestamp_pretty_print(get_now(), lang),
+        'last_login': sql_timestamp_pretty_print(get_now(), lang),
+        'registered': sql_timestamp_pretty_print(get_now(), lang),
+        'group': 'Saiyajin',
+        'is_male': True,
+        'is_female': False,
+        'is_neutral': False,
+        'statements_posted': '>9000',
+        'edits_done': '>9000',
+        'reviews_proposed': '>9000',
+        'discussion_arg_votes': '>9000',
+        'discussion_stat_votes': '>9000',
+        'avatar_url': '/static/images/goku.jpg',
+        'discussion_stat_rep': '>9000',
+    }
 
 
 def get_summary_of_today(db_user: User) -> dict:
@@ -675,21 +712,22 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
     return success, info, db_user
 
 
-def set_new_user(mailer, firstname, lastname, nickname, gender, email, password, _tn):
+def set_new_user(mailer, user_data, password, _tn):
     """
-    Let's create a new user
 
-    :param mailer: instance of pyramid mailer
-    :param firstname: String
-    :param lastname: String
-    :param nickname: String
-    :param gender: String
-    :param email: String
-    :param password: String
-    :param _tn: Translaator
-    :return: Boolean, msg
+    :param mailer:
+    :param firstname:
+    :param user_data: dict with firstname, lastname, nickname, email, gender
+    :param password:
+    :param _tn:
+    :return:
     """
     # getting the authors group
+    firstname = user_data.get('firstname')
+    lastname = user_data.get('lastname')
+    nickname = user_data.get('nickname')
+    email = user_data.get('email')
+    gender = user_data.get('gender')
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
 
     # does the group exists?
@@ -732,20 +770,22 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
     }
 
 
-def set_new_oauth_user(firstname, lastname, nickname, email, gender, uid, provider, _tn):
+def set_new_oauth_user(user_data, uid, provider, _tn):
     """
-    Let's create a new user
+    Create a new user
 
-    :param firstname: String
-    :param lastname: String
-    :param nickname: String
-    :param email: String
-    :param gender: String
-    :param uid: String
-    :param provider: String
-    :param _tn: Translator
-    :return: Boolean, msg
+    :param firstname:
+    :param user_data: dict with firstname, lastname, nickname, email, gender
+    :param uid:
+    :param provider:
+    :param _tn:
+    :return:
     """
+    firstname = user_data.get('firstname')
+    lastname = user_data.get('lastname')
+    nickname = user_data.get('nickname')
+    email = user_data.get('email')
+    gender = user_data.get('gender')
     # getting the authors group
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
 
@@ -836,44 +876,44 @@ def delete(db_user: User):
     anonym_uid = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first().uid
 
     # authors
-    db_Authors = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).all()
-    db_Authors += DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
-    db_Authors += DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).all()
-    db_Authors += DBDiscussionSession.query(Premise).filter_by(author_uid=db_user.uid).all()
-    db_Authors += DBDiscussionSession.query(Argument).filter_by(author_uid=db_user.uid).all()
-    db_Authors += DBDiscussionSession.query(ReviewCanceled).filter_by(author_uid=db_user.uid).all()
-    db_Authors += DBDiscussionSession.query(RevokedContent).filter_by(author_uid=db_user.uid).all()
-    for element in db_Authors:
+    db_authors = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).all()
+    db_authors += DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
+    db_authors += DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).all()
+    db_authors += DBDiscussionSession.query(Premise).filter_by(author_uid=db_user.uid).all()
+    db_authors += DBDiscussionSession.query(Argument).filter_by(author_uid=db_user.uid).all()
+    db_authors += DBDiscussionSession.query(ReviewCanceled).filter_by(author_uid=db_user.uid).all()
+    db_authors += DBDiscussionSession.query(RevokedContent).filter_by(author_uid=db_user.uid).all()
+    for element in db_authors:
         element.author_uid = anonym_uid
 
     # reviews without ReviewSplitValues and ReviewMergeValues
-    db_ReviewEdit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=db_user.uid).all()
-    db_ReviewEditValue = DBDiscussionSession.query(ReviewEditValue).filter(
-        ReviewEditValue.review_edit_uid.in_([r.uid for r in db_ReviewEdit])).all()
-    db_Reviews = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=db_user.uid).all()
-    db_Reviews += DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=db_user.uid).all()
-    db_Reviews += DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=db_user.uid).all()
-    db_Reviews += DBDiscussionSession.query(ReviewMerge).filter_by(detector_uid=db_user.uid).all()
-    db_Reviews += DBDiscussionSession.query(ReviewSplit).filter_by(detector_uid=db_user.uid).all()
-    for element in db_Reviews + db_ReviewEdit + db_ReviewEditValue:
+    db_review_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=db_user.uid).all()
+    db_review_edit_value = DBDiscussionSession.query(ReviewEditValue).filter(
+        ReviewEditValue.review_edit_uid.in_([r.uid for r in db_review_edit])).all()
+    db_reviews = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=db_user.uid).all()
+    db_reviews += DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=db_user.uid).all()
+    db_reviews += DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=db_user.uid).all()
+    db_reviews += DBDiscussionSession.query(ReviewMerge).filter_by(detector_uid=db_user.uid).all()
+    db_reviews += DBDiscussionSession.query(ReviewSplit).filter_by(detector_uid=db_user.uid).all()
+    for element in db_reviews + db_review_edit + db_review_edit_value:
         element.detector_uid = anonym_uid
 
     # last reviewed elements
-    db_LastReviewers = DBDiscussionSession.query(LastReviewerDelete).filter_by(reviewer_uid=db_user.uid).all()
-    db_LastReviewers += DBDiscussionSession.query(LastReviewerDuplicate).filter_by(reviewer_uid=db_user.uid).all()
-    db_LastReviewers += DBDiscussionSession.query(LastReviewerEdit).filter_by(reviewer_uid=db_user.uid).all()
-    db_LastReviewers += DBDiscussionSession.query(LastReviewerOptimization).filter_by(reviewer_uid=db_user.uid).all()
-    db_LastReviewers += DBDiscussionSession.query(LastReviewerSplit).filter_by(reviewer_uid=db_user.uid).all()
-    db_LastReviewers += DBDiscussionSession.query(LastReviewerMerge).filter_by(reviewer_uid=db_user.uid).all()
-    for element in db_LastReviewers:
+    db_last_reviewers = DBDiscussionSession.query(LastReviewerDelete).filter_by(reviewer_uid=db_user.uid).all()
+    db_last_reviewers += DBDiscussionSession.query(LastReviewerDuplicate).filter_by(reviewer_uid=db_user.uid).all()
+    db_last_reviewers += DBDiscussionSession.query(LastReviewerEdit).filter_by(reviewer_uid=db_user.uid).all()
+    db_last_reviewers += DBDiscussionSession.query(LastReviewerOptimization).filter_by(reviewer_uid=db_user.uid).all()
+    db_last_reviewers += DBDiscussionSession.query(LastReviewerSplit).filter_by(reviewer_uid=db_user.uid).all()
+    db_last_reviewers += DBDiscussionSession.query(LastReviewerMerge).filter_by(reviewer_uid=db_user.uid).all()
+    for element in db_last_reviewers:
         element.reviewer_uid = anonym_uid
 
     # revoked content
-    db_RevCntntHisyOld = DBDiscussionSession.query(RevokedContentHistory).filter_by(old_author_uid=db_user.uid).all()
-    db_RevCntntHisyNew = DBDiscussionSession.query(RevokedContentHistory).filter_by(new_author_uid=db_user.uid).all()
-    for element in db_RevCntntHisyOld:
+    db_rev_cntnt_hisy_old = DBDiscussionSession.query(RevokedContentHistory).filter_by(old_author_uid=db_user.uid).all()
+    db_rev_cntnt_hisy_new = DBDiscussionSession.query(RevokedContentHistory).filter_by(new_author_uid=db_user.uid).all()
+    for element in db_rev_cntnt_hisy_old:
         element.old_author_uid = anonym_uid
-    for element in db_RevCntntHisyNew:
+    for element in db_rev_cntnt_hisy_new:
         element.new_author_uid = anonym_uid
 
     DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()

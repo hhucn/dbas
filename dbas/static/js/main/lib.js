@@ -12,35 +12,33 @@ function levensthein(s1, s2) {
     var rowTwo = [];
     if (s1 === s2) {
         return 0;
-    } else {
-        var s1Len = s1.length, s2Len = s2.length;
-        if (s1Len && s2Len) {
-            var i1 = 0, i2 = 0, a, b, c, c2, row = rowTwo;
-            while (i1 < s1Len) {
-                ++i1;
-                row[i1] = i1;
+    }
+    var s1Len = s1.length, s2Len = s2.length;
+    if (!s1Len || !s2Len) {
+        return s1Len + s2Len;
+    }
+    var i1 = 0, i2 = 0, a, b, c, c2, row = rowTwo;
+    while (i1 < s1Len) {
+        ++i1;
+        row[i1] = i1;
+    }
+    while (i2 < s2Len) {
+        c2 = s2.charCodeAt(i2);
+        a = i2;
+        ++i2;
+        b = i2;
+        for (i1 = 0; i1 < s1Len; ++i1) {
+            c = a + (s1.charCodeAt(i1) === c2 ? 0 : 1);
+            a = row[i1];
+            if (b < a) {
+                b = b < c ? b + 1 : c;
+            } else {
+                b = a < c ? a + 1 : c;
             }
-            while (i2 < s2Len) {
-                c2 = s2.charCodeAt(i2);
-                a = i2;
-                ++i2;
-                b = i2;
-                for (i1 = 0; i1 < s1Len; ++i1) {
-                    c = a + (s1.charCodeAt(i1) === c2 ? 0 : 1);
-                    a = row[i1];
-                    if (b < a) {
-                        b = b < c ? b + 1 : c;
-                    } else {
-                        b = a < c ? a + 1 : c;
-                    }
-                    row[i1] = b;
-                }
-            }
-            return b;
-        } else {
-            return s1Len + s2Len;
+            row[i1] = b;
         }
     }
+    return b;
 }
 
 function pxToEm(px) {
@@ -82,8 +80,8 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
         dialog.find('.modal-dialog').addClass('modal-sm');
     }
     dialog.modal('show');
-    $('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
-    $('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
+    $('#myModalLabelConfirmDialog').html(titleText);
+    dialog.find('div.modal-body').html(bodyText);
     $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
         $('#' + popupConfirmDialogId).modal('hide');
         if (functionForAccept) {
@@ -116,9 +114,10 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
 function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) {
     'use strict';
     // display dialog
-    $('#' + popupConfirmDialogId).modal('show');
-    $('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
-    $('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
+    var dialog = $('#' + popupConfirmDialogId);
+    dialog.modal('show');
+    $('#myModalLabelConfirmDialog').html(titleText);
+    dialog.find('div.modal-body').html(bodyText);
     $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
         $('#' + popupConfirmDialogId).modal('hide').find('.modal-dialog').removeClass('modal-sm');
     }).removeClass('btn-success');

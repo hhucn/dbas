@@ -11,14 +11,34 @@ from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid_mailer.mailer import DummyMailer
 
-from dbas.database import DBDiscussionSession
+from dbas.database import DBDiscussionSession, get_dbas_db_configuration
 from dbas.database.discussion_model import Issue, Statement, Argument, User
+from dbas.helper.test import add_settings_to_appconfig
 
 
-class TestCaseWithConfig(unittest.TestCase):
+class TestCaseWithDatabase(unittest.TestCase):
+    def setUpDb(self):
+        self.config = testing.setUp()
+        settings = add_settings_to_appconfig()
+        DBDiscussionSession.remove()
+        DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
+
+    def tearDownTest(self):
+        testing.tearDown()
+
+
+class TestCaseWithChameleon(TestCaseWithDatabase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
+
+    def tearDown(self):
+        testing.tearDown()
+
+
+class TestCaseWithConfig(TestCaseWithChameleon):
+    def setUp(self):
+        self.config = testing.setUp()
 
         self.issue_disabled: Issue = DBDiscussionSession.query(Issue).get(6)
         self.issue_read_only: Issue = DBDiscussionSession.query(Issue).get(7)

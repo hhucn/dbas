@@ -6,13 +6,8 @@
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
     SeenStatement, StatementToIssue
-from dbas.lib import get_profile_picture
+from dbas.lib import get_profile_picture, get_enabled_statement_as_query, get_enabled_arguments_as_query
 from dbas.logger import logger
-from dbas.query_wrapper import get_enabled_arguments_as_query, get_enabled_statement_as_query
-
-green = '#64DD17'
-red = '#F44336'
-grey = '#424242'
 
 
 def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
@@ -36,7 +31,8 @@ def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     if all_statements is None:
-        issues_statements_uids = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
+        issues_statements_uids = [el.statement_uid for el in
+                                  DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
         all_statements = get_enabled_statement_as_query().filter(Statement.uid.in_(issues_statements_uids)).all()
 
     if all_arguments is None:
@@ -78,7 +74,8 @@ def get_opinion_data(db_issue: Issue) -> dict:
     :param db_issue:
     :return:
     """
-    statements = [el.statement_uid for el in DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
+    statements = [el.statement_uid for el in
+                  DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
     db_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(statements)).all()
     db_all_seen = DBDiscussionSession.query(SeenStatement)
     db_all_votes = DBDiscussionSession.query(ClickedStatement)
@@ -210,7 +207,7 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
             edge_dict = __get_edge_dict(uid='edge_' + str(statement.uid) + '_issue',
                                         source='statement_' + str(statement.uid),
                                         target='issue',
-                                        color=grey,
+                                        color='grey',
                                         edge_type=edge_type)
             edges.append(edge_dict)
 
@@ -257,7 +254,7 @@ def __add_edge_to_dict(edges, argument, counter, premise, target, edge_type):
     edges.append(__get_edge_dict(uid='edge_' + str(argument.uid) + '_' + str(counter),
                                  source='statement_' + str(premise.statement_uid),
                                  target=target,
-                                 color=green if argument.is_supportive else red,
+                                 color='green' if argument.is_supportive else 'red',
                                  edge_type=edge_type))
 
 
@@ -268,7 +265,7 @@ def __add_edge_and_node_to_dict(edges, nodes, all_ids, argument, counter, db_pre
         edge_dict = __get_edge_dict(uid='edge_' + str(argument.uid) + '_' + str(counter),
                                     source='statement_' + str(premise.statement_uid),
                                     target='argument_' + str(argument.uid),
-                                    color=green if argument.is_supportive else red,
+                                    color='green' if argument.is_supportive else 'red',
                                     edge_type='')
         edges.append(edge_dict)
         edge_source.append('statement_' + str(premise.statement_uid))
@@ -278,7 +275,7 @@ def __add_edge_and_node_to_dict(edges, nodes, all_ids, argument, counter, db_pre
     edge_dict = __get_edge_dict(uid='edge_' + str(argument.uid) + '_0',
                                 source='argument_' + str(argument.uid),
                                 target=target,
-                                color=green if argument.is_supportive else red,
+                                color='green' if argument.is_supportive else 'red',
                                 edge_type=edge_type)
     edges.append(edge_dict)
 
@@ -367,15 +364,17 @@ def __get_node_dict(uid, label, node_type='', author=None, editor=None, edge_sou
     if editor is None:
         editor = dict()
 
-    return {'id': uid,
-            'label': label,
-            'type': node_type,
-            'author': author,
-            'editor': editor,
-            # for virtual nodes
-            'edge_source': edge_source,
-            'edge_target': edge_target,
-            'timestamp': timestamp}
+    return {
+        'id': uid,
+        'label': label,
+        'type': node_type,
+        'author': author,
+        'editor': editor,
+        # for virtual nodes
+        'edge_source': edge_source,
+        'edge_target': edge_target,
+        'timestamp': timestamp
+    }
 
 
 def __get_edge_dict(uid, source, target, color, edge_type):
@@ -389,8 +388,10 @@ def __get_edge_dict(uid, source, target, color, edge_type):
     :param edge_type:
     :return:
     """
-    return {'id': uid,
-            'source': source,
-            'target': target,
-            'color': color,
-            'edge_type': edge_type}
+    return {
+        'id': uid,
+        'source': source,
+        'target': target,
+        'color': color,
+        'edge_type': edge_type
+    }

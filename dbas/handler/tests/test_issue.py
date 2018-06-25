@@ -102,6 +102,8 @@ class IssueHandlerTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).get(2)
         response = ih.get_issues_overview_on_start(db_user)
         self.assertIn('issues', response)
+        self.assertIn('readable', response['issues'])
+        self.assertIn('writable', response['issues'])
         self.assertIn('data', response)
 
     def test_set_discussions_properties(self):

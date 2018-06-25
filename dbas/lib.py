@@ -13,7 +13,7 @@ from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
-from typing import List
+from typing import List, Union
 from urllib import parse
 from uuid import uuid4
 
@@ -21,7 +21,7 @@ from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, Settings, \
-    ClickedArgument, ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup
+    ClickedArgument, ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup, StatementToIssue
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small
@@ -180,7 +180,7 @@ def get_discussion_language(matchdict, params, session, current_issue_uid=None):
     return db_issue.lang if db_issue else 'en'
 
 
-def python_datetime_pretty_print(ts, lang):
+def pretty_print_timestamp(ts, lang):
     """
     Pretty print of a locale
 
@@ -540,22 +540,42 @@ def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_h
 
 
 def __get_tags_for_building_single_argument(with_html_tag, attack_type, colored_position, premises, conclusion):
+    if attack_type in ['dont_know', 'jump']:
+        return __get_tags_for_building_single_unknown_argument(with_html_tag, premises, conclusion)
+    else:
+        return __get_tags_for_building_single_user_argument(with_html_tag, premises, conclusion, colored_position,
+                                                            attack_type)
+
+
+def __get_tags_for_building_single_unknown_argument(with_html_tag, premises, conclusion):
+    sb = start_argument if with_html_tag else ''
+    sb_tmp = start_attack if with_html_tag else ''
     sb_none = start_tag if with_html_tag else ''
     se = end_tag if with_html_tag else ''
-    if attack_type not in ['dont_know', 'jump']:
-        sb = start_tag if with_html_tag else ''
-        if colored_position:
-            sb = start_position if with_html_tag else ''
+    premises = sb + premises + se
+    conclusion = sb_tmp + conclusion + se
 
-        if attack_type == Relations.UNDERMINE:
-            premises = sb + premises + se
-        else:
-            conclusion = sb + conclusion + se
-    else:
-        sb = start_argument if with_html_tag else ''
-        sb_tmp = start_attack if with_html_tag else ''
+    return {
+        'premise': premises,
+        'conclusion': conclusion,
+        'tag_begin': sb,
+        'tag_none': sb_none,
+        'tag_end': se
+    }
+
+
+def __get_tags_for_building_single_user_argument(with_html_tag, premises, conclusion, colored_position, attack_type):
+    sb_none = start_tag if with_html_tag else ''
+    se = end_tag if with_html_tag else ''
+    sb = start_tag if with_html_tag else ''
+    if colored_position:
+        sb = start_position if with_html_tag else ''
+
+    if attack_type == Relations.UNDERMINE:
         premises = sb + premises + se
-        conclusion = sb_tmp + conclusion + se
+    else:
+        conclusion = sb + conclusion + se
+
     return {
         'premise': premises,
         'conclusion': conclusion,
@@ -695,7 +715,7 @@ def get_text_for_premisegroup_uid(uid):
     return ' {} '.format(_t.get(_.aand)).join(texts)
 
 
-def get_text_for_statement_uid(uid: int, colored_position=False):
+def get_text_for_statement_uid(uid: int, colored_position=False) -> Union[None, str]:
     """
     Returns text of statement with given uid
 
@@ -711,22 +731,20 @@ def get_text_for_statement_uid(uid: int, colored_position=False):
     if not db_statement:
         return None
 
-    db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).get(
-        db_statement.textversion_uid)
-    content = db_textversion.content
+    content = db_statement.get_text()
 
     while content.endswith(('.', '?', '!')):
         content = content[:-1]
 
     sb, se = '', ''
     if colored_position:
-        sb = '<{} data-argumentation-type="position">'.format(tag_type)
-        se = '</{}>'.format(tag_type)
+        sb = f'<{tag_type} data-argumentation-type="position">'
+        se = f'</{tag_type}>'
 
     return sb + content + se
 
 
-def get_text_for_premise(uid: int, colored_position: bool = False):
+def get_text_for_premise(uid: int, colored_position: bool = False) -> Union[None, str]:
     """
     Returns text of premise with given uid
 
@@ -869,12 +887,10 @@ def pretty_print_options(message):
 
 
 def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False, is_author: bool = False,
-                             uid: str = '',
-                             bubble_url: str = '', content: str = '', omit_bubble_url: bool = False,
-                             omit_vote_info: bool = False,
-                             argument_uid: int = None, statement_uid: int = None, is_supportive: bool = False,
-                             nickname: str = 'anonymous', lang: str = 'en', is_users_opinion: bool = False,
-                             other_author: User = None):
+                             uid: str = '', bubble_url: str = '', content: str = '', omit_bubble_url: bool = False,
+                             omit_vote_info: bool = False, argument_uid: int = None, statement_uid: int = None,
+                             is_supportive: bool = False, db_user: User = None, lang: str = 'en',
+                             is_users_opinion: bool = False, other_author: User = None):
     """
     Creates an dictionary which includes every information needed for a bubble.
 
@@ -889,14 +905,21 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
     :param argument_uid: Argument.uid
     :param statement_uid: Statement.uid
     :param is_supportive: Boolean
-    :param nickname: String
+    :param db_user: current
     :param omit_bubble_url: Boolean
     :param lang: is_users_opinion
     :param is_users_opinion: Boolean
+    :param other_author:
     :return: dict()
     """
     gravatar_link = get_global_url() + '/static/images/icon.png'
     profile = None
+
+    is_enemy_user = {
+        'admin': False,
+        'author': False,
+        'special': False
+    }
 
     if uid is not 'now':
         content = pretty_print_options(content)
@@ -904,10 +927,12 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
     if bubble_type is BubbleTypes.SYSTEM and other_author is not None:
         gravatar_link = get_profile_picture(other_author, 25)
         profile = '/user/{}'.format(other_author.uid),
+        is_enemy_user['admin'] = other_author.is_admin()
+        is_enemy_user['author'] = other_author.is_author()
+        is_enemy_user['special'] = other_author.is_special()
 
     # check for users opinion
-    if bubble_type is BubbleTypes.USER and nickname != 'anonymous':
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if bubble_type is BubbleTypes.USER and db_user and db_user.nickname != nick_of_anonymous_user:
         db_marked = None
         gravatar_link = get_profile_picture(db_user, 25)
         if argument_uid is not None and db_user is not None:
@@ -929,6 +954,7 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
         'is_info': bubble_type is BubbleTypes.INFO,
         'is_markable': is_markable,
         'is_author': is_author,
+        'is_enemy_user': is_enemy_user,
         'id': uid if len(str(uid)) > 0 else uuid4().hex,
         'bubble_url': bubble_url,
         'message': content,
@@ -946,7 +972,7 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
         }
     }
 
-    votecount_keys = __get_text_for_click_and_mark_count(nickname, bubble_type is BubbleTypes.USER, argument_uid,
+    votecount_keys = __get_text_for_click_and_mark_count(db_user, bubble_type is BubbleTypes.USER, argument_uid,
                                                          statement_uid, speech, lang)
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
@@ -954,7 +980,8 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
     return speech
 
 
-def __get_text_for_click_and_mark_count(nickname, is_user, argument_uid, statement_uid, speech, lang):
+def __get_text_for_click_and_mark_count(db_user: User, is_user: bool, argument_uid: int, statement_uid: int,
+                                        speech: dict, lang: str):
     """
     Build text for a bubble, how many other participants have the same interest?
 
@@ -966,14 +993,8 @@ def __get_text_for_click_and_mark_count(nickname, is_user, argument_uid, stateme
     :param lang: ui_locales
     :return: [String]
     """
-
-    if not nickname:
-        nickname = 'anonymous'
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
-
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     db_clicks, db_marks = __get_clicks_and_marks(argument_uid, statement_uid, db_user)
 
     _t = Translator(lang)
@@ -1229,3 +1250,68 @@ def unhtmlify(html):
     :return:
     """
     return unescape(re.sub(r'<.*?>', '', html))
+
+
+def get_enabled_statement_as_query():
+    """
+    Returns query with all statements, which are not disabled
+
+    :return: Query
+    """
+    return DBDiscussionSession.query(Statement).filter_by(is_disabled=False)
+
+
+def get_enabled_arguments_as_query():
+    """
+    Returns query with all arguments, which are not disabled
+
+    :return: Query
+    """
+    return DBDiscussionSession.query(Argument).filter_by(is_disabled=False)
+
+
+def get_enabled_premises_as_query():
+    """
+    Returns query with all premises, which are not disabled
+
+    :return: Query
+    """
+    return DBDiscussionSession.query(Premise).filter_by(is_disabled=False)
+
+
+def get_enabled_issues_as_query():
+    """
+    Returns query with all issues, which are not disabled
+
+    :return: Query
+    """
+    return DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
+
+
+def get_visible_issues_for_user_as_query(user_uid):
+    """
+    Returns query with all issues, which are visible for the user
+
+    :param user_uid:
+    :return: Query
+    """
+    db_valid_issues = DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                              Issue.is_private == False).all()
+    set_of_visited_issues = {tmp.uid for tmp in db_valid_issues}
+
+    db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user_uid).all()
+
+    statement_uids = [el.statement_uid for el in db_clicked_statements]
+    db_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(statement_uids)).all()
+
+    statement_uids = [st.uid for st in db_statements]
+    db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter(
+        StatementToIssue.statement_uid.in_(statement_uids)).all()
+
+    issue_ids = [st.issue_uid for st in db_statement2issues]
+    db_valid_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(issue_ids)).all()
+
+    for issue in db_valid_issues:
+        set_of_visited_issues.add(issue.uid)
+
+    return DBDiscussionSession.query(Issue).filter(Issue.uid.in_(list(set_of_visited_issues)))

@@ -27,7 +27,7 @@ function ReviewHistory() {
         var blockquote = '<blockquote><p>' + revoked_argument + '</p><small>' + _t(revokedArgument) + '</small>';
         var icon = '<i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i>';
         $('#' + popupConfirmDialogId).modal('show');
-        $('#' + popupConfirmDialogId + ' h4.modal-title').html(icon + ' ' + _t(caution));
+        $('#' + popupConfirmDialogId + ' h4 span').html(icon + ' ' + _t(caution));
         $('#' + popupConfirmDialogId + ' div.modal-body').html(span + blockquote);
         $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
             $('#' + popupConfirmDialogId).modal('hide');

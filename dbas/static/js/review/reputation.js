@@ -3,7 +3,12 @@
  */
 
 // https://www.google.com/design/spec/style/color.html#color-color-palette
-var fillColorSet = ['rgba(200,230,201,0.4)', 'rgba(255,205,210,0.4)', 'rgba(187,222,251,0.4)', 'rgba(187,222,251,0.4)']; //100
+var fillColorSet = [
+    'rgba(200,230,201,0.4)',
+    'rgba(255,205,210,0.4)',
+    'rgba(187,222,251,0.4)',
+    'rgba(187,222,251,0.4)'
+]; //100
 
 $(document).ready(function () {
     'use strict';
@@ -114,11 +119,11 @@ function createChart(label, labels, displaydata, space, id, count) {
         'style': 'display: block; margin: 0 auto;'
     });
     space.append(canvas);
-    
+
     var colors = new Colors();
     var color_100_rgba = colors.getAllAsRGB(100, 0.4);
     var color_500_hex = colors.getAllAsHEX(500);
-    
+
     var ctx = document.getElementById(id).getContext('2d');
     var chart_data = {
         type: 'line',

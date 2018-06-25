@@ -87,46 +87,45 @@ Code
 .. automodule:: dbas.views.user.tests
     :members:
 
+Frontend with Cypress
+=====================
+**Up to date**
 
-Frontend with Splinter
-======================
-**DEPRECATED**
+First of all you have to add the *cypress.env.json* into the frontendtest folder.
 
-Frontend tests are done by *Splinter* and are regardless of DBAS/Pyramid. Splinter is an open source tool for testing web
-applications using Python. It lets you automate browser actions, such as visiting URLs and interacting with their items.
-If you want to use splinter, please install the latest version of `chromedriver <https://sites.google.com/a/chromium.org/chromedriver/downloads>`_
-For running these tests, just execute::
+The folder structure will look like this::
 
-    $ cd tests/
-    $ python splinterTests.py
-
-If you want to add a tests, please follow these steps:
-
-    1. Open tests/splinterTests.py
-
-    2. Add your test into the test list.
+    frontendtest/
+        -> cypress/
+            -> fixtures
+            -> integration
+            -> plugins
+            -> support
+        -> cypress.json
+        -> cypress.env.json
 
 
-    3. Define your test function in Webtests by using this skeleton::
+Fill *cypress.env.json* with the environment variables used in development.env::
 
-        def __test_YOUR_TEST_METHOD(self, browser):
-            """
-            Please enter a description here
-            :param browser: current browser
-            :return: 1 if success else 0
-            """
-            print('Starting tests for XYZ:')
-            b = Browser(browser)
-            success = True
+    {
+        "WEB_PROTOCOL": <the protocol which is used by D-BAS>,
+        "WEB_HOST": <the host of the running D-BAS container>,
+        "WEB_PORT": <the port on which you can enter D-BAS>
+    }
 
-            # your test routine
+If you have added all environment variables to the *cypress.env.json* you have two options to run the tests stored in *integration/*::
 
-            b.quit()
-            return 1 if success else 0
+    // navigate into frontendtest
 
-        Please:
-            * replace the name with the chosen name out of 2.
-            * enter a short description
-            * use the *success*-parameter
+    // this command will open the cypress IDE where you can see and interact with the tests
+    $ cypress open
 
-    4. Have fun!
+    // this will run the tests on the console
+    $ cypress run
+
+    // to run a specific test use the --spec flag
+    $ cypress run --spec /path/to/the/test
+
+    // to run the tests in a specific browser use the --browser flag and make sure that this browser is installed
+    // cypress will use the Electron-Browser for default
+    $ cypress run --browser chrome

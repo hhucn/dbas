@@ -2,23 +2,10 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
          i18n:domain="dbas" metal:define-macro="layout" lang="${extras.ui_locales}">
 <head>
-  <meta name="google-site-verification" content="u3fQwV9ImqboTAEyPUoNlS7LNF0gAGaIb67qg-aD9JY"/>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="dialog based discussion online participation tool argumentation argument">
-  <meta name="author" content="Tobias Krauthoff">
-  <link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
-  <title>${title}</title>
-  <!-- Bootstrap core CSS/JS -->
+  <div metal:use-macro="load: snippet/header.pt"></div>
   <link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.7-paper.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/node_modules/cookieconsent/build/cookieconsent.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">
-  <script src="${request.static_url('dbas:static/node_modules/jquery/dist/jquery.min.js')}"></script>
 </head>
 
 <body>
@@ -57,7 +44,7 @@
     <span id="request_info_container_close" aria-hidden="true">×</span></button>
 </div>
 
-<div metal:use-macro="load: snippet/header.pt"></div>
+<div metal:use-macro="load: snippet/navbar.pt"></div>
 
 <div id="wrapper-content">
   <div metal:define-slot="content_page"></div>
@@ -67,75 +54,15 @@
 
 <a href="#top" class="back-to-top">
   <img class="center" id="back-to-top-img" alt="back-to-top-img"
-       src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
+       src="${request.static_url('dbas:static/images/icons/chevron_up.png')}"></a>
 
 <div metal:use-macro="load: snippet/footer.pt"></div>
 
 <div class="ajaxloader">
-  <img class="center rotating" src="${request.static_url('dbas:static/images/icon.png')}" alt="loading">
+  <img class="center rotating" src="${request.static_url('dbas:static/images/icons/ajax-icon.png')}" alt="loading">
 </div>
 
-<div class="eupopup eupopup-bottomright"></div>
-
-<script src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
-<script src="${request.static_url('dbas:static/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js')}"></script>
-<script src="${request.static_url('dbas:static/node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js')}"></script>
-<script src="${request.static_url('dbas:static/node_modules/bootstrap-tour/build/js/bootstrap-tour-standalone.min.js')}"></script>
-<script src="${request.static_url('dbas:static/node_modules/datatables/media/js/jquery.dataTables.min.js')}"></script>
-<script src="${request.static_url('dbas:static/node_modules/datatables-bootstrap/js/dataTables.bootstrap.js')}"></script>
-
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="${request.static_url('dbas:static/node_modules/jquery-slimscroll/jquery.slimscroll.min.js')}"></script>
-<script src="${request.static_url('dbas:static/node_modules/chart.js/dist/Chart.min.js')}"></script>
-<script src="${request.static_url('dbas:static/node_modules/d3/d3.min.js')}"></script>
-<script src="${request.static_url('dbas:static/node_modules/socket.io-client/dist/socket.io.js')}"></script>
-<script src="${request.static_url('dbas:static/node_modules/js-cookie/src/js.cookie.js')}"></script>
-<script src="${request.static_url('dbas:static/node_modules/cookieconsent/build/cookieconsent.min.js')}"></script>
-
-<!-- PRODUCTION -->
-<script src="${request.static_url('dbas:static/js/dbas.min.js')}" tal:condition="not:extras.development_mode"></script>
-<script src="${request.static_url('websocket:static/js/websocket.min.js')}" tal:condition="not:extras.development_mode"></script>
-
-<!-- DEVELOPMENT -->
-<script src="${request.static_url('dbas:static/js/main/ids.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/guided-tour.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/colors.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/dbas.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/sharing.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/strings.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/settings.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/lib.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/my-discussion.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/dolan.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/countdown.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/login.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/news.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/passwordcheck.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/user.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/notification.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/ajax/settings.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/discussion/guihandler.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/discussion/popups.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/discussion/helper.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/discussion/main.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/discussion/start.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/ajax/discussion.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/ajax/graph.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/ajax/main.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/ajax/login.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/ajax/notification.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/ajax/reference.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/ajax/review.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/review/reputation.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/review/queue.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/review/review.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/review/callbacks.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/review/history.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/review/index.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
+<div metal:use-macro="load: snippet/js-scripts.pt"></div>
 
 <!-- Matomo -->
 <script type="text/javascript" tal:condition="extras.usage_of_matomo">

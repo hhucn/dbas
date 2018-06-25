@@ -107,11 +107,27 @@ class DictionaryHelper(object):
         """
         logger('DictionaryHelper', 'def')
 
-        is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP') if db_user else None
-        is_logged_in = True if db_user else False
-        if db_user and db_user.nickname == nick_of_anonymous_user:
-            db_user = None
-            is_logged_in = False
+        is_user_from_ldap = None
+        is_logged_in = False
+        nickname = None
+        public_nickname = None
+        is_user_male = False
+        is_user_female = False
+        is_admin = False
+        is_special = False
+
+        if db_user:
+            is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP')
+            is_logged_in = True
+            nickname = db_user.nickname
+            public_nickname = db_user.public_nickname
+            is_user_male = db_user.gender == 'm'
+            is_user_female = db_user.gender == 'f'
+            is_admin = db_user.is_admin()
+            is_special = db_user.is_special()
+            if db_user.nickname == nick_of_anonymous_user:
+                db_user = None
+                is_logged_in = False
 
         return_dict = dict()
         return_dict['url'] = get_global_url()
@@ -119,15 +135,15 @@ class DictionaryHelper(object):
         return_dict['restart_url'] = current_slug
         return_dict['is_in_discussion'] = 'discuss' in path
         return_dict['logged_in'] = is_logged_in
-        return_dict['nickname'] = db_user.nickname if db_user else None
-        return_dict['public_nickname'] = db_user.public_nickname if db_user else None
+        return_dict['nickname'] = nickname
+        return_dict['public_nickname'] = public_nickname
         return_dict['add_premise_container_style'] = add_premise_container_style
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar'] = get_profile_picture(db_user, 25)
         return_dict['ongoing_discussion'] = ongoing_discussion
         return_dict['slug'] = current_slug
-        return_dict['is_user_male'] = db_user.gender == 'm' if db_user else False
-        return_dict['is_user_female'] = db_user.gender == 'f' if db_user else False
+        return_dict['is_user_male'] = is_user_male
+        return_dict['is_user_female'] = is_user_female
         return_dict['is_user_neutral'] = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit'] = 'true' if broke_limit else 'false'
         return_dict['use_with_ldap'] = is_user_from_ldap
@@ -154,8 +170,10 @@ class DictionaryHelper(object):
         is_author_bool = is_author or points > limit_to_open_issues
 
         return_dict['is_reportable'] = is_reportable
-        return_dict['is_admin'] = db_user.is_admin() if db_user else False
+        return_dict['is_admin'] = is_admin
+        return_dict['is_special'] = is_special
         return_dict['is_author'] = is_author_bool
+        return_dict['is_user'] = not (is_admin or is_author_bool or is_special)
         return_dict['show_bar_icon'] = show_bar_icon
         return_dict['show_graph_icon'] = show_graph_icon
         return_dict['close_premise_container'] = True
@@ -306,9 +324,11 @@ class DictionaryHelper(object):
         else:
             user_text = _tn.get(_.firstPositionText)
         user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
+
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.STATUS, content=user_text, lang=self.system_lang,
-                                     nickname=nickname))
+            create_speechbubble_dict(BubbleTypes.STATUS, content=user_text, db_user=db_user,
+                                     lang=self.system_lang))
 
         is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
         if nickname and not is_read_only:
@@ -332,6 +352,7 @@ class DictionaryHelper(object):
         :return: None
         """
         discussion_dict['mode'] = 'justify_argumentation'
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
         if nickname and not is_read_only:
@@ -340,8 +361,8 @@ class DictionaryHelper(object):
         extras_dict['show_display_style'] = False
         if is_read_only:
             mid_text = _tn.get(_.discussionEndAndReadOnly)
-            sdict = create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, lang=self.system_lang,
-                                             nickname=nickname)
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, db_user=db_user,
+                                             lang=self.system_lang)
             discussion_dict['bubbles'].append(sdict)
 
         elif nickname:
@@ -351,13 +372,13 @@ class DictionaryHelper(object):
                 mid_text = _tn.get(_.firstOneReasonM)
             else:
                 mid_text = _tn.get(_.firstOneReason)
-            sdict = create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, lang=self.system_lang,
-                                             nickname=nickname)
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, db_user=db_user,
+                                             lang=self.system_lang)
             discussion_dict['bubbles'].append(sdict)
         else:
             mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
-            sdict = create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, lang=self.system_lang,
-                                             nickname=nickname)
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, db_user=db_user,
+                                             lang=self.system_lang)
             discussion_dict['bubbles'].append(sdict)
 
     def __add_discussion_end_text_at_dont_know(self, discussion_dict, current_premise, gender, _tn, nickname):
@@ -388,12 +409,12 @@ class DictionaryHelper(object):
             sys_text = _tn.get(_.untilNowThereAreNoMoreInformation)
             mid_text = _tn.get(_.discussionEnd) + ' ' + endtext
 
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, lang=self.system_lang,
-                                     nickname=nickname))
+            create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, db_user=db_user,
+                                     lang=self.system_lang))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, lang=self.system_lang,
-                                     nickname=nickname))
+            create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, db_user=db_user, lang=self.system_lang))
 
     def __add_discussion_end_text_at_justify_statement(self, discussion_dict, extras_dict, nickname, current_premise,
                                                        supportive, gender, _tn):
@@ -430,8 +451,9 @@ class DictionaryHelper(object):
             endtext = _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
             mid_text += _tn.get(_.discussionEnd) + ' ' + endtext
 
-        discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, content=mid_text,
-                                                                   lang=self.system_lang, nickname=nickname))
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        discussion_dict['bubbles'].append(
+            create_speechbubble_dict(BubbleTypes.INFO, content=mid_text, db_user=db_user, lang=self.system_lang))
         extras_dict['close_premise_container'] = False
         extras_dict['show_display_style'] = False
         extras_dict['show_bar_icon'] = False
@@ -509,7 +531,6 @@ class DictionaryHelper(object):
             'add_issue_info': _tn_sys.get(_.addIssueInfo).format(
                 limit_to_open_issues) if logged_in else _tn_sys.get(_.notLoggedIn),
             'guided_view': _tn_sys.get(_.displayControlDialogGuidedTitle),
-            'island_view': _tn_sys.get(_.displayControlDialogIslandTitle),
             'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
             'edit_statement': _tn_dis.get(_.editTitle),
             'edit_statement_already': _tn_dis.get(_.editAlreadyTitle),
@@ -536,7 +557,10 @@ class DictionaryHelper(object):
             'select_multiple_statements': _tn_dis.get(_.selectMultipleStatementsWhichFlag),
             'because': _tn_dis.get(_.because).lower(),
             'mark_as_opinion': _tn_dis.get(_.mark_as_opinion),
-            'unmark_as_opinion': _tn_dis.get(_.unmark_as_opinion)
+            'unmark_as_opinion': _tn_dis.get(_.unmark_as_opinion),
+            'user_is_admin': _tn_dis.get(_.user_is_admin),
+            'user_is_special': _tn_dis.get(_.user_is_special),
+            'user_is_author': _tn_dis.get(_.user_is_author)
         }
 
         if logged_in:
@@ -569,7 +593,6 @@ class DictionaryHelper(object):
             'url_sharing_description': _tn_dis.get(_.urlSharingDescription),
             'fetchurl': _tn_dis.get(_.fetchLongUrl),
             'warning': _tn_dis.get(_.warning),
-            'island_view_for': _tn_dis.get(_.islandViewFor),
             'language': self.discussion_lang,
             'aand': _tn_dis.get(_.aand),
             'add_premise_title': _tn_dis.get(_.addPremiseRadioButtonText),

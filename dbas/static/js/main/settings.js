@@ -164,7 +164,7 @@ function StatisticsHandler() {
         }
         // display dialog
         $('#' + popupConfirmDialogId).modal('show');
-        $('#' + popupConfirmDialogId + ' h4.modal-title').text(_t(deleteStatisticsTitle));
+        $('#' + popupConfirmDialogId + ' h4 span').text(_t(deleteStatisticsTitle));
         $('#' + popupConfirmDialogId + ' div.modal-body').html(_t(deleteStatisticsBody));
         $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
             $('#' + popupConfirmDialogId).modal('hide');
@@ -230,7 +230,7 @@ function StatisticsHandler() {
             div.remove();
         }).modal('show').find('.modal-dialog').addClass('modal-lg');
 
-        $('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
+        $('#' + popupConfirmDialogId + ' h4.modal-title span').text(titleText);
         modalBody = $('#' + popupConfirmDialogId + ' div.modal-body');
         modalBody.empty().append(table);
 
@@ -336,11 +336,13 @@ $(function () {
     $('#' + settingsPublicNick).change(function publicNickChange() {
         new AjaxSettingsHandler().setUserSetting($(this), 'public_nick');
     });
-    
-    $('#' + settingsDeleteAccount).click(function deleteUserAccount(){
+
+    $('#' + settingsDeleteAccount).click(function deleteUserAccount() {
         var titleText = '<i class="fa fa-trash"></i> ' + _t(deleteAccount);
         var bodyText = '<p class="lead">' + _t(stepCannotBeUndone) + '<br>' + _t(mayTakeAWhile) + '</p>';
-        var functionForAccept = function(){ new AjaxSettingsHandler().deleteAccount(); };
+        var functionForAccept = function () {
+            new AjaxSettingsHandler().deleteAccount();
+        };
         displayConfirmationDialog(titleText, bodyText, functionForAccept, null, true);
     });
 
