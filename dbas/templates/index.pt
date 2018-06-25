@@ -2,19 +2,12 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
          i18n:domain="dbas" metal:define-macro="layout" lang="${extras.ui_locales}">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="dialog based discussion online participation tool argumentation argument">
-  <meta name="author" content="Tobias Krauthoff">
-  <link rel="shortcut icon" href="${request.static_url('dbas:static/images/icons/favicon-16x16.png')}">
-
-  <title>${title}</title>
+  <div metal:use-macro="load: snippet/header.pt"></div>
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap/dist/css/bootstrap.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/css/creative.css')}" rel="stylesheet">
-  <script src="${request.static_url('dbas:static/node_modules/jquery/dist/jquery.min.js')}"></script>
   <script src="${request.static_url('dbas:static/node_modules/jquery-migrate/dist/jquery-migrate.js')}"></script>
 </head>
 
@@ -442,6 +435,9 @@
   <div metal:use-macro="load: snippet/footer.pt"></div>
 </div>
 
+<<<<<<< HEAD
+<div metal:use-macro="load: snippet/js-scripts.pt"></div>
+=======
 <script src="${request.static_url('dbas:static/node_modules/bootstrap/dist/js/bootstrap.js')}"></script>
 <script src="${request.static_url('dbas:static/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js')}"></script>
 <script src="${request.static_url('dbas:static/node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js')}"></script>
@@ -494,6 +490,7 @@
 <script src="${request.static_url('dbas:static/js/review/history.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/review/index.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
+>>>>>>> new/cookie-popup
 </body>
 
 </html>
