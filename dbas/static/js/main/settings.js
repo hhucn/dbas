@@ -164,7 +164,7 @@ function StatisticsHandler() {
         }
         // display dialog
         $('#' + popupConfirmDialogId).modal('show');
-        $('#' + popupConfirmDialogId + ' h4.modal-title').text(_t(deleteStatisticsTitle));
+        $('#' + popupConfirmDialogId + ' h4 span').text(_t(deleteStatisticsTitle));
         $('#' + popupConfirmDialogId + ' div.modal-body').html(_t(deleteStatisticsBody));
         $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
             $('#' + popupConfirmDialogId).modal('hide');
@@ -230,7 +230,7 @@ function StatisticsHandler() {
             div.remove();
         }).modal('show').find('.modal-dialog').addClass('modal-lg');
 
-        $('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
+        $('#' + popupConfirmDialogId + ' h4.modal-title span').text(titleText);
         modalBody = $('#' + popupConfirmDialogId + ' div.modal-body');
         modalBody.empty().append(table);
 
