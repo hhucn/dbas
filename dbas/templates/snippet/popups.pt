@@ -1354,4 +1354,18 @@
       </div>
     </div>
   </div>
+
+  <!-- PRIVACY POLICY COOKIE -->
+  <div id="privacy-policy-popup" class="hidden">
+    <div class="row">
+      <div class="col-md-10">
+        <span class="lead" id="privacy-policy-text"></span>
+        <a id="privacy-policy-link" href="/privacy_policy"></a>
+      </div>
+      <div class="col-md-2">
+        <button id="privacy-policy-btn" class="btn btn-default"></button>
+      </div>
+    </div>
+  </div>
+
 </div>
