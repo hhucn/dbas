@@ -47,11 +47,11 @@ function addCookieConsent() {
     'use strict';
 
     if (!Cookies.get('EU_COOKIE_LAW_CONSENT')){
-        $('#privacy-policy-popup').removeClass('hidden');
+        $('#privacy-policy-popup').show();
         $('#privacy-policy-text').text(_t(euCookiePopupText));
         $('#privacy-policy-link').html(_t(euCookiePopoupButton2));
         $('#privacy-policy-btn').text(_t(euCookiePopoupButton1)).click(function(){
-            $('#privacy-policy-popup').addClass('hidden');
+            $('#privacy-policy-popup').hide();
             Cookies.set('EU_COOKIE_LAW_CONSENT', true, {expires: 180});
         });
     }

@@ -1359,7 +1359,7 @@
   </div>
 
   <!-- PRIVACY POLICY COOKIE -->
-  <div id="privacy-policy-popup" class="hidden">
+  <div id="privacy-policy-popup">
     <div class="row">
       <div class="col-md-10">
         <span class="lead" id="privacy-policy-text"></span>
