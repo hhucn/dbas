@@ -77,6 +77,7 @@ function AjaxGraphHandler() {
 
         var done = function (d) {
             context.callbackIfDoneForDiscussionGraph(d);
+            new GuiHandler().setDisplayStyleAsGraphView();
         };
         var fail = function (data) {
             setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
