@@ -19,7 +19,6 @@
   <div tal:condition="not:extras.development_mode" tal:omit-tag="">
     <script src="${request.static_url('dbas:static/js/dbas.min.js')}"></script>
     <script src="${request.static_url('websocket:static/js/websocket.min.js')}"></script>
-    <script src="${request.static_url('dbas:static/node_modules/cookieconsent/build/cookieconsent.min.js')}"></script>
   </div>
 
   <!-- DEVELOPMENT -->
