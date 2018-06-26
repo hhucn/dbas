@@ -177,19 +177,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     this.callbackIfDoneForGetJumpDataForGraph = function (data) {
         var popup = $('#popup-jump-graph');
-        if (data.error.length === 0) {
-            var list = $('<ul>');
-            popup.find('div.modal-body div').empty();
-            createContentOfModalBody(data, list);
-            popup.find('div.modal-body div').append(list);
+        popup.find('div.modal-body div').empty();
+        var list = createContentOfModalBody(data);
+        popup.find('div.modal-body div').append(list);
 
-            // jump to url
-            popup.find('input').click(function () {
-                window.location = $(this).attr('value');
-            });
-        } else {
-            popup.modal('hide');
-        }
+        // jump to url
+        popup.find('input').click(function () {
+            window.location = $(this).attr('value');
+        });
 
         // add hover effects
         new GuiHandler().hoverInputListOf(popup.find('div.modal-body div'));
@@ -199,10 +194,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Create content for modal to jump into discussion.
      *
      * @param jsonData
-     * @param list
      */
-    function createContentOfModalBody(jsonData, list) {
+    function createContentOfModalBody(jsonData) {
         var label, input, element, counter = 0;
+        var list = $('<ul>');
 
         $.each(jsonData.arguments, function (key, value) {
             input = $('<input>').attr('type', 'radio').attr('value', value.url).attr('id', 'jump_' + counter);
@@ -211,6 +206,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             list.append(element);
             counter += 1;
         });
+        return list;
     }
 
     /**
@@ -1458,7 +1454,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // determine color of circle before mouse over
             // to restore color on mouse out
             currentColorOfCircle = d3.select('#circle-' + d.id).attr('fill');
-            d3.select('#circle-' + d.id).attr('fill', c.grey);
+            d3.select('#circle-' + d.id).attr('fill', new Colors().grey);
         }
         // otherwise there is a mouseout-out, then hide the tooltip
         else {

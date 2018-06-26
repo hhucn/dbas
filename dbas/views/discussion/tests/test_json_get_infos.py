@@ -67,7 +67,7 @@ class TestGetArgumentsByStatementId(TestCaseWithConfig):
     def test_get_arguments_by_statement_uid(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'statement_id': 3, 'issue': issue_uid})
+        request = construct_dummy_request({'issue': issue_uid}, match_dict={'statement_id': 3})
         response = get_arguments_by_statement_id(request)
         self.assertIsNotNone(response)
         self.assertIn('arguments', response)
@@ -79,21 +79,21 @@ class TestGetArgumentsByStatementId(TestCaseWithConfig):
     def test_get_arguments_by_statement_uid_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'statement_id': 1, 'issue': issue_uid})
+        request = construct_dummy_request({'issue': issue_uid}, match_dict={'statement_id': 1})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 410)
 
     def test_get_arguments_by_statement_uid_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'statement_id': 3, 'issue': issue_uid + 1})
+        request = construct_dummy_request({'issue': issue_uid + 1}, match_dict={'statement_id': 3})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 400)
 
     def test_get_arguments_by_statement_uid_failure3(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'statement_id': 'a', 'issue': issue_uid})
+        request = construct_dummy_request({'issue': issue_uid}, match_dict={'statement_id': 'a'})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 400)
 

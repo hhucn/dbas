@@ -346,7 +346,7 @@ def get_infos_about_argument(request):
 
 
 @view_config(route_name='get_arguments_by_statement_uid', renderer='json')
-@validate(valid_any_issue_by_id, valid_statement(location='json_body'))
+@validate(valid_any_issue_by_id, valid_statement(location='path'))
 def get_arguments_by_statement_id(request):
     """
     Returns all arguments, which use the given statement
@@ -357,4 +357,7 @@ def get_arguments_by_statement_id(request):
     logger('views', 'main: {}'.format(request.json_body))
     db_statement = request.validated['statement']
     db_issue = request.validated['issue']
-    return get_arguments_by_statement_uid(db_statement, db_issue)
+    argument_list = get_arguments_by_statement_uid(db_statement, db_issue)
+    for el in argument_list.get('arguments', []):
+        el['url'] = '/discuss' + el['url']
+    return argument_list

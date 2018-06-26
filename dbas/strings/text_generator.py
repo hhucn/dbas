@@ -609,10 +609,10 @@ def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, c
             bind = __translation_based_on_gender(_t, _.butHeDoesNotBelieveCounter, _.butSheDoesNotBelieveCounter,
                                                  data['gender'])
 
-    bind = bind.format(start_con, end_tag, start_con, end_tag)
+    bind = bind.format(start_con, end_tag, start_argument, end_tag)
 
-    confrontation_text = '{} {}. {}{} {}{}. {}{} {}'.format(intro, premise, bind, end_tag, conclusion, start_tag,
-                                                            gender_think, end_tag, confrontation)
+    confrontation_text = f'{intro} {premise}. {bind}{end_tag} {conclusion}{start_tag}. '
+    confrontation_text += f'{gender_think}{end_tag} {confrontation}'
 
     return confrontation_text, data['gender'] if data['is_valid'] else ''
 
