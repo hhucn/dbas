@@ -14,12 +14,12 @@
   <script src="${request.static_url('dbas:static/node_modules/d3/d3.min.js')}"></script>
   <script src="${request.static_url('dbas:static/node_modules/socket.io-client/dist/socket.io.js')}"></script>
   <script src="${request.static_url('dbas:static/node_modules/js-cookie/src/js.cookie.js')}"></script>
-  <script src="${request.static_url('dbas:static/node_modules/cookieconsent/build/cookieconsent.min.js')}"></script>
 
   <!-- PRODUCTION -->
   <div tal:condition="not:extras.development_mode" tal:omit-tag="">
     <script src="${request.static_url('dbas:static/js/dbas.min.js')}"></script>
     <script src="${request.static_url('websocket:static/js/websocket.min.js')}"></script>
+    <script src="${request.static_url('dbas:static/node_modules/cookieconsent/build/cookieconsent.min.js')}"></script>
   </div>
 
   <!-- DEVELOPMENT -->

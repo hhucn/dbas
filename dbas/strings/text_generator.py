@@ -392,7 +392,6 @@ def get_text_for_confrontation(lang, nickname, premise, conclusion, sys_conclusi
     """
     Text for the confrontation of the system
 
-    :param main_page: main_page
     :param lang: ui_locales
     :param nickname: nickname
     :param premise: String
@@ -725,7 +724,9 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
             intro += __translation_based_on_gender(_t, _.strongerStatementM, _.strongerStatementF, infos['gender'])
         elif infos['db_other_nick'] == infos['nickname']:
             intro = infos['author'] + ' ' + start_content
-            intro += _t.get(_.earlierYouHadNoOpinitionForThisStatement) + ' ' + _t.get(_.strongerStatementY)
+            intro += _t.get(_.earlierYouHadNoOpinitionForThisStatement) + ', '
+            intro += _t.get(_.whichConfirmedYourView).format(start_position, end_tag)
+            intro += ' ' + _t.get(_.strongerStatementY)
         else:
             intro = infos['author'] + ' ' + start_content
             intro += _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + ' '
@@ -756,8 +757,7 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
         if infos['is_okay']:
             bind = __translation_based_on_gender(_t, _.heSays, _.sheSays, infos['gender'])
 
-    confrontation_text = '{} {}. {}{}:{} {}'.format(intro, conclusion, start_tag, bind, end_tag, confrontation)
-
+    confrontation_text = f'{intro} {conclusion}. {start_tag}{bind}:{end_tag} {confrontation}'
     return confrontation_text
 
 

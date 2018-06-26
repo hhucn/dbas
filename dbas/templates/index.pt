@@ -435,9 +435,8 @@
   <div metal:use-macro="load: snippet/footer.pt"></div>
 </div>
 
-<<<<<<< HEAD
 <div metal:use-macro="load: snippet/js-scripts.pt"></div>
-=======
+
 <script src="${request.static_url('dbas:static/node_modules/bootstrap/dist/js/bootstrap.js')}"></script>
 <script src="${request.static_url('dbas:static/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js')}"></script>
 <script src="${request.static_url('dbas:static/node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js')}"></script>
