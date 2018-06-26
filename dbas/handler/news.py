@@ -87,8 +87,8 @@ def get_latest_news(ui_locales):
     ret_news = []
     for index, news in enumerate(db_news[:5]):
         news_dict = {
-            'indicatorclass': '',
-            'blockclass': 'carousel-item',
+            'indicator_class': '',
+            'block_class': 'carousel-item',
             'title': news.title,
             'author': news.author,
             'date': sql_timestamp_pretty_print(news.date, ui_locales, False),
@@ -96,6 +96,6 @@ def get_latest_news(ui_locales):
             'id': index
         }
         ret_news.append(news_dict)
-    ret_news[0]['indicatorclass'] = 'active'
-    ret_news[0]['blockclass'] += ' active'
+    ret_news[0]['indicator_class'] += 'active'
+    ret_news[0]['block_class'] += ' active'
     return ret_news
