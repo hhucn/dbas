@@ -1247,6 +1247,7 @@
           <p class="lead" i18n:translate="below_you_will_find_list_with_jump_arguments">
             Below you find a list with all arguments, where your selected text is used:
           </p>
+          <div></div>
         </div>
       </div>
     </div>

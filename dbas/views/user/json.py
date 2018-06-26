@@ -57,7 +57,7 @@ def user_login_oauth(request):
 
     :return: dict() with error
     """
-    logger('views', 'main')
+    logger('views', f'main {request.json_body}')
 
     lang = get_language_from_cookie(request)
     _tn = Translator(lang)
@@ -67,8 +67,8 @@ def user_login_oauth(request):
         return {'error': ''}
 
     try:
-        service = request.params['service']
-        url = request.params['redirect_uri']
+        service = request.json_body['service']
+        url = request.json_body['redirect_uri']
         old_redirect = url.replace('http:', 'https:')
         # add service tag to notice the oauth provider after a redirect
         if '?service' in url:
