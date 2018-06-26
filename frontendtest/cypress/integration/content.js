@@ -23,12 +23,6 @@ describe('Test if content is visible with english language', function () {
     it('checks for present buttons at /', function () {
         test_for_element_to_be_clickable(buttons);
     });
-    it('checks for DSGVO', function () {
-        cy.get(':nth-child(1) > :nth-child(3) > a > span')
-            .should('exist')
-            .click();
-        cy.url().should('contain', '/privacy_policy');
-    });
 });
 describe('Test if content is visible with german language', function () {
     beforeEach('Set language to german', function () {
@@ -37,11 +31,5 @@ describe('Test if content is visible with german language', function () {
     });
     it('checks for present buttons at /', function () {
         test_for_element_to_be_clickable(buttons);
-    });
-    it('checks for DSGVO', function () {
-        cy.get(':nth-child(1) > :nth-child(3) > a > span')
-            .should('exist')
-            .click();
-        cy.url().should('contain', '/privacy_policy');
     });
 });
