@@ -53,9 +53,9 @@ class BubbleTypes(Enum):
 
 class Relations(Enum):
     UNDERMINE = 'undermine'
+    SUPPORT = 'support'
     UNDERCUT = 'undercut'
     REBUT = 'rebut'
-    SUPPORT = 'support'
 
     def __str__(self):
         return str(self.value)
