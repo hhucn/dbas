@@ -1,3 +1,7 @@
+### 1.9.1 (2018-06-26)
+ - Many bugfixes for the frontend
+ - Special thanks to the COMMA18 Reviewer
+
 ### 1.9.0 (2018-06-13)
  - Introduced Cypress for frontend tests
 

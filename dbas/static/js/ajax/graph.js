@@ -90,7 +90,7 @@ function AjaxGraphHandler() {
      * @param uid
      */
     this.getJumpDataForGraph = function (uid) {
-        var url = '/ajax_get_arguments_by_statement/' + uid;
+        var url = '/get_arguments_by_statement/' + uid;
         var issue_uid = $('#issue_info').data('issue');
         var done = function (data) {
             new DiscussionGraph({}, false).callbackIfDoneForGetJumpDataForGraph(data);
@@ -98,6 +98,6 @@ function AjaxGraphHandler() {
         var fail = function (data) {
             setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
         };
-        ajaxSkeleton(url, 'GET', {'issue': issue_uid}, done, fail);
+        ajaxSkeleton(url, 'POST', {'issue': issue_uid}, done, fail);
     };
 }

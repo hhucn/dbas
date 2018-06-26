@@ -672,9 +672,8 @@ Main.prototype.__setContainerSidebarForOneLiner = function(children, id, ids){
     'use strict';
     // if we have just one list element AND the list element has a special function AND we are logged in
     if (children.length === 1 && $.inArray(id, ids) !== -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) === -1) {
-        var container = $('#' + discussionContainerId);
-        container.height(container.height() - 50);
         children.eq(0).prop('checked', true).parent().hide();
+        $('#' + discussionSpaceId).remove();
     }
 };
 
