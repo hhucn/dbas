@@ -16,6 +16,5 @@
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/node_modules/cookieconsent/build/cookieconsent.min.css')}" rel="stylesheet">
   <script src="${request.static_url('dbas:static/node_modules/jquery/dist/jquery.min.js')}"></script>
 </tal:block>

@@ -32,12 +32,10 @@ def index(request):
 
     set_language_for_visit(request)
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
-    ui_locales = get_language_from_cookie(request)
 
     prep_dict = main_dict(request, name + ' ' + full_version)
     prep_dict.update({
         'session_expired': session_expired,
-        'news': news_handler.get_latest_news(ui_locales)
     })
     return prep_dict
 
@@ -59,8 +57,8 @@ def news(request):
 
     prep_dict = main_dict(request, 'News')
     prep_dict.update({
-        'is_author': is_author,
-        'news': news_handler.get_news(ui_locales)
+        'is_author': is_author, 'news': news_handler.get_news(ui_locales)
+
     })
     return prep_dict
 
