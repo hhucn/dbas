@@ -500,6 +500,7 @@ class Keywords(Enum):
     agreesThat = 'agreesThat'
     that = 'that'
     earlierYouHadNoOpinitionForThisStatement = 'earlierYouHadNoOpinitionForThisStatement'
+    whichConfirmedYourView = 'whichConfirmedYourView'
     otherUserDoesntHaveOpinionForThisStatement = 'otherUserDoesntHaveOpinionForThisStatement'
     otherParticipantsDontHaveOpinionForThisStatement = 'otherParticipantsDontHaveOpinionForThisStatement'
     otherParticipantsDontHaveOpinion = 'otherParticipantsDontHaveOpinion'
