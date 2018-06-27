@@ -56,8 +56,8 @@ Afterwards everything should be fine.
 
 ## Maintainers and Main Contributors
 
-* [Tobias Krauthoff](mailto:krauthoff@cs.uni-duesseldorf.de)
 * [Christian Meter](mailto:meter@cs.uni-duesseldorf.de)
+* [Tobias Krauthoff](mailto:krauthoff@cs.uni-duesseldorf.de) (Alumni)
 
 
 ## Contributors
