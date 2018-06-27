@@ -1,5 +1,5 @@
 const url = Cypress.env('WEB_PROTOCOL') + "://" + Cypress.env("WEB_HOST") + ":" + Cypress.env("WEB_PORT");
-var buttons = ['about', 'requirements', 'services', 'github', 'partners', 'news', 'contact'];
+var buttons = ['about', 'requirements', 'services', 'github', 'partners', 'contact'];
 
 function set_cookie_to(language) {
     cy.setCookie('_LOCALE_', 'en');
