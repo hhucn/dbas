@@ -11,8 +11,8 @@ from dbas.database.discussion_model import Argument, Statement, User, History, s
     Issue
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.input_validator import check_reaction
-from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid, \
-    get_text_for_conclusion, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, Relations, Attitudes, \
+from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_conclusion, \
+    bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, Relations, Attitudes, \
     relation_mapper
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -74,7 +74,7 @@ def create_bubbles(history, nickname='', lang='', slug=''):
     if len(history) == 0:
         return []
 
-    logger('history_handler', 'nickname: ' + str(nickname) + ', history: ' + history)
+    logger('history_handler', f'nickname: {nickname}, history: {history}')
     splitted_history = split(history)
 
     bubble_array = []
@@ -99,7 +99,7 @@ def create_bubbles(history, nickname='', lang='', slug=''):
             __prepare_support_step(bubble_array, index, step, db_user, lang)
 
         else:
-            logger('history_handler', str(index) + ': unused case -> ' + step)
+            logger('history_handler', f'{index}: unused case -> {step}')
 
     return bubble_array
 
@@ -135,7 +135,7 @@ def __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, u
     :param url: String
     :return: None
     """
-    logger('history_handler', str(index) + ': justify case -> ' + step)
+    logger('history_handler', f'{index}: justify case -> {step}')
     steps = step.split('/')
     if len(steps) < 3:
         return
@@ -159,7 +159,6 @@ def __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_h
 
     :param bubble_array: [dict()]
     :param index: int
-    :param application_url: String
     :param step: String
     :param db_user: User
     :param lang: Language.ui_locales
@@ -167,7 +166,7 @@ def __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_h
     :param url: String
     :return: None
     """
-    logger('history_handler', str(index) + ': reaction case -> ' + step)
+    logger('history_handler', f'{index}: reaction case -> {step}')
     bubbles = get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url)
     if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
@@ -182,10 +181,9 @@ def __prepare_support_step(bubble_array, index, step, nickname, lang):
     :param step: String
     :param nickname: User.nickname
     :param lang: Language.ui_locales
-    :param application_url: String
     :return: None
     """
-    logger('history_handler', str(index) + ': support case -> ' + step)
+    logger('history_handler', f'{index}: support case -> {step}')
     steps = step.split('/')
     if len(steps) < 3:
         return
@@ -210,7 +208,7 @@ def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
     logger('history_handler', 'def')
     steps = step.split('/')
     uid = int(steps[1])
-    is_supportive = steps[2] == Attitudes.AGREE or steps[2] == Attitudes.DONT_KNOW
+    is_supportive = steps[2] == Attitudes.AGREE.value or steps[2] == Attitudes.DONT_KNOW.value
 
     _tn = Translator(lang)
     msg, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
@@ -229,7 +227,6 @@ def __get_bubble_from_support_step(arg_uid_user, uid_system, nickname, lang):
     :param uid_system: Argument.uid
     :param nickname: User.nickname
     :param lang: Language.ui_locales
-    :param application_url: String
     :return: [dict()]
     """
     db_arg_user = DBDiscussionSession.query(Argument).get(arg_uid_user)
@@ -272,7 +269,7 @@ def __get_bubble_from_attitude_step(step, nickname, lang, url):
     logger('history_handler', 'def')
     steps = step.split('/')
     uid = int(steps[1])
-    text = get_text_for_statement_uid(uid)
+    text = DBDiscussionSession.query(Statement).get(uid).get_text()
     if lang != 'de':
         text = start_with_capital(text)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -287,9 +284,8 @@ def __get_bubble_from_dont_know_step(step, db_user, lang):
     Creates bubbles for the don't-know-reaction for a statement.
 
     :param step: String
-    :param nickname: User.nickname
+    :param db_user: User
     :param lang: ui_locales
-    :param url: String
     :return: [dict()]
     """
     steps = step.split('/')
@@ -332,7 +328,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     :param color_steps: Boolean
     :return: [dict()]
     """
-    logger('history_handler', 'def: {}, {}'.format(step, splitted_history))
+    logger('history_handler', f'def: {step}, {splitted_history}')
     steps = step.split('/')
     uid = int(steps[1])
 
@@ -428,7 +424,7 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
     :param history: String
     :return: None
     """
-    logger('HistoryHelper', 'path: {}, history: {}, slug: {}'.format(path, history, slug))
+    logger('HistoryHelper', f'path: {path}, history: {history}, slug: {slug}')
 
     if path.startswith('/discuss'):
         path = path[len('/discuss'):]
@@ -442,7 +438,7 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
     if len(history) > 0:
         history = '?history=' + history
 
-    logger('HistoryHelper', 'saving {}{}'.format(path, history))
+    logger('HistoryHelper', f'saving {path}{history}')
 
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
     DBDiscussionSession.flush()
@@ -482,7 +478,7 @@ def save_and_set_cookie(request: Request, db_user: User, issue: Issue) -> str:
     """
 
     :param request: pyramid's request object
-    :param nickname: the user's nickname creating the request
+    :param db_user: the user
     :param issue: the discussion's issue od
     :rtype: str
     :return: current user's history

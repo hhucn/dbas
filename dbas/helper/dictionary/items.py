@@ -506,11 +506,11 @@ class ItemDictHelper(object):
         mode = Attitudes.AGREE if is_supportive else Attitudes.DISAGREE
         _um = UrlManager(slug, history=self.path)
 
-        relations = [relation.value for relation in Relations]
+        relations = [relation for relation in Relations]
         for relation in relations:
             url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument)
-            d = {'title': rel_dict[relation + '_text'], 'id': relation}
-            tmp = self.__create_answer_dict(relation, [d], relation, url)
+            d = {'title': rel_dict[relation.value + '_text'], 'id': relation.value}
+            tmp = self.__create_answer_dict(relation.value, [d], relation.value, url)
             statements_array.append(tmp)
 
         # last item is the change attack button or step back, if we have bno other attack
