@@ -361,7 +361,7 @@ def __fetch_url(service: str, long_url: str) -> Tuple[str, str]:
     short_url, service_text = '', service
     try:
         short_url = format(Shortener(service).short(long_url))
-    except (ReadTimeout, ConnectionError, NewConnectionError, ShorteningErrorException) as e:
+    except (ReadTimeout, ConnectionError, NewConnectionError, ShorteningErrorException, ValueError) as e:
         logger('query', repr(e), error=True)
         service_text = Translator('en').get(_.serviceNotAvailable)
 

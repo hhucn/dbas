@@ -1,4 +1,4 @@
-const url = Cypress.env('WEB_PROTOCOL') + "://" + Cypress.env("WEB_HOST") + ":" + Cypress.env("WEB_PORT");
+const url = Cypress.env('WEB_PROTOCOL') + '://' + Cypress.env('WEB_HOST') + ':' + Cypress.env('WEB_PORT');
 
 function switch_language(from, to) {
     cy.reload()
@@ -17,15 +17,11 @@ function switch_language(from, to) {
         .should('have.property', 'value', to);
 }
 
-
 describe('Test language at /', function () {
     beforeEach('Visit /', function () {
         cy.visit(url);
         cy.setCookie('_LOCALE_', 'de')
             .reload();
-        cy.reload()
-            .getCookies()
-            .should('have.length', 2);
     });
     it('switches from german to english', function () {
         switch_language('de', 'en');
@@ -41,9 +37,6 @@ describe('Test language at /discussion', function () {
         cy.visit(url + '/discuss');
         cy.setCookie('_LOCALE_', 'de')
             .reload();
-        cy.reload()
-            .getCookies()
-            .should('have.length', 2);
     });
     it('switches from german to english', function () {
         switch_language('de', 'en');
