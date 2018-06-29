@@ -1,4 +1,4 @@
-const url = Cypress.env('WEB_PROTOCOL') + "://" + Cypress.env("WEB_HOST") + ":" + Cypress.env("WEB_PORT");
+const url = Cypress.env('WEB_PROTOCOL') + '://' + Cypress.env('WEB_HOST') + ':' + Cypress.env('WEB_PORT');
 var pages = ['', 'news', 'imprint', 'discuss', 'settings', 'notifications', 'admin/'];
 
 describe('Test if test are active', function () {

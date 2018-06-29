@@ -1,4 +1,4 @@
-const url = Cypress.env('WEB_PROTOCOL') + "://" + Cypress.env("WEB_HOST") + ":" + Cypress.env("WEB_PORT");
+const url = Cypress.env('WEB_PROTOCOL') + '://' + Cypress.env('WEB_HOST') + ':' + Cypress.env('WEB_PORT');
 
 function get_every_element_at(element, at) {
     cy.visit(at);
@@ -38,12 +38,12 @@ describe('Click every element at /', function () {
 describe('Click every button at /discuss', function () {
     it('checks if every discussion is active', function () {
         cy.visit(url + '/discuss');
-        cy.get('td.start_issue_link > a:visible')
+        cy.get('td > a:visible')
             .each(($el) => {
                 cy.wrap($el)
                     .should('have.attr', 'href')
                     .then((href) => {
-                        console.log("href " + href);
+                        console.log('href ' + href);
                         cy.request({
                             url: url + href,
                             baseUrl: url

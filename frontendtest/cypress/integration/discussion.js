@@ -1,4 +1,4 @@
-const url = Cypress.env('WEB_PROTOCOL') + "://" + Cypress.env("WEB_HOST") + ":" + Cypress.env("WEB_PORT");
+const url = Cypress.env('WEB_PROTOCOL') + '://' + Cypress.env('WEB_HOST') + ':' + Cypress.env('WEB_PORT');
 const valid_user = 'Bob';
 const valid_pw = 'iamatestuser2016';
 const invalid_position = 'coconut';
@@ -18,8 +18,8 @@ function login(user, pw) {
 }
 
 function randomString(length) {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var text = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
     for (var i = 0; i < length; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
