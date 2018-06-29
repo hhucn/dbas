@@ -55,15 +55,3 @@ describe('Click every button at /discuss', function () {
             });
     });
 });
-
-describe('Clicks every element at /discuss/cat-or-dog', function () {
-    it('Clicks every sidebar element', function () {
-        cy.visit(url + '/discuss/cat-or-dog');
-        cy.get('.sidebar-element')
-            .each(($el) => {
-                cy.wrap($el)
-                    .click({force: true});
-                cy.url().should('contains', url + '/discuss/cat-or-dog');
-            });
-    });
-});

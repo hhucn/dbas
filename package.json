@@ -7,7 +7,7 @@
   "author": "Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>",
   "license": "MIT",
   "dependencies": {
-    "bootstrap": "^4.0.0",
+    "bootstrap": "^4.1.1",
     "bootstrap-slider": "^10.0.0",
     "bootstrap-toggle": "^2.2.2",
     "bootstrap-tour": "^0.12.0",
