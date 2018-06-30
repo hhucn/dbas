@@ -82,7 +82,7 @@ class UrlManager(object):
         :return: discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys
         """
         if not confrontation_argument:
-            return self.__get_url_for_discussion_finish(argument_uid)
+            return self.get_url_for_discussion_finish(argument_uid)
         url = '{}/reaction/{}/{}/{}'.format(self.slug, argument_uid, mode, confrontation_argument)
         return self.__return_discussion_url(url)
 
@@ -154,7 +154,7 @@ class UrlManager(object):
         arg_id_sys, attack = attacks.get_attack_for_argument(new_argument_uid,
                                                              restrictive_arg_uids=attacking_arg_uids)
         if not arg_id_sys:
-            url = self.__get_url_for_discussion_finish(new_argument_uid)
+            url = self.get_url_for_discussion_finish(new_argument_uid)
         else:
             url = self.get_url_for_reaction_on_argument(new_argument_uid, attack, arg_id_sys)
         return url
@@ -194,7 +194,7 @@ class UrlManager(object):
         history = '?history=' + self.history if self.history and len(self.history) > 1 else ''
         return '/{}{}'.format(url, history)
 
-    def __get_url_for_discussion_finish(self, arg_uid):
+    def get_url_for_discussion_finish(self, arg_uid):
         """
 
         :param arg_uid:
