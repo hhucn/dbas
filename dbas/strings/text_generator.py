@@ -517,11 +517,12 @@ def __get_text_for_add_something(nickname, lang, url, keyword, for_html=True):
     nl = '<br>' if for_html else '\n'
     _t = Translator(lang)
     intro = _t.get(keyword).format(nickname)
-    w = start_with_capital(_t.get(_.where))
+    clickForMore = start_with_capital(_t.get(_.clickForMore))
     if for_html:
-        url = '<a href="{}">{}</a>'.format(url, url)
+        url = f'/discuss{url}'
+        url = f'<a href="{url}">{clickForMore}</a>'
 
-    return '{}{}{}: {}'.format(intro, nl, w, url)
+    return f'{intro}{nl}{clickForMore}: {url}'
 
 
 def __get_confrontation_text_for_undermine(nickname, premise, lang, system_argument, my_start_argument,
