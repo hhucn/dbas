@@ -13,5 +13,5 @@ class OAuthFacebookLoginTest(unittest.TestCase):
 
     def test_login_facebook(self):
         redirect_uri = 'http://lvh.me:4284/discuss?service=facebook'
-        resp = facebook.start_flow(redirect_uri)
+        resp = facebook.start_flow(redirect_uri=redirect_uri)
         self.assertIn('authorization_url', resp)

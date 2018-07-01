@@ -15,7 +15,7 @@ class OAuthTwitterLoginTest(unittest.TestCase):
         try:
             redirect_uri = 'http://lvh.me:4284/discuss?service=twitter'
             request = testing.DummyRequest()
-            resp = twitter.start_flow(request, redirect_uri)
+            resp = twitter.start_flow(request=request, redirect_uri=redirect_uri)
             self.assertIn('authorization_url', resp)
         except ValueError as e:
             return True

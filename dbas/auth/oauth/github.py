@@ -7,25 +7,29 @@ Used lib: http://requests-oauthlib.readthedocs.io/en/latest/examples/github.html
 Manage Github Client IDs: https://github.com/organizations/**YOUR_ACCOUNT**/settings/applications
 """
 
-import os
 import json
-from requests_oauthlib.oauth2_session import OAuth2Session
+import os
+
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, InvalidClientError, MissingTokenError
-from dbas.logger import logger
+from requests_oauthlib.oauth2_session import OAuth2Session
 from slugify import slugify
+
+from dbas.auth.oauth import get_oauth_ret_dict
 from dbas.handler.user import oauth_values
-from dbas.strings.translator import Translator
+from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
 scope = ['user:email']
 
 
-def start_flow():
+def start_flow(**kwargs):
     """
+    Starts the oauth flow. This will return a dict which causes a redirect to the providers page.
 
-    :return:
+    :param kwargs: should have a redirect_uri
     """
     client_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
     client_secret = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
@@ -41,6 +45,8 @@ def start_flow():
 
 def continue_flow(authorization_response, ui_locales):
     """
+    Continues the oauth flow. This will fetch the login tokens and login the user if all information were given.
+    Otherwise the registration modal will be displayed.
 
     :param authorization_response:
     :param ui_locales:
@@ -49,6 +55,7 @@ def continue_flow(authorization_response, ui_locales):
     client_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
     client_secret = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
     github = OAuth2Session(client_id)
+    _tn = Translator(ui_locales)
 
     logger('Github OAuth', 'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
     logger('Github OAuth', 'authorization_response: ' + authorization_response)
@@ -57,16 +64,13 @@ def continue_flow(authorization_response, ui_locales):
         github.fetch_token(token_url, client_secret=client_secret, authorization_response=authorization_response)
     except InsecureTransportError:
         logger('Github OAuth', 'OAuth 2 MUST utilize https', error=True)
-        _tn = Translator(ui_locales)
-        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+        return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
     except InvalidClientError:
         logger('Github OAuth', 'InvalidClientError', error=True)
-        _tn = Translator(ui_locales)
-        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+        return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
     except MissingTokenError:
         logger('Github OAuth', 'MissingTokenError', error=True)
-        _tn = Translator(ui_locales)
-        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+        return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
 
     resp = github.get('https://api.github.com/user')
     logger('Github OAuth', str(resp.text))
@@ -109,11 +113,7 @@ def continue_flow(authorization_response, ui_locales):
     logger('Github OAuth', 'user_data: ' + str(user_data))
     logger('Github OAuth', 'missing_data: ' + str(missing_data))
 
-    return {
-        'user': user_data,
-        'missing': missing_data,
-        'error': ''
-    }
+    return get_oauth_ret_dict(user_data=user_data, missing_data=missing_data)
 
 
 def __prepare_data(parsed_resp):
