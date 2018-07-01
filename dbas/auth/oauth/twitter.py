@@ -10,18 +10,23 @@ Manage Google Client IDs: https://apps.twitter.com/
 """
 
 import os
+
 from requests_oauthlib.oauth1_session import OAuth1Session
-from dbas.logger import logger
+
+from dbas.auth.oauth import get_oauth_ret_dict
 from dbas.handler.user import oauth_values
+from dbas.logger import logger
 
 
-def start_flow(request, redirect_uri):
+def start_flow(**kwargs):
     """
+    Starts the oauth flow. This will return a dict which causes a redirect to the providers page.
 
-    :param request:
-    :param redirect_uri:
+    :param kwargs: should have a redirect_uri and a request
     :return:
     """
+    redirect_uri = kwargs.get('redirect_uri')
+    request = kwargs.get('request')
     client_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
     client_secret = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
 
@@ -43,6 +48,8 @@ def start_flow(request, redirect_uri):
 
 def continue_flow(request, redirect_response):
     """
+    Continues the oauth flow. This will fetch the login tokens and login the user if all information were given.
+    Otherwise the registration modal will be displayed.
 
     :param request:
     :param redirect_response:
@@ -74,8 +81,4 @@ def continue_flow(request, redirect_response):
 
     missing_data = [key for key in oauth_values if len(user_data[key]) == 0]
 
-    return {
-        'user': user_data,
-        'missing': missing_data,
-        'error': ''
-    }
+    return get_oauth_ret_dict(user_data=user_data, missing_data=missing_data)

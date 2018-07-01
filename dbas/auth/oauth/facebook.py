@@ -7,23 +7,28 @@ Used lib: http://requests-oauthlib.readthedocs.io/en/latest/examples/facebook.ht
 Manage Google Client IDs: https://developers.facebook.com/apps/
 """
 
-import os
 import json
-from requests_oauthlib.oauth2_session import OAuth2Session
+import os
+
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, InvalidClientError, MissingTokenError
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
-from dbas.logger import logger
+from requests_oauthlib.oauth2_session import OAuth2Session
+
+from dbas.auth.oauth import get_oauth_ret_dict
 from dbas.handler.user import oauth_values
-from dbas.strings.translator import Translator
+from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 
-def start_flow(redirect_uri):
+def start_flow(**kwargs):
     """
+    Starts the oauth flow. This will return a dict which causes a redirect to the providers page.
 
-    :param redirect_uri:
+    :param kwargs: should have a redirect_uri
     :return:
     """
+    redirect_uri = kwargs.get('redirect_uri')
     client_id = os.environ.get('OAUTH_FACEBOOK_CLIENTID', None)
     client_secret = os.environ.get('OAUTH_FACEBOOK_CLIENTKEY', None)
 
@@ -46,6 +51,8 @@ def start_flow(redirect_uri):
 
 def continue_flow(redirect_uri, authorization_response, ui_locales):
     """
+    Continues the oauth flow. This will fetch the login tokens and login the user if all information were given.
+    Otherwise the registration modal will be displayed.
 
     :param redirect_uri:
     :param authorization_response:
@@ -54,6 +61,7 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     """
     client_id = os.environ.get('OAUTH_FACEBOOK_CLIENTID', None)
     client_secret = os.environ.get('OAUTH_FACEBOOK_CLIENTKEY', None)
+    _tn = Translator(ui_locales)
 
     bind = '#' if '?' in redirect_uri else '?'
     if 'service=facebook' not in redirect_uri:
@@ -68,16 +76,13 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
         facebook.fetch_token(token_url, client_secret=client_secret, authorization_response=authorization_response)
     except InsecureTransportError:
         logger('Facebook OAuth', 'OAuth 2 MUST utilize https', error=True)
-        _tn = Translator(ui_locales)
-        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+        return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
     except InvalidClientError:
         logger('Facebook OAuth', 'InvalidClientError', error=True)
-        _tn = Translator(ui_locales)
-        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+        return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
     except MissingTokenError:
         logger('Facebook OAuth', 'MissingTokenError', error=True)
-        _tn = Translator(ui_locales)
-        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+        return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
 
     resp = facebook.get('https://graph.facebook.com/me?fields=name,email,first_name,last_name,gender,locale')
     logger('Facebook OAuth', str(resp.text))
@@ -104,11 +109,7 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     logger('Facebook OAuth', 'user_data: ' + str(user_data))
     logger('Facebook OAuth', 'missing_data: ' + str(missing_data))
 
-    return {
-        'user': user_data,
-        'missing': missing_data,
-        'error': ''
-    }
+    return get_oauth_ret_dict(user_data=user_data, missing_data=missing_data)
 
 
 def __prepare_data(parsed_resp, gender, ui_locales):
