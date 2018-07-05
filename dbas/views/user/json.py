@@ -80,8 +80,15 @@ def user_login_oauth(request):
         redirect_url = url.replace('http:', 'https:')
 
         val = login_oauth_user(request, service, redirect_url, old_redirect, lang)
+
         if val is None:
             return {'error': _tn.get(_.internalKeyError)}
+        elif val.get('user'):
+            url = f'{request.application_url}/discuss'
+            headers, url = __refresh_headers_and_url(request, val.get('user'), False, url)
+            sleep(0.5)
+            return HTTPFound(location=url, headers=headers)
+
         return val
     except KeyError as e:
         logger('user_login_oauth', repr(e), error=True)

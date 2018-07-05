@@ -58,14 +58,7 @@ def __do_oauth(request, service, provider, keywords, redirect_uri, old_redirect,
         if len(data['error']) != 0 or len(data['missing']) != 0:
             return data
 
-        value_dict = __set_oauth_user(data['user'], service, ui_locales)
-        if isinstance(value_dict, dict):
-            if len(value_dict['error']) != 0:
-                return value_dict
-        else:
-            return value_dict
-
-        return {'status': 'success'}  # api
+        return __set_oauth_user(data['user'], service, ui_locales)
     else:
         request.session['oauth_redirect_url'] = old_redirect
         return provider.start_flow(request=request, redirect_uri=redirect_uri)
@@ -88,10 +81,8 @@ def __set_oauth_user(user_data, service, ui_locales):
 
     ret_dict = user.set_new_oauth_user(user_data, user_data['id'], service, _tn)
 
-    if ret_dict['success']:
-        return {'status': 'success'}  # api
-    else:
-        return {
-            'error': ret_dict['error'],
-            'success': ret_dict['success']
-        }
+    return {
+        'status': ret_dict['success'] if ret_dict['success'] else ret_dict['error'],
+        'error': ret_dict.get('error', ''),
+        'user': ret_dict.get('user')
+    }
