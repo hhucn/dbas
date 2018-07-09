@@ -103,13 +103,6 @@ jshint:
     - bash -c "jshint ./websocket/static/js/*.js"
   allow_failure: true
 
-# binaries:
-#   <<: *add-services
-#   stage: test
-#   script:
-#     - apt-get install python3
-#     - python3 tests/binaries.py
-
 unit:
   <<: *add-services
   stage: test
