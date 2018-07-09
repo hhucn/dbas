@@ -96,7 +96,8 @@ attitude = Service(name='api_attitude',
 
 finish = Service(name='api_finish',
                  path='/{slug}/finish/{argument_id:\d+}',
-                 description='End of a discussion')
+                 description='End of a discussion',
+                 cors_policy=cors_policy)
 
 # add new stuff
 positions = Service(name='Positions',
