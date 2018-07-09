@@ -74,7 +74,6 @@ frontend:
     - docker run -di --name frontendtest_$CI_JOB_ID --net=dbas_$CI_JOB_ID $CI_REGISTRY_IMAGE/frontendtest
   script:
     - docker exec frontendtest_$CI_JOB_ID bash -c "node_modules/.bin/cypress run --env WEB_HOST=web_$CI_JOB_ID,WEB_PORT=$DBAS_PORT,WEB_PROTOCOL=$DBAS_PROTOCOL"
-    - docker exec frontendtest_$CI_JOB_ID bash -c "node_modules/.bin/cypress run --env WEB_HOST=web_$CI_JOB_ID,WEB_PORT=$DBAS_PORT,WEB_PROTOCOL=$DBAS_PROTOCOL --browser chrome"
   after_script:
     - mkdir cypress_artifacts/
     - docker cp frontendtest_$CI_JOB_ID:/cypress cypress_artifacts/
@@ -126,7 +125,7 @@ sonar:
   image: hhucn/sonar-scanner
   stage: deploy
   script:
-    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.9.0 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
+    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.9.1 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
   only:
     - development
   when: always

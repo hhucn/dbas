@@ -70,12 +70,6 @@ Main.prototype.__setClFunctionsSomeElements = function (guiHandler) {
     });
 
     // hiding the island view, when the X button is clicked
-    $('#' + closeIslandViewContainerId).click(function () {
-        guiHandler.resetChangeDisplayStyleBox();
-        $('#li_' + addReasonButtonId).prop('checked', true);
-    });
-
-    // hiding the island view, when the X button is clicked
     $('#' + closeGraphViewContainerId).click(function () {
         guiHandler.resetChangeDisplayStyleBox();
     });
@@ -88,12 +82,9 @@ Main.prototype.__setClickFunctionsDisplayElements = function (guiHandler) {
         guiHandler.setDisplayStyleAsDiscussion();
         clearAnchor();
     });
-    $('#' + displayStyleIconIslandId).click(function displayStyleIconIslandFct() {
-        guiHandler.setDisplayStyleAsIsland();
-        setAnchor('island');
-    });
     $('#' + displayStyleIconGraphId).click(function displayStyleIconExpertFct() {
         guiHandler.setDisplayStyleAsGraphView();
+        new DiscussionGraph({}, false).showGraph(false);
         setAnchor('graph');
     });
 
@@ -681,9 +672,8 @@ Main.prototype.__setContainerSidebarForOneLiner = function(children, id, ids){
     'use strict';
     // if we have just one list element AND the list element has a special function AND we are logged in
     if (children.length === 1 && $.inArray(id, ids) !== -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) === -1) {
-        var container = $('#' + discussionContainerId);
-        container.height(container.height() - 50);
         children.eq(0).prop('checked', true).parent().hide();
+        $('#' + discussionSpaceId).remove();
     }
 };
 
@@ -754,20 +744,10 @@ $(document).ready(function mainDocumentReady() {
         $('#' + discussionEndReview).attr('href', mainpage + 'review');
     }
 
-    tmp = window.location.href.split('?');
-    if (tmp[0].indexOf('/reaction/') !== -1) {
-        $('#island-view-undermine-button').attr('onclick', $('#item_undermine').attr('onclick'));
-        $('#island-view-support-button').attr('onclick', $('#item_support').attr('onclick'));
-        $('#island-view-undercut-button').attr('onclick', $('#item_undercut').attr('onclick'));
-        $('#island-view-rebut-button').attr('onclick', $('#item_rebut').attr('onclick'));
-    }
-
     // check anchors
     if (location.hash.indexOf('graph') !== -1) {
-        guiHandler.setDisplayStyleAsGraphView();
-    }
-    if (location.hash.indexOf('island') !== -1) {
-        guiHandler.setDisplayStyleAsIsland();
+        new GuiHandler().setDisplayStyleAsGraphView();
+        new DiscussionGraph({}, false).showGraph(false);
     }
     if (location.hash.indexOf('barometer') !== -1) {
         new DiscussionBarometer().showBarometer();

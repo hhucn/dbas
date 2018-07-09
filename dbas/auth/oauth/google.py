@@ -7,14 +7,17 @@ Used lib: http://requests-oauthlib.readthedocs.io/en/latest/examples/google.html
 Manage Google Client IDs: https://console.developers.google.com/apis/credentials
 """
 
-import os
 import json
+import os
+
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, InvalidClientError, MissingTokenError
 from requests_oauthlib.oauth2_session import OAuth2Session
-from dbas.logger import logger
+
+from dbas.auth.oauth import get_oauth_ret_dict
 from dbas.handler.user import oauth_values
-from dbas.strings.translator import Translator
+from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 scope = ['https://www.googleapis.com/auth/userinfo.email',
          'https://www.googleapis.com/auth/userinfo.profile']
@@ -22,12 +25,14 @@ authorization_base_url = 'https://accounts.google.com/o/oauth2/v2/auth'
 token_url = 'https://accounts.google.com/o/oauth2/token'
 
 
-def start_flow(redirect_uri):
+def start_flow(**kwargs):
     """
+    Starts the oauth flow. This will return a dict which causes a redirect to the providers page.
 
-    :param redirect_uri:
+    :param kwargs: should have a redirect_uri
     :return:
     """
+    redirect_uri = kwargs.get('redirect_uri')
     client_id = os.environ.get('OAUTH_GOOGLE_CLIENTID', None)
     client_secret = os.environ.get('OAUTH_GOOGLE_CLIENTKEY', None)
 
@@ -40,7 +45,8 @@ def start_flow(redirect_uri):
     # OAuth endpoints given in the Google API documentation
     google = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
 
-    authorization_url, state = google.authorization_url(authorization_base_url, access_type='offline', prompt='select_account')
+    authorization_url, state = google.authorization_url(authorization_base_url, access_type='offline',
+                                                        prompt='select_account')
 
     logger('Google OAuth', 'Please go to {} and authorize access'.format(authorization_url))
     return {'authorization_url': authorization_url, 'error': ''}
@@ -48,6 +54,8 @@ def start_flow(redirect_uri):
 
 def continue_flow(redirect_uri, authorization_response, ui_locales):
     """
+    Continues the oauth flow. This will fetch the login tokens and login the user if all information were given.
+    Otherwise the registration modal will be displayed.
 
     :param redirect_uri:
     :param authorization_response:
@@ -56,6 +64,7 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     """
     client_id = os.environ.get('OAUTH_GOOGLE_CLIENTID', None)
     client_secret = os.environ.get('OAUTH_GOOGLE_CLIENTKEY', None)
+    _tn = Translator(ui_locales)
 
     logger('Google OAuth', 'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
 
@@ -66,19 +75,17 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     google = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
 
     try:
-        token = google.fetch_token(token_url, authorization_response=authorization_response, client_secret=client_secret)
+        token = google.fetch_token(token_url, authorization_response=authorization_response,
+                                   client_secret=client_secret)
     except InsecureTransportError:
         logger('Google OAuth', 'OAuth 2 MUST utilize https', error=True)
-        _tn = Translator(ui_locales)
-        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+        return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
     except InvalidClientError:
         logger('Google OAuth', 'InvalidClientError', error=True)
-        _tn = Translator(ui_locales)
-        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+        return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
     except MissingTokenError:
         logger('Google OAuth', 'MissingTokenError', error=True)
-        _tn = Translator(ui_locales)
-        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+        return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
 
     logger('Google OAuth', 'Token: {}'.format(token))
 
@@ -108,11 +115,7 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     logger('Google OAuth', 'user_data: ' + str(user_data))
     logger('Google OAuth', 'missing_data: ' + str(missing_data))
 
-    return {
-        'user': user_data,
-        'missing': missing_data,
-        'error': ''
-    }
+    return get_oauth_ret_dict(user_data=user_data, missing_data=missing_data)
 
 
 def __prepare_data(parsed_resp, gender, ui_locales):

@@ -15,7 +15,7 @@ from typing import Union
 import transaction
 
 from admin.lib import check_api_token
-from dbas.auth.login import login_user
+from dbas.auth.login import login_local_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.lib import get_user_by_case_insensitive_nickname, nick_of_anonymous_user
@@ -152,7 +152,7 @@ def validate_credentials(request, **kwargs):
     password = request.validated['password']
 
     # Check in DB-AS' database, if the user's credentials are valid
-    logged_in = login_user(nickname, password, request.mailer)
+    logged_in = login_local_user(nickname, password, request.mailer)
     db_user = logged_in.get('user')
     if db_user:
         token = __create_token(db_user.nickname)

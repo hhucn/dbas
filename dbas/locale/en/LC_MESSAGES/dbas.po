@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-06-19 16:02+0200\n"
+"POT-Creation-Date: 2018-06-27 08:45+0000\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -246,45 +246,40 @@ msgid "go_back_to_the_discussion"
 msgstr "go back to the discussion!"
 
 #. Default: About
-#: templates/index.pt:43
+#: templates/index.pt:35
 msgid "about"
 msgstr "About"
 
 #. Default: Requirements
-#: templates/index.pt:46 templates/index.pt:136
+#: templates/index.pt:38 templates/index.pt:125
 msgid "requirements"
 msgstr "Requirements"
 
 #. Default: Services
-#: templates/index.pt:49
+#: templates/index.pt:41
 msgid "services"
 msgstr "Services"
 
 #. Default: Github
-#: templates/index.pt:52
+#: templates/index.pt:44
 msgid "github"
 msgstr "Github"
 
-#. Default: News
-#: templates/index.pt:58 templates/news.pt:6 templates/snippet/footer.pt:47
-msgid "news"
-msgstr "News"
-
 #. Default: Contact
 #. Default: Kontakt:
-#: templates/index.pt:61 templates/imprint.pt:22 templates/snippet/footer.pt:20
+#: templates/index.pt:50 templates/imprint.pt:22 templates/snippet/footer.pt:20
 msgid "contact"
 msgstr "Contact"
 
 #. Default: The solution for every Large Scale Online-Discussion
-#: templates/index.pt:89
+#: templates/index.pt:78
 msgid "landing-page-heading"
 msgstr "The solution for large-scale Online-Discussions"
 
 #. Default: Welcome to D-BAS! This is our Dialog-Based Argumentation System. It
 #. offers a clear discussion structure, a modern web interface, a decentralized
 #. moderation system and is easy to use for everyone!
-#: templates/index.pt:93
+#: templates/index.pt:82
 msgid "welcome_to_dbas"
 msgstr ""
 "Welcome to D-BAS - the Dialog-Based Argumentation System. It offers a clear "
@@ -292,17 +287,17 @@ msgstr ""
 "system and is easy to use for everyone!"
 
 #. Default: Find Out More
-#: templates/index.pt:100
+#: templates/index.pt:89
 msgid "find_out_more"
 msgstr "Find Out More"
 
 #. Default: or start directly
-#: templates/index.pt:105
+#: templates/index.pt:94
 msgid "start_directly"
 msgstr "try it out"
 
 #. Default: We've got what you need!
-#: templates/index.pt:116
+#: templates/index.pt:105
 msgid "we_have_you_need"
 msgstr "We've got what you need: Structured Discussions!"
 
@@ -313,7 +308,7 @@ msgstr "We've got what you need: Structured Discussions!"
 #. the potential to strengthen the acceptance and the quality of them. We offer
 #. a novel approach for large scale online-discussion. Feel free to try it out
 #. now!
-#: templates/index.pt:120
+#: templates/index.pt:109
 msgid "landing_page_intro"
 msgstr ""
 "With the rise of the Internet, we now have a basic infrastructure, which "
@@ -328,7 +323,7 @@ msgstr ""
 #. online discussion, of course! But we give our best to deliver a software
 #. which can support rational online argumentations! You should give D-BAS a
 #. try if:
-#: templates/index.pt:140
+#: templates/index.pt:129
 msgid "requirements_text"
 msgstr ""
 "We are aware of the fact, that D-BAS is not suitable for every online "
@@ -336,239 +331,219 @@ msgstr ""
 "support rational online argumentations! You should give D-BAS a try if:"
 
 #. Default: your discussion is very controversy
-#: templates/index.pt:145
+#: templates/index.pt:134
 msgid "discussion_is_controversy"
 msgstr "your discussion is very controversy"
 
 #. Default: your participants are willing to debate
-#: templates/index.pt:146
+#: templates/index.pt:135
 msgid "participants_willing_debate"
 msgstr "your participants are willing to debate"
 
 #. Default: some participants will come back
-#: templates/index.pt:147
+#: templates/index.pt:136
 msgid "participants_come_back"
 msgstr "some participants will come back"
 
 #. Default: you need to support the discussion
-#: templates/index.pt:148
+#: templates/index.pt:137
 msgid "need_support_the_discussion"
 msgstr "you need to support the discussion"
 
 #. Default: you want a structured result of given arguments
-#: templates/index.pt:149
+#: templates/index.pt:138
 msgid "want_structured_result"
 msgstr "you want a structured result of given arguments"
 
 #. Default: That's interesting, isn't it?
-#: templates/index.pt:158
+#: templates/index.pt:147
 msgid "thats_interessting_isnt_it"
 msgstr "That's interesting, isn't it?"
 
 #. Default: Get Started
-#: templates/index.pt:159
+#: templates/index.pt:148
 msgid "get_started"
 msgstr "Get Started"
 
 #. Default: At Your Service
-#: templates/index.pt:167
+#: templates/index.pt:156
 msgid "at_your_service"
 msgstr "At Your Service"
 
 #. Default: Easy to Use
-#: templates/index.pt:177
+#: templates/index.pt:166
 msgid "easy_to_use"
 msgstr "Easy-to-Use"
 
 #. Default: No complicated argumentation! Step-by-step dialogs!
-#: templates/index.pt:178
+#: templates/index.pt:167
 msgid "easy_to_use_text"
 msgstr "No complicated argumentation. Step-by-step dialogs."
 
 #. Default: Clear Structure
-#: templates/index.pt:185
+#: templates/index.pt:174
 msgid "clear_structure"
 msgstr "Clear Structure"
 
 #. Default: Argument-maps are to messy! Let's use a modern chat-interface!
-#: templates/index.pt:186
+#: templates/index.pt:175
 msgid "clear_structure_text"
 msgstr "Argument-maps are to messy. Let's use a modern chat-interface."
 
 #. Default: Decentralized Mods
-#: templates/index.pt:193
+#: templates/index.pt:182
 msgid "dec_mods"
 msgstr "Decentralized Mods"
 
 #. Default: Give the power to the crowd! They know how to use it!
-#: templates/index.pt:194
+#: templates/index.pt:183
 msgid "dec_mods_text"
 msgstr "Give the power to the crowd. They know how to use it."
 
 #. Default: Proved Scientifically
-#: templates/index.pt:202
+#: templates/index.pt:191
 msgid "developed_at_uni"
 msgstr "Proved Scientifically"
 
 #. Default: D-BAS was developed at the university in cooperation with city
 #. councils.
-#: templates/index.pt:203
+#: templates/index.pt:192
 msgid "developed_at_uni_text"
 msgstr "D-BAS was developed at the university in cooperation with cities."
 
 #. Default: Tested by a Crowd
-#: templates/index.pt:213
+#: templates/index.pt:202
 msgid "tested_by_crowd"
 msgstr "Tested by a Crowd"
 
 #. Default: D-BAS was test by many students and citizens!
-#: templates/index.pt:214
+#: templates/index.pt:203
 msgid "tested_by_crowd_text"
 msgstr "Scientifically evaluated and tested by students and citizens."
 
 #. Default: Ready to Ship
-#: templates/index.pt:222
+#: templates/index.pt:211
 msgid "ready_to_ship"
 msgstr "Ready to Ship"
 
 #. Default: Easy to deploy and maintain, because it is shipped in Docker
 #. Containers!
-#: templates/index.pt:223
+#: templates/index.pt:212
 msgid "ready_to_ship_text"
 msgstr "Easy to deploy and maintain, because it is shipped with Docker."
 
 #. Default: Up to Date
-#: templates/index.pt:231
+#: templates/index.pt:220
 msgid "up_to_date"
 msgstr "Up to Date"
 
 #. Default: We update dependencies to keep things fresh.
-#: templates/index.pt:232
+#: templates/index.pt:221
 msgid "up_to_date_text"
 msgstr "We update dependencies to keep things fresh."
 
 #. Default: Made with Love
-#: templates/index.pt:240
+#: templates/index.pt:229
 msgid "made_with_love"
 msgstr "Made with Love"
 
 #. Default: You have to make your software with love these days!
-#: templates/index.pt:241
+#: templates/index.pt:230
 msgid "made_with_love_text"
 msgstr "Developed by scientists in Düsseldorf."
 
 #. Default: Free Download at Github!
-#: templates/index.pt:252
+#: templates/index.pt:241
 msgid "free_at_github"
 msgstr "Free Download at Github!"
 
 #. Default: Download Now
-#: templates/index.pt:255
+#: templates/index.pt:244
 msgid "download_now"
 msgstr "Download Now"
 
 #. Default: From the University into Practice
-#: templates/index.pt:264
+#: templates/index.pt:253
 msgid "from_uni_to_pratice"
 msgstr "From the University into Practice"
 
 #. Default: This work is part of the graduate school on
-#: templates/index.pt:266
+#: templates/index.pt:255
 msgid "work_based_on"
 msgstr "This work is part of the graduate school on"
 
 #. Default: Online-Participation
-#: templates/index.pt:269 templates/index.pt:274
+#: templates/index.pt:258 templates/index.pt:263
 msgid "online_participation"
 msgstr "Online-Participation"
 
 #. Default: It is funded by the
-#: templates/index.pt:277
+#: templates/index.pt:266
 msgid "funded_by"
 msgstr "It is funded by the"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: templates/index.pt:280
+#: templates/index.pt:269
 msgid "ministry_of_innovation"
 msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
 
 #. Default: Heinrich-Heine-University Duesseldorf
-#: templates/index.pt:294
+#: templates/index.pt:283
 msgid "hhu"
 msgstr "Heinrich-Heine-University Düsseldorf"
 
 #. Default: Graduation School on Online Participation
-#: templates/index.pt:302
+#: templates/index.pt:291
 msgid "graduate_school_online_participation"
 msgstr "Graduation School on Online Participation"
 
 #. Default: University of Applied Sciences for Public Administration and
 #. management of North Rhine-Westphalia
-#: templates/index.pt:311
+#: templates/index.pt:300
 msgid "fhoev"
 msgstr ""
 "University of Applied Sciences for Public Administration and management of "
 "North Rhine-Westphalia"
 
 #. Default: Duesseldorf Institut of Internet and Democracy
-#: templates/index.pt:321
+#: templates/index.pt:310
 msgid "diid"
 msgstr "Düsseldorf Institut of Internet and Democracy"
 
-#. Default: Latest News
-#: templates/index.pt:332
-msgid "latest_news"
-msgstr "Latest News"
-
-#. Default: Previous
-#: templates/index.pt:362
-msgid "previous"
-msgstr "Previous"
-
-#. Default: Next
-#: templates/index.pt:366
-msgid "next"
-msgstr "Next"
-
-#. Default: Go to the news
-#: templates/index.pt:375
-msgid "go_to_news"
-msgstr "Go to the News"
-
 #. Default: Statistics
-#: templates/index.pt:386
+#: templates/index.pt:321
 msgid "statistics"
 msgstr "Statistics"
 
 #. Default: Arguments
-#: templates/index.pt:394
+#: templates/index.pt:329
 msgid "arguments"
 msgstr "Arguments"
 
 #. Default: Discussions
-#: templates/index.pt:400
+#: templates/index.pt:335
 msgid "discussions"
 msgstr "Discussions"
 
 #. Default: Users
-#: templates/index.pt:407
+#: templates/index.pt:342
 msgid "users"
 msgstr "Users"
 
 #. Default: Reviews
-#: templates/index.pt:414
+#: templates/index.pt:349
 msgid "reviews"
 msgstr "Reviews"
 
 #. Default: Let's Get In Touch!
-#: templates/index.pt:425
+#: templates/index.pt:360
 msgid "get_in_touch"
 msgstr "Let's Get In Touch!"
 
 #. Default: Ready to start your next discussion with us? That's great! Send us
 #. an email and we will get back to you as soon as possible!
-#: templates/index.pt:427
+#: templates/index.pt:362
 msgid "ready_to_start_with_us"
 msgstr ""
 "Ready to start your next discussion with us? That's great! Send us an email "
@@ -788,9 +763,14 @@ msgid "copyright_and_used_software"
 msgstr "Used Software"
 
 #. Default: Changes
-#: templates/imprint.pt:112
+#: templates/imprint.pt:106
 msgid "changes"
 msgstr "Changelog"
+
+#. Default: News
+#: templates/news.pt:6 templates/snippet/footer.pt:47
+msgid "news"
+msgstr "News"
 
 #. Default: Latest news of D-BAS
 #: templates/news.pt:9
@@ -816,77 +796,77 @@ msgstr ""
 "Feeds"
 
 #. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:31
+#: templates/basetemplate.pt:18
 msgid "js_disabled1"
 msgstr "JavaScript is not enabled:"
 
 #. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:32
+#: templates/basetemplate.pt:19
 msgid "js_disabled2"
 msgstr "Please enable JavaScript!"
 
 #. Default: Your request failed!
-#: templates/basetemplate.pt:38
+#: templates/basetemplate.pt:25
 msgid "request_failed"
 msgstr "Your request failed!"
 
 #. Default: Please reload the page.
-#: templates/basetemplate.pt:39
+#: templates/basetemplate.pt:26
 msgid "please_reload"
 msgstr "Please reload the page."
 
 #. Default: Your request succeded!
-#: templates/basetemplate.pt:46 templates/basetemplate.pt:47
+#: templates/basetemplate.pt:33 templates/basetemplate.pt:34
 msgid "request_success"
 msgstr "Your request succeded!"
 
 #. Default: Toggle navigation
-#: templates/snippet/header.pt:9
+#: templates/snippet/navbar.pt:9
 msgid "Toggle Navigation"
 msgstr "Toggle navigation"
 
 #. Default: Let's go
-#: templates/snippet/header.pt:20
+#: templates/snippet/navbar.pt:20
 msgid "lets_go"
 msgstr "Let's go"
 
 #. Default: Restart
-#: templates/snippet/header.pt:27
+#: templates/snippet/navbar.pt:27
 msgid "restart"
 msgstr "Restart"
 
 #. Default: My Discussions
-#: templates/snippet/header.pt:33
+#: templates/snippet/navbar.pt:33
 #: templates/discussion/organism/overview-user.pt:6
 msgid "my_discussions"
 msgstr "My Discussions"
 
 #. Default: Switch Topic
-#: templates/snippet/header.pt:40
+#: templates/snippet/navbar.pt:40
 msgid "switch_topic"
 msgstr "Switch Topic"
 
 #. Default: Übersicht
-#: templates/snippet/header.pt:58
+#: templates/snippet/navbar.pt:58
 msgid "overview"
 msgstr "Overview"
 
 #. Default: Add a Topic
 #. Default: Add Topic
-#: templates/snippet/header.pt:61 templates/snippet/header.pt:66
-#: templates/snippet/popups.pt:777
+#: templates/snippet/navbar.pt:61 templates/snippet/navbar.pt:66
+#: templates/snippet/popups.pt:780
 msgid "add_topic"
 msgstr "Add a Topic"
 
 #. Default: Login
 #. Default: Log In
-#: templates/snippet/header.pt:78 templates/snippet/popups.pt:312
-#: templates/snippet/popups.pt:372
+#: templates/snippet/navbar.pt:78 templates/snippet/popups.pt:314
+#: templates/snippet/popups.pt:374
 msgid "login"
 msgstr "Log In"
 
 #. Default: Review
-#: templates/snippet/header.pt:84 templates/review/type/split.pt:6
+#: templates/snippet/navbar.pt:84 templates/review/type/split.pt:6
 #: templates/review/type/delete.pt:6 templates/review/type/optimize.pt:6
 #: templates/review/type/edit.pt:7 templates/review/type/duplicate.pt:6
 #: templates/review/type/merge.pt:6
@@ -894,53 +874,53 @@ msgid "review"
 msgstr "Review"
 
 #. Default: Settings
-#: templates/snippet/header.pt:102 templates/user/settings.pt:54
+#: templates/snippet/navbar.pt:102 templates/user/settings.pt:54
 msgid "settings"
 msgstr "Settings"
 
 #. Default: Notifications
-#: templates/snippet/header.pt:110
+#: templates/snippet/navbar.pt:110
 msgid "notifications"
 msgstr "Notifications"
 
 #. Default: Admin
-#: templates/snippet/header.pt:117
+#: templates/snippet/navbar.pt:117
 msgid "Admin"
 msgstr "Admin"
 
 #. Default: Logout
-#: templates/snippet/header.pt:122
+#: templates/snippet/navbar.pt:122
 msgid "logout"
 msgstr "Logout"
 
 #. Default: Okay
-#: templates/snippet/popups.pt:55 templates/snippet/popups.pt:84
-#: templates/snippet/popups.pt:118 templates/snippet/popups.pt:1346
+#: templates/snippet/popups.pt:57 templates/snippet/popups.pt:86
+#: templates/snippet/popups.pt:120 templates/snippet/popups.pt:1350
 msgid "okay"
 msgstr "Okay"
 
 #. Default: Cancel
-#: templates/snippet/popups.pt:58 templates/snippet/popups.pt:88
-#: templates/snippet/popups.pt:122 templates/snippet/popups.pt:1092
-#: templates/snippet/popups.pt:1160 templates/snippet/popups.pt:1350
+#: templates/snippet/popups.pt:60 templates/snippet/popups.pt:90
+#: templates/snippet/popups.pt:124 templates/snippet/popups.pt:1095
+#: templates/snippet/popups.pt:1163 templates/snippet/popups.pt:1354
 #: templates/review/history.pt:115
 msgid "cancel"
 msgstr "Cancel"
 
 #. Default: Do not remind me again
-#: templates/snippet/popups.pt:111
+#: templates/snippet/popups.pt:113
 msgid "do_not_remind_me_again"
 msgstr "Do not remind me again"
 
 #. Default: Information are missing
-#: templates/snippet/popups.pt:182
+#: templates/snippet/popups.pt:184
 msgid "information_missing"
 msgstr "Information are missing"
 
 #. Default: During the authentication we could not fetch all of the necessary
 #. information. Please add the missing information, so we can add a new account
 #. in D-BAS (Login via other providers won't work).
-#: templates/snippet/popups.pt:185
+#: templates/snippet/popups.pt:187
 msgid "plase_add_missing_infos_we_add_account"
 msgstr ""
 "During the authentication we could not fetch all of the necessary "
@@ -948,331 +928,331 @@ msgstr ""
 "in D-BAS (Login via other providers won't work)."
 
 #. Default: Your First Name
-#: templates/snippet/popups.pt:191 templates/snippet/popups.pt:389
+#: templates/snippet/popups.pt:193 templates/snippet/popups.pt:391
 msgid "first_name"
 msgstr "Your First Name"
 
 #. Default: Your Last Name
-#: templates/snippet/popups.pt:201 templates/snippet/popups.pt:399
+#: templates/snippet/popups.pt:203 templates/snippet/popups.pt:401
 msgid "last_name"
 msgstr "Your Last Name"
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: templates/snippet/popups.pt:210 templates/snippet/popups.pt:408
+#: templates/snippet/popups.pt:212 templates/snippet/popups.pt:410
 #: templates/user/settings.pt:30
 msgid "nickname"
 msgstr "Nickname"
 
 #. Default: Your Gender
-#: templates/snippet/popups.pt:220 templates/snippet/popups.pt:416
+#: templates/snippet/popups.pt:222 templates/snippet/popups.pt:418
 msgid "your_gender"
 msgstr "Your Gender"
 
 #. Default: Your Email Address
-#: templates/snippet/popups.pt:240 templates/snippet/popups.pt:436
+#: templates/snippet/popups.pt:242 templates/snippet/popups.pt:438
 msgid "your_email"
 msgstr "Your Email Address"
 
 #. Default: Your Password
-#: templates/snippet/popups.pt:249 templates/snippet/popups.pt:446
+#: templates/snippet/popups.pt:251 templates/snippet/popups.pt:448
 msgid "password"
 msgstr "Your Password"
 
 #. Default: Password (confirm)
-#: templates/snippet/popups.pt:260 templates/snippet/popups.pt:457
+#: templates/snippet/popups.pt:262 templates/snippet/popups.pt:459
 msgid "password-confirm"
 msgstr "Password (confirm)"
 
 #. Default: Error:
-#: templates/snippet/popups.pt:274 templates/snippet/popups.pt:497
-#: templates/snippet/popups.pt:515
+#: templates/snippet/popups.pt:276 templates/snippet/popups.pt:499
+#: templates/snippet/popups.pt:517
 msgid "error"
 msgstr "Error:"
 
 #. Default: Info:
 #. Default: Info
-#: templates/snippet/popups.pt:282 templates/snippet/popups.pt:504
-#: templates/snippet/popups.pt:528
+#: templates/snippet/popups.pt:284 templates/snippet/popups.pt:506
+#: templates/snippet/popups.pt:530
 #: templates/discussion/organism/dialog-space.pt:8
 msgid "info"
 msgstr "Info:"
 
 #. Default: Register
-#: templates/snippet/popups.pt:289 templates/snippet/popups.pt:535
+#: templates/snippet/popups.pt:291 templates/snippet/popups.pt:537
 msgid "register"
 msgstr "Register"
 
 #. Default: Close
-#: templates/snippet/popups.pt:293 templates/snippet/popups.pt:375
-#: templates/snippet/popups.pt:537 templates/snippet/popups.pt:699
-#: templates/snippet/popups.pt:763
+#: templates/snippet/popups.pt:295 templates/snippet/popups.pt:377
+#: templates/snippet/popups.pt:539 templates/snippet/popups.pt:702
+#: templates/snippet/popups.pt:766
 msgid "close"
 msgstr "Close"
 
 #. Default: Sign Up
-#: templates/snippet/popups.pt:313
+#: templates/snippet/popups.pt:315
 msgid "sign_up"
 msgstr "Sign Up"
 
 #. Default: Your Nickname
-#: templates/snippet/popups.pt:322
+#: templates/snippet/popups.pt:324
 msgid "your_nickname"
 msgstr "Your Nickname"
 
 #. Default: Your Password
-#: templates/snippet/popups.pt:334
+#: templates/snippet/popups.pt:336
 msgid "your_password"
 msgstr "Your Password"
 
 #. Default: Keep me logged in
-#: templates/snippet/popups.pt:348
+#: templates/snippet/popups.pt:350
 msgid "keep_me_logged_in"
 msgstr "Keep me logged in"
 
 #. Default: Forgot your password?
-#: templates/snippet/popups.pt:351
+#: templates/snippet/popups.pt:353
 msgid "forgot_password"
 msgstr "Forgot your password?"
 
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address. This does not affect other services of the HHU:
-#: templates/snippet/popups.pt:356
+#: templates/snippet/popups.pt:358
 msgid "fill_in_mail_for_password"
 msgstr ""
 "Please fill in your e-mail below. A new password will be send this address. "
 "This does not affect other services of the HHU:"
 
 #. Default: We will never display your real name to other users!
-#: templates/snippet/popups.pt:385
+#: templates/snippet/popups.pt:387
 msgid "never_display_real_name"
 msgstr "We will never display your real name to other users!"
 
 #. Default: If you have a valid account at the HHU, you can directly use the
 #. login!
-#: templates/snippet/popups.pt:386
+#: templates/snippet/popups.pt:388
 msgid "have_account_hhu"
 msgstr "If you have a valid account at the HHU, you can directly use the login"
 
 #. Default: Password Strength
-#: templates/snippet/popups.pt:468
+#: templates/snippet/popups.pt:470
 msgid "password-strength"
 msgstr "Password Strength"
 
 #. Default: very weak
-#: templates/snippet/popups.pt:471
+#: templates/snippet/popups.pt:473
 msgid "password_strength"
 msgstr "very weak"
 
 #. Default: Solve this captcha
-#: templates/snippet/popups.pt:475
+#: templates/snippet/popups.pt:477
 msgid "captcha"
 msgstr "Solve this captcha"
 
 #. Default: Success:
 #. Default: Success
-#: templates/snippet/popups.pt:490 templates/snippet/popups.pt:521
+#: templates/snippet/popups.pt:492 templates/snippet/popups.pt:523
 #: templates/discussion/organism/dialog-space.pt:24
 msgid "success"
 msgstr "Success:"
 
 #. Default: Or login via
-#: templates/snippet/popups.pt:543
+#: templates/snippet/popups.pt:546
 msgid "or_login_via"
 msgstr "Or login via"
 
 #. Default: Writing a new message
-#: templates/snippet/popups.pt:653 templates/snippet/popups.pt:714
+#: templates/snippet/popups.pt:656 templates/snippet/popups.pt:717
 msgid "writing_message"
 msgstr "Writing a new message"
 
 #. Default: Error:
-#: templates/snippet/popups.pt:675 templates/snippet/popups.pt:748
+#: templates/snippet/popups.pt:678 templates/snippet/popups.pt:751
 msgid "error:"
 msgstr "Error:"
 
 #. Default: Success:
-#: templates/snippet/popups.pt:681 templates/snippet/popups.pt:754
+#: templates/snippet/popups.pt:684 templates/snippet/popups.pt:757
 msgid "success:"
 msgstr "Success:"
 
 #. Default: Author
-#: templates/snippet/popups.pt:689
+#: templates/snippet/popups.pt:692
 msgid "author"
 msgstr "Author"
 
 #. Default: Date
-#: templates/snippet/popups.pt:691 templates/review/reputation.pt:25
+#: templates/snippet/popups.pt:694 templates/review/reputation.pt:25
 msgid "date"
 msgstr "Date"
 
 #. Default: Send News
-#: templates/snippet/popups.pt:696
+#: templates/snippet/popups.pt:699
 msgid "send_news"
 msgstr "Send News"
 
 #. Default: Send Notifcation
-#: templates/snippet/popups.pt:761
+#: templates/snippet/popups.pt:764
 msgid "send_notification"
 msgstr "Send Notifcation"
 
 #. Default: Please enter your title here:
-#: templates/snippet/popups.pt:782
+#: templates/snippet/popups.pt:785
 msgid "please_enter_title"
 msgstr "Your title here:"
 
 #. Default: Please enter a short-description or question here:
-#: templates/snippet/popups.pt:788
+#: templates/snippet/popups.pt:791
 msgid "please_enter_info"
 msgstr "Question for the topic:"
 
 #. Default: Please enter the full description here:
-#: templates/snippet/popups.pt:796
+#: templates/snippet/popups.pt:799
 msgid "please_enter_long_info"
 msgstr "Full description:"
 
 #. Default: Language of the discussion:
-#: templates/snippet/popups.pt:807
+#: templates/snippet/popups.pt:810
 msgid "please_select_language_for_topic"
 msgstr "Language of the discussion:"
 
 #. Default: Is the topic available for the public?
-#: templates/snippet/popups.pt:833
+#: templates/snippet/popups.pt:836
 msgid "is_topic_available_for_public"
 msgstr "Is the topic available for the public?"
 
 #. Default: Is the topic read only?
-#: templates/snippet/popups.pt:850
+#: templates/snippet/popups.pt:853
 msgid "is_topic_read_only"
 msgstr "Is the topic read only?"
 
 #. Default: Selecting a reason
-#: templates/snippet/popups.pt:891
+#: templates/snippet/popups.pt:894
 msgid "select-reason"
 msgstr "Selecting a reason"
 
 #. Default: The statement under consideration is as follows
-#: templates/snippet/popups.pt:895
+#: templates/snippet/popups.pt:898
 msgid "statement_under_consideration_is"
 msgstr "The statement under consideration is as follows"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet/popups.pt:900 templates/snippet/popups.pt:980
+#: templates/snippet/popups.pt:903 templates/snippet/popups.pt:983
 msgid "argument_under_consideration_is"
 msgstr "The argument under consideration is as follows"
 
 #. Default: The text needs to be revised.
-#: templates/snippet/popups.pt:914
+#: templates/snippet/popups.pt:917
 msgid "text_need_to_be_revised"
 msgstr "The text needs to be revised."
 
 #. Default: This statement is off topic or irrelevant.
-#: templates/snippet/popups.pt:923
+#: templates/snippet/popups.pt:926
 msgid "statement_offtopic_or_irrelevant"
 msgstr "This statement is off topic or irrelevant."
 
 #. Default: This argument is off topic or irrelevant.
-#: templates/snippet/popups.pt:926
+#: templates/snippet/popups.pt:929
 msgid "argument_offtopic_or_irrelevant"
 msgstr "This argument is off topic or irrelevant."
 
 #. Default: This statement is harmful or abusive.
-#: templates/snippet/popups.pt:933
+#: templates/snippet/popups.pt:936
 msgid "statement_harmful"
 msgstr "This statement is harmful or abusive."
 
 #. Default: This argument is harmful or abusive.
-#: templates/snippet/popups.pt:934
+#: templates/snippet/popups.pt:937
 msgid "argument_harmful"
 msgstr "This argument is harmful or abusive."
 
 #. Default: This statement is a duplicate.
-#: templates/snippet/popups.pt:941
+#: templates/snippet/popups.pt:944
 msgid "statement_duplicate"
 msgstr "Statement is a duplicate."
 
 #. Default: This statement should be merged.
-#: templates/snippet/popups.pt:948
+#: templates/snippet/popups.pt:951
 msgid "statement_merge"
 msgstr "This statement should be merged into several messages."
 
 #. Default: This statement has more than one message.
-#: templates/snippet/popups.pt:955
+#: templates/snippet/popups.pt:958
 msgid "statement_split"
 msgstr "This statement has more than one message."
 
 #. Default: Reporting (parts of) an argument
-#: templates/snippet/popups.pt:975
+#: templates/snippet/popups.pt:978
 msgid "reporting_parts_argument"
 msgstr "Reporting (parts of) an argument"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet/popups.pt:983
+#: templates/snippet/popups.pt:986
 msgid "please_choose_part_to_report"
 msgstr "Please choose which part of the argument you want to report"
 
 #. Default: Report
-#: templates/snippet/popups.pt:991
+#: templates/snippet/popups.pt:994
 msgid "report"
 msgstr "Report"
 
 #. Default: Report the whole argument.
-#: templates/snippet/popups.pt:998
+#: templates/snippet/popups.pt:1001
 msgid "report_whole_argument"
 msgstr "Report the whole argument."
 
 #. Default: Split Statements
-#: templates/snippet/popups.pt:1071 templates/snippet/popups.pt:1107
+#: templates/snippet/popups.pt:1074 templates/snippet/popups.pt:1110
 msgid "split_statement"
 msgstr "Split Statements"
 
 #. Default: Please enter the splitted version of the statement; one per input
 #. field.
-#: templates/snippet/popups.pt:1075
+#: templates/snippet/popups.pt:1078
 msgid "split_multiple_statements"
 msgstr ""
 "Please enter the splitted version of the statement; one per input field."
 
 #. Default: Submit
-#: templates/snippet/popups.pt:1089 templates/snippet/popups.pt:1157
+#: templates/snippet/popups.pt:1092 templates/snippet/popups.pt:1160
 msgid "submit"
 msgstr "Submit"
 
 #. Default: The selected statement is already splitted in several parts, like
 #. the list illustrates below. Do you want to continue with a new split?
-#: templates/snippet/popups.pt:1112
+#: templates/snippet/popups.pt:1115
 msgid "split_multiple_statements_of_pgroup"
 msgstr ""
 "The selected statement is already splitted in several parts, like the list "
 "illustrates below. Do you want to split the statements totally?"
 
 #. Default: The statement
-#: templates/snippet/popups.pt:1116 templates/snippet/popups.pt:1185
+#: templates/snippet/popups.pt:1119 templates/snippet/popups.pt:1188
 msgid "the_statement"
 msgstr "The statement"
 
 #. Default: consist out of
-#: templates/snippet/popups.pt:1118 templates/snippet/popups.pt:1188
+#: templates/snippet/popups.pt:1121 templates/snippet/popups.pt:1191
 msgid "consist_out_of"
 msgstr "consist out of"
 
 #. Default: Yes
-#: templates/snippet/popups.pt:1122 templates/snippet/popups.pt:1192
+#: templates/snippet/popups.pt:1125 templates/snippet/popups.pt:1195
 msgid "yes"
 msgstr "Yes"
 
 #. Default: No
-#: templates/snippet/popups.pt:1125 templates/snippet/popups.pt:1195
+#: templates/snippet/popups.pt:1128 templates/snippet/popups.pt:1198
 msgid "no"
 msgstr "No"
 
 #. Default: Merge Statement
-#: templates/snippet/popups.pt:1140 templates/snippet/popups.pt:1176
+#: templates/snippet/popups.pt:1143 templates/snippet/popups.pt:1179
 msgid "merge_statement"
 msgstr "Merge Statement"
 
 #. Default: Please select the statements, that should be concatenated.
-#: templates/snippet/popups.pt:1143
+#: templates/snippet/popups.pt:1146
 msgid "merge_multiple_statements"
 msgstr ""
 "Please select the statements, that should be concatenated with the given "
@@ -1281,7 +1261,7 @@ msgstr ""
 #. Default: The selected statement already consists out of multiple statement.
 #. Further on the several statements are listed. Do you want to continue with
 #. the merge?
-#: templates/snippet/popups.pt:1181
+#: templates/snippet/popups.pt:1184
 msgid "merge_multiple_statements_of_pgroup"
 msgstr ""
 "The selected statement already consists out of multiple statement. Further "
@@ -1289,62 +1269,62 @@ msgstr ""
 "to one single statement?"
 
 #. Default: Caution
-#: templates/snippet/popups.pt:1212
+#: templates/snippet/popups.pt:1215
 msgid "caution"
 msgstr "Caution"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet/popups.pt:1216
+#: templates/snippet/popups.pt:1219
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Do you really want to disassociate yourself from your content? This step is "
 "irreversible! Subsequently you will not be the author of this"
 
 #. Default: Please choose a step to jump in
-#: templates/snippet/popups.pt:1239
+#: templates/snippet/popups.pt:1242
 msgid "choose_a_step_to_jump_in"
 msgstr "Please choose a step to jump in"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet/popups.pt:1244
+#: templates/snippet/popups.pt:1247
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 "Below you find a list with all arguments, where your selected text is used:"
 
 #. Default: References
-#: templates/snippet/popups.pt:1261
+#: templates/snippet/popups.pt:1265
 msgid "refereces"
 msgstr "References"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet/popups.pt:1267
+#: templates/snippet/popups.pt:1271
 msgid "statement_reference_definition"
 msgstr ""
 "Statement is a cite from a website like a newspaper article, which underpins "
 "the opinion. The source is the website as link."
 
 #. Default: Statement
-#: templates/snippet/popups.pt:1272 templates/snippet/popups.pt:1302
+#: templates/snippet/popups.pt:1276 templates/snippet/popups.pt:1306
 #: templates/review/history.pt:47
 msgid "statement"
 msgstr "Statement"
 
 #. Default: Source
-#: templates/snippet/popups.pt:1281
+#: templates/snippet/popups.pt:1285
 msgid "source"
 msgstr "Source"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet/popups.pt:1289
+#: templates/snippet/popups.pt:1293
 msgid "please_choose_a_reference"
 msgstr "Please choose a statement for your reference!"
 
 #. Default: Add reference
-#: templates/snippet/popups.pt:1308
+#: templates/snippet/popups.pt:1312
 msgid "add_reference"
 msgstr "Add reference"
 
@@ -2512,6 +2492,18 @@ msgstr "Delete everything"
 #: templates/user/notifications.pt:100 templates/user/notifications.pt:109
 msgid "to"
 msgstr "To:"
+
+#~ msgid "latest_news"
+#~ msgstr "Latest News"
+
+#~ msgid "previous"
+#~ msgstr "Previous"
+
+#~ msgid "next"
+#~ msgstr "Next"
+
+#~ msgid "go_to_news"
+#~ msgstr "Go to the News"
 
 #~ msgid "following_statements_were_flagged"
 #~ msgstr "following statements were flagged:"

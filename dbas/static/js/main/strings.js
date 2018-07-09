@@ -606,8 +606,8 @@ var dbas_de = {
     'deleteStatisticsTitle': 'Statistik löschen',
     'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
     'euCookiePopupTitle': 'Diese Seite nutzt Cookies.',
-    'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen,' +
-    ' nehmen Sie alle Cookies unserer Seite an und sind glücklich damit.',
+    'euCookiePopupText': 'Wir benutzen Cookies, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen,' +
+    ' akzeptieren Sie alle Cookies unserer Seite an und sind glücklich damit.',
     'euCookiePopoupButton1': 'Alles klar!',
     'euCookiePopoupButton2': 'Mehr&nbsp;Infos',
     'empty_news_input': 'Nachrichten-Titel oder Text ist leer oder zu kurz!',

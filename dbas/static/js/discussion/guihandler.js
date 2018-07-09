@@ -65,7 +65,6 @@ GuiHandler.prototype.appendAddPremiseRow = function () {
  */
 GuiHandler.prototype.setDisplayStyleAsDiscussion = function () {
     'use strict';
-    $('#' + islandViewContainerId).hide();
     $('#' + graphViewContainerId).hide();
     $('#' + discussionContainerId).show();
     $('#' + headerContainerId).show();
@@ -79,22 +78,12 @@ GuiHandler.prototype.setDisplayStyleAsDiscussion = function () {
 };
 
 /**
- * Some kind of pro contra list, but how?
- */
-GuiHandler.prototype.setDisplayStyleAsIsland = function () {
-    'use strict';
-    $('#' + islandViewContainerId).fadeIn('slow');
-    GuiHandler.prototype.hideAddPositionContainer();
-};
-
-/**
  * Full view, full interaction range for the graph
  */
 GuiHandler.prototype.setDisplayStyleAsGraphView = function () {
     'use strict';
     var graphViewContainer = $('#' + graphViewContainerId);
 
-    $('#' + islandViewContainerId).hide();
     $('#' + discussionContainerId).hide();
     $('#' + headerContainerId).hide();
     $('#' + addPositionContainerId).hide();
@@ -102,9 +91,8 @@ GuiHandler.prototype.setDisplayStyleAsGraphView = function () {
     // height
     var innerHeight = this.getMaxSizeOfGraphViewContainer();
     graphViewContainer.attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; margin-bottom: 1em;');
-    innerHeight -= 1.5 * $('#graph-sidebar').outerHeight();
+    innerHeight -= 2 * $('#graph-sidebar').outerHeight();
     $('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 97%');
-    new DiscussionGraph({}, false).showGraph(false);
 };
 
 /**

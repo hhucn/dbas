@@ -80,8 +80,8 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
         dialog.find('.modal-dialog').addClass('modal-sm');
     }
     dialog.modal('show');
-    $('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
-    $('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
+    $('#myModalLabelConfirmDialog').html(titleText);
+    dialog.find('div.modal-body').html(bodyText);
     $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
         $('#' + popupConfirmDialogId).modal('hide');
         if (functionForAccept) {
@@ -114,9 +114,10 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
 function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) {
     'use strict';
     // display dialog
-    $('#' + popupConfirmDialogId).modal('show');
-    $('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
-    $('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
+    var dialog = $('#' + popupConfirmDialogId);
+    dialog.modal('show');
+    $('#myModalLabelConfirmDialog').html(titleText);
+    dialog.find('div.modal-body').html(bodyText);
     $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
         $('#' + popupConfirmDialogId).modal('hide').find('.modal-dialog').removeClass('modal-sm');
     }).removeClass('btn-success');

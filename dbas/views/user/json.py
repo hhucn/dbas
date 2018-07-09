@@ -4,7 +4,8 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
 from pyramid.view import view_config
 
-from dbas.auth.login import login_user, login_user_oauth, register_user_with_json_data, __refresh_headers_and_url
+from dbas.auth.login import login_local_user, register_user_with_json_data, __refresh_headers_and_url
+from dbas.auth.oauth.main import login_oauth_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue
 from dbas.handler import user
@@ -40,7 +41,7 @@ def user_login(request):
     keep_login = request.validated['keep_login']
     redirect_url = request.validated['redirect_url']
 
-    login_data = login_user(nickname, password, request.mailer, lang)
+    login_data = login_local_user(nickname, password, request.mailer, lang)
 
     if not login_data.get('error'):
         headers, url = __refresh_headers_and_url(request, login_data['user'], keep_login, redirect_url)
@@ -57,7 +58,7 @@ def user_login_oauth(request):
 
     :return: dict() with error
     """
-    logger('views', 'main')
+    logger('views', f'main {request.json_body}')
 
     lang = get_language_from_cookie(request)
     _tn = Translator(lang)
@@ -67,8 +68,8 @@ def user_login_oauth(request):
         return {'error': ''}
 
     try:
-        service = request.params['service']
-        url = request.params['redirect_uri']
+        service = request.json_body['service']
+        url = request.json_body['redirect_uri']
         old_redirect = url.replace('http:', 'https:')
         # add service tag to notice the oauth provider after a redirect
         if '?service' in url:
@@ -78,7 +79,7 @@ def user_login_oauth(request):
                 url = url[0:url.index('/discuss') + len('/discuss')]
         redirect_url = url.replace('http:', 'https:')
 
-        val = login_user_oauth(request, service, redirect_url, old_redirect, lang)
+        val = login_oauth_user(request, service, redirect_url, old_redirect, lang)
         if val is None:
             return {'error': _tn.get(_.internalKeyError)}
         return val

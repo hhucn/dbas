@@ -46,28 +46,15 @@ function addBorderToActiveNavbar() {
 function addCookieConsent() {
     'use strict';
 
-    window.addEventListener("load", function () {
-        window.cookieconsent.initialise({
-            "palette": {
-                "popup": {
-                    "background": "#2196F3"
-                },
-                "button": {
-                    "background": "#fff",
-                    "text": "#2196F3"
-                }
-            },
-            "content": {
-                "message": _t(euCookiePopupText),
-                "dismiss": _t(euCookiePopoupButton1),
-                "link": _t(euCookiePopoupButton2),
-                "href": "/privacy_policy",
-            },
-            "cookie": {
-                "name": EU_COOKIE_LAW_CONSENT
-            },
+    if (!Cookies.get('EU_COOKIE_LAW_CONSENT')){
+        $('#privacy-policy-popup').show();
+        $('#privacy-policy-text').text(_t(euCookiePopupText));
+        $('#privacy-policy-link').html(_t(euCookiePopoupButton2));
+        $('#privacy-policy-btn').text(_t(euCookiePopoupButton1)).click(function(){
+            $('#privacy-policy-popup').hide();
+            Cookies.set('EU_COOKIE_LAW_CONSENT', true, {expires: 180});
         });
-    });
+    }
 }
 
 /**

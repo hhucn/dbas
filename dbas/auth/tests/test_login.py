@@ -6,7 +6,8 @@ from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
 from pyramid_mailer.mailer import DummyMailer
 
-from dbas.auth.login import login_user, register_user_with_json_data, login_user_oauth
+from dbas.auth.login import login_local_user, register_user_with_json_data
+from dbas.auth.oauth.main import login_oauth_user
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.views import user_login
@@ -46,12 +47,12 @@ class AuthLoginTest(unittest.TestCase):
         response = user_login(request)
         self.assertTrue(type(response) is HTTPFound)
 
-        response = login_user(nickname, password, DummyMailer, lang=_tn)
+        response = login_local_user(nickname, password, DummyMailer, lang=_tn)
         self.assertTrue(isinstance(response, dict))
         self.assertNotIn('error', response)
         self.assertIn('user', response)
 
-        response = login_user('definitelynotauser', '¯\_(ツ)_/¯', DummyMailer, lang=_tn)
+        response = login_local_user('definitelynotauser', '¯\_(ツ)_/¯', DummyMailer, lang=_tn)
         self.assertTrue(isinstance(response, dict))
         self.assertIn('error', response)
         self.assertNotIn('user', response)
@@ -132,7 +133,7 @@ class AuthLoginTest(unittest.TestCase):
         self.assertEqual(self._tn.get(_.pwdNotEqual), msg)
         self.assertIsNone(db_new_user)
 
-    def test_login_user_oauth(self):
+    def test_login_oauth_user(self):
         services = ['google', 'github', 'facebook', '']  # 'twitter'
         for service in services:
             redirect_uri = 'http://lvh.me:4284'
@@ -149,7 +150,7 @@ class AuthLoginTest(unittest.TestCase):
             }
             request = testing.DummyRequest(params={'application_url': 'http://lvh.me'}, environ=environ)
             request.environ = environ
-            resp = login_user_oauth(request, service, redirect_uri, redirect_uri, ui_locales)
+            resp = login_oauth_user(request, service, redirect_uri, redirect_uri, ui_locales)
             if len(service) > 0:
                 self.assertIsNotNone(resp)
             else:

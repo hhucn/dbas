@@ -227,8 +227,8 @@ class ItemDictHelper(object):
             if new_arg:
                 url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
 
-        if attack or new_arg is None or url is None:
-            url = _um.get_url_for_reaction_on_argument(argument.uid, attack.value, arg_id_sys)
+        if None in [attack, new_arg, url]:
+            url = _um.get_url_for_discussion_finish(argument.uid)
 
         return self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
                                          already_used=already_used,
@@ -506,11 +506,11 @@ class ItemDictHelper(object):
         mode = Attitudes.AGREE if is_supportive else Attitudes.DISAGREE
         _um = UrlManager(slug, history=self.path)
 
-        relations = [relation.value for relation in Relations]
+        relations = [relation for relation in Relations]
         for relation in relations:
             url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument)
-            d = {'title': rel_dict[relation + '_text'], 'id': relation}
-            tmp = self.__create_answer_dict(relation, [d], relation, url)
+            d = {'title': rel_dict[relation.value + '_text'], 'id': relation.value}
+            tmp = self.__create_answer_dict(relation.value, [d], relation.value, url)
             statements_array.append(tmp)
 
         # last item is the change attack button or step back, if we have bno other attack
