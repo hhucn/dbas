@@ -1,5 +1,7 @@
 import unittest
+
 from pyramid import testing
+
 from dbas.auth.oauth import google as google
 
 

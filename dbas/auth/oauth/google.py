@@ -19,10 +19,10 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
-scope = ['https://www.googleapis.com/auth/userinfo.email',
+SCOPE = ['https://www.googleapis.com/auth/userinfo.email',
          'https://www.googleapis.com/auth/userinfo.profile']
-authorization_base_url = 'https://accounts.google.com/o/oauth2/v2/auth'
-token_url = 'https://accounts.google.com/o/oauth2/token'
+AUTHORIZATION_BASE_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
+TOKEN_URL = 'https://accounts.google.com/o/oauth2/token'
 
 
 def start_flow(**kwargs):
@@ -43,9 +43,9 @@ def start_flow(**kwargs):
     logger('Google OAuth', 'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
 
     # OAuth endpoints given in the Google API documentation
-    google = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+    google = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=SCOPE)
 
-    authorization_url, state = google.authorization_url(authorization_base_url, access_type='offline',
+    authorization_url, state = google.authorization_url(AUTHORIZATION_BASE_URL, access_type='offline',
                                                         prompt='select_account')
 
     logger('Google OAuth', 'Please go to {} and authorize access'.format(authorization_url))
@@ -72,10 +72,10 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
         bind = '#' if '?' in redirect_uri else '?'
         redirect_uri = '{}{}{}'.format(redirect_uri, bind, 'service=google')
 
-    google = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+    google = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=SCOPE)
 
     try:
-        token = google.fetch_token(token_url, authorization_response=authorization_response,
+        token = google.fetch_token(TOKEN_URL, authorization_response=authorization_response,
                                    client_secret=client_secret)
     except InsecureTransportError:
         logger('Google OAuth', 'OAuth 2 MUST utilize https', error=True)
