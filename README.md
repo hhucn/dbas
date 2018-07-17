@@ -17,7 +17,7 @@ Of course, you can try out D-BAS on [https://dbas.cs.uni-duesseldorf.de/](https:
 
 Ensure that the following tools are installed:
 
-* Python >= 3.5
+* Python >= 3.6
 * [Docker](https://docs.docker.com/engine/installation/)
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
