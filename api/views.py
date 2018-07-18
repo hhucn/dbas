@@ -10,9 +10,10 @@ return JSON objects which can then be used in external websites.
 
 """
 import json
-from typing import Callable, Any
+from typing import Callable, Any, List
 
 from cornice import Service
+from cornice.resource import resource, view
 from pyramid.httpexceptions import HTTPSeeOther
 
 import dbas.discussion.core as discussion
@@ -24,16 +25,18 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
+from dbas.handler.user import set_new_oauth_user
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug, create_speechbubble_dict, BubbleTypes,
                       Attitudes, Relations)
-from dbas.strings.translator import Keywords as _, get_translation
+from dbas.strings.translator import Keywords as _, get_translation, Translator
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
 from .lib import HTTP204, flatten, json_to_dict, logger
-from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
+from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional, \
+    valid_api_token
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
                          prepare_single_reference, store_reference,
@@ -772,3 +775,49 @@ def add_premise_to_argument(request):
                                 request.mailer)
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
+
+
+@resource(collection_path='/users', path='/users/{id:\d+}')
+class ApiUser(object):
+    def __init__(self, request, context=None):
+        self.request = request
+
+    @staticmethod
+    def external_view(db_user: User):
+        return {
+            'id': db_user.uid,
+            'nickname': db_user.public_nickname
+        }
+
+    def get(self):
+        db_user: User = DBDiscussionSession.query(User).get(int(self.request.matchdict['id']))
+        if db_user:
+            return ApiUser.external_view(db_user)
+        else:
+            self.request.response.status = 404
+            return "This user-id does not exist."
+
+    def collection_get(self):
+        db_users: List[User] = DBDiscussionSession.query(User).all()
+        return [ApiUser.external_view(db_user) for db_user in db_users]
+
+    @view(require_csrf=False)
+    def collection_post(self):
+        return self._collection_post(self.request)
+
+    @staticmethod
+    @validate(valid_api_token,
+              has_keywords(('firstname', str), ('lastname', str), ('nickname', str), ('email', str), ('gender', str),
+                           ('id', int), ('locale', str), ('service', str)))
+    def _collection_post(request):
+        result = set_new_oauth_user(request.json_body,
+                                    request.json_body['id'],
+                                    request.json_body['service'],
+                                    Translator(request.json_body['locale']))
+
+        if result["success"]:
+            request.response.status = 201
+            return {"id": result["user"].uid}
+        else:
+            request.response.status = 400
+            return result["error"]
