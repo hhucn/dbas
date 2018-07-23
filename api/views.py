@@ -718,7 +718,8 @@ def __http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
     :param location: URL to route to
     :return: HTTPSeeOther with CORS Header
     """
-    return HTTPSeeOther(location=location, headers={'Access-Control-Allow-Origin': '*'})
+    return HTTPSeeOther(location=location, headers={'Access-Control-Allow-Origin': '*',
+                                                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'})
 
 
 @positions.post(require_csrf=False)
