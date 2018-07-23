@@ -708,6 +708,19 @@ def get_issues(_request):
                                                    Issue.is_private == False).all()
 
 
+# -----------------------------------------------------------------------------
+# Posts
+
+def __http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
+    """
+    Add CORS Headers to HTTPSeeOther response.
+
+    :param location: URL to route to
+    :return: HTTPSeeOther with CORS Header
+    """
+    return HTTPSeeOther(location=location, headers={'Access-Control-Allow-Origin': '*'})
+
+
 @positions.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body)
 def add_position_with_premise(request):
@@ -717,13 +730,13 @@ def add_position_with_premise(request):
 
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
 
-    conslusion_id: int = new_position['statement_uids'][0]
-    db_conclusion: Statement = DBDiscussionSession.query(Statement).get(conslusion_id)
+    conclusion_id: int = new_position['statement_uids'][0]
+    db_conclusion: Statement = DBDiscussionSession.query(Statement).get(conclusion_id)
 
     pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
                                request.mailer)
 
-    return HTTPSeeOther(location='/api' + pd['url'])
+    return __http_see_other_with_cors_header('/api' + pd['url'])
 
 
 @justify_statement.post(require_csrf=False)
@@ -740,7 +753,7 @@ def add_premise_to_statement(request):
                                history,
                                request.mailer)
 
-    return HTTPSeeOther(location='/api' + pd['url'])
+    return __http_see_other_with_cors_header('/api' + pd['url'])
 
 
 @justify_argument.post(require_csrf=False)
@@ -757,4 +770,4 @@ def add_premise_to_argument(request):
                                 history,
                                 request.mailer)
 
-    return HTTPSeeOther(location='/api' + pd['url'])
+    return __http_see_other_with_cors_header('/api' + pd['url'])
