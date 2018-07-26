@@ -46,7 +46,7 @@ log = logger()
 # CORS configuration
 #
 cors_policy = dict(enabled=True,
-                   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
+                   headers=('Origin', 'X-Requested-With', 'X-Authentication'),
                    origins=('*',),
                    credentials=True,  # TODO: how can i use this?
                    max_age=42)
@@ -711,6 +711,10 @@ def get_issues(_request):
 # -----------------------------------------------------------------------------
 # Posts
 
+def __join_list_to_string(list_of_strings) -> str:
+    return ", ".join(str(elem) for elem in list_of_strings)
+
+
 def __http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
     """
     Add CORS Headers to HTTPSeeOther response.
@@ -718,8 +722,14 @@ def __http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
     :param location: URL to route to
     :return: HTTPSeeOther with CORS Header
     """
-    return HTTPSeeOther(location=location, headers={'Access-Control-Allow-Origin': '*',
-                                                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'})
+    return HTTPSeeOther(
+        location=location,
+        headers={
+            'Access-Control-Allow-Origin': __join_list_to_string(cors_policy.get('origins')),
+            'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, HEAD',
+            'Access-Control-Allow-Headers': __join_list_to_string(cors_policy.get('headers')),
+        }
+    )
 
 
 @positions.post(require_csrf=False)
