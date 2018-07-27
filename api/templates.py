@@ -4,10 +4,11 @@ Templates for API responses.
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 from .lib import logger
+
 log = logger()
 
 
-def error(message, logtype=None, logmsg=None):
+def error(message):
     """
     Prepare dictionary and add error status code to it.
 
@@ -15,9 +16,6 @@ def error(message, logtype=None, logmsg=None):
     :returns: wrapped dictionary
     :rtype: dict
     """
-    if logtype:
-        log.info("[{}] {}".format(logtype, message))
-    elif logtype and logmsg:
-        log.info("[{}] {}".format(logtype, logmsg))
+    log.error(message)
     return {"status": "error",
             "message": message}
