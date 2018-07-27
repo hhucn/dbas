@@ -491,6 +491,7 @@ def add_start_statement(request):
     :param request:
     :return:
     """
+    log.debug("Adding new position")
     return prepare_data_assign_reference(request, set_position)
 
 
@@ -502,6 +503,7 @@ def add_start_premise(request):
     :param request:
     :return:
     """
+    log.debug("Adding new position with premise")
     return prepare_data_assign_reference(request, set_positions_premise)
 
 
@@ -513,6 +515,7 @@ def add_justify_premise(request):
     :param request:
     :return:
     """
+    log.debug("Adding new justifying premise")
     return prepare_data_assign_reference(request, set_arguments_premises)
 
 
@@ -527,10 +530,10 @@ def get_references(request):
 
     :param request: request
     :return: References assigned to the queried URL
-
     """
     host = request.GET.get("host")
     path = request.GET.get("path")
+    log.debug("Querying references for host: {}, path: {}".format(host, path))
     if host and path:
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
@@ -539,8 +542,8 @@ def get_references(request):
                                        prepare_single_reference(ref), refs_db))
             }
         else:
-            return error("Could not retrieve references", "API/Reference")
-    return error("Could not parse your origin", "API/Reference")
+            return error("Could not retrieve references")
+    return error("Could not parse your origin")
 
 
 @reference_usages.get()
@@ -557,9 +560,7 @@ def get_reference_usages(request):
     db_ref = get_reference_by_id(ref_uid)
     if db_ref:
         return get_all_references_by_reference_text(db_ref.reference)
-    return error("Reference could not be found",
-                 "API/GET Reference Usages",
-                 "Error when trying to find matching reference for id")
+    return error("Reference could not be found")
 
 
 # =============================================================================
@@ -576,8 +577,10 @@ def user_login(request):
     :param request:
     :return: token and nickname
     """
+    nickname = request.validated['nickname']
+    log.debug('User authenticated: {}'.format(nickname))
     return {
-        'nickname': request.validated['nickname'],
+        'nickname': nickname,
         'token': request.validated['token']
     }
 
@@ -591,6 +594,8 @@ def user_logout(request):
     :param request:
     :return:
     """
+    nickname = request.validated['user']
+    log.debug('User logged out: {}'.format(nickname))
     request.session.invalidate()
     token_to_database(request.validated['user'], None)
     return {
