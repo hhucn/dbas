@@ -228,6 +228,9 @@ class User(DiscussionBase):
         self.oauth_provider = oauth_provider
         self.oauth_provider_id = oauth_provider_id
 
+    def __str__(self):
+        return self.public_nickname
+
     def validate_password(self, password):
         """
         Validates given password with against the saved one
