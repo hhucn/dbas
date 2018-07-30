@@ -3,22 +3,24 @@ Testing the routes of the API.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
+import hypothesis.strategies as st
 import json
 import unittest
-
-import hypothesis.strategies as st
 from hypothesis import given, settings
 from pyramid import httpexceptions
 from pyramid.interfaces import IRequest
 from pyramid.response import Response
 from pyramid.testing import DummyRequest
+from typing import List
 
 import api.views as apiviews
 from admin.lib import generate_application_token
 from api.login import token_to_database
 # ------------------------------------------------------------------------------
 # Tests
-from dbas.database.discussion_model import Issue
+from api.models import Reference
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Issue, StatementReferences
 from dbas.lib import get_user_by_case_insensitive_nickname, Relations, Attitudes
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
@@ -487,3 +489,56 @@ class TestUser(TestCaseWithConfig):
         response = apiviews.ApiUser(construct_dummy_request(match_dict={'id': 2})).get()
         self.assertUser(response)
         self.assertDictEqual(response, tobias_krauthoff)
+
+
+class TestReferences(TestCaseWithConfig):
+    def setUp(self):
+        self.statement_reference: StatementReferences = DBDiscussionSession.query(StatementReferences).get(2)
+
+    def assertError(self, response):
+        self.assertIn('status', response)
+        self.assertEqual(response.get('status'), 'error')
+
+    def assertValidReferences(self, response, expected_references: List[Reference] = None):
+        references = response.get('references')
+        self.assertIn('references', response)
+        self.assertIsInstance(references, list)
+        if expected_references:
+            expected = [ref.uid for ref in expected_references]
+            actual = [ref.uid for ref in references]
+            self.assertCountEqual(expected, actual)
+
+    def test_missing_parameters_should_return_error(self):
+        request: IRequest = construct_dummy_request(params={})
+        response = apiviews.get_references(request)
+        self.assertError(response)
+
+    def test_missing_path_should_return_error(self):
+        request: IRequest = construct_dummy_request(params={
+            'host': 'foo',
+        })
+        response = apiviews.get_references(request)
+        self.assertError(response)
+
+    def test_missing_host_should_return_error(self):
+        request: IRequest = construct_dummy_request(params={
+            'path': 'foo',
+        })
+        response = apiviews.get_references(request)
+        self.assertError(response)
+
+    def test_empty_list_when_no_references_in_database(self):
+        request: IRequest = construct_dummy_request(params={
+            'host': 'foo',
+            'path': 'foo',
+        })
+        response = apiviews.get_references(request)
+        self.assertValidReferences(response, [])
+
+    def test_query_one_reference_should_return_list_of_references(self):
+        request: IRequest = construct_dummy_request(params={
+            'host': 'localhost:3449',
+            'path': '/',
+        })
+        response = apiviews.get_references(request)
+        self.assertValidReferences(response, [Reference(self.statement_reference)])

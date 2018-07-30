@@ -11,7 +11,6 @@ import warnings
 from functools import reduce
 from html import escape
 from typing import Tuple
-
 from webob import Response, exc
 
 # =============================================================================

@@ -10,17 +10,16 @@ return JSON objects which can then be used in external websites.
 
 """
 import json
-from typing import Callable, Any, List
-
 from cornice import Service
 from cornice.resource import resource, view
 from pyramid.httpexceptions import HTTPSeeOther
+from typing import Callable, Any, List
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
 import dbas.views.discussion as dbas
 from api.lib import extract_items_and_bubbles
-from api.models import Item, Bubble
+from api.models import Item, Bubble, Reference
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue
 from dbas.handler.arguments import set_arguments_premises
@@ -39,8 +38,7 @@ from .login import validate_credentials, validate_login, valid_token, token_to_d
     valid_api_token
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
-                         prepare_single_reference, store_reference,
-                         url_to_statement)
+                         store_reference)
 from .templates import error
 
 log = logger()
@@ -150,10 +148,10 @@ find_statements = Service(name="find_statements",
                           description="Query database to get closest statements",
                           cors_policy=cors_policy)
 
-statement_url_service = Service(name="statement_url",
-                                path="/statement/url/{issue_uid}/{statement_uid}/{agree}",
-                                description="Get URL to a statement inside the discussion for direct jumping to it",
-                                cors_policy=cors_policy)
+# statement_url_service = Service(name="statement_url",
+#                                 path="/statement/url/{issue_uid}/{statement_uid}/{agree}",
+#                                 description="Get URL to a statement inside the discussion for direct jumping to it",
+#                                 cors_policy=cors_policy)
 
 issues = Service(name="issues",
                  path="/issues",
@@ -482,7 +480,7 @@ def prepare_data_assign_reference(request, func: Callable[[bool, dict], Any]):
         if type(statement_uids) is int:
             statement_uids = [statement_uids]
         refs_db = [store_reference(api_data, statement) for statement in statement_uids]
-        return_dict["references"] = list(map(prepare_single_reference, refs_db))
+        return_dict["references"] = [Reference(ref) for ref in refs_db]
     return return_dict
 
 
@@ -541,8 +539,7 @@ def get_references(request):
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
             return {
-                "references": list(map(lambda ref:
-                                       prepare_single_reference(ref), refs_db))
+                "references": [Reference(ref) for ref in refs_db]
             }
         else:
             return error("Could not retrieve references")
@@ -636,7 +633,6 @@ def find_statements_fn(request):
     for statement in results["values"]:
         statement_uid = statement["statement_uid"]
         statement["issue"] = {"uid": issue_uid, "slug": resolve_issue_uid_to_slug(issue_uid)}
-        statement["url"] = url_to_statement(api_data["issue"], statement_uid)  # TODO I think I do not use this any more
         statement["arguments"] = get_all_arguments_with_text_by_statement_id(statement_uid)
         return_dict["values"].append(statement)
     return return_dict
@@ -687,22 +683,6 @@ def get_text_for_argument(request):
 # =============================================================================
 # GET INFORMATION - several functions to get information from the database
 # =============================================================================
-
-@statement_url_service.get()
-def get_statement_url(request):
-    """
-    Given an issue, the statement_uid and an (dis-)agreement, produce a url to the statement inside the corresponding
-    discussion.
-
-    :param request:
-    :return:
-
-    """
-    issue_uid = request.matchdict["issue_uid"]
-    statement_uid = request.matchdict["statement_uid"]
-    agree = request.matchdict["agree"]
-    return {"url": url_to_statement(issue_uid, statement_uid, agree)}
-
 
 @issues.get()
 def get_issues(_request):

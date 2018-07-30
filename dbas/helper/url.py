@@ -5,6 +5,7 @@ Managing URLS can be done with a very hardcoded scheme. We are differentiating b
 """
 import random
 
+from dbas.database.discussion_model import Statement, Issue
 from dbas.handler import attacks
 from dbas.lib import get_all_attacking_arg_uids_from_history
 
@@ -202,3 +203,19 @@ class UrlManager(object):
         """
         url = '{}/finish/{}'.format(self.slug, arg_uid)
         return self.__return_discussion_url(url)
+
+
+def url_to_statement(issue: Issue, statement: Statement, agree: bool = True) -> str:
+    """
+    Generate URL to given statement_uid in specific issue (by slug).
+    Used to directly jump into the discussion.
+    """
+    if isinstance(agree, str):
+        if agree == "true":
+            mode = "agree"
+        else:
+            mode = "disagree"
+    else:
+        mode = "agree" if agree is True else "disagree"
+    url_manager = UrlManager(slug=issue.slug)
+    return "/api" + url_manager.get_url_for_justifying_statement(statement.uid, mode)
