@@ -777,7 +777,7 @@ def add_premise_to_argument(request):
     return __http_see_other_with_cors_header('/api' + pd['url'])
 
 
-@resource(collection_path='/users', path='/users/{id:\d+}')
+@resource(collection_path='/users', path='/users/{id:\d+}', cors_policy=cors_policy)
 class ApiUser(object):
     def __init__(self, request, context=None):
         self.request = request
