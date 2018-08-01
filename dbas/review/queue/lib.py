@@ -4,11 +4,10 @@ from typing import List, Union
 import transaction
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Issue, Statement, StatementToIssue, \
-    sql_timestamp_pretty_print, Premise
-from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
-    LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewDuplicate, LastReviewerDuplicate, ReviewMerge, \
-    ReviewSplit, LastReviewerMerge, LastReviewerSplit
+from dbas.database.discussion_model import Argument, Issue, Statement, StatementToIssue, sql_timestamp_pretty_print, \
+    Premise, User, ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, ReviewEdit, \
+    LastReviewerEdit, ReviewDuplicate, LastReviewerDuplicate, ReviewMerge, ReviewSplit, LastReviewerMerge, \
+    LastReviewerSplit
 from dbas.lib import get_text_for_argument_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.review.mapper import get_review_modal_mapping, get_last_reviewer_by_key
@@ -35,10 +34,10 @@ def get_all_allowed_reviews_for_user(session, session_keyword, db_user, review_t
     # and not reviewed
     db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
     already_reviewed = [last_review.review_uid for last_review in db_last_reviews_of_user]
+    relevant_reviews = already_seen + already_reviewed
     db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
                                                                review_type.detector_uid != db_user.uid,
-                                                               ~review_type.uid.in_(
-                                                                   already_seen + already_reviewed)).all()
+                                                               ~review_type.uid.in_(relevant_reviews)).all()
 
     return {
         'reviews': db_reviews,

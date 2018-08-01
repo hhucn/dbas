@@ -17,6 +17,9 @@ from dbas.auth.oauth import get_oauth_ret_dict
 from dbas.handler.user import oauth_values
 from dbas.logger import logger
 
+CLIENT_ID = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
+CLIENT_SECRET = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
+
 
 def start_flow(**kwargs):
     """
@@ -27,15 +30,13 @@ def start_flow(**kwargs):
     """
     redirect_uri = kwargs.get('redirect_uri')
     request = kwargs.get('request')
-    client_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
-    client_secret = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
 
-    logger('Twitter OAuth', 'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
+    logger('Twitter OAuth', 'Read OAuth id/secret: none? {}'.format(CLIENT_ID is None, CLIENT_SECRET is None))
 
     request_token_url = 'https://api.twitter.com/oauth/request_token'
     authorization_url = 'https://api.twitter.com/oauth/authorize'
 
-    oauth_client = OAuth1Session(client_id, client_secret=client_secret, callback_uri=redirect_uri)
+    oauth_client = OAuth1Session(CLIENT_ID, client_secret=CLIENT_SECRET, callback_uri=redirect_uri)
     resp = oauth_client.fetch_request_token(request_token_url)
     url = oauth_client.authorization_url(authorization_url)
 

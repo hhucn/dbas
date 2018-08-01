@@ -5,9 +5,6 @@ from pyramid.security import forget
 from pyramid.view import view_config
 
 from dbas.auth.login import login_local_user, register_user_with_json_data, __refresh_headers_and_url
-from dbas.auth.oauth.main import login_oauth_user
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
@@ -49,43 +46,6 @@ def user_login(request):
         return HTTPFound(location=url, headers=headers)
 
     return {'error': Translator(lang).get(_.userPasswordNotMatch)}
-
-
-@view_config(route_name='user_login_oauth', renderer='json')
-def user_login_oauth(request):
-    """
-    Will login the user via oauth
-
-    :return: dict() with error
-    """
-    logger('views', f'main {request.json_body}')
-
-    lang = get_language_from_cookie(request)
-    _tn = Translator(lang)
-
-    # sanity check
-    if request.authenticated_userid:
-        return {'error': ''}
-
-    try:
-        service = request.json_body['service']
-        url = request.json_body['redirect_uri']
-        old_redirect = url.replace('http:', 'https:')
-        # add service tag to notice the oauth provider after a redirect
-        if '?service' in url:
-            url = url[0:url.index('/discuss') + len('/discuss')] + url[url.index('?service'):]
-        for slug in [issue.slug for issue in DBDiscussionSession.query(Issue).all()]:
-            if slug in url:
-                url = url[0:url.index('/discuss') + len('/discuss')]
-        redirect_url = url.replace('http:', 'https:')
-
-        val = login_oauth_user(request, service, redirect_url, old_redirect, lang)
-        if val is None:
-            return {'error': _tn.get(_.internalKeyError)}
-        return val
-    except KeyError as e:
-        logger('user_login_oauth', repr(e), error=True)
-        return {'error': _tn.get(_.internalKeyError)}
 
 
 @view_config(route_name='user_logout', renderer='json')

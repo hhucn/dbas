@@ -20,9 +20,11 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
-authorization_base_url = 'https://github.com/login/oauth/authorize'
-token_url = 'https://github.com/login/oauth/access_token'
-scope = ['user:email']
+CLIENT_ID = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
+CLIENT_SECRET = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
+AUTHORIZATION_BASE_URL = 'https://github.com/login/oauth/authorize'
+TOKEN_URL = 'https://github.com/login/oauth/access_token'
+SCOPE = ['user:email']
 
 
 def start_flow(**kwargs):
@@ -31,13 +33,11 @@ def start_flow(**kwargs):
 
     :param kwargs: should have a redirect_uri
     """
-    client_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
-    client_secret = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
 
-    logger('Github OAuth', 'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
+    logger('Github OAuth', 'Read OAuth id/secret: none? {}/{}'.format(CLIENT_ID is None, CLIENT_SECRET is None))
 
-    github = OAuth2Session(client_id, scope=scope)
-    authorization_url, state = github.authorization_url(authorization_base_url)
+    github = OAuth2Session(CLIENT_ID, scope=SCOPE)
+    authorization_url, state = github.authorization_url(AUTHORIZATION_BASE_URL)
 
     logger('Github OAuth', 'Please go to {} and authorize access'.format(authorization_url))
     return {'authorization_url': authorization_url, 'error': ''}
@@ -52,16 +52,14 @@ def continue_flow(authorization_response, ui_locales):
     :param ui_locales:
     :return:
     """
-    client_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
-    client_secret = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
-    github = OAuth2Session(client_id)
+    github = OAuth2Session(CLIENT_ID)
     _tn = Translator(ui_locales)
 
-    logger('Github OAuth', 'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
+    logger('Github OAuth', 'Read OAuth id/secret: none? {}/{}'.format(CLIENT_ID is None, CLIENT_SECRET is None))
     logger('Github OAuth', 'authorization_response: ' + authorization_response)
 
     try:
-        github.fetch_token(token_url, client_secret=client_secret, authorization_response=authorization_response)
+        github.fetch_token(TOKEN_URL, client_secret=CLIENT_SECRET, authorization_response=authorization_response)
     except InsecureTransportError:
         logger('Github OAuth', 'OAuth 2 MUST utilize https', error=True)
         return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
