@@ -121,7 +121,7 @@ $(document).ready(function mainDocumentReady() {
     var classes = ['.btn-google', '.btn-facebook', '.btn-twitter', '.btn-github'];
     $.each(classes, function (key, value) {
         $(value).click(function () {
-            new AjaxLoginHandler().oauthLogin($(this).data('service'), window.location.href);
+            new AjaxLoginHandler().oauthLogin($(this).data('service'));
         });
     });
 

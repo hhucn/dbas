@@ -3,9 +3,8 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import warnings
-
 import arrow
+import warnings
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
@@ -227,6 +226,9 @@ class User(DiscussionBase):
         self.token_timestamp = token_timestamp
         self.oauth_provider = oauth_provider
         self.oauth_provider_id = oauth_provider_id
+
+    def __str__(self):
+        return self.public_nickname
 
     def validate_password(self, password):
         """
@@ -567,9 +569,9 @@ class StatementReferences(DiscussionBase):
     users = relationship('User', foreign_keys=[author_uid])
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, reference, host, path, author_uid, statement_uid, issue_uid):
+    def __init__(self, reference: str, host: str, path: str, author_uid: int, statement_uid: int, issue_uid: int):
         """
-        Inits a row in current statements reference table
+        Store a real-world text-reference.
 
         :param reference: String
         :param host: Host of URL
@@ -585,6 +587,14 @@ class StatementReferences(DiscussionBase):
         self.author_uid = author_uid
         self.statement_uid = statement_uid
         self.issue_uid = issue_uid
+
+    @hybrid_property
+    def issue(self) -> Issue:
+        return DBDiscussionSession.query(Issue).get(self.issue_uid)
+
+    @hybrid_property
+    def statement(self) -> Statement:
+        return DBDiscussionSession.query(Statement).get(self.statement_uid)
 
     def get_statement_text(self, html: bool = False) -> str:
         """

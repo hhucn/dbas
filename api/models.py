@@ -1,5 +1,7 @@
 from typing import List
 
+from dbas.database.discussion_model import StatementReferences, Issue, Statement
+from dbas.helper.url import url_to_statement
 from dbas.lib import unhtmlify
 
 
@@ -79,4 +81,20 @@ class Bubble:
             'html': self.html,
             'text': self.text,
             'url': self.url
+        }
+
+
+class Reference:
+    def __init__(self, statement_reference: StatementReferences):
+        self.uid: int = statement_reference.uid
+        self.reference: str = statement_reference.reference
+        self.issue: Issue = statement_reference.issue
+        self.statement: Statement = statement_reference.statement
+        self.url: str = url_to_statement(self.issue, self.statement)
+
+    def __json__(self, _request):
+        return {
+            "uid": self.uid,
+            "text": self.reference,
+            "url": self.url
         }

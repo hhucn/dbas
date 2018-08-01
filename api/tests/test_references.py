@@ -1,24 +1,9 @@
-from nose.tools import assert_equals, assert_true, assert_is_not_none, assert_is_none, assert_in
+from nose.tools import assert_equals, assert_is_not_none, assert_is_none, assert_in
 
-from api.references import url_to_statement, prepare_single_reference, store_reference, get_complete_reference,\
+from api.references import store_reference, get_complete_reference, \
     get_all_references_by_reference_text, get_references_for_url, get_reference_by_id
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences
-
-
-def test_url_to_statement():
-    assert_true(len(url_to_statement(2, 3)) > 0)
-
-
-def test_prepare_single_reference():
-    assert_is_none(prepare_single_reference(None))
-    assert_is_none(prepare_single_reference(''))
-    reference = DBDiscussionSession.query(StatementReferences).get(1)
-    prep_dict = prepare_single_reference(reference)
-    assert_in('uid', prep_dict)
-    assert_in('text', prep_dict)
-    assert_in('url', prep_dict)
 
 
 def test_store_reference():

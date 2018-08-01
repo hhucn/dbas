@@ -10,34 +10,35 @@ return JSON objects which can then be used in external websites.
 
 """
 import json
-from typing import Callable, Any
-
 from cornice import Service
+from cornice.resource import resource, view
 from pyramid.httpexceptions import HTTPSeeOther
+from typing import Callable, Any, List
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
 import dbas.views.discussion as dbas
 from api.lib import extract_items_and_bubbles
-from api.models import Item, Bubble
+from api.models import Item, Bubble, Reference
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
+from dbas.handler.user import set_new_oauth_user
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug, create_speechbubble_dict, BubbleTypes,
                       Attitudes, Relations)
-from dbas.strings.translator import Keywords as _, get_translation
+from dbas.strings.translator import Keywords as _, get_translation, Translator
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
 from .lib import HTTP204, flatten, json_to_dict, logger
-from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
+from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional, \
+    valid_api_token
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
-                         prepare_single_reference, store_reference,
-                         url_to_statement)
+                         store_reference)
 from .templates import error
 
 log = logger()
@@ -46,7 +47,7 @@ log = logger()
 # CORS configuration
 #
 cors_policy = dict(enabled=True,
-                   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
+                   headers=('Origin', 'X-Requested-With', 'X-Authentication'),
                    origins=('*',),
                    credentials=True,  # TODO: how can i use this?
                    max_age=42)
@@ -96,7 +97,8 @@ attitude = Service(name='api_attitude',
 
 finish = Service(name='api_finish',
                  path='/{slug}/finish/{argument_id:\d+}',
-                 description='End of a discussion')
+                 description='End of a discussion',
+                 cors_policy=cors_policy)
 
 # add new stuff
 positions = Service(name='Positions',
@@ -146,10 +148,10 @@ find_statements = Service(name="find_statements",
                           description="Query database to get closest statements",
                           cors_policy=cors_policy)
 
-statement_url_service = Service(name="statement_url",
-                                path="/statement/url/{issue_uid}/{statement_uid}/{agree}",
-                                description="Get URL to a statement inside the discussion for direct jumping to it",
-                                cors_policy=cors_policy)
+# statement_url_service = Service(name="statement_url",
+#                                 path="/statement/url/{issue_uid}/{statement_uid}/{agree}",
+#                                 description="Get URL to a statement inside the discussion for direct jumping to it",
+#                                 cors_policy=cors_policy)
 
 issues = Service(name="issues",
                  path="/issues",
@@ -478,7 +480,7 @@ def prepare_data_assign_reference(request, func: Callable[[bool, dict], Any]):
         if type(statement_uids) is int:
             statement_uids = [statement_uids]
         refs_db = [store_reference(api_data, statement) for statement in statement_uids]
-        return_dict["references"] = list(map(prepare_single_reference, refs_db))
+        return_dict["references"] = [Reference(ref) for ref in refs_db]
     return return_dict
 
 
@@ -490,6 +492,7 @@ def add_start_statement(request):
     :param request:
     :return:
     """
+    log.debug("Adding new position")
     return prepare_data_assign_reference(request, set_position)
 
 
@@ -501,6 +504,7 @@ def add_start_premise(request):
     :param request:
     :return:
     """
+    log.debug("Adding new position with premise")
     return prepare_data_assign_reference(request, set_positions_premise)
 
 
@@ -512,6 +516,7 @@ def add_justify_premise(request):
     :param request:
     :return:
     """
+    log.debug("Adding new justifying premise")
     return prepare_data_assign_reference(request, set_arguments_premises)
 
 
@@ -526,20 +531,19 @@ def get_references(request):
 
     :param request: request
     :return: References assigned to the queried URL
-
     """
     host = request.GET.get("host")
     path = request.GET.get("path")
+    log.debug("Querying references for host: {}, path: {}".format(host, path))
     if host and path:
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
             return {
-                "references": list(map(lambda ref:
-                                       prepare_single_reference(ref), refs_db))
+                "references": [Reference(ref) for ref in refs_db]
             }
         else:
-            return error("Could not retrieve references", "API/Reference")
-    return error("Could not parse your origin", "API/Reference")
+            return error("Could not retrieve references")
+    return error("Could not parse your origin")
 
 
 @reference_usages.get()
@@ -556,9 +560,7 @@ def get_reference_usages(request):
     db_ref = get_reference_by_id(ref_uid)
     if db_ref:
         return get_all_references_by_reference_text(db_ref.reference)
-    return error("Reference could not be found",
-                 "API/GET Reference Usages",
-                 "Error when trying to find matching reference for id")
+    return error("Reference could not be found")
 
 
 # =============================================================================
@@ -575,8 +577,10 @@ def user_login(request):
     :param request:
     :return: token and nickname
     """
+    nickname = request.validated['nickname']
+    log.debug('User authenticated: {}'.format(nickname))
     return {
-        'nickname': request.validated['nickname'],
+        'nickname': nickname,
         'token': request.validated['token']
     }
 
@@ -590,6 +594,8 @@ def user_logout(request):
     :param request:
     :return:
     """
+    nickname = request.validated['user']
+    log.debug('User logged out: {}'.format(nickname))
     request.session.invalidate()
     token_to_database(request.validated['user'], None)
     return {
@@ -627,7 +633,6 @@ def find_statements_fn(request):
     for statement in results["values"]:
         statement_uid = statement["statement_uid"]
         statement["issue"] = {"uid": issue_uid, "slug": resolve_issue_uid_to_slug(issue_uid)}
-        statement["url"] = url_to_statement(api_data["issue"], statement_uid)  # TODO I think I do not use this any more
         statement["arguments"] = get_all_arguments_with_text_by_statement_id(statement_uid)
         return_dict["values"].append(statement)
     return return_dict
@@ -679,22 +684,6 @@ def get_text_for_argument(request):
 # GET INFORMATION - several functions to get information from the database
 # =============================================================================
 
-@statement_url_service.get()
-def get_statement_url(request):
-    """
-    Given an issue, the statement_uid and an (dis-)agreement, produce a url to the statement inside the corresponding
-    discussion.
-
-    :param request:
-    :return:
-
-    """
-    issue_uid = request.matchdict["issue_uid"]
-    statement_uid = request.matchdict["statement_uid"]
-    agree = request.matchdict["agree"]
-    return {"url": url_to_statement(issue_uid, statement_uid, agree)}
-
-
 @issues.get()
 def get_issues(_request):
     """
@@ -707,6 +696,30 @@ def get_issues(_request):
                                                    Issue.is_private == False).all()
 
 
+# -----------------------------------------------------------------------------
+# Posts
+
+def __join_list_to_string(list_of_strings) -> str:
+    return ", ".join(str(elem) for elem in list_of_strings)
+
+
+def __http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
+    """
+    Add CORS Headers to HTTPSeeOther response.
+
+    :param location: URL to route to
+    :return: HTTPSeeOther with CORS Header
+    """
+    return HTTPSeeOther(
+        location=location,
+        headers={
+            'Access-Control-Allow-Origin': __join_list_to_string(cors_policy.get('origins')),
+            'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, HEAD',
+            'Access-Control-Allow-Headers': __join_list_to_string(cors_policy.get('headers')),
+        }
+    )
+
+
 @positions.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body)
 def add_position_with_premise(request):
@@ -716,13 +729,13 @@ def add_position_with_premise(request):
 
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
 
-    conslusion_id: int = new_position['statement_uids'][0]
-    db_conclusion: Statement = DBDiscussionSession.query(Statement).get(conslusion_id)
+    conclusion_id: int = new_position['statement_uids'][0]
+    db_conclusion: Statement = DBDiscussionSession.query(Statement).get(conclusion_id)
 
     pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
                                request.mailer)
 
-    return HTTPSeeOther(location='/api' + pd['url'])
+    return __http_see_other_with_cors_header('/api' + pd['url'])
 
 
 @justify_statement.post(require_csrf=False)
@@ -739,7 +752,7 @@ def add_premise_to_statement(request):
                                history,
                                request.mailer)
 
-    return HTTPSeeOther(location='/api' + pd['url'])
+    return __http_see_other_with_cors_header('/api' + pd['url'])
 
 
 @justify_argument.post(require_csrf=False)
@@ -756,4 +769,50 @@ def add_premise_to_argument(request):
                                 history,
                                 request.mailer)
 
-    return HTTPSeeOther(location='/api' + pd['url'])
+    return __http_see_other_with_cors_header('/api' + pd['url'])
+
+
+@resource(collection_path='/users', path='/users/{id:\d+}', cors_policy=cors_policy)
+class ApiUser(object):
+    def __init__(self, request, context=None):
+        self.request = request
+
+    @staticmethod
+    def external_view(db_user: User):
+        return {
+            'id': db_user.uid,
+            'nickname': db_user.public_nickname
+        }
+
+    def get(self):
+        db_user: User = DBDiscussionSession.query(User).get(int(self.request.matchdict['id']))
+        if db_user:
+            return ApiUser.external_view(db_user)
+        else:
+            self.request.response.status = 404
+            return "This user-id does not exist."
+
+    def collection_get(self):
+        db_users: List[User] = DBDiscussionSession.query(User).all()
+        return [ApiUser.external_view(db_user) for db_user in db_users]
+
+    @view(require_csrf=False)
+    def collection_post(self):
+        return self._collection_post(self.request)
+
+    @staticmethod
+    @validate(valid_api_token,
+              has_keywords(('firstname', str), ('lastname', str), ('nickname', str), ('email', str), ('gender', str),
+                           ('id', int), ('locale', str), ('service', str)))
+    def _collection_post(request):
+        result = set_new_oauth_user(request.json_body,
+                                    request.json_body['id'],
+                                    request.json_body['service'],
+                                    Translator(request.json_body['locale']))
+
+        if result["success"]:
+            request.response.status = 201
+            return {"id": result["user"].uid}
+        else:
+            request.response.status = 400
+            return result["error"]

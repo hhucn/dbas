@@ -3,26 +3,38 @@ Testing the routes of the API.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
+import hypothesis.strategies as st
 import json
 import unittest
-
-import hypothesis.strategies as st
 from hypothesis import given, settings
 from pyramid import httpexceptions
+from pyramid.interfaces import IRequest
 from pyramid.response import Response
+from pyramid.testing import DummyRequest
+from typing import List
 
 import api.views as apiviews
+from admin.lib import generate_application_token
 from api.login import token_to_database
 # ------------------------------------------------------------------------------
 # Tests
-from dbas.database.discussion_model import Issue
+from api.models import Reference
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Issue, StatementReferences
 from dbas.lib import get_user_by_case_insensitive_nickname, Relations, Attitudes
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
 
-def create_request_with_token_header(json_body=None, match_dict=None, nickname='Walter', token='mytoken'):
+def create_request_with_token_header(json_body=None, match_dict=None, nickname='Walter', token='mytoken') -> IRequest:
     token_to_database(get_user_by_case_insensitive_nickname(nickname), token)
-    request = construct_dummy_request(json_body=json_body, match_dict=match_dict)
+    request: IRequest = construct_dummy_request(json_body=json_body, match_dict=match_dict)
+    request.headers['X-Authentication'] = json.dumps({'nickname': nickname, 'token': token})
+    return request
+
+
+def create_request_with_api_token_header(json_body=None, match_dict=None, nickname='Walter'):
+    token = generate_application_token("TEST_API_TOKEN_FOR_" + nickname)
+    request: IRequest = construct_dummy_request(json_body=json_body, match_dict=match_dict)
     request.headers['X-Authentication'] = json.dumps({'nickname': nickname, 'token': token})
     return request
 
@@ -397,8 +409,8 @@ class TestDiscussionFinish(TestCaseWithConfig):
 
 class TestPosition(TestCaseWithConfig):
     test_body = {
-        "position": "we should do something entirely else",
-        "reason": "because i need to"
+        'position': 'we should do something entirely else',
+        'reason': 'because i need to'
     }
 
     def test_add_valid_position(self):
@@ -419,7 +431,7 @@ class TestPosition(TestCaseWithConfig):
     def test_invalid_body(self):
         request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug})
 
-        request.json_body = {"position": "we should do something entirely else"}
+        request.json_body = {'position': 'we should do something entirely else'}
 
         response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 400)
@@ -431,3 +443,102 @@ class TestPosition(TestCaseWithConfig):
 
         response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 401)
+
+
+class TestUser(TestCaseWithConfig):
+    test_body = {
+        'firstname': 'This',
+        'lastname': 'Is',
+        'nickname': 'TEST-nick',
+        'service': 'Jeb?',
+        'locale': 'de_DE',
+        'email': 'bla@bla.de',
+        'gender': 'n',
+        'id': 1236
+    }
+
+    def test_add_user(self):
+        request = create_request_with_api_token_header(json_body=self.test_body)
+        response: Response = apiviews.ApiUser(request).collection_post()
+        print(response)
+        self.assertIsInstance(response, dict)
+        self.assertIn('id', response)
+
+    def test_add_user_with_user_token(self):
+        request = create_request_with_token_header(json_body=self.test_body)
+        response: Response = apiviews.ApiUser(request).collection_post()
+        self.assertGreaterEqual(response.status_code, 400)
+
+    def assertUser(self, user):  # camel case to be consistent with unittest
+        """
+        Asserts that the user-data is in correct shape.
+        :param user: Something which should be a user.
+        """
+        self.assertIsInstance(user, dict)
+        self.assertIn('id', user)
+        self.assertIn('nickname', user)
+
+    def test_list_users(self):
+        response = apiviews.ApiUser(DummyRequest()).collection_get()
+        self.assertIsInstance(response, list)
+        for user in response:
+            self.assertUser(user)
+
+    def test_single_user(self):
+        tobias_krauthoff = {'id': 2, 'nickname': 'Tobias'}
+        response = apiviews.ApiUser(construct_dummy_request(match_dict={'id': 2})).get()
+        self.assertUser(response)
+        self.assertDictEqual(response, tobias_krauthoff)
+
+
+class TestReferences(TestCaseWithConfig):
+    def setUp(self):
+        self.statement_reference: StatementReferences = DBDiscussionSession.query(StatementReferences).get(2)
+
+    def assertError(self, response):
+        self.assertIn('status', response)
+        self.assertEqual(response.get('status'), 'error')
+
+    def assertValidReferences(self, response, expected_references: List[Reference] = None):
+        references = response.get('references')
+        self.assertIn('references', response)
+        self.assertIsInstance(references, list)
+        if expected_references:
+            expected = [ref.uid for ref in expected_references]
+            actual = [ref.uid for ref in references]
+            self.assertCountEqual(expected, actual)
+
+    def test_missing_parameters_should_return_error(self):
+        request: IRequest = construct_dummy_request(params={})
+        response = apiviews.get_references(request)
+        self.assertError(response)
+
+    def test_missing_path_should_return_error(self):
+        request: IRequest = construct_dummy_request(params={
+            'host': 'foo',
+        })
+        response = apiviews.get_references(request)
+        self.assertError(response)
+
+    def test_missing_host_should_return_error(self):
+        request: IRequest = construct_dummy_request(params={
+            'path': 'foo',
+        })
+        response = apiviews.get_references(request)
+        self.assertError(response)
+
+    def test_empty_list_when_no_references_in_database(self):
+        request: IRequest = construct_dummy_request(params={
+            'host': 'foo',
+            'path': 'foo',
+        })
+        response = apiviews.get_references(request)
+        self.assertValidReferences(response, [])
+
+    def test_query_one_reference_should_return_list_of_references(self):
+        request: IRequest = construct_dummy_request(params={
+            'host': 'localhost:3449',
+            'path': '/',
+        })
+        response = apiviews.get_references(request)
+        self.assertValidReferences(response, [Reference(self.statement_reference)])

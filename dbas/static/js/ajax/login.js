@@ -56,15 +56,15 @@ function AjaxLoginHandler() {
      * @param service
      * @param redirect_uri
      */
-    this.oauthLogin = function (service, redirect_uri) {
+    this.oauthLogin = function (service) {
         $('#' + popupLoginFailed).hide();
         $('#' + popupLoginFailed + '-message').text('');
         $('#' + popupLoginInfo).hide();
         $('#' + popupLoginInfo + '-message').text('');
-        var url = mainpage + 'user_login_oauth';
+        var url = mainpage + 'oauth';
         var d = {
             service: service,
-            redirect_uri: redirect_uri
+            redirect_uri: window.location.href
         };
         var done = function ajaxOauthLoginDone(data) {
             if (data.error.length !== 0) {

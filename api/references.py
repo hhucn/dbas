@@ -5,56 +5,15 @@ Handle references from other websites, prepare, store and load them into D-BAS.
 """
 
 import transaction
+
 from api.extractor import extract_reference_information, extract_author_information, extract_issue_information
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
-from dbas.lib import resolve_issue_uid_to_slug, get_all_arguments_with_text_by_statement_id
-from dbas.helper.url import UrlManager
-
+from dbas.helper.url import url_to_statement
+from dbas.lib import get_all_arguments_with_text_by_statement_id
 from .lib import escape_html, logger
 
 log = logger()
-
-
-def url_to_statement(issue_uid, statement_uid, agree=True):
-    """
-    Generate URL to given statement_uid in specific issue (by slug).
-    Used to directly jump into the discussion.
-
-    :param issue_uid: uid of current issue
-    :type issue_uid: id
-    :param statement_uid: Statement id to generate the link to
-    :type statement_uid: int
-    :param agree: Indicate (dis-)agreement with a statement
-    :type agree: boolean
-    :return: direct URL to jump to the provided statement
-    :rtype: str
-    """
-    if isinstance(agree, str):
-        if agree == "true":
-            mode = "agree"
-        else:
-            mode = "disagree"
-    else:
-        mode = "agree" if agree is True else "disagree"
-    slug = resolve_issue_uid_to_slug(issue_uid)
-    url_manager = UrlManager(slug=slug)
-    return "api/" + url_manager.get_url_for_justifying_statement(statement_uid, mode)
-
-
-def prepare_single_reference(ref):
-    """
-    Given a StatementReference database-object extract information and generate a URL for it.
-    Then prepare a dict and return it.
-
-    :param ref: single Reference
-    :type ref: StatementReferences
-    :return: dictionary with some prepared fields of a reference
-    :rtype: dict
-    """
-    if ref:
-        url = url_to_statement(ref.issue_uid, ref.statement_uid)
-        return {"uid": ref.uid, "text": ref.reference, "url": url}
 
 
 def store_reference(api_data, statement_uid=None):
@@ -123,7 +82,7 @@ def get_all_references_by_reference_text(ref_text=None):
             user = DBDiscussionSession.query(User).get(reference.author_uid)
             issue = DBDiscussionSession.query(Issue).get(reference.issue_uid)
             textversion = DBDiscussionSession.query(TextVersion).get(reference.statement_uid)
-            statement_url = url_to_statement(issue.uid, reference.statement_uid)
+            statement_url = url_to_statement(issue, reference.statement)
             refs.append({"reference": extract_reference_information(reference),
                          "author": extract_author_information(user),
                          "issue": extract_issue_information(issue),

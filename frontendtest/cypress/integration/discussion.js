@@ -69,6 +69,9 @@ describe('Test the functions while discussing', function () {
             .should('exist');
     }
 
+    before(function () {
+        cy.wait(1000);
+    });
     beforeEach(function () {
         cy.visit(url + '/discuss');
         cy.contains(discussions[0])
