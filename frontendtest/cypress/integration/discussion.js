@@ -63,18 +63,6 @@ describe('Test the functions while discussing', function () {
 
 
     before(function () {
-        /*
-         cy.visit(url + '/discuss');
-         cy.contains(discussions[0])
-         .click({force: true});
-         cy.get('#item_login')
-         .should('exist')
-         .click({force: true});
-         login(valid_user, valid_pw);
-         cy.get('#item_start_statement')
-         .should('exist')
-         .click({force: true});
-         */
         cy.visit(url + '/discuss/' + slugify(discussions[0]));
         login(valid_user, valid_pw);
     });
@@ -174,22 +162,6 @@ describe('Test grap functions', function () {
             }
         }
     });
-    /*it('tests if new statement is added to the graph', function () {
-        const position = randomString(10);
-        const reason = randomString(10);
-        cy.get('#add-statement-container-main-input-position').type(position, {force: true});
-        cy.get('#add-statement-container-main-input-reason').type(reason, {force: true});
-        cy.get('#send-new-statement')
-            .click({force: true});
-        cy.visit(url + '/discuss');
-        cy.contains(discussions[0])
-            .click({force: true});
-        visit_graph();
-        cy.get(options[0])
-            .click({force: true});
-        cy.contains(position);
-        cy.contains(reason);
-    });*/
 });
 
 
