@@ -57,22 +57,7 @@ function slugify(str) {
 
 describe('Test the functions while discussing', function () {
 
-    const options = ['#labels', '#positions', '#statements', '#my-statements', '#supports-on-my-statements'];
-
-    function visit_graph() {
-        cy.get('#display-style-icon-graph-img')
-            .should('exist')
-            .click({force: true});
-        cy.get('#confirm-dialog-refuse-btn')
-            .click({force: true});
-        cy.get('#circle-issue')
-            .should('exist');
-    }
-
     before(function () {
-        cy.wait(1000);
-    });
-    beforeEach(function () {
         cy.visit(url + '/discuss');
         cy.contains(discussions[0])
             .click({force: true});
@@ -84,6 +69,7 @@ describe('Test the functions while discussing', function () {
             .should('exist')
             .click({force: true});
     });
+
     it('choose position and restart discussion', function () {
         cy.url()
             .should('eq', url + '/discuss/' + slugify(discussions[0]));
@@ -117,6 +103,9 @@ describe('Test the functions while discussing', function () {
         cy.get('.icon-add-premise')
             .should('exist');
     });
+});
+
+describe('Test the barometer and sharing', function () {
 
     it('tests if the discussion can be shared', function () {
         cy.get('#share-url')
@@ -124,6 +113,9 @@ describe('Test the functions while discussing', function () {
             .click({force: true});
         cy.get('#popup-url-sharing')
             .should('exist');
+        cy.get('#popup-url-sharing-close-button')
+            .should('exist')
+            .click({force: true});
     });
     it('tests if the barometer can be used', function () {
         cy.get('#opinion-barometer-img')
@@ -132,6 +124,34 @@ describe('Test the functions while discussing', function () {
         cy.get('#barometer-popup')
             .should('exist');
     });
+});
+
+describe('Test grap functions', function () {
+    const options = ['#labels', '#positions', '#statements', '#my-statements', '#supports-on-my-statements'];
+
+    function visit_graph() {
+        cy.get('#display-style-icon-graph-img')
+            .should('exist')
+            .click({force: true});
+        cy.get('#confirm-dialog-refuse-btn')
+            .click({force: true});
+        cy.get('#circle-issue')
+            .should('exist');
+    }
+
+    before(function () {
+        cy.visit(url + '/discuss');
+        cy.contains(discussions[0])
+            .click({force: true});
+        cy.get('#item_login')
+            .should('exist')
+            .click({force: true});
+        login(valid_user, valid_pw);
+        cy.get('#item_start_statement')
+            .should('exist')
+            .click({force: true});
+    });
+
     it('tests if the graph can be used', function () {
         visit_graph();
     });
@@ -145,7 +165,7 @@ describe('Test the functions while discussing', function () {
             }
         }
     });
-    it('tests if new statement is added to the graph', function () {
+    /*it('tests if new statement is added to the graph', function () {
         const position = randomString(10);
         const reason = randomString(10);
         cy.get('#add-statement-container-main-input-position').type(position, {force: true});
@@ -160,8 +180,9 @@ describe('Test the functions while discussing', function () {
             .click({force: true});
         cy.contains(position);
         cy.contains(reason);
-    });
+    });*/
 });
+
 
 describe('Test if not logged in user can not contribute', function () {
     it('checks if every discussion denies contribution', function () {
@@ -234,7 +255,7 @@ describe('Test if user can login and can contribute at ' + discussions[0], funct
 });
 
 describe('Test for leaks while adding new statements at ' + discussions[0], function () {
-    beforeEach(function () {
+    before(function () {
         cy.visit(url + '/discuss');
         cy.contains(discussions[0])
             .click({force: true});
