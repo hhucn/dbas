@@ -19,7 +19,7 @@ from dbas.logger import logger
 def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relations] = None,
                             restrictive_arg_uids: List[int] = None, last_attack: Relations = None,
                             history: str = '', redirected_from_jump: bool = False) -> Tuple[Optional[int],
-                                                                                            Optional[str]]:
+                                                                                            Optional[Relations]]:
     """
     Selects an attack out of the web of reasons.
 
@@ -119,7 +119,7 @@ def get_forbidden_attacks_based_on_history(history: str) -> List[int]:
 
 def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_attacks: List,
                                                  restrictive_arg_uids: List, last_attack: Relations,
-                                                 history: str) -> Tuple[List[int], str, bool]:
+                                                 history: str) -> Tuple[List[int], Optional[Relations], bool]:
     """
     Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
     Additionally returns id's of premises groups with [key + str(index) + 'id']
@@ -136,7 +136,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
     is_supportive = False
     new_attack_step = ''
     arg_uids = []
-    attack_key = ''
+    attack_key = None
 
     while len(attack_list) > 0:
         attack = random.choice(attack_list)
@@ -158,7 +158,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
         if attack_key not in restrictive_attacks and new_attack_step not in history:  # no duplicated attacks
             break  # found an attack
 
-        attack_key = ''  # reset, because maybe the while loop is not triggered again
+        attack_key = None  # reset, because maybe the while loop is not triggered again
         arg_uids = []
 
     return arg_uids, attack_key, new_attack_step in history
