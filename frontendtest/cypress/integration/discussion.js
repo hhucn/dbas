@@ -9,12 +9,16 @@ const discussions = ['Cat or Dog', 'Make the world better',
     'Elektroautos', 'Unterstützung der Sekretariate', 'Read only Issue'];
 
 function login(user, pw) {
+    cy.get('#link_popup_login')
+        .should('exist')
+        .click({force: true});
     cy.get('#login-user')
-        .type(user);
+        .type(user, {force: true});
     cy.get('#login-pw')
-        .type(pw);
+        .type(pw, {force: true});
     cy.get('#popup-login-button-login')
         .click({force: true});
+    cy.wait(1000);
 }
 
 function randomString(length) {
@@ -57,28 +61,33 @@ function slugify(str) {
 
 describe('Test the functions while discussing', function () {
 
+
     before(function () {
-        cy.visit(url + '/discuss');
-        cy.contains(discussions[0])
-            .click({force: true});
-        cy.get('#item_login')
-            .should('exist')
-            .click({force: true});
+        /*
+         cy.visit(url + '/discuss');
+         cy.contains(discussions[0])
+         .click({force: true});
+         cy.get('#item_login')
+         .should('exist')
+         .click({force: true});
+         login(valid_user, valid_pw);
+         cy.get('#item_start_statement')
+         .should('exist')
+         .click({force: true});
+         */
+        cy.visit(url + '/discuss/' + slugify(discussions[0]));
         login(valid_user, valid_pw);
-        cy.get('#item_start_statement')
-            .should('exist')
-            .click({force: true});
     });
 
     it('choose position and restart discussion', function () {
         cy.url()
             .should('eq', url + '/discuss/' + slugify(discussions[0]));
+
         cy.get('#discussion-restart-btn')
             .click({force: true});
         cy.url()
             .should('eq', url + '/discuss/' + slugify(discussions[0]));
     });
-
     it('add more then one reason', function () {
         cy.get('#item_2')
             .click({force: true});
@@ -256,15 +265,8 @@ describe('Test if user can login and can contribute at ' + discussions[0], funct
 
 describe('Test for leaks while adding new statements at ' + discussions[0], function () {
     before(function () {
-        cy.visit(url + '/discuss');
-        cy.contains(discussions[0])
-            .click({force: true});
-        cy.get('#item_login')
-            .should('exist')
-            .click({force: true});
+        cy.visit(url + '/discuss/' + slugify(discussions[0]));
         login(valid_user, valid_pw);
-        cy.get('#item_login')
-            .should('not.exist');
         cy.get('#item_start_statement')
             .should('exist')
             .click({force: true});
@@ -376,4 +378,3 @@ describe('Test for leaks while adding new statements at ' + discussions[0], func
             .contains(not_enough);
     });
 });
-
