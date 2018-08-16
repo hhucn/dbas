@@ -61,13 +61,9 @@ function slugify(str) {
 
 describe('Test the functions while discussing', function () {
 
-
-    before(function () {
+    it('choose position and restart discussion', function () {
         cy.visit(url + '/discuss/' + slugify(discussions[0]));
         login(valid_user, valid_pw);
-    });
-
-    it('choose position and restart discussion', function () {
         cy.url()
             .should('eq', url + '/discuss/' + slugify(discussions[0]));
 
@@ -77,6 +73,8 @@ describe('Test the functions while discussing', function () {
             .should('eq', url + '/discuss/' + slugify(discussions[0]));
     });
     it('add more then one reason', function () {
+        cy.visit(url + '/discuss/' + slugify(discussions[0]));
+        login(valid_user, valid_pw);
         cy.get('#item_2')
             .click({force: true});
         cy.get('#item_disagree')
@@ -123,47 +121,6 @@ describe('Test the barometer and sharing', function () {
     });
 });
 
-describe('Test grap functions', function () {
-    const options = ['#labels', '#positions', '#statements', '#my-statements', '#supports-on-my-statements'];
-
-    function visit_graph() {
-        cy.get('#display-style-icon-graph-img')
-            .should('exist')
-            .click({force: true});
-        cy.get('#confirm-dialog-refuse-btn')
-            .click({force: true});
-        cy.get('#circle-issue')
-            .should('exist');
-    }
-
-    before(function () {
-        cy.visit(url + '/discuss');
-        cy.contains(discussions[0])
-            .click({force: true});
-        cy.get('#item_login')
-            .should('exist')
-            .click({force: true});
-        login(valid_user, valid_pw);
-        cy.get('#item_start_statement')
-            .should('exist')
-            .click({force: true});
-    });
-
-    it('tests if the graph can be used', function () {
-        visit_graph();
-    });
-    it('tests all options of the graph', function () {
-        visit_graph();
-        for (var i = 0; i < options.length; i++) {
-            cy.get(options[i])
-                .click({force: true});
-            if ('#labels' === options[i]) {
-                cy.contains('we should get a cat');
-            }
-        }
-    });
-});
-
 
 describe('Test if not logged in user can not contribute', function () {
     it('checks if every discussion denies contribution', function () {
@@ -183,7 +140,8 @@ describe('Test if user can login and can contribute at ' + discussions[0], funct
     var reason = randomString(10);
     var disagreement = randomString(10);
     var premise = randomString(10);
-    beforeEach('checks if a user can login and contribute', function () {
+    /**
+     beforeEach('checks if a user can login and contribute', function () {
             cy.visit(url + '/discuss');
             cy.contains(discussions[0])
                 .click({force: true});
@@ -202,9 +160,11 @@ describe('Test if user can login and can contribute at ' + discussions[0], funct
                     }
                 });
         }
-    );
-
+     );
+     **/
     it('checks if new position can be contributed', function () {
+        cy.visit(url + '/discuss/' + slugify(discussions[0]));
+        login(valid_user, valid_pw);
         cy.get('#item_start_statement').click({force: true});
         cy.get('#add-statement-container-main-input-position').type(position, {force: true});
         cy.get('#add-statement-container-main-input-reason').type(reason, {force: true});
@@ -214,6 +174,8 @@ describe('Test if user can login and can contribute at ' + discussions[0], funct
         cy.contains(lowercaseFirstLetter(reason));
     });
     it('checks if an user can disagree to new position', function () {
+        cy.visit(url + '/discuss/' + slugify(discussions[0]));
+        login(valid_user, valid_pw);
         cy.contains(position).click({force: true});
         cy.get('#item_disagree').click({force: true});
         cy.get('#add-position-container-main-input').type(disagreement, {force: true});
@@ -223,6 +185,8 @@ describe('Test if user can login and can contribute at ' + discussions[0], funct
         cy.contains(lowercaseFirstLetter(disagreement));
     });
     it('checks if an user can agree to new position and adds premise', function () {
+        cy.visit(url + '/discuss/' + slugify(discussions[0]));
+        login(valid_user, valid_pw);
         cy.contains(position).click({force: true});
         cy.get('#item_agree').click({force: true});
         cy.contains(reason);
@@ -243,7 +207,6 @@ describe('Test for leaks while adding new statements at ' + discussions[0], func
             .should('exist')
             .click({force: true});
     });
-
     afterEach(function () {
         cy.get('#send-new-position').click({force: true});
         cy.get('#add-statement-error-container')
@@ -263,7 +226,6 @@ describe('Test for leaks while adding new statements at ' + discussions[0], func
     });
 
     it('writes an valid position and no reason', function () {
-
         cy.get('#add-statement-container-main-input-position')
             .type(valid_position, {force: true});
         var remaining = remaining_input_msg(valid_position);
