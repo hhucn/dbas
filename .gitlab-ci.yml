@@ -64,12 +64,12 @@ frontend:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY/cn-tsn/project/dbas/dbas/db:testing
-    - docker pull $CI_REGISTRY/cn-tsn/project/dbas/dbas:experimental
+    - docker pull $CI_REGISTRY/cn-tsn/project/dbas/dbas:development
     - docker pull $CI_REGISTRY_IMAGE/frontendtest
     - docker network create -d bridge dbas_$CI_JOB_ID
     - docker run -d --name db_$CI_JOB_ID --net=dbas_$CI_JOB_ID $CI_REGISTRY_IMAGE/db:testing
     - sleep 8
-    - docker run -d --name web_$CI_JOB_ID --net=dbas_$CI_JOB_ID -e AUTHN_SECRET=$AUTHN_SECRET -e DB_HOST=$DB_HOST -e DB_PORT=$DB_PORT -e DB_USER=$DB_USER -e DB_PW=$DB_PW -e DB_NAME=$DB_NAME $CI_REGISTRY_IMAGE:experimental
+    - docker run -d --name web_$CI_JOB_ID --net=dbas_$CI_JOB_ID -e AUTHN_SECRET=$AUTHN_SECRET -e DB_HOST=$DB_HOST -e DB_PORT=$DB_PORT -e DB_USER=$DB_USER -e DB_PW=$DB_PW -e DB_NAME=$DB_NAME $CI_REGISTRY_IMAGE:development
     - sleep 5
     - docker run -di --name frontendtest_$CI_JOB_ID --net=dbas_$CI_JOB_ID $CI_REGISTRY_IMAGE/frontendtest
   script:
