@@ -9,8 +9,6 @@ function slugify(str) {
 }
 
 describe('Test grap functions', function () {
-    const options = ['#labels', '#positions', '#statements', '#my-statements', '#supports-on-my-statements'];
-
     function login(user, pw) {
         cy.get('#link_popup_login')
             .should('exist')
@@ -34,17 +32,23 @@ describe('Test grap functions', function () {
             .should('exist');
     }
 
-    it('tests all options of the graph', function () {
-        cy.visit(url + '/discuss/' + slugify(discussions[0]));
+
+    it('checks if every option is active', function () {
+
+        cy.visit(url + "/discuss/cat-or-dog#graph");
         login(valid_user, valid_pw);
-        visit_graph();
         cy.wait(1000);
-        for (var i = 0; i < options.length; i++) {
-            cy.get(options[i])
-                .click({force: true});
-            if ('#labels' === options[i]) {
-                cy.contains('we should get a cat');
-            }
-        }
+        cy.get('ul#graph-sidebar > li:visible')
+            .each(($el) => {
+                cy.wrap($el)
+                    .should('have.attr', 'id')
+                    .then((id) => {
+                        console.log('id ' + id);
+                        cy.get('#' + id)
+                            .should('exist')
+                            .click({force: true});
+                    });
+            });
     });
+
 });
