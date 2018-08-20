@@ -18,6 +18,13 @@ services:
       - "4284:4284"
     links:
       - db:db
+    environment:
+      AUTHN_SECRET: ${AUTHN_SECRET}
+      DB_PW: ${DB_PW}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      URL: ${URL}
     env_file:
       - production.env
     depends_on:
