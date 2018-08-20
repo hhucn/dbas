@@ -14,7 +14,7 @@ from typing import List
 from cornice import Service
 from cornice.resource import resource, view
 from pyramid.httpexceptions import HTTPSeeOther
-from pyramid.interfaces import IRequest
+from pyramid.request import Request
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
@@ -31,7 +31,7 @@ from dbas.lib import (get_all_arguments_by_statement,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug, create_speechbubble_dict, BubbleTypes,
                       Attitudes, Relations)
 from dbas.strings.translator import Keywords as _, get_translation, Translator
-from dbas.validators.core import has_keywords, validate
+from dbas.validators.core import has_keywords, validate, has_maybe_keywords
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
 from .lib import logger
@@ -388,34 +388,12 @@ def discussion_finish(request):
     return {'bubbles': extract_items_and_bubbles(prepared_discussion)[0]}
 
 
-# -----------------------------------------------------------------------------
-
-def prepare_user_information(request):
-    """
-    Check if user is authenticated, return prepared data for D-BAS.
-
-    :param request:
-    :return:
-    """
-    val = request.validated
-    try:
-        api_data = {
-            "nickname": val["user"],
-            "user": val["user"],
-            "user_uid": val["user_uid"],
-            "session_id": val["session_id"]
-        }
-    except KeyError:
-        api_data = None
-    return api_data
-
-
 # =============================================================================
 # REFERENCES - Get references from database
 # =============================================================================
 
 @references.get()
-def get_references(request: IRequest):
+def get_references(request: Request):
     """
     Query database to get stored references from site. Generate a list with text versions of references.
 
@@ -437,14 +415,13 @@ def get_references(request: IRequest):
 
 
 @reference_usages.get()
-def get_reference_usages(request):
+def get_reference_usages(request: Request):
     """
     Return a JSON object containing all information about the stored reference and its usages.
 
     :param request:
     :return: JSON with all information about the stored reference
     :rtype: list
-
     """
     ref_uid = request.matchdict["ref_uid"]
     db_ref = get_reference_by_id(ref_uid)
@@ -630,7 +607,7 @@ def add_position_with_premise(request):
 
 @justify_statement.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_reason_in_body, valid_statement(location="path"),
-          valid_attitude)
+          valid_attitude, has_maybe_keywords(('reference', str, 'razupaltuff')))
 def add_premise_to_statement(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']

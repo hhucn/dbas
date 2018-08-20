@@ -3,15 +3,16 @@ Testing the routes of the API.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-import hypothesis.strategies as st
 import json
 import unittest
+from typing import List
+
+import hypothesis.strategies as st
 from hypothesis import given, settings
 from pyramid import httpexceptions
 from pyramid.interfaces import IRequest
 from pyramid.response import Response
 from pyramid.testing import DummyRequest
-from typing import List
 
 import api.views as apiviews
 from admin.lib import generate_application_token
@@ -238,7 +239,7 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
         request = create_request_with_token_header(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'statement_id': "2",
-            'attitude': 'disagree'
+            'attitude': Attitudes.DISAGREE.value
         },
             json_body={'reason': "because i need to"})
 
@@ -252,6 +253,21 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
 
         response: Response = apiviews.add_premise_to_statement(request)
         self.assertEqual(response.status_code, 400)
+
+    def test_valid_reference_should_be_assigned_to_new_statement(self):
+        test_reference = 'awesome reference'
+        request = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'statement_id': '2',
+            'attitude': Attitudes.DISAGREE.value
+        },
+            json_body={
+                'reason': 'i am groot',
+                'reference': test_reference
+            })
+        response: Response = apiviews.add_premise_to_statement(request)
+        self.assertEqual(request.validated['reference'], test_reference)
+        self.assertEqual(response.status_code, 303)
 
 
 class TestDiscussionJustifyArgument(TestCaseWithConfig):
