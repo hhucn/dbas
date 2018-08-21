@@ -19,7 +19,7 @@ from dbas.logger import logger
 def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relations] = None,
                             restrictive_arg_uids: List[int] = None, last_attack: Relations = None,
                             history: str = '', redirected_from_jump: bool = False) -> Tuple[Optional[int],
-                                                                                            Optional[str]]:
+                                                                                            Optional[Relations]]:
     """
     Selects an attack out of the web of reasons.
 
@@ -29,7 +29,7 @@ def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relatio
     :param last_attack: String
     :param history: History
     :param redirected_from_jump: Boolean
-    :return: Retrusn a tuple with an attacking Argument.uid as well as the type of attack as str
+    :return: Returns a tuple with an attacking Argument.uid as well as the type of attack
     """
     restrictive_arg_uids = list(set(restrictive_arg_uids)) if restrictive_arg_uids else []
     history, redirected_from_jump = __setup_history(history, redirected_from_jump)
