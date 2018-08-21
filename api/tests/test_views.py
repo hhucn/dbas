@@ -256,15 +256,16 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
 
     def test_valid_reference_should_be_assigned_to_new_statement(self):
         test_reference = 'awesome reference'
-        request = create_request_with_token_header(match_dict={
+        request: DummyRequest = create_request_with_token_header(match_dict={
             'slug': self.issue_cat_or_dog.slug,
-            'statement_id': '2',
+            'statement_id': 2,
             'attitude': Attitudes.DISAGREE.value
         },
             json_body={
                 'reason': 'i am groot',
                 'reference': test_reference
-            })
+            }
+        )
         response: Response = apiviews.add_premise_to_statement(request)
         self.assertEqual(request.validated['reference'], test_reference)
         self.assertEqual(response.status_code, 303)
@@ -272,7 +273,7 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
 
 class TestDiscussionJustifyArgument(TestCaseWithConfig):
     def test_successful_discussion_justify_argument(self):
-        request = construct_dummy_request(match_dict={
+        request: DummyRequest = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_cat_or_dog.uid,
             'attitude': Attitudes.AGREE.value,
@@ -288,7 +289,7 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
         self.assertIn('relation', request.validated)
 
     def test_wrong_slug_returns_error(self):
-        request = construct_dummy_request(match_dict={
+        request: DummyRequest = construct_dummy_request(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': self.argument_town.uid,
             'attitude': Attitudes.AGREE.value,
