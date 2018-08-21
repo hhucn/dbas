@@ -1,7 +1,5 @@
 """
 Managing URLS can be done with a very hardcoded scheme. We are differentiating between several steps in the discussion.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import random
 
@@ -36,7 +34,7 @@ class UrlManager(object):
         """
         return self.review_url + self.slug
 
-    def get_url_for_statement_attitude(self, statement_uid):
+    def get_url_for_statement_attitude(self, statement_uid: int):
         """
         Returns url for getting statement attitude of the user or the API-version
 
@@ -57,7 +55,8 @@ class UrlManager(object):
         url = '{}/justify/{}/{}'.format(self.slug, statement_uid, attitude)
         return self.__return_discussion_url(url)
 
-    def get_url_for_justifying_argument(self, argument_uid, attitude: Attitudes, relation: Relations, additional_id=-1):
+    def get_url_for_justifying_argument(self, argument_uid: int, attitude: Attitudes, relation: Relations,
+                                        additional_id: int = -1):
         """
         Returns url for justifying an argument of the user or the API-version
 
@@ -72,18 +71,18 @@ class UrlManager(object):
             url += '/{}'.format(additional_id)
         return self.__return_discussion_url(url)
 
-    def get_url_for_reaction_on_argument(self, argument_uid, mode, confrontation_argument):
+    def get_url_for_reaction_on_argument(self, argument_uid: int, relation: Relations, confrontation_argument: int):
         """
         Returns url for getting the reaction regarding an argument of the user or the API-version
 
         :param argument_uid: Argument.uid
-        :param mode:
+        :param relation:
         :param confrontation_argument: Argument.uid
         :return: discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys
         """
         if not confrontation_argument:
             return self.get_url_for_discussion_finish(argument_uid)
-        url = '{}/reaction/{}/{}/{}'.format(self.slug, argument_uid, mode, confrontation_argument)
+        url = '{}/reaction/{}/{}/{}'.format(self.slug, argument_uid, relation, confrontation_argument)
         return self.__return_discussion_url(url)
 
     def get_url_for_choosing_premisegroup(self, is_argument, is_supportive, statement_or_argument_id,
