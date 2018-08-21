@@ -240,8 +240,7 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
             'slug': self.issue_cat_or_dog.slug,
             'statement_id': "2",
             'attitude': Attitudes.DISAGREE.value
-        },
-            json_body={'reason': "because i need to"})
+        }, json_body={'reason': "because i need to"})
 
         response: Response = apiviews.add_premise_to_statement(request)
         self.assertEqual(response.status_code, 303, response.body)
@@ -260,12 +259,10 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
             'slug': self.issue_cat_or_dog.slug,
             'statement_id': 2,
             'attitude': Attitudes.DISAGREE.value
-        },
-            json_body={
-                'reason': 'i am groot',
-                'reference': test_reference
-            }
-        )
+        }, json_body={
+            'reason': 'i am groot',
+            'reference': test_reference
+        })
         response: Response = apiviews.add_premise_to_statement(request)
         self.assertEqual(request.validated['reference'], test_reference)
         self.assertEqual(response.status_code, 303)

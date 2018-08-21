@@ -119,7 +119,7 @@ def get_forbidden_attacks_based_on_history(history: str) -> List[int]:
 
 def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_attacks: List[Relations],
                                                  restrictive_arg_uids: List, last_attack: Relations,
-                                                 history: str) -> Tuple[List[int], Relations, bool]:
+                                                 history: str) -> Tuple[List[int], Optional[Relations], bool]:
     """
     Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
     Additionally returns id's of premises groups with [key + str(index) + 'id']
