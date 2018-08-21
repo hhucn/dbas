@@ -612,7 +612,7 @@ def add_premise_to_statement(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
     db_statement: Statement = request.validated['statement']
-    is_supportive = request.validated['attitude'] == Attitudes.AGREE
+    is_supportive = request.validated['attitude'] == Attitudes.AGREE.value
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
