@@ -1,9 +1,8 @@
-import unittest
-
 from dbas.lib import Relations, Attitudes
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class UrlManagerTests(unittest.TestCase):
+class UrlManagerTests(TestCaseWithConfig):
     @staticmethod
     def __get_target_class():
         from dbas.helper.url import UrlManager

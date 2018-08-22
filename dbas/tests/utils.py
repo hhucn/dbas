@@ -19,6 +19,7 @@ from dbas.helper.test import add_settings_to_appconfig
 class TestCaseWithDatabase(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
+        self.config.include('pyramid_chameleon')
         settings = add_settings_to_appconfig()
         DBDiscussionSession.remove()
         DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
@@ -27,13 +28,7 @@ class TestCaseWithDatabase(unittest.TestCase):
         testing.tearDown()
 
 
-class TestCaseWithChameleon(TestCaseWithDatabase):
-    def setUp(self):
-        super().setUp()
-        self.config.include('pyramid_chameleon')
-
-
-class TestCaseWithConfig(TestCaseWithChameleon):
+class TestCaseWithConfig(TestCaseWithDatabase):
     def setUp(self):
         super().setUp()
         self.issue_disabled: Issue = DBDiscussionSession.query(Issue).get(6)
