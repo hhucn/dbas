@@ -218,7 +218,7 @@ class TestChangeLog(TestCaseWithConfig):
         self.assertEqual(len(lib.get_changelog(1)), 1)
         self.assertEqual(len(lib.get_changelog(3)), 3)
         self.assertIsInstance(lib.get_changelog(1), list)
-        self.assertIsInstance(type(lib.get_changelog(1)[0]), dict)
+        self.assertIsInstance(lib.get_changelog(1)[0], dict)
 
 
 class TestDiscussionLanguage(TestCaseWithConfig):
