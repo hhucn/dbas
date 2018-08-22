@@ -71,7 +71,7 @@ unit:
   <<: *add-services
   stage: test
   script:
-  - nosetests --with-coverage --cover-package=dbas --cover-package=graph --cover-package=admin --cover-package=api --cover-xml -w . api dbas graph admin
+    - nosetests --with-coverage --cover-package=dbas --cover-package=graph --cover-package=admin --cover-package=api --cover-xml -w . api dbas graph admin
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
   artifacts:
     paths:
