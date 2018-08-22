@@ -16,7 +16,8 @@ from .lib import logger
 log = logger()
 
 
-def store_reference(reference: str, host: str, path: str, user: User, statement: Statement, issue: Issue):
+def store_reference(reference: str, host: str, path: str, user: User, statement: Statement,
+                    issue: Issue) -> StatementReferences:
     """
     Store reference to database.
 
@@ -28,9 +29,9 @@ def store_reference(reference: str, host: str, path: str, user: User, statement:
     :param issue: assign issue to reference
     :return: newly stored reference
     """
-    ref = escape_string(reference)
-    log.debug("New Reference for Statement.uid {}: {}".format(Statement.uid, ref))
-    db_ref = StatementReferences(escape_string(ref), host, path, user.uid, statement.uid, issue.uid)
+    reference_text = escape_string(reference)
+    log.debug("New Reference for Statement.uid {}: {}".format(statement.uid, reference_text))
+    db_ref = StatementReferences(escape_string(reference_text), host, path, user.uid, statement.uid, issue.uid)
     DBDiscussionSession.add(db_ref)
     DBDiscussionSession.flush()
     transaction.commit()

@@ -8,6 +8,7 @@ import unittest
 from typing import List
 
 import hypothesis.strategies as st
+import transaction
 from hypothesis import given, settings
 from pyramid import httpexceptions
 from pyramid.interfaces import IRequest
@@ -238,7 +239,7 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
         # Add position
         request = create_request_with_token_header(match_dict={
             'slug': self.issue_cat_or_dog.slug,
-            'statement_id': "2",
+            'statement_id': 2,
             'attitude': Attitudes.DISAGREE.value
         }, json_body={'reason': "because i need to"})
 
@@ -246,16 +247,17 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
         self.assertEqual(response.status_code, 303, response.body)
 
     def test_invalid_body(self):
-        request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug})
-
-        request.json_body = {"position": "we should do something entirely else"}
-
+        request: IRequest = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug
+        }, json_body={
+            'position': 'we should do something entirely else'
+        })
         response: Response = apiviews.add_premise_to_statement(request)
         self.assertEqual(response.status_code, 400)
 
     def test_valid_reference_should_be_assigned_to_new_statement(self):
         test_reference = 'awesome reference'
-        request: DummyRequest = create_request_with_token_header(match_dict={
+        request: IRequest = create_request_with_token_header(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'statement_id': 2,
             'attitude': Attitudes.DISAGREE.value
@@ -264,8 +266,15 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
             'reference': test_reference
         })
         response: Response = apiviews.add_premise_to_statement(request)
+        added_references: List[StatementReferences] = DBDiscussionSession.query(StatementReferences) \
+            .filter_by(reference=test_reference).all()
+
+        self.assertGreater(len(added_references), 0)
         self.assertEqual(request.validated['reference'], test_reference)
         self.assertEqual(response.status_code, 303)
+
+        DBDiscussionSession.query(StatementReferences).filter_by(reference=test_reference).delete()
+        transaction.commit()
 
 
 class TestDiscussionJustifyArgument(TestCaseWithConfig):
@@ -327,16 +336,16 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
 
 
 class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
-
     def test_add_valid_reason(self):
         # Add position
-        request = create_request_with_token_header(match_dict={
+        request: IRequest = create_request_with_token_header(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': '18',
             'attitude': 'agree',
             'relation': 'undercut'
-        },
-            json_body={'reason': "because i need to"})
+        }, json_body={
+            'reason': 'because i need to'
+        })
 
         response: Response = apiviews.add_premise_to_argument(request)
         self.assertEqual(response.status_code, 303, response.body)
@@ -344,7 +353,7 @@ class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
     def test_invalid_body(self):
         request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug})
 
-        request.json_body = {"position": "we should do something entirely else"}
+        request.json_body = {'position': 'we should do something entirely else'}
 
         response: Response = apiviews.add_premise_to_argument(request)
         self.assertEqual(response.status_code, 400)

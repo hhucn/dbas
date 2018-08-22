@@ -14,6 +14,7 @@ from typing import List
 from cornice import Service
 from cornice.resource import resource, view
 from pyramid.httpexceptions import HTTPSeeOther
+from pyramid.interfaces import IRequest
 from pyramid.request import Request
 
 import dbas.discussion.core as discussion
@@ -38,7 +39,7 @@ from .lib import logger
 from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, \
     valid_api_token
 from .references import (get_all_references_by_reference_text,
-                         get_reference_by_id, get_references_for_url)
+                         get_reference_by_id, get_references_for_url, store_reference)
 from .templates import error
 
 log = logger()
@@ -607,13 +608,17 @@ def add_position_with_premise(request):
 
 @justify_statement.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_reason_in_body, valid_statement(location="path"),
-          valid_attitude, has_maybe_keywords(('reference', str, 'razupaltuff')))
-def add_premise_to_statement(request):
+          valid_attitude, has_maybe_keywords(('reference', str, None)))
+def add_premise_to_statement(request: IRequest):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
     db_statement: Statement = request.validated['statement']
+    reference_text: str = request.validated["reference"]
     is_supportive = request.validated['attitude'] == Attitudes.AGREE.value
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+
+    if reference_text:
+        store_reference(reference_text, request.host, request.path, db_user, db_statement, db_issue)
 
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
                                history,
@@ -624,13 +629,17 @@ def add_premise_to_statement(request):
 
 @justify_argument.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_reason_in_body, valid_argument(location="path"), valid_relation,
-          valid_attitude)
+          valid_attitude, has_maybe_keywords(('reference', str, None)))
 def add_premise_to_argument(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
     db_argument: Argument = request.validated['argument']
+    reference_text: str = request.validated["reference"]
     relation: Relations = request.validated['relation']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+
+    if reference_text:
+        store_reference(reference_text, request.host, request.path, db_user, db_argument.conclusion, db_issue)
 
     pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
                                 history,
