@@ -1,4 +1,3 @@
-import unittest
 from datetime import date
 
 import transaction
@@ -9,9 +8,10 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
 from dbas.helper.url import UrlManager
 from dbas.lib import get_enabled_statement_as_query, get_enabled_arguments_as_query, get_enabled_premises_as_query, \
     get_visible_issues_for_user_as_query
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class LibTests(unittest.TestCase):
+class LibTests(TestCaseWithConfig):
 
     def test_escape_string(self):
         self.assertEqual('', lib.escape_string(text=''))
@@ -27,11 +27,6 @@ class LibTests(unittest.TestCase):
         long_str_with_special_char = 'str' + '"' * 1000
         long_str_without_special_char = 'str' + '&quot;' * 1000
         self.assertEqual(long_str_without_special_char, lib.escape_string(long_str_with_special_char))
-
-    def test_unhtmlify(self):
-        self.assertEqual('', lib.unhtmlify(''))
-        self.assertEqual('str', lib.unhtmlify('str'))
-        self.assertEqual('str', lib.unhtmlify('str'))
 
     def test_python_datetime_pretty_print(self):
         # datetime corresponding to Gregorian ordinal
@@ -126,9 +121,6 @@ class LibTests(unittest.TestCase):
         self.assertEqual(len(lib.get_all_arguments_by_statement(12, True)), 1)
         self.assertEqual(lib.get_all_arguments_by_statement(-1), None)
 
-    def test_get_global_url(self):
-        self.assertIn('https://dbas.cs.uni-duesseldorf.de', lib.get_global_url())
-
     def test_get_user_by_private_or_public_nickname(self):
         self.assertIsNotNone(lib.get_user_by_case_insensitive_nickname('tobias'))
         self.assertIsNotNone(lib.get_user_by_case_insensitive_nickname('Antonia'))
@@ -147,11 +139,15 @@ class LibTests(unittest.TestCase):
         self.assertIsNotNone(lib.get_user_by_case_insensitive_public_nickname(user.public_nickname.upper()))
         self.assertIsNone(lib.get_user_by_case_insensitive_public_nickname('puh_der_bär'))
 
-    def test_pretty_print_options(self):
-        self.assertTrue('Hallo.', lib.pretty_print_options('hallo'))
-        self.assertTrue('Hallo.', lib.pretty_print_options('<bla>hallo'))
-        self.assertTrue('Hallo.', lib.pretty_print_options('<bla>hallo</bla>'))
 
+class TestPrettyPrintOptions(TestCaseWithConfig):
+    def test_pretty_print_options(self):
+        self.assertEqual(lib.pretty_print_options('hallo'), 'Hallo.')
+        self.assertEqual(lib.pretty_print_options('<bla>hallo'), '<bla>Hallo.')
+        self.assertEqual(lib.pretty_print_options('<bla>hallo</bla>'), '<bla>Hallo.</bla>')
+
+
+class TestAuthorship(TestCaseWithConfig):
     def test_is_user_author_or_admin(self):
         db_user1 = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         db_user2 = DBDiscussionSession.query(User).filter_by(nickname='Pascal').first()
@@ -182,6 +178,8 @@ class LibTests(unittest.TestCase):
         self.assertTrue(lib.is_author_of_argument(user36, 36))
         self.assertFalse(lib.is_author_of_argument(user36, 2))
 
+
+class TestGravatar(TestCaseWithConfig):
     def test_get_profile_picture(self):
         user = DBDiscussionSession.query(User).get(1)
         self.assertIn('gravatar.com', lib.get_profile_picture(user))
@@ -196,6 +194,8 @@ class LibTests(unittest.TestCase):
         self.assertIn('gravatar.com', lib.get_profile_picture(user, size=120))
         self.assertIn('120', lib.get_profile_picture(user, size=120))
 
+
+class TestAuthorData(TestCaseWithConfig):
     def test_get_author_data(self):
         db_user, author_string, some_boolean = lib.get_author_data(0)
         self.assertFalse(some_boolean)
@@ -212,15 +212,16 @@ class LibTests(unittest.TestCase):
         self.assertIn('{}'.format(user.nickname), author_string)
         self.assertIn('left', author_string)
 
-    def test_bubbles_already_last_in_list(self):
-        return True
 
+class TestChangeLog(TestCaseWithConfig):
     def test_get_changelog(self):
-        self.assertEqual(1, len(lib.get_changelog(1)))
-        self.assertEqual(3, len(lib.get_changelog(3)))
-        self.assertEqual(type(list()), type(lib.get_changelog(1)))
-        self.assertEqual(type(dict()), type(lib.get_changelog(1)[0]))
+        self.assertEqual(len(lib.get_changelog(1)), 1)
+        self.assertEqual(len(lib.get_changelog(3)), 3)
+        self.assertIsInstance(lib.get_changelog(1), list)
+        self.assertIsInstance(type(lib.get_changelog(1)[0]), dict)
 
+
+class TestDiscussionLanguage(TestCaseWithConfig):
     def test_get_discussion_language(self):
         matchdict, params, session, current_issue_uid = {}, {}, {}, {}
         self.assertEqual('en', lib.get_discussion_language(matchdict, params, session, current_issue_uid))
@@ -237,6 +238,8 @@ class LibTests(unittest.TestCase):
         matchdict, params, session, current_issue_uid = {}, {}, {'issue': 1}, {}
         self.assertEqual('en', lib.get_discussion_language(matchdict, params, session, current_issue_uid))
 
+
+class TestGetTextForEntities(TestCaseWithConfig):
     def test_get_text_for_premise(self):
         self.assertIsNone(lib.get_text_for_premise(0))
         self.assertEqual(lib.get_text_for_premise(12), 'cats are fluffy')
@@ -244,13 +247,6 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_text_for_premise(52),
                          'das Unfallrisiko steigt, da die Autos kaum Geräusche verursachen')
         self.assertIn('data-argumentation-type', lib.get_text_for_premise(12, True))
-
-    def test_is_argument_disabled_due_to_disabled_statements(self):
-        arg = DBDiscussionSession.query(Argument).get(2)
-        self.assertFalse(lib.is_argument_disabled_due_to_disabled_statements(arg))
-
-        arg = DBDiscussionSession.query(Argument).get(1)
-        self.assertTrue(lib.is_argument_disabled_due_to_disabled_statements(arg))
 
     def test_get_all_arguments_with_text_by_statement_id(self):
         res = lib.get_all_arguments_with_text_by_statement_id(0)
@@ -304,73 +300,105 @@ class LibTests(unittest.TestCase):
 
         results = {
             47: '<span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them.',
-            48: 'our swimming pools are very old and it would take a major investment to repair them <span data-attitude="con">is not a good reason for</span> <span data-argumentation-type="position">we should close public swimming pools</span>. Because schools need the swimming pools for their sports lessons.',
-            49: '<span data-argumentation-type="position">we should close public swimming pools</span> <span data-attitude="con">does not hold</span> because the rate of non-swimmers is too high.'
+            48: 'our swimming pools are very old and it would take a major investment to repair them is not a good reason for <span data-argumentation-type="position">we should close public swimming pools</span>. Because schools need the swimming pools for their sports lessons.',
+            49: '<span data-argumentation-type="position">we should close public swimming pools</span> does not hold because the rate of non-swimmers is too high.'
         }
 
         db_statement = DBDiscussionSession.query(Statement).get(38)
         res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True,
                                                                       is_jump=True)
-        self.assertEqual(3, len(res))
+        self.assertEqual(len(res), 3)
         for r in res:
             self.assertIn(r['uid'], results)
             self.assertIn('jump', r['url'])
             self.assertEqual(results[r['uid']], r['text'])
 
+
+class TestGetTextForArgumentByUid(TestCaseWithConfig):
     def test_get_text_for_argument_uid(self):
-        s47 = 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them'
-        s48 = 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.'
+        s47 = 'we should close public swimming pools because our swimming pools are very old and it would take a ' \
+              'major investment to repair them'
+        s48 = 'Other participants said that we should close public swimming pools because our swimming pools are ' \
+              'very old and it would take a major investment to repair them. You did not agree with this because ' \
+              'schools need the swimming pools for their sports lessons.'
         s49 = 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
 
-        self.assertTrue(lib.get_text_for_argument_uid(47), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47), s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48), s48)
+        self.assertEqual(lib.get_text_for_argument_uid(49), s49)
 
-        for attack in ['', None, 'jump']:
-            self.assertTrue(lib.get_text_for_argument_uid(47, attack_type=attack), s47)
-            self.assertTrue(lib.get_text_for_argument_uid(48, attack_type=attack), s48)
-            self.assertTrue(lib.get_text_for_argument_uid(49, attack_type=attack), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, attack_type='doesnt-matter-parameter-should-be-a-boolean'),
+                         s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48, attack_type='doesnt-matter-parameter-should-be-a-boolean'),
+                         s48)
+        self.assertEqual(lib.get_text_for_argument_uid(49, attack_type='doesnt-matter-parameter-should-be-a-boolean'),
+                         s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, with_html_tag=True), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48, with_html_tag=True), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49, with_html_tag=True), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, attack_type='jump'), '{}.'.format(s47))
+        self.assertEqual(lib.get_text_for_argument_uid(48, attack_type='jump'),
+                         'our swimming pools are very old and it would take a major investment to repair them is not '
+                         'a good reason for we should close public swimming pools. Because schools need the swimming '
+                         'pools for their sports lessons.')
+        self.assertEqual(lib.get_text_for_argument_uid(49, attack_type='jump'),
+                         'we should close public swimming pools does not hold because the rate of non-swimmers is too '
+                         'high.')
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, start_with_intro=True), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48, start_with_intro=True), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49, start_with_intro=True), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, with_html_tag=True),
+                         '<span>we should close public swimming pools</span> because our swimming pools are very old '
+                         'and it would take a major investment to repair them')
+        self.assertEqual(lib.get_text_for_argument_uid(48, with_html_tag=True),
+                         'Other participants said that we should close public swimming pools because our swimming '
+                         'pools are very old and it would take a major investment to repair them. You did not agree '
+                         'with this because<span data-argumentation-type="position"> schools need the swimming pools '
+                         'for their sports lessons.')
+        self.assertEqual(lib.get_text_for_argument_uid(49, with_html_tag=True),
+                         '<span>we should close public swimming pools</span> <span> does not hold</span>, because the '
+                         'rate of non-swimmers is too high')
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, first_arg_by_user=True), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48, first_arg_by_user=True), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49, first_arg_by_user=True), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, start_with_intro=True), s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48, start_with_intro=True), s48)
+        self.assertEqual(lib.get_text_for_argument_uid(49, start_with_intro=True), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, is_users_opinion=False), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48, is_users_opinion=False), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49, is_users_opinion=False), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, first_arg_by_user=True), s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48, first_arg_by_user=True),
+                         'We should close public swimming pools because our swimming pools are very old and it would '
+                         'take a major investment to repair them. Now you agree that schools need the swimming pools '
+                         'for their sports lessons.')
+        self.assertEqual(lib.get_text_for_argument_uid(49, first_arg_by_user=True), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, rearrange_intro=True), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48, rearrange_intro=True), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49, rearrange_intro=True), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, is_users_opinion=False), s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48, is_users_opinion=False), s48)
+        self.assertEqual(lib.get_text_for_argument_uid(49, is_users_opinion=False), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, support_counter_argument=True), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48, support_counter_argument=True), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49, support_counter_argument=True), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, rearrange_intro=True), s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48, rearrange_intro=True), s48)
+        self.assertEqual(lib.get_text_for_argument_uid(49, rearrange_intro=True), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, nickname='Dieter'), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48, nickname='Dieter'), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49, nickname='Dieter'), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, support_counter_argument=True), s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48, support_counter_argument=True), s48)
+        self.assertEqual(lib.get_text_for_argument_uid(49, support_counter_argument=True), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, minimize_on_undercut=True), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48, minimize_on_undercut=True), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49, minimize_on_undercut=True), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, nickname='Dieter'), s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48, nickname='Dieter'), s48)
+        self.assertEqual(lib.get_text_for_argument_uid(49, nickname='Dieter'), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, colored_position=True), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48, colored_position=True), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49, colored_position=True), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, minimize_on_undercut=True), s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48, minimize_on_undercut=True), s48)
+        self.assertEqual(lib.get_text_for_argument_uid(49, minimize_on_undercut=True), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, user_changed_opinion=True), s47)
-        self.assertTrue(lib.get_text_for_argument_uid(48, user_changed_opinion=True), s48)
-        self.assertTrue(lib.get_text_for_argument_uid(49, user_changed_opinion=True), s49)
+        self.assertEqual(lib.get_text_for_argument_uid(47, colored_position=True), s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48, colored_position=True), s48)
+        self.assertEqual(lib.get_text_for_argument_uid(49, colored_position=True), s49)
 
+        self.assertEqual(lib.get_text_for_argument_uid(47, user_changed_opinion=True), s47)
+        self.assertEqual(lib.get_text_for_argument_uid(48, user_changed_opinion=True),
+                         'Earlier you argued that we should close public swimming pools because our swimming pools '
+                         'are very old and it would take a major investment to repair them. Other participants '
+                         'convinced you that schools need the swimming pools for their sports lessons.')
+        self.assertEqual(lib.get_text_for_argument_uid(49, user_changed_opinion=True), s49)
+
+
+class TestVisibilityOfDisabledEntites(TestCaseWithConfig):
     def test_get_enabled_statement_as_query(self):
         query_len = get_enabled_statement_as_query().count()
         res_len = DBDiscussionSession.query(Statement).filter_by(is_disabled=False).count()
@@ -392,8 +420,21 @@ class LibTests(unittest.TestCase):
         self.assertEqual(res_len, query_len)
 
     def test_get_visible_issues_for_user_as_query(self):
-        issue_uids = sorted([issue.uid for issue in get_visible_issues_for_user_as_query(2).all()])
-        self.assertEqual([2, 3, 4, 5, 7, 8], issue_uids)
+        issue_uids = [issue.uid for issue in get_visible_issues_for_user_as_query(self.user_christian.uid).all()]
+        self.assertCountEqual(issue_uids, [2, 3, 4, 5, 7, 8])
 
-        issue_uids = sorted([issue.uid for issue in get_visible_issues_for_user_as_query(10).all()])
-        self.assertEqual([2, 3, 4, 5, 7, 8], issue_uids)
+    def test_is_argument_disabled_due_to_disabled_statements(self):
+        arg1 = DBDiscussionSession.query(Argument).get(1)
+        arg2 = DBDiscussionSession.query(Argument).get(2)
+
+        self.assertFalse(lib.is_argument_disabled_due_to_disabled_statements(arg2))
+        self.assertTrue(lib.is_argument_disabled_due_to_disabled_statements(arg1))
+
+
+class TestUnhtmlify(TestCaseWithConfig):
+    def test_unhtmlify(self):
+        self.assertEqual(lib.unhtmlify(''), '')
+        self.assertEqual(lib.unhtmlify('str'), 'str')
+        self.assertEqual(lib.unhtmlify('<a>str</a>'), 'str')
+        self.assertEqual(lib.unhtmlify('<a> str </a>'), ' str ')
+        self.assertEqual(lib.unhtmlify('<a>str'), 'str')

@@ -17,29 +17,25 @@ from dbas.helper.test import add_settings_to_appconfig
 
 
 class TestCaseWithDatabase(unittest.TestCase):
-    def setUpDb(self):
+    def setUp(self):
         self.config = testing.setUp()
         settings = add_settings_to_appconfig()
         DBDiscussionSession.remove()
         DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
-    def tearDownTest(self):
+    def tearDown(self):
         testing.tearDown()
 
 
 class TestCaseWithChameleon(TestCaseWithDatabase):
     def setUp(self):
-        self.config = testing.setUp()
+        super().setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
 
 class TestCaseWithConfig(TestCaseWithChameleon):
     def setUp(self):
-        self.config = testing.setUp()
-
+        super().setUp()
         self.issue_disabled: Issue = DBDiscussionSession.query(Issue).get(6)
         self.issue_read_only: Issue = DBDiscussionSession.query(Issue).get(7)
         self.issue_cat_or_dog: Issue = DBDiscussionSession.query(Issue).get(2)
@@ -60,14 +56,13 @@ class TestCaseWithConfig(TestCaseWithChameleon):
         transaction.commit()
 
     def tearDown(self):
-        testing.tearDown()
-
+        super().tearDown()
         DBDiscussionSession.query(Argument).get(1).set_disabled(False)
         transaction.commit()
 
 
 def construct_dummy_request(json_body: dict = None, match_dict: dict = None, validated: dict = None,
-                            params: dict = None) -> object:
+                            params: dict = None) -> DummyRequest:
     """
     Creates a Dummy-Request. Optionally takes a json_body etc, which can directly be injected into the request.
 
@@ -78,13 +73,9 @@ def construct_dummy_request(json_body: dict = None, match_dict: dict = None, val
     :return: DummyRequest
     :rtype: DummyRequest
     """
-    if json_body is None:
-        json_body = dict()
-    if match_dict is None:
-        match_dict = dict()
-    if validated is None:
-        validated = dict()
-    if params is None:
-        params = dict()
+    json_body = json_body if json_body else {}
+    match_dict = match_dict if match_dict else {}
+    validated = validated if validated else {}
+    params = params if params else {}
     return DummyRequest(json_body=json_body, matchdict=match_dict, validated=validated, params=params, errors=Errors(),
                         mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, decorated={'extras': {}})
