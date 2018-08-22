@@ -79,7 +79,7 @@ def valid_issue_by_slug(request: Request) -> bool:
                 request.validated['issue'] = db_issue
                 return True
 
-    add_error(request, 'Invalid slug for issue', location='path', status_code=404)
+        add_error(request, 'Invalid slug \'{}\' for issue'.format(request.validated['slug']), location='path', status_code=404)
     return False
 
 
