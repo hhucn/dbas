@@ -1,32 +1,24 @@
-import unittest
-import transaction
 import itertools
 
-from pyramid import testing
+import transaction
 
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument, User, MarkedArgument
 from dbas.lib import Relations
 from dbas.strings import text_generator as tg
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, MarkedArgument
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class TextGeneratorText(unittest.TestCase):
-
+class TextGeneratorText(TestCaseWithConfig):
     def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
+        super().setUp()
         self.premise = 'some premise text'
         self.conclusion = 'some conclusion text'
         self.confrontation = 'some confrontation text'
         self.maxDiff = None
-
-        # test every ajax method, which is not used in other classes
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_get_text_for_add_premise_container(self):
         _t = Translator('en')
@@ -299,13 +291,15 @@ class TextGeneratorText(unittest.TestCase):
 
     def test_get_text_for_edit_text_message(self):
         text = tg.get_text_for_edit_text_message('en', 'Tobias', 'oem', 'edit', 'some_url', True)
-        self.assertEqual(text, 'Your original statement was edited by Tobias<br>From: oem<br>To: edit<br>Where: <a href="some_url">some_url</a>')
+        self.assertEqual(text,
+                         'Your original statement was edited by Tobias<br>From: oem<br>To: edit<br>Where: <a href="some_url">some_url</a>')
 
         text = tg.get_text_for_edit_text_message('en', 'Tobias', 'oem', 'edit', 'some_url', False)
         self.assertEqual(text, 'Your original statement was edited by Tobias\nFrom: oem\nTo: edit\nWhere: some_url')
 
         text = tg.get_text_for_edit_text_message('de', 'Tobias', 'oem', 'edit', 'some_url', True)
-        self.assertEqual(text, 'Ihr Text wurde geändert von Tobias<br>Von: oem<br>Zu: edit<br>Wo: <a href="some_url">some_url</a>')
+        self.assertEqual(text,
+                         'Ihr Text wurde geändert von Tobias<br>Von: oem<br>Zu: edit<br>Wo: <a href="some_url">some_url</a>')
 
         text = tg.get_text_for_edit_text_message('de', 'Tobias', 'oem', 'edit', 'some_url', False)
         self.assertEqual(text, 'Ihr Text wurde geändert von Tobias\nVon: oem\nZu: edit\nWo: some_url')
