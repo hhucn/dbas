@@ -126,7 +126,7 @@ def get_number_of_statements(issue_uid: int) -> int:
     return DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=issue_uid).count()
 
 
-def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict():
+def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict:
     """
     Creates an dictionary for the issue
 

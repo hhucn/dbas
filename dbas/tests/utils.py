@@ -51,9 +51,9 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         transaction.commit()
 
     def tearDown(self):
-        super().tearDown()
         DBDiscussionSession.query(Argument).get(1).set_disabled(False)
         transaction.commit()
+        super().tearDown()
 
 
 def construct_dummy_request(json_body: dict = None, match_dict: dict = None, validated: dict = None,

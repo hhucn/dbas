@@ -8,8 +8,17 @@ from dbas.strings.translator import Translator
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
 
-class IssueHandlerTests(TestCaseWithConfig):
+class TestIssueDictByIssue(TestCaseWithConfig):
+    def test_get_issue_dict_for(self):
+        lang = 'en'
+        issue_cat: Issue = DBDiscussionSession.query(Issue).get(2)
+        response = ih.get_issue_dict_for(issue_cat,
+                                         issue_cat.uid, lang)
+        self.assertTrue(len(response) > 0)
+        self.assertTrue(len(response['error']) == 0)
 
+
+class IssueHandlerTests(TestCaseWithConfig):
     def test_set_issue(self):
         db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
         info = 'infoinfoinfo'
@@ -37,12 +46,6 @@ class IssueHandlerTests(TestCaseWithConfig):
         self.assertTrue(response == 0)
         response = ih.get_number_of_statements(1)
         self.assertTrue(response > 0)
-
-    def test_get_issue_dict_for(self):
-        lang = 'en'
-        response = ih.get_issue_dict_for(self.issue_cat_or_dog, self.issue_cat_or_dog.uid, lang)
-        self.assertTrue(len(response) > 0)
-        self.assertTrue(len(response['error']) == 0)
 
     def test_get_id_of_slug(self):
         queried_issue = ih.get_id_of_slug(self.issue_cat_or_dog.slug)
