@@ -12,7 +12,7 @@ import dbas.strings.matcher as fuzzy_string_matcher
 from dbas.handler import user
 from dbas.handler.language import set_language, get_language_from_cookie
 from dbas.handler.references import set_reference, get_references
-from dbas.helper.query import get_short_url
+from dbas.helper.query import generate_short_url
 from dbas.lib import escape_string
 from dbas.logger import logger
 from dbas.validators.common import valid_language, valid_fuzzy_search_mode
@@ -71,7 +71,7 @@ def get_shortened_url(request):
     :return: dictionary with shortend url
     """
     logger('views', 'main')
-    return get_short_url(request.validated['url'])
+    return generate_short_url(request.validated['url'])
 
 
 # ajax - for getting all news

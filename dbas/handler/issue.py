@@ -19,7 +19,7 @@ from dbas.database.discussion_model import Argument, User, Issue, Language, sql_
     ClickedStatement, TextVersion, StatementToIssue
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
-from dbas.helper.query import get_short_url
+from dbas.helper.query import generate_short_url
 from dbas.helper.url import UrlManager
 from dbas.lib import nick_of_anonymous_user, get_visible_issues_for_user_as_query
 from dbas.lib import pretty_print_timestamp
@@ -367,7 +367,7 @@ def __create_issue_dict(db_issue: Issue, app_url: str) -> dict:
     :param app_url: current applications url
     :return: dict()
     """
-    short_url_dict = get_short_url(app_url + '/discuss/' + db_issue.slug)
+    short_url_dict = generate_short_url(app_url + '/discuss/' + db_issue.slug)
     url = short_url_dict['url'] if len(short_url_dict['url']) > 0 else app_url + '/discuss/' + db_issue.slug
 
     # we do nto have to check for clicked arguments, cause arguments consist out of statements
