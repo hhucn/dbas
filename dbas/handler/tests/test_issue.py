@@ -1,25 +1,21 @@
-import unittest
-
 import transaction
 from pyramid import testing
 
 import dbas.handler.issue as ih
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Language
-from dbas.lib import nick_of_anonymous_user
 from dbas.strings.translator import Translator
-from dbas.tests.utils import construct_dummy_request
+from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
 
-class IssueHandlerTests(unittest.TestCase):
+class IssueHandlerTests(TestCaseWithConfig):
 
     def test_set_issue(self):
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
         info = 'infoinfoinfo'
         long_info = 'long_infolong_infolong_info'
         title = 'titletitletitle'
-        response = ih.set_issue(db_user, info, long_info, title, db_lang, False, False)
+        response = ih.set_issue(self.user_tobi, info, long_info, title, db_lang, False, False)
         self.assertTrue(len(response['issue']) >= 0)
 
         DBDiscussionSession.query(Issue).filter_by(title=title).delete()
@@ -27,11 +23,7 @@ class IssueHandlerTests(unittest.TestCase):
         transaction.commit()
 
     def test_prepare_json_of_issue(self):
-        uid = 1
-
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        db_issue = DBDiscussionSession.query(Issue).get(uid)
-        response = ih.prepare_json_of_issue(db_issue, db_user)
+        response = ih.prepare_json_of_issue(self.issue_town, self.user_anonymous)
         self.assertTrue(len(response) > 0)
 
     def test_get_number_of_arguments(self):
@@ -47,52 +39,46 @@ class IssueHandlerTests(unittest.TestCase):
         self.assertTrue(response > 0)
 
     def test_get_issue_dict_for(self):
-        issue = DBDiscussionSession.query(Issue).first()
-        uid = issue.uid
         lang = 'en'
-        response = ih.get_issue_dict_for(issue, uid, lang)
+        response = ih.get_issue_dict_for(self.issue_cat_or_dog, self.issue_cat_or_dog.uid, lang)
         self.assertTrue(len(response) > 0)
         self.assertTrue(len(response['error']) == 0)
 
     def test_get_id_of_slug(self):
-        issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
-        slug = issue.slug
-        response = ih.get_id_of_slug(slug)
-        self.assertEqual(response.uid, issue.uid)
+        queried_issue = ih.get_id_of_slug(self.issue_cat_or_dog.slug)
+        self.assertEqual(queried_issue.uid, self.issue_cat_or_dog.uid)
 
     def test_get_issue_id(self):
         request = construct_dummy_request(match_dict={'issue': 1})
-        response = ih.get_issue_id(request)
-        self.assertEqual(1, response)
+        issue1 = ih.get_issue_id(request)
+        self.assertEqual(issue1, 1)
 
         request = testing.DummyRequest(params={'issue': 2})
-        response = ih.get_issue_id(request)
-        self.assertEqual(2, response)
+        issue2 = ih.get_issue_id(request)
+        self.assertEqual(issue2, 2)
 
         request = testing.DummyRequest(session={'issue': 3})
-        response = ih.get_issue_id(request)
-        self.assertEqual(3, response)
+        issue3 = ih.get_issue_id(request)
+        self.assertEqual(issue3, 3)
 
         request = testing.DummyRequest(json_body={'issue': 4})
-        response = ih.get_issue_id(request)
-        self.assertEqual(4, response)
+        issue4 = ih.get_issue_id(request)
+        self.assertEqual(issue4, 4)
 
     def test_get_title_for_slug(self):
-        issue = DBDiscussionSession.query(Issue).first()
-        slug = issue.slug
-        response = ih.get_title_for_slug(slug)
-        self.assertEqual(issue.title, response)
+        queried_title = ih.get_title_for_slug(self.issue_cat_or_dog.slug)
+        self.assertEqual(queried_title, self.issue_cat_or_dog.title)
 
-    def test_get_issues_overiew(self):
+    def test_get_issues_overview(self):
         db_user = DBDiscussionSession.query(User).get(2)
-        response = ih.get_issues_overiew_for(db_user, 'http://test.url')
+        response = ih.get_issues_overview_for(db_user, 'http://test.url')
         self.assertIn('user', response)
         self.assertIn('other', response)
         self.assertTrue(len(response['user']) > 0)
         self.assertTrue(len(response['other']) == 0)
 
         db_user = DBDiscussionSession.query(User).get(3)
-        response = ih.get_issues_overiew_for(db_user, 'http://test.url')
+        response = ih.get_issues_overview_for(db_user, 'http://test.url')
         self.assertIn('user', response)
         self.assertIn('other', response)
         self.assertTrue(len(response['user']) == 0)

@@ -6,6 +6,7 @@ Provides helping function for issues.
 from datetime import date, timedelta
 from json import JSONDecodeError
 from math import ceil
+from typing import Optional
 
 import arrow
 import transaction
@@ -152,7 +153,7 @@ def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict():
     return issue_dict
 
 
-def get_id_of_slug(slug: str):
+def get_id_of_slug(slug: str) -> Issue:
     """
     Returns the uid of the issue with given slug
 
@@ -172,7 +173,7 @@ def save_issue_id_in_session(issue_uid: int, request: Request):
     request.session['issue'] = issue_uid
 
 
-def get_issue_id(request):
+def get_issue_id(request) -> Optional[int]:
     """
     Returns issue uid saved in request. If there is no uid, we will choose an
     issue based on the language from the requests header
@@ -218,7 +219,7 @@ def get_issue_based_on_header(request):
     return db_issue.uid
 
 
-def get_title_for_slug(slug):
+def get_title_for_slug(slug) -> Optional[str]:
     """
     Returns the issues title for a given slug
 
@@ -232,7 +233,7 @@ def get_title_for_slug(slug):
     return None
 
 
-def get_issues_overiew_for(db_user: User, app_url: str) -> dict:
+def get_issues_overview_for(db_user: User, app_url: str) -> dict:
     """
     Returns dictionary with keywords 'user' and 'others', which got lists with dicts with infos
     IMPORTANT: URL's are generated for the frontend!
