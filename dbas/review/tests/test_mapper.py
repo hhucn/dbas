@@ -1,19 +1,8 @@
-import unittest
-
-from pyramid import testing
-
 from dbas.review.mapper import get_title_by_key, get_review_model_by_key, get_last_reviewer_by_key, get_queue_by_key
 from dbas.review.queue import review_queues
 
 
-class TestMapper(unittest.TestCase):
-
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
-
+class TestMapper(TestCaseWithConfig):
     def test_get_title_by_key(self):
         try:
             get_title_by_key('asd')
