@@ -1,22 +1,15 @@
-import unittest
-
 import transaction
-from pyramid import testing
 
 from dbas import get_enabled_issues_as_query
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import RSS, User
+from dbas.database.discussion_model import RSS
 from dbas.handler.rss import rewrite_issue_rss, create_initial_issue_rss, create_news_rss, append_action_to_issue_rss, \
     get_list_of_all_feeds
 from dbas.lib import get_global_url
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class RSSHandlerTests(unittest.TestCase):
-
-    def setUp(self):
-        self.config = testing.setUp()
-        self.user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-
+class RSSHandlerTests(TestCaseWithConfig):
     def test_create_news_rss(self):
         self.assertTrue(create_news_rss(get_global_url(), 'en'))
 
@@ -28,11 +21,11 @@ class RSSHandlerTests(unittest.TestCase):
         db_issue = get_enabled_issues_as_query().first()
         l1 = DBDiscussionSession.query(RSS).count()
         self.assertTrue(
-            append_action_to_issue_rss(db_issue, self.user, 'test_title', 'test_description', get_global_url()))
+            append_action_to_issue_rss(db_issue, self.user_tobi, 'test_title', 'test_description', get_global_url()))
         l2 = DBDiscussionSession.query(RSS).count()
         self.assertEqual(l1 + 1, l2)
 
-        DBDiscussionSession.query(RSS).filter(RSS.issue_uid == db_issue.uid, RSS.author_uid == self.user.uid,
+        DBDiscussionSession.query(RSS).filter(RSS.issue_uid == db_issue.uid, RSS.author_uid == self.user_tobi.uid,
                                               RSS.title == 'test_title', RSS.description == 'test_description').delete()
         DBDiscussionSession.flush()
         transaction.commit()
