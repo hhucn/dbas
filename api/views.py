@@ -659,7 +659,8 @@ class ApiUser(object):
             self.request.response.status = 404
             return "This user-id does not exist."
 
-    def collection_get(self):
+    @staticmethod
+    def collection_get():
         db_users: List[User] = DBDiscussionSession.query(User).all()
         return [ApiUser.external_view(db_user) for db_user in db_users]
 

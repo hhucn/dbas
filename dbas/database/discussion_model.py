@@ -3,8 +3,9 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import arrow
 import warnings
+
+import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
