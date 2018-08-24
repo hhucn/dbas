@@ -774,8 +774,8 @@ class TextVersion(DiscussionBase):
 
 class Premise(DiscussionBase):
     """
-    Premises-table with several columns.
-    Each premises has a value pair of group and statement, an author, a timestamp as well as a boolean whether it is negated
+    Each premises has a value pair of group and statement, an author,
+    a timestamp as well as a boolean whether it is negated
     """
     __tablename__ = 'premises'
     uid = Column(Integer, primary_key=True)
@@ -892,7 +892,7 @@ class PremiseGroup(DiscussionBase):
     def get_text(self):
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()
         texts = [premise.get_text() for premise in db_premises]
-        lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
+        lang = DBDiscussionSession.query(Statement).get(db_premises[0].statement.uid).lang
         return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
 
     @hybrid_property
@@ -2377,19 +2377,11 @@ class ShortLinks(DiscussionBase):
     timestamp = Column(ArrowType, default=get_now())
 
     def __init__(self, service, long_url, short_url):
-        """
-        Initializes a row in current news-table
-        """
         self.service = service
         self.long_url = long_url
         self.short_url = short_url
         self.timestamp = get_now()
 
     def update_short_url(self, short_url):
-        """
-
-        :param url:
-        :return:
-        """
         self.short_url = short_url
         self.timestamp = get_now()
