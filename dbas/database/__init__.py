@@ -1,7 +1,5 @@
 """
 Initialize the engine and session of D-BAS database.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import os
 
@@ -13,8 +11,7 @@ from zope.sqlalchemy import ZopeTransactionExtension
 
 # the concept of “session scopes” was introduced, with an emphasis on web applications
 # and the practice of linking the scope of a Session with that of a web request
-DBDiscussionSession = scoped_session(
-    sessionmaker(extension=ZopeTransactionExtension(keep_session=True), expire_on_commit=False))
+DBDiscussionSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(), expire_on_commit=False))
 DiscussionBase = declarative_base()
 NewsBase = declarative_base(metadata=MetaData(schema='news'))
 DBEngine = None
