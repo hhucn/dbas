@@ -1,5 +1,6 @@
 from dbas.review.mapper import get_title_by_key, get_review_model_by_key, get_last_reviewer_by_key, get_queue_by_key
 from dbas.review.queue import review_queues
+from dbas.tests.utils import TestCaseWithConfig
 
 
 class TestMapper(TestCaseWithConfig):
