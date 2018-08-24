@@ -3,8 +3,6 @@
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
-document.getElementById("issue_info").innerText = "bar";
-
 
 function Main() {
 }
