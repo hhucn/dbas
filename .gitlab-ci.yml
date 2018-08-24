@@ -68,9 +68,9 @@ frontend:
     - docker pull $CI_REGISTRY_IMAGE/frontendtest
     - docker network create -d bridge dbas_$CI_JOB_ID
     - docker run -d --name db_$CI_JOB_ID --net=dbas_$CI_JOB_ID $CI_REGISTRY_IMAGE/db:testing
-    - sleep 8
+    - sleep 4
     - docker run -d --name web_$CI_JOB_ID --net=dbas_$CI_JOB_ID -e AUTHN_SECRET=$AUTHN_SECRET -e DB_HOST=$DB_HOST -e DB_PORT=$DB_PORT -e DB_USER=$DB_USER -e DB_PW=$DB_PW -e DB_NAME=$DB_NAME $CI_REGISTRY_IMAGE:experimental
-    - sleep 5
+    - sleep 4
     - docker run -di --name frontendtest_$CI_JOB_ID --net=dbas_$CI_JOB_ID $CI_REGISTRY_IMAGE/frontendtest
   script:
     - docker exec frontendtest_$CI_JOB_ID bash -c "node_modules/.bin/cypress run --env WEB_HOST=web_$CI_JOB_ID,WEB_PORT=$DBAS_PORT,WEB_PROTOCOL=$DBAS_PROTOCOL"
@@ -79,6 +79,9 @@ frontend:
     - docker cp frontendtest_$CI_JOB_ID:/cypress cypress_artifacts/
     - docker kill db_$CI_JOB_ID web_$CI_JOB_ID frontendtest_$CI_JOB_ID || true
     - docker network rm dbas_$CI_JOB_ID || true
+    - docker rm db_$CI_JOB_ID web_$CI_JOB_ID frontendtest_$CI_JOB_ID || true
+  dependencies:
+    - build_frontend_test_image
   artifacts:
     paths:
       - cypress_artifacts/
