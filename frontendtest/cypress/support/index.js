@@ -26,7 +26,6 @@ Cypress.Cookies.defaults({
 
 beforeEach(function () {
         cy.setCookie('PASSED_GUIDED_TOUR', 'true');
-        cy.reload();
         cy.getCookie('PASSED_GUIDED_TOUR').should('have.property', 'value', 'true');
     });
 
