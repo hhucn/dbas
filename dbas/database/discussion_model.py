@@ -4,6 +4,7 @@ D-BAS database Model
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import warnings
+from typing import List
 
 import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -771,33 +772,6 @@ class TextVersion(DiscussionBase):
         }
 
 
-class PremiseGroup(DiscussionBase):
-    """
-    PremiseGroup-table with several columns.
-    Each premisesGroup has a id and an author
-    """
-    __tablename__ = 'premisegroups'
-    uid = Column(Integer, primary_key=True)
-    author_uid = Column(Integer, ForeignKey('users.uid'))
-
-    users = relationship('User', foreign_keys=[author_uid])
-
-    def __init__(self, author):
-        """
-        Initializes a row in current premisesGroup-table
-
-        :param author: User.id
-        :return: None
-        """
-        self.author_uid = author
-
-    def get_text(self):
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()
-        texts = [premise.get_text() for premise in db_premises]
-        lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
-        return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
-
-
 class Premise(DiscussionBase):
     """
     Premises-table with several columns.
@@ -813,10 +787,10 @@ class Premise(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    users = relationship('User', foreign_keys=[author_uid])
-    issues = relationship('Issue', foreign_keys=[issue_uid])
+    premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
+    statement = relationship('Statement', foreign_keys=[statement_uid])
+    author = relationship('User', foreign_keys=[author_uid])
+    issue = relationship('Issue', foreign_keys=[issue_uid])
 
     def __init__(self, premisesgroup, statement, is_negated, author, issue, is_disabled=False):
         """
@@ -895,6 +869,42 @@ class Premise(DiscussionBase):
         }
 
 
+class PremiseGroup(DiscussionBase):
+    """
+    PremiseGroup-table with several columns.
+    Each premisesGroup has a id and an author
+    """
+    __tablename__ = 'premisegroups'
+    uid = Column(Integer, primary_key=True)
+    author_uid = Column(Integer, ForeignKey('users.uid'))
+
+    author = relationship('User', foreign_keys=[author_uid])
+
+    def __init__(self, author):
+        """
+        Initializes a row in current premisesGroup-table
+
+        :param author: User.id
+        :return: None
+        """
+        self.author_uid = author
+
+    def get_text(self):
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()
+        texts = [premise.get_text() for premise in db_premises]
+        lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
+        return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
+
+    @hybrid_property
+    def premises(self) -> List[Premise]:
+        """
+        Return all premises in this premise group
+
+        :return: List of Premises
+        """
+        return DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).all()
+
+
 class Argument(DiscussionBase):
     """
     Argument-table with several columns.
@@ -912,7 +922,7 @@ class Argument(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
+    premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
     conclusion = relationship('Statement', foreign_keys=[conclusion_uid])
     users = relationship('User', foreign_keys=[author_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
