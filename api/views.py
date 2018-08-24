@@ -4,10 +4,6 @@ This is the entry point for the API. Here are views defined, which always
 return JSON objects which can then be used in external websites.
 
 .. note:: Methods **must not** have the same name as their assigned Service.
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
-
 """
 from typing import List
 
@@ -130,11 +126,6 @@ find_statements = Service(name="find_statements",
                           path="/statements/{issue}/{type}/{value}",
                           description="Query database to get closest statements",
                           cors_policy=cors_policy)
-
-# statement_url_service = Service(name="statement_url",
-#                                 path="/statement/url/{issue_uid}/{statement_uid}/{agree}",
-#                                 description="Get URL to a statement inside the discussion for direct jumping to it",
-#                                 cors_policy=cors_policy)
 
 issues = Service(name="issues",
                  path="/issues",
