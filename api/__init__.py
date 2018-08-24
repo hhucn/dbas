@@ -22,7 +22,6 @@ if ENABLE_DOCKER_PRINT:
         def __getattr__(self, attr):
             return getattr(self.stream, attr)
 
-
     sys.stdout = Unbuffered(sys.stdout)
 
 
