@@ -625,12 +625,13 @@ def add_premise_to_argument(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
     db_argument: Argument = request.validated['argument']
-    reference_text: str = request.validated["reference"]
+    reference_text: str = request.validated['reference']
     relation: Relations = request.validated['relation']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     if reference_text:
-        store_reference(reference_text, request.host, request.path, db_user, db_argument.conclusion, db_issue)
+        for premise in db_argument.premisegroup.premises:
+            store_reference(reference_text, request.host, request.path, db_user, premise.statement, db_issue)
 
     pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
                                 history,
