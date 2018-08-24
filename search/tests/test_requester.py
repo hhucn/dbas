@@ -1,13 +1,14 @@
 import time
-import unittest
 
+from dbas.tests.utils import TestCaseWithConfig
 from search import ROUTE_API
 from search.requester import get_suggestions, get_duplicates_or_reasons, get_statements_with_value, get_edits, \
     response_as_dict
 
 
-class TestRequester(unittest.TestCase):
+class TestRequester(TestCaseWithConfig):
     def setUp(self):
+        super().setUp()
         time.sleep(8)
 
     def test_request_as_dict_returns_dict(self):

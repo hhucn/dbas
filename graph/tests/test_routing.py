@@ -1,19 +1,8 @@
-import unittest
-
-from pyramid import testing
-
-from dbas.tests.utils import construct_dummy_request
+from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 from graph.views import get_d3_complete_dump, get_d3_partial_dump
 
 
-class ViewTest(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
-
+class ViewTest(TestCaseWithConfig):
     def test_get_d3_complete_dump(self):
         request = construct_dummy_request()
         ret_dict = get_d3_complete_dump(request)

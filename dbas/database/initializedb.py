@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Init scripts for database
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import os
@@ -30,7 +28,7 @@ first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'H
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
                'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
 
-nick_of_admin = 'Tobias'
+NICK_OF_ADMIN = 'Tobias'
 
 
 def usage(argv):
@@ -216,7 +214,7 @@ def blank_file(argv=sys.argv):
                      gender='m')
         user1 = User(firstname='admin',
                      surname='admin',
-                     nickname=nick_of_admin,
+                     nickname=NICK_OF_ADMIN,
                      email='dbas.hhu@gmail.com',
                      password=pw1,
                      group_uid=group0.uid,
