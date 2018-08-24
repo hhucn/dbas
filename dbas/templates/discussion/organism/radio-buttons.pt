@@ -4,8 +4,9 @@
   <div id="discussions-space">
     <ul id="discussions-space-list">
       <li tal:repeat="item items.elements" style="${item.style}">
-        <input id="${item.id}" type="radio" name="discussion-button-group"
-               onclick='location.href="${item.url}";' data-url="${item.url}">
+        <input tal:condition="python: item.url in ['login', 'add']" id="${item.id}" type="radio" name="discussion-button-group" data-url="${item.url}">
+        <input tal:condition="python: item.url not in ['login', 'add']" id="${item.id}" type="radio" name="discussion-button-group"
+                 onclick='location.href="${item.url}";' data-url="${item.url}">
         <span tal:repeat="premise item.premises" tal:omit-tag="">
                   <label for="${item.id}" id="${premise.id}" data-toggle="tooltip"
                          data-placement="auto">${structure:premise.title}</label>

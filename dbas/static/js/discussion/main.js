@@ -660,7 +660,6 @@ Main.prototype.__setInputExtraFuncs = function (guiHandler, sendStartStatement, 
     }
     id = input.attr('id').indexOf('item_') === 0 ? input.attr('id').substr('item_'.length) : input.attr('id');
     if ($.inArray(id, ids) !== -1) {
-        input.attr('onclick', '');
         input.click(function () {
             _this.setInputExtraBox(input, guiHandler, sendStartStatement, sendStartPremise, sendArgumentsPremise);
         });
