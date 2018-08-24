@@ -52,6 +52,8 @@ build_frontend_test_image:
 frontend:
   stage: test
   image: docker:dind
+  tags:
+    - cn
   variables:
     AUTHN_SECRET: '89#s3cr3t_15'
     DB_HOST: db_$CI_JOB_ID
