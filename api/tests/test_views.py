@@ -358,6 +358,28 @@ class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
         response: Response = apiviews.add_premise_to_argument(request)
         self.assertEqual(response.status_code, 400)
 
+    def test_valid_reference_should_be_assigned_to_new_argument(self):
+        test_reference = 'awesome reference for test_valid_reference_should_be_assigned_to_new_argument'
+        request: IRequest = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': 18,
+            'attitude': Attitudes.AGREE.value,
+            'relation': Relations.UNDERCUT.value
+        }, json_body={
+            'reason': 'because i need to',
+            'reference': test_reference
+        })
+        response: Response = apiviews.add_premise_to_argument(request)
+        added_references: List[StatementReferences] = DBDiscussionSession.query(StatementReferences) \
+            .filter_by(reference=test_reference).all()
+
+        self.assertGreater(len(added_references), 0)
+        self.assertEqual(request.validated['reference'], test_reference)
+        self.assertEqual(response.status_code, 303)
+
+        DBDiscussionSession.query(StatementReferences).filter_by(reference=test_reference).delete()
+        transaction.commit()
+
 
 class TestDiscussionReaction(TestCaseWithConfig):
     def test_invalid_slug_returns_error(self):
