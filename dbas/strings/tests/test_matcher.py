@@ -38,7 +38,7 @@ class StringMatcherTest(unittest.TestCase):
     def test_get_strings_for_search(self):
         return_dict = matcher.get_strings_for_search('cat')
         for key in return_dict:
-            self.assertTrue('cat' in return_dict[key]['text'].lower())
+            self.assertIn('cat', return_dict[key]['text'].lower())
             self.assertGreater(return_dict[key]['statement_uid'], 0)
 
     def test_get_distance(self):
@@ -48,6 +48,6 @@ class StringMatcherTest(unittest.TestCase):
 
     def check_string_matcher_array(self, return_array):
         for entry in return_array:
-            self.assertTrue('cat' in entry['text'].lower())
+            self.assertIn('cat', entry['text'].lower())
             self.assertGreaterEqual(int(entry['distance']), 0)
             self.assertNotEqual(entry['statement_uid'], 0)

@@ -401,23 +401,23 @@ def __build_argument_for_jump(arg_array: List[Argument], with_html_tag):
     Build tet for an argument, if we jump to this argument
 
     :param arg_array: [Argument]
-    :param with_html_tag: Boolean
+    :param with_html_tag: This parameter is ignored in the next steps, which is why we should rewrite this function.
+    "intro" in the next steps will always add html attributes.
     :return: String
     """
-    tag_premise = ('<' + tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
-    tag_conclusion = ('<' + tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
-    tag_end = ('</' + tag_type + '>') if with_html_tag else ''
-    lang = arg_array[0].lang
-    _t = Translator(lang)
+    tag_premise = ('<{} data-argumentation-type="attack">'.format(tag_type))
+    tag_conclusion = ('<{} data-argumentation-type="argument">'.format(tag_type))
+    tag_end = ('</{}>'.format(tag_type))
+    _t = Translator(arg_array[0].lang)
 
     if len(arg_array) == 1:
         ret_value = __build_val_for_jump(arg_array[0], tag_premise, tag_conclusion, tag_end, _t)
-
     elif len(arg_array) == 2:
         ret_value = __build_val_for_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t)
-
     else:
         ret_value = __build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t)
+
+    ret_value = unhtmlify(ret_value) if not with_html_tag else ret_value
 
     return ret_value.replace('  ', ' ')
 
@@ -709,7 +709,7 @@ def get_text_for_premisegroup_uid(uid):
     if len(db_premises) == 0:
         return ''
     texts = [premise.get_text() for premise in db_premises]
-    lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
+    lang = DBDiscussionSession.query(Statement).get(db_premises[0].statement.uid).lang
     _t = Translator(lang)
 
     return ' {} '.format(_t.get(_.aand)).join(texts)
@@ -1059,7 +1059,7 @@ def is_argument_disabled_due_to_disabled_statements(argument):
         # check premisegroup of given arguments conclusion
         premises = __get_all_premises_of_argument(db_argument)
         for premise in premises:
-            if premise.statements.is_disabled:
+            if premise.statement.is_disabled:
                 return True
     else:
         # check conclusion of given argument
@@ -1070,7 +1070,7 @@ def is_argument_disabled_due_to_disabled_statements(argument):
     # check premisegroup of given argument
     premises = __get_all_premises_of_argument(argument)
     for premise in premises:
-        if premise.statements.is_disabled:
+        if premise.statement.is_disabled:
             return True
 
     return False

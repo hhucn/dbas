@@ -311,7 +311,7 @@ def get_default_locale_name(registry):
     return registry.settings.get('pyramid.default_locale_name', 'en')
 
 
-def get_short_url(url) -> dict:
+def generate_short_url(url) -> dict:
     """
     Shortens the url via external service and uses our database as cache (7 days)
 

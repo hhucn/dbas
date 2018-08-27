@@ -1,22 +1,13 @@
-import unittest
-
 import transaction
 from pyramid import testing
 
 from admin.views import main_table, main_admin
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.tests.utils import construct_dummy_request
+from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
 
-class AdminViewTest(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
-
+class AdminViewTest(TestCaseWithConfig):
     def __update_user(self, nickname):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         db_user.update_last_login()

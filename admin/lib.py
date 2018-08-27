@@ -323,7 +323,7 @@ def __resolve_premisesgroup_attribute(attribute, main_page, db_languages, db_use
     if attribute is not None:
         text = get_text_for_premisegroup_uid(attribute)
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=attribute).join(Statement).all()
-        uids = [premise.statements.uid for premise in db_premises]
+        uids = [premise.statement.uid for premise in db_premises]
     tmp.append('{} - {} {}'.format(attribute, text, uids))
 
 

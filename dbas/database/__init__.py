@@ -1,7 +1,5 @@
 """
 Initialize the engine and session of D-BAS database.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import os
 

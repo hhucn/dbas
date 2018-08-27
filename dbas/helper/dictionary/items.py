@@ -14,9 +14,8 @@ from dbas.handler import attacks
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.url import UrlManager
-from dbas.lib import Relations, Attitudes, get_enabled_arguments_as_query
-from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_statement, \
-    is_author_of_argument
+from dbas.lib import Relations, Attitudes, get_enabled_arguments_as_query, get_all_attacking_arg_uids_from_history, \
+    is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
 from dbas.review.queue.edit import EditQueue
 from dbas.strings.keywords import Keywords as _
@@ -89,8 +88,10 @@ class ItemDictHelper(object):
             if statement.uid in uids:  # add seen by if the statement is visible
                 add_seen_statement(statement.uid, db_user)
             statements_array.append(self.__create_answer_dict(statement.uid,
-                                                              [{'title': statement.get_text(),
-                                                                'id': statement.uid}],
+                                                              [{
+                                                                  'title': statement.get_text(),
+                                                                  'id': statement.uid
+                                                              }],
                                                               'start',
                                                               _um.get_url_for_statement_attitude(statement.uid),
                                                               is_editable=not ed.is_statement_in_edit_queue(
@@ -106,8 +107,10 @@ class ItemDictHelper(object):
         if not self.issue_read_only:
             if db_user.nickname == nick_of_anonymous_user:
                 statements_array.append(self.__create_answer_dict('login',
-                                                                  [{'id': '0',
-                                                                    'title': _tn.get(_.wantToStateNewPosition)}],
+                                                                  [{
+                                                                      'id': '0',
+                                                                      'title': _tn.get(_.wantToStateNewPosition)
+                                                                  }],
                                                                   'justify',
                                                                   'login'))
             else:
@@ -187,8 +190,10 @@ class ItemDictHelper(object):
         if not self.issue_read_only:
             if db_user and db_user.nickname != nick_of_anonymous_user:
                 statements_array.append(self.__create_answer_dict('start_premise',
-                                                                  [{'title': _tn.get(_.newPremiseRadioButtonText),
-                                                                    'id': 0}],
+                                                                  [{
+                                                                      'title': _tn.get(_.newPremiseRadioButtonText),
+                                                                      'id': 0
+                                                                  }],
                                                                   'justify',
                                                                   'add'))
             else:
@@ -220,15 +225,15 @@ class ItemDictHelper(object):
         already_used = 'reaction/' + str(argument.uid) + '/' in self.path
         additional_text = '(' + _tn.get(_.youUsedThisEarlier) + ')'
 
-        new_arg = None
-        url = None
-        if not attack:
-            new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
-            if new_arg:
-                url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
+        url = _um.get_url_for_discussion_finish(
+            argument.uid)  # finish the discussion if D-BAS can't find something to talk about
 
-        if None in [attack, new_arg, url]:
-            url = _um.get_url_for_discussion_finish(argument.uid)
+        if attack:  # if there is an attack get the url to a reaction
+            url = _um.get_url_for_reaction_on_argument(argument.uid, attack.value, arg_id_sys)
+        else:  # if there is no attack, search for an argument to ask the user about
+            new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
+            if new_arg:  # if one is found: get the url
+                url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
 
         return self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
                                          already_used=already_used,
@@ -292,8 +297,10 @@ class ItemDictHelper(object):
         premises_array = []
         for premise in db_premises:
             text = premise.get_text()
-            premises_array.append({'id': premise.statement_uid,
-                                   'title': text})
+            premises_array.append({
+                'id': premise.statement_uid,
+                'title': text
+            })
 
         # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
         is_undermine = Relations.UNDERMINE if attack_type == Relations.UNDERMINE else None
@@ -416,7 +423,7 @@ class ItemDictHelper(object):
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     @staticmethod
-    def __get_dont_know_item_for_undermine(db_argument, is_not_supportive, _um):
+    def __get_dont_know_item_for_undermine(db_argument: Argument, is_not_supportive: Attitudes, _um):
         """
         Returns a random undermine url
 
