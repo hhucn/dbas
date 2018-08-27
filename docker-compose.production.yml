@@ -16,8 +16,6 @@ services:
     restart: always
     ports:
       - "4284:4284"
-    links:
-      - db:db
     environment:
       AUTHN_SECRET: ${AUTHN_SECRET}
       DB_PW: ${DB_PW}
@@ -27,6 +25,4 @@ services:
       URL: ${URL}
     env_file:
       - production.env
-    depends_on:
-      - db
     tmpfs: /tmp

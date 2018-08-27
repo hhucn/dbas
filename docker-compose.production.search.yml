@@ -12,5 +12,3 @@ services:
       DB_USER: ${DB_USER}
     env_file:
       - production.env
-    depends_on:
-      - web
