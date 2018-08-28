@@ -23,4 +23,6 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       URL: ${URL}
+    env_file:
+      - production.env
     tmpfs: /tmp
