@@ -24,6 +24,4 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       URL: ${URL}
-    env_file:
-      - development.env
     tmpfs: /tmp
