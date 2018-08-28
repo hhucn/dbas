@@ -286,7 +286,6 @@ def discussion_justify_statement(request) -> dict:
     }
 
 
-
 @dontknow_argument.get()
 @validate(valid_issue_by_slug, valid_token_optional, valid_argument(location='path'))
 def discussion_dontknow_argument(request) -> dict:
