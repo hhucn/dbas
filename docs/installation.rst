@@ -52,66 +52,95 @@ Afterwards everything should be fine.
 Environment Variables
 =====================
 You may want to configure options as environment variables instead of config entries.
+The core variables are stored in `.env` to make sure D-BAS is completely up with `docker-compose up`.
 
 D-BAS
 -----
+D-BAS needs some environment variables to start und run properly.
+Those variables **have** to be set, otherwise an error will be raised explaining which variables aren't configured.
+The core variables which are stored in `.env` are:
 
-You can configure all entries in the env-file in environment variables (instead of adding variables via code and ini-files in pyramid).
-By default D-BAS takes all environment variables with empty prefix and adds them to the configuration, after parsing the .ini file itself.
-The name of the environment variable will be the key of the new configuration entry, after some transformations. For more
-information please have a look at https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html.
-
-1. The prefix will be stripped.
-2. All single underscores will be substituted with a dot.
-3. All double underscores will be substituted with a single underscore.
-4. uppercase will be lowered.
-
-Example::
-
-    export FOO_BAR__BAZ=fizz
-    => foo.bar_baz = fizz
-
-
-Also you can add pyramid specific variables in the ini-files with `[a:b]` as section parameter. Please add the following
-snippet with your keywords to the config in file `dbas/__init__py`::
-
-    sections = ['service']
-    log = logging.getLogger(__name__)
-    for s in sections:
-        try:
-            parser = ConfigParser()
-            parser.read(global_config['__file__'])
-            custom_settings = dict()
-            for k, v in parser.items('settings:{}'.format(s)):
-                custom_settings['settings:{}:{}'.format(s, k)] = v
-            settings.update(custom_settings)
-        except NoSectionError as e:
-            log.debug(f'__init__(): main() <No {s}-Section> ->{e})
-
-The parameters can now be accessed  via::
-
-    def includeme(config):
-        settings = config.registry.settings
-        its_something = settings['your_keyword']
-
++--------------+------------------------------------------------------------------------+
+| AUTHN_SECRET | The authentication secret of the database user. (example ABCDEF!2D)    |
++--------------+------------------------------------------------------------------------+
+| DB_HOST      | The hostname of the database. (example: localhost, db, 10.0.0.2)       |
++--------------+------------------------------------------------------------------------+
+| DB_PORT      | The port of the database. (example: 5432)                              |
++--------------+------------------------------------------------------------------------+
+| DB_USER      | The database username. (example: dbas)                                 |
++--------------+------------------------------------------------------------------------+
+| DB_PW        | The passwort of the DB_USER. (example: passw0rt123)                    |
++--------------+------------------------------------------------------------------------+
+| URL          | The global url of D-BAS. (example: https://dbas.cs.uni-duesseldorf.de )|
++--------------+------------------------------------------------------------------------+
 
 Special Variables
 -----------------
 
-There are some special variables for the database connection.
-These **have** to be set, otherwise an error will be raised explaining which variables aren't configured.
+There is the opportunity to modify special variables if you need them.
+Those variables can be set in `development.env` or `production.env`.
+Notice: Existing environment-variables which are defined in `.env` can be overwritten if they are set in `development.env` or `production.env`.
+You can add those variables if you want to start services like the sematic-search in `docker-compose.search.yml`.
 
-+---------+------------------------------------------------------------------+
-| DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
-+---------+------------------------------------------------------------------+
-| DB_PORT | The port of the database (example: 5432).                        |
-+---------+------------------------------------------------------------------+
-| DB_USER | The database username. (example: dbas)                           |
-+---------+------------------------------------------------------------------+
-| DB_PW   | The passwort of the DB_USER (example: passw0rt123)               |
-+---------+------------------------------------------------------------------+
+Those special variables are defined as bellow.
 
-These variables are accessible like any other via the normal substitutions (DB.HOST, ...)
++----------------------------+------------------------------------------------------------------------+
+| MAIL_HOST                  | The hist of the imap account                                           |
++----------------------------+------------------------------------------------------------------------+
+| MAIL_PORT                  | The port of the mail host                                              |
++----------------------------+------------------------------------------------------------------------+
+| MAIL_USERNAME              | The username of the imap account                                       |
++----------------------------+------------------------------------------------------------------------+
+| MAIL_PASSWORD              | The password if the imap account                                       |
++----------------------------+------------------------------------------------------------------------+
+| MAIL_SSL                   | A boolean to enable or disable ssl for mail traffic                    |
++----------------------------+------------------------------------------------------------------------+
+| MAIL_TLS                   | A boolean to enable or disable tls for mail traffic                    |
++----------------------------+------------------------------------------------------------------------+
+| MAIL_DEFAULT__SENDER       | The total mail address                                                 |
++----------------------------+------------------------------------------------------------------------+
+| HHU_LDAP_SERVER            | LDAPs server address (Notice: Must be in single quotes                 |
++----------------------------+------------------------------------------------------------------------+
+| HHU_LDAP_BASE              | LDAPs base address (Notice: Must be in single quotes)                  |
++----------------------------+------------------------------------------------------------------------+
+| HHU_LDAP_ACCOUNT_SCOPE     | Scope of the LDAP search (Notice: Must be in single quotes)            |
++----------------------------+------------------------------------------------------------------------+
+| HHU_LDAP_ACCOUNT_FILTER    | Filter of the LDAP search (Notice: Must be in single quotes)           |
++----------------------------+------------------------------------------------------------------------+
+| HHU_LDAP_ACCOUNT_FIRSTNAME | Key of the LDAP firstname (Notice: Must be in single quotes)           |
++----------------------------+------------------------------------------------------------------------+
+| HHU_LDAP_ACCOUNT_LAST      | Key of the LDAP lastname (Notice: Must be in single quotes)            |
++----------------------------+------------------------------------------------------------------------+
+| HHU_LDAP_ACCOUNT_TITLE     | Key of the LDAP title (Notice: Must be in single quotes)               |
++----------------------------+------------------------------------------------------------------------+
+| HHU_LDAP_ACCOUNT_EMAIL     | Key of the LDAP title (Notice: Must be in single quotes)               |
++----------------------------+------------------------------------------------------------------------+
+| OAUTH_GOOGLE_CLIENTID      | ID for o auth with GOOGLE                                              |
++----------------------------+------------------------------------------------------------------------+
+| OAUTH_GOOGLE_CLIENTKEY     | Key for o auth with GOOGLE                                             |
++----------------------------+------------------------------------------------------------------------+
+| OAUTH_GITHUB_CLIENTID      | ID for o auth with GitHub                                              |
++----------------------------+------------------------------------------------------------------------+
+| OAUTH_GITHUB_CLIENTKEY     | Key for o auth with GitHub                                             |
++----------------------------+------------------------------------------------------------------------+
+| OAUTH_FACEBOOK_CLIENTID    | ID for o auth with Facebook                                            |
++----------------------------+------------------------------------------------------------------------+
+| OAUTH_FACEBOOK_CLIENTKEY   | Key for o auth with Facebook                                           |
++----------------------------+------------------------------------------------------------------------+
+| DBAS_HOST                  | Name of the dbas container which needs the semantic-search             |
++----------------------------+------------------------------------------------------------------------+
+| DBAS_PORT                  | Port of the dbas container which needs the semantic-search             |
++----------------------------+------------------------------------------------------------------------+
+| DBAS_PROTOCOL              | The Protocol which is used by the running dbas container (e.g. http)   |
++----------------------------+------------------------------------------------------------------------+
+| SEARCH_PORT                | Port of the container which returns the search results, default 5000   |
++----------------------------+------------------------------------------------------------------------+
+| SEARCH_NAME                | Name of the container which returns the search results, default search |
++----------------------------+------------------------------------------------------------------------+
+| WEBSOCKET_PORT             | Port of the node.js server                                             |
++----------------------------+------------------------------------------------------------------------+
+| MIN_LENGTH_OF_STATEMENT    | The minimal length of any statement, default 10                        |
++----------------------------+------------------------------------------------------------------------+
 
 OAuth
 -----
