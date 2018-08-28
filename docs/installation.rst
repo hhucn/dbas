@@ -57,6 +57,7 @@ The core variables are stored in `.env` to make sure D-BAS is completely up with
 D-BAS
 -----
 D-BAS needs some environment variables to start und run properly.
+For the production mode the core variables have to be overwritten.
 Those variables **have** to be set, otherwise an error will be raised explaining which variables aren't configured.
 The core variables which are stored in `.env` are:
 
@@ -78,6 +79,11 @@ Special Variables
 -----------------
 
 There is the opportunity to modify special variables if you need them.
+By creating a `development.env` or `production.env` file and adding them to the specific `docker-compose` file with::
+
+    env_file:
+      - development.env
+
 Those variables can be set in `development.env` or `production.env`.
 Notice: Existing environment-variables which are defined in `.env` can be overwritten if they are set in `development.env` or `production.env`.
 You can add those variables if you want to start services like the sematic-search in `docker-compose.search.yml`.
