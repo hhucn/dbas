@@ -286,6 +286,7 @@ def discussion_justify_statement(request) -> dict:
     }
 
 
+
 @dontknow_argument.get()
 @validate(valid_issue_by_slug, valid_token_optional, valid_argument(location='path'))
 def discussion_dontknow_argument(request) -> dict:
@@ -305,9 +306,11 @@ def discussion_dontknow_argument(request) -> dict:
                                                         request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
+    keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
+
     return {
         'bubbles': bubbles,
-        'items': items
+        'attacks': dict(zip(keys, items))
     }
 
 
