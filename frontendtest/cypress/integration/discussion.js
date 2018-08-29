@@ -71,11 +71,6 @@ describe('Test the functions while discussing', function () {
 
     beforeEach(function () {
         cy.visit(url + '/discuss');
-        cy.wait(url + '/static/js/discussion/main.js');
-        cy.wait(2000);
-        cy.setCookie('PASSED_GUIDED_TOUR', 'true');
-        cy.getCookie('PASSED_GUIDED_TOUR')
-            .should('have.property', 'value', 'true');
         cy.contains(discussions[0])
             .click({force: true});
         cy.get('#item_login')
@@ -186,9 +181,6 @@ describe('Test if user can login and can contribute at ' + discussions[0], funct
     var premise = randomString(10);
     beforeEach('checks if a user can login and contribute', function () {
             cy.visit(url + '/discuss');
-            cy.setCookie('PASSED_GUIDED_TOUR', 'true');
-            cy.getCookie('PASSED_GUIDED_TOUR')
-                .should('have.property', 'value', 'true');
             cy.contains(discussions[0])
                 .click({force: true});
             cy.get('#item_login')
@@ -242,9 +234,6 @@ describe('Test if user can login and can contribute at ' + discussions[0], funct
 describe('Test for leaks while adding new statements at ' + discussions[0], function () {
     beforeEach(function () {
         cy.visit(url + '/discuss');
-        cy.setCookie('PASSED_GUIDED_TOUR', 'true');
-        cy.getCookie('PASSED_GUIDED_TOUR')
-            .should('have.property', 'value', 'true');
         cy.contains(discussions[0])
             .click({force: true});
         cy.get('#item_login')
