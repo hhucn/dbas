@@ -29,9 +29,11 @@ services:
 
   proxy:
     image: nginx:1.15-alpine
+    command: /bin/sh -c "/etc/nginx/init/create_ssl.sh && nginx -g 'daemon off;'"
     ports:
-      - "80:80"
+      - "443:443"
     volumes:
       - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf/domain.conf:/etc/nginx/domain.conf:ro
+      - ./nginx/init:/etc/nginx/init:ro
     restart: unless-stopped
