@@ -3,6 +3,8 @@ Provides helping function for creating the history as bubbles.
 
 .. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from typing import Optional
+
 import transaction
 from pyramid.request import Request
 
@@ -35,7 +37,7 @@ def save_issue_uid(issue_uid: int, db_user: User):
     transaction.commit()
 
 
-def get_last_issue_of(db_user: User):
+def get_last_issue_of(db_user: User) -> Optional[Issue]:
     """
     Returns the last used issue of the user or None
 

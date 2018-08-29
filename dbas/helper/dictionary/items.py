@@ -423,7 +423,7 @@ class ItemDictHelper(object):
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     @staticmethod
-    def __get_dont_know_item_for_undermine(db_argument, is_not_supportive, _um):
+    def __get_dont_know_item_for_undermine(db_argument: Argument, is_not_supportive: Attitudes, _um):
         """
         Returns a random undermine url
 

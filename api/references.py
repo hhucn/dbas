@@ -8,43 +8,34 @@ import transaction
 
 from api.extractor import extract_reference_information, extract_author_information, extract_issue_information
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
+from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion, Statement
 from dbas.helper.url import url_to_statement
-from dbas.lib import get_all_arguments_with_text_by_statement_id
-from .lib import escape_html, logger
+from dbas.lib import get_all_arguments_with_text_by_statement_id, escape_string
+from .lib import logger
 
 log = logger()
 
 
-def store_reference(api_data, statement_uid=None):
+def store_reference(reference: str, host: str, path: str, user: User, statement: Statement,
+                    issue: Issue) -> StatementReferences:
     """
-    Validate provided reference and store it in the database.
-    Has side-effects.
+    Store reference to database.
 
-    :param api_data: user provided data
-    :param statement_uid: the statement the reference should be assigned to
-    :return:
+    :param reference: String from external website
+    :param user: user which adds the reference
+    :param host: external website, where the reference comes from
+    :param path: path on website to reference
+    :param statement: assign reference to this statement
+    :param issue: assign issue to reference
+    :return: newly stored reference
     """
-    try:
-        reference = api_data["reference"]
-        if not reference:
-            return  # Early exit if there is no reference
-        if not statement_uid:
-            log.error("[API/Reference] No statement_uid provided.")
-            return
-
-        user_uid = api_data["user_uid"]
-        host = escape_html(api_data["host"])
-        path = escape_html(api_data["path"])
-        issue_uid = api_data["issue_id"]
-
-        db_ref = StatementReferences(escape_html(reference), host, path, user_uid, statement_uid, issue_uid)
-        DBDiscussionSession.add(db_ref)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return db_ref
-    except KeyError as e:
-        log.error("[API/Reference] KeyError: could not access field in api_data. " + repr(e))
+    reference_text = escape_string(reference)
+    log.debug("New Reference for Statement.uid {}: {}".format(statement.uid, reference_text))
+    db_ref = StatementReferences(escape_string(reference_text), host, path, user.uid, statement.uid, issue.uid)
+    DBDiscussionSession.add(db_ref)
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return db_ref
 
 
 # =============================================================================

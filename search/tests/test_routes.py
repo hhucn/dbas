@@ -1,15 +1,15 @@
 import json
 import time
-import unittest
 
 import requests
 
+from dbas.tests.utils import TestCaseWithConfig
 from search import ROUTE_API
 
 
-class TestRoutes(unittest.TestCase):
-
+class TestRoutes(TestCaseWithConfig):
     def setUp(self):
+        super().setUp()
         time.sleep(8)
 
     def test_get_suggestions_status_200(self):

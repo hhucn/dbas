@@ -1,19 +1,11 @@
-import unittest
-
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import TextVersion, Statement, StatementToIssue
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class AjaxTest(unittest.TestCase):
-
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
-
+class AjaxTest(TestCaseWithConfig):
     def test_wrong_user(self):
         from admin.views import main_update as ajax1
         from admin.views import main_delete as ajax2

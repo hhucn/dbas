@@ -29,7 +29,7 @@ def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relatio
     :param last_attack: String
     :param history: History
     :param redirected_from_jump: Boolean
-    :return: Retrusn a tuple with an attacking Argument.uid as well as the type of attack as str
+    :return: Returns a tuple with an attacking Argument.uid as well as the type of attack
     """
     restrictive_arg_uids = list(set(restrictive_arg_uids)) if restrictive_arg_uids else []
     history, redirected_from_jump = __setup_history(history, redirected_from_jump)
@@ -117,7 +117,7 @@ def get_forbidden_attacks_based_on_history(history: str) -> List[int]:
     return forbidden_uids
 
 
-def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_attacks: List,
+def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_attacks: List[Relations],
                                                  restrictive_arg_uids: List, last_attack: Relations,
                                                  history: str) -> Tuple[List[int], Optional[Relations], bool]:
     """
@@ -131,8 +131,8 @@ def __get_attack_for_argument_by_random_in_range(argument_uid: int, restrictive_
     :param history: Users history
     :return: [Argument.uid], String, Boolean if no new attacks are found
     """
-    list_of_attacks = [relation for relation in list(Relations) if relation is not Relations.SUPPORT]
-    attack_list = list(set(list_of_attacks) - set(restrictive_attacks))
+    list_of_attacks: List[Relations] = [relation for relation in Relations if relation is not Relations.SUPPORT]
+    attack_list: List[Relations] = list(set(list_of_attacks) - set(restrictive_attacks))
     is_supportive = False
     new_attack_step = ''
     arg_uids = []

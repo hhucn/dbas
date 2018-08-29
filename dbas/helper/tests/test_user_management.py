@@ -1,25 +1,20 @@
-import unittest
-
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
 from dbas.handler import user
 from dbas.strings import keywords as _
 from dbas.strings.translator import Translator
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class UserManagementTest(unittest.TestCase):
+class UserManagementTest(TestCaseWithConfig):
 
     def test_update_last_action(self):
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=str('Tobias')).first()
-        last_action_old = db_user.last_action
-        user.update_last_action(db_user)
-        last_action_new = db_user.last_action
+        last_action_old = self.user_tobi.last_action
+        user.update_last_action(self.user_tobi)
+        last_action_new = self.user_tobi.last_action
         self.assertNotEqual(last_action_old, last_action_new)
 
     def test_refresh_public_nickname(self):
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=str('Tobias')).first()
-        old_public_nickname = db_user.public_nickname
-        new_public_nickname = user.refresh_public_nickname(db_user)
+        old_public_nickname = self.user_tobi.public_nickname
+        new_public_nickname = user.refresh_public_nickname(self.user_tobi)
         self.assertNotEqual(old_public_nickname, new_public_nickname)
 
     def test_is_user_in_group(self):
@@ -37,23 +32,21 @@ class UserManagementTest(unittest.TestCase):
         self.assertFalse(user.is_admin('Torben'))
 
     def test_is_user_author(self):
-        db_user1 = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        db_user2 = DBDiscussionSession.query(User).filter_by(nickname='Torben').first()
-        self.assertTrue(db_user1.is_admin() or db_user1.is_author())
-        self.assertFalse(db_user2.is_admin() or db_user2.is_author())
+        self.assertTrue(self.user_tobi.is_admin() or self.user_tobi.is_author())
+        self.assertFalse(self.user_anonymous.is_admin() or self.user_anonymous.is_author())
 
     def change_password(self):
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=str('Tobias')).first()
         _t = Translator('en')
 
-        msg1, success1 = user.change_password(db_user, None, 'tobiass', 'tobias', 'en')  # not old pw
-        msg2, success2 = user.change_password(db_user, 'tobias', None, 'tobias', 'en')  # not new pw
-        msg3, success3 = user.change_password(db_user, 'tobias', 'tobiass', None, 'en')  # not confirm_pw
-        msg4, success4 = user.change_password(db_user, 'tobias', 'tobias1', 'tobias2', 'en')  # not new == confirm
-        msg5, success5 = user.change_password(db_user, 'tobias', 'tobias', 'tobias', 'en')  # old == new
-        msg6, success6 = user.change_password(db_user, 'tobiaS', 'tobiass', 'tobias', 'en')  # old wrong
-        msg7, success7 = user.change_password(db_user, 'tobias', '123456', '123456', 'en')
-        msg8, success8 = user.change_password(db_user, '123456', 'tobias', 'tobias', 'en')
+        msg1, success1 = user.change_password(self.user_tobi, None, 'tobiass', 'tobias', 'en')  # not old pw
+        msg2, success2 = user.change_password(self.user_tobi, 'tobias', None, 'tobias', 'en')  # not new pw
+        msg3, success3 = user.change_password(self.user_tobi, 'tobias', 'tobiass', None, 'en')  # not confirm_pw
+        msg4, success4 = user.change_password(self.user_tobi, 'tobias', 'tobias1', 'tobias2',
+                                              'en')  # not new == confirm
+        msg5, success5 = user.change_password(self.user_tobi, 'tobias', 'tobias', 'tobias', 'en')  # old == new
+        msg6, success6 = user.change_password(self.user_tobi, 'tobiaS', 'tobiass', 'tobias', 'en')  # old wrong
+        msg7, success7 = user.change_password(self.user_tobi, 'tobias', '123456', '123456', 'en')
+        msg8, success8 = user.change_password(self.user_tobi, '123456', 'tobias', 'tobias', 'en')
 
         self.assertFalse(success1)
         self.assertFalse(success2)

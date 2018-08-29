@@ -2,6 +2,7 @@
 #
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
+from typing import List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
@@ -29,7 +30,7 @@ def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
 
     logger('Graph.lib', 'title: ' + db_issue.title)
 
-    db_textversions = DBDiscussionSession.query(TextVersion).all()
+    db_textversions: List[TextVersion] = DBDiscussionSession.query(TextVersion).all()
     if all_statements is None:
         issues_statements_uids = [el.statement_uid for el in
                                   DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]

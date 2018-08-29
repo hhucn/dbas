@@ -1,13 +1,11 @@
 """
 Managing URLS can be done with a very hardcoded scheme. We are differentiating between several steps in the discussion.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import random
 
 from dbas.database.discussion_model import Statement, Issue
 from dbas.handler import attacks
-from dbas.lib import get_all_attacking_arg_uids_from_history
+from dbas.lib import get_all_attacking_arg_uids_from_history, Attitudes, Relations
 
 
 class UrlManager(object):
@@ -36,7 +34,7 @@ class UrlManager(object):
         """
         return self.review_url + self.slug
 
-    def get_url_for_statement_attitude(self, statement_uid):
+    def get_url_for_statement_attitude(self, statement_uid: int):
         """
         Returns url for getting statement attitude of the user or the API-version
 
@@ -46,45 +44,45 @@ class UrlManager(object):
         url = '{}/attitude/{}'.format(self.slug, statement_uid)
         return self.__return_discussion_url(url)
 
-    def get_url_for_justifying_statement(self, statement_uid, mode):
+    def get_url_for_justifying_statement(self, statement_uid: int, attitude: Attitudes):
         """
         Returns url for getting statement justification of the user or the API-version
 
         :param statement_uid: Statement.uid
-        :param mode:
-        :type mode: String
+        :param attitude:
         :return: discuss/{slug}/justify/{statement_or_arg_id}/{mode}
         """
-        url = '{}/justify/{}/{}'.format(self.slug, statement_uid, mode)
+        url = '{}/justify/{}/{}'.format(self.slug, statement_uid, attitude)
         return self.__return_discussion_url(url)
 
-    def get_url_for_justifying_argument(self, argument_uid, mode, attitude, additional_id=-1):
+    def get_url_for_justifying_argument(self, argument_uid: int, attitude: Attitudes, relation: Relations,
+                                        additional_id: int = -1):
         """
         Returns url for justifying an argument of the user or the API-version
 
         :param argument_uid: Argument.uid
-        :param mode: String
         :param attitude: String
+        :param relation: String
         :param additional_id: String
         :return: discuss/{slug}/justify/{statement_or_arg_id}/{mode}*attitude
         """
-        url = '{}/justify/{}/{}/{}'.format(self.slug, argument_uid, mode, attitude)
+        url = '{}/justify/{}/{}/{}'.format(self.slug, argument_uid, attitude, relation)
         if additional_id != -1:
             url += '/{}'.format(additional_id)
         return self.__return_discussion_url(url)
 
-    def get_url_for_reaction_on_argument(self, argument_uid, mode, confrontation_argument):
+    def get_url_for_reaction_on_argument(self, argument_uid: int, relation: Relations, confrontation_argument: int):
         """
         Returns url for getting the reaction regarding an argument of the user or the API-version
 
         :param argument_uid: Argument.uid
-        :param mode:
+        :param relation:
         :param confrontation_argument: Argument.uid
         :return: discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys
         """
         if not confrontation_argument:
             return self.get_url_for_discussion_finish(argument_uid)
-        url = '{}/reaction/{}/{}/{}'.format(self.slug, argument_uid, mode, confrontation_argument)
+        url = '{}/reaction/{}/{}/{}'.format(self.slug, argument_uid, relation, confrontation_argument)
         return self.__return_discussion_url(url)
 
     def get_url_for_choosing_premisegroup(self, is_argument, is_supportive, statement_or_argument_id,

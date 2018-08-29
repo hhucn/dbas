@@ -6,7 +6,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Argument, User
 from dbas.discussion import core as discussion
 from dbas.handler import issue as issue_handler, history as history_handler
-from dbas.handler.issue import get_issues_overiew_for
+from dbas.handler.issue import get_issues_overview_for
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -35,7 +35,7 @@ def discussion_overview(request):
     """
     logger('discussion_overview', 'main')
     ui_locales = get_language_from_cookie(request)
-    issue_dict = get_issues_overiew_for(request.validated['user'], request.application_url)
+    issue_dict = get_issues_overview_for(request.validated['user'], request.application_url)
 
     prep_dict = main_dict(request, Translator(ui_locales).get(_.myDiscussions))
     modifiy_issue_main_url(issue_dict)

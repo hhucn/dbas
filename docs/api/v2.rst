@@ -7,8 +7,9 @@ remote service, version 2 tries to be more precise and more concise to provide a
 much cleaner experience.
 
 This API uses OpenAPI and is described `in this specification
-<https://app.swaggerhub.com/apis/MrOerni/D-BAS/1.0.0>`_, which is currently a
-work-in-progess.
+<https://app.swaggerhub.com/apis/MrOerni/D-BAS/1>`_, which is currently a
+work-in-progress.
+
 
 GraphQL
 =======

@@ -30,13 +30,6 @@ Logger
     :members:
 
 
-Query Wrapper
-=============
-
-.. automodule:: dbas.query_wrapper
-    :members:
-
-
 Security
 ========
 
