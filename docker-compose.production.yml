@@ -32,6 +32,8 @@ services:
     command: /bin/sh -c "/etc/nginx/init/create_ssl.sh && nginx -g 'daemon off;'"
     ports:
       - "443:443"
+    environment:
+      DEPLOY_HOST: dbas.cs.uni-duesseldorf.de
     volumes:
       - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf/domain.conf:/etc/nginx/domain.conf:ro
