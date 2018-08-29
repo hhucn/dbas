@@ -1,104 +1,104 @@
-from nose.tools import assert_is_not_none, assert_equal
-
 from api.v2.graphql.tests.lib import graphql_query
+from dbas.tests.utils import TestCaseWithConfig
 
 
-def test_query_statement_reference():
-    query = """
-        query {
-            statementReferences {
-                uid
-                users {
-                    publicNickname
+class TestQueryStatementReference(TestCaseWithConfig):
+    def test_query_statement_reference(self):
+        query = """
+            query {
+                statementReferences {
+                    uid
+                    users {
+                        publicNickname
+                    }
                 }
             }
-        }
-    """
-    content = graphql_query(query)
-    references = content.get("statementReferences")
-    ref = references[0]
-    assert_is_not_none(ref)
-    assert_is_not_none(ref.get("uid"))
-    assert_is_not_none(ref.get("users"))
-    assert_is_not_none(ref.get("users").get("publicNickname"))
+        """
+        content = graphql_query(query)
+        references = content.get("statementReferences")
+        ref = references[0]
+        self.assertIsNotNone(ref)
+        self.assertIn('uid', ref)
+        self.assertIn('users', ref)
+        self.assertIsNotNone(ref.get("users").get("publicNickname"))
 
 
-def test_query_premises():
-    query = """
-        query {
-            premises {
-                uid
-                users {
-                    publicNickname
+class TestQueryPremises(TestCaseWithConfig):
+    def test_query_premises(self):
+        query = """
+            query {
+                premises {
+                    uid
+                    author {
+                        publicNickname
+                    }
                 }
             }
-        }
-    """
-    content = graphql_query(query)
-    premises = content.get("premises")
-    premise = premises[0]
-    assert_is_not_none(premise)
-    assert_is_not_none(premise.get("uid"))
-    assert_is_not_none(premise.get("users"))
-    assert_is_not_none(premise.get("users").get("publicNickname"))
+        """
+        content = graphql_query(query)
+        premises = content.get("premises")
+        premise = premises[0]
+        self.assertIsNotNone(premise)
+        self.assertIn('uid', premise)
+        self.assertIn('author', premise)
+        self.assertIsNotNone(premise.get("author").get("publicNickname"))
 
-
-def test_query_premisegroups():
-    query = """
-        query {
-            premisegroups {
-                uid
-                users {
-                    publicNickname
-                }
-            }
-        }
-    """
-    content = graphql_query(query)
-    premisegroups = content.get("premisegroups")
-    group = premisegroups[0]
-    assert_is_not_none(group)
-    assert_is_not_none(group.get("uid"))
-    assert_is_not_none(group.get("users"))
-    assert_is_not_none(group.get("users").get("publicNickname"))
-
-
-def test_query_premises_by_premisegroup():
-    query = """
-        query {
-            premises (premisegroupUid: 9) {
-                uid
-            }
-        }
-    """
-    content = graphql_query(query)
-    result = content.get("premises")
-    assert_is_not_none(result)
-    assert_equal(2, len(result))
-    assert_is_not_none(result[0].get("uid"))
-    assert_is_not_none(result[1].get("uid"))
-
-
-def test_query_arguments():
-    query = """
-        query {
-            arguments {
-                uid
+    def test_query_premisegroups(self):
+        query = """
+            query {
                 premisegroups {
                     uid
-                }
-                users {
-                    publicNickname
+                    author {
+                        publicNickname
+                    }
                 }
             }
-        }
-    """
-    content = graphql_query(query)
-    arguments = content.get("arguments")
-    group = arguments[0]
-    assert_is_not_none(group)
-    assert_is_not_none(group.get("uid"))
-    assert_is_not_none(group.get("users"))
-    assert_is_not_none(group.get("users").get("publicNickname"))
-    assert_is_not_none(group.get("premisegroups"))
-    assert_is_not_none(group.get("premisegroups").get("uid"))
+        """
+        content = graphql_query(query)
+        premisegroups = content.get("premisegroups")
+        group = premisegroups[0]
+        self.assertIsNotNone(group)
+        self.assertIn('uid', group)
+        self.assertIn('author', group)
+        self.assertIsNotNone(group.get("author").get("publicNickname"))
+
+    def test_query_premises_by_premisegroup(self):
+        query = """
+            query {
+                premises (premisegroupUid: 9) {
+                    uid
+                }
+            }
+        """
+        content = graphql_query(query)
+        result = content.get("premises")
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result), 2)
+        self.assertIn('uid', result[0])
+        self.assertIn('uid', result[1])
+
+
+class TestQueryArguments(TestCaseWithConfig):
+    def test_query_arguments(self):
+        query = """
+            query {
+                arguments {
+                    uid
+                    premisegroup {
+                        uid
+                    }
+                    users {
+                        publicNickname
+                    }
+                }
+            }
+        """
+        content = graphql_query(query)
+        arguments = content.get("arguments")
+        group = arguments[0]
+        self.assertIsNotNone(group)
+        self.assertIn('uid', group)
+        self.assertIn('users', group)
+        self.assertIn('publicNickname', group.get('users'))
+        self.assertIn('premisegroup', group)
+        self.assertIn('uid', group.get("premisegroup"))

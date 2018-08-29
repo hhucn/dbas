@@ -1,22 +1,13 @@
-import unittest
-
 import transaction
-from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Statement, StatementToIssue
 from dbas.handler.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.lib import get_text_for_statement_uid
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class ReferenceHelperTest(unittest.TestCase):
-
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
-
+class ReferenceHelperTest(TestCaseWithConfig):
     def test_get_references_for_argument(self):
         val_data, val_text = get_references_for_argument(0, 'base_url')
         self.__validate_reference_text([], val_text)
@@ -55,7 +46,8 @@ class ReferenceHelperTest(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).get(2)
         db_statement = DBDiscussionSession.query(Statement).get(3)
         db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first()
-        val = set_reference('some_reference#42', 'http://www.fortschrittskolleg.de/', db_user, db_statement, db_statement2issue.issue_uid)
+        val = set_reference('some_reference#42', 'http://www.fortschrittskolleg.de/', db_user, db_statement,
+                            db_statement2issue.issue_uid)
         self.assertTrue(val)
 
         DBDiscussionSession.query(StatementReferences).filter_by(reference='some_reference#42').delete()

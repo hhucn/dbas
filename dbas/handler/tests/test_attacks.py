@@ -1,15 +1,15 @@
-import transaction
-import unittest
-
 from typing import List
 
-from dbas.lib import Relations
+import transaction
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
 from dbas.handler import attacks
+from dbas.lib import Relations
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class AttackHandlerTests(unittest.TestCase):
+class AttackHandlerTests(TestCaseWithConfig):
 
     def test_get_attack_for_argument(self):
         results = {

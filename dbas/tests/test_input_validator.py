@@ -1,13 +1,13 @@
 import transaction
-import unittest
 
 import dbas.input_validator as iv
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
 from dbas.lib import Relations
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class InputValidatorTests(unittest.TestCase):
+class InputValidatorTests(TestCaseWithConfig):
 
     def test_is_integer(self):
         # conditions_response
@@ -83,7 +83,8 @@ class InputValidatorTests(unittest.TestCase):
         undercut_false = iv.check_reaction(attacked_arg_uid=0, attacking_arg_uid=0, relation=Relations.UNDERCUT)
         self.assertFalse(undercut_false)
 
-        undercut_empty_string_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='', relation=Relations.UNDERCUT)
+        undercut_empty_string_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='',
+                                                        relation=Relations.UNDERCUT)
         self.assertFalse(undercut_empty_string_false)
 
         undercut_string_false = iv.check_reaction(attacked_arg_uid='1str/', attacking_arg_uid='17str',
@@ -95,23 +96,28 @@ class InputValidatorTests(unittest.TestCase):
         rebut_true = iv.check_reaction(attacked_arg_uid=58, attacking_arg_uid=51, relation=Relations.REBUT)
         self.assertTrue(rebut_true)
 
-        rebut_not_db_attacked_arg_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=35, relation=Relations.REBUT)
+        rebut_not_db_attacked_arg_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=35,
+                                                            relation=Relations.REBUT)
         self.assertFalse(rebut_not_db_attacked_arg_false)
 
-        rebut_not_db_attacking_arg_false = iv.check_reaction(attacked_arg_uid=31, attacking_arg_uid=1, relation=Relations.REBUT)
+        rebut_not_db_attacking_arg_false = iv.check_reaction(attacked_arg_uid=31, attacking_arg_uid=1,
+                                                             relation=Relations.REBUT)
         self.assertFalse(rebut_not_db_attacking_arg_false)
 
-        rebut_not_db_attacked_arg_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=35, relation=Relations.REBUT)
+        rebut_not_db_attacked_arg_false = iv.check_reaction(attacked_arg_uid=1, attacking_arg_uid=35,
+                                                            relation=Relations.REBUT)
         self.assertFalse(rebut_not_db_attacked_arg_false)
 
         # db_attacked_arg and db_attacking_arg are False
         rebut_false = iv.check_reaction(attacked_arg_uid=0, attacking_arg_uid=0, relation=Relations.REBUT)
         self.assertFalse(rebut_false)
 
-        rebut_empty_string_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='', relation=Relations.REBUT)
+        rebut_empty_string_false = iv.check_reaction(attacked_arg_uid='', attacking_arg_uid='',
+                                                     relation=Relations.REBUT)
         self.assertFalse(rebut_empty_string_false)
 
-        rebut_string_false = iv.check_reaction(attacked_arg_uid='31str/', attacking_arg_uid='35str', relation=Relations.REBUT)
+        rebut_string_false = iv.check_reaction(attacked_arg_uid='31str/', attacking_arg_uid='35str',
+                                               relation=Relations.REBUT)
         self.assertFalse(rebut_string_false)
 
     def test_check_belonging_of_statement(self):

@@ -23,6 +23,9 @@ Cypress.Cookies.defaults({
   whitelist: "PASSED_GUIDED_TOUR"
 })
 
-it('set tour cookie', function() {
-    cy.setCookie('PASSED_GUIDED_TOUR', 'true');
-});
+
+beforeEach(function () {
+        cy.setCookie('PASSED_GUIDED_TOUR', 'true');
+        cy.getCookie('PASSED_GUIDED_TOUR').should('have.property', 'value', 'true');
+    });
+

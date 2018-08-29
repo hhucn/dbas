@@ -7,7 +7,7 @@ services:
     volumes:
       - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
     environment:
-      POSTGRES_PASSWORD: 'DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!'
+      POSTGRES_PASSWORD: ${DB_PW}
     tmpfs: /tmp
 
   web:
@@ -17,10 +17,11 @@ services:
       - .:/dbas
     ports:
       - "4284:4284"
-    links:
-      - db:db
-    env_file:
-      - development.env
-    depends_on:
-      - db
+    environment:
+      AUTHN_SECRET: ${AUTHN_SECRET}
+      DB_PW: ${DB_PW}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      URL: ${URL}
     tmpfs: /tmp

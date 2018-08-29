@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import unittest
 from uuid import uuid4
 
 from pyramid import testing
@@ -9,10 +8,11 @@ from pyramid_mailer.mailer import DummyMailer
 from dbas.auth.login import login_local_user, register_user_with_json_data
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from dbas.tests.utils import TestCaseWithConfig
 from dbas.views import user_login
 
 
-class AuthLoginTest(unittest.TestCase):
+class AuthLoginTest(TestCaseWithConfig):
     @staticmethod
     def uustring():
         """
@@ -24,11 +24,8 @@ class AuthLoginTest(unittest.TestCase):
         return str(uuid4())
 
     def setUp(self):
-        self.config = testing.setUp()
+        super().setUp()
         self._tn = Translator('en')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_login_user(self):
         nickname = 'Bob'

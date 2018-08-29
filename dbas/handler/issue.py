@@ -6,6 +6,7 @@ Provides helping function for issues.
 from datetime import date, timedelta
 from json import JSONDecodeError
 from math import ceil
+from typing import Optional
 
 import arrow
 import transaction
@@ -18,7 +19,7 @@ from dbas.database.discussion_model import Argument, User, Issue, Language, sql_
     ClickedStatement, TextVersion, StatementToIssue
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
-from dbas.helper.query import get_short_url
+from dbas.helper.query import generate_short_url
 from dbas.helper.url import UrlManager
 from dbas.lib import nick_of_anonymous_user, get_visible_issues_for_user_as_query
 from dbas.lib import pretty_print_timestamp
@@ -125,7 +126,7 @@ def get_number_of_statements(issue_uid: int) -> int:
     return DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=issue_uid).count()
 
 
-def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict():
+def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict:
     """
     Creates an dictionary for the issue
 
@@ -152,7 +153,7 @@ def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict():
     return issue_dict
 
 
-def get_id_of_slug(slug: str):
+def get_id_of_slug(slug: str) -> Issue:
     """
     Returns the uid of the issue with given slug
 
@@ -172,7 +173,7 @@ def save_issue_id_in_session(issue_uid: int, request: Request):
     request.session['issue'] = issue_uid
 
 
-def get_issue_id(request):
+def get_issue_id(request) -> Optional[int]:
     """
     Returns issue uid saved in request. If there is no uid, we will choose an
     issue based on the language from the requests header
@@ -218,7 +219,7 @@ def get_issue_based_on_header(request):
     return db_issue.uid
 
 
-def get_title_for_slug(slug):
+def get_title_for_slug(slug) -> Optional[str]:
     """
     Returns the issues title for a given slug
 
@@ -232,7 +233,7 @@ def get_title_for_slug(slug):
     return None
 
 
-def get_issues_overiew_for(db_user: User, app_url: str) -> dict:
+def get_issues_overview_for(db_user: User, app_url: str) -> dict:
     """
     Returns dictionary with keywords 'user' and 'others', which got lists with dicts with infos
     IMPORTANT: URL's are generated for the frontend!
@@ -366,7 +367,7 @@ def __create_issue_dict(db_issue: Issue, app_url: str) -> dict:
     :param app_url: current applications url
     :return: dict()
     """
-    short_url_dict = get_short_url(app_url + '/discuss/' + db_issue.slug)
+    short_url_dict = generate_short_url(app_url + '/discuss/' + db_issue.slug)
     url = short_url_dict['url'] if len(short_url_dict['url']) > 0 else app_url + '/discuss/' + db_issue.slug
 
     # we do nto have to check for clicked arguments, cause arguments consist out of statements
