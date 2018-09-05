@@ -607,7 +607,7 @@ def add_premise_to_statement(request: IRequest):
     db_issue: Issue = request.validated['issue']
     db_statement: Statement = request.validated['statement']
     reference_text: str = request.validated["reference"]
-    is_supportive = request.validated['attitude'] == Attitudes.AGREE.value
+    is_supportive = request.validated['attitude'] == Attitudes.AGREE
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     if reference_text:
