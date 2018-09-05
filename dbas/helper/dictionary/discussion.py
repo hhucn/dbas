@@ -330,7 +330,7 @@ class DiscussionDictHelper(object):
             else:
                 intro = b + _tn.get(_.otherParticipantsThinkThat) + e
             sys_text = intro + ' ' + start_with_small(text) + '. '
-            sys_text += '<br><br>' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
+            sys_text += '<br><br> ' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, uid=uid, content=sys_text,
                                                   other_author=data['user'])
             if not bubbles_already_last_in_list(bubbles_array, bubble_sys):

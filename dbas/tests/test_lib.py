@@ -438,3 +438,5 @@ class TestUnhtmlify(TestCaseWithConfig):
         self.assertEqual(lib.unhtmlify('<a>str</a>'), 'str')
         self.assertEqual(lib.unhtmlify('<a> str </a>'), ' str ')
         self.assertEqual(lib.unhtmlify('<a>str'), 'str')
+        self.assertEqual(lib.unhtmlify('a <tag> b'), 'a  b')
+        self.assertEqual(lib.unhtmlify('a.<tag> b'), 'a. b')
