@@ -4,7 +4,7 @@ stages:
   - build
   - test
   - build-images
-  - security-analysis
+  - analysis
   - deploy
 
 .job-template: &add-services
@@ -88,7 +88,7 @@ unit:
 
 sonar:
   image: hhucn/sonar-scanner
-  stage: deploy
+  stage: analysis
   script:
     - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.10.0 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
   only:
@@ -96,7 +96,7 @@ sonar:
   when: always
 
 sast:
-  stage: security-analysis
+  stage: analysis
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -117,7 +117,7 @@ sast:
   when: always
 
 dependency_scanning:
-  stage: security-analysis
+  stage: analysis
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
