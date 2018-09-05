@@ -725,9 +725,12 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
             intro += __translation_based_on_gender(_t, _.strongerStatementM, _.strongerStatementF, infos['gender'])
         elif infos['db_other_nick'] == infos['nickname']:
             intro = infos['author'] + ' ' + start_content
-            intro += _t.get(_.earlierYouHadNoOpinitionForThisStatement) + ', '
-            intro += _t.get(_.whichConfirmedYourView).format(start_position, end_tag)
-            intro += ' ' + _t.get(_.strongerStatementY)
+            intro += _t.get(
+                _.earlierYouHadNoOpinitionForThisStatement) + ', '  # earlier you had no opinion for {premise}
+            intro += _t.get(_.whichConfirmedYourView).format(start_position,
+                                                             end_tag)  # which {start_position}confirmed your view{end_tag}
+            intro += ' ' + _t.get(
+                _.strongerStatementY)  # But you had a stronger {tag}statement for {tmp}{end_tag}
         else:
             intro = infos['author'] + ' ' + start_content
             intro += _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + ' '
@@ -752,7 +755,7 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
         conclusion = conclusion[len(start_argument):]
 
     if infos['db_other_nick'] == infos['nickname']:
-        bind = _t.get(_.nowYouSayThat)
+        bind = _t.get(_.youSaidThat)
     else:
         bind = _t.get(_.theySay)
         if infos['is_okay']:
