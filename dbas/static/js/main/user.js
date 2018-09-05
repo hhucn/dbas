@@ -63,8 +63,10 @@ function User() {
      */
     this.getPublicUserData = function () {
         var url = 'get_public_user_data';
+        var href = window.location.href.split('/');
+        var user_id = href[href.length- 1 ];
         var d = {
-            'nickname': $('#public_nick').text()
+            'user_id': parseInt(user_id)
         };
         var done = function getPublicUserDataDone(data) {
             var u = new User();

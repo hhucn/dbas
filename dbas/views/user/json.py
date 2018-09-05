@@ -214,7 +214,7 @@ def send_some_notification(request):
 
 # ajax - for getting all users with the same opinion
 @view_config(route_name='get_public_user_data', renderer='json')
-@validate(has_keywords(('nickname', str)))
+@validate(has_keywords(('user_id', int)))
 def get_public_user_data(request):
     """
     Returns dictionary with public user data
@@ -223,4 +223,4 @@ def get_public_user_data(request):
     :return:
     """
     logger('views', 'main: {}'.format(request.json_body))
-    return user.get_public_data(request.validated['nickname'], get_language_from_cookie(request))
+    return user.get_public_data(request.validated['user_id'], get_language_from_cookie(request))
