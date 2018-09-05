@@ -23,3 +23,4 @@ CREATE TRIGGER update_statements_trigger AFTER INSERT OR UPDATE ON discussion.pu
 CREATE TRIGGER update_textversions_trigger AFTER INSERT OR UPDATE ON discussion.public.textversions FOR EACH ROW EXECUTE PROCEDURE notify_trigger();
 CREATE TRIGGER update_arguments_trigger AFTER INSERT OR UPDATE ON discussion.public.arguments FOR EACH ROW EXECUTE PROCEDURE notify_trigger();
 CREATE TRIGGER update_issues_trigger AFTER INSERT OR UPDATE ON discussion.public.issues FOR EACH ROW EXECUTE PROCEDURE notify_trigger();
+CREATE TRIGGER update_users_trigger AFTER INSERT OR UPDATE ON discussion.public.users FOR EACH ROW EXECUTE PROCEDURE notify_trigger();
