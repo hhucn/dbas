@@ -3,12 +3,12 @@ Methods for validating input params given via url or ajax
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import logging
 from typing import Optional, Union
 
 from dbas.lib import Relations
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, Premise, StatementToIssue
-from .logger import logger
 
 
 def is_integer(variable, ignore_empty_case=False):
@@ -39,7 +39,8 @@ def check_reaction(attacked_arg_uid: Union[int, str], attacking_arg_uid: Union[i
     :param relation: Relations
     :return: Boolean
     """
-    logger('Validator', relation.value + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
+    log = logging.getLogger(__name__)
+    log.debug("%s from %s to %s", relation.value, attacking_arg_uid, attacked_arg_uid)
 
     malicious_val = [
         not is_integer(attacked_arg_uid),
@@ -61,7 +62,7 @@ def check_reaction(attacked_arg_uid: Union[int, str], attacking_arg_uid: Union[i
     if relation in relation_mapper:
         return relation_mapper[relation](attacked_arg_uid, attacking_arg_uid)
 
-    logger('Validator', 'else-case')
+    log.debug("else-case")
     return False
 
 
@@ -73,8 +74,9 @@ def check_belonging_of_statement(issue_uid, statement_uid):
     :param statement_uid: Statement.uid
     :return:
     """
-    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(StatementToIssue.statement_uid == statement_uid,
-                                                                            StatementToIssue.issue_uid == issue_uid).first()
+    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
+        StatementToIssue.statement_uid == statement_uid,
+        StatementToIssue.issue_uid == issue_uid).first()
     return db_statement2issue is not None
 
 
@@ -83,7 +85,7 @@ def check_belonging_of_arguments(issue_uid: int, argument_uids: list) -> bool:
     Check whether current Argument.uid belongs to the given Issue
 
     :param issue_uid: Issue.uid
-    :param argument_uid: Argument.uid
+    :param argument_uids: Argument.uid
     :return: Boolean
     """
     db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid.in_(argument_uids),
@@ -216,7 +218,8 @@ def get_relation_between_arguments(arg1_uid: int, arg2_uid: int) -> Optional[Rel
     if related_with_support(arg1_uid, arg2_uid):
         return Relations.SUPPORT
 
-    logger('InputValidator', str(arg1_uid) + ' NONE ' + str(arg2_uid))
+    log = logging.getLogger(__name__)
+    log.debug("%s NONE %s", arg1_uid, arg2_uid)
     return None
 
 
