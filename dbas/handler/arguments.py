@@ -1,8 +1,8 @@
+import logging
 import random
+import transaction
 from os import environ
 from typing import List
-
-import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Argument, Premise, MarkedArgument, ClickedArgument, \
@@ -13,7 +13,6 @@ from dbas.helper.url import UrlManager
 from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, get_profile_picture, Relations, \
     get_text_for_argument_uid, resolve_issue_uid_to_slug
-from dbas.logger import logger
 from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
     ReputationReasons
 from dbas.strings.keywords import Keywords as _
@@ -68,7 +67,8 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
 
     prepared_dict['url'] = url
 
-    logger('ArgumentsHelper', 'returning {}'.format(prepared_dict))
+    log = logging.getLogger(__name__)
+    log.debug("Returning %s", prepared_dict)
     return prepared_dict
 
 
@@ -76,7 +76,7 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
     """
     Returns bunch of information about the given argument
 
-    :param Argument: Argument
+    :param db_argument: The argument
     :param main_page: url of the application
     :param db_user: User
     :param lang: Language
@@ -141,7 +141,6 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
     :param arg_infos: dict with arg_id, attack_type, premisegroups and the history
     :param db_issue: Issue
     :param db_user: User
-    :param m: dict with port and mailer
     :return: URL, [Statement.uids], String
     """
     discussion_lang = langs['discussion_lang']
@@ -150,7 +149,8 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
     premisegroups = arg_infos['premisegroups']
     history = arg_infos['history']
 
-    logger('ArgumentsHelper', 'count of new pgroups: ' + str(len(premisegroups)))
+    log = logging.getLogger(__name__)
+    log.debug("Count of new pgroups: %s", len(premisegroups))
     _tn = Translator(discussion_lang)
 
     slug = db_issue.slug
@@ -265,7 +265,8 @@ def get_another_argument_with_same_conclusion(uid, history):
     :param history: String
     :return: Argument
     """
-    logger('ArgumentsHelper', str(uid))
+    log = logging.getLogger(__name__)
+    log.debug("%s", uid)
     db_arg = DBDiscussionSession.query(Argument).get(uid)
     if not db_arg:
         return None
