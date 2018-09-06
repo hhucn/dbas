@@ -4,6 +4,7 @@ Login Handler for D-BAS
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import logging
 import transaction
 from pyramid.security import remember
 from pyramid_mailer import Mailer
@@ -17,7 +18,6 @@ from dbas.handler import user
 from dbas.handler.password import get_hashed_password
 from dbas.lib import escape_string, get_user_by_case_insensitive_nickname, \
     get_user_by_case_insensitive_public_nickname
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _, Keywords
 from dbas.strings.translator import Translator
 
@@ -34,7 +34,8 @@ def login_local_user(nickname: str, password: str, mailer: Mailer, lang='en') ->
     :param lang: current language
     :return: dict() or HTTPFound if the user is logged in and it is not the api
     """
-    logger('Auth.Login', 'user: {}'.format(nickname))
+    log = logging.getLogger(__name__)
+    log.debug("user: %s", nickname)
     _tn = Translator(lang)
 
     # now we have several options:
@@ -65,7 +66,8 @@ def __register_user_with_ldap_data(mailer, nickname, password, _tn) -> dict:
     :param _tn: Translator
     :return: dict() or HTTPFound if the user is logged in an it is not the api
     """
-    logger('Auth.Login', 'user: {}'.format(nickname))
+    log = logging.getLogger(__name__)
+    log.debug("user: %s", nickname)
     ldap_data = verify_ldap_user_data(nickname, password, _tn)
     if ldap_data['error']:
         return {'error': ldap_data['error']}
@@ -89,13 +91,14 @@ def __check_in_local_known_user(db_user: User, password: str, _tn) -> dict:
     :param _tn: instance of current translator
     :return: dict()
     """
-    logger('Auth.Login', 'user: {}'.format(db_user.nickname))
+    log = logging.getLogger(__name__)
+    log.debug("user: %s", db_user.nickname)
     if db_user.validate_password(password):
         return {'user': db_user}
 
     if not (db_user.validate_password('NO_PW_BECAUSE_LDAP') or db_user.password is get_hashed_password(
             'NO_PW_BECAUSE_LDAP')):
-        logger('Auth.Login', 'invalid password for the local user')
+        log.debug("Invalid password for the local user")
         return {'error': _tn.get(_.userPasswordNotMatch)}
 
     data = verify_ldap_user_data(db_user.nickname, password, _tn)
@@ -136,7 +139,8 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     # does the group exists?
     if not db_group:
         msg = _tn.get(_.errorTryLateOrContant)
-        logger('Auth.Login', 'Error occured')
+        log = logging.getLogger(__name__)
+        log.debug("Error occured")
         return success, msg, db_new_user
 
     user_data = {
@@ -165,27 +169,28 @@ def __check_login_params(nickname, email, password, passwordconfirm) -> Keywords
     is_mail_valid = validate_email(email, check_mx=True)
 
     # are the password equal?
+    log = logging.getLogger(__name__)
     if not password == passwordconfirm:
-        logger('Auth.Login', 'Passwords are not equal')
+        log.debug("Passwords are not equal")
         return _.pwdNotEqual
 
     # empty password?
     if len(password) <= 5:
-        logger('Auth.Login', 'Password too short')
+        log.debug("Password too short")
         return _.pwdShort
 
     # is the nick already taken?
     if db_nick1 or db_nick2:
-        logger('Auth.Login', 'Nickname \'' + nickname + '\' is taken')
+        log.debug("Nickname '%s' is taken", nickname)
         return _.nickIsTaken
 
     # is the email already taken?
     if db_mail:
-        logger('Auth.Login', 'E-Mail \'' + email + '\' is taken')
+        log.debug("E-Mail '%s' is taken", email)
         return _.mailIsTaken
 
     if len(email) < 2 or not is_mail_valid:
-        logger('Auth.Login', 'E-Mail \'' + email + '\' is too short or not valid')
+        log.debug("E-Mail '%s' is too short or not valid otherwise", email)
         return _.mailNotValid
 
     return None
@@ -202,13 +207,14 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     :param url: String
     :return: Headers, String
     """
-    logger('Auth.Login', 'login', 'login successful / keep_login: {}'.format(keep_login))
+    log = logging.getLogger(__name__)
+    log.debug("Login successful / keep_login: %s", keep_login)
     db_settings = db_user.settings
     db_settings.should_hold_the_login(keep_login)
-    logger('Auth.Login', 'remembering headers for {}'.format(db_user.nickname))
+    log.debug("Remembering headers for %s", db_user.nickname)
     headers = remember(request, db_user.nickname)
 
-    logger('Auth.Login', 'update login timestamp')
+    log.debug("Update login timestamp")
     db_user.update_last_login()
     db_user.update_last_action()
     transaction.commit()
