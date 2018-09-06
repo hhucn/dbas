@@ -158,12 +158,6 @@ class DictionaryHelper(object):
         db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
         db_de = DBDiscussionSession.query(Language).filter_by(ui_locales='de').first()
         db_en = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
-        db_issue_de = db_issues.filter_by(lang_uid=db_de.uid).first()
-        db_issue_en = db_issues.filter_by(lang_uid=db_en.uid).first()
-        link_de = '{}/discuss/{}'.format(application_url, db_issue_de.slug if db_issue_de else '')
-        link_en = '{}/discuss/{}'.format(application_url, db_issue_en.slug if db_issue_en else '')
-        return_dict['de_discussion_link'] = link_de
-        return_dict['en_discussion_link'] = link_en
 
         self.add_language_options_for_extra_dict(return_dict)
         is_author, points = get_reputation_of(db_user)
