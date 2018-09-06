@@ -4,11 +4,12 @@ Security module of D-BAS, where the groups are set
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import logging
 from pyramid.security import Allow, Everyone
-from dbas.logger import logger
+from sqlalchemy.exc import InternalError
+
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
-from sqlalchemy.exc import InternalError
 
 
 class RootFactory(object):
@@ -32,19 +33,19 @@ def groupfinder(nick, _):
     :param request: request
     :return: given group as list or empty list
     """
-
-    logger('security', 'nick: ' + nick)
+    log = logging.getLogger(__name__)
+    log.debug("nick: %s", nick)
     try:
         user = DBDiscussionSession.query(User).filter_by(nickname=nick).first()
     except InternalError as i:
-        logger('security', str(i), error=True)
+        log.error("%s", i)
         return []
 
     if user:
         group = DBDiscussionSession.query(Group).get(user.group_uid)
         if group:
-            logger('security', 'return [group:' + group.name + ']')
+            log.debug("return [group: %s]", group.name)
             return ['group:' + group.name]
 
-    logger('security', 'return []')
+    log.debug("return []")
     return []
