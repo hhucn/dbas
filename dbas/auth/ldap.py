@@ -1,7 +1,7 @@
 import ldap
+import logging
 import os
 
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 
 
@@ -14,7 +14,8 @@ def verify_ldap_user_data(nickname, password, _tn):
     :param _tn: Translator
     :return: [firstname, lastname, gender, email] on success else None
     """
-    logger('ldap', 'main')
+    log = logging.getLogger(__name__)
+    log.debug("main")
     try:
         server = os.environ.get('HHU_LDAP_SERVER', None)
         base = os.environ.get('HHU_LDAP_BASE', None)
@@ -24,10 +25,10 @@ def verify_ldap_user_data(nickname, password, _tn):
         lastname = os.environ.get('HHU_LDAP_ACCOUNT_LAST', None)
         title = os.environ.get('HHU_LDAP_ACCOUNT_TITLE', None)
         email = os.environ.get('HHU_LDAP_ACCOUNT_EMAIL', None)
-        logger('ldap', 'parsed data')
+        log.debug("parsed data")
 
         if any(el is None for el in [server, base, scope, filterf, firstname, lastname, title, email]):
-            logger('ldap', 'Environment Keys are None')
+            log.debug("Environment Keys are None")
             return {'error': _tn.get(_.internalKeyError) + ' ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)}
 
         server = server.replace('\'', '')
@@ -39,12 +40,12 @@ def verify_ldap_user_data(nickname, password, _tn):
         title = title.replace('\'', '')
         email = email.replace('\'', '')
 
-        logger('ldap', 'ldap.initialize(\'{}\')'.format(server))
+        log.debug("ldap.initialize('%s')", server)
         ldaps = ldap.initialize(server)
         ldaps.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
-        logger('ldap', 'ldap.simple_bind_s(\'{}{}\', \'***\')'.format(nickname, scope))
+        log.debug("ldap.simple_bind_s('%s%s', '***')", nickname, scope)
         ldaps.simple_bind_s(nickname + scope, password)
-        logger('ldap', 'l.search_s({}, ldap.SCOPE_SUBTREE, (\'{}={}\'))[0][1]'.format(base, filterf, nickname))
+        log.debug("l.search_s(%s, ldap.SCOPE_SUBTREE, ('%s=%s'))[0][1]", base, filterf, nickname)
         user = ldaps.search_s(base, ldap.SCOPE_SUBTREE, filterf + '=' + nickname)[0][1]
 
         firstname = user[firstname][0].decode('utf-8')
@@ -52,7 +53,7 @@ def verify_ldap_user_data(nickname, password, _tn):
         title = user[title][0].decode('utf-8')
         gender = 'm' if 'Herr' in title else 'f' if 'Frau' in title else 'n'
         email = user[email][0].decode('utf-8')
-        logger('ldap', 'success')
+        log.debug("success")
 
         data = {
             'firstname': firstname,
@@ -64,7 +65,7 @@ def verify_ldap_user_data(nickname, password, _tn):
         return data
 
     except ldap.INVALID_CREDENTIALS as e:
-        logger('ldap', 'ldap credential error: ' + str(e))
+        log.debug("ldap credetial error: %s", e)
         data = {'error': _tn.get(_.userPasswordNotMatch)}
         return data
 
