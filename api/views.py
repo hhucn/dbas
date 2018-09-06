@@ -5,13 +5,12 @@ return JSON objects which can then be used in external websites.
 
 .. note:: Methods **must not** have the same name as their assigned Service.
 """
-from typing import List
-
 from cornice import Service
 from cornice.resource import resource, view
 from pyramid.httpexceptions import HTTPSeeOther
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
+from typing import List
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
