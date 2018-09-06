@@ -70,11 +70,11 @@ def verify_ldap_user_data(nickname, password, _tn):
         return data
 
     except ldap.SERVER_DOWN as e:
-        logger('ldap', 'can\'t reach server within 5s: ' + str(e))
+        log.debug("can't reach server within 5s: %s", e)
         data = {'error': _tn.get(_.serviceNotAvailable) + '. ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)}
         return data
 
     except ldap.OPERATIONS_ERROR as e:
-        logger('ldap', 'OPERATIONS_ERROR: ' + str(e))
+        log.debug("OPERATIONS_ERROR: %s", e)
         data = {'error': _tn.get(_.userPasswordNotMatch)}
         return data
