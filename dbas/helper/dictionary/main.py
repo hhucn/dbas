@@ -4,11 +4,10 @@ Provides helping function for dictionaries.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import arrow
 import datetime
 import os
 import random
-
-import arrow
 from pyramid.registry import Registry
 
 from dbas.database import DBDiscussionSession
@@ -153,11 +152,6 @@ class DictionaryHelper(object):
         return_dict['review_count'] = get_complete_review_count(db_user)
         return_dict['modern_bubbles'] = usage_of_modern_bubbles(registry)
         return_dict['usage_of_matomo'] = usage_of_matomo(registry)
-
-        # add german and english discussion links
-        db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
-        db_de = DBDiscussionSession.query(Language).filter_by(ui_locales='de').first()
-        db_en = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
 
         self.add_language_options_for_extra_dict(return_dict)
         is_author, points = get_reputation_of(db_user)
