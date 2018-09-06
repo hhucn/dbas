@@ -4,6 +4,7 @@ D-BAS database Model
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import warnings
+from typing import List
 
 import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -227,6 +228,9 @@ class User(DiscussionBase):
         self.token_timestamp = token_timestamp
         self.oauth_provider = oauth_provider
         self.oauth_provider_id = oauth_provider_id
+
+    def __str__(self):
+        return self.public_nickname
 
     def validate_password(self, password):
         """
@@ -567,9 +571,9 @@ class StatementReferences(DiscussionBase):
     users = relationship('User', foreign_keys=[author_uid])
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, reference, host, path, author_uid, statement_uid, issue_uid):
+    def __init__(self, reference: str, host: str, path: str, author_uid: int, statement_uid: int, issue_uid: int):
         """
-        Inits a row in current statements reference table
+        Store a real-world text-reference.
 
         :param reference: String
         :param host: Host of URL
@@ -585,6 +589,14 @@ class StatementReferences(DiscussionBase):
         self.author_uid = author_uid
         self.statement_uid = statement_uid
         self.issue_uid = issue_uid
+
+    @hybrid_property
+    def issue(self) -> Issue:
+        return DBDiscussionSession.query(Issue).get(self.issue_uid)
+
+    @hybrid_property
+    def statement(self) -> Statement:
+        return DBDiscussionSession.query(Statement).get(self.statement_uid)
 
     def get_statement_text(self, html: bool = False) -> str:
         """
@@ -760,37 +772,10 @@ class TextVersion(DiscussionBase):
         }
 
 
-class PremiseGroup(DiscussionBase):
-    """
-    PremiseGroup-table with several columns.
-    Each premisesGroup has a id and an author
-    """
-    __tablename__ = 'premisegroups'
-    uid = Column(Integer, primary_key=True)
-    author_uid = Column(Integer, ForeignKey('users.uid'))
-
-    users = relationship('User', foreign_keys=[author_uid])
-
-    def __init__(self, author):
-        """
-        Initializes a row in current premisesGroup-table
-
-        :param author: User.id
-        :return: None
-        """
-        self.author_uid = author
-
-    def get_text(self):
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()
-        texts = [premise.get_text() for premise in db_premises]
-        lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
-        return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
-
-
 class Premise(DiscussionBase):
     """
-    Premises-table with several columns.
-    Each premises has a value pair of group and statement, an author, a timestamp as well as a boolean whether it is negated
+    Each premises has a value pair of group and statement, an author,
+    a timestamp as well as a boolean whether it is negated
     """
     __tablename__ = 'premises'
     uid = Column(Integer, primary_key=True)
@@ -802,10 +787,10 @@ class Premise(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    users = relationship('User', foreign_keys=[author_uid])
-    issues = relationship('Issue', foreign_keys=[issue_uid])
+    premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
+    statement = relationship('Statement', foreign_keys=[statement_uid])
+    author = relationship('User', foreign_keys=[author_uid])
+    issue = relationship('Issue', foreign_keys=[issue_uid])
 
     def __init__(self, premisesgroup, statement, is_negated, author, issue, is_disabled=False):
         """
@@ -884,6 +869,42 @@ class Premise(DiscussionBase):
         }
 
 
+class PremiseGroup(DiscussionBase):
+    """
+    PremiseGroup-table with several columns.
+    Each premisesGroup has a id and an author
+    """
+    __tablename__ = 'premisegroups'
+    uid = Column(Integer, primary_key=True)
+    author_uid = Column(Integer, ForeignKey('users.uid'))
+
+    author = relationship('User', foreign_keys=[author_uid])
+
+    def __init__(self, author):
+        """
+        Initializes a row in current premisesGroup-table
+
+        :param author: User.id
+        :return: None
+        """
+        self.author_uid = author
+
+    def get_text(self):
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()
+        texts = [premise.get_text() for premise in db_premises]
+        lang = DBDiscussionSession.query(Statement).get(db_premises[0].statement.uid).lang
+        return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
+
+    @hybrid_property
+    def premises(self) -> List[Premise]:
+        """
+        Return all premises in this premise group
+
+        :return: List of Premises
+        """
+        return DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).all()
+
+
 class Argument(DiscussionBase):
     """
     Argument-table with several columns.
@@ -901,7 +922,7 @@ class Argument(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
+    premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
     conclusion = relationship('Statement', foreign_keys=[conclusion_uid])
     users = relationship('User', foreign_keys=[author_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
@@ -2356,19 +2377,11 @@ class ShortLinks(DiscussionBase):
     timestamp = Column(ArrowType, default=get_now())
 
     def __init__(self, service, long_url, short_url):
-        """
-        Initializes a row in current news-table
-        """
         self.service = service
         self.long_url = long_url
         self.short_url = short_url
         self.timestamp = get_now()
 
     def update_short_url(self, short_url):
-        """
-
-        :param url:
-        :return:
-        """
         self.short_url = short_url
         self.timestamp = get_now()

@@ -10,27 +10,33 @@ Manage Google Client IDs: https://apps.twitter.com/
 """
 
 import os
+
 from requests_oauthlib.oauth1_session import OAuth1Session
-from dbas.logger import logger
+
+from dbas.auth.oauth import get_oauth_ret_dict
 from dbas.handler.user import oauth_values
+from dbas.logger import logger
+
+CLIENT_ID = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
+CLIENT_SECRET = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
 
 
-def start_flow(request, redirect_uri):
+def start_flow(**kwargs):
     """
+    Starts the oauth flow. This will return a dict which causes a redirect to the providers page.
 
-    :param request:
-    :param redirect_uri:
+    :param kwargs: should have a redirect_uri and a request
     :return:
     """
-    client_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
-    client_secret = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
+    redirect_uri = kwargs.get('redirect_uri')
+    request = kwargs.get('request')
 
-    logger('Twitter OAuth', 'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
+    logger('Twitter OAuth', 'Read OAuth id/secret: none? {}'.format(CLIENT_ID is None, CLIENT_SECRET is None))
 
     request_token_url = 'https://api.twitter.com/oauth/request_token'
     authorization_url = 'https://api.twitter.com/oauth/authorize'
 
-    oauth_client = OAuth1Session(client_id, client_secret=client_secret, callback_uri=redirect_uri)
+    oauth_client = OAuth1Session(CLIENT_ID, client_secret=CLIENT_SECRET, callback_uri=redirect_uri)
     resp = oauth_client.fetch_request_token(request_token_url)
     url = oauth_client.authorization_url(authorization_url)
 
@@ -43,6 +49,8 @@ def start_flow(request, redirect_uri):
 
 def continue_flow(request, redirect_response):
     """
+    Continues the oauth flow. This will fetch the login tokens and login the user if all information were given.
+    Otherwise the registration modal will be displayed.
 
     :param request:
     :param redirect_response:
@@ -74,8 +82,4 @@ def continue_flow(request, redirect_response):
 
     missing_data = [key for key in oauth_values if len(user_data[key]) == 0]
 
-    return {
-        'user': user_data,
-        'missing': missing_data,
-        'error': ''
-    }
+    return get_oauth_ret_dict(user_data=user_data, missing_data=missing_data)

@@ -15,7 +15,7 @@ from typing import Union
 import transaction
 
 from admin.lib import check_api_token
-from dbas.auth.login import login_user
+from dbas.auth.login import login_local_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.lib import get_user_by_case_insensitive_nickname, nick_of_anonymous_user
@@ -66,7 +66,7 @@ def token_to_database(db_user: User, token: Union[str, None]) -> None:
 # #############################################################################
 # Dispatch API attempts by type
 
-def check_auth_token(request, nickname, token):
+def check_auth_token(request, nickname: str, token: str) -> bool:
     log.info("[API] Login attempt from user {}".format(nickname))
     db_user: User = get_user_by_case_insensitive_nickname(nickname)
 
@@ -74,9 +74,16 @@ def check_auth_token(request, nickname, token):
         add_error(request, "Unknown user", status_code=401, location="header")
         return False
 
-    if (db_user.token and db_user.token == token) or check_api_token(token):
+    if db_user.token and db_user.token == token:
         request.validated['user'] = db_user
+        request.validated['auth-by-api-token'] = False
         return True
+
+    if check_api_token(token):
+        request.validated['user'] = db_user
+        request.validated['auth-by-api-token'] = True
+        return True
+
     else:
         add_error(request, "Invalid token", status_code=401, location="header")
         return False
@@ -137,7 +144,16 @@ def valid_token(request, **_kwargs):
         add_error(request, "Invalid JSON in token")
 
 
-def validate_credentials(request, **kwargs):
+def valid_api_token(request, **kwargs):
+    valid_token(request, **kwargs)
+    if request.validated.get('auth-by-api-token', False):
+        return True
+    else:
+        add_error(request, "This method is only allowed with an API-token!")
+        return False
+
+
+def validate_credentials(request, **_kwargs):
     """
     Parse credentials from POST request and validate it against DBA-S'
     database.
@@ -152,7 +168,7 @@ def validate_credentials(request, **kwargs):
     password = request.validated['password']
 
     # Check in DB-AS' database, if the user's credentials are valid
-    logged_in = login_user(nickname, password, request.mailer)
+    logged_in = login_local_user(nickname, password, request.mailer)
     db_user = logged_in.get('user')
     if db_user:
         token = __create_token(db_user.nickname)

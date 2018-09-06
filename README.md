@@ -17,7 +17,7 @@ Of course, you can try out D-BAS on [https://dbas.cs.uni-duesseldorf.de/](https:
 
 Ensure that the following tools are installed:
 
-* Python >= 3.5
+* Python >= 3.6
 * [Docker](https://docs.docker.com/engine/installation/)
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
@@ -30,12 +30,7 @@ At least the following field should be set:
 
 Then follow these steps:
 
-    docker-compose build
     docker-compose up
-
-Example for a fresh build:
-
-    docker-compose up --build
 
 If you want to include the notification service as well as elastic search:
 
@@ -49,29 +44,35 @@ After this you can hit [http://localhost:4284](http://localhost:4284) for D-BAS.
 
 If your container stucks during the first start up, please install D-BAS manually via:
 
-    docker exec dbas_web_1 ./build_assets.sh
+    docker-compose exec web ./build_assets.sh
 
 Afterwards everything should be fine.
 
 
-## Maintainers and Main Contributors
+## Maintainers
 
 * [Christian Meter](mailto:meter@cs.uni-duesseldorf.de)
-* [Tobias Krauthoff](mailto:krauthoff@cs.uni-duesseldorf.de) (Alumni)
+* [Tobias Krauthoff](mailto:krauthoff@cs.uni-duesseldorf.de) (Alumnus)
 
 
-## Contributors
+### Contributors
 
 We thank all contributors to this project! In order of appearance:
 
-* Teresa Uebber
 * Björn Ebbinghaus
 * Alexander Schneider
 * Marc Feger
 
 
+### Former Contributors
+
+Thanks to all former contributors! In order of appearance:
+
+* Teresa Uebber (JS Graphs and Visualizations)
+
+
 ## License
 
-Copyright © 2016 - 2018 Tobias Krauthoff, Christian Meter
+Copyright © 2016 - 2018 hhucn
 
-Distributed under the [MIT License](https://gitlab.cs.uni-duesseldorf.de/project/dbas/raw/master/LICENSE).
+Distributed under the [MIT License](LICENSE).

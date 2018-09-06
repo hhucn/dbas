@@ -1,24 +1,37 @@
+### 1.10.0 (2018-09-05)
+- Add route to API to support references again
+  - support model abstractions for API entities
+- Include all tests for API v1 and v2
+- Simplify tests
+- Update OAuth modules
+- Uniform env-files
+- Enable Continuous Delivery through GitLab
+- Add security analysis in GitLab CI
+- Fix many dead tests
+- Fix discussion flow
+- Fix CORS headers for HTTP 303 redirects
+
 ### 1.9.1 (2018-06-26)
- - Many bugfixes for the frontend
- - Special thanks to the COMMA18 Reviewer
+- Many bugfixes for the frontend
+- Special thanks to the COMMA18 Reviewer
 
 ### 1.9.0 (2018-06-13)
- - Introduced Cypress for frontend tests
+- Introduced Cypress for frontend tests
 
 ### 1.8.2 (2018-06-07)
- - Fix language set which is derived from the requests header
+- Fix language set which is derived from the requests header
 
 ### 1.8.1 (2018-06-06)
- - Update yarn packages
+- Update yarn packages
 
 ### 1.8.0 (2018-05-30)
- - Refactored the review queues. IMPORTANT: Now some logic is switched, so that old discussions are not
+- Refactored the review queues. IMPORTANT: Now some logic is switched, so that old discussions are not
 
 ### 1.7.0 (2018-05-24)
- - Statements are no longer bounded to one issue. Noe we have a many-to-many relationship between statements and issues.
+- Statements are no longer bounded to one issue. Noe we have a many-to-many relationship between statements and issues.
 
 ### 1.6.4 (2018-05-10)
- - Function to delete an account
+- Function to delete an account
 
 ### 1.6.3 (2018-05-02)
 - Revival of our API

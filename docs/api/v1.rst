@@ -6,12 +6,7 @@ This is the description for APIv1. We are currently working on a new APIv2,
 which has GraphQL support and returns just that, what you have really queried.
 
 APIv1 is primarily designed to call the same functions, which D-BAS itself calls
-in the frontend, but just get a JSON-representation of it as a response. There
-is one big problem with it currently, because we get data from the API, which we
-didn't directly called, but was just implicitly returned to us, because the
-"normal" frontend needs this information. For example, we additionally get all
-issues back when we try to do one step in the discussion -- why does this
-happen? Because D-BAS needs it in its frontend.
+in the frontend, but just get a JSON-representation of it as a response.
 
 The primary goal of APIv1 is to make the functionality as a dialog-game
 execution platform of D-BAS accessible via a REST-API. We achieved this in
@@ -21,13 +16,17 @@ replace "discuss" with "api" and get the api-route for the very same step in the
 discussion, just as a JSON representation:
 https://dbas.cs.uni-duesseldorf.de/api/town-has-to-cut-spending
 
-For a cleaner solution and cleaner routes is APIv2 intended to be.
+To query data without needing to add new routes APIv2 intended to be.
 
 All steps in the discussion are accessible via the APIv1. You could just ignore
 the other data, which is sent from D-BAS and use the data you actually want.
 Additionally, there is an authentication-mechanism, which is described in more
 detail, because this is a new / unique feature of the API, which is not used in
 the frontend.
+
+This API uses OpenAPI and is described `in this specification
+<https://app.swaggerhub.com/apis/MrOerni/D-BAS/1>`_, which is currently a
+work-in-progress.
 
 
 Authentication

@@ -5,7 +5,9 @@ services:
     ports:
       - "9200:9200"
       - "5000:5000"
-    env_file:
-      - development.env
-    depends_on:
-      - web
+    environment:
+      DB_PW: ${DB_PW}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+

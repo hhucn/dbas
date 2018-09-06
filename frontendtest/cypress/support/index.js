@@ -18,3 +18,14 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+Cypress.Cookies.defaults({
+  whitelist: "PASSED_GUIDED_TOUR"
+})
+
+
+beforeEach(function () {
+        cy.setCookie('PASSED_GUIDED_TOUR', 'true');
+        cy.getCookie('PASSED_GUIDED_TOUR').should('have.property', 'value', 'true');
+    });
+

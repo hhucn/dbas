@@ -5,87 +5,37 @@ Handle references from other websites, prepare, store and load them into D-BAS.
 """
 
 import transaction
+
 from api.extractor import extract_reference_information, extract_author_information, extract_issue_information
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
-from dbas.lib import resolve_issue_uid_to_slug, get_all_arguments_with_text_by_statement_id
-from dbas.helper.url import UrlManager
-
-from .lib import escape_html, logger
+from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion, Statement
+from dbas.helper.url import url_to_statement
+from dbas.lib import get_all_arguments_with_text_by_statement_id, escape_string
+from .lib import logger
 
 log = logger()
 
 
-def url_to_statement(issue_uid, statement_uid, agree=True):
+def store_reference(reference: str, host: str, path: str, user: User, statement: Statement,
+                    issue: Issue) -> StatementReferences:
     """
-    Generate URL to given statement_uid in specific issue (by slug).
-    Used to directly jump into the discussion.
+    Store reference to database.
 
-    :param issue_uid: uid of current issue
-    :type issue_uid: id
-    :param statement_uid: Statement id to generate the link to
-    :type statement_uid: int
-    :param agree: Indicate (dis-)agreement with a statement
-    :type agree: boolean
-    :return: direct URL to jump to the provided statement
-    :rtype: str
+    :param reference: String from external website
+    :param user: user which adds the reference
+    :param host: external website, where the reference comes from
+    :param path: path on website to reference
+    :param statement: assign reference to this statement
+    :param issue: assign issue to reference
+    :return: newly stored reference
     """
-    if isinstance(agree, str):
-        if agree == "true":
-            mode = "agree"
-        else:
-            mode = "disagree"
-    else:
-        mode = "agree" if agree is True else "disagree"
-    slug = resolve_issue_uid_to_slug(issue_uid)
-    url_manager = UrlManager(slug=slug)
-    return "api/" + url_manager.get_url_for_justifying_statement(statement_uid, mode)
-
-
-def prepare_single_reference(ref):
-    """
-    Given a StatementReference database-object extract information and generate a URL for it.
-    Then prepare a dict and return it.
-
-    :param ref: single Reference
-    :type ref: StatementReferences
-    :return: dictionary with some prepared fields of a reference
-    :rtype: dict
-    """
-    if ref:
-        url = url_to_statement(ref.issue_uid, ref.statement_uid)
-        return {"uid": ref.uid, "text": ref.reference, "url": url}
-
-
-def store_reference(api_data, statement_uid=None):
-    """
-    Validate provided reference and store it in the database.
-    Has side-effects.
-
-    :param api_data: user provided data
-    :param statement_uid: the statement the reference should be assigned to
-    :return:
-    """
-    try:
-        reference = api_data["reference"]
-        if not reference:
-            return  # Early exit if there is no reference
-        if not statement_uid:
-            log.error("[API/Reference] No statement_uid provided.")
-            return
-
-        user_uid = api_data["user_uid"]
-        host = escape_html(api_data["host"])
-        path = escape_html(api_data["path"])
-        issue_uid = api_data["issue_id"]
-
-        db_ref = StatementReferences(escape_html(reference), host, path, user_uid, statement_uid, issue_uid)
-        DBDiscussionSession.add(db_ref)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return db_ref
-    except KeyError as e:
-        log.error("[API/Reference] KeyError: could not access field in api_data. " + repr(e))
+    reference_text = escape_string(reference)
+    log.debug("New Reference for Statement.uid {}: {}".format(statement.uid, reference_text))
+    db_ref = StatementReferences(escape_string(reference_text), host, path, user.uid, statement.uid, issue.uid)
+    DBDiscussionSession.add(db_ref)
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return db_ref
 
 
 # =============================================================================
@@ -123,7 +73,7 @@ def get_all_references_by_reference_text(ref_text=None):
             user = DBDiscussionSession.query(User).get(reference.author_uid)
             issue = DBDiscussionSession.query(Issue).get(reference.issue_uid)
             textversion = DBDiscussionSession.query(TextVersion).get(reference.statement_uid)
-            statement_url = url_to_statement(issue.uid, reference.statement_uid)
+            statement_url = url_to_statement(issue, reference.statement)
             refs.append({"reference": extract_reference_information(reference),
                          "author": extract_author_information(user),
                          "issue": extract_issue_information(issue),

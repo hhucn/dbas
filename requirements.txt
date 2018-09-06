@@ -34,7 +34,7 @@ pyramid-tm==2.2
 PyRSS2Gen==1.1
 pyshorteners==0.6.1
 pytest==3.6.1
-py3dns==3.1.0
+py3dns==3.2.0
 python-Levenshtein==0.12.0
 python-slugify==1.2.5
 python-twitter==3.4.2

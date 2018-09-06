@@ -3,13 +3,12 @@ Unit tests for lib.py
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import unittest
 
 import admin.lib as admin
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, APIToken
 from dbas.lib import nick_of_anonymous_user
-
+from dbas.tests.utils import TestCaseWithConfig
 
 new_user = {
     'firstname': 'new',
@@ -22,8 +21,7 @@ new_user = {
 }
 
 
-class AdminTest(unittest.TestCase):
-
+class AdminTest(TestCaseWithConfig):
     def test_get_overview(self):
         dict_return = admin.get_overview('some_main_page')
         for row in dict_return:
@@ -73,9 +71,10 @@ class AdminTest(unittest.TestCase):
         self.assertEqual(len(db_new_user), 0)
 
 
-class APITokenTest(unittest.TestCase):
+class APITokenTest(TestCaseWithConfig):
     def tearDown(self):
         DBDiscussionSession.query(APIToken).delete()
+        super().tearDown()
 
     def test_generate_check(self):
         token = admin.generate_application_token("test")

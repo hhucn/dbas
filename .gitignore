@@ -85,3 +85,4 @@ cover/
 cypress.env.json
 frontendtest/cypress/screenshots/
 frontendtest/cypress/videos/
+/.vscode/

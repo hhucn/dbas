@@ -1,29 +1,23 @@
-import unittest
-
 import transaction
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Argument, Premise, ClickedArgument, SeenArgument, Issue
+from dbas.database.discussion_model import Argument, Premise, ClickedArgument, SeenArgument
 from dbas.helper.relation import get_undermines_for_argument_uid, get_undercuts_for_argument_uid, \
     get_rebuts_for_argument_uid, get_supports_for_argument_uid, set_new_undermine_or_support_for_pgroup, \
     set_new_undercut, set_new_rebut, set_new_support
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class RelationHelperTest(unittest.TestCase):
-
-    def setUp(self):
-        # set a user wich has no argument in the dummy discussion
-        self.db_user = DBDiscussionSession.query(User).filter_by(nickname='Christian').first()
-        self.db_issue = DBDiscussionSession.query(Issue).get(2)
-
+class RelationHelperTest(TestCaseWithConfig):
     def tearDown(self):
         for uid in [arg.uid for arg in
-                    DBDiscussionSession.query(Argument).filter_by(author_uid=self.db_user.uid).all()]:
+                    DBDiscussionSession.query(Argument).filter_by(author_uid=self.user_christian.uid).all()]:
             DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=uid).delete()
             DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=uid).delete()
-        DBDiscussionSession.query(Argument).filter_by(author_uid=self.db_user.uid).delete()
+        DBDiscussionSession.query(Argument).filter_by(author_uid=self.user_christian.uid).delete()
         DBDiscussionSession.flush()
         transaction.commit()
+        super().tearDown()
 
     def test_get_undermines_for_argument_uid(self):
         val = get_undermines_for_argument_uid('a')
@@ -93,16 +87,18 @@ class RelationHelperTest(unittest.TestCase):
         db_argument = DBDiscussionSession.query(Argument).get(1)
         db_premise = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).first()
 
-        before = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == 1, Argument.conclusion_uid == db_premise.statement_uid).all()
-        set_new_undermine_or_support_for_pgroup(1, db_argument, False, self.db_user, self.db_issue)
-        after = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == 1, Argument.conclusion_uid == db_premise.statement_uid).all()
+        before = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == 1,
+                                                            Argument.conclusion_uid == db_premise.statement_uid).all()
+        set_new_undermine_or_support_for_pgroup(1, db_argument, False, self.user_christian, self.issue_cat_or_dog)
+        after = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == 1,
+                                                           Argument.conclusion_uid == db_premise.statement_uid).all()
         self.assertEqual(len(before), len(after))
 
     def test_set_new_undercut(self):
         db_argument = DBDiscussionSession.query(Argument).get(1)
 
         before = DBDiscussionSession.query(Argument).filter_by(argument_uid=1).all()
-        set_new_undercut(1, db_argument, self.db_user, self.db_issue)
+        set_new_undercut(1, db_argument, self.user_christian, self.issue_cat_or_dog)
         after = DBDiscussionSession.query(Argument).filter_by(argument_uid=1).all()
         self.assertLess(len(before), len(after))
 
@@ -110,7 +106,7 @@ class RelationHelperTest(unittest.TestCase):
         db_argument = DBDiscussionSession.query(Argument).get(1)
 
         before = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_argument.conclusion_uid).all()
-        set_new_rebut(1, db_argument, self.db_user, self.db_issue)
+        set_new_rebut(1, db_argument, self.user_christian, self.issue_cat_or_dog)
         after = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_argument.conclusion_uid).all()
         self.assertLess(len(before), len(after))
 
@@ -119,7 +115,7 @@ class RelationHelperTest(unittest.TestCase):
 
         before = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == 1,
                                                             Argument.conclusion_uid == db_argument.conclusion_uid).all()
-        set_new_support(1, db_argument, self.db_user, self.db_issue)
+        set_new_support(1, db_argument, self.user_christian, self.issue_cat_or_dog)
         after = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == 1,
                                                            Argument.conclusion_uid == db_argument.conclusion_uid).all()
         self.assertLess(len(before), len(after))

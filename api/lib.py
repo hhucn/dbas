@@ -11,7 +11,6 @@ import warnings
 from functools import reduce
 from html import escape
 from typing import Tuple
-
 from webob import Response, exc
 
 # =============================================================================
@@ -24,10 +23,7 @@ def logger():
     """
     Create a logger.
     """
-    warnings.warn("Use DBAS-Logger instead", DeprecationWarning)
-    log = logging.getLogger()
-    log.setLevel(logging.DEBUG)
-    return log
+    return logging.getLogger("api")
 
 
 def escape_html(evil):

@@ -11,7 +11,6 @@ from sqlalchemy import func
 from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
-from dbas.auth.oauth import google as google, github as github, facebook as facebook, twitter as twitter
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group
 from dbas.handler import user
@@ -25,7 +24,7 @@ from dbas.strings.translator import Translator
 oauth_providers = ['google', 'github', 'facebook', 'twitter']
 
 
-def login_user(nickname: str, password: str, mailer: Mailer, lang='en') -> dict:
+def login_local_user(nickname: str, password: str, mailer: Mailer, lang='en') -> dict:
     """
     Try to login the user whereby she is maybe a HHU-LDAP user or known locally
 
@@ -54,170 +53,6 @@ def login_user(nickname: str, password: str, mailer: Mailer, lang='en') -> dict:
 
     # this is 3.
     return __check_in_local_known_user(db_user, password, _tn)
-
-
-def login_user_oauth(request, service, redirect_uri, old_redirect, ui_locales):
-    """
-
-    :param request:
-    :param service: name of the oauth service
-    :param redirect_uri:
-    :param old_redirect: redirect_url without modifications
-    :param ui_locales:
-    :return:
-    """
-    logger('Auth.Login', 'service: {}'.format(service))
-    if service == 'google':
-        return __do_google_oauth(request, redirect_uri, old_redirect, ui_locales)
-    elif service == 'github':
-        return __do_github_oauth(request, redirect_uri, old_redirect, ui_locales)
-    elif service == 'facebook':
-        return __do_facebook_oauth(request, redirect_uri, old_redirect, ui_locales)
-    elif service == 'twitter':
-        return __do_twitter_oauth(request, redirect_uri, old_redirect, ui_locales)
-    else:
-        return None
-
-
-def __do_google_oauth(request, redirect_uri, old_redirect, ui_locales):
-    """
-
-    :param request:
-    :param redirect_uri:
-    :param old_redirect:
-    :param ui_locales:
-    :return:
-    """
-    if 'state' in redirect_uri and 'code' in redirect_uri:
-        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
-        data = google.continue_flow(url, redirect_uri, ui_locales)
-        if len(data['error']) != 0 or len(data['missing']) != 0:
-            return data
-
-        value_dict = __set_oauth_user(request, data['user'], 'google', ui_locales)
-        if isinstance(value_dict, dict):
-            if len(value_dict['error']) != 0:
-                return value_dict
-        else:
-            return value_dict
-
-        # return a HTTPFound via 'return success login'
-        return __return_success_login(request, False, value_dict['user'], False, url)
-    else:
-        request.session['oauth_redirect_url'] = old_redirect
-        return google.start_flow(redirect_uri)
-
-
-def __do_github_oauth(request, redirect_uri, old_redirect, ui_locales):
-    """
-
-    :param request:
-    :param redirect_uri:
-    :param old_redirect:
-    :param ui_locales:
-    :return:
-    """
-    if 'code' in redirect_uri:
-        data = github.continue_flow(redirect_uri, ui_locales)
-        if len(data['error']) != 0 or len(data['missing']) != 0:
-            return data
-
-        value_dict = __set_oauth_user(request, data['user'], 'github', ui_locales)
-        if isinstance(value_dict, dict):
-            if len(value_dict['error']) != 0:
-                return value_dict
-        else:
-            return value_dict
-
-        # return a HTTPFound via 'return success login'
-        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
-        return __return_success_login(request, False, value_dict['user'], False, url)
-    else:
-        request.session['oauth_redirect_url'] = old_redirect
-        return github.start_flow()
-
-
-def __do_facebook_oauth(request, redirect_uri, old_redirect, ui_locales):
-    """
-
-    :param request:
-    :param redirect_uri:
-    :param old_redirect:
-    :param ui_locales:
-    :return:
-    """
-    if 'state' in redirect_uri and 'code' in redirect_uri:
-        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
-        data = facebook.continue_flow(url, redirect_uri, ui_locales)
-        if len(data['error']) != 0 or len(data['missing']) != 0:
-            return data
-
-        value_dict = __set_oauth_user(request, data['user'], 'facebook', ui_locales)
-        if isinstance(value_dict, dict):
-            if len(value_dict['error']) != 0:
-                return value_dict
-        else:
-            return value_dict
-
-        # return a HTTPFound via 'return success login'
-        return __return_success_login(request, False, value_dict['user'], False, url)
-    else:
-        request.session['oauth_redirect_url'] = old_redirect
-        return facebook.start_flow(redirect_uri)
-
-
-def __do_twitter_oauth(request, redirect_uri, old_redirect, ui_locales):
-    """
-
-    :param request:
-    :param redirect_uri:
-    :param old_redirect:
-    :param ui_locales:
-    :return:
-    """
-    if 'code' in redirect_uri:
-        data = twitter.continue_flow(request, redirect_uri)
-        if len(data['error']) != 0 or len(data['missing']) != 0:
-            return data
-
-        value_dict = __set_oauth_user(request, data['user'], 'twitter', ui_locales)
-        if isinstance(value_dict, dict):
-            if len(value_dict['error']) != 0:
-                return value_dict
-        else:
-            return value_dict
-
-        # return a HTTPFound via 'return success login'
-        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
-        return __return_success_login(request, False, value_dict['user'], False, url)
-    else:
-        request.session['oauth_redirect_url'] = old_redirect
-        return twitter.start_flow(request, redirect_uri)
-
-
-def __set_oauth_user(request, user_data, service, ui_locales):
-    """
-
-    :param request:
-    :param user_data:
-    :param service:
-    :param ui_locales:
-    :return:
-    """
-    _tn = Translator(ui_locales)
-
-    db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
-    if not db_group:
-        logger('Auth.Login', 'Error occured')
-        return {'error': _tn.get(_.errorTryLateOrContant)}
-
-    ret_dict = user.set_new_oauth_user(user_data, user_data['id'], service, _tn)
-
-    if ret_dict['success']:
-        url = request.session['oauth_redirect_url']
-        return __return_success_login(request, False, ret_dict['user'], False, url)
-    else:
-        return {'error': ret_dict['error'], 'success': ret_dict['success']}
 
 
 def __register_user_with_ldap_data(mailer, nickname, password, _tn) -> dict:
@@ -268,19 +103,6 @@ def __check_in_local_known_user(db_user: User, password: str, _tn) -> dict:
         return {'error': data['error']}
 
     return {'user': db_user}
-
-
-def __return_success_login(request, db_user, keep_login, url) -> dict:
-    """
-
-    :param request: web servers request
-    :param db_user:
-    :param keep_login:
-    :param url:
-    :return:
-    """
-    logger('Auth.Login', 'return for api: success')
-    return {'status': 'success'}  # api
 
 
 def register_user_with_json_data(data, lang, mailer: Mailer):

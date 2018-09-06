@@ -4,9 +4,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
 from pyramid.view import view_config
 
-from dbas.auth.login import login_user, login_user_oauth, register_user_with_json_data, __refresh_headers_and_url
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
+from dbas.auth.login import login_local_user, register_user_with_json_data, __refresh_headers_and_url
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
@@ -40,7 +38,7 @@ def user_login(request):
     keep_login = request.validated['keep_login']
     redirect_url = request.validated['redirect_url']
 
-    login_data = login_user(nickname, password, request.mailer, lang)
+    login_data = login_local_user(nickname, password, request.mailer, lang)
 
     if not login_data.get('error'):
         headers, url = __refresh_headers_and_url(request, login_data['user'], keep_login, redirect_url)
@@ -48,43 +46,6 @@ def user_login(request):
         return HTTPFound(location=url, headers=headers)
 
     return {'error': Translator(lang).get(_.userPasswordNotMatch)}
-
-
-@view_config(route_name='user_login_oauth', renderer='json')
-def user_login_oauth(request):
-    """
-    Will login the user via oauth
-
-    :return: dict() with error
-    """
-    logger('views', f'main {request.json_body}')
-
-    lang = get_language_from_cookie(request)
-    _tn = Translator(lang)
-
-    # sanity check
-    if request.authenticated_userid:
-        return {'error': ''}
-
-    try:
-        service = request.json_body['service']
-        url = request.json_body['redirect_uri']
-        old_redirect = url.replace('http:', 'https:')
-        # add service tag to notice the oauth provider after a redirect
-        if '?service' in url:
-            url = url[0:url.index('/discuss') + len('/discuss')] + url[url.index('?service'):]
-        for slug in [issue.slug for issue in DBDiscussionSession.query(Issue).all()]:
-            if slug in url:
-                url = url[0:url.index('/discuss') + len('/discuss')]
-        redirect_url = url.replace('http:', 'https:')
-
-        val = login_user_oauth(request, service, redirect_url, old_redirect, lang)
-        if val is None:
-            return {'error': _tn.get(_.internalKeyError)}
-        return val
-    except KeyError as e:
-        logger('user_login_oauth', repr(e), error=True)
-        return {'error': _tn.get(_.internalKeyError)}
 
 
 @view_config(route_name='user_logout', renderer='json')
@@ -253,7 +214,7 @@ def send_some_notification(request):
 
 # ajax - for getting all users with the same opinion
 @view_config(route_name='get_public_user_data', renderer='json')
-@validate(has_keywords(('nickname', str)))
+@validate(has_keywords(('user_id', int)))
 def get_public_user_data(request):
     """
     Returns dictionary with public user data
@@ -262,4 +223,4 @@ def get_public_user_data(request):
     :return:
     """
     logger('views', 'main: {}'.format(request.json_body))
-    return user.get_public_data(request.validated['nickname'], get_language_from_cookie(request))
+    return user.get_public_data(request.validated['user_id'], get_language_from_cookie(request))

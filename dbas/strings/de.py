@@ -623,7 +623,7 @@ de_lang = {
     _.strongerStatementF: 'Aber sie nennt einen {}Grund {}, dass{}',
     _.strongerStatementM: 'Aber er nennt einen {}Grund {}, dass{}',
     _.strongerStatementP: 'Aber sie nennen einen {}Grund {}, dass{}',
-    _.strongerStatementY: 'Aber nun nennst du einen {}Grund {}, dass{}',
+    _.strongerStatementY: 'Aber du hattest einen {}Grund {}, dass{}',
     _.accepting: 'dafür',
     _.rejecting: 'dagegen',
     _.strongerStatementEnd: 'davon, dass',

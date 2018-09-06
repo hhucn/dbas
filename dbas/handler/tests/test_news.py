@@ -1,9 +1,8 @@
-import unittest
-
 from dbas.handler import news
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class NewsHandlerTests(unittest.TestCase):
+class NewsHandlerTests(TestCaseWithConfig):
     def test_get_news(self):
         # correct id
         response_correct_id = news.get_news(1)
@@ -20,9 +19,9 @@ class NewsHandlerTests(unittest.TestCase):
 
     def verify_structure_news_list(self, response):
         for element in response:
-            self.assertTrue('title' in element)
-            self.assertTrue('author' in element)
-            self.assertTrue('date' in element)
-            self.assertTrue('news' in element)
-            self.assertTrue('uid' in element)
+            self.assertIn('title', element)
+            self.assertIn('author', element)
+            self.assertIn('date', element)
+            self.assertIn('news', element)
+            self.assertIn('uid', element)
         return True
