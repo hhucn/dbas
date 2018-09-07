@@ -5,8 +5,9 @@ Provides helping function for dictionaries, which are used for the radio buttons
 """
 
 import hashlib
+import logging
 import random
-from typing import List
+from typing import List, Dict
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User, StatementToIssue
@@ -16,7 +17,6 @@ from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.url import UrlManager
 from dbas.lib import Relations, Attitudes, get_enabled_arguments_as_query, get_all_attacking_arg_uids_from_history, \
     is_author_of_statement, is_author_of_argument
-from dbas.logger import logger
 from dbas.review.queue.edit import EditQueue
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \
@@ -61,14 +61,15 @@ class ItemDictHelper(object):
             'extras': {'cropped_list': False}
         }
 
-    def get_array_for_start(self, db_user: User) -> dict():
+    def get_array_for_start(self, db_user: User) -> Dict:
         """
         Prepares the dict with all items for the first step in discussion, where the user chooses a position.
 
         :param db_user: User
         :return:
         """
-        logger('ItemDictHelper', 'def user: {}'.format(db_user.nickname))
+        log = logging.getLogger(__name__)
+        log.debug("Entering get_array_for_start with user: %s", db_user.nickname)
 
         statements = [el.statement_uid for el in
                       DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=self.db_issue.uid).all()]
@@ -130,7 +131,8 @@ class ItemDictHelper(object):
         :param statement_uid: Statement.uid
         :return:
         """
-        logger('ItemDictHelper', 'def')
+        log = logging.getLogger(__name__)
+        log.debug("Entering prepare_item_dict_for_attitude")
         _tn = Translator(self.lang)
 
         slug = DBDiscussionSession.query(Issue).get(self.db_issue.uid).slug
@@ -171,7 +173,8 @@ class ItemDictHelper(object):
         :param history: history
         :return:
         """
-        logger('ItemDictHelper', 'def')
+        log = logging.getLogger(__name__)
+        log.debug("Entering get_array_for_justify_statement")
         statements_array = []
         _tn = Translator(self.lang)
         slug = self.db_issue.slug
@@ -254,7 +257,8 @@ class ItemDictHelper(object):
         :param history:
         :return:
         """
-        logger('ItemDictHelper', 'def: arg {}, attack {}'.format(argument_uid, attack_type))
+        log = logging.getLogger(__name__)
+        log.debug("Entering get_array_for_justify_argument with arg %s anf attack %s", argument_uid, attack_type)
         statements_array = []
         _tn = Translator(self.lang)
         slug = self.db_issue.slug
@@ -377,7 +381,8 @@ class ItemDictHelper(object):
         :param gender: m, f or n
         :return:
         """
-        logger('ItemDictHelper', 'def')
+        log = logging.getLogger(__name__)
+        log.debug("Entering get_array_for_dont_know_reaction")
         slug = self.db_issue.slug
         statements_array = []
 
@@ -444,7 +449,6 @@ class ItemDictHelper(object):
         Returns a random support url
 
         :param argument_uid: Argument.uid
-        :param lang: Language.ui_locales
         :param _um: UrlManager
         :return: String
         """
@@ -500,7 +504,8 @@ class ItemDictHelper(object):
         :param gender: Gender of the author of the attack
         :return:
         """
-        logger('ItemDictHelper', 'def')
+        log = logging.getLogger(__name__)
+        log.debug("Entering get_array_for_reaction")
         slug = self.db_issue.slug
 
         db_sys_argument = DBDiscussionSession.query(Argument).get(argument_uid_sys)
@@ -651,7 +656,8 @@ class ItemDictHelper(object):
         :param nickname:
         :return: dict()
         """
-        logger('ItemDictHelper', 'def')
+        log = logging.getLogger(__name__)
+        log.debug("Entering get_array_for_choosing")
         statements_array = []
         slug = self.db_issue.slug
         _um = UrlManager(slug, history=self.path)
