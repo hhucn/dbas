@@ -4,8 +4,8 @@ Class for handling passwords.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import logging
 import random
-
 import transaction
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from pyramid_mailer import Mailer
@@ -14,7 +14,6 @@ from sqlalchemy import func
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Language
 from dbas.handler.email import send_mail
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -67,7 +66,8 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
 
     db_user = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
     if not db_user:
-        logger('user_password_request', 'Mail unknown')
+        log = logging.getLogger(__name__)
+        log.debug("Mail unknown")
         return {
             'success': False,
             'message': _tn.get(_.emailUnknown)
