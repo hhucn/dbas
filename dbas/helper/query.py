@@ -4,12 +4,11 @@ Provides helping function for database querys.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-from typing import Union, Tuple
-
 import transaction
 from pyshorteners import Shorteners, Shortener
 from pyshorteners.exceptions import ShorteningErrorException
 from requests.exceptions import ReadTimeout, ConnectionError
+from typing import Union, Tuple
 from urllib3.exceptions import NewConnectionError
 
 from dbas.database import DBDiscussionSession
