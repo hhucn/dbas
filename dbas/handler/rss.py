@@ -4,17 +4,16 @@ Provides functions for our rss feed.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-import os
-from datetime import datetime
-
 import PyRSS2Gen
 import arrow
+import logging
+import os
 import transaction
+from datetime import datetime
 
 from dbas.database import DBDiscussionSession as Session
 from dbas.database.discussion_model import Issue, RSS, User, News
 from dbas.lib import get_enabled_issues_as_query, get_global_url
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -29,7 +28,8 @@ def create_news_rss(main_page: str, ui_locale: str) -> bool:
     :param ui_locale: Language.ui_locale
     :return: Boolean
     """
-    logger('RSS-Handler', 'def')
+    log = logging.getLogger(__name__)
+    log.debug("Entering create_new_rss function")
     db_news = Session.query(News).order_by(News.date.desc()).all()
     items = [__get_rss_item(n.title, n.news, n.date.datetime, n.author, '{}/news'.format(get_global_url())) for n in
              db_news]
@@ -56,10 +56,10 @@ def create_initial_issue_rss(main_page: str) -> bool:
     Creates the initial RSS entry for an issue
 
     :param main_page: Host URL
-    :param ui_locale: Language.ui_locale
     :return: Boolean
     """
-    logger('RSS-Handler', 'def')
+    log = logging.getLogger(__name__)
+    log.debug("Entering create_initial_issue_rss function")
 
     if not os.path.exists('dbas{}'.format(rss_path)):
         os.makedirs('dbas{}'.format(rss_path))
@@ -92,7 +92,8 @@ def append_action_to_issue_rss(db_issue: Issue, db_author: User, title: str, des
     :param url: url of this event
     :return: Boolean
     """
-    logger('RSS-Handler', 'issue_uid ' + str(db_issue.uid))
+    log = logging.getLogger(__name__)
+    log.debug("Issue_uid: %s", db_issue.uid)
     Session.add(RSS(author=db_author.uid, issue=db_issue.uid, title=title, description=description))
     Session.flush()
     transaction.commit()
@@ -132,7 +133,8 @@ def get_list_of_all_feeds(ui_locale: str) -> list:
     :param ui_locale: Language.ui_locale
     :return: list
     """
-    logger('RSS-Handler', 'def with ' + str(ui_locale))
+    log = logging.getLogger(__name__)
+    log.debug("Enter get_list_of_all_feeds with locale %s", ui_locale)
 
     feeds = []
     feed = {
