@@ -1,6 +1,4 @@
-# For more easy access in a composed environment, you have to access the docs at http://localhost/docs
 FROM gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas
-MAINTAINER Tobias Krauhoff <krauthoff@cs.uni-duesseldorf.de>
 
 WORKDIR /dbas/docs
 

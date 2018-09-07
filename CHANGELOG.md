@@ -1,4 +1,4 @@
-### 1.10.0 (2018-xx-xx)
+### 1.10.0 (2018-09-05)
 - Add route to API to support references again
   - support model abstractions for API entities
 - Include all tests for API v1 and v2
@@ -6,6 +6,7 @@
 - Update OAuth modules
 - Uniform env-files
 - Enable Continuous Delivery through GitLab
+- Add security analysis in GitLab CI
 - Fix many dead tests
 - Fix discussion flow
 - Fix CORS headers for HTTP 303 redirects

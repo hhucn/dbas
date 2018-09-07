@@ -1,10 +1,8 @@
 version: "3.2"
 services:
   db:
-    build: docker/db/
-    restart: always
-    ports:
-      - "5432:5432"
+    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas/db
+    restart: unless-stopped
     volumes:
       - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
       - ./docker/db/data:/var/lib/postgresql/data
@@ -13,9 +11,7 @@ services:
   web:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas
     command: bash -c "sleep 10 && alembic upgrade head && uwsgi --ini-paste production.ini"
-    restart: always
-    ports:
-      - "4284:4284"
+    restart: unless-stopped
     environment:
       AUTHN_SECRET: ${AUTHN_SECRET}
       DB_PW: ${DB_PW}
@@ -23,6 +19,23 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       URL: ${URL}
-    env_file:
-      - production.env
+    # env_file:  # Optional if you want to change passwords
+    #  - production.env
     tmpfs: /tmp
+
+  docs:
+    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas/docs
+    restart: unless-stopped
+
+  proxy:
+    image: nginx:1.15-alpine
+    command: /bin/sh -c "/etc/nginx/init/create_ssl.sh && nginx -g 'daemon off;'"
+    ports:
+      - "443:443"
+    environment:
+      DEPLOY_HOST: dbas.cs.uni-duesseldorf.de
+    volumes:
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf/domain.conf:/etc/nginx/domain.conf:ro
+      - ./nginx/init:/etc/nginx/init:ro
+    restart: unless-stopped

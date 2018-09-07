@@ -136,7 +136,7 @@ class TestGetUserInformation(TestCaseWithConfig):
     def test_get_public_user_data(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # more tests for get_public_user_data are in test_handler_opinion
-        request = construct_dummy_request({'nickname': 'Torben'})
+        request = construct_dummy_request({'user_id': 2})
         response = get_public_user_data(request)
         self.assertIsNotNone(response)
 

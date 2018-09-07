@@ -27,7 +27,7 @@ from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups_of_args, get_user_and_opinions_for_argument
 from dbas.lib import pretty_print_timestamp, get_text_for_argument_uid, \
-    get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture, nick_of_anonymous_user
+    get_text_for_statement_uid, get_profile_picture, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
@@ -210,19 +210,19 @@ def is_admin(nickname):
     return db_user and db_user.groups.name == 'admins'
 
 
-def get_public_data(nickname, lang):
+def get_public_data(user_id: int, lang: str):
     """
     Fetch some public information about the user with given nickname
 
-    :param nickname: User.public_nickname
+    :param user_id: User.uid
     :param lang:
     :return: dict()
     """
-    logger('User', f'User: "{nickname}"')
+    logger('User', f'User: "{user_id}"')
     return_dict = dict()
-    current_user = get_user_by_private_or_public_nickname(nickname)
+    db_user = DBDiscussionSession.query(User).get(user_id)
 
-    if current_user is None and nickname != 'Son Goku':
+    if db_user is None and user_id != 1:
         return return_dict
 
     _tn = Translator(lang)
@@ -243,7 +243,7 @@ def get_public_data(nickname, lang):
     return_dict['label3'] = _tn.get(_.statementIndex)
     return_dict['label4'] = _tn.get(_.editIndex)
 
-    if nickname == 'Son Goku':
+    if user_id == 1:
         return __special_public_data(return_dict, lang)
 
     for days_diff in range(30, -1, -1):
@@ -258,11 +258,11 @@ def get_public_data(nickname, lang):
         labels_edit_30.append(ts)
 
         db_clicks_statements = DBDiscussionSession.query(ClickedStatement).filter(
-            ClickedStatement.author_uid == current_user.uid,
+            ClickedStatement.author_uid == db_user.uid,
             ClickedStatement.timestamp >= begin,
             ClickedStatement.timestamp < end).all()
         db_clicks_arguments = DBDiscussionSession.query(ClickedArgument).filter(
-            ClickedArgument.author_uid == current_user.uid,
+            ClickedArgument.author_uid == db_user.uid,
             ClickedArgument.timestamp >= begin,
             ClickedArgument.timestamp < end).all()
         clicks = len(db_clicks_statements) + len(db_clicks_arguments)
@@ -271,7 +271,7 @@ def get_public_data(nickname, lang):
             labels_decision_7.append(ts)
             data_decision_7.append(clicks)
 
-        get_tv_dict = get_textversions(current_user, lang, begin, end)
+        get_tv_dict = get_textversions(db_user, lang, begin, end)
         data_statement_30.append(len(get_tv_dict.get('statements', [])))
         data_edit_30.append(len(get_tv_dict.get('edits', [])))
 

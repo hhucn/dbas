@@ -45,7 +45,7 @@ class UserHandlerTests(TestCaseWithConfig):
         self.assertTrue(user.is_admin('Tobias'))
 
     def test_get_public_data(self):
-        prep_dict = user.get_public_data('CantHitThat', 'en')
+        prep_dict = user.get_public_data(1000, 'en')
         self.assertEqual(len(prep_dict), 0)
 
     def test_get_reviews_of(self):

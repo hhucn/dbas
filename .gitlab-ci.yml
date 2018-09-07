@@ -1,5 +1,12 @@
 image: docker
 
+stages:
+  - build
+  - test
+  - build-images
+  - analysis
+  - deploy
+
 .job-template: &add-services
   services:
     - name: $CI_REGISTRY/cn-tsn/project/dbas/dbas/db:testing
@@ -81,15 +88,59 @@ unit:
 
 sonar:
   image: hhucn/sonar-scanner
-  stage: deploy
+  stage: analysis
   script:
     - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.10.0 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
   only:
     - development
   when: always
 
-deploy_image:
-  stage: deploy
+sast:
+  stage: analysis
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env SAST_CONFIDENCE_LEVEL="${SAST_CONFIDENCE_LEVEL:-3}"
+        --volume "$PWD:/code"
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
+  artifacts:
+    paths: [gl-sast-report.json]
+  only:
+    - development
+  when: always
+
+dependency_scanning:
+  stage: analysis
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  tags:
+    - 40c
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}"
+        --volume "$PWD:/code"
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
+  artifacts:
+    paths: [gl-dependency-scanning-report.json]
+  when: always
+  only:
+    - development
+
+build_production_images:
+  stage: build-images
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE .
@@ -97,56 +148,14 @@ deploy_image:
     # Build and deploy database
     - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
     - docker push $CI_REGISTRY_IMAGE/db
+    # Build and deploy docs image
+    - docker build -t $CI_REGISTRY_IMAGE/docs -f Dockerfile.docs --pull .
+    - docker push $CI_REGISTRY_IMAGE/docs
   only:
     - master
 
-sast:
-  stage: deploy
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-  - docker:stable-dind
-  script:
-  - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-  - docker run
-      --env SAST_CONFIDENCE_LEVEL="${SAST_CONFIDENCE_LEVEL:-3}"
-      --volume "$PWD:/code"
-      --volume /var/run/docker.sock:/var/run/docker.sock
-      "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
-  artifacts:
-    paths: [gl-sast-report.json]
-  only:
-  - development
-  - master
-  when: always
-
-dependency_scanning:
-  stage: deploy
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-  - docker:stable-dind
-  script:
-  - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-  - docker run
-      --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}"
-      --volume "$PWD:/code"
-      --volume /var/run/docker.sock:/var/run/docker.sock
-      "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
-  artifacts:
-    paths: [gl-dependency-scanning-report.json]
-  only:
-  - development
-  - master
-  when: always
-
-
-deploy_dev_image:
-  stage: deploy
+build_dev_images:
+  stage: build-images
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE .
@@ -156,15 +165,27 @@ deploy_dev_image:
     - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
     - docker tag $CI_REGISTRY_IMAGE/db $CI_REGISTRY_IMAGE/db:development
     - docker push $CI_REGISTRY_IMAGE/db:development
+    # Build and deploy docs image
+    - docker build -t $CI_REGISTRY_IMAGE/docs -f Dockerfile.docs --pull .
+    - docker tag $CI_REGISTRY_IMAGE/docs $CI_REGISTRY_IMAGE/docs:development
+    - docker push $CI_REGISTRY_IMAGE/docs
   only:
     - development
 
-deploy_docs_image:
+deploy_production:
+  image: alpine
   stage: deploy
+  environment: production
+  tags:
+    - cn
+  before_script:
+    - apk add --no-cache openssh
+    - eval "$(ssh-agent -s)"
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - chmod 700 ~/.ssh/
+    - ssh-keyscan -H 'docker-int.cn.uni-duesseldorf.de' > ~/.ssh/known_hosts
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE -f Dockerfile.docs --pull .
-    - docker tag $CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE:docs
-    - docker push $CI_REGISTRY_IMAGE:docs
+    - ssh root@docker-int.cn.uni-duesseldorf.de
   only:
     - master

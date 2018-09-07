@@ -1,8 +1,0 @@
-version: "3.2"
-services:
-  docs:
-    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas:docs
-    restart: always
-    ports:
-      - "8000:8000"
-    tmpfs: /tmp
