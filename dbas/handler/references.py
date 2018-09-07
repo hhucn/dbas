@@ -1,13 +1,12 @@
+import logging
+import transaction
 from urllib.parse import urlparse
 
-import transaction
-
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences, User
+from dbas.database.discussion_model import StatementReferences, User, Statement
 from dbas.input_validator import is_integer
-from dbas.lib import get_text_for_statement_uid, get_profile_picture, get_enabled_arguments_as_query, \
+from dbas.lib import get_profile_picture, get_enabled_arguments_as_query, \
     get_enabled_premises_as_query
-from dbas.logger import logger
 
 
 def get_references_for_argument(uid, main_page):
@@ -18,7 +17,8 @@ def get_references_for_argument(uid, main_page):
     :param main_page: current overview page
     :return: dict
     """
-    logger('ReferenceHelper', str(uid))
+    log = logging.getLogger(__name__)
+    log.debug("%s", uid)
 
     if not is_integer(uid):
         return {}, {}
@@ -43,7 +43,8 @@ def get_references_for_argument(uid, main_page):
         tmp_uid = db_argument.conclusion_uid
         references_array = __get_references_for_statement(tmp_uid, main_page)[tmp_uid]
         data[tmp_uid] = references_array
-        text[tmp_uid] = get_text_for_statement_uid(tmp_uid)
+        db_statement = DBDiscussionSession.query(Statement).get(uid)
+        text[tmp_uid] = db_statement.get_text()
     else:
         d, t = get_references_for_argument(db_argument.argument_uid, main_page)
         data.update(d)
@@ -56,7 +57,7 @@ def get_references_for_statements(uids, main_page):
     """
     Returns all references for the current given statements
 
-    :param uid: uids of the statement
+    :param uids: uids of the statement
     :param main_page: current overview page
     :return: dict
     """
@@ -65,7 +66,8 @@ def get_references_for_statements(uids, main_page):
     for uid in uids:
         references_array = __get_references_for_statement(uid, main_page)[uid]
         data[uid] = references_array
-        text[uid] = get_text_for_statement_uid(uid)
+        db_statement = DBDiscussionSession.query(Statement).get(uid)
+        text[uid] = db_statement.get_text()
     return data, text
 
 
@@ -77,7 +79,8 @@ def __get_references_for_statement(uid, main_page):
     :param main_page: current overview page
     :return: dict
     """
-    logger('ReferenceHelper', str(uid))
+    log = logging.getLogger(__name__)
+    log.debug("%s", uid)
     db_references = DBDiscussionSession.query(StatementReferences).filter_by(statement_uid=uid).all()
     references_array = [__get_values_of_reference(ref, main_page) for ref in db_references]
     return {uid: references_array}
@@ -113,6 +116,7 @@ def set_reference(reference, url, db_user, db_statement, issue_uid):
     Creates a new reference
 
     :param reference: Text of the reference
+    :param url: The url for the reference
     :param db_user: User
     :param db_statement: Statement
     :param issue_uid: current issue uid
