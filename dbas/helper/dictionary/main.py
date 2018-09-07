@@ -6,6 +6,7 @@ Provides helping function for dictionaries.
 
 import arrow
 import datetime
+import logging
 import os
 import random
 from pyramid.registry import Registry
@@ -16,7 +17,6 @@ from dbas.handler import user
 from dbas.handler.notification import count_of_new_notifications, get_box_for
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode, \
     nick_of_anonymous_user, get_global_url, usage_of_matomo, usage_of_modern_bubbles
-from dbas.logger import logger
 from dbas.review.queue.lib import get_count_of_all, get_complete_review_count
 from dbas.review.reputation import get_reputation_of, limit_to_open_issues
 from dbas.strings.keywords import Keywords as _
@@ -50,7 +50,8 @@ class DictionaryHelper(object):
         :return: dictionary
         """
         return_dict = dict()
-        logger('DictionaryHelper', 'count: ' + str(count))
+        log = logging.getLogger(__name__)
+        log.debug("Count: %s", count)
         items = list(ordered_dict.items())
 
         if count < 0:
@@ -104,7 +105,8 @@ class DictionaryHelper(object):
         :param ongoing_discussion: Boolean
         :return: dict()
         """
-        logger('DictionaryHelper', 'def')
+        log = logging.getLogger(__name__)
+        log.debug("Entering prepare_extras_dict")
 
         is_user_from_ldap = None
         is_logged_in = False
@@ -275,7 +277,8 @@ class DictionaryHelper(object):
         :param supportive: supportive
         :return: None
         """
-        logger('DictionaryHelper', 'main')
+        log = logging.getLogger(__name__)
+        log.debug("Entering add_discussion_end_text")
         _tn = Translator(self.discussion_lang)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         gender = db_user.gender if db_user else None
@@ -455,7 +458,8 @@ class DictionaryHelper(object):
         :param extras_dict: current dict()
         :return: dict()
         """
-        logger('DictionaryHelper', 'def')
+        log = logging.getLogger(__name__)
+        log.debug("Entering add_language_options_for_extra_dict")
         lang_is_en = self.system_lang != 'de'
         lang_is_de = self.system_lang == 'de'
         extras_dict.update({
@@ -615,7 +619,8 @@ class DictionaryHelper(object):
             'issue_writable': _tn_sys.get(_.issueWritableDescription)
         }
 
-    def __add_login_button_properties(self, return_dict):
+    @staticmethod
+    def __add_login_button_properties(return_dict):
         """
         Check if oauth client ids are available and updates the dict
 
