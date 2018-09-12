@@ -284,3 +284,29 @@ def get_another_argument_with_same_conclusion(uid, history):
         return None
 
     return db_supports[random.randint(0, len(db_supports) - 1)]
+
+
+def get_all_statements_for_args(graph_arg_list) -> List[int]:
+    """
+
+    :param graph_arg_list:
+    :return:
+    """
+    statement_uids = []
+
+    for arg in graph_arg_list:
+        # getting all premises of current argument
+        db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisegroup_uid == arg.premisegroup_uid,
+                                                                Premise.is_disabled == False).all()
+
+        # fetching statement ids for the premises
+        statement_uids += [premise.statement_uid for premise in db_premises if premise.statement_uid not in statement_uids]
+
+        # querying the arguments conclusion
+        while arg.conclusion_uid is None:
+            arg = DBDiscussionSession.query(Argument).get(arg.argument_uid)
+
+        if arg.conclusion_uid not in statement_uids:
+            statement_uids.append(arg.conclusion_uid)
+
+    return statement_uids

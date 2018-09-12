@@ -6,6 +6,7 @@
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Argument, Premise, Issue
+from dbas.handler.arguments import get_all_statements_for_args
 from dbas.lib import get_all_arguments_by_statement
 from dbas.logger import logger
 from graph.lib import get_d3_data
@@ -93,7 +94,7 @@ def __return_d3_data(graph_arg_lists, db_issue: Issue):
         graph_arg_list += graph_arg_lists[key]
     graph_arg_list = [DBDiscussionSession.query(Argument).get(uid) for uid in list(set(graph_arg_list))]
 
-    graph_stat_list = __get_all_statements_for_args(graph_arg_list)
+    graph_stat_list = get_all_statements_for_args(graph_arg_list)
     graph_stat_list = [DBDiscussionSession.query(Statement).get(uid) for uid in graph_stat_list]
 
     logger('PartialGraph', 'stat_list: {}'.format([stat.uid for stat in graph_stat_list]))
@@ -262,30 +263,3 @@ def __append_todos_for_getting_argument_net_with_undercuts(uid, list_todos, list
         for arg in db_undercuts:
             if arg.uid not in list_todos + list_dones + [uid]:
                 list_todos.append(arg.uid)
-
-
-def __get_all_statements_for_args(graph_arg_list):
-    """
-
-    :param graph_arg_list:
-    :return:
-    """
-    logger('PartialGraph', str([arg.uid for arg in graph_arg_list]))
-    nodes = []
-
-    for arg in graph_arg_list:
-        # save all premises
-        db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisegroup_uid == arg.premisegroup_uid,
-                                                                Premise.is_disabled == False).all()
-
-        # save premises
-        nodes += [premise.statement_uid for premise in db_premises]
-        # save conclusion
-        while arg.conclusion_uid is None:
-            arg = DBDiscussionSession.query(Argument).get(arg.argument_uid)
-        nodes.append(arg.conclusion_uid)
-
-    nodes = list(set(nodes))
-
-    logger('PartialGraph', 'return nodes ({}): {}'.format(len(nodes), nodes))
-    return nodes
