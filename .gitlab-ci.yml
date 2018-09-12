@@ -93,6 +93,7 @@ sonar:
     - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.10.1 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
   only:
     - development
+  allow_failure: true
   when: always
 
 sast:
