@@ -16,8 +16,9 @@ from slugify import slugify
 from dbas import get_enabled_issues_as_query
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
-    ClickedStatement, TextVersion, StatementToIssue
+    ClickedStatement, StatementToIssue, ClickedArgument
 from dbas.handler import user
+from dbas.handler.arguments import get_all_statements_for_args
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import generate_short_url
 from dbas.helper.url import UrlManager
@@ -58,7 +59,7 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     return {'issue': get_issue_dict_for(db_issue, 0, db_lang.ui_locales)}
 
 
-def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict():
+def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict:
     """
     Prepares slug, info, argument count and the date of the issue as dict
 
@@ -276,6 +277,13 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     date_dict = {}
     readable = []
     writable = []
+
+    # arg.uid to list of used statements fo speed up the __get_dict_for_charts(..)
+    arg_stat_mapper = {}
+    db_arguments = DBDiscussionSession.query(Argument).filter(Argument.issue_uid.in_(i.uid for i in db_issues)).all()
+    for db_arg in db_arguments:
+        arg_stat_mapper[db_arg.uid] = get_all_statements_for_args([db_arg])
+
     for index, db_issue in enumerate(db_issues):
         issue_dict = {
             'uid': db_issue.uid,
@@ -294,8 +302,7 @@ def get_issues_overview_on_start(db_user: User) -> dict:
             writable.append(issue_dict)
 
         # key needs to be a str to be parsed in the frontend as json
-        date_dict[str(db_issue.uid)] = __get_dict_for_charts(db_issue)
-
+        date_dict[str(db_issue.uid)] = __get_dict_for_charts(db_issue, arg_stat_mapper)
     return {
         'issues': {
             'readable': readable,
@@ -305,7 +312,7 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     }
 
 
-def __get_dict_for_charts(db_issue: Issue) -> dict:
+def __get_dict_for_charts(db_issue: Issue, arg_stat_mapper: dict) -> dict:
     """
 
     :param db_issue:
@@ -314,15 +321,25 @@ def __get_dict_for_charts(db_issue: Issue) -> dict:
     days_since_start = min((arrow.utcnow() - db_issue.date).days, 14)
     label, data = [], []
     today = date.today()
+
+    db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=db_issue.uid).all()
+    arguments_uids = [db_arg.uid for db_arg in db_arguments]
+    statement_uids = []
+    for arg_uid in arguments_uids:
+        statement_uids += arg_stat_mapper[arg_uid]
+    db_clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.uid.in_(arguments_uids))
+    db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.uid.in_(statement_uids))
+
     for days_diff in range(days_since_start, -1, -1):
         date_begin = today - timedelta(days=days_diff)
         date_end = today - timedelta(days=days_diff - 1)
 
         label.append(pretty_print_timestamp(date_begin, db_issue.lang))
-        count = DBDiscussionSession.query(TextVersion).filter(
-            TextVersion.timestamp >= arrow.get(date_begin),
-            TextVersion.timestamp < arrow.get(date_end)).count()
-        data.append(count)
+        clicked_arguments = db_clicked_arguments.filter(ClickedArgument.timestamp >= arrow.get(date_begin),
+                                                        ClickedArgument.timestamp < arrow.get(date_end)).count()
+        clicked_statements = db_clicked_statements.filter(ClickedStatement.timestamp >= arrow.get(date_begin),
+                                                          ClickedStatement.timestamp < arrow.get(date_end)).count()
+        data.append(clicked_arguments + clicked_statements)
 
     return {
         'data': data,

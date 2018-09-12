@@ -75,6 +75,7 @@ describe('Test the functions while discussing', function () {
             .click({force: true});
         cy.get('#item_login')
             .should('exist')
+            .should('have.property', 'onClick')
             .click({force: true});
         login(valid_user, valid_pw);
         cy.get('#item_start_statement')

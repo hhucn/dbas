@@ -11,7 +11,7 @@ docutils==0.14
 db==0.1.1
 graphene==2.1.1
 graphene-sqlalchemy==2.0.0
-graphql-core==2.1rc1
+graphql-core==2.1
 hypothesis==3.57.0
 imagesize==1.0.0
 iso8601==0.1.12

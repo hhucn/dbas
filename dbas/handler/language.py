@@ -71,10 +71,11 @@ def set_language_for_visit(request) -> str:
     if '_LOCALE_' in request.cookies:
         logger('LanguageHelper', 'User was already here')
         # user was already here
-        return
+        ui_locales = request.cookies['_LOCALE_']
+    else:
+        logger('LanguageHelper', 'User is first time here')
+        ui_locales = get_language_from_header(request)
 
-    logger('LanguageHelper', 'User is first time here')
-    ui_locales = get_language_from_header(request)
     lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
     if hasattr(request, 'request'):
         DictionaryHelper(ui_locales).add_language_options_for_extra_dict(request.decorated['extras'])
