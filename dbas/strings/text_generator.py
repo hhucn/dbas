@@ -654,7 +654,7 @@ def __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument, user_
     # has the other user any opinion for the users conclusion?
     has_other_user_opinion = False
     if data['is_valid']:
-        if user_arg.argument_uid is None:
+        if user_arg.argument_uid is not None:
             db_vote = DBDiscussionSession.query(ClickedArgument).filter(
                 ClickedArgument.argument_uid == user_arg.argument_uid,
                 ClickedArgument.author_uid == data['user'].uid,
