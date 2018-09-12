@@ -1,3 +1,7 @@
+### 1.10.1 (2018-09-12)
+- Fix graphiql error
+- Add more triggers to database
+
 ### 1.10.0 (2018-09-05)
 - Add route to API to support references again
   - support model abstractions for API entities
