@@ -33,12 +33,12 @@
               <i class="fa fa-question-circle-o cursor-help" title="${extras.tag.issue_enabled}"
                  aria-hidden="true"></i>
             </th>
-            <th tal:condition="extras.is_admin"><span i18n:translate="Writable">Writable</span>
+            <th tal:condition="extras.is_admin"><span i18n:translate="public">Public</span>
               <i class="fa fa-question-circle-o cursor-help" title="${extras.tag.issue_public}"
                  aria-hidden="true"></i>
             </th>
             <th>
-              <span i18n:translate="Writable">writable</span>
+              <span i18n:translate="Writable">Writable</span>
               <i class="fa fa-question-circle-o cursor-help" title="${extras.tag.issue_writable}"
                  aria-hidden="true"></i>
             </th>
