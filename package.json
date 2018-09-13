@@ -1,6 +1,6 @@
 {
   "name": "D-BAS",
-  "version": "1.10.1",
+  "version": "1.10.2",
   "description": "system for dialog-based online argumentation",
   "main": "app.js",
   "repository": "git@github.com:hhucn/dbas",
@@ -15,7 +15,7 @@
     "cookieconsent": "^3.0.6",
     "cypress": "^3.0.1",
     "d3": "^3.0.0",
-    "datatables": "^1.10.13",
+    "datatables": "^1.10.23",
     "datatables-bootstrap": "^0.0.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",

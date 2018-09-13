@@ -1,3 +1,6 @@
+### 1.10.2 (2018-09-13)
+- Fix selection of conclusion
+
 ### 1.10.1 (2018-09-12)
 - Fix graphiql error
 - Add more triggers to database

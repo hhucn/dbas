@@ -13,7 +13,7 @@ from dbas.lib import usage_of_modern_bubbles, nick_of_anonymous_user, Attitudes
 from dbas.logger import logger
 
 name = 'D-BAS'
-version = '1.10.1'
+version = '1.10.2'
 full_version = version
 project_name = name + ' ' + full_version
 
