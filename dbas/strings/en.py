@@ -335,7 +335,7 @@ en_lang = {
     _.firstname: 'First name',
     _.fillLine: 'Please, fill this this line with your report',
     _.finish: 'Finish',
-    _.finishTitle: 'Leave the discussion!',
+    _.finishTitle: 'Leave the discussion',
     _.fieldtest: 'Field Experiment',
     _.fromm: 'from',
     _.gender: 'Gender',

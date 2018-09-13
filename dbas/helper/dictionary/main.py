@@ -493,7 +493,6 @@ class DictionaryHelper(object):
             'report': _tn_sys.get(_.report),
             'opinion_barometer': _tn_sys.get(_.opinionBarometer),
             'save_my_statement': _tn_dis.get(_.saveMyStatement),
-            'share_url': _tn_sys.get(_.shareUrl),
             'lets_go_back': _tn_sys.get(_.letsGoBack),
             'go_back': _tn_sys.get(_.goBack),
             'go_forward': _tn_sys.get(_.goForward),
@@ -515,11 +514,8 @@ class DictionaryHelper(object):
         _tn_dis = Translator(self.discussion_lang)
         _tn_sys = Translator(self.system_lang)
         return_dict['title'] = {
-            'barometer': _tn_sys.get(_.opinionBarometer),
             'add_issue_info': _tn_sys.get(_.addIssueInfo).format(
                 limit_to_open_issues) if logged_in else _tn_sys.get(_.notLoggedIn),
-            'guided_view': _tn_sys.get(_.displayControlDialogGuidedTitle),
-            'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
             'edit_statement': _tn_dis.get(_.editTitle),
             'edit_statement_already': _tn_dis.get(_.editAlreadyTitle),
             'view_changelog': _tn_dis.get(_.viewChangelog),
@@ -527,8 +523,6 @@ class DictionaryHelper(object):
             'report_argument': _tn_dis.get(_.reportArgument),
             'delete_statement': _tn_dis.get(_.deleteStatement),
             'disassociate_statement': _tn_dis.get(_.disassociateStatement),
-            'finish_title': _tn_sys.get(_.finishTitle),
-            'ask_friend': _tn_sys.get(_.askAFriend),
             'question_title': _tn_sys.get(_.questionTitle),
             'more_title': _tn_dis.get(_.more),
             'add_statement_row_title': _tn_dis.get(_.addStatementRow),
@@ -607,7 +601,6 @@ class DictionaryHelper(object):
             'placeholder_add_topic_title': _tn_dis.get(_.exampleAddTopicTitle),
             'placeholder_add_topic_question': _tn_dis.get(_.exampleAddTopicQuestion),
             'placeholder_add_topic_description': _tn_dis.get(_.exampleAddTopicDescription),
-            'search': _tn_sys.get(_.searchForStatements),
             'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning),
             'argument_optimization_description': _tn_dis.get(_.argument_optimization_description),
             'argument_offtopic_or_irrelevant_description': _tn_dis.get(_.argument_offtopic_or_irrelevant_description),
