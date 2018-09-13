@@ -47,8 +47,10 @@ def get_user_and_opinions_for_argument(argument_uid, db_user, lang, main_page, p
     ]
 
     # get gender of counter use
-    db_user = get_author_or_first_supporter_of_element(argument_uid, db_user.uid, True)
-    gender = db_user.gender if db_user else 'n'
+    db_supporter = get_author_or_first_supporter_of_element(argument_uid, db_user.uid, True)
+    gender = 'n'
+    if db_supporter:
+        gender = db_supporter.gender
 
     if '/d' in path.split('?')[0]:
         relation_text = get_relation_text_dict_with_substitution(lang, False, is_dont_know=True, gender=gender)
@@ -56,7 +58,7 @@ def get_user_and_opinions_for_argument(argument_uid, db_user, lang, main_page, p
         relation_text = get_relation_text_dict_with_substitution(lang, True, gender=gender)
 
     # getting votes for every reaction
-    ret_list = __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user, _t, main_page)
+    ret_list = __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_supporter, _t, main_page)
 
     return {'opinions': ret_list, 'title': start_with_capital(title)}
 
@@ -90,10 +92,10 @@ def __build_reaction_dict_by_relation(relations, current_relation, relation_text
     message = ''
     seen_by = 0
 
-    if db_user.gender == 'f':
-        msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
-    else:
+    if db_user and db_user.gender == 'm':
         msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+    else:
+        msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
 
     if not arg_uids_for_reactions[relations.index(current_relation)]:
         return {
@@ -104,10 +106,11 @@ def __build_reaction_dict_by_relation(relations, current_relation, relation_text
         }
 
     for uid in arg_uids_for_reactions[relations.index(current_relation)]:
+        db_user_uid = db_user.uid if db_user else 0
         db_votes = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.argument_uid == uid['id'],
                                                                      ClickedArgument.is_up_vote == True,
                                                                      ClickedArgument.is_valid == True,
-                                                                     ClickedArgument.author_uid != db_user.uid).all()
+                                                                     ClickedArgument.author_uid != db_user_uid).all()
 
         for vote in db_votes:
             voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
