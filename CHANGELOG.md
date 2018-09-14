@@ -1,3 +1,8 @@
+### 1.10.2 (2018-09-14)
+- Fix parse error of history in URL
+- Make discussion-sidebar more mobile friendly
+- Move "Restart discussion" into the discussion
+
 ### 1.10.2 (2018-09-13)
 - Fix selection of conclusion
 
