@@ -673,10 +673,13 @@ class DiscussionDictHelper(object):
         save_statement_url = 'set_new_start_statement'
 
         log = logging.getLogger(__name__)
-        log.debug("at_choosing")
+        log.debug("Choosing dictionary for bubbles.")
         a = _tn.get(_.soYouEnteredMultipleReasons)
-        statement = DBDiscussionSession.query(Statement).get(uid)
-        c = get_text_for_argument_uid(uid) if is_uid_argument else statement.get_text()
+        if is_uid_argument:
+            c = get_text_for_argument_uid(uid)
+        else:
+            statement = DBDiscussionSession.query(Statement).get(uid)
+            c = statement.get_text()
 
         if is_supportive:
             if is_uid_argument:

@@ -7,7 +7,7 @@ Provides helping function for dictionaries, which are used for the radio buttons
 import hashlib
 import logging
 import random
-from typing import List, Dict
+from typing import List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User, StatementToIssue
@@ -61,7 +61,7 @@ class ItemDictHelper(object):
             'extras': {'cropped_list': False}
         }
 
-    def get_array_for_start(self, db_user: User) -> Dict:
+    def get_array_for_start(self, db_user: User) -> dict:
         """
         Prepares the dict with all items for the first step in discussion, where the user chooses a position.
 

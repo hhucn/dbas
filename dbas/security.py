@@ -12,7 +12,7 @@ from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
 
 
-class RootFactory(object):
+class RootFactory():
     """
     Defines the ACL
     """

@@ -6,7 +6,7 @@ Provides helping function for flagging arguments.
 
 import logging
 import transaction
-from typing import Union, Dict, List
+from typing import Union
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
@@ -20,7 +20,7 @@ from dbas.strings.translator import Translator
 
 
 def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], db_user: User,
-                 is_argument: bool, ui_locales: str, extra_uid=None) -> Dict:
+                 is_argument: bool, ui_locales: str, extra_uid=None) -> dict:
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
@@ -55,7 +55,7 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
 
 
 def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument_uid: Union[int, None],
-               statement_uid: Union[int, None], extra_uid: Union[int, None], db_user: User, tn: Translator) -> Dict:
+               statement_uid: Union[int, None], extra_uid: Union[int, None], db_user: User, tn: Translator) -> dict:
     """
 
     :param reason:
@@ -84,8 +84,8 @@ def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReason
     return {'success': tn.get(_.thxForFlagText), 'info': ''}
 
 
-def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_values: List, db_user: User,
-                                      tn: Translator) -> Dict:
+def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_values: list, db_user: User,
+                                      tn: Translator) -> dict:
     """
     Flags a statement for a merge or split event. On split, the statement of the pgroup will be splitted into the
     given text_values. On merge the statements of the pgroup will be connected by an and.
@@ -120,7 +120,7 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
     return {'success': success, 'info': ''}
 
 
-def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User, tn: Translator) -> Dict:
+def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User, tn: Translator) -> dict:
     """
     Flags a premisegroup for a merge or split event. On split the premisegroup will be divided into indepent groups.
     On merge the statements of this group will be one statement.

@@ -348,14 +348,10 @@ def __argument_seen_by_user(db_user, argument_uid):
     db_seen_by = DBDiscussionSession.query(SeenArgument).filter(SeenArgument.argument_uid == argument_uid,
                                                                 SeenArgument.user_uid == db_user.uid).first()
     if not db_seen_by:
-        # logger('VotingHelper', '__argument_seen_by_user', 'argument {}, for user {} is now marked as
-        # seen'.format(argument_uid, db_user.uid))
         DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user_uid=db_user.uid))
         DBDiscussionSession.flush()
         return True
 
-    # logger('VotingHelper', '__argument_seen_by_user', 'argument {}, for user {} was already
-    # seen'.format(argument_uid, db_user.uid))
     return False
 
 
@@ -370,14 +366,10 @@ def __statement_seen_by_user(db_user, statement_uid):
     db_seen_by = DBDiscussionSession.query(SeenStatement).filter(SeenStatement.statement_uid == statement_uid,
                                                                  SeenStatement.user_uid == db_user.uid).first()
     if not db_seen_by:
-        # logger('VotingHelper', '__statement_seen_by_user', 'statement {}, for user {} is now marked as
-        # seen'.format(statement_uid, db_user.uid))
         DBDiscussionSession.add(SeenStatement(statement_uid=statement_uid, user_uid=db_user.uid))
         DBDiscussionSession.flush()
         return True
 
-    # logger('VotingHelper', '__statement_seen_by_user', 'statement {}, for user {} was already
-    # seen'.format(statement_uid, db_user.uid))
     return False
 
 
