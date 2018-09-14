@@ -43,7 +43,7 @@ def get_references_for_argument(uid, main_page):
         tmp_uid = db_argument.conclusion_uid
         references_array = __get_references_for_statement(tmp_uid, main_page)[tmp_uid]
         data[tmp_uid] = references_array
-        db_statement = DBDiscussionSession.query(Statement).get(uid)
+        db_statement = DBDiscussionSession.query(Statement).get(tmp_uid)
         text[tmp_uid] = db_statement.get_text()
     else:
         d, t = get_references_for_argument(db_argument.argument_uid, main_page)
