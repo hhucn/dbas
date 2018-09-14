@@ -3,6 +3,7 @@ Provides helping function for getting some opinions.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import logging
 from typing import List
 
 from dbas.database import DBDiscussionSession
@@ -10,13 +11,14 @@ from dbas.database.discussion_model import Argument, Statement, User, ClickedArg
     SeenArgument, SeenStatement, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, \
     get_undermines_for_argument_uid, get_supports_for_argument_uid
-from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid, get_profile_picture, Relations
-from dbas.logger import logger
+from dbas.lib import get_text_for_argument_uid, get_profile_picture, Relations
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, \
     get_author_or_first_supporter_of_element
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 def get_user_and_opinions_for_argument(argument_uid, db_user, lang, main_page, path):
@@ -29,10 +31,11 @@ def get_user_and_opinions_for_argument(argument_uid, db_user, lang, main_page, p
     :param lang: current language
     :param main_page: main_page
     :param path: path
-    :return: { 'attack_type': { 'message': 'string', 'users': [{'nickname': 'string', 'avatar_url': 'url' 'vote_timestamp': 'string' ], ... }],...}
+    :return: { 'attack_type': { 'message': 'string', 'users': [{'nickname': 'string', 'avatar_url': 'url'
+               'vote_timestamp': 'string' ], ... }],...}
     """
 
-    logger('OpinionHandler', 'Argument ' + str(argument_uid) + ', nickname ' + str(db_user.nickname))
+    LOG.debug("Argument %s, nickname %s", argument_uid, db_user.nickname)
 
     # preparation
     _t = Translator(lang)
@@ -140,14 +143,14 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, db_
     """
     Returns nested dictionary with all kinds of information about the votes of the statements.
 
-    :param statement_uid: Statement.uid
+    :param statement_uids: Statement.uids
     :param is_supportive: Boolean
     :param db_user: User
     :param lang: language
     :param main_page: url
     :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
     """
-    logger('OpinionHandler', 'Statement {} ({})'.format(statement_uids, is_supportive))
+    LOG.debug("Statement %s (%s)", statement_uids, is_supportive)
 
     opinions = []
     _t = Translator(lang)
@@ -169,7 +172,7 @@ def __get_opinions_for_uid(uid, is_supportive, db_user, lang, _t, main_page):
         statement_dict.update(none_dict)
 
     statement_dict['uid'] = str(uid)
-    text = get_text_for_statement_uid(uid)
+    text = db_statement.get_text()
     try:
         if db_statement.is_position and lang == 'de':
             text = _t.get(_.statementIsAbout) + ' ' + text
@@ -227,7 +230,7 @@ def get_user_with_same_opinion_for_premisegroups_of_args(argument_uids, db_user,
     :param main_page: url
     :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
     """
-    logger('OpinionHandler', 'Arguments ' + str(argument_uids))
+    LOG.debug("Arguments %s", argument_uids)
 
     opinions = []
     _t = Translator(lang)
@@ -236,7 +239,8 @@ def get_user_with_same_opinion_for_premisegroups_of_args(argument_uids, db_user,
         db_argument = DBDiscussionSession.query(Argument).get(arg_uid)
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
         if db_premises:
-            opinions.append(get_user_with_same_opinion_for_premisegroups_of_arg(db_argument, db_premises, db_user, lang, main_page))
+            opinions.append(
+                get_user_with_same_opinion_for_premisegroups_of_arg(db_argument, db_premises, db_user, lang, main_page))
 
     return {'opinions': opinions, 'title': start_with_capital(title)}
 
@@ -292,7 +296,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, db_user, lang, main_pa
     """
     try:
         text = get_text_for_argument_uid(argument_uid, 'de')
-        logger('OpinionHandler', 'Argument {}: {}'.format(argument_uid, text))
+        LOG.debug("Argument %s: %s", argument_uid, text)
         if not text:
             return {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
     except TypeError:
@@ -341,7 +345,7 @@ def get_user_with_opinions_for_attitude(statement_uid, db_user, lang, main_page)
     :return:
     """
 
-    logger('OpinionHandler', 'Statement ' + str(statement_uid))
+    LOG.debug("Statement %s", statement_uid)
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid) if statement_uid else None
     _t = Translator(lang)
     title = _t.get(_.agreeVsDisagree)

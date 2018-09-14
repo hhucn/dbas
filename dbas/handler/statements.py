@@ -1,8 +1,8 @@
-from os import environ
-from typing import List, Tuple, Dict, Union, Any
-
+import logging
 import transaction
+from os import environ
 from sqlalchemy import func
+from typing import List, Tuple, Dict, Union, Any
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
@@ -14,9 +14,8 @@ from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_ne
     set_new_rebut
 from dbas.helper.url import UrlManager
 from dbas.input_validator import is_integer
-from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_string, get_text_for_argument_uid, \
+from dbas.lib import get_profile_picture, escape_string, get_text_for_argument_uid, \
     Relations, Attitudes
-from dbas.logger import logger
 from dbas.review.queue import Code
 from dbas.review.queue.edit import EditQueue
 from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
@@ -24,6 +23,8 @@ from dbas.review.reputation import add_reputation_for, has_access_to_review_syst
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
+
+LOG = logging.getLogger(__name__)
 
 
 def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
@@ -36,7 +37,7 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
-    logger('StatementsHelper', statement_text)
+    LOG.debug("%s", statement_text)
 
     user.update_last_action(db_user)
 
@@ -124,18 +125,18 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
 
     if added_reviews.count(Code.SUCCESS) == 0:  # no edits set
         if added_reviews.count(Code.DOESNT_EXISTS) > 0:
-            logger('StatementsHelper', 'internal key error')
+            LOG.debug("Internal Key Error")
             return {
                 'info': translator.get(_.internalKeyError),
                 'error': True
             }
         if added_reviews.count(Code.DUPLICATE) > 0:
-            logger('StatementsHelper', 'already edit proposals')
+            LOG.debug("Already edit proposals")
             return {
                 'info': translator.get(_.alreadyEditProposals),
                 'error': True
             }
-        logger('StatementsHelper', 'no corrections given')
+        LOG.debug("No corrections given")
         return {
             'info': translator.get(_.noCorrections),
             'error': True
@@ -195,7 +196,7 @@ def get_logfile_for_statements(uids, lang, main_page):
     :param main_page: URL
     :return: dictionary with the logfile-rows
     """
-    logger('StatementsHelper', 'def with uid: ' + str(uids))
+    LOG.debug("Enter get_logfile_for_statements with uids: %s", uids)
 
     main_dict = dict()
     for uid in uids:
@@ -209,7 +210,8 @@ def get_logfile_for_statements(uids, lang, main_page):
         for index, version in enumerate(db_textversions):
             content_dict[str(index)] = __get_logfile_dict(version, main_page, lang)
         return_dict['content'] = content_dict
-        main_dict[get_text_for_statement_uid(uid)] = return_dict
+        statement = DBDiscussionSession.query(Statement).get(uid)
+        main_dict[statement.get_text()] = return_dict
 
     return main_dict
 
@@ -255,7 +257,7 @@ def insert_as_statement(text: str, db_user: User, db_issue: Issue, is_start=Fals
     _um = UrlManager(db_issue.slug)
     append_action_to_issue_rss(db_issue=db_issue, db_author=db_user,
                                title=_tn.get(_.positionAdded if is_start else _.statementAdded),
-                               description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
+                               description='...' + new_statement.get_text() + '...',
                                url=_um.get_url_for_statement_attitude(new_statement.uid))
 
     return new_statement
@@ -272,7 +274,7 @@ def set_statement(text: str, db_user: User, is_position: bool, db_issue: Issue) 
     :return: Statement, is_duplicate or -1, False on error
     """
 
-    logger('StatementsHelper', 'user_id: {}, text: {}, issue: {}'.format(db_user.uid, text, db_issue.uid))
+    LOG.debug("User_id: %s, text: %s, issue: %s", db_user.uid, text, db_issue.uid)
 
     # escaping and cleaning
     text = escape_string(' '.join(text.strip().split()))
@@ -381,7 +383,7 @@ def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, s
     :param db_user: User
     :return: URL, [Statement.uid], String
     """
-    logger('StatementsHelper', '__process_input_of_start_premises: {}'.format(len(premisegroups)))
+    LOG.debug("Entering __process_input_of_start_premises with # of premisegroups: %s", len(premisegroups))
     _tn = Translator(db_issue.lang)
 
     # insert all premise groups into our database
@@ -418,7 +420,7 @@ def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, s
 
 def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, supportive: bool, db_issue: Issue,
                                 db_user: User, history, mailer):
-    logger('StatementsHelper', '__receive_urls_of_start_premises')
+    LOG.debug("Entering __receive_urls_of_start_premises")
 
     # arguments=0: empty input
     # arguments=1: deliver new url
@@ -453,7 +455,7 @@ def insert_new_premises_for_argument(premisegroup: List[str], current_attack, ar
     :param db_user: User
     :return: Argument
     """
-    logger('StatementsHelper', 'def {}'.format(arg_uid))
+    LOG.debug("Entering insert_new_premises_for_argument with arg_uid: %s", arg_uid)
 
     statements = []
     for premise in premisegroup:
@@ -479,10 +481,10 @@ def insert_new_premises_for_argument(premisegroup: List[str], current_attack, ar
         new_argument, duplicate = set_new_rebut(new_pgroup.uid, current_argument, db_user, db_issue)
 
     if not new_argument:
-        logger('StatementsHelper', 'No statement or any premise = conclusion')
+        LOG.debug("No statement or any premise = conclusion")
         return Translator(db_issue.lang).get(_.premiseAndConclusionAreEqual)
 
-    logger('StatementsHelper', 'Returning argument ' + str(new_argument.uid))
+    LOG.debug("Returning argument %s", new_argument.uid)
     return new_argument
 
 
@@ -495,8 +497,7 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
     :param db_issue: Issue
     :return: PremiseGroup.uid
     """
-    logger('StatementsHelper', 'user: ' + str(db_user.uid) +
-           ', statement: ' + str([s.uid for s in statements]) + ', issue: ' + str(db_issue.uid))
+    LOG.debug("User: %s, statement: %s, issue: %s", db_user.uid, [s.uid for s in statements], db_issue.uid)
     # check for duplicate
     all_groups = []
     for statement in statements:
@@ -550,10 +551,8 @@ def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclu
     :param db_issue: Issue
     :return:
     """
-    logger('StatementsHelper',
-           'main with premisegroup {} as premisegroup, conclusion {} in issue {}'.format(premisegroup,
-                                                                                         db_conclusion.uid,
-                                                                                         db_issue.uid))
+    LOG.debug("Entering __create_argument_by_raw_input with premisegroup %s, conclusion %s in issue %s",
+              premisegroup, db_conclusion.uid, db_issue.uid)
 
     new_statements = []
 
@@ -563,7 +562,7 @@ def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclu
 
     # second, set the new statements as premisegroup
     new_premisegroup = set_statements_as_new_premisegroup(new_statements, db_user, db_issue)
-    logger('StatementsHelper', 'new pgroup ' + str(new_premisegroup.uid))
+    LOG.debug("New pgroup %s", new_premisegroup.uid)
 
     # third, insert the argument
     new_argument = __create_argument_by_uids(db_user, new_premisegroup.uid, db_conclusion.uid, None, is_supportive,
@@ -594,12 +593,9 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
     :param db_issue: Issue
     :return:
     """
-    logger('StatementsHelper', 'main with user: ' + str(db_user.nickname) +
-           ', premisegroup_uid: ' + str(premisegroup_uid) +
-           ', conclusion_uid: ' + str(conclusion_uid) +
-           ', argument_uid: ' + str(argument_uid) +
-           ', is_supportive: ' + str(is_supportive) +
-           ', issue: ' + str(db_issue.uid))
+    LOG.debug("Entering __create_argument_by_uids with user: %s, premisegroup_uid: %s, conclusion_uid :%s, "
+              "argument_uid: %s, is_supportive: %s, issue: %s",
+              db_user.nickname, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, db_issue.uid)
 
     new_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == premisegroup_uid,
                                                               Argument.is_supportive == is_supportive,
@@ -621,8 +617,8 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
                                                                   Argument.issue_uid == db_issue.uid).first()
     transaction.commit()
     if new_argument:
-        logger('StatementsHelper', 'argument was inserted')
+        LOG.debug("Argument was inserted")
         return new_argument
     else:
-        logger('StatementsHelper', 'argument was not inserted')
+        LOG.debug("Argument was not inserted")
         return None

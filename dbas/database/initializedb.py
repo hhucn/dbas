@@ -3,11 +3,12 @@
 Init scripts for database
 """
 
-import os
-import random
 import sys
 
 import arrow
+import logging
+import os
+import random
 import transaction
 from pyramid.paster import get_appsettings, setup_logging
 
@@ -22,8 +23,8 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
 from dbas.handler.password import get_hashed_password
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url, nick_of_anonymous_user
-from dbas.logger import logger
 
+LOG = logging.getLogger(__name__)
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
                'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
@@ -281,13 +282,15 @@ def setup_news_db(session, ui_locale):
     news01 = News(title='Anonymous users after vacation',
                   date=arrow.get('2015-09-24'),
                   author='Tobias Krauthoff',
-                  news='After two and a half week of vacation we have a new feature. The discussion is now available for anonymous ' +
-                       'users, therefore everyone can participate, but only registered users can make and edit statements.')
+                  news='After two and a half week of vacation we have a new feature. The discussion is now available ' +
+                       'for anonymous users, therefore everyone can participate, but only registered users can make ' +
+                       'and edit statements.')
     news02 = News(title='Vacation done',
                   date=arrow.get('2015-09-23'),
                   author='Tobias Krauthoff',
-                  news='After two and a half weeks of vacation a new feature was done. Hence anonymous users can participate, the ' +
-                       'discussion is open for all, but committing and editing statements is for registered users only.')
+                  news='After two and a half weeks of vacation a new feature was done. Hence anonymous users can ' +
+                       'participate, the discussion is open for all, but committing and editing statements is ' +
+                       'for registered users only.')
     news03 = News(title='New URL-Schemes',
                   date=arrow.get('2015-09-01'),
                   author='Tobias Krauthoff',
@@ -862,10 +865,8 @@ def __setup_dummy_seen_by(session):
     session.add_all(elements)
     session.flush()
 
-    logger('INIT_DB',
-           'Created ' + str(argument_count) + ' seen-by entries for ' + str(len(db_arguments)) + ' arguments')
-    logger('INIT_DB',
-           'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
+    LOG.debug("Created %s seen-by entries for %s arguments", argument_count, len(db_arguments))
+    LOG.debug("Created %s seen-by entries for %s statements", statement_count, len(db_statements))
 
 
 def __setup_dummy_clicks(session):
@@ -889,7 +890,7 @@ def __setup_dummy_clicks(session):
     statement_count = len(db_statements)
 
     if argument_count <= 0 or statement_count <= 0:
-        logger('INIT_DB', 'No arguments or statements! Do you forget to init discussions?', warning=True)
+        LOG.warning("No arguments or statements! Did you forget to init discussions?")
         return
 
     rat_arg_up = arg_up / argument_count
@@ -897,17 +898,11 @@ def __setup_dummy_clicks(session):
     rat_stat_up = stat_up / statement_count
     rat_stat_down = stat_down / statement_count
 
-    logger('INIT_DB',
-           'Created {} up clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_up, argument_count, rat_arg_up))
-    logger('INIT_DB',
-           'Created {} down clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_down, argument_count,
-                                                                                     rat_arg_down))
-    logger('INIT_DB',
-           'Created {} up clicks for {} statements ({:.2f} clicks/statement)'.format(stat_up, statement_count,
-                                                                                     rat_stat_up))
-    logger('INIT_DB',
-           'Created {} down clicks for {} statements ({:.2f} clicks/statement)'.format(stat_down, statement_count,
-                                                                                       rat_stat_down))
+    LOG.debug("Created %s up clicks for %s arguments (%.2f clicks/argument)", arg_up, argument_count, rat_arg_up)
+    LOG.debug("Created %s down clicks for %s arguments (%.2f clicks/argument)", arg_down, argument_count, rat_arg_down)
+    LOG.debug("Created %s up clicks for %s statements (%.2f clicks/statements)", stat_up, statement_count, rat_stat_up)
+    LOG.debug("Created %s down clicks for %s statements (%.2f clicks/statements)", stat_down, statement_count,
+              rat_stat_down)
 
     session.add_all(new_clicks_for_arguments)
     session.add_all(new_clicks_for_statements)

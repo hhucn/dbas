@@ -4,28 +4,30 @@ Common, pure functions used by the D-BAS.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from collections import defaultdict
+
 import hashlib
 import locale
+import logging
 import os
 import re
 import warnings
-from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
+from sqlalchemy import func
 from typing import List, Union
 from urllib import parse
 from uuid import uuid4
 
-from sqlalchemy import func
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, Settings, \
     ClickedArgument, ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup, StatementToIssue
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 nick_of_anonymous_user = 'anonymous'
 
@@ -207,7 +209,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :param include_disabled: Boolean
     :return: [Arguments]
     """
-    logger('DBAS.LIB', 'main {}, include_disabled {}'.format(statement_uid, include_disabled))
+    LOG.debug("main %s, include_disabled %s", statement_uid, include_disabled)
     db_arguments = __get_arguments_of_conclusion(statement_uid, include_disabled)
     arg_array = [arg for arg in db_arguments] if db_arguments else []
 
@@ -229,7 +231,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
 
     arg_array = list(set(arg_array + db_undercuts + db_undercutted_undercuts))
 
-    logger('DBAS.LIB', 'returning arguments {}'.format([arg.uid for arg in arg_array]))
+    LOG.debug("returning arguments %s", [arg.uid for arg in arg_array])
     return arg_array if len(arg_array) > 0 else None
 
 
@@ -285,7 +287,7 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
-    logger('DBAS.LIB', 'main ' + str(statement_uid))
+    LOG.debug("main %s", statement_uid)
     arguments = get_all_arguments_by_statement(statement_uid)
     results = []
     if arguments:
@@ -306,7 +308,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
-    logger('DBAS.LIB', 'main ' + str(db_statement.uid))
+    LOG.debug("main %s", db_statement.uid)
     arguments = get_all_arguments_by_statement(db_statement.uid)
     uids = [arg.uid for arg in arguments] if arguments else None
     results = list()
@@ -343,6 +345,7 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
     :param uid: Integer
+    :param nickname: String
     :param with_html_tag: Boolean
     :param start_with_intro: Boolean
     :param first_arg_by_user: Boolean
@@ -353,9 +356,10 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     :param minimize_on_undercut: Boolean
     :param anonymous_style: Boolean
     :param support_counter_argument: Boolean
+    :param is_users_opinion: Boolean
     :return: String
     """
-    logger('DBAS.LIB', 'main {}'.format(uid))
+    LOG.debug("main %s", uid)
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return None
@@ -490,7 +494,6 @@ def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_h
 
     Please, do not touch this!
 
-    :param uid: Argument.uid
     :param rearrange_intro: Boolean
     :param with_html_tag: Boolean
     :param colored_position: Boolean

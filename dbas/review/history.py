@@ -3,11 +3,11 @@ Provides helping function for the managing the queue with all executed decisions
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import logging
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, sql_timestamp_pretty_print
 from dbas.lib import get_profile_picture
-from dbas.logger import logger
 from dbas.review import txt_len_history_page
 from dbas.review.mapper import get_review_model_by_key, get_queue_by_key
 from dbas.review.queue import key_edit, key_delete, key_duplicate, key_merge, key_split, review_queues
@@ -16,6 +16,8 @@ from dbas.review.reputation import get_reputation_of, reputation_borders
 from dbas.review.reputation import reputation_icons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
+
+LOG = logging.getLogger(__name__)
 
 
 def get_review_history(main_page, db_user, translator):
@@ -35,7 +37,7 @@ def get_ongoing_reviews(main_page, db_user, translator):
     Returns the history of all reviews
 
     :param main_page: Host URL
-    :param nickname: User.nickname
+    :param db_user: User
     :param translator: Translator
     :return: dict()
     """
@@ -79,12 +81,11 @@ def __get_executed_reviews_of(table, main_page, table_type, translator, is_execu
     :param table: Shortcut for the table
     :param main_page: Main page of D-BAS
     :param table_type: Type of the review table
-    :param last_review_type: Type of the last reviewer of the table
     :param translator: current ui_locales
     :param is_executed
     :return: Array with all decision per table
     """
-    logger('History', f'Table: {table} ({table_type})')
+    LOG.debug("Table: %s (%s)", table, table_type)
     some_list = list()
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == is_executed).order_by(
         table_type.uid.desc()).all()
@@ -103,7 +104,6 @@ def __get_executed_review_element_of(table_key, main_page, db_review, translator
     :param table_key: Shortcut for the table
     :param main_page: Main page of D-BAS
     :param db_review: Element
-    :param last_review_type: Type of the last reviewer of the table
     :param translator: current ui_locales
     :param is_executed
     :return: Element
@@ -149,7 +149,7 @@ def __handle_table_of_review_element(table_key, review, short_text, full_text, i
     :param is_executed:
     :return:
     """
-    pdict = {}
+    pdict = dict()
     pdict['row_id'] = table_key + str(review.uid)
     pdict['argument_shorttext'] = short_text
     pdict['argument_fulltext'] = full_text

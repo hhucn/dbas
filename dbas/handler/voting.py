@@ -7,6 +7,7 @@ We are not deleting opposite votes for detecting opinion changes!
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import logging
 import transaction
 
 from dbas.database import DBDiscussionSession
@@ -14,7 +15,8 @@ from dbas.database.discussion_model import Argument, Statement, Premise, Clicked
     SeenStatement, SeenArgument, MarkedArgument, MarkedStatement
 from dbas.input_validator import is_integer
 from dbas.lib import nick_of_anonymous_user
-from dbas.logger import logger
+
+LOG = logging.getLogger(__name__)
 
 
 def add_click_for_argument(db_argument: Argument, db_user: User) -> bool:
@@ -26,22 +28,21 @@ def add_click_for_argument(db_argument: Argument, db_user: User) -> bool:
     :return:
     """
     if db_user.nickname == nick_of_anonymous_user:
-        logger('VotingHelper', 'User is anonymous, don\'t counting clicks')
+        LOG.debug("User is anonymous, not counting clicks")
         return False
-    logger('VotingHelper', 'Increasing argument ' + str(db_argument.uid) + ' vote')
+    LOG.debug("Increasting vote for argument %s ", db_argument.uid)
 
     if db_argument.argument_uid is None:
-        logger('VotingHelper', 'Undercut depth 0')
+        LOG.debug("Undercut depth 0")
         __add_click_for_argument(db_user, db_argument)
     else:
         db_undercuted_arg_step_1 = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
 
         if db_undercuted_arg_step_1.argument_uid is None:
-            logger('VotingHelper', 'Undercut depth 1')
+            LOG.debug("Undercut depth 1")
             __add_click_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_user)
-
         else:
-            logger('VotingHelper', 'Undercut depth 2')
+            LOG.debug("Undercut depth 2")
             __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user)
 
     transaction.commit()
@@ -134,8 +135,7 @@ def add_click_for_statement(stmt_or_arg: Statement, db_user: User, supportive: b
     :return: Boolean
     """
 
-    logger('VotingHelper',
-           'increasing {} vote for statement {}'.format('up' if supportive else 'down', str(stmt_or_arg.uid)))
+    LOG.debug("Increasing %s vote for statement %s", 'up' if supportive else 'down', stmt_or_arg.uid)
 
     if db_user.nickname == nick_of_anonymous_user:
         return False
@@ -156,7 +156,7 @@ def add_seen_statement(statement_uid: int, db_user: User):
     """
     if not is_integer(statement_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
         return False
-    logger('VotingHelper', 'statement ' + str(statement_uid) + ', for user ' + str(db_user.uid))
+    LOG.debug("Statement %s, for user %s", statement_uid, db_user.uid)
 
     val = __statement_seen_by_user(db_user, statement_uid)
     if val:
@@ -167,7 +167,8 @@ def add_seen_statement(statement_uid: int, db_user: User):
 
 def add_seen_argument(argument_uid, db_user):
     """
-    Adds the uid of the argument into the seen_by list as well as all included statements, mapped with the given user uid
+    Adds the uid of the argument into the seen_by list as well as all included statements, mapped with the given user
+    uid
 
     :param db_user: current user
     :param argument_uid: uid of the argument
@@ -175,7 +176,7 @@ def add_seen_argument(argument_uid, db_user):
     """
     if not is_integer(argument_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
         return False
-    logger('VotingHelper', 'argument ' + str(argument_uid) + ', for user ' + str(db_user.uid))
+    LOG.debug("Argument %s, for user %s", argument_uid, db_user.uid)
 
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     __argument_seen_by_user(db_user, argument_uid)
@@ -225,10 +226,10 @@ def __click_argument(argument, user, is_up_vote):
     :return: None
     """
     if argument is None:
-        logger('VotingHelper', 'argument is None')
+        LOG.debug("Argument is None")
         return
 
-    logger('VotingHelper', 'argument ' + str(argument.uid) + ', user ' + user.nickname)
+    LOG.debug("Argument %s, user %s", argument.uid, user.nickname)
 
     db_all_valid_votes = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.argument_uid == argument.uid,
                                                                            ClickedArgument.author_uid == user.uid,
@@ -241,13 +242,13 @@ def __click_argument(argument, user, is_up_vote):
         db_old_votes.remove(db_current_vote)
 
     for old_vote in db_old_votes:
-        logger('VotingHelper', 'setting old vote ' + str(old_vote.uid) + ' as invalid')
+        LOG.debug("Setting old vote %s as invalid", old_vote.uid)
         old_vote.set_valid(False)
     DBDiscussionSession.flush()
 
     db_new_vote = None
     if not db_current_vote:
-        logger('VotingHelper', 'add vote for argument ' + str(argument.uid))
+        LOG.debug("Add vote for argument %s", argument.uid)
         db_new_vote = ClickedArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_up_vote,
                                       is_valid=True)
         DBDiscussionSession.add(db_new_vote)
@@ -256,10 +257,11 @@ def __click_argument(argument, user, is_up_vote):
     # do we have some inconsequences?
     db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=argument.conclusion_uid).all()
     for arg in db_arguments:
-        db_votes_for_arg = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.argument_uid == arg.uid,
-                                                                             ClickedArgument.is_valid == True,
-                                                                             ClickedArgument.author_uid == user.uid,
-                                                                             ClickedArgument.is_up_vote == argument.is_supportive).all()
+        db_votes_for_arg = DBDiscussionSession.query(ClickedArgument).filter(
+            ClickedArgument.argument_uid == arg.uid,
+            ClickedArgument.is_valid == True,
+            ClickedArgument.author_uid == user.uid,
+            ClickedArgument.is_up_vote == argument.is_supportive).all()
         if db_new_vote and db_new_vote in db_votes_for_arg:
             db_votes_for_arg.remove(db_new_vote)
 
@@ -279,10 +281,10 @@ def __click_statement(statement, db_user, is_up_vote):
     :return: None
     """
     if statement is None:
-        logger('VotingHelper', 'statement is None')
+        LOG.debug("Statement is None")
         return
 
-    logger('VotingHelper', 'statement ' + str(statement.uid) + ', db_user ' + db_user.nickname)
+    LOG.debug("Statement %s, db_user %s", statement.uid, db_user.nickname)
 
     db_all_valid_votes = DBDiscussionSession.query(ClickedStatement).filter(
         ClickedStatement.statement_uid == statement.uid,
@@ -296,12 +298,12 @@ def __click_statement(statement, db_user, is_up_vote):
         db_old_votes.remove(db_current_vote)
 
     for old_vote in db_old_votes:
-        logger('VotingHelper', 'setting old vote' + str(old_vote.uid) + 'as invalid')
+        LOG.debug("Setting old vote %s as invalid", old_vote.uid)
         old_vote.set_valid(False)
     DBDiscussionSession.flush()
 
     if not db_current_vote:
-        logger('VotingHelper', 'add vote for statement ' + str(statement.uid))
+        LOG.debug("Add vote for statement %s", statement.uid)
         db_new_vote = ClickedStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=is_up_vote,
                                        is_valid=True)
         DBDiscussionSession.add(db_new_vote)
@@ -318,10 +320,10 @@ def __vote_premisesgroup(premisegroup_uid, user, is_up_vote):
     :return:
     """
     if premisegroup_uid is None or premisegroup_uid == 0:
-        logger('VotingHelper', 'premisegroup_uid is None')
+        LOG.debug("Premisegroup_uid is None")
         return
 
-    logger('VotingHelper', 'premisegroup_uid {}, user {}'.format(premisegroup_uid, user.nickname))
+    LOG.debug("Premisegroup_uid %s, user %s", premisegroup_uid, user.nickname)
 
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
     for premise in db_premises:
@@ -341,12 +343,10 @@ def __argument_seen_by_user(db_user, argument_uid):
     db_seen_by = DBDiscussionSession.query(SeenArgument).filter(SeenArgument.argument_uid == argument_uid,
                                                                 SeenArgument.user_uid == db_user.uid).first()
     if not db_seen_by:
-        # logger('VotingHelper', '__argument_seen_by_user', 'argument {}, for user {} is now marked as seen'.format(argument_uid, db_user.uid))
         DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user_uid=db_user.uid))
         DBDiscussionSession.flush()
         return True
 
-    # logger('VotingHelper', '__argument_seen_by_user', 'argument {}, for user {} was already seen'.format(argument_uid, db_user.uid))
     return False
 
 
@@ -361,12 +361,10 @@ def __statement_seen_by_user(db_user, statement_uid):
     db_seen_by = DBDiscussionSession.query(SeenStatement).filter(SeenStatement.statement_uid == statement_uid,
                                                                  SeenStatement.user_uid == db_user.uid).first()
     if not db_seen_by:
-        # logger('VotingHelper', '__statement_seen_by_user', 'statement {}, for user {} is now marked as seen'.format(statement_uid, db_user.uid))
         DBDiscussionSession.add(SeenStatement(statement_uid=statement_uid, user_uid=db_user.uid))
         DBDiscussionSession.flush()
         return True
 
-    # logger('VotingHelper', '__statement_seen_by_user', 'statement {}, for user {} was already seen'.format(statement_uid, db_user.uid))
     return False
 
 
@@ -378,7 +376,7 @@ def __premisegroup_seen_by_user(db_user, premisegroup_uid):
     :param premisegroup_uid: uid of the premisesgroup
     :return: True if the statement was not seen by the user (until now), false otherwise
     """
-    logger('VotingHelper', 'Check premises of group {}'.format(premisegroup_uid))
+    LOG.debug("Check premises of group %s", premisegroup_uid)
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
     for premise in db_premises:
         __statement_seen_by_user(db_user, premise.statement_uid)

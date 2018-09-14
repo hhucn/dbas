@@ -8,18 +8,18 @@ Manage Github Client IDs: https://github.com/organizations/**YOUR_ACCOUNT**/sett
 """
 
 import json
+import logging
 import os
-
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, InvalidClientError, MissingTokenError
 from requests_oauthlib.oauth2_session import OAuth2Session
 from slugify import slugify
 
 from dbas.auth.oauth import get_oauth_ret_dict
 from dbas.handler.user import oauth_values
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
 CLIENT_ID = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
 CLIENT_SECRET = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
 AUTHORIZATION_BASE_URL = 'https://github.com/login/oauth/authorize'
@@ -27,19 +27,18 @@ TOKEN_URL = 'https://github.com/login/oauth/access_token'
 SCOPE = ['user:email']
 
 
-def start_flow(**kwargs):
+def start_flow():
     """
     Starts the oauth flow. This will return a dict which causes a redirect to the providers page.
 
-    :param kwargs: should have a redirect_uri
     """
 
-    logger('Github OAuth', 'Read OAuth id/secret: none? {}/{}'.format(CLIENT_ID is None, CLIENT_SECRET is None))
+    LOG.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
 
     github = OAuth2Session(CLIENT_ID, scope=SCOPE)
     authorization_url, state = github.authorization_url(AUTHORIZATION_BASE_URL)
 
-    logger('Github OAuth', 'Please go to {} and authorize access'.format(authorization_url))
+    LOG.debug("Please go to %s and authorize access", authorization_url)
     return {'authorization_url': authorization_url, 'error': ''}
 
 
@@ -55,23 +54,23 @@ def continue_flow(authorization_response, ui_locales):
     github = OAuth2Session(CLIENT_ID)
     _tn = Translator(ui_locales)
 
-    logger('Github OAuth', 'Read OAuth id/secret: none? {}/{}'.format(CLIENT_ID is None, CLIENT_SECRET is None))
-    logger('Github OAuth', 'authorization_response: ' + authorization_response)
+    LOG.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
+    LOG.debug("Authorization_response: %s", authorization_response)
 
     try:
         github.fetch_token(TOKEN_URL, client_secret=CLIENT_SECRET, authorization_response=authorization_response)
     except InsecureTransportError:
-        logger('Github OAuth', 'OAuth 2 MUST utilize https', error=True)
+        LOG.debug("Oauth2 MUST utilize https")
         return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
     except InvalidClientError:
-        logger('Github OAuth', 'InvalidClientError', error=True)
+        LOG.debug("InvalidClientError")
         return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
     except MissingTokenError:
-        logger('Github OAuth', 'MissingTokenError', error=True)
+        LOG.debug("MissingTokenError")
         return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
 
     resp = github.get('https://api.github.com/user')
-    logger('Github OAuth', str(resp.text))
+    LOG.debug("%s", resp.text)
     parsed_resp = json.loads(resp.text)
 
     # 'login': 'tkrauthoff'
@@ -108,8 +107,8 @@ def continue_flow(authorization_response, ui_locales):
     user_data = __prepare_data(parsed_resp)
     missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
 
-    logger('Github OAuth', 'user_data: ' + str(user_data))
-    logger('Github OAuth', 'missing_data: ' + str(missing_data))
+    LOG.debug("user_data: %s", user_data)
+    LOG.debug("missing_data: %s", missing_data)
 
     return get_oauth_ret_dict(user_data=user_data, missing_data=missing_data)
 

@@ -3,6 +3,7 @@ Provides helping function for dictionaries, which are used in discussions.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import logging
 from typing import Union, List
 
 import dbas.handler.history as history_handler
@@ -13,14 +14,15 @@ from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_stat
 from dbas.helper.url import UrlManager
 from dbas.lib import get_text_for_argument_uid, get_text_for_conclusion, create_speechbubble_dict, \
     is_author_of_argument, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, \
-    get_text_for_statement_uid, Relations
-from dbas.logger import logger
+    Relations
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.text_generator import tag_type, get_header_for_users_confrontation_response, \
     get_text_for_add_premise_container, get_text_for_confrontation, get_text_for_support, \
     get_name_link_of_arguments_author
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 class DiscussionDictHelper(object):
@@ -52,7 +54,7 @@ class DiscussionDictHelper(object):
         :position_count: int
         :return: dict()
         """
-        logger('DictionaryHelper', 'at_start with positions: ' + str(position_count))
+        LOG.debug("At_start with positions: %s", position_count)
         _tn = Translator(self.lang)
         add_premise_text = _tn.get(_.whatIsYourIdea)
         intro = _tn.get(_.initialPositionInterest) + ' ...'
@@ -75,11 +77,10 @@ class DiscussionDictHelper(object):
         Prepares the discussion dict with all bubbles for the second step in discussion,
         where the user chooses her attitude.
 
-        :param uid: Argument.uid
         :param db_position: Statement
         :return: dict()
         """
-        logger('DictionaryHelper', 'at_attitude')
+        LOG.debug("Entering get_dict_for_attitude")
         _tn = Translator(self.lang)
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
@@ -116,7 +117,7 @@ class DiscussionDictHelper(object):
         :param count_of_items: Integer
         :return: dict()
         """
-        logger('DictionaryHelper', 'at_justify')
+        LOG.debug("Entering get_dict_for_justify_statement")
         _tn = Translator(self.lang)
 
         bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
@@ -190,7 +191,7 @@ class DiscussionDictHelper(object):
         :param attack: String (undermine, support, undercut, rebut, ...)
         :return: dict()
         """
-        logger('DictionaryHelper', 'def')
+        LOG.debug("Entering get_dict_for_justify_argument")
         _tn = Translator(self.lang)
         bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
@@ -307,7 +308,7 @@ class DiscussionDictHelper(object):
         :param nickname:
         :return: dict()
         """
-        logger('DictionaryHelper', 'at_dont_know')
+        LOG.debug("Entering get_dict_for_dont_know_reaction")
         _tn = Translator(self.lang)
         bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
@@ -361,7 +362,7 @@ class DiscussionDictHelper(object):
         :param db_user: User
         :return: dict()
         """
-        logger('DictionaryHelper', 'at_argumentation about ' + str(db_user_argument.uid))
+        LOG.debug("At_argumentation about %s", db_user_argument.uid)
         nickname = db_user.nickname
         if db_user.nickname == nick_of_anonymous_user:
             db_user = None
@@ -532,7 +533,7 @@ class DiscussionDictHelper(object):
         :param uid: Argument.uid
         :return: dict()
         """
-        logger('DictionaryHelper', 'argument ' + str(uid))
+        LOG.debug("Argument %s", uid)
         _tn = Translator(self.lang)
         argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
         bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
@@ -580,7 +581,7 @@ class DiscussionDictHelper(object):
         :param nickname: User.nickname
         :return: dict()
         """
-        logger('DictionaryHelper', str(uid_system_arg))
+        LOG.debug("Entering get_dict_for_supporting_each_other for arg uid: %s", uid_system_arg)
         _tn = Translator(self.lang)
         bubbles_array = history_handler.create_bubbles(self.history, nickname, self.lang, self.slug)
         db_arg_system = DBDiscussionSession.query(Argument).get(uid_system_arg)
@@ -623,7 +624,7 @@ class DiscussionDictHelper(object):
         :param uid: Argument.uid
         :return: dict()
         """
-        logger('DictionaryHelper', 'at_attitude')
+        LOG.debug("Entering get_dict_got_jump_decision")
         _tn = Translator(self.lang)
 
         db_argument = DBDiscussionSession.query(Argument).get(uid)
@@ -664,9 +665,13 @@ class DiscussionDictHelper(object):
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
 
-        logger('DictionaryHelper', 'at_choosing')
+        LOG.debug("Choosing dictionary for bubbles.")
         a = _tn.get(_.soYouEnteredMultipleReasons)
-        c = get_text_for_argument_uid(uid) if is_uid_argument else get_text_for_statement_uid(uid)
+        if is_uid_argument:
+            c = get_text_for_argument_uid(uid)
+        else:
+            statement = DBDiscussionSession.query(Statement).get(uid)
+            c = statement.get_text()
 
         if is_supportive:
             if is_uid_argument:
@@ -708,9 +713,8 @@ class DiscussionDictHelper(object):
         statement_list = list()
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=argument.premisegroup_uid).all()
 
-        logger('DictionaryHelper', 'Argument ' + str(argument.uid) +
-               ' conclusion: ' + str(argument.conclusion_uid) + '/' + str(argument.argument_uid) +
-               ' premise count: ' + str(len(db_premises)))
+        LOG.debug("Argument %s, conclusion: %s / %s, premise count: %s", argument.uid, argument.conclusion_uid,
+                  argument.argument_uid, len(db_premises))
 
         for premise in db_premises:
             statement_list.append({'text': premise.get_text(),

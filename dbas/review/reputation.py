@@ -3,22 +3,22 @@ Provides helping function for handling reputation.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
+import arrow
+import logging
+import transaction
 from enum import Enum
 from typing import Union
-
-import arrow
-import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason, sql_timestamp_pretty_print
 from dbas.lib import nick_of_anonymous_user
-from dbas.logger import logger
 from dbas.review.queue import review_queues, all_queues, key_edit, key_delete, key_duplicate, key_optimization, \
     key_merge, key_split, key_history, key_ongoing
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
 
+LOG = logging.getLogger(__name__)
 smallest_border = 30
 limit_to_open_issues = 10
 reputation_borders = {**{key: smallest_border for key in review_queues}, **{key_history: 150, key_ongoing: 300}}
@@ -137,7 +137,7 @@ def add_reputation_for(db_user: User, db_reason: ReputationReason):
     :param db_reason: ReputationReason
     :return: boolean that is true, when the user reached 30points
     """
-    logger('Reputation', f'main {db_reason.reason}, user {db_user.uid}')
+    LOG.debug("Main %s, user %s", db_reason.reason, db_user.uid)
     # special case:
     if db_user.nickname == nick_of_anonymous_user:
         return False
@@ -147,10 +147,10 @@ def add_reputation_for(db_user: User, db_reason: ReputationReason):
             ReputationHistory.reputation_uid == db_reason.uid,
             ReputationHistory.reputator_uid == db_user.uid).first()
         if db_already_farmed:
-            logger('Reputation', 'karma already farmed')
+            LOG.debug("Karma already farmed")
             return False
 
-    logger('Reputation', f'add {db_reason.points} for {db_user.nickname}')
+    LOG.debug("Add %s for %s", db_reason.reason, db_user.nickname)
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()
@@ -257,7 +257,8 @@ def add_reputation_and_check_review_access(db_user: User, reason: ReputationReas
 def add_reputation_and_send_popup(db_user: User, db_rep_reason: Union[None, ReputationReason], main_page: str,
                                   translator: Translator) -> bool:
     """
-    Adds reputation to a specific user and checks (send info popup) to this user. Returns true if the user now has access
+    Adds reputation to a specific user and checks (send info popup) to this user. Returns true if the user now has
+    access
 
     :param db_user: user, which should get reputation
     :param db_rep_reason: Any reputation reason
@@ -270,6 +271,7 @@ def add_reputation_and_send_popup(db_user: User, db_rep_reason: Union[None, Repu
 
     # send popup if the user had not access but not she has
     if not has_access and has_access_to_review_system(db_user):
-        send_request_for_info_popup_to_socketio(db_user.nickname, translator.get(_.youAreAbleToReviewNow), f'{main_page}/review')
+        send_request_for_info_popup_to_socketio(db_user.nickname, translator.get(_.youAreAbleToReviewNow),
+                                                f'{main_page}/review')
         return True
     return False

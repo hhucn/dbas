@@ -3,7 +3,9 @@ Provides helping function for creating the history as bubbles.
 
 .. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from typing import Optional, List
+import logging
+from typing import List
+from typing import Optional
 
 import transaction
 from pyramid.request import Request
@@ -16,11 +18,12 @@ from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_conclusion, \
     bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, Relations, Attitudes, \
     relation_mapper
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 def save_issue_uid(issue_uid: int, db_user: User):
@@ -76,7 +79,7 @@ def create_bubbles(history, nickname='', lang='', slug=''):
     if len(history) == 0:
         return []
 
-    logger('history_handler', f'nickname: {nickname}, history: {history}')
+    LOG.debug("nickname: %s, history: %s", nickname, history)
     splitted_history = split(history)
 
     bubble_array = []
@@ -101,7 +104,7 @@ def create_bubbles(history, nickname='', lang='', slug=''):
             __prepare_support_step(bubble_array, index, step, db_user, lang)
 
         else:
-            logger('history_handler', f'{index}: unused case -> {step}')
+            LOG.debug("%s: unused case -> %s", index, step)
 
     return bubble_array
 
@@ -137,7 +140,7 @@ def __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, u
     :param url: String
     :return: None
     """
-    logger('history_handler', f'{index}: justify case -> {step}')
+    LOG.debug("%s: justify case -> %s", index, step)
     steps = step.split('/')
     if len(steps) < 3:
         return
@@ -168,7 +171,7 @@ def __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_h
     :param url: String
     :return: None
     """
-    logger('history_handler', f'{index}: reaction case -> {step}')
+    LOG.debug("%s: reaction case -> %s", index, step)
     bubbles = get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url)
     if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
@@ -185,7 +188,7 @@ def __prepare_support_step(bubble_array: List[dict], index: int, step: str, db_u
     :param lang: Language.ui_locales
     :return: None
     """
-    logger('history_handler', f'{index}: support case -> {step}')
+    LOG.debug("%s: support case -> %s", index, step)
     steps = step.split('/')
     if len(steps) < 3:
         return
@@ -207,7 +210,6 @@ def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
     :param url: String
     :return: [dict()]
     """
-    logger('history_handler', 'def')
     steps = step.split('/')
     uid = int(steps[1])
     is_supportive = steps[2] == Attitudes.AGREE.value or steps[2] == Attitudes.DONT_KNOW.value
@@ -221,7 +223,8 @@ def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
     return [bubble_user]
 
 
-def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) -> Optional[List[list]]:
+def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) -> Optional[
+    List[list]]:
     """
     Creates bubbles for the support-keyword for an statement.
 
@@ -266,7 +269,6 @@ def __get_bubble_from_attitude_step(step, nickname, lang, url):
     :param url: String
     :return: [dict()]
     """
-    logger('history_handler', 'def')
     steps = step.split('/')
     uid = int(steps[1])
     text = DBDiscussionSession.query(Statement).get(uid).get_text()
@@ -316,19 +318,19 @@ def __get_bubble_from_dont_know_step(step, db_user, lang):
     return [user_bubble, sys_bubble]
 
 
-def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, color_steps=False):
+def get_bubble_from_reaction_step(step, db_user, lang, split_history, url, color_steps=False):
     """
     Creates bubbles for the reaction-keyword.
 
     :param step: String
     :param db_user: User
     :param lang: ui_locales
-    :param splitted_history: [String].uid
+    :param split_history: [String].uid
     :param url: String
     :param color_steps: Boolean
     :return: [dict()]
     """
-    logger('history_handler', f'def: {step}, {splitted_history}')
+    LOG.debug("def: %s, %s", step, split_history)
     steps = step.split('/')
     uid = int(steps[1])
 
@@ -340,10 +342,10 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
         additional_uid = int(steps[2])
 
     if not check_reaction(uid, additional_uid, attack):
-        logger('history_handler', 'wrong reaction')
+        LOG.debug("Wrong reaction")
         return None
 
-    return __create_reaction_history_bubbles(step, db_user, lang, splitted_history, url, color_steps, uid,
+    return __create_reaction_history_bubbles(step, db_user, lang, split_history, url, color_steps, uid,
                                              additional_uid, attack)
 
 
@@ -424,7 +426,7 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
     :param history: String
     :return: None
     """
-    logger('HistoryHelper', f'path: {path}, history: {history}, slug: {slug}')
+    LOG.debug("Path: %s, history: %s, slug: %s", path, history, slug)
 
     if path.startswith('/discuss'):
         path = path[len('/discuss'):]
@@ -438,7 +440,7 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
     if len(history) > 0:
         history = '?history=' + history
 
-    logger('HistoryHelper', f'saving {path}{history}')
+    LOG.debug("Saving %s%s", path, history)
 
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
     DBDiscussionSession.flush()

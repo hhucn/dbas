@@ -4,36 +4,36 @@ Handler for user-accounts
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import arrow
+import logging
 import random
+import transaction
 import uuid
 from datetime import date, timedelta
 from typing import Tuple
 
-import arrow
-import transaction
-
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, ClickedStatement, ClickedArgument, TextVersion, Settings, \
-    ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement, \
-    ReviewDuplicate, Language, StatementReferences, SeenStatement, SeenArgument, PremiseGroup, Premise, \
-    History, Message, ReviewEditValue, ReviewMerge, ReviewSplit, LastReviewerDelete, LastReviewerDuplicate, \
+    ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print, MarkedArgument, \
+    MarkedStatement, ReviewDuplicate, Language, StatementReferences, SeenStatement, SeenArgument, PremiseGroup, \
+    Premise, History, Message, ReviewEditValue, ReviewMerge, ReviewSplit, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerEdit, LastReviewerOptimization, \
     LastReviewerSplit, LastReviewerMerge, ReputationHistory, ReviewCanceled, RevokedContent, RevokedContentHistory, \
-    Issue, Argument
+    Issue, Argument, Statement
 from dbas.handler.email import send_mail
 from dbas.handler.notification import send_welcome_notification
 from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups_of_args, get_user_and_opinions_for_argument
 from dbas.lib import pretty_print_timestamp, get_text_for_argument_uid, \
-    get_text_for_statement_uid, get_profile_picture, nick_of_anonymous_user
-from dbas.logger import logger
+    get_profile_picture, nick_of_anonymous_user
 from dbas.review.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
 values = ['firstname', 'surname', 'email', 'nickname', 'password', 'gender']
 oauth_values = ['firstname', 'lastname', 'email', 'nickname', 'gender']
 
@@ -57,7 +57,8 @@ moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry'
 
 # https://en.wikipedia.org/wiki/List_of_animal_names
 # list = ';
-# $.each($($('table')[3]).find('tbody td:first-child'), function(){if ($(this).text().length > 2 ) list += ', ' + '"' + $(this).text().replace(' (list) ', ') + '"'});
+# $.each($($('table')[3]).find('tbody td:first-child'), function(){if ($(this).text().length > 2 ) list += ', ' +
+# '"' + $(this).text().replace(' (list) ', ') + '"'});
 animallist = ['Aardvark', 'Albatross', 'Alligator', 'Alpaca', 'Ant', 'Anteater', 'Antelope', 'Ape', 'Armadillo',
               'Badger', 'Barracuda', 'Bat', 'Bear', 'Beaver', 'Bee', 'Bird', 'Bison', 'Boar', 'Buffalo', 'Butterfly',
               'Camel', 'Caribou', 'Cassowary', 'Cat', 'Caterpillar', 'Cattle', 'Chamois', 'Cheetah', 'Chicken',
@@ -179,7 +180,7 @@ def refresh_public_nickname(user):
         second = biglist[random.randint(0, len(biglist) - 1)]
         nick = first + ' ' + second
 
-    logger('User', user.public_nickname + ' -> ' + nick)
+    LOG.debug("User %s -> %s", user.public_nickname, nick)
     user.set_public_nickname(nick)
 
     return nick
@@ -194,7 +195,7 @@ def is_in_group(nickname, groupname):
     :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    logger('User', 'main')
+    LOG.debug("Entering is_in_group")
     return db_user and db_user.groups.name == groupname
 
 
@@ -206,7 +207,7 @@ def is_admin(nickname):
     :return: true, if user is admin, false otherwise
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    logger('User', 'main')
+    LOG.debug("Entering is_admin")
     return db_user and db_user.groups.name == 'admins'
 
 
@@ -218,7 +219,7 @@ def get_public_data(user_id: int, lang: str):
     :param lang:
     :return: dict()
     """
-    logger('User', f'User: "{user_id}"')
+    LOG.debug("User: %s", user_id)
     return_dict = dict()
     db_user = DBDiscussionSession.query(User).get(user_id)
 
@@ -378,7 +379,7 @@ def get_mark_count_of(db_user: User, limit_on_today: bool = False):
     :return: Int, Int
     """
     if not db_user:
-        return (0, 0)
+        return 0, 0
 
     db_arg = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.author_uid == db_user.uid)
     db_stat = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.author_uid == db_user.uid)
@@ -400,7 +401,7 @@ def get_click_count_of(db_user: User, limit_on_today: bool = False) -> Tuple[int
     :return: Int, Int
     """
     if not db_user:
-        return (0, 0)
+        return 0, 0
 
     db_arg = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == db_user.uid)
     db_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == db_user.uid)
@@ -479,7 +480,8 @@ def get_marked_elements_of(db_user: User, is_argument: bool, lang: str):
             vote_dict['content'] = get_text_for_argument_uid(vote.argument_uid, lang)
         else:
             vote_dict['statement_uid'] = str(vote.statement_uid)
-            vote_dict['content'] = get_text_for_statement_uid(vote.statement_uid)
+            statement = DBDiscussionSession.query(Statement).get(vote.statement_uid)
+            vote_dict['content'] = statement.get_text()
         return_array.append(vote_dict)
 
     return return_array
@@ -510,7 +512,8 @@ def get_clicked_elements_of(db_user: User, is_argument: bool, lang: str) -> list
             click_dict['content'] = get_text_for_argument_uid(click.argument_uid, lang)
         else:
             click_dict['statement_uid'] = click.statement_uid
-            click_dict['content'] = get_text_for_statement_uid(click.statement_uid)
+            statement = DBDiscussionSession.query(Statement).get(click.statement_uid)
+            click_dict['content'] = statement.get_text()
         return_array.append(click_dict)
 
     return return_array
@@ -581,7 +584,7 @@ def get_summary_of_today(db_user: User) -> dict:
     """
     Returns summary of today's actions
 
-    :param nickname: User.nickname
+    :param db_user: Contains parameters for the user concerned
     :return: dict()
     """
     if not db_user:
@@ -618,35 +621,35 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     :param lang: current language
     :return: an message and boolean for error and success
     """
-    logger('User', 'def')
+    LOG.debug("Entering change_password")
     _t = Translator(lang)
 
     success = False
 
     # is the old password given?
     if not old_pw:
-        logger('User', 'old pwd is empty')
+        LOG.debug("Old pwd is empty")
         message = _t.get(_.oldPwdEmpty)  # 'The old password field is empty.'
     # is the new password given?
     elif not new_pw:
-        logger('User', 'new pwd is empty')
+        LOG.debug("New pwd is empty")
         message = _t.get(_.newPwdEmtpy)  # 'The new password field is empty.'
     # is the confirmation password given?
     elif not confirm_pw:
-        logger('User', 'confirm pwd is empty')
+        LOG.debug("Confirm pwd is empty")
         message = _t.get(_.confPwdEmpty)  # 'The password confirmation field is empty.'
     # is new password equals the confirmation?
     elif not new_pw == confirm_pw:
-        logger('User', 'new pwds not equal')
+        LOG.debug("New pwds not equal")
         message = _t.get(_.newPwdNotEqual)  # 'The new passwords are not equal'
     # is new old password equals the new one?
     elif old_pw == new_pw:
-        logger('User', 'pwds are the same')
+        LOG.debug("Pwds are the same")
         message = _t.get(_.pwdsSame)  # 'The new and old password are the same'
     else:
         # is the old password valid?
         if not user.validate_password(old_pw):
-            logger('User', 'old password is wrong')
+            LOG.debug("Old password is wrong")
             message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
         else:
             hashed_pw = password_handler.get_hashed_password(new_pw)
@@ -656,7 +659,7 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
             DBDiscussionSession.add(user)
             transaction.commit()
 
-            logger('User', 'password was changed')
+            LOG.debug("Password was changed")
             message = _t.get(_.pwdChanged)  # 'Your password was changed'
             success = True
 
@@ -678,7 +681,7 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
 
     _t = Translator(ui_locales)
     # creating a new user with hashed password
-    logger('User', 'Adding user ' + user['nickname'])
+    LOG.debug("Adding user %s", user['nickname'])
     hashed_password = password_handler.get_hashed_password(user['password'])
     newuser = User(firstname=user['firstname'],
                    surname=user['lastname'],
@@ -702,11 +705,11 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
     # sanity check, whether the user exists
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     if db_user:
-        logger('User', 'New data was added with uid ' + str(db_user.uid))
+        LOG.debug("New data was added with uid %s", db_user.uid)
         success = _t.get(_.accountWasAdded).format(user['nickname'])
 
     else:
-        logger('User', 'New data was not added')
+        LOG.debug("New data was not added")
         info = _t.get(_.accoutErrorTryLateOrContant)
 
     return success, info, db_user
@@ -716,7 +719,6 @@ def set_new_user(mailer, user_data, password, _tn):
     """
 
     :param mailer:
-    :param firstname:
     :param user_data: dict with firstname, lastname, nickname, email, gender
     :param password:
     :param _tn:
@@ -732,13 +734,13 @@ def set_new_user(mailer, user_data, password, _tn):
 
     # does the group exists?
     if not db_group:
-        logger('User', 'Internal error occured')
+        LOG.debug("Internal error occured")
         return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
-        logger('User', 'User already exists')
+        LOG.debug("User already exists")
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
     user = {
@@ -759,10 +761,10 @@ def set_new_user(mailer, user_data, password, _tn):
         send_mail(mailer, subject, body, email, _tn.get_lang())
         send_welcome_notification(db_new_user.uid, _tn)
 
-        logger('User', 'set new user in db')
+        LOG.debug("Set new user in db")
         return {'success': success, 'error': '', 'user': db_new_user}
 
-    logger('User', 'new user not found in db')
+    LOG.debug("New user not found in db")
     return {
         'success': False,
         'error': _tn.get(_.errorTryLateOrContant),
@@ -774,7 +776,6 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
     """
     Create a new user
 
-    :param firstname:
     :param user_data: dict with firstname, lastname, nickname, email, gender
     :param uid:
     :param provider:
@@ -791,7 +792,7 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
 
     # does the group exists?
     if not db_group:
-        logger('User', 'Internal error occurred')
+        LOG.debug("Internal error occurred")
         return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
@@ -799,13 +800,13 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
                                                      User.oauth_provider_id == str(uid)).first()
     # login of oauth user
     if db_user:
-        logger('User', 'User already exists, she will login')
+        LOG.debug("User already exists. They will login")
         return {'success': True, 'error': '', 'user': db_user}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
-        logger('User', 'User already exists')
+        LOG.debug("User already exists")
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
     user = {
@@ -820,10 +821,10 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
     success, info, db_new_user = __create_new_user(user, _tn.get_lang(), oauth_provider=provider, oauth_provider_id=uid)
 
     if db_new_user:
-        logger('User', 'set new user in db')
+        LOG.debug("Set new user in db")
         return {'success': success, 'error': '', 'user': db_new_user}
 
-    logger('User', 'new user not found in db')
+    LOG.debug("New user nor found in db")
 
     return {
         'success': False,
