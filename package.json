@@ -1,6 +1,6 @@
 {
   "name": "D-BAS",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "description": "system for dialog-based online argumentation",
   "main": "app.js",
   "repository": "git@github.com:hhucn/dbas",

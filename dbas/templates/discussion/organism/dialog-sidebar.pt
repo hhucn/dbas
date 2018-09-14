@@ -1,31 +1,47 @@
-<!-- sidebar of the disussion -->
+<!-- sidebar of the discussion -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-
   <ul id="dialog-sidebar" class="sidebar center">
-    <hr>
-    <li id="share-url" class="text-muted">
-      <i class="fa fa-share-alt" aria-hidden="true"></i>
-      <span class="sidebar-element">${extras.buttons.share_url}</span>
+    <li id="restart-link" tal:condition="extras.ongoing_discussion">
+      <a id="discussion-restart-btn" class="btn btn-link" href="/discuss/${extras.restart_url}">
+        <i class="fa fa-repeat" aria-hidden="true"></i>
+        <span i18n:translate="restart_discussion">Restart Discussion</span>
+      </a>
     </li>
-    <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon" class="text-muted">
-      <i class="fa fa-bar-chart" aria-hidden="true"></i>
-      <span class="sidebar-element">${extras.title.barometer}</span>
+    <li id="share-url">
+      <button class="btn btn-link btn-muted">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="share_url">Share URL</span>
+      </button>
     </li>
-    <li id="display-style-icon-graph-img" tal:condition="extras.show_graph_icon" class="text-muted">
-      <i class="fa fa-sitemap" aria-hidden="true"></i>
-      <span class="sidebar-element">${extras.title.graph_view}</span>
+    <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon">
+      <button class="btn btn-link btn-muted">
+        <i class="fa fa-bar-chart" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="Barometer">Opinion Barometer</span>
+      </button>
     </li>
-    <li id="sidebar-search-statement" class="text-muted">
-      <i class="fa fa-search" aria-hidden="true"></i>
-      <span class="sidebar-element">${extras.tag.search}</span>
+    <li id="display-style-icon-graph-img" tal:condition="extras.show_graph_icon">
+      <button class="btn btn-link btn-muted">
+        <i class="fa fa-sitemap" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="graph_view">Graph View</span>
+      </button>
     </li>
-    <li id="sidebar-ask-a-friend" tal:condition="extras.logged_in" class="text-muted">
-      <i class="fa fa-users" aria-hidden="true"></i>
-      <span class="sidebar-element">${extras.title.ask_friend}</span>
+    <li id="sidebar-search-statement">
+      <button class="btn btn-link btn-muted">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="search">Search for Statements</span>
+      </button>
     </li>
-    <li id="finish-button" onclick="window.location='/discuss/exit'" tal:condition="extras.logged_in" class="text-muted">
-      <i class="fa fa-sign-out" aria-hidden="true"></i>
-      <span class="sidebar-element">${extras.title.finish_title}</span>
+    <li id="sidebar-ask-a-friend" tal:condition="extras.logged_in">
+      <button class="btn btn-link btn-muted">
+        <i class="fa fa-users" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="ask_friend">Ask a Friend</span>
+      </button>
+    </li>
+    <li id="finish-button" onclick="window.location='/discuss/exit'" tal:condition="extras.logged_in">
+      <button class="btn btn-link btn-muted">
+        <i class="fa fa-sign-out" aria-hidden="true"></i>
+        <span class="sidebar-element" i18n:translate="exit_discussion">Leave the Discussion</span>
+      </button>
     </li>
   </ul>
 </tal:block>
