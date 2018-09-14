@@ -22,8 +22,10 @@ from dbas.review.reputation import get_reputation_of, limit_to_open_issues
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
 
-class DictionaryHelper(object):
+
+class DictionaryHelper():
     """
     General function for dictionaries as well as the extras-dict()
     """
@@ -50,8 +52,7 @@ class DictionaryHelper(object):
         :return: dictionary
         """
         return_dict = dict()
-        log = logging.getLogger(__name__)
-        log.debug("Count: %s", count)
+        LOG.debug("Count: %s", count)
         items = list(ordered_dict.items())
 
         if count < 0:
@@ -105,8 +106,7 @@ class DictionaryHelper(object):
         :param ongoing_discussion: Boolean
         :return: dict()
         """
-        log = logging.getLogger(__name__)
-        log.debug("Entering prepare_extras_dict")
+        LOG.debug("Entering prepare_extras_dict")
 
         is_user_from_ldap = None
         is_logged_in = False
@@ -277,8 +277,7 @@ class DictionaryHelper(object):
         :param supportive: supportive
         :return: None
         """
-        log = logging.getLogger(__name__)
-        log.debug("Entering add_discussion_end_text")
+        LOG.debug("Entering add_discussion_end_text")
         _tn = Translator(self.discussion_lang)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         gender = db_user.gender if db_user else None
@@ -458,8 +457,7 @@ class DictionaryHelper(object):
         :param extras_dict: current dict()
         :return: dict()
         """
-        log = logging.getLogger(__name__)
-        log.debug("Entering add_language_options_for_extra_dict")
+        LOG.debug("Entering add_language_options_for_extra_dict")
         lang_is_en = self.system_lang != 'de'
         lang_is_de = self.system_lang == 'de'
         extras_dict.update({

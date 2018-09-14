@@ -11,6 +11,8 @@ from sqlalchemy.exc import InternalError
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
 
+LOG = logging.getLogger(__name__)
+
 
 class RootFactory():
     """
@@ -33,19 +35,18 @@ def groupfinder(nick, _):
     :param request: request
     :return: given group as list or empty list
     """
-    log = logging.getLogger(__name__)
-    log.debug("nick: %s", nick)
+    LOG.debug("nick: %s", nick)
     try:
         user = DBDiscussionSession.query(User).filter_by(nickname=nick).first()
     except InternalError as i:
-        log.error("%s", i)
+        LOG.error("%s", i)
         return []
 
     if user:
         group = DBDiscussionSession.query(Group).get(user.group_uid)
         if group:
-            log.debug("return [group: %s]", group.name)
+            LOG.debug("return [group: %s]", group.name)
             return ['group:' + group.name]
 
-    log.debug("return []")
+    LOG.debug("return []")
     return []

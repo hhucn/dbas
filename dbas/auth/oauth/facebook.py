@@ -14,6 +14,7 @@ from pyramid.request import Request
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 from requests_oauthlib.oauth2_session import OAuth2Session
 
+LOG = logging.getLogger(__name__)
 CLIENT_ID = os.environ.get('OAUTH_FACEBOOK_CLIENTID', None)
 CLIENT_SECRET = os.environ.get('OAUTH_FACEBOOK_CLIENTKEY', None)
 AUTHORIZATION_BASE_URL = 'https://www.facebook.com/v3.0/dialog/oauth'
@@ -31,8 +32,7 @@ def start_flow(request: Request, redirect_uri: str = None) -> dict:
     :return:
     """
     next_url = request.application_url + '/discuss' if not redirect_uri else redirect_uri
-    log = logging.getLogger(__name__)
-    log.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
+    LOG.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
     oauth_session = OAuth2Session(CLIENT_ID, scope=','.join(SCOPE),
                                   redirect_uri=(request.application_url + REDIRECT_PATH))
     oauth_session = facebook_compliance_fix(oauth_session)
@@ -42,7 +42,7 @@ def start_flow(request: Request, redirect_uri: str = None) -> dict:
     request.session['csrf'] = state
     request.session['next'] = next_url
 
-    log.debug("Please go to %s and authorize access", authorization_url)
+    LOG.debug("Please go to %s and authorize access", authorization_url)
     return {'authorization_url': authorization_url, 'error': ''}
 
 
@@ -51,8 +51,7 @@ def continue_flow(request: Request):
         raise HTTPBadRequest('CSRF Error')
 
     oauth_session = request.session['oauth_session']
-    log = logging.getLogger(__name__)
-    log.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
+    LOG.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
 
     oauth_session.fetch_token(TOKEN_URL,
                               client_secret=CLIENT_SECRET,

@@ -17,6 +17,8 @@ from dbas.handler.email import send_mail
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
+
 
 # http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html
 def get_rnd_passwd(pw_len: int = 10) -> str:
@@ -66,8 +68,7 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
 
     db_user = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
     if not db_user:
-        log = logging.getLogger(__name__)
-        log.debug("Mail unknown")
+        LOG.debug("Mail unknown")
         return {
             'success': False,
             'message': _tn.get(_.emailUnknown)

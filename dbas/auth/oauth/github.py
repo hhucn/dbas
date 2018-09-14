@@ -19,6 +19,7 @@ from dbas.handler.user import oauth_values
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
 CLIENT_ID = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
 CLIENT_SECRET = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
 AUTHORIZATION_BASE_URL = 'https://github.com/login/oauth/authorize'
@@ -32,13 +33,12 @@ def start_flow():
 
     """
 
-    log = logging.getLogger(__name__)
-    log.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
+    LOG.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
 
     github = OAuth2Session(CLIENT_ID, scope=SCOPE)
     authorization_url, state = github.authorization_url(AUTHORIZATION_BASE_URL)
 
-    log.debug("Please go to %s and authorize access", authorization_url)
+    LOG.debug("Please go to %s and authorize access", authorization_url)
     return {'authorization_url': authorization_url, 'error': ''}
 
 
@@ -54,24 +54,23 @@ def continue_flow(authorization_response, ui_locales):
     github = OAuth2Session(CLIENT_ID)
     _tn = Translator(ui_locales)
 
-    log = logging.getLogger(__name__)
-    log.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
-    log.debug("authorization_response: %s", authorization_response)
+    LOG.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
+    LOG.debug("Authorization_response: %s", authorization_response)
 
     try:
         github.fetch_token(TOKEN_URL, client_secret=CLIENT_SECRET, authorization_response=authorization_response)
     except InsecureTransportError:
-        log.debug("Oauth2 MUST utilize https")
+        LOG.debug("Oauth2 MUST utilize https")
         return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
     except InvalidClientError:
-        log.debug("InvalidClientError")
+        LOG.debug("InvalidClientError")
         return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
     except MissingTokenError:
-        log.debug("MissingTokenError")
+        LOG.debug("MissingTokenError")
         return get_oauth_ret_dict(error_str=_tn.get(_.internalErrorHTTPS))
 
     resp = github.get('https://api.github.com/user')
-    log.debug("%s", resp.text)
+    LOG.debug("%s", resp.text)
     parsed_resp = json.loads(resp.text)
 
     # 'login': 'tkrauthoff'
@@ -108,8 +107,8 @@ def continue_flow(authorization_response, ui_locales):
     user_data = __prepare_data(parsed_resp)
     missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
 
-    log.debug("user_data: %s", user_data)
-    log.debug("missing_data: %s", missing_data)
+    LOG.debug("user_data: %s", user_data)
+    LOG.debug("missing_data: %s", missing_data)
 
     return get_oauth_ret_dict(user_data=user_data, missing_data=missing_data)
 

@@ -18,6 +18,8 @@ from dbas.strings.text_generator import get_relation_text_dict_with_substitution
     get_author_or_first_supporter_of_element
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
+
 
 def get_user_and_opinions_for_argument(argument_uid, db_user, lang, main_page, path):
     """
@@ -33,8 +35,7 @@ def get_user_and_opinions_for_argument(argument_uid, db_user, lang, main_page, p
                'vote_timestamp': 'string' ], ... }],...}
     """
 
-    log = logging.getLogger(__name__)
-    log.debug("Argument %s, nickname %s", argument_uid, db_user.nickname)
+    LOG.debug("Argument %s, nickname %s", argument_uid, db_user.nickname)
 
     # preparation
     _t = Translator(lang)
@@ -149,8 +150,7 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, db_
     :param main_page: url
     :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
     """
-    log = logging.getLogger(__name__)
-    log.debug("Statement %s (%s)", statement_uids, is_supportive)
+    LOG.debug("Statement %s (%s)", statement_uids, is_supportive)
 
     opinions = []
     _t = Translator(lang)
@@ -230,8 +230,7 @@ def get_user_with_same_opinion_for_premisegroups_of_args(argument_uids, db_user,
     :param main_page: url
     :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
     """
-    log = logging.getLogger(__name__)
-    log.debug("Arguments %s", argument_uids)
+    LOG.debug("Arguments %s", argument_uids)
 
     opinions = []
     _t = Translator(lang)
@@ -297,8 +296,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, db_user, lang, main_pa
     """
     try:
         text = get_text_for_argument_uid(argument_uid, 'de')
-        log = logging.getLogger(__name__)
-        log.debug("Argument %s: %s", argument_uid, text)
+        LOG.debug("Argument %s: %s", argument_uid, text)
         if not text:
             return {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
     except TypeError:
@@ -347,8 +345,7 @@ def get_user_with_opinions_for_attitude(statement_uid, db_user, lang, main_page)
     :return:
     """
 
-    log = logging.getLogger(__name__)
-    log.debug("Statement %s", statement_uid)
+    LOG.debug("Statement %s", statement_uid)
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid) if statement_uid else None
     _t = Translator(lang)
     title = _t.get(_.agreeVsDisagree)

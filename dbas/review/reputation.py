@@ -18,6 +18,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
 
+LOG = logging.getLogger(__name__)
 smallest_border = 30
 limit_to_open_issues = 10
 reputation_borders = {**{key: smallest_border for key in review_queues}, **{key_history: 150, key_ongoing: 300}}
@@ -136,8 +137,7 @@ def add_reputation_for(db_user: User, db_reason: ReputationReason):
     :param db_reason: ReputationReason
     :return: boolean that is true, when the user reached 30points
     """
-    log = logging.getLogger(__name__)
-    log.debug("Main %s, user %s", db_reason.reason, db_user.uid)
+    LOG.debug("Main %s, user %s", db_reason.reason, db_user.uid)
     # special case:
     if db_user.nickname == nick_of_anonymous_user:
         return False
@@ -147,10 +147,10 @@ def add_reputation_for(db_user: User, db_reason: ReputationReason):
             ReputationHistory.reputation_uid == db_reason.uid,
             ReputationHistory.reputator_uid == db_user.uid).first()
         if db_already_farmed:
-            log.debug("Karma already farmed")
+            LOG.debug("Karma already farmed")
             return False
 
-    log.debug("Add %s for %s", db_reason.reason, db_user.nickname)
+    LOG.debug("Add %s for %s", db_reason.reason, db_user.nickname)
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()

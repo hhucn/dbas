@@ -19,6 +19,8 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
+
 
 def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument, premisegroups: List[List[str]],
                            attack_type: Relations, history, mailer) -> dict:
@@ -67,8 +69,7 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
 
     prepared_dict['url'] = url
 
-    log = logging.getLogger(__name__)
-    log.debug("Returning %s", prepared_dict)
+    LOG.debug("Returning %s", prepared_dict)
     return prepared_dict
 
 
@@ -149,8 +150,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
     premisegroups = arg_infos['premisegroups']
     history = arg_infos['history']
 
-    log = logging.getLogger(__name__)
-    log.debug("Count of new pgroups: %s", len(premisegroups))
+    LOG.debug("Count of new pgroups: %s", len(premisegroups))
     _tn = Translator(discussion_lang)
 
     slug = db_issue.slug
@@ -265,8 +265,7 @@ def get_another_argument_with_same_conclusion(uid, history):
     :param history: String
     :return: Argument
     """
-    log = logging.getLogger(__name__)
-    log.debug("%s", uid)
+    LOG.debug("%s", uid)
     db_arg = DBDiscussionSession.query(Argument).get(uid)
     if not db_arg:
         return None
@@ -301,7 +300,8 @@ def get_all_statements_for_args(graph_arg_list) -> List[int]:
                                                                 Premise.is_disabled == False).all()
 
         # fetching statement ids for the premises
-        statement_uids += [premise.statement_uid for premise in db_premises if premise.statement_uid not in statement_uids]
+        statement_uids += [premise.statement_uid for premise in db_premises if
+                           premise.statement_uid not in statement_uids]
 
         # querying the arguments conclusion
         while arg.conclusion_uid is None:

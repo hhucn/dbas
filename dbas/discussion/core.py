@@ -13,6 +13,8 @@ from dbas.review.reputation import ReputationReasons, add_reputation_and_check_r
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
+
 
 def init(db_issue: Issue, db_user: User) -> dict:
     """
@@ -23,8 +25,7 @@ def init(db_issue: Issue, db_user: User) -> dict:
     :param db_user: User
     :return: prepared collection with first elements for the discussion
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering init of discussion.core")
+    LOG.debug("Entering init of discussion.core")
     slug = db_issue.slug
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
@@ -56,8 +57,7 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: s
     :return: prepared collection dict for the discussion
     :rtype: dict
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering attitude function of discussion.core")
+    LOG.debug("Entering attitude function of discussion.core")
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = db_issue.lang
@@ -90,8 +90,7 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, u
     :param path:
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering justify_statement")
+    LOG.debug("Entering justify_statement")
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, user_attitude,
@@ -117,8 +116,7 @@ def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, hi
     :param path:
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering dont_know_argument")
+    LOG.debug("Entering dont_know_argument")
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     item_dict, discussion_dict = handle_justification_dontknow(db_issue, db_user, db_argument, history, path)
@@ -146,8 +144,7 @@ def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, user
     :param path:
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering justify_argument")
+    LOG.debug("Entering justify_argument")
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     item_dict, discussion_dict = handle_justification_argument(db_issue, db_user, db_argument, user_attitude, relation,
@@ -176,8 +173,7 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     :param path:
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering reaction function")
+    LOG.debug("Entering reaction function")
     # set votes and reputation
     broke_limit = add_reputation_and_check_review_access(db_user, ReputationReasons.first_argument_click)
 
@@ -211,8 +207,7 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     :param path:
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering support function")
+    LOG.debug("Entering support function")
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
@@ -244,8 +239,7 @@ def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: boo
     :param path:
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering choose function")
+    LOG.debug("Entering choose function")
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
@@ -278,8 +272,7 @@ def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: str, pa
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering jump function")
+    LOG.debug("Entering jump function")
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']

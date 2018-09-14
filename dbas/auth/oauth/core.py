@@ -14,6 +14,7 @@ from dbas.handler.language import get_language_from_cookie
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
 PROVIDER = {"facebook": facebook}
 
 
@@ -28,8 +29,7 @@ def oauth_start(request: Request) -> dict:
 def oauth_endpoint(request: Request):
     service = request.matchdict.get("service")
     ui_local = get_language_from_cookie(request)
-    log = logging.getLogger(__name__)
-    log.debug("%s", service)
+    LOG.debug("%s", service)
 
     data, next_url = PROVIDER[service].continue_flow(request)
     oauth_user = set_oauth_user(data, service, ui_local)["user"]
@@ -50,9 +50,8 @@ def set_oauth_user(user_data, service, ui_locales):
     _tn = Translator(ui_locales)
 
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
-    log = logging.getLogger(__name__)
     if not db_group:
-        log.debug("Error occured: No db_group for users during `set_oauth_user`")
+        LOG.debug("Error occured: No db_group for users during `set_oauth_user`")
         return {'error': _tn.get(_.errorTryLateOrContant)}
 
     ret_dict = user.set_new_oauth_user(user_data, user_data['id'], service, _tn)

@@ -16,6 +16,8 @@ from dbas.database.discussion_model import Argument, Statement, Premise, Clicked
 from dbas.input_validator import is_integer
 from dbas.lib import nick_of_anonymous_user
 
+LOG = logging.getLogger(__name__)
+
 
 def add_click_for_argument(db_argument: Argument, db_user: User) -> bool:
     """
@@ -25,23 +27,22 @@ def add_click_for_argument(db_argument: Argument, db_user: User) -> bool:
     :param db_user: User
     :return:
     """
-    log = logging.getLogger(__name__)
     if db_user.nickname == nick_of_anonymous_user:
-        log.debug("User is anonymous, not counting clicks")
+        LOG.debug("User is anonymous, not counting clicks")
         return False
-    log.debug("Increasting vote for argument %s ", db_argument.uid)
+    LOG.debug("Increasting vote for argument %s ", db_argument.uid)
 
     if db_argument.argument_uid is None:
-        log.debug("Undercut depth 0")
+        LOG.debug("Undercut depth 0")
         __add_click_for_argument(db_user, db_argument)
     else:
         db_undercuted_arg_step_1 = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
 
         if db_undercuted_arg_step_1.argument_uid is None:
-            log.debug("Undercut depth 1")
+            LOG.debug("Undercut depth 1")
             __add_click_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_user)
         else:
-            log.debug("Undercut depth 2")
+            LOG.debug("Undercut depth 2")
             __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user)
 
     transaction.commit()
@@ -134,8 +135,7 @@ def add_click_for_statement(stmt_or_arg: Statement, db_user: User, supportive: b
     :return: Boolean
     """
 
-    log = logging.getLogger(__name__)
-    log.debug("Increasing %s vote for statement %s", 'up' if supportive else 'down', stmt_or_arg.uid)
+    LOG.debug("Increasing %s vote for statement %s", 'up' if supportive else 'down', stmt_or_arg.uid)
 
     if db_user.nickname == nick_of_anonymous_user:
         return False
@@ -156,8 +156,7 @@ def add_seen_statement(statement_uid: int, db_user: User):
     """
     if not is_integer(statement_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
         return False
-    log = logging.getLogger(__name__)
-    log.debug("Statement %s, for user %s", statement_uid, db_user.uid)
+    LOG.debug("Statement %s, for user %s", statement_uid, db_user.uid)
 
     val = __statement_seen_by_user(db_user, statement_uid)
     if val:
@@ -177,8 +176,7 @@ def add_seen_argument(argument_uid, db_user):
     """
     if not is_integer(argument_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
         return False
-    log = logging.getLogger(__name__)
-    log.debug("Argument %s, for user %s", argument_uid, db_user.uid)
+    LOG.debug("Argument %s, for user %s", argument_uid, db_user.uid)
 
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     __argument_seen_by_user(db_user, argument_uid)
@@ -227,12 +225,11 @@ def __click_argument(argument, user, is_up_vote):
     :param is_up_vote: Boolean
     :return: None
     """
-    log = logging.getLogger(__name__)
     if argument is None:
-        log.debug("Argument is None")
+        LOG.debug("Argument is None")
         return
 
-    log.debug("Argument %s, user %s", argument.uid, user.nickname)
+    LOG.debug("Argument %s, user %s", argument.uid, user.nickname)
 
     db_all_valid_votes = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.argument_uid == argument.uid,
                                                                            ClickedArgument.author_uid == user.uid,
@@ -245,13 +242,13 @@ def __click_argument(argument, user, is_up_vote):
         db_old_votes.remove(db_current_vote)
 
     for old_vote in db_old_votes:
-        log.debug("Setting old vote %s as invalid", old_vote.uid)
+        LOG.debug("Setting old vote %s as invalid", old_vote.uid)
         old_vote.set_valid(False)
     DBDiscussionSession.flush()
 
     db_new_vote = None
     if not db_current_vote:
-        log.debug("Add vote for argument %s", argument.uid)
+        LOG.debug("Add vote for argument %s", argument.uid)
         db_new_vote = ClickedArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_up_vote,
                                       is_valid=True)
         DBDiscussionSession.add(db_new_vote)
@@ -283,12 +280,11 @@ def __click_statement(statement, db_user, is_up_vote):
     :param is_up_vote: Boolean
     :return: None
     """
-    log = logging.getLogger(__name__)
     if statement is None:
-        log.debug("Statement is None")
+        LOG.debug("Statement is None")
         return
 
-    log.debug("Statement %s, db_user %s", statement.uid, db_user.nickname)
+    LOG.debug("Statement %s, db_user %s", statement.uid, db_user.nickname)
 
     db_all_valid_votes = DBDiscussionSession.query(ClickedStatement).filter(
         ClickedStatement.statement_uid == statement.uid,
@@ -302,12 +298,12 @@ def __click_statement(statement, db_user, is_up_vote):
         db_old_votes.remove(db_current_vote)
 
     for old_vote in db_old_votes:
-        log.debug("Setting old vote %s as invalid", old_vote.uid)
+        LOG.debug("Setting old vote %s as invalid", old_vote.uid)
         old_vote.set_valid(False)
     DBDiscussionSession.flush()
 
     if not db_current_vote:
-        log.debug("Add vote for statement %s", statement.uid)
+        LOG.debug("Add vote for statement %s", statement.uid)
         db_new_vote = ClickedStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=is_up_vote,
                                        is_valid=True)
         DBDiscussionSession.add(db_new_vote)
@@ -323,12 +319,11 @@ def __vote_premisesgroup(premisegroup_uid, user, is_up_vote):
     :param is_up_vote: Boolean
     :return:
     """
-    log = logging.getLogger(__name__)
     if premisegroup_uid is None or premisegroup_uid == 0:
-        log.debug("Premisegroup_uid is None")
+        LOG.debug("Premisegroup_uid is None")
         return
 
-    log.debug("Premisegroup_uid %s, user %s", premisegroup_uid, user.nickname)
+    LOG.debug("Premisegroup_uid %s, user %s", premisegroup_uid, user.nickname)
 
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
     for premise in db_premises:
@@ -381,8 +376,7 @@ def __premisegroup_seen_by_user(db_user, premisegroup_uid):
     :param premisegroup_uid: uid of the premisesgroup
     :return: True if the statement was not seen by the user (until now), false otherwise
     """
-    log = logging.getLogger(__name__)
-    log.debug("Check premises of group %s", premisegroup_uid)
+    LOG.debug("Check premises of group %s", premisegroup_uid)
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
     for premise in db_premises:
         __statement_seen_by_user(db_user, premise.statement_uid)

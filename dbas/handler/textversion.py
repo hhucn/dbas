@@ -3,6 +3,8 @@ import logging
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, TextVersion
 
+LOG = logging.getLogger(__name__)
+
 
 def propose_new_textversion_for_statement(db_user, uid, corrected_text):
     """
@@ -13,8 +15,7 @@ def propose_new_textversion_for_statement(db_user, uid, corrected_text):
     :param corrected_text: new text
     :return: dict()
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering propose_new_textversion_for_statement with uid: %s", uid)
+    LOG.debug("Entering propose_new_textversion_for_statement with uid: %s", uid)
 
     while corrected_text.endswith(('.', '?', '!')):
         corrected_text = corrected_text[:-1]

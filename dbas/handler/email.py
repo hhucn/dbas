@@ -19,6 +19,8 @@ from dbas.strings.text_generator import get_text_for_add_text_message, get_text_
     get_text_for_add_argument_message
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
+
 
 def send_mail_due_to_added_text(lang, url, recipient, mailer):
     """
@@ -94,11 +96,10 @@ def send_mail(mailer, subject, body, recipient, lang):
     :param lang: current language
     :return: duple with boolean for sent message, message-string
     """
-    log = logging.getLogger(__name__)
-    log.debug("Sending mail with subject '%s' to %s", subject, recipient)
+    LOG.debug("Sending mail with subject '%s' to %s", subject, recipient)
     _t = Translator(lang)
     if not mailer:
-        log.debug("Mailer is none")
+        LOG.debug("Mailer is none")
         return False, _t.get(_.internalKeyError)
 
     send_message = False
@@ -116,20 +117,19 @@ def send_mail(mailer, subject, body, recipient, lang):
     except smtplib.SMTPConnectError as exception:
         code = str(exception.smtp_code)
         error = str(exception.smtp_error)
-        log.debug("Exception smtplib.SMTPConnectionError smtp code / error %s / %s", code, error)
+        LOG.debug("Exception smtplib.SMTPConnectionError smtp code / error %s / %s", code, error)
         message = _t.get(_.emailWasNotSent)
     except socket_error as serr:
-        log.debug("Socker error while sending %s", serr)
+        LOG.debug("Socker error while sending %s", serr)
         message = _t.get(_.emailWasNotSent)
 
     return send_message, message
 
 
 def __thread_to_send_mail(mailer, message, recipient, body):
-    log = logging.getLogger(__name__)
-    log.debug("Start thread to send mail to %s with %s", recipient, body[:30])
+    LOG.debug("Start thread to send mail to %s with %s", recipient, body[:30])
     try:
         mailer.send_immediately(message, fail_silently=False)
     except TypeError as e:
-        log.debug("TypeError %s", e)
-    log.debug("End thread to send mail to %s with %s", recipient, body[:30])
+        LOG.debug("TypeError %s", e)
+    LOG.debug("End thread to send mail to %s with %s", recipient, body[:30])

@@ -33,6 +33,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
 values = ['firstname', 'surname', 'email', 'nickname', 'password', 'gender']
 oauth_values = ['firstname', 'lastname', 'email', 'nickname', 'gender']
 
@@ -179,8 +180,7 @@ def refresh_public_nickname(user):
         second = biglist[random.randint(0, len(biglist) - 1)]
         nick = first + ' ' + second
 
-    log = logging.getLogger(__name__)
-    log.debug("User %s -> %s", user.public_nickname, nick)
+    LOG.debug("User %s -> %s", user.public_nickname, nick)
     user.set_public_nickname(nick)
 
     return nick
@@ -195,8 +195,7 @@ def is_in_group(nickname, groupname):
     :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    log = logging.getLogger(__name__)
-    log.debug("Entering is_in_group")
+    LOG.debug("Entering is_in_group")
     return db_user and db_user.groups.name == groupname
 
 
@@ -208,8 +207,7 @@ def is_admin(nickname):
     :return: true, if user is admin, false otherwise
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    log = logging.getLogger(__name__)
-    log.debug("Entering is_admin")
+    LOG.debug("Entering is_admin")
     return db_user and db_user.groups.name == 'admins'
 
 
@@ -221,8 +219,7 @@ def get_public_data(user_id: int, lang: str):
     :param lang:
     :return: dict()
     """
-    log = logging.getLogger(__name__)
-    log.debug("User: %s", user_id)
+    LOG.debug("User: %s", user_id)
     return_dict = dict()
     db_user = DBDiscussionSession.query(User).get(user_id)
 
@@ -624,36 +621,35 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     :param lang: current language
     :return: an message and boolean for error and success
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering change_password")
+    LOG.debug("Entering change_password")
     _t = Translator(lang)
 
     success = False
 
     # is the old password given?
     if not old_pw:
-        log.debug("Old pwd is empty")
+        LOG.debug("Old pwd is empty")
         message = _t.get(_.oldPwdEmpty)  # 'The old password field is empty.'
     # is the new password given?
     elif not new_pw:
-        log.debug("New pwd is empty")
+        LOG.debug("New pwd is empty")
         message = _t.get(_.newPwdEmtpy)  # 'The new password field is empty.'
     # is the confirmation password given?
     elif not confirm_pw:
-        log.debug("Confirm pwd is empty")
+        LOG.debug("Confirm pwd is empty")
         message = _t.get(_.confPwdEmpty)  # 'The password confirmation field is empty.'
     # is new password equals the confirmation?
     elif not new_pw == confirm_pw:
-        log.debug("New pwds not equal")
+        LOG.debug("New pwds not equal")
         message = _t.get(_.newPwdNotEqual)  # 'The new passwords are not equal'
     # is new old password equals the new one?
     elif old_pw == new_pw:
-        log.debug("Pwds are the same")
+        LOG.debug("Pwds are the same")
         message = _t.get(_.pwdsSame)  # 'The new and old password are the same'
     else:
         # is the old password valid?
         if not user.validate_password(old_pw):
-            log.debug("Old password is wrong")
+            LOG.debug("Old password is wrong")
             message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
         else:
             hashed_pw = password_handler.get_hashed_password(new_pw)
@@ -663,7 +659,7 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
             DBDiscussionSession.add(user)
             transaction.commit()
 
-            log.debug("Password was changed")
+            LOG.debug("Password was changed")
             message = _t.get(_.pwdChanged)  # 'Your password was changed'
             success = True
 
@@ -685,8 +681,7 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
 
     _t = Translator(ui_locales)
     # creating a new user with hashed password
-    log = logging.getLogger(__name__)
-    log.debug("Adding user %s", user['nickname'])
+    LOG.debug("Adding user %s", user['nickname'])
     hashed_password = password_handler.get_hashed_password(user['password'])
     newuser = User(firstname=user['firstname'],
                    surname=user['lastname'],
@@ -710,11 +705,11 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
     # sanity check, whether the user exists
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     if db_user:
-        log.debug("New data was added with uid %s", db_user.uid)
+        LOG.debug("New data was added with uid %s", db_user.uid)
         success = _t.get(_.accountWasAdded).format(user['nickname'])
 
     else:
-        log.debug("New data was not added")
+        LOG.debug("New data was not added")
         info = _t.get(_.accoutErrorTryLateOrContant)
 
     return success, info, db_user
@@ -738,15 +733,14 @@ def set_new_user(mailer, user_data, password, _tn):
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
 
     # does the group exists?
-    log = logging.getLogger(__name__)
     if not db_group:
-        log.debug("Internal error occured")
+        LOG.debug("Internal error occured")
         return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
-        log.debug("User already exists")
+        LOG.debug("User already exists")
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
     user = {
@@ -767,10 +761,10 @@ def set_new_user(mailer, user_data, password, _tn):
         send_mail(mailer, subject, body, email, _tn.get_lang())
         send_welcome_notification(db_new_user.uid, _tn)
 
-        log.debug("Set new user in db")
+        LOG.debug("Set new user in db")
         return {'success': success, 'error': '', 'user': db_new_user}
 
-    log.debug("New user not found in db")
+    LOG.debug("New user not found in db")
     return {
         'success': False,
         'error': _tn.get(_.errorTryLateOrContant),
@@ -797,9 +791,8 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
 
     # does the group exists?
-    log = logging.getLogger(__name__)
     if not db_group:
-        log.debug("Internal error occurred")
+        LOG.debug("Internal error occurred")
         return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
@@ -807,13 +800,13 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
                                                      User.oauth_provider_id == str(uid)).first()
     # login of oauth user
     if db_user:
-        log.debug("User already exists. They will login")
+        LOG.debug("User already exists. They will login")
         return {'success': True, 'error': '', 'user': db_user}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
-        log.debug("User already exists")
+        LOG.debug("User already exists")
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
     user = {
@@ -828,10 +821,10 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
     success, info, db_new_user = __create_new_user(user, _tn.get_lang(), oauth_provider=provider, oauth_provider_id=uid)
 
     if db_new_user:
-        log.debug("Set new user in db")
+        LOG.debug("Set new user in db")
         return {'success': success, 'error': '', 'user': db_new_user}
 
-    log.debug("New user nor found in db")
+    LOG.debug("New user nor found in db")
 
     return {
         'success': False,

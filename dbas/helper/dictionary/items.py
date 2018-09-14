@@ -23,6 +23,8 @@ from dbas.strings.text_generator import get_relation_text_dict_with_substitution
     get_support_to_argument_text_list, nick_of_anonymous_user
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
+
 
 def shuffle_list_by_user(db_user: User, l: List) -> List:
     random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
@@ -68,8 +70,7 @@ class ItemDictHelper(object):
         :param db_user: User
         :return:
         """
-        log = logging.getLogger(__name__)
-        log.debug("Entering get_array_for_start with user: %s", db_user.nickname)
+        LOG.debug("Entering get_array_for_start with user: %s", db_user.nickname)
 
         statements = [el.statement_uid for el in
                       DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=self.db_issue.uid).all()]
@@ -131,8 +132,7 @@ class ItemDictHelper(object):
         :param statement_uid: Statement.uid
         :return:
         """
-        log = logging.getLogger(__name__)
-        log.debug("Entering prepare_item_dict_for_attitude")
+        LOG.debug("Entering prepare_item_dict_for_attitude")
         _tn = Translator(self.lang)
 
         slug = DBDiscussionSession.query(Issue).get(self.db_issue.uid).slug
@@ -173,8 +173,7 @@ class ItemDictHelper(object):
         :param history: history
         :return:
         """
-        log = logging.getLogger(__name__)
-        log.debug("Entering get_array_for_justify_statement")
+        LOG.debug("Entering get_array_for_justify_statement")
         statements_array = []
         _tn = Translator(self.lang)
         slug = self.db_issue.slug
@@ -257,8 +256,7 @@ class ItemDictHelper(object):
         :param history:
         :return:
         """
-        log = logging.getLogger(__name__)
-        log.debug("Entering get_array_for_justify_argument with arg %s anf attack %s", argument_uid, attack_type)
+        LOG.debug("Entering get_array_for_justify_argument with arg %s anf attack %s", argument_uid, attack_type)
         statements_array = []
         _tn = Translator(self.lang)
         slug = self.db_issue.slug
@@ -381,8 +379,7 @@ class ItemDictHelper(object):
         :param gender: m, f or n
         :return:
         """
-        log = logging.getLogger(__name__)
-        log.debug("Entering get_array_for_dont_know_reaction")
+        LOG.debug("Entering get_array_for_dont_know_reaction")
         slug = self.db_issue.slug
         statements_array = []
 
@@ -504,8 +501,7 @@ class ItemDictHelper(object):
         :param gender: Gender of the author of the attack
         :return:
         """
-        log = logging.getLogger(__name__)
-        log.debug("Entering get_array_for_reaction")
+        LOG.debug("Entering get_array_for_reaction")
         slug = self.db_issue.slug
 
         db_sys_argument = DBDiscussionSession.query(Argument).get(argument_uid_sys)
@@ -656,8 +652,7 @@ class ItemDictHelper(object):
         :param nickname:
         :return: dict()
         """
-        log = logging.getLogger(__name__)
-        log.debug("Entering get_array_for_choosing")
+        LOG.debug("Entering get_array_for_choosing")
         statements_array = []
         slug = self.db_issue.slug
         _um = UrlManager(slug, history=self.path)

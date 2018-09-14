@@ -10,6 +10,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Language
 from dbas.helper.dictionary.main import DictionaryHelper
 
+LOG = logging.getLogger(__name__)
+
 
 def set_language(request, db_lang) -> str:
     """
@@ -19,13 +21,12 @@ def set_language(request, db_lang) -> str:
     :param db_lang: Language
     :return: dict()
     """
-    log = logging.getLogger(__name__)
-    log.debug("Setting lang to %s", db_lang.ui_locales)
+    LOG.debug("Setting lang to %s", db_lang.ui_locales)
     request._LOCALE_ = db_lang.ui_locales
     request.response.set_cookie('_LOCALE_', str(db_lang.ui_locales))
     request.cookies['_LOCALE_'] = db_lang.ui_locales
     # we have to set 'ui_locales = get_language_from_cookie(request)' in each view again, because D-BAS is no object
-    log.debug("Switched to %s", db_lang.ui_locales)
+    LOG.debug("Switched to %s", db_lang.ui_locales)
 
     return db_lang.ui_locales
 
@@ -39,11 +40,10 @@ def get_language_from_header(request):
     """
     lang = request.headers.get('Accept-Language')
     all_lang = [lang.ui_locales for lang in DBDiscussionSession.query(Language).all()]
-    log = logging.getLogger(__name__)
     if not lang or lang not in all_lang:
-        log.debug("No accepted language found in header -> get default lang")
+        LOG.debug("No accepted language found in header -> get default lang")
         lang = request.registry.settings['pyramid.default_locale_name']
-    log.debug("Return %s", lang)
+    LOG.debug("Return %s", lang)
     return lang
 
 
@@ -70,13 +70,12 @@ def set_language_for_visit(request) -> str:
     :param request: request-dict (necessary, because the language will be set in the cookies dict of the request)
     :return: None
     """
-    log = logging.getLogger(__name__)
     if '_LOCALE_' in request.cookies:
-        log.debug("User was already here")
+        LOG.debug("User was already here")
         # user was already here
         ui_locales = request.cookies['_LOCALE_']
     else:
-        log.debug("User is first time here")
+        LOG.debug("User is first time here")
         ui_locales = get_language_from_header(request)
     lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
     if hasattr(request, 'request'):

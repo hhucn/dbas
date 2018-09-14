@@ -17,6 +17,8 @@ from dbas.review.reputation import reputation_icons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 
+LOG = logging.getLogger(__name__)
+
 
 def get_review_history(main_page, db_user, translator):
     """
@@ -83,8 +85,7 @@ def __get_executed_reviews_of(table, main_page, table_type, translator, is_execu
     :param is_executed
     :return: Array with all decision per table
     """
-    log = logging.getLogger(__name__)
-    log.debug("Table: %s (%s)", table, table_type)
+    LOG.debug("Table: %s (%s)", table, table_type)
     some_list = list()
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == is_executed).order_by(
         table_type.uid.desc()).all()

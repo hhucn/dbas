@@ -15,6 +15,8 @@ from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for
 from dbas.input_validator import is_integer
 from dbas.lib import Relations, get_enabled_arguments_as_query
 
+LOG = logging.getLogger(__name__)
+
 
 def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relations] = None,
                             restrictive_arg_uids: List[int] = None, last_attack: Relations = None,
@@ -34,8 +36,7 @@ def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relatio
     restrictive_arg_uids = list(set(restrictive_arg_uids)) if restrictive_arg_uids else []
     history, redirected_from_jump = __setup_history(history, redirected_from_jump)
     restrictive_attacks = __setup_restrictive_attack_keys(argument_uid, restrictive_attacks, redirected_from_jump)
-    log = logging.getLogger(__name__)
-    log.debug("arg: %s, restricts: %s, %s, from_jump: %s", argument_uid, restrictive_attacks, restrictive_arg_uids,
+    LOG.debug("arg: %s, restricts: %s, %s, from_jump: %s", argument_uid, restrictive_attacks, restrictive_arg_uids,
               redirected_from_jump)
 
     attack_uids, attack_key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid,
@@ -47,8 +48,7 @@ def get_attack_for_argument(argument_uid: int, restrictive_attacks: List[Relatio
         return None, None
 
     attack_uid = random.choice(attack_uids)['id']
-    log = logging.getLogger(__name__)
-    log.debug("Return %s by %s", attack_key, attack_uid)
+    LOG.debug("Return %s by %s", attack_key, attack_uid)
     return attack_uid, attack_key
 
 

@@ -18,6 +18,8 @@ from dbas.review.queue.adapter import QueueAdapter
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
+
 
 def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], db_user: User,
                  is_argument: bool, ui_locales: str, extra_uid=None) -> dict:
@@ -43,8 +45,7 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
                                                                  statement_uid=statement_uid,
                                                                  premisegroup_uid=None)
     if flag_status:
-        log = logging.getLogger(__name__)
-        log.debug("Already flagged by %s", flag_status)
+        LOG.debug("Already flagged by %s", flag_status)
         if flag_status == FlaggedBy.user:
             info = tn.get(_.alreadyFlaggedByYou)
         else:
@@ -76,8 +77,7 @@ def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReason
 
     elif reason_val == key_duplicate:
         if statement_uid == extra_uid:
-            log = logging.getLogger(__name__)
-            log.debug("uid Error")
+            LOG.debug("uid Error")
             return {'success': '', 'info': tn.get(_.internalKeyError)}
         __add_duplication_review(statement_uid, extra_uid, db_user.uid)
 
@@ -97,14 +97,13 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
     :param tn: The translator used
     :return: success, info
     """
-    log = logging.getLogger(__name__)
-    log.debug("Flag statements in pgroup %s for a %s with values %s", pgroup.uid, key, text_values)
+    LOG.debug("Flag statements in pgroup %s for a %s with values %s", pgroup.uid, key, text_values)
     # was this already flagged?
     flag_status = QueueAdapter(db_user=db_user).element_in_queue(argument_uid=None,
                                                                  statement_uid=None,
                                                                  premisegroup_uid=pgroup.uid)
     if flag_status:
-        log.debug("Already flagged")
+        LOG.debug("Already flagged")
         if flag_status == FlaggedBy.user:
             info = tn.get(_.alreadyFlaggedByYou)
         else:
@@ -131,8 +130,7 @@ def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User
     :param tn: The translator used
     :return: success, info
     """
-    log = logging.getLogger(__name__)
-    log.debug("Flag pgroup %s for a %s", pgroup.uid, key)
+    LOG.debug("Flag pgroup %s for a %s", pgroup.uid, key)
     return flag_statement_for_merge_or_split(key, pgroup, [], db_user, tn)
 
 
@@ -146,8 +144,7 @@ def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
     :param reason_uid: ReviewDeleteReason.uid
     :return: None
     """
-    log = logging.getLogger(__name__)
-    log.debug("Flag argument/statement %s/%s by user %s for delete", argument_uid, statement_uid, user_uid)
+    LOG.debug("Flag argument/statement %s/%s by user %s for delete", argument_uid, statement_uid, user_uid)
     review_delete = ReviewDelete(detector=user_uid, argument=argument_uid, statement=statement_uid, reason=reason_uid)
     DBDiscussionSession.add(review_delete)
     DBDiscussionSession.flush()
@@ -163,8 +160,7 @@ def __add_optimization_review(argument_uid, statement_uid, user_uid):
     :param user_uid: User.uid
     :return: None
     """
-    log = logging.getLogger(__name__)
-    log.debug("Flag argument/statement %s/%s by user %s for optimization", argument_uid, statement_uid, user_uid)
+    LOG.debug("Flag argument/statement %s/%s by user %s for optimization", argument_uid, statement_uid, user_uid)
     review_optimization = ReviewOptimization(detector=user_uid, argument=argument_uid, statement=statement_uid)
     DBDiscussionSession.add(review_optimization)
     DBDiscussionSession.flush()
@@ -180,8 +176,7 @@ def __add_duplication_review(duplicate_statement_uid, original_statement_uid, us
     :param user_uid: User.uid
     :return: None
     """
-    log = logging.getLogger(__name__)
-    log.debug("Flag statement %s by user %s as duplicate of %s", duplicate_statement_uid, user_uid,
+    LOG.debug("Flag statement %s by user %s as duplicate of %s", duplicate_statement_uid, user_uid,
               original_statement_uid)
     review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement_uid,
                                          original_statement=original_statement_uid)
@@ -199,8 +194,7 @@ def __add_split_review(pgroup_uid, user_uid, text_values):
     :param text_values: text values or None, if you want to split the premisegroup itself
     :return: None
     """
-    log = logging.getLogger(__name__)
-    log.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
+    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
     review_split = ReviewSplit(detector=user_uid, premisegroup=pgroup_uid)
     DBDiscussionSession.add(review_split)
     DBDiscussionSession.flush()
@@ -222,8 +216,7 @@ def __add_merge_review(pgroup_uid, user_uid, text_values):
     :param text_values: text values or None, if you want to merge the premisegroup itself
     :return: None
     """
-    log = logging.getLogger(__name__)
-    log.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
+    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
     review_merge = ReviewMerge(detector=user_uid, premisegroup=pgroup_uid)
     DBDiscussionSession.add(review_merge)
     DBDiscussionSession.flush()

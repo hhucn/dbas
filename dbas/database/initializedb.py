@@ -24,6 +24,7 @@ from dbas.handler.password import get_hashed_password
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url, nick_of_anonymous_user
 
+LOG = logging.getLogger(__name__)
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
                'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
@@ -864,9 +865,8 @@ def __setup_dummy_seen_by(session):
     session.add_all(elements)
     session.flush()
 
-    log = logging.getLogger(__name__)
-    log.debug("Created %s seen-by entries for %s arguments", argument_count, len(db_arguments))
-    log.debug("Created %s seen-by entries for %s statements", statement_count, len(db_statements))
+    LOG.debug("Created %s seen-by entries for %s arguments", argument_count, len(db_arguments))
+    LOG.debug("Created %s seen-by entries for %s statements", statement_count, len(db_statements))
 
 
 def __setup_dummy_clicks(session):
@@ -889,9 +889,8 @@ def __setup_dummy_clicks(session):
     argument_count = len(db_arguments)
     statement_count = len(db_statements)
 
-    log = logging.getLogger(__name__)
     if argument_count <= 0 or statement_count <= 0:
-        log.warning("No arguments or statements! Did you forget to init discussions?")
+        LOG.warning("No arguments or statements! Did you forget to init discussions?")
         return
 
     rat_arg_up = arg_up / argument_count
@@ -899,10 +898,10 @@ def __setup_dummy_clicks(session):
     rat_stat_up = stat_up / statement_count
     rat_stat_down = stat_down / statement_count
 
-    log.debug("Created %s up clicks for %s arguments (%.2f clicks/argument)", arg_up, argument_count, rat_arg_up)
-    log.debug("Created %s down clicks for %s arguments (%.2f clicks/argument)", arg_down, argument_count, rat_arg_down)
-    log.debug("Created %s up clicks for %s statements (%.2f clicks/statements)", stat_up, statement_count, rat_stat_up)
-    log.debug("Created %s down clicks for %s statements (%.2f clicks/statements)", stat_down, statement_count,
+    LOG.debug("Created %s up clicks for %s arguments (%.2f clicks/argument)", arg_up, argument_count, rat_arg_up)
+    LOG.debug("Created %s down clicks for %s arguments (%.2f clicks/argument)", arg_down, argument_count, rat_arg_down)
+    LOG.debug("Created %s up clicks for %s statements (%.2f clicks/statements)", stat_up, statement_count, rat_stat_up)
+    LOG.debug("Created %s down clicks for %s statements (%.2f clicks/statements)", stat_down, statement_count,
               rat_stat_down)
 
     session.add_all(new_clicks_for_arguments)

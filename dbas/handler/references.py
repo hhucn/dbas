@@ -8,6 +8,8 @@ from dbas.input_validator import is_integer
 from dbas.lib import get_profile_picture, get_enabled_arguments_as_query, \
     get_enabled_premises_as_query
 
+LOG = logging.getLogger(__name__)
+
 
 def get_references_for_argument(uid, main_page):
     """
@@ -17,8 +19,7 @@ def get_references_for_argument(uid, main_page):
     :param main_page: current overview page
     :return: dict
     """
-    log = logging.getLogger(__name__)
-    log.debug("%s", uid)
+    LOG.debug("%s", uid)
 
     if not is_integer(uid):
         return {}, {}
@@ -79,8 +80,7 @@ def __get_references_for_statement(uid, main_page):
     :param main_page: current overview page
     :return: dict
     """
-    log = logging.getLogger(__name__)
-    log.debug("%s", uid)
+    LOG.debug("%s", uid)
     db_references = DBDiscussionSession.query(StatementReferences).filter_by(statement_uid=uid).all()
     references_array = [__get_values_of_reference(ref, main_page) for ref in db_references]
     return {uid: references_array}

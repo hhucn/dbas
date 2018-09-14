@@ -24,6 +24,8 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
 
+LOG = logging.getLogger(__name__)
+
 
 def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
     """
@@ -35,8 +37,7 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
-    log = logging.getLogger(__name__)
-    log.debug("%s", statement_text)
+    LOG.debug("%s", statement_text)
 
     user.update_last_action(db_user)
 
@@ -123,20 +124,19 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     added_reviews = [EditQueue().add_edit_reviews(db_user, el['uid'], el['text']) for el in elements]
 
     if added_reviews.count(Code.SUCCESS) == 0:  # no edits set
-        log = logging.getLogger(__name__)
         if added_reviews.count(Code.DOESNT_EXISTS) > 0:
-            log.debug("Internal Key Error")
+            LOG.debug("Internal Key Error")
             return {
                 'info': translator.get(_.internalKeyError),
                 'error': True
             }
         if added_reviews.count(Code.DUPLICATE) > 0:
-            log.debug("Already edit proposals")
+            LOG.debug("Already edit proposals")
             return {
                 'info': translator.get(_.alreadyEditProposals),
                 'error': True
             }
-        log.debug("No corrections given")
+        LOG.debug("No corrections given")
         return {
             'info': translator.get(_.noCorrections),
             'error': True
@@ -196,8 +196,7 @@ def get_logfile_for_statements(uids, lang, main_page):
     :param main_page: URL
     :return: dictionary with the logfile-rows
     """
-    log = logging.getLogger(__name__)
-    log.debug("Enter get_logfile_for_statements with uids: %s", uids)
+    LOG.debug("Enter get_logfile_for_statements with uids: %s", uids)
 
     main_dict = dict()
     for uid in uids:
@@ -275,8 +274,7 @@ def set_statement(text: str, db_user: User, is_position: bool, db_issue: Issue) 
     :return: Statement, is_duplicate or -1, False on error
     """
 
-    log = logging.getLogger(__name__)
-    log.debug("User_id: %s, text: %s, issue: %s", db_user.uid, text, db_issue.uid)
+    LOG.debug("User_id: %s, text: %s, issue: %s", db_user.uid, text, db_issue.uid)
 
     # escaping and cleaning
     text = escape_string(' '.join(text.strip().split()))
@@ -385,8 +383,7 @@ def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, s
     :param db_user: User
     :return: URL, [Statement.uid], String
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering __process_input_of_start_premises with # of premisegroups: %s", len(premisegroups))
+    LOG.debug("Entering __process_input_of_start_premises with # of premisegroups: %s", len(premisegroups))
     _tn = Translator(db_issue.lang)
 
     # insert all premise groups into our database
@@ -423,8 +420,7 @@ def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, s
 
 def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, supportive: bool, db_issue: Issue,
                                 db_user: User, history, mailer):
-    log = logging.getLogger(__name__)
-    log.debug("Entering __receive_urls_of_start_premises")
+    LOG.debug("Entering __receive_urls_of_start_premises")
 
     # arguments=0: empty input
     # arguments=1: deliver new url
@@ -459,8 +455,7 @@ def insert_new_premises_for_argument(premisegroup: List[str], current_attack, ar
     :param db_user: User
     :return: Argument
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering insert_new_premises_for_argument with arg_uid: %s", arg_uid)
+    LOG.debug("Entering insert_new_premises_for_argument with arg_uid: %s", arg_uid)
 
     statements = []
     for premise in premisegroup:
@@ -486,10 +481,10 @@ def insert_new_premises_for_argument(premisegroup: List[str], current_attack, ar
         new_argument, duplicate = set_new_rebut(new_pgroup.uid, current_argument, db_user, db_issue)
 
     if not new_argument:
-        log.debug("No statement or any premise = conclusion")
+        LOG.debug("No statement or any premise = conclusion")
         return Translator(db_issue.lang).get(_.premiseAndConclusionAreEqual)
 
-    log.debug("Returning argument %s", new_argument.uid)
+    LOG.debug("Returning argument %s", new_argument.uid)
     return new_argument
 
 
@@ -502,8 +497,7 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
     :param db_issue: Issue
     :return: PremiseGroup.uid
     """
-    log = logging.getLogger(__name__)
-    log.debug("User: %s, statement: %s, issue: %s", db_user.uid, [s.uid for s in statements], db_issue.uid)
+    LOG.debug("User: %s, statement: %s, issue: %s", db_user.uid, [s.uid for s in statements], db_issue.uid)
     # check for duplicate
     all_groups = []
     for statement in statements:
@@ -557,8 +551,7 @@ def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclu
     :param db_issue: Issue
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering __create_argument_by_raw_input with premisegroup %s, conclusion %s in issue %s",
+    LOG.debug("Entering __create_argument_by_raw_input with premisegroup %s, conclusion %s in issue %s",
               premisegroup, db_conclusion.uid, db_issue.uid)
 
     new_statements = []
@@ -569,7 +562,7 @@ def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclu
 
     # second, set the new statements as premisegroup
     new_premisegroup = set_statements_as_new_premisegroup(new_statements, db_user, db_issue)
-    log.debug("New pgroup %s", new_premisegroup.uid)
+    LOG.debug("New pgroup %s", new_premisegroup.uid)
 
     # third, insert the argument
     new_argument = __create_argument_by_uids(db_user, new_premisegroup.uid, db_conclusion.uid, None, is_supportive,
@@ -600,8 +593,7 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
     :param db_issue: Issue
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering __create_argument_by_uids with user: %s, premisegroup_uid: %s, conclusion_uid :%s, "
+    LOG.debug("Entering __create_argument_by_uids with user: %s, premisegroup_uid: %s, conclusion_uid :%s, "
               "argument_uid: %s, is_supportive: %s, issue: %s",
               db_user.nickname, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, db_issue.uid)
 
@@ -625,8 +617,8 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
                                                                   Argument.issue_uid == db_issue.uid).first()
     transaction.commit()
     if new_argument:
-        log.debug("Argument was inserted")
+        LOG.debug("Argument was inserted")
         return new_argument
     else:
-        log.debug("Argument was not inserted")
+        LOG.debug("Argument was not inserted")
         return None

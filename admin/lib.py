@@ -25,6 +25,8 @@ from dbas.lib import get_text_for_premisegroup_uid, get_text_for_argument_uid, \
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
+
 table_mapper = {
     'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
     'Language'.lower(): {'table': Language, 'name': 'Language'},
@@ -83,8 +85,7 @@ def get_overview(page):
     :param page: Name of the overview page
     :return: [[{'name': .., 'content': [{'name': .., 'count': .., 'href': ..}, ..] }], ..]
     """
-    log = logging.getLogger(__name__)
-    log.debug("main")
+    LOG.debug("main")
     return_list = list()
 
     # all tables for the 'general' group
@@ -168,8 +169,7 @@ def get_table_dict(table_name, main_page):
     :param main_page: URL
     :return: Dictionary with head, row, count and has_elements
     """
-    log = logging.getLogger(__name__)
-    log.debug("%s", table_name)
+    LOG.debug("%s", table_name)
 
     # check for elements
     table = table_mapper[table_name.lower()]['table']
@@ -364,20 +364,19 @@ def update_row(table_name, uids, keys, values):
     """
     table = table_mapper[table_name.lower()]['table']
     _tn = Translator('en')
-    log = logging.getLogger(__name__)
     try:
         update_dict = __update_row_dict(table, values, keys, _tn)
     except ProgrammingError as e:
-        log.error("%s", e)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     try:
         __update_row(table, table_name, uids, update_dict)
     except IntegrityError as e:
-        log.error("%s", e)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
     except ProgrammingError as e:
-        log.error("%s", e)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     DBDiscussionSession.flush()
@@ -395,8 +394,7 @@ def delete_row(table_name, uids):
     :param _tn: Translator
     :return: Empty string or error message
     """
-    log = logging.getLogger(__name__)
-    log.debug("%s %s", table_name, uids)
+    LOG.debug("%s %s", table_name, uids)
     table = table_mapper[table_name.lower()]['table']
     try:
         # check if there is a table, where uid is not the PK!
@@ -410,10 +408,10 @@ def delete_row(table_name, uids):
             DBDiscussionSession.query(table).filter_by(uid=uids[0]).delete()
 
     except IntegrityError as e:
-        log.error("%s", e)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
     except ProgrammingError as e:
-        log.error("%s", e)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     DBDiscussionSession.flush()
@@ -429,8 +427,7 @@ def add_row(table_name, data):
     :param data: Dictionary with data for the update
     :return: Empty string or error message
     """
-    log = logging.getLogger(__name__)
-    log.debug("%s", data)
+    LOG.debug("%s", data)
 
     table = table_mapper[table_name.lower()]['table']
     try:
@@ -439,7 +436,7 @@ def add_row(table_name, data):
         new_one = table(**data)
         DBDiscussionSession.add(new_one)
     except IntegrityError as e:
-        log.error("%s", e)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
 
     DBDiscussionSession.flush()

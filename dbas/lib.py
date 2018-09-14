@@ -27,6 +27,8 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
+
 nick_of_anonymous_user = 'anonymous'
 
 fallback_lang = 'en'
@@ -207,8 +209,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :param include_disabled: Boolean
     :return: [Arguments]
     """
-    log = logging.getLogger(__name__)
-    log.debug("main %s, include_disabled %s", statement_uid, include_disabled)
+    LOG.debug("main %s, include_disabled %s", statement_uid, include_disabled)
     db_arguments = __get_arguments_of_conclusion(statement_uid, include_disabled)
     arg_array = [arg for arg in db_arguments] if db_arguments else []
 
@@ -230,7 +231,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
 
     arg_array = list(set(arg_array + db_undercuts + db_undercutted_undercuts))
 
-    log.debug("returning arguments %s", [arg.uid for arg in arg_array])
+    LOG.debug("returning arguments %s", [arg.uid for arg in arg_array])
     return arg_array if len(arg_array) > 0 else None
 
 
@@ -286,8 +287,7 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
-    log = logging.getLogger(__name__)
-    log.debug("main %s", statement_uid)
+    LOG.debug("main %s", statement_uid)
     arguments = get_all_arguments_by_statement(statement_uid)
     results = []
     if arguments:
@@ -308,8 +308,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
-    log = logging.getLogger(__name__)
-    log.debug("main %s", db_statement.uid)
+    LOG.debug("main %s", db_statement.uid)
     arguments = get_all_arguments_by_statement(db_statement.uid)
     uids = [arg.uid for arg in arguments] if arguments else None
     results = list()
@@ -360,8 +359,7 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     :param is_users_opinion: Boolean
     :return: String
     """
-    log = logging.getLogger(__name__)
-    log.debug("main %s", uid)
+    LOG.debug("main %s", uid)
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return None

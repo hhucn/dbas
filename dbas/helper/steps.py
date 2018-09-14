@@ -16,6 +16,8 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
 
+LOG = logging.getLogger(__name__)
+
 
 def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
                                    path):
@@ -29,8 +31,7 @@ def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_ar
     :param path:
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Justify statement")
+    LOG.debug("Justify statement")
     supportive = attitude in [Attitudes.AGREE, Attitudes.DONT_KNOW]
     item_dict, discussion_dict = preparation_for_justify_statement(history, db_user, path, db_issue, db_stmt_or_arg,
                                                                    supportive)
@@ -48,8 +49,7 @@ def handle_justification_dontknow(db_issue: Issue, db_user: User, db_stmt_or_arg
     :param path:
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Do not know for %s", db_stmt_or_arg.uid)
+    LOG.debug("Do not know for %s", db_stmt_or_arg.uid)
     item_dict, discussion_dict = __preparation_for_dont_know_statement(db_issue, db_user, db_stmt_or_arg, history, path)
     return item_dict, discussion_dict
 
@@ -67,8 +67,7 @@ def handle_justification_argument(db_issue: Issue, db_user: User, db_argument: A
     :param path:
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Justify argument")
+    LOG.debug("Justify argument")
     ui_locales = db_issue.lang
     nickname = db_user.nickname
     supportive = attitude in [Attitudes.AGREE, Attitudes.DONT_KNOW]
@@ -97,8 +96,7 @@ def preparation_for_justify_statement(history, db_user: User, path, db_issue: Is
     :param supportive: Boolean
     :return: dict(), dict(), dict()
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering preparation_for_justify_statement")
+    LOG.debug("Entering preparation_for_justify_statement")
     nickname = db_user.nickname
     slug = db_issue.slug
 
@@ -126,8 +124,7 @@ def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stm
     :param path: request.path
     :return: dict(), dict(), dict()
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering __preparation_for_dont_know_statement")
+    LOG.debug("Entering __preparation_for_dont_know_statement")
     nickname = db_user.nickname
     slug = db_issue.slug
 
@@ -154,8 +151,7 @@ def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument
     :param path:
     :return:
     """
-    log = logging.getLogger(__name__)
-    log.debug("Entering preparation_for_justify_argument")
+    LOG.debug("Entering preparation_for_justify_argument")
     nickname = db_user.nickname
     slug = db_issue.slug
 
