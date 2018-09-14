@@ -3,12 +3,12 @@ Provides helping function for creating the history as bubbles.
 
 .. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from typing import Optional, List
-
 import logging
+from typing import List
+from typing import Optional
+
 import transaction
 from pyramid.request import Request
-from typing import Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, History, sql_timestamp_pretty_print, \
@@ -223,7 +223,8 @@ def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
     return [bubble_user]
 
 
-def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) -> Optional[List[list]]:
+def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) -> Optional[
+    List[list]]:
     """
     Creates bubbles for the support-keyword for an statement.
 
