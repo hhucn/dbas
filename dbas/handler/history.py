@@ -223,8 +223,8 @@ def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
     return [bubble_user]
 
 
-def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) -> Optional[
-    List[list]]:
+def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) \
+        -> Optional[List[list]]:
     """
     Creates bubbles for the support-keyword for an statement.
 
