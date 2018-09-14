@@ -3,7 +3,7 @@ Provides helping function for creating the history as bubbles.
 
 .. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from typing import Optional
+from typing import Optional, List
 
 import transaction
 from pyramid.request import Request
@@ -174,14 +174,14 @@ def __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_h
         bubble_array += bubbles
 
 
-def __prepare_support_step(bubble_array, index, step, nickname, lang):
+def __prepare_support_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str):
     """
     Preparation for creating the support bubbles
 
     :param bubble_array: [dict()]
     :param index: int
     :param step: String
-    :param nickname: User.nickname
+    :param db_user: User
     :param lang: Language.ui_locales
     :return: None
     """
@@ -189,10 +189,10 @@ def __prepare_support_step(bubble_array, index, step, nickname, lang):
     steps = step.split('/')
     if len(steps) < 3:
         return
-    user_uid = steps[1]
-    system_uid = steps[2]
+    user_uid = int(steps[1])
+    system_uid = int(steps[2])
 
-    bubble = __get_bubble_from_support_step(user_uid, system_uid, nickname, lang)
+    bubble = __get_bubble_from_support_step(user_uid, system_uid, db_user, lang)
     if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
         bubble_array += bubble
 
@@ -221,13 +221,13 @@ def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
     return [bubble_user]
 
 
-def __get_bubble_from_support_step(arg_uid_user, uid_system, nickname, lang):
+def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) -> Optional[List[list]]:
     """
     Creates bubbles for the support-keyword for an statement.
 
     :param arg_uid_user: User.uid
     :param uid_system: Argument.uid
-    :param nickname: User.nickname
+    :param db_user: User
     :param lang: Language.ui_locales
     :return: [dict()]
     """
@@ -238,20 +238,18 @@ def __get_bubble_from_support_step(arg_uid_user, uid_system, nickname, lang):
         return None
 
     user_text = get_text_for_argument_uid(arg_uid_user)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=user_text, omit_bubble_url=True,
                                            argument_uid=arg_uid_user, is_supportive=db_arg_user.is_supportive,
                                            db_user=db_user, lang=lang)
 
     argument_text = get_text_for_argument_uid(uid_system, colored_position=True, with_html_tag=True, attack_type='jump')
-
     offset = len('</' + tag_type + '>') if argument_text.endswith('</' + tag_type + '>') else 1
+
     while argument_text[:-offset].endswith(('.', '?', '!')):
         argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
 
-    text = get_text_for_support(db_arg_system, argument_text, nickname, Translator(lang))
-    db_other_author = DBDiscussionSession.query(User).get(
-        DBDiscussionSession.query(Argument).get(db_arg_system).author_uid)
+    text = get_text_for_support(db_arg_system, argument_text, db_user.nickname, Translator(lang))
+    db_other_author = DBDiscussionSession.query(User).get(db_arg_system.author_uid)
     bubble_system = create_speechbubble_dict(BubbleTypes.SYSTEM, content=text, omit_bubble_url=True, lang=lang,
                                              other_author=db_other_author)
 
