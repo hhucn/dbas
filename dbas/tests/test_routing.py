@@ -42,9 +42,6 @@ class RoutingTests(unittest.TestCase):
     def test_imprint(self):
         self.testapp.get('/imprint', status=200)
 
-    def test_rss(self):
-        self.testapp.get('/rss', status=200)
-
     def test_faq(self):
         self.testapp.get('/faq', status=200)
 

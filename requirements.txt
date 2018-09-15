@@ -31,7 +31,6 @@ pyramid-chameleon==0.3
 pyramid-mailer==0.15.1
 pyramid-redis-sessions==1.0.1
 pyramid-tm==2.2
-PyRSS2Gen==1.1
 pyshorteners==0.6.1
 pytest==3.6.1
 py3dns==3.2.0

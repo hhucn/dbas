@@ -19,10 +19,9 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     ReputationReason, ReviewMerge, ReviewSplit, ReviewSplitValues, ReviewMergeValues, \
     ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument, \
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
-    ReviewCanceled, RSS, OptimizationReviewLocks, History, News, StatementToIssue
+    ReviewCanceled, OptimizationReviewLocks, History, News, StatementToIssue
 from dbas.handler.password import get_hashed_password
-from dbas.handler.rss import create_news_rss, create_initial_issue_rss
-from dbas.lib import get_global_url, nick_of_anonymous_user
+from dbas.lib import nick_of_anonymous_user
 
 LOG = logging.getLogger(__name__)
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
@@ -76,7 +75,6 @@ def main_discussion(argv=sys.argv):
         __setup_dummy_clicks(DBDiscussionSession)
         __setup_review_dummy_database(DBDiscussionSession)
         transaction.commit()
-        create_initial_issue_rss(get_global_url())
 
 
 def main_field_test(argv=sys.argv):
@@ -106,7 +104,6 @@ def main_field_test(argv=sys.argv):
         transaction.commit()
         __add_reputation_and_delete_reason(DBDiscussionSession)
         transaction.commit()
-        create_initial_issue_rss(get_global_url())
 
 
 def drop_it(argv=sys.argv):
@@ -164,7 +161,6 @@ def drop_it(argv=sys.argv):
         DBDiscussionSession.query(Argument).delete()
         DBDiscussionSession.query(Statement).delete()
         DBDiscussionSession.query(PremiseGroup).delete()
-        DBDiscussionSession.query(RSS).delete()
         DBDiscussionSession.query(Settings).delete()
         DBDiscussionSession.query(User).delete()
         DBDiscussionSession.query(Group).delete()
@@ -245,7 +241,6 @@ def blank_file(argv=sys.argv):
         DBDiscussionSession.add_all([settings0, settings1])
 
         transaction.commit()
-        create_initial_issue_rss(get_global_url())
 
 
 def init_dummy_votes(argv=sys.argv):
@@ -595,8 +590,6 @@ def setup_news_db(session, ui_locale):
                   news50, news51, news52, news53, news54, news55, news56, news57, news58, news59, news60, news61]
     session.add_all(news_array[::-1])
     session.flush()
-
-    create_news_rss(get_global_url(), ui_locale)
 
 
 def __set_up_users(session, include_dummy_users=True):

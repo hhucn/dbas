@@ -6,7 +6,6 @@ from admin.lib import table_mapper
 from dbas.database import DBDiscussionSession
 from dbas.handler import news as news_handler
 from dbas.handler.language import set_language_for_visit, get_language_from_cookie
-from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.decoration import prep_extras_dict
 from dbas.lib import get_changelog
 from dbas.logger import logger
@@ -132,24 +131,6 @@ def docs(request):
     """
     logger('docs', 'main')
     return main_dict(request, Translator(get_language_from_cookie(request)).get(_.docs))
-
-
-@view_config(route_name='main_rss', renderer='../../templates/rss.pt', permission='everybody')
-@validate(check_authentication, prep_extras_dict)
-def rss(request):
-    """
-    View configuration for the RSS feed.
-
-    :param request: current request of the server
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
-    """
-    logger('rss', 'main')
-    ui_locales = get_language_from_cookie(request)
-    rss = get_list_of_all_feeds(ui_locales)
-
-    prep_dict = main_dict(request, 'RSS')
-    prep_dict.update({'rss': rss})
-    return prep_dict
 
 
 @view_config(route_name='health', permission='everybody')
