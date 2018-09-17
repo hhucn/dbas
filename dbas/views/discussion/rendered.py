@@ -1,3 +1,4 @@
+import logging
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
@@ -11,7 +12,6 @@ from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.lib import nick_of_anonymous_user
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
@@ -24,6 +24,8 @@ from dbas.views.helper import main_dict, modify_discussion_url, modify_discussio
     append_extras_dict, append_extras_dict_during_justification_statement, \
     append_extras_dict_during_justification_argument, modifiy_issue_main_url
 
+LOG = logging.getLogger(__name__)
+
 
 @view_config(route_name='discussion_overview', renderer='../../templates/discussion/myoverview.pt', permission='use')
 @validate(check_authentication, prep_extras_dict, valid_user_optional)
@@ -33,7 +35,7 @@ def discussion_overview(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('discussion_overview', 'main')
+    LOG.debug("Return a discussion overview dicstionary")
     ui_locales = get_language_from_cookie(request)
     issue_dict = get_issues_overview_for(request.validated['user'], request.application_url)
 
@@ -56,7 +58,7 @@ def start(request):
     :param request: request of the web server
     :return: dictionary
     """
-    logger('start', 'main')
+    LOG.debug("Return configuration for initial discussion overview")
     ui_locales = get_language_from_cookie(request)
     issue_dict = issue_handler.get_issues_overview_on_start(request.validated['user'])
     for key in issue_dict['issues']:
@@ -81,7 +83,7 @@ def init(request):
     :param request: request of the web server
     :return: dictionary
     """
-    logger('init', 'request.matchdict: {}'.format(request.matchdict))
+    LOG.debug("Configuration for initial discussion. %s", request.matchdict)
 
     prepared_discussion = discussion.init(request.validated['issue'], request.validated['user'])
     modify_discussion_url(prepared_discussion)
@@ -114,7 +116,7 @@ def attitude(request):
     :param request: request of the web server
     :return: dictionary
     """
-    logger('attitude', 'request.matchdict: {}'.format(request.matchdict))
+    LOG.debug("View attitude: %s", request.matchdict)
 
     db_statement = request.validated['statement']
     db_issue = request.validated['issue']
@@ -145,21 +147,22 @@ def justify_statement(request) -> dict:
     :param request: request of the web server
     :return: dict
     """
-    logger('justify_statement', 'request.matchdict: {}'.format(request.matchdict))
+    LOG.debug("Justify a statement. %s", request.matchdict)
 
     db_statement: Statement = request.validated['statement']
 
     db_issue = request.validated['issue']
     db_user = request.validated['user']
-    attitude = request.validated['attitude']
+    inner_attitude = request.validated['attitude']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
-    prepared_discussion = discussion.justify_statement(db_issue, db_user, db_statement, attitude, history, request.path)
+    prepared_discussion = discussion.justify_statement(db_issue, db_user, db_statement, inner_attitude, history,
+                                                       request.path)
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
 
     append_extras_dict_during_justification_statement(request, db_user, db_issue, db_statement, prepared_discussion,
-                                                      attitude)
+                                                      inner_attitude)
 
     return prepared_discussion
 
@@ -176,7 +179,7 @@ def dontknow_argument(request) -> dict:
     :param request: request of the web server
     :return: dict
     """
-    logger('dontknow_argument', 'request.matchdict: {}'.format(request.matchdict))
+    LOG.debug("Do not now an argument for this step. %s", request.matchdict)
 
     db_argument: Argument = request.validated['argument']
 
@@ -206,16 +209,16 @@ def justify_argument(request) -> dict:
     :param request: request of the web server
     :return: dict
     """
-    logger('justify_argument', 'request.matchdict: {}'.format(request.matchdict))
+    LOG.debug("Justify an argument. %s", request.matchdict)
 
     db_argument: Argument = request.validated['argument']
     db_issue = request.validated['issue']
     db_user = request.validated['user']
-    attitude = request.validated['attitude']
+    inner_attitude = request.validated['attitude']
     relation = request.validated['relation']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
-    prepared_discussion = discussion.justify_argument(db_issue, db_user, db_argument, attitude, relation, history,
+    prepared_discussion = discussion.justify_argument(db_issue, db_user, db_argument, inner_attitude, relation, history,
                                                       request.path)
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
@@ -236,7 +239,7 @@ def reaction(request):
     :param request: request of the web server
     :return: dictionary
     """
-    logger('reaction', 'request.validated: {}'.format(request.validated))
+    LOG.debug("React to a step. %s", request.validated)
 
     db_user = request.validated['user']
     db_issue = request.validated['issue']
@@ -265,7 +268,7 @@ def support(request):
     :param request: request of the web server
     :return: dictionary
     """
-    logger('support', 'request.matchdict: {}'.format(request.matchdict))
+    LOG.debug("Support a statement. %s", request.matchdict)
 
     db_user = request.validated['user']
     db_issue = request.validated['issue']
@@ -293,7 +296,7 @@ def finish(request):
     :param request: request of the web server
     :return:
     """
-    logger('finish', 'request.matchdict: {}'.format(request.matchdict))
+    LOG.debug("Finish the discussion. %s", request.matchdict)
 
     db_user = request.validated['user']
     db_issue = request.validated['issue']
@@ -321,8 +324,7 @@ def dexit(request):
     :param request: request of the web server
     :return:
     """
-    match_dict = request.matchdict
-    logger('dexit', 'request.matchdict: {}'.format(match_dict))
+    LOG.debug("Exit discussion. %s", request.matchdict)
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     dh = DictionaryHelper(get_language_from_cookie(request))
@@ -346,8 +348,7 @@ def choose(request):
     :return: dictionary
     """
     # '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
-    match_dict = request.matchdict
-    logger('choose', 'request.matchdict: {}'.format(match_dict))
+    LOG.debug("Choose a statement. %s", request.matchdict)
 
     db_user = request.validated['user']
     db_issue = request.validated['issue']
