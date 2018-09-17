@@ -95,8 +95,8 @@ class EditQueue(QueueABC):
         self.__difference_between_string(rev_dict['text'], db_edit_value.content, correction_list)
         correction = ''.join(correction_list)
 
-        rev_dict[f'already_seen_reviews'].append(not rev_dict['rnd_review'].uid)
-        session[f'already_seen_{self.key}'] = rev_dict[f'already_seen_reviews']
+        rev_dict['already_seen_reviews'].append(rev_dict['rnd_review'].uid)
+        session[f'already_seen_{self.key}'] = rev_dict['already_seen_reviews']
 
         return {
             'stats': stats,
