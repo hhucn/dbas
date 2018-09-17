@@ -5,12 +5,13 @@ return JSON objects which can then be used in external websites.
 
 .. note:: Methods **must not** have the same name as their assigned Service.
 """
+from typing import List
+
 from cornice import Service
 from cornice.resource import resource, view
 from pyramid.httpexceptions import HTTPSeeOther
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
-from typing import List
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
@@ -224,12 +225,12 @@ def discussion_init(request):
                                                                Statement.uid.in_(issues_statements),
                                                                Statement.is_position == True).all()
 
-    items = [Item([pos.get_textversion().content], "/{}/attitude/{}".format(db_issue.slug, pos.uid))
-             for pos in db_positions]
+    positions = [Item([pos.get_textversion().content], "/{}/attitude/{}".format(db_issue.slug, pos.uid))
+                 for pos in db_positions]
 
     return {
         'bubbles': [Bubble(bubble) for bubble in bubbles],
-        'items': items
+        'positions': positions
     }
 
 
@@ -393,8 +394,8 @@ def get_references(request: Request):
     :param request: request
     :return: References assigned to the queried URL
     """
-    host = request.GET.get("host")
-    path = request.GET.get("path")
+    host = request.host
+    path = request.path
     log.debug("Querying references for host: {}, path: {}".format(host, path))
     if host and path:
         refs_db = get_references_for_url(host, path)
