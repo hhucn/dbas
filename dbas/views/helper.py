@@ -1,5 +1,5 @@
+import logging
 import re
-
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.registry import Registry
 from pyramid.request import Request
@@ -10,8 +10,8 @@ from dbas.handler import history as history_handler, issue as issue_handler
 from dbas.handler.language import get_language_from_cookie, set_language_for_visit
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.lib import usage_of_modern_bubbles, nick_of_anonymous_user, Attitudes
-from dbas.logger import logger
 
+LOG = logging.getLogger(__name__)
 name = 'D-BAS'
 version = '1.10.3'
 full_version = version
@@ -69,7 +69,7 @@ def prepare_request_dict(request: Request):
     :param request:
     :return:
     """
-    logger('Renderer', 'def')
+    LOG.debug("Preparing request dict for renderer")
 
     db_user = request.validated['user']
     nickname = db_user.nickname if db_user.nickname != nick_of_anonymous_user else None
@@ -146,7 +146,7 @@ def append_extras_dict(pdict: dict, rdict: dict, nickname: str, is_reportable: b
     """
 
     :param pdict: prepared dict for rendering
-    :param idict: item dict with the answers
+    :param rdict: request dictionary
     :param nickname: request.authenticated_userid
     :param is_reportable: Same as discussion.bubbles.last.is_markable, but TAL has no last indicator
     :return:
