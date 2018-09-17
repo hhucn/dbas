@@ -515,13 +515,6 @@ class TestUser(TestCaseWithConfig):
 
 
 class TestReferences(TestCaseWithConfig):
-    def setUp(self):
-        self.statement_reference: StatementReferences = DBDiscussionSession.query(StatementReferences).get(2)
-
-    def __assert_error(self, response):
-        self.assertIn('status', response)
-        self.assertEqual(response.get('status'), 'error')
-
     def __assert_valid_references(self, response, expected_references: List[Reference] = None):
         references = response.get('references')
         self.assertIn('references', response)
@@ -534,19 +527,19 @@ class TestReferences(TestCaseWithConfig):
     def test_missing_parameters_should_return_error(self):
         request: IRequest = construct_dummy_request(params={})
         response = apiviews.get_references(request)
-        self.__assert_error(response)
+        self.__assert_valid_references(response, [])
 
     def test_missing_path_should_return_error(self):
         request: IRequest = construct_dummy_request()
         request.host = 'foo'
         response = apiviews.get_references(request)
-        self.__assert_error(response)
+        self.__assert_valid_references(response, [])
 
     def test_missing_host_should_return_error(self):
         request: IRequest = construct_dummy_request()
         request.path = 'foo'
         response = apiviews.get_references(request)
-        self.__assert_error(response)
+        self.__assert_valid_references(response, [])
 
     def test_empty_list_when_no_references_in_database(self):
         request: IRequest = construct_dummy_request()

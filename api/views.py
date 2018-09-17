@@ -19,7 +19,7 @@ import dbas.views.discussion as dbas
 from api.lib import extract_items_and_bubbles
 from api.models import Item, Bubble, Reference
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue
+from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReferences
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.handler.user import set_new_oauth_user
@@ -397,15 +397,10 @@ def get_references(request: Request):
     host = request.host
     path = request.path
     log.debug("Querying references for host: {}, path: {}".format(host, path))
-    if host and path:
-        refs_db = get_references_for_url(host, path)
-        if refs_db is not None:
-            return {
-                "references": [Reference(ref) for ref in refs_db]
-            }
-        else:
-            return error("Could not retrieve references")
-    return error("Could not parse your origin")
+    refs_db: List[StatementReferences] = get_references_for_url(host, path)
+    return {
+        "references": [Reference(ref) for ref in refs_db]
+    }
 
 
 @reference_usages.get()
