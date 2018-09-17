@@ -1,7 +1,7 @@
+import logging
 import random
-from typing import List, Union
-
 import transaction
+from typing import List, Union
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Issue, Statement, StatementToIssue, sql_timestamp_pretty_print, \
@@ -9,9 +9,10 @@ from dbas.database.discussion_model import Argument, Issue, Statement, Statement
     LastReviewerEdit, ReviewDuplicate, LastReviewerDuplicate, ReviewMerge, ReviewSplit, LastReviewerMerge, \
     LastReviewerSplit
 from dbas.lib import get_text_for_argument_uid, get_profile_picture
-from dbas.logger import logger
 from dbas.review.mapper import get_review_modal_mapping, get_last_reviewer_by_key
 from dbas.review.reputation import get_reputation_of, reputation_borders
+
+LOG = logging.getLogger(__name__)
 
 
 def get_all_allowed_reviews_for_user(session, session_keyword, db_user, review_type, last_reviewer_type):
@@ -23,10 +24,11 @@ def get_all_allowed_reviews_for_user(session, session_keyword, db_user, review_t
     :param db_user: current user
     :param review_type: data table of reviews
     :param last_reviewer_type: data table of last reviewers
-    :return: all revies, list of already seen reviews as uids, list of already reviewed reviews as uids, boolean if the user reviews for the first time in this session
+    :return: all revies, list of already seen reviews as uids, list of already reviewed reviews as uids, boolean if the
+    user reviews for the first time in this session
     """
     # only get arguments, which the user has not seen yet
-    logger('review.lib', 'main')
+    LOG.debug("Trying to return all reviews for review_type %s", review_type.uid)
     already_seen, first_time = list(), True
     if session_keyword in session:
         already_seen, first_time = session[session_keyword], False
@@ -105,7 +107,7 @@ def get_reporter_stats_for_review(db_review, ui_locales, main_page):
     :param main_page: Host URL
     :return: dict()
     """
-    logger('ReviewSubpagerHelper', 'main')
+    LOG.debug("Return statistics for review %s", db_review.uid)
 
     db_reporter = DBDiscussionSession.query(User).get(db_review.detector_uid)
 
@@ -159,7 +161,7 @@ def set_able_object_of_review(review, is_disabled):
     :param is_disabled: boolean
     :return: None
     """
-    logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
+    LOG.debug("Is %s disabled? %s", review.uid, is_disabled)
     if review.statement_uid is not None:
         __set_able_of_reviews_statement(review, is_disabled)
     else:
@@ -174,7 +176,7 @@ def __set_able_of_reviews_statement(review, is_disabled):
     :param is_disabled: boolean
     :return: None
     """
-    logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
+    LOG.debug("Is statement %s disabled? %s", review.uid, is_disabled)
     db_statement = DBDiscussionSession.query(Statement).get(review.statement_uid)
     db_statement.set_disabled(is_disabled)
     DBDiscussionSession.add(db_statement)
@@ -196,7 +198,7 @@ def __set_able_of_reviews_argument(review, is_disabled):
     :param is_disabled: boolean
     :return: None
     """
-    logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
+    LOG.debug("Is argument %s disabled? %s", review.uid, is_disabled)
     db_argument = DBDiscussionSession.query(Argument).get(review.argument_uid)
     db_argument.set_disabled(is_disabled)
     DBDiscussionSession.add(db_argument)
@@ -224,8 +226,7 @@ def undo_premisegroups(pgroups_splitted_or_merged, replacements):
     :param replacements:
     :return:
     """
-    logger('review_history_helper',
-           f'Got {len(pgroups_splitted_or_merged)} merge/splitted pgroups and {len(replacements)} replacements')
+    LOG.debug("Got %s merge/split pgroups and %s replacements", len(pgroups_splitted_or_merged), len(replacements))
 
     for element in pgroups_splitted_or_merged:
         old_pgroup = element.old_premisegroup_uid
@@ -233,8 +234,7 @@ def undo_premisegroups(pgroups_splitted_or_merged, replacements):
 
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=new_pgroup).all()
         for argument in db_arguments:
-            logger('review_history_helper',
-                   f'reset arguments {argument.uid} pgroup from {new_pgroup} back to {old_pgroup}')
+            LOG.debug("Reset arguments %s pgroup from %s back to %s", argument.uid, new_pgroup, old_pgroup)
             argument.set_premisegroup(old_pgroup)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.flush()
@@ -245,8 +245,7 @@ def undo_premisegroups(pgroups_splitted_or_merged, replacements):
 
         db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=new_statement).all()
         for argument in db_arguments:
-            logger('review_history_helper',
-                   f'reset arguments {argument.uid} conclusion from {new_statement} back to {old_statement}')
+            LOG.debug("Reset arguments %s conclusion from %s back to %s", argument.uid, new_statement, old_statement)
             argument.set_conclusion(old_statement)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.flush()
@@ -322,14 +321,15 @@ def add_vote_for(db_user: User, db_review: Union[ReviewDelete, ReviewDuplicate, 
     :param db_reviewer_type: one table out of the LastReviews
     :return: True, if the cote can be added
     """
-    logger('review.lib', f'{db_reviewer_type}, user {db_user.uid}, db_review {db_review}, is_okay {is_okay}')
-    already_voted = DBDiscussionSession.query(db_reviewer_type).filter(db_reviewer_type.reviewer_uid == db_user.uid,
-                                                                       db_reviewer_type.review_uid == db_review.uid).first()
+    LOG.debug("%s, user %s, db_review %s, is_okay %s", db_reviewer_type, db_user.uid, db_review, is_okay)
+    already_voted = DBDiscussionSession.query(db_reviewer_type).filter(
+        db_reviewer_type.reviewer_uid == db_user.uid,
+        db_reviewer_type.review_uid == db_review.uid).first()
     if already_voted:
-        logger('review.lib', 'already voted')
+        LOG.warning("Already voted")
         return False
 
-    logger('review.lib', 'vote added')
+    LOG.debug("Vote Added")
     db_new_review = db_reviewer_type(db_user.uid, db_review.uid, is_okay)
     DBDiscussionSession.add(db_new_review)
     DBDiscussionSession.flush()
