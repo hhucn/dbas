@@ -1,3 +1,4 @@
+import logging
 from pyramid.view import view_config
 
 from dbas.database import DBDiscussionSession
@@ -11,7 +12,6 @@ from dbas.handler.statements import set_position, set_positions_premise, set_cor
 from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.query import mark_statement_or_argument
 from dbas.lib import relation_mapper, escape_string, get_discussion_language
-from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.validators.common import valid_language
 from dbas.validators.core import validate, has_keywords
@@ -20,6 +20,8 @@ from dbas.validators.discussion import valid_any_issue_by_id, valid_issue_not_re
     valid_statement
 from dbas.validators.user import valid_user, valid_user_optional
 from dbas.views.json import __modifiy_discussion_url
+
+LOG = logging.getLogger(__name__)
 
 
 @view_config(route_name='get_user_history', renderer='json')
@@ -129,7 +131,7 @@ def delete_user_history(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('delete_user_history', 'main')
+    LOG.debug("Delete user history")
     db_user = request.validated['user']
     return history_handler.delete_in_database(db_user)
 
@@ -143,7 +145,7 @@ def delete_statistics(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('delete_statistics', 'main')
+    LOG.debug("Delete votes and clicks of a user")
     db_user = request.validated['user']
     return clear_vote_and_seen_values_of_user(db_user)
 
@@ -157,7 +159,7 @@ def set_discussion_properties(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'request.params: {}'.format(request.json_body))
+    LOG.debug("Request.params: %s", request.json_body)
     _tn = Translator(get_language_from_cookie(request))
 
     prop = request.validated['property']
@@ -176,16 +178,16 @@ def set_new_start_argument(request):
     :param request: request of the web server
     :return: a status code, if everything was successful
     """
-    logger('views', 'request.params: {}'.format(request.json_body))
+    LOG.debug("Insert a new argument as starting point: %s", request.json_body)
     reason = request.validated['reason']
 
     # set the new position
-    logger('views', 'set conclusion/position')
+    LOG.debug("Set conclusion/position")
     prepared_dict_pos = set_position(request.validated['user'], request.validated['issue'],
                                      request.validated['position'])
 
     if len(prepared_dict_pos['error']) is 0:
-        logger('views', 'set premise/reason')
+        LOG.debug("Set premise/reason")
         prepared_dict_pos = set_positions_premise(request.validated['issue'],
                                                   request.validated['user'],
                                                   DBDiscussionSession.query(Statement).get(
@@ -209,7 +211,7 @@ def set_new_start_premise(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Set new premise for start: %s", request.json_body)
     prepared_dict = set_positions_premise(request.validated['issue'],
                                           request.validated['user'],
                                           request.validated['conclusion'],
@@ -231,7 +233,7 @@ def set_new_premises_for_argument(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Set new premise for an argument. %s", request.json_body)
     prepared_dict = set_arguments_premises(request.validated['issue'],
                                            request.validated['user'],
                                            request.validated['argument'],
@@ -252,7 +254,7 @@ def set_correction_of_some_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Set textvalue for a statement: %s", request.json_body)
     ui_locales = get_language_from_cookie(request)
     elements = request.validated['elements']
     db_user = request.validated['user']
@@ -268,7 +270,7 @@ def set_new_issue(request):
     :param request: current request of the server
     :return:
     """
-    logger('views', 'main {}'.format(request.json_body))
+    LOG.debug("Set a new issue: %s", request.json_body)
     info = escape_string(request.validated['info'])
     long_info = escape_string(request.validated['long_info'])
     title = escape_string(request.validated['title'])
@@ -288,7 +290,7 @@ def set_statements_as_seen(request):
     :param request: current request of the server
     :return: json
     """
-    logger('views', 'main {}'.format(request.json_body))
+    LOG.debug("Set statement as seen. %s", request.json_body)
     uids = request.validated['uids']
     return set_seen_statements(uids, request.path, request.validated['user'])
 
@@ -303,7 +305,7 @@ def mark_or_unmark_statement_or_argument(request):
     :param request: current request of the server
     :return: json
     """
-    logger('views', 'main {}'.format(request.json_body))
+    LOG.debug("Set statement as seen. %s", request.json_body)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     arg_or_stmt = request.validated['arg_or_stmt']
     step = request.validated['step']
@@ -323,7 +325,7 @@ def get_logfile_for_some_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Return the changelog of a statement. %s", request.json_body)
     uids = request.validated['uids']
     db_issue = request.validated['issue']
     return get_logfile_for_statements(uids, db_issue.lang, request.application_url)
@@ -338,7 +340,7 @@ def get_infos_about_argument(request):
     :param request: current request of the server
     :return: json-set with everything
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Get infos about an argument via AJAX. %s", request.json_body)
     lang = request.validated['lang']
     db_user = request.validated['user']
     db_argument = request.validated['argument']
@@ -354,7 +356,7 @@ def get_arguments_by_statement_id(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Return all arguments which use the given statement. %s", request.json_body)
     db_statement = request.validated['statement']
     db_issue = request.validated['issue']
     argument_list = get_arguments_by_statement_uid(db_statement, db_issue)
