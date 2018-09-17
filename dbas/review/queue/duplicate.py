@@ -1,15 +1,14 @@
 # Adaptee for the duplicate queue.
+import logging
 import random
-from typing import Union, Tuple
-
 import transaction
 from beaker.session import Session
+from typing import Union, Tuple
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerDuplicate, ReviewDuplicate, Statement, RevokedDuplicate, \
     Premise, ReviewCanceled, Argument, LastReviewerDelete
-from dbas.lib import get_all_arguments_by_statement, get_text_for_statement_uid
-from dbas.logger import logger
+from dbas.lib import get_all_arguments_by_statement
 from dbas.review import FlaggedBy, txt_len_history_page
 from dbas.review.queue import min_difference, max_votes, key_duplicate
 from dbas.review.queue.abc_queue import QueueABC
@@ -19,6 +18,8 @@ from dbas.review.reputation import get_reason_by_action, ReputationReasons, \
     add_reputation_and_send_popup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 class DuplicateQueue(QueueABC):
@@ -49,7 +50,7 @@ class DuplicateQueue(QueueABC):
         :param translator: Translator
         :return: dict()
         """
-        logger('DuplicateQueue', 'main')
+        LOG.debug("Setting up subpage for the duplication queue")
         all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user,
                                                         ReviewDuplicate,
                                                         LastReviewerDuplicate)
@@ -57,19 +58,19 @@ class DuplicateQueue(QueueABC):
         extra_info = ''
         # if we have no reviews, try again with fewer restrictions
         if not all_rev_dict['reviews']:
-            logger('DuplicateQueue', 'no unseen reviews')
+            LOG.debug("No unseen reviews found")
             all_rev_dict['already_seen_reviews'] = list()
             extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
             all_rev_dict['reviews'] = DBDiscussionSession.query(ReviewDuplicate).filter(
                 ReviewDuplicate.is_executed == False,
                 ReviewDuplicate.detector_uid != db_user.uid)
             if len(all_rev_dict['already_voted_reviews']) > 0:
-                logger('DuplicateQueue', 'everything was seen')
+                LOG.debug("Everything was seen in the duplication queue")
                 all_rev_dict['reviews'] = all_rev_dict['reviews'].filter(
                     ~ReviewDuplicate.uid.in_(all_rev_dict['already_voted_reviews'])).all()
 
         if not all_rev_dict['reviews']:
-            logger('DuplicateQueue', 'no reviews')
+            LOG.debug("No reviews available")
             return {
                 'stats': None,
                 'text': None,
@@ -85,7 +86,8 @@ class DuplicateQueue(QueueABC):
 
         issue_titles = [issue.title for issue in get_issues_for_statement_uids([rnd_review.duplicate_statement_uid])]
         reason = translator.get(_.argumentFlaggedBecauseDuplicate)
-        duplicate_of_text = get_text_for_statement_uid(rnd_review.original_statement_uid)
+        rnd_review_original_statement = DBDiscussionSession.query(Statement).get(rnd_review.original_statement_uid)
+        duplicate_of_text = rnd_review_original_statement.get_text()
         stats = get_reporter_stats_for_review(rnd_review, translator.get_lang(), application_url)
 
         all_rev_dict['already_seen_reviews'].append(rnd_review.uid)
@@ -116,7 +118,7 @@ class DuplicateQueue(QueueABC):
         :param kwargs: optional, keyworded arguments
         :return:
         """
-        logger('DuplicateQueue', 'main {}, duplicate {}'.format(db_review.uid, is_okay))
+        LOG.debug("Adding vote for review with id %s. Duplicate? %s", db_review.uid, is_okay)
         db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
         rep_reason = None
 
@@ -218,7 +220,8 @@ class DuplicateQueue(QueueABC):
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
         :param db_user: current user
-        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update this!
+        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update
+        this!
         """
         db_review = DBDiscussionSession.query(ReviewDuplicate).filter_by(
             duplicate_statement_uid=kwargs.get('statement_uid'),
@@ -261,6 +264,7 @@ class DuplicateQueue(QueueABC):
         Returns all pro and con votes for the given element
 
         :param db_review: current review element
+        :param application_url: The applications URL
         :return:
         """
         db_all_votes = DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid)
@@ -280,10 +284,8 @@ class DuplicateQueue(QueueABC):
         :param db_review: Review
         :return: None
         """
-        msg = 'Review {} with dupl {} and oem {}'.format(db_review.uid,
-                                                         db_review.duplicate_statement_uid,
-                                                         db_review.original_statement_uid)
-        logger('DuplicateQueue', msg)
+        LOG.debug("Review %s with duplicate %s and Original %s", db_review.uid, db_review.duplicate_statement_uid,
+                  db_review.original_statement_uid)
         db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
         db_statement.set_disabled(True)
         DBDiscussionSession.add(db_statement)
@@ -292,7 +294,7 @@ class DuplicateQueue(QueueABC):
         db_dupl_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
         db_orig_statement = DBDiscussionSession.query(Statement).get(db_review.original_statement_uid)
         if db_dupl_statement.is_position and not db_orig_statement.is_position:
-            logger('DuplicateQueue', 'Duplicate is startpoint, but original one is not')
+            LOG.debug("Duplicate is startpoint, but original one is not")
             DBDiscussionSession.add(
                 RevokedDuplicate(review=db_review.uid, bend_position=True, statement=db_orig_statement.uid))
             db_orig_statement.set_position(True)
@@ -305,8 +307,8 @@ class DuplicateQueue(QueueABC):
 
             # recalibrate conclusion
             if argument.conclusion_uid == db_review.duplicate_statement_uid:
-                tmp = '{text}, bend conclusion from {argument.conclusion_ui} to {db_review.original_statement_uid}'
-                logger('DuplicateQueue', tmp)
+                LOG.debug("%s, bend conclusion from %s to %s", text, argument.conclusion_uid,
+                          db_review.original_statement_uid)
                 argument.set_conclusion(db_review.original_statement_uid)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, conclusion_of_argument=argument.uid))
@@ -316,16 +318,15 @@ class DuplicateQueue(QueueABC):
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=argument.premisegroup_uid).all()
             for premise in db_premises:
                 if premise.statement_uid == db_review.duplicate_statement_uid:
-                    tmp = f'{text}, bend premise {premise.uid} from {premise.statement_uid} to {db_review.original_statement_uid}'
-                    logger('DuplicateQueue', tmp)
+                    LOG.debug("%s, bend premise %s from %s to %s", text, premise.uid, premise.statement_uid,
+                              db_review.original_statement_uid)
                     premise.set_statement(db_review.original_statement_uid)
                     DBDiscussionSession.add(premise)
                     DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, premise=premise.uid))
                     used = True
 
             if not used:
-                logger('DuplicateQueue', f'Nothing was bend - undercut from {argument.uid} to {argument.argument_uid}',
-                       error=True)
+                LOG.warning("Nothing was bend - undercut from %s to %s", argument.uid, argument.argument_uid)
 
         DBDiscussionSession.flush()
         transaction.commit()
@@ -338,7 +339,7 @@ class DuplicateQueue(QueueABC):
         :param db_review: Review
         :return: None
         """
-        logger('review_history_helper', f'review: {db_review.uid}')
+        LOG.debug("Review: %s", db_review.uid)
 
         db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
         db_statement.set_disabled(False)
@@ -353,15 +354,15 @@ class DuplicateQueue(QueueABC):
 
             if revoke.argument_uid is not None:
                 db_argument = DBDiscussionSession.query(Argument).get(revoke.argument_uid)
-                text = f'Rebend conclusion of argument {revoke.argument_uid} from {db_argument.conclusion_uid} to {db_review.duplicate_statement_uid}'
-                logger('review_history_helper', text)
+                LOG.debug("Rebend conclusion of argument %s from %s to %s", revoke.argument_uid,
+                          db_argument.conclusion_uid, db_review.duplicate_statement_uid)
                 db_argument.conclusion_uid = db_review.duplicate_statement_uid
                 DBDiscussionSession.add(db_argument)
 
             if revoke.premise_uid is not None:
                 db_premise = DBDiscussionSession.query(Premise).get(revoke.premise_uid)
-                text = f'Rebend premise {revoke.premise_uid} from {db_premise.statement_uid} to {db_review.duplicate_statement_uid}'
-                logger('review_history_helper', text)
+                LOG.debug("Rebend premise %s from %s to %s", revoke.premise_uid, db_premise.statement_uid,
+                          db_review.duplicate_statement_uid)
                 db_premise.statement_uid = db_review.duplicate_statement_uid
                 DBDiscussionSession.add(db_premise)
         DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).delete()
