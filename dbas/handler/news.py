@@ -10,12 +10,11 @@ import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, News, sql_timestamp_pretty_print
-from dbas.handler.rss import create_news_rss
 
 LOG = logging.getLogger(__name__)
 
 
-def set_news(title: str, text: str, db_user: User, lang: str, main_page: str) -> dict():
+def set_news(title: str, text: str, db_user: User, lang: str, main_page: str) -> dict:
     """
     Sets a new news into the news table
 
@@ -44,8 +43,6 @@ def set_news(title: str, text: str, db_user: User, lang: str, main_page: str) ->
         'author': author,
         'news': text
     }
-
-    create_news_rss(main_page, lang)
 
     return return_dict
 

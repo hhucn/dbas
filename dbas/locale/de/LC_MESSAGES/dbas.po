@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-09-13 10:57+0000\n"
+"POT-Creation-Date: 2018-09-15 14:04+0000\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Christian Meter <meter@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -211,14 +211,6 @@ msgid "of_course_it_is_open_source"
 msgstr ""
 "Natürlich ist es Open-Source! Jedes Tool ist unter der MIT-Lizenz auf Github "
 "veröffentlicht"
-
-#. Default: Stay tuned and fetch the latest news and discussion contributions
-#. via RSS-feeds
-#: templates/rss.pt:7
-msgid "stay_tuned_rss"
-msgstr ""
-"Bleiben Sie mit den RSS-Feeds aktuell und bekommen Sie direkt die neusten "
-"Nachrichten und Beiträge der Diskussionen"
 
 #. Default: About
 #: templates/index.pt:35
@@ -673,7 +665,7 @@ msgstr ""
 "versuchen werden, schnellstmöglich zu antworten."
 
 #. Default: News
-#: templates/news.pt:6 templates/snippet/footer.pt:47
+#: templates/news.pt:6 templates/snippet/footer.pt:42
 msgid "news"
 msgstr "Neuigkeiten"
 
@@ -1942,28 +1934,23 @@ msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
 msgid "add_reference"
 msgstr "Referenzen hinzufügen"
 
-#. Default: RSS
-#: templates/snippet/footer.pt:32
-msgid "rss"
-msgstr "RSS"
-
 #. Default: Help
-#: templates/snippet/footer.pt:37
+#: templates/snippet/footer.pt:32
 msgid "Help"
 msgstr "Hilfe"
 
 #. Default: Docs
-#: templates/snippet/footer.pt:42
+#: templates/snippet/footer.pt:37
 msgid "Documentation"
 msgstr "Dokumentation"
 
 #. Default: Github
-#: templates/snippet/footer.pt:52
+#: templates/snippet/footer.pt:47
 msgid "Github"
 msgstr "Github"
 
 #. Default: Field Experiment
-#: templates/snippet/footer.pt:57
+#: templates/snippet/footer.pt:52
 msgid "field_experiment"
 msgstr "Feldstudie"
 
@@ -2164,8 +2151,8 @@ msgstr "Start"
 msgid "now"
 msgstr "Jetzt"
 
-#. Default: Restart discussion
-#: templates/discussion/organism/dialog-sidebar.pt:8
+#. Default: Restart Discussion
+#: templates/discussion/organism/dialog-sidebar.pt:7
 msgid "restart_discussion"
 msgstr "Diskussion neustarten"
 
@@ -2174,28 +2161,28 @@ msgstr "Diskussion neustarten"
 msgid "share_url"
 msgstr "URL teilen"
 
-#. Default: Opinion barometer
-#: templates/discussion/organism/dialog-sidebar.pt:17
+#. Default: Opinion Barometer
+#: templates/discussion/organism/dialog-sidebar.pt:19
 msgid "Barometer"
 msgstr "Meinungsbarometer"
 
-#. Default: Graph view
-#: templates/discussion/organism/dialog-sidebar.pt:21
+#. Default: Graph View
+#: templates/discussion/organism/dialog-sidebar.pt:25
 msgid "graph_view"
 msgstr "Argumentationsgraph"
 
-#. Default: Search for statements
-#: templates/discussion/organism/dialog-sidebar.pt:25
+#. Default: Search for Statements
+#: templates/discussion/organism/dialog-sidebar.pt:31
 msgid "search"
 msgstr "Aussagensuche"
 
-#. Default: Ask a friend
-#: templates/discussion/organism/dialog-sidebar.pt:29
+#. Default: Ask a Friend
+#: templates/discussion/organism/dialog-sidebar.pt:37
 msgid "ask_friend"
 msgstr "Frag einen Freund"
 
-#. Default: Leave the discussion
-#: templates/discussion/organism/dialog-sidebar.pt:33
+#. Default: Leave the Discussion
+#: templates/discussion/organism/dialog-sidebar.pt:43
 msgid "exit_discussion"
 msgstr "Diskussion beenden"
 
@@ -2533,6 +2520,14 @@ msgstr "Profilbild von"
 #: templates/user/details.pt:60
 msgid "reviews_proposed"
 msgstr "Änderungen vorgeschlagen"
+
+#~ msgid "stay_tuned_rss"
+#~ msgstr ""
+#~ "Bleiben Sie mit den RSS-Feeds aktuell und bekommen Sie direkt die neusten "
+#~ "Nachrichten und Beiträge der Diskussionen"
+
+#~ msgid "rss"
+#~ msgstr "RSS"
 
 #~ msgid "restart"
 #~ msgstr "Neustart"

@@ -19,8 +19,6 @@ from pyramid_beaker import session_factory_from_settings, set_cache_regions_from
 from sqlalchemy import engine_from_config
 
 from dbas.database import get_db_environs
-from dbas.handler.rss import rewrite_issue_rss, create_news_rss
-from dbas.lib import get_global_url, get_enabled_issues_as_query
 from .database import load_discussion_database
 from .security import groupfinder
 
@@ -85,7 +83,6 @@ def main(global_config, **settings):
     config.add_route('main_news', '/news')
     config.add_route('main_imprint', '/imprint')
     config.add_route('main_privacy', '/privacy_policy')
-    config.add_route('main_rss', '/rss')
     config.add_route('main_faq', '/faq')
     config.add_route('main_batman', '/batman')
     config.add_route('main_docs', '/docs')
@@ -179,16 +176,7 @@ def main(global_config, **settings):
 
     config.scan()
 
-    __write_rss_feeds()
-
     return config.make_wsgi_app()
-
-
-def __write_rss_feeds():
-    issues = get_enabled_issues_as_query().all()
-    for issue in issues:
-        rewrite_issue_rss(issue.uid, get_global_url())
-    create_news_rss(get_global_url(), 'en')
 
 
 def get_dbas_environs(prefix=""):

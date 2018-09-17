@@ -18,7 +18,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     SeenStatement, SeenArgument, TextVersion, PremiseGroup, Premise, Argument, ClickedArgument, ClickedStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
-    ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate, \
+    ReviewCanceled, RevokedContent, RevokedContentHistory, LastReviewerDuplicate, ReviewDuplicate, \
     RevokedDuplicate, MarkedArgument, MarkedStatement, History, APIToken, StatementOrigins, StatementToIssue
 from dbas.lib import get_text_for_premisegroup_uid, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_profile_picture
@@ -66,7 +66,6 @@ table_mapper = {
     'RevokedContent'.lower(): {'table': RevokedContent, 'name': 'RevokedContent'},
     'RevokedContentHistory'.lower(): {'table': RevokedContentHistory, 'name': 'RevokedContentHistory'},
     'RevokedDuplicate'.lower(): {'table': RevokedDuplicate, 'name': 'RevokedDuplicate'},
-    'RSS'.lower(): {'table': RSS, 'name': 'RSS'}
 }
 
 # list of all columns with FK of users/statement table
@@ -92,7 +91,6 @@ def get_overview(page):
     general = list()
     general.append(__get_dash_dict('Issue', page + 'Issue'))
     general.append(__get_dash_dict('Language', page + 'Language'))
-    general.append(__get_dash_dict('RSS', page + 'RSS'))
 
     # all tables for the 'users' group
     users = list()

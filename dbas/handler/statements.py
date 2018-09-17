@@ -1,21 +1,20 @@
 import logging
-import transaction
 from os import environ
-from sqlalchemy import func
 from typing import List, Tuple, Dict, Union, Any
+
+import transaction
+from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
 from dbas.handler import user, notification as nh
-from dbas.handler.rss import append_action_to_issue_rss
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
     set_new_rebut
 from dbas.helper.url import UrlManager
 from dbas.input_validator import is_integer
-from dbas.lib import get_profile_picture, escape_string, get_text_for_argument_uid, \
-    Relations, Attitudes
+from dbas.lib import get_profile_picture, escape_string, Relations, Attitudes
 from dbas.review.queue import Code
 from dbas.review.queue.edit import EditQueue
 from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
@@ -252,13 +251,6 @@ def insert_as_statement(text: str, db_user: User, db_issue: Issue, is_start=Fals
     DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
     DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
     DBDiscussionSession.flush()
-
-    _tn = Translator(db_issue.lang)
-    _um = UrlManager(db_issue.slug)
-    append_action_to_issue_rss(db_issue=db_issue, db_author=db_user,
-                               title=_tn.get(_.positionAdded if is_start else _.statementAdded),
-                               description='...' + new_statement.get_text() + '...',
-                               url=_um.get_url_for_statement_attitude(new_statement.uid))
 
     return new_statement
 
@@ -568,14 +560,6 @@ def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclu
     new_argument = __create_argument_by_uids(db_user, new_premisegroup.uid, db_conclusion.uid, None, is_supportive,
                                              db_issue)
     transaction.commit()
-
-    if new_argument:
-        _tn = Translator(db_issue.lang)
-        _um = UrlManager(db_issue.slug)
-        append_action_to_issue_rss(db_issue=db_issue, db_author=db_user, title=_tn.get(_.argumentAdded),
-                                   description='...' + get_text_for_argument_uid(new_argument.uid,
-                                                                                 anonymous_style=True) + '...',
-                                   url=_um.get_url_for_justifying_statement(new_argument.uid, Attitudes.DONT_KNOW))
 
     return new_argument, [s.uid for s in new_statements]
 

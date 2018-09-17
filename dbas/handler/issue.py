@@ -13,7 +13,6 @@ import transaction
 from pyramid.request import Request
 from slugify import slugify
 
-from dbas import get_enabled_issues_as_query
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
     ClickedStatement, StatementToIssue, ClickedArgument
@@ -22,6 +21,7 @@ from dbas.handler.arguments import get_all_statements_for_args
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import generate_short_url
 from dbas.helper.url import UrlManager
+from dbas.lib import get_enabled_issues_as_query
 from dbas.lib import nick_of_anonymous_user, get_visible_issues_for_user_as_query
 from dbas.lib import pretty_print_timestamp
 from dbas.strings.keywords import Keywords as _
