@@ -1,10 +1,10 @@
+import logging
 from pyramid.view import view_config
 
 import dbas.review
 import dbas.review.queue
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
-from dbas.logger import logger
 from dbas.review.history import get_ongoing_reviews, get_review_history
 from dbas.review.mapper import get_title_by_key
 from dbas.review.queue.abc_queue import subclass_by_name
@@ -19,6 +19,8 @@ from dbas.validators.reviews import valid_review_queue_name, valid_user_has_revi
 from dbas.validators.user import valid_user
 from dbas.views.helper import main_dict
 
+LOG = logging.getLogger(__name__)
+
 
 @view_config(route_name='review_index', renderer='../../templates/review/index.pt', permission='use')
 @validate(check_authentication, valid_user, prep_extras_dict)
@@ -29,7 +31,7 @@ def index(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('index', f'main {request.matchdict} / {request.params}')
+    LOG.debug("Review Index: %s / %s", request.matchdict, request.params)
     db_user = request.validated['user']
 
     _tn = Translator(get_language_from_cookie(request))
@@ -59,7 +61,7 @@ def queue_details(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('queue_details', f'main {request.matchdict} / {request.params}')
+    LOG.debug("Queue Details %s / %s", request.matchdict, request.params)
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
@@ -90,13 +92,13 @@ def history(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('history', f'main {request.matchdict} / {request.params}')
+    LOG.debug("View history of a review case. %s / %s", request.matchdict, request.params)
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    history = get_review_history(request.application_url, request.validated['user'], _tn)
+    specific_history = get_review_history(request.application_url, request.validated['user'], _tn)
     prep_dict = main_dict(request, _tn.get(_.review_history))
-    prep_dict.update({'history': history})
+    prep_dict.update({'history': specific_history})
     return prep_dict
 
 
@@ -109,13 +111,13 @@ def ongoing(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('ongoing', f'main {request.matchdict} / {request.params}')
+    LOG.debug("Current reviews view. %s / %s", request.matchdict, request.params)
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    history = get_ongoing_reviews(request.application_url, request.validated['user'], _tn)
+    specific_history = get_ongoing_reviews(request.application_url, request.validated['user'], _tn)
     prep_dict = main_dict(request, _tn.get(_.review_ongoing))
-    prep_dict.update({'history': history})
+    prep_dict.update({'history': specific_history})
     return prep_dict
 
 
@@ -128,7 +130,7 @@ def reputation(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('reputation', f'main {request.matchdict} / {request.params}')
+    LOG.debug("Reputation Borders view. %s / %s", request.matchdict, request.params)
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
