@@ -4,6 +4,7 @@ Collection of pyramids views components of D-BAS' core.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
+import logging
 from cornice.util import json_error
 from pyramid.view import view_config
 
@@ -14,12 +15,13 @@ from dbas.handler.language import set_language, get_language_from_cookie
 from dbas.handler.references import set_reference, get_references
 from dbas.helper.query import generate_short_url
 from dbas.lib import escape_string
-from dbas.logger import logger
 from dbas.validators.common import valid_language, valid_fuzzy_search_mode
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_id, valid_statement, valid_text_length_of, valid_any_issue_by_id
 from dbas.validators.lib import add_error
 from dbas.validators.user import valid_user, valid_user_optional, valid_user_as_author
+
+LOG = logging.getLogger(__name__)
 
 
 def __modifiy_discussion_url(prep_dict: dict) -> dict:
@@ -70,7 +72,7 @@ def get_shortened_url(request):
     :param request: current request of the server
     :return: dictionary with shortend url
     """
-    logger('views', 'main')
+    LOG.debug("Shorten URL")
     return generate_short_url(request.validated['url'])
 
 
@@ -83,7 +85,7 @@ def get_news(request):
     :param request: current request of the server
     :return: json-set with all news
     """
-    logger('views', 'main')
+    LOG.debug("Return News from AJAX")
     return news_handler.get_news(get_language_from_cookie(request))
 
 
@@ -99,10 +101,10 @@ def get_users_with_opinion(request):
     """
     ajax interface for getting a dump
 
-    :params reqeust: current request of the web  server
+    :params request: current request of the web  server
     :return: json-set with everything
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Return a dump via AJAX, for: %s", request.json_body)
     db_lang = request.validated['lang']
     uids = request.json_body.get('uids')
     is_arg = request.validated['is_argument']
@@ -124,7 +126,7 @@ def get_reference(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Return references for request: %s", request.json_body)
     uids = request.validated['uids']
     is_argument = request.validated['is_argument']
     return get_references(uids, is_argument, request.application_url)
@@ -140,7 +142,7 @@ def set_references(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Set a reference for a statement or an argument. Request: %s", request.json_body)
     db_statement = request.validated['statement']
     reference = escape_string(request.validated['reference'])
     source = escape_string(request.validated['ref_source'])
@@ -164,7 +166,7 @@ def switch_language(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('switch_language', 'main: {}'.format(request.json_body))
+    LOG.debug("Switching the language: %s", request.json_body)
     lang = set_language(request, request.validated['lang'])
     return {'_LOCALE_': lang}
 
@@ -179,7 +181,7 @@ def send_news(request):
     :param request: current request of the server
     :return: json-set with new news
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Set news via AJAX: %s", request.json_body)
     title = escape_string(request.validated['title'])
     text = escape_string(request.validated['text'])
     db_user = request.validated['user']
@@ -198,7 +200,7 @@ def fuzzy_search(request):
     :param request: request of the web server
     :return: json-set with all matched strings
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Fuzzy String search for AJAX: %s", request.json_body)
 
     mode = request.validated['type']
     value = request.validated['value']
@@ -221,5 +223,5 @@ def fuzzy_nickname_search(request):
     :param request: request of the web server
     :return: json-set with all matched strings
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Fuzzy nickname search via AJAX: %s", request.json_body)
     return fuzzy_string_matcher.get_nicknames(request.validated['user'], request.validated['value'])
