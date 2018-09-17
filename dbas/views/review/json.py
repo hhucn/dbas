@@ -1,3 +1,4 @@
+import logging
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
@@ -6,7 +7,6 @@ from dbas.database.discussion_model import ReviewDelete, ReviewEdit, ReviewDupli
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.query import revoke_author_of_statement_content, revoke_author_of_argument_content
 from dbas.lib import get_discussion_language
-from dbas.logger import logger
 from dbas.review.flags import flag_element, flag_statement_for_merge_or_split, flag_pgroup_for_merge_or_split
 from dbas.review.mapper import get_queue_by_key
 from dbas.review.queue import key_edit, key_delete, key_duplicate, key_optimization, key_merge, key_split
@@ -26,6 +26,8 @@ from dbas.validators.user import valid_user, valid_user_as_author, valid_user_as
     valid_user_as_author_of_argument
 from websocket.lib import send_request_for_recent_reviewer_socketio
 
+LOG = logging.getLogger(__name__)
+
 
 @view_config(route_name='flag_argument_or_statement', renderer='json')
 @validate(valid_user, valid_review_reason, has_keywords(('uid', int), ('is_argument', bool)),
@@ -37,7 +39,7 @@ def flag_argument_or_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Flag an argument or statement. %s", request.json_body)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     uid = request.validated['uid']
     reason = request.validated['reason']
@@ -56,7 +58,7 @@ def split_or_merge_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Flag a statement for a split or merge. %s", request.json_body)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
     db_user = request.validated['user']
@@ -78,7 +80,7 @@ def split_or_merge_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.params))
+    LOG.debug("Flag a premisegroup for split or merge. %s", request.params)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
     db_user = request.validated['user']
@@ -99,7 +101,7 @@ def review_delete_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Review an argument-delete request. %s", request.json_body)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -121,7 +123,7 @@ def review_edit_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    LOG.debug("Review request to edit argument: %s - %s", request.json_body, request.authenticated_userid)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -143,7 +145,7 @@ def review_duplicate_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    LOG.debug("Request to review duplicate statements. %s - %s", request.json_body, request.authenticated_userid)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -166,7 +168,7 @@ def review_optimization_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    LOG.debug("Request to review an optimization. %s - %s", request.json_body, request.authenticated_userid)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -189,7 +191,7 @@ def review_splitted_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    LOG.debug("Request to review a premisegroup split. %s - %s", request.json_body, request.authenticated_userid)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -211,7 +213,7 @@ def review_merged_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    LOG.debug("Request to merge premisegroups. %s - %s", request.json_body, request.authenticated_userid)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -233,7 +235,7 @@ def undo_review(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Undo a review process. %s", request.json_body)
     db_user = request.validated['user']
     queue = request.validated['queue']
     db_review = request.validated['review']
@@ -253,7 +255,7 @@ def cancel_review(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Cancel an ongoing review. %s", request.json_body)
     db_user = request.validated['user']
     queue = request.validated['queue']
     db_review = request.validated['review']
@@ -273,7 +275,7 @@ def review_lock(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Lock an optimization review. %s", request.json_body)
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
     lock = request.validated['lock']
@@ -295,7 +297,7 @@ def revoke_statement_content(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'main: {}'.format(request.json_body))
+    LOG.debug("Revoke a user as author. %s", request.json_body)
     db_user = request.validated['user']
     statement = request.validated['statement']
     return revoke_author_of_statement_content(statement, db_user)
