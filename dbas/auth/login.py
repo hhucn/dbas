@@ -35,7 +35,7 @@ def login_local_user(nickname: str, password: str, mailer: Mailer, lang='en') ->
     :param lang: current language
     :return: dict() or HTTPFound if the user is logged in and it is not the api
     """
-    LOG.debug("user: %s", nickname)
+    LOG.debug("Trying to login user: %s", nickname)
     _tn = Translator(lang)
 
     # now we have several options:
