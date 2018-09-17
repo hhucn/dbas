@@ -2405,8 +2405,7 @@ msgstr "Passwort von D-BAS ändern"
 #: templates/user/settings.pt:306
 msgid "this_does_not_affect_other_services"
 msgstr ""
-"Die Änderung betrifft nur die Anmeldung in D-BAS und nicht weitere Dienste "
-"der HHU."
+"Diese Änderung betrifft nur das Passwort in D-BAS."
 
 #. Default: Old password
 #: templates/user/settings.pt:313
