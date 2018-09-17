@@ -4,13 +4,15 @@ Provides helping function for dictionaries.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import arrow
 import datetime
 import logging
 import os
 import random
+
+import arrow
 from pyramid.registry import Registry
 
+from dbas.auth.login import PW_FOR_LDAP_USER
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Language, Group, Issue, Argument
 from dbas.handler import user
@@ -108,7 +110,7 @@ class DictionaryHelper():
         """
         LOG.debug("Entering prepare_extras_dict")
 
-        is_user_from_ldap = None
+        is_user_from_ldap = False
         is_logged_in = False
         nickname = None
         public_nickname = None
@@ -118,7 +120,7 @@ class DictionaryHelper():
         is_special = False
 
         if db_user:
-            is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP')
+            is_user_from_ldap = db_user.validate_password(PW_FOR_LDAP_USER)
             is_logged_in = True
             nickname = db_user.nickname
             public_nickname = db_user.public_nickname
@@ -237,7 +239,7 @@ class DictionaryHelper():
             'db_public_nickname': public_nick,
             'db_mail': db_user.email,
             'has_mail': db_user.email is not 'None',
-            'can_change_password': not use_with_ldap and db_user.token is None,
+            'can_change_password': not use_with_ldap and db_user.token in [None, ""],
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
             'edits_done': edits,

@@ -5,6 +5,7 @@ Login Handler for D-BAS
 """
 
 import logging
+
 import transaction
 from pyramid.security import remember
 from pyramid_mailer import Mailer
@@ -23,6 +24,8 @@ from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
 oauth_providers = ['google', 'github', 'facebook', 'twitter']
+
+PW_FOR_LDAP_USER = 'NO_PW_BECAUSE_LDAP'
 
 
 def login_local_user(nickname: str, password: str, mailer: Mailer, lang='en') -> dict:
@@ -74,7 +77,7 @@ def __register_user_with_ldap_data(mailer, nickname, password, _tn) -> dict:
     # register the new user
 
     ldap_data['nickname'] = nickname
-    ret_dict = user.set_new_user(mailer, ldap_data, 'NO_PW_BECAUSE_LDAP', _tn)
+    ret_dict = user.set_new_user(mailer, ldap_data, PW_FOR_LDAP_USER, _tn)
     if 'success' not in ret_dict:
         return {'error': _tn.get(_.internalKeyError)}
 
@@ -94,8 +97,8 @@ def __check_in_local_known_user(db_user: User, password: str, _tn) -> dict:
     if db_user.validate_password(password):
         return {'user': db_user}
 
-    if not (db_user.validate_password('NO_PW_BECAUSE_LDAP') or db_user.password is get_hashed_password(
-            'NO_PW_BECAUSE_LDAP')):
+    if not (db_user.validate_password(PW_FOR_LDAP_USER) or db_user.password is get_hashed_password(
+            PW_FOR_LDAP_USER)):
         LOG.debug("Invalid password for the local user")
         return {'error': _tn.get(_.userPasswordNotMatch)}
 
