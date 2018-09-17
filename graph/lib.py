@@ -2,13 +2,15 @@
 #
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
+import logging
 from typing import List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
     SeenStatement, StatementToIssue
 from dbas.lib import get_profile_picture, get_enabled_statement_as_query, get_enabled_arguments_as_query
-from dbas.logger import logger
+
+LOG = logging.getLogger(__name__)
 
 
 def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
@@ -22,13 +24,13 @@ def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
     """
     a = [a.uid for a in all_statements] if all_statements is not None else 'all'
     b = [b.uid for b in all_arguments] if all_arguments is not None else 'all'
-    logger('Graph.lib', 'main - statements: {}, arguments: {}'.format(a, b))
+    LOG.debug("Return D3 data. Statements: %s, arguments: %s", a, b)
     edge_type = 'arrow'
     nodes_array = []
     edges_array = []
     extras_dict = {}
 
-    logger('Graph.lib', 'title: ' + db_issue.title)
+    LOG.debug("Titel: %s", db_issue.title)
 
     db_textversions: List[TextVersion] = DBDiscussionSession.query(TextVersion).all()
     if all_statements is None:
@@ -65,7 +67,6 @@ def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
     error = __sanity_check_of_d3_data(all_node_ids, edges_array)
 
     d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
-    logger('Graph.lib', 'end')
     return d3_dict, error
 
 
@@ -99,7 +100,7 @@ def get_path_of_user(base_url, path, db_issue):
     :param db_issue:
     :return:
     """
-    logger('Graph.lib', 'main ' + path)
+    LOG.debug("Path of a specific user: %s", path)
 
     # replace everything what we do not need
     kill_it = [base_url, '/discuss/', '/discuss', db_issue.slug, '#graph', '#']
@@ -114,7 +115,7 @@ def get_path_of_user(base_url, path, db_issue):
     else:
         history = [path]
 
-    logger('Graph.lib', 'main ' + str(history))
+    LOG.debug("History: %s", history)
 
     tlist = []
     for h in history:
@@ -128,7 +129,7 @@ def get_path_of_user(base_url, path, db_issue):
     else:
         ret_list = tlist
 
-    logger('Graph.lib', 'returning path ' + str(ret_list))
+    LOG.debug("Returning path %s", ret_list)
     return ret_list
 
 
@@ -142,7 +143,7 @@ def __get_statements_of_path_step(step):
     splitted = step.split('/')
 
     if 'justify' in step and len(splitted) > 2:
-        logger('Graph.lib', 'append {} -> {}'.format(splitted[2], 'issue'))
+        LOG.debug("Append %s -> issue", splitted[2])
         statements.append([int(splitted[2]), 'issue'])
 
     # elif 'justify' in step:
@@ -167,13 +168,7 @@ def __get_statements_of_path_step(step):
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=arg.premisegroup_uid)
             for premise in db_premises:
                 statements.append([premise.statement_uid, target])
-                logger('Graph.lib', 'append {} -> {}'.format(premise.statement_uid, target))
-
-    # reaction / {arg_id_user}
-    # justify / {statement_or_arg_id}
-    # attitude / * statement_id
-    # choose / {is_argument}
-    # jump / {arg_id}
+                LOG.debug("Append %s -> %s", premise.statement_uid, target)
 
     return statements if len(statements) > 0 else None
 
@@ -186,7 +181,7 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
     :param edge_type:
     :return:
     """
-    logger('Graph.lib', 'def')
+    LOG.debug("Enter private function to prepare statements for d3")
     all_ids = []
     nodes = []
     edges = []
@@ -227,7 +222,7 @@ def __prepare_arguments_for_d3_data(db_arguments, edge_type):
     nodes = []
     edges = []
     extras = {}
-    logger('Graph.lib', 'def')
+    LOG.debug("Enter private function to prepare arguments for d3")
 
     # for each argument edges will be added as well as the premises
     for argument in db_arguments:
@@ -302,18 +297,16 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
         err1 = e['source'] not in all_node_ids
         err2 = e['target'] not in all_node_ids
         if err1:
-            logger('Graph.lib', 'Source of {} is not valid'.format(e))
-            # logger('Graph.lib', '__sanity_check_of_d3_data', '{} is not in dict of all node ids'.format(e['source']))
+            LOG.debug("Source of %s is not valid", e)
         if err2:
-            logger('Graph.lib', 'Target of {} is not valid'.format(e))
-            # logger('Graph.lib', '__sanity_check_of_d3_data', '{} is not in dict of all node ids'.format(e['target']))
+            LOG.debug("Target of %s is not valid", e)
         error = error or err1 or err2
     if error:
-        logger('Graph.lib', 'At least one edge has invalid source or target!', error=True)
-        logger('Graph.lib', 'List of all node ids: ' + str(all_node_ids))
+        LOG.warning("At least one edge has an invalid source or target.")
+        LOG.debug("List of all node ids: %s", all_node_ids)
         return True
     else:
-        logger('Graph.lib', 'All nodes are connected well')
+        LOG.debug("All nodes are connected well.")
         return False
 
 
