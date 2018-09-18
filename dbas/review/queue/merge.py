@@ -1,17 +1,15 @@
 # Adaptee for the merge queue
+import logging
 import random
-from typing import Union, Tuple
-
 import transaction
 from beaker.session import Session
+from typing import Union, Tuple
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerMerge, ReviewMerge, \
     StatementReplacementsByPremiseGroupMerge, PremiseGroupMerged, Argument, PremiseGroup, Premise, Issue, \
     ReviewMergeValues, Statement, ReviewCanceled
 from dbas.handler.statements import set_statement
-from dbas.lib import get_text_for_statement_uid
-from dbas.logger import logger
 from dbas.review import FlaggedBy, txt_len_history_page
 from dbas.review.queue import max_votes, min_difference, key_merge
 from dbas.review.queue.abc_queue import QueueABC
@@ -21,6 +19,8 @@ from dbas.review.reputation import get_reason_by_action, ReputationReasons, \
     add_reputation_and_send_popup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 class MergeQueue(QueueABC):
@@ -51,25 +51,25 @@ class MergeQueue(QueueABC):
         :param translator: Translator
         :return: dict()
         """
-        logger('MergeQueue', 'main')
+        LOG.debug("Setting up the subpage for merge queue")
         all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user, ReviewMerge,
                                                         LastReviewerMerge)
 
         extra_info = ''
         # if we have no reviews, try again with fewer restrictions
         if not all_rev_dict['reviews']:
-            logger('MergeQueue', 'no unseen reviews')
+            LOG.debug("No unseen reviews")
             all_rev_dict['already_seen_reviews'] = list()
             extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
             db_reviews = DBDiscussionSession.query(ReviewMerge).filter(ReviewMerge.is_executed == False,
                                                                        ReviewMerge.detector_uid != db_user.uid)
             if len(all_rev_dict['already_voted_reviews']) > 0:
-                logger('MergeQueue', 'everything was seen')
+                LOG.debug("Every review-case was seen")
                 db_reviews = db_reviews.filter(~ReviewMerge.uid.in_(all_rev_dict['already_voted_reviews']))
             all_rev_dict['reviews'] = db_reviews.all()
 
         if not all_rev_dict['reviews']:
-            logger('MergeQueue', 'no reviews')
+            LOG.debug("No reviews present")
             return {
                 'stats': None,
                 'text': None,
@@ -130,7 +130,7 @@ class MergeQueue(QueueABC):
         :param kwargs: optional, keyworded arguments
         :return:
         """
-        logger('MergeQueue', 'main {}'.format(db_review.uid))
+        LOG.debug("Adding a vote for %s", db_review.uid)
         db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
         rep_reason = None
 
@@ -239,7 +239,8 @@ class MergeQueue(QueueABC):
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
         :param db_user: current user
-        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update this!
+        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update
+        this!
         """
         db_review = DBDiscussionSession.query(ReviewMerge).filter_by(
             premisegroup_uid=kwargs.get('premisegroup_uid'),
@@ -261,7 +262,7 @@ class MergeQueue(QueueABC):
         :return:
         """
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_review.premisegroup_uid).all()
-        oem_fulltext = str([get_text_for_statement_uid(p.statement_uid) for p in db_premises])
+        oem_fulltext = str([p.statement.get_text() for p in db_premises])
         full_text = oem_fulltext
         db_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).all()
         if db_values:
@@ -289,6 +290,7 @@ class MergeQueue(QueueABC):
         Returns all pro and con votes for the given element
 
         :param db_review: current review element
+        :param application_url: The applications URL
         """
         db_all_votes = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid)
         pro_votes = db_all_votes.filter_by(should_merge=True).all()
@@ -316,12 +318,12 @@ class MergeQueue(QueueABC):
         db_user = DBDiscussionSession.query(User).get(db_review.detector_uid)
 
         if db_values:
-            logger('MergeQueue', 'merge given premisegroup with the mapped, new statements')
+            LOG.debug("Merge was given premisegroup with the mapped, new statements")
             texts = [values.content for values in db_values]
             translator_discussion = Translator(discussion_lang)
             new_text = ' {} '.format(translator_discussion.get(_.aand)).join(texts)
         else:
-            logger('MergeQueue', 'just merge the premisegroup')
+            LOG.debug("Just merge the premisegroup")
             new_text = DBDiscussionSession.query(PremiseGroup).get(db_review.premisegroup_uid).get_text()
 
         # now we have new text as a variable, let's set the statement
@@ -336,15 +338,13 @@ class MergeQueue(QueueABC):
         db_new_premise = Premise(db_new_premisegroup.uid, new_statement.uid, False, db_user.uid, db_issue.uid)
         DBDiscussionSession.add(db_new_premise)
         DBDiscussionSession.flush()
-        logger('MergeQueue',
-               'Added new premise {} with pgroup {}'.format(db_new_premise.uid, db_new_premisegroup.uid))
+        LOG.debug("Added new premise %s with pgroup %s", db_new_premise.uid, db_new_premisegroup.uid)
 
         # swap the premisegroup occurence in every argument
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=db_review.premisegroup_uid).all()
         for argument in db_arguments:
-            logger('MergeQueue',
-                   'Reset argument {} from pgroup {} to new pgroup {}'.format(argument.uid, argument.premisegroup_uid,
-                                                                              db_new_premisegroup.uid))
+            LOG.debug("Reset argument %s from pgroup %s to new pgroup %s", argument.uid, argument.premisegroup_uid,
+                      db_new_premisegroup.uid)
             argument.set_premisegroup(db_new_premisegroup.uid)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.flush()
@@ -357,10 +357,8 @@ class MergeQueue(QueueABC):
         for old_statement_id in old_statement_ids:
             db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=old_statement_id).all()
             for argument in db_arguments:
-                logger('MergeQueue',
-                       'Reset arguments {} from conclusion {} to new merges statement {}'.format(argument.uid,
-                                                                                                 argument.conclusion_uid,
-                                                                                                 new_statement.uid))
+                LOG.debug("Reset arguments %s from conclusions %s to new merges statement %s", argument.uid,
+                          argument.conclusion_uid, new_statement.uid)
                 argument.set_conclusion(new_statement.uid)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.add(

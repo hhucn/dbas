@@ -5,6 +5,7 @@ Collection of pyramids views components of D-BAS' core.
 """
 
 import graphene
+import logging
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config, notfound_view_config
 from webob_graphql import serve_graphql_request
@@ -12,9 +13,10 @@ from webob_graphql import serve_graphql_request
 from api.v2.graphql.core import Query
 from dbas.database import DBDiscussionSession
 from dbas.helper.decoration import prep_extras_dict
-from dbas.logger import logger
 from dbas.validators.core import validate
 from dbas.views.helper import main_dict
+
+LOG = logging.getLogger(__name__)
 
 
 # graphiql
@@ -26,7 +28,7 @@ def main_graphiql(request):
     :param request: current request of the server
     :return: graphql
     """
-    logger('main_graphiql', 'main')
+    LOG.debug("Show GraphiQL configuration")
     schema = graphene.Schema(query=Query)
     context = {'session': DBDiscussionSession}
     return serve_graphql_request(request, schema, batch_enabled=True, context_value=context)
@@ -52,11 +54,11 @@ def notfound(request):
     cornice_services = ['/admin', '/docs']
     for service in cornice_services:
         if request.path.startswith(service):
-            logger('notfound', f'Redirect to {service}/')
+            LOG.debug("Redirect to %s/", service)
             return HTTPFound(location=service + '/')
 
-    logger('notfound', f'main in {request.method}-request, path: {request.path}, view name: {request.view_name}, '
-                       f'matchdict: {request.matchdict}, params: {request.params}')
+    LOG.debug("Configuration for 404 page in %s-request. Path: %s, view name: %s, matchdict: %s, params: %s",
+              request.method, request.path, request.view_name, request.matchdict, request.params)
 
     # clear url
     path = request.path
@@ -87,5 +89,5 @@ def batman(request):
 
     :param request: current request of the server
     """
-    logger('batman', 'main')
+    LOG.debug("NANANANANNANANANANANANANANANANA BATMAAAAAAN!")
     return main_dict(request, 'Batman')

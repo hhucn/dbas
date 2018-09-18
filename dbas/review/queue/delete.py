@@ -1,14 +1,13 @@
 # Adaptee for the delete queue. Every deleted statement will just be disabled.
-from typing import Union, Tuple
-
+import logging
 import transaction
 from beaker.session import Session
+from typing import Union, Tuple
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete, ReviewDeleteReason, ReviewCanceled, \
     Statement
 from dbas.lib import get_text_for_argument_uid
-from dbas.logger import logger
 from dbas.review import FlaggedBy
 from dbas.review.queue import max_votes, min_difference, key_delete
 from dbas.review.queue.abc_queue import QueueABC
@@ -19,6 +18,8 @@ from dbas.review.reputation import get_reason_by_action, ReputationReasons, \
     add_reputation_and_send_popup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 class DeleteQueue(QueueABC):
@@ -49,7 +50,7 @@ class DeleteQueue(QueueABC):
         :param translator: Translator
         :return: dict()
         """
-        logger('DeleteQueue', 'main')
+        LOG.debug("Entering setup for subpage of deletion queue")
         all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user, ReviewDelete,
                                                         LastReviewerDelete)
 
@@ -92,7 +93,8 @@ class DeleteQueue(QueueABC):
                  translator: Translator,
                  **kwargs):
         """
-        Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged element will be disabled
+        Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged element will be
+        disabled
 
         :param db_user: current user who votes
         :param db_review: the review, which is voted vor
@@ -102,7 +104,7 @@ class DeleteQueue(QueueABC):
         :param kwargs: optional, keyworded arguments
         :return:
         """
-        logger('DeleteQueue', 'main')
+        LOG.debug("Entering function to add a vote for review with id %s", db_review.uid)
         db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
         rep_reason = None
 
@@ -202,7 +204,8 @@ class DeleteQueue(QueueABC):
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
         :param db_user: current user
-        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update this!
+        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid.
+        Please update this!
         """
         db_review = DBDiscussionSession.query(ReviewDelete).filter_by(
             argument_uid=kwargs.get('argument_uid'),
@@ -245,6 +248,7 @@ class DeleteQueue(QueueABC):
         Reeturns all pro and con votes for the given element
 
         :param db_review: current review element
+        :param application_url: The corresponding application URL
         :return:
         """
         db_all_votes = DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid)

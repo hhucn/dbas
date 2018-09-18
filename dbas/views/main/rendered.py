@@ -1,3 +1,4 @@
+import logging
 import pkg_resources
 from pyramid.httpexceptions import HTTPInternalServerError, HTTPOk
 from pyramid.view import view_config, forbidden_view_config
@@ -8,13 +9,14 @@ from dbas.handler import news as news_handler
 from dbas.handler.language import set_language_for_visit, get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
 from dbas.lib import get_changelog
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
 from dbas.validators.user import valid_user_optional
 from dbas.views.helper import main_dict, name, full_version
+
+LOG = logging.getLogger(__name__)
 
 
 @view_config(route_name='main_page', renderer='../../templates/index.pt', permission='everybody')
@@ -27,7 +29,7 @@ def index(request):
     :param request: current request of the server
     :return: HTTP 200 with several information
     """
-    logger('index', 'request.matchdict: {}'.format(request.matchdict))
+    LOG.debug("Return index page. %s", request.matchdict)
 
     set_language_for_visit(request)
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
@@ -48,7 +50,7 @@ def news(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('news', 'main')
+    LOG.debug("Return news view.")
 
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
@@ -71,7 +73,7 @@ def imprint(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('imprint', 'main')
+    LOG.debug("Return imprint view.")
     # add version of pyramid
     request.decorated['extras'].update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
@@ -89,7 +91,7 @@ def privacy(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('privacy', 'main')
+    LOG.debug("Return privacy policy view.")
     return main_dict(request, Translator(get_language_from_cookie(request)).get(_.privacy_policy))
 
 
@@ -102,7 +104,7 @@ def faq(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('faq', 'main')
+    LOG.debug("Return FAQ view.")
     return main_dict(request, 'FAQ')
 
 
@@ -115,7 +117,7 @@ def experiment(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('experiment', 'main')
+    LOG.debug("Return experiment Information view.")
     ui_locales = get_language_from_cookie(request)
     return main_dict(request, Translator(ui_locales).get(_.fieldtest))
 
@@ -129,7 +131,7 @@ def docs(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('docs', 'main')
+    LOG.debug("Return docs view.")
     return main_dict(request, Translator(get_language_from_cookie(request)).get(_.docs))
 
 
@@ -140,8 +142,8 @@ def health(_):
         tables = [t['table'] for t in table_mapper.values()]
         list(map(lambda x: DBDiscussionSession.query(x).all(), tables))
     except Exception as e:
-        logger('health', f'Fatal error: {e}', error=True)
+        LOG.error("Fatal error: %s", e)
         return HTTPInternalServerError()
 
-    logger('health', 'Everythings fine')
+    LOG.debug("Everything is fine with the instance health.")
     return HTTPOk(detail='Database can be queried successful')

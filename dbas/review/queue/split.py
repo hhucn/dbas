@@ -1,17 +1,15 @@
 # Adaptee for the split queue.
+import logging
 import random
-from typing import Union, Tuple
-
 import transaction
 from beaker.session import Session
+from typing import Union, Tuple
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerSplit, ReviewSplit, ReviewSplitValues, Premise, Issue, \
     Statement, PremiseGroup, PremiseGroupSplitted, Argument, ArgumentsAddedByPremiseGroupSplit, \
     StatementReplacementsByPremiseGroupSplit, ReviewCanceled, ReviewMergeValues, LastReviewerMerge
 from dbas.handler.statements import set_statement
-from dbas.lib import get_text_for_premisegroup_uid
-from dbas.logger import logger
 from dbas.review import FlaggedBy, txt_len_history_page
 from dbas.review.queue import max_votes, min_difference, key_split
 from dbas.review.queue.abc_queue import QueueABC
@@ -21,6 +19,8 @@ from dbas.review.reputation import get_reason_by_action, ReputationReasons, \
     add_reputation_and_send_popup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 class SplitQueue(QueueABC):
@@ -43,33 +43,33 @@ class SplitQueue(QueueABC):
 
     def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
         """
-        Setup the subpage for the split queue
+        Setup the sub-page for the split queue
 
         :param db_user: User
-        :param session: session of current webserver request
+        :param session: session of current web-server request
         :param application_url: current url of the app
         :param translator: Translator
         :return: dict()
         """
-        logger('SplitQueue', 'main')
+        LOG.debug("Setting up the sub-page for the split queue")
         all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user, ReviewSplit,
                                                         LastReviewerSplit)
 
         extra_info = ''
         # if we have no reviews, try again with fewer restrictions
         if not all_rev_dict['reviews']:
-            logger('SplitQueue', 'no unseen reviews')
+            LOG.debug("No unseen reviews")
             all_rev_dict['already_seen_reviews'] = list()
             extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
             db_reviews = DBDiscussionSession.query(ReviewSplit).filter(ReviewSplit.is_executed == False,
                                                                        ReviewSplit.detector_uid != db_user.uid)
             if len(all_rev_dict['already_voted_reviews']) > 0:
-                logger('SplitQueue', 'everything was seen')
+                LOG.debug("Everything was seen")
                 db_reviews = db_reviews.filter(~ReviewSplit.uid.in_(all_rev_dict['already_voted_reviews']))
                 all_rev_dict['reviews'] = db_reviews.all()
 
         if not all_rev_dict['reviews']:
-            logger('SplitQueue', 'no reviews')
+            LOG.debug("No reviews available")
             return {
                 'stats': None,
                 'text': None,
@@ -127,7 +127,7 @@ class SplitQueue(QueueABC):
         :param kwargs: optional, keyworded arguments
         :return:
         """
-        logger('SplitQueue', 'main {}'.format(db_review.uid))
+        LOG.debug("Adding vote for split case with id %s", db_review.uid)
         db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
         rep_reason = None
 
@@ -238,7 +238,8 @@ class SplitQueue(QueueABC):
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
         :param db_user: current user
-        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update this!
+        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid.
+        Please update this!
         """
         db_review = DBDiscussionSession.query(ReviewSplit).filter_by(
             premisegroup_uid=kwargs.get('premisegroup_uid'),
@@ -259,11 +260,13 @@ class SplitQueue(QueueABC):
         :param kwargs: "magic" -> atm keywords like is_executed, short_text and full_text. Please update this!
         :return:
         """
-        oem_fulltext = get_text_for_premisegroup_uid(db_review.premisegroup_uid)
-        full_text = oem_fulltext
+        premisegroup = DBDiscussionSession.query(PremiseGroup).get(db_review.premisegroup_uid)
+        oem_fulltext = premisegroup.get_text()
         db_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=db_review.uid).all()
         if db_values:
             full_text = str([value.content for value in db_values])
+        else:
+            full_text = oem_fulltext
         entry['argument_oem_shorttext'] = (oem_fulltext[0:txt_len_history_page] + '...') if len(
             oem_fulltext) > txt_len_history_page else oem_fulltext
         entry['argument_oem_fulltext'] = oem_fulltext
@@ -286,7 +289,8 @@ class SplitQueue(QueueABC):
         Returns all pro and con votes for the given element
 
         :param db_review: current review element
-        :return:
+        :param application_url: The Applications URL
+        :return: A tuple of lists representing the pro and con votes
         """
         db_all_votes = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review.uid)
         pro_votes = db_all_votes.filter_by(should_split=True).all()
@@ -314,13 +318,13 @@ class SplitQueue(QueueABC):
         db_user = DBDiscussionSession.query(User).get(db_review.detector_uid)
 
         if db_values:
-            logger('SplitQueue', 'split given premisegroup into the mapped, new statements')
+            LOG.debug("Split given premisegroup %s into mapped new statements", db_review.premisegroup_uid)
             db_statements = []
             for value in db_values:
                 new_statement, tmp = set_statement(value.content, db_user, db_first_old_statement.is_position, db_issue)
                 db_statements.append(new_statement)
         else:
-            logger('SplitQueue', 'just split the premisegroup')
+            LOG.debug("Just split the premisegroup")
             db_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(db_old_statement_ids)).all()
 
         # new premisegroups, for each statement a new one
@@ -381,9 +385,9 @@ class SplitQueue(QueueABC):
     @staticmethod
     def __disable_arguments_by_id(argument_uids):
         """
-        Disbale the list of argument by their id
+        Disable the list of argument by their id
 
-        :param Argument_uids: list of argument.uid
+        :param argument_uids: list of argument.uid
         :return: None
         """
         for uid in argument_uids:

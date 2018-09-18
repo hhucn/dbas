@@ -1,3 +1,4 @@
+import logging
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
@@ -9,13 +10,14 @@ from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
 from dbas.validators.user import valid_user
 from dbas.views.helper import main_dict
+
+LOG = logging.getLogger(__name__)
 
 
 @view_config(route_name='main_user', renderer='../../templates/user/details.pt', permission='everybody')
@@ -28,17 +30,17 @@ def user(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     match_dict = request.matchdict
-    logger('user', 'request.matchdict: {}'.format(match_dict))
+    LOG.debug("Return public user page: %s", match_dict)
 
     uid = match_dict.get('uid', 0)
-    logger('user', 'uid: {}'.format(uid))
+    LOG.debug("User being shown: %s", uid)
 
     if not is_integer(uid):
         raise HTTPNotFound
 
     current_user = DBDiscussionSession.query(User).get(uid)
     if current_user is None:
-        logger('user', 'no user: {}'.format(uid), error=True)
+        LOG.error("No user found: %s", uid)
         raise HTTPNotFound()
 
     ui_locales = get_language_from_cookie(request)
@@ -66,7 +68,7 @@ def settings(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('settings', 'main: {}'.format(request.params))
+    LOG.debug("Show settings %s", request.params)
 
     ui_locales = get_language_from_cookie(request)
     old_pw, new_pw, confirm_pw, message = '', '', '', ''
@@ -101,6 +103,6 @@ def notifications(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('notifications', 'main')
+    LOG.debug("Show Notifications")
     _tn = Translator(get_language_from_cookie(request))
     return main_dict(request, _tn.get(_.message))
