@@ -9,7 +9,7 @@ RUN apt-get update -qq && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update -qq && \
-    apt-get install -yqq ruby2.3-dev rubygems build-essential libfontconfig nodejs locales libsasl2-dev libldap2-dev libssl-dev gettext bzip2 autoconf libffi-dev gcc iproute2 yarn&& \
+    apt-get install -yqq ruby2.3-dev rubygems build-essential libfontconfig nodejs locales libsasl2-dev libldap2-dev libssl-dev gettext bzip2 autoconf libffi-dev gcc iproute2 yarn && \
     (yes | gem install sass) && \
     npm install google-closure-compiler-js -g && \
     touch $locs && \
@@ -36,8 +36,8 @@ RUN pip install -q -U pip && \
     apt-get clean -y
 
 COPY . /dbas/
-
-RUN ./build_assets.sh
+ENV CHAMELEON_CACHE /dbas/dbas/templates/cache
+RUN ./build_assets.sh && python3 precompile_templates.py --dir /dbas/dbas/templates/
 
 EXPOSE 4284
 CMD sh -c "alembic upgrade head && pserve development.ini --reload"
