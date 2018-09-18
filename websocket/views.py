@@ -3,16 +3,18 @@ Introducing websockets.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import logging
 from cornice import Service
 from pyramid_mailer import get_mailer
+
+from dbas.handler.email import send_mail
 from dbas.handler.language import get_language_from_cookie
-from dbas.logger import logger
+from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.validators.user import valid_user_as_admin, valid_user_optional
 from dbas.views import validate
 from dbas.views.helper import project_name
-from dbas.handler.email import send_mail
-from dbas.helper.dictionary.main import DictionaryHelper
 
+LOG = logging.getLogger(__name__)
 # =============================================================================
 # CORS configuration
 # =============================================================================
@@ -40,6 +42,7 @@ debug_mail = Service(name='mail',
 
 path = '/{url:.*}add',
 
+
 # =============================================================================
 # WEBSOCKET REQUESTS
 # =============================================================================
@@ -54,7 +57,7 @@ def debug_function(request):
     :param request: current webservers reqquest
     :return: dict()
     """
-    logger('Websocket', 'main')
+    LOG.debug("Preparing debug information for websocket")
 
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
@@ -80,8 +83,9 @@ def debug_that_mail(request):
     :param request:
     :return:
     """
-    logger('Websocket', 'debug_mail')
+    LOG.debug("Send a debug E-Mail")
     text = request.get('text', 'empty text input')
-    logger('Websocket', 'you got access: {}'.format(text))
-    send_mail(get_mailer(request), '[D-BAS] Debug Mail', 'Debug: {}'.format(text), request.validated['user'].email, 'en')
+    LOG.debug("You got access: %s", text)
+    send_mail(get_mailer(request), '[D-BAS] Debug Mail', 'Debug: {}'.format(text), request.validated['user'].email,
+              'en')
     return {'success': True}
