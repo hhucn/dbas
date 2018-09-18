@@ -5,15 +5,16 @@ Provides functions
 """
 
 import time
-from os import environ
 
+import logging
 import urllib.request
+from os import environ
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.lib import get_profile_picture, get_global_url
-from dbas.logger import logger
 
+LOG = logging.getLogger(__name__)
 fallback_port = 5222
 
 
@@ -27,7 +28,7 @@ def send_request_for_info_popup_to_socketio(nickname, message='', url=None, incr
     :param increase_counter: Boolean
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'main')
+    LOG.debug("Send a request to socketio for user %s", nickname)
     if url:
         use_https = 'localhost' not in url
         __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
@@ -44,9 +45,9 @@ def send_request_for_info_popup_to_socketio_with_delay(nickname, message='', url
     :param delay: int
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'main sleeping for ' + str(delay))
+    LOG.debug("send_request_for_info_popup_to_socketio_with_delay - sleeping for %s", delay)
     time.sleep(delay)
-    logger('Websocket.lib', 'enough sleep')
+    LOG.debug("Stop sleeping")
     if url:
         use_https = 'localhost' not in url
         __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
@@ -62,7 +63,7 @@ def send_request_for_success_popup_to_socketio(nickname, message='', url=None, i
     :param increase_counter:
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'main')
+    LOG.debug("Send request success popup")
     if url:
         use_https = 'localhost' not in url
         __send_request_for_popup_to_socketio(nickname, 'success', message, url, increase_counter, use_https)
@@ -78,7 +79,7 @@ def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, i
     :param increase_counter:
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'main')
+    LOG.debug("Send request for socketio warning popup")
     __send_request_for_popup_to_socketio(nickname, 'warning', message, url, increase_counter)
 
 
@@ -95,7 +96,7 @@ def __send_request_for_popup_to_socketio(nickname, popup_type, message='', url=N
     :param use_https: Boolean
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'main')
+    LOG.debug("Send request to socketio server")
 
     if popup_type not in ['success', 'warning', 'info']:
         popup_type = 'info'
@@ -129,7 +130,7 @@ def send_request_for_recent_reviewer_socketio(nickname, main_page, queue):
     :param queue: Key of the last reviewers queue
     :return: Status code of the request
     """
-    logger('Websocket.lib', f'main - nickname {nickname} for queue {queue}')
+    LOG.debug("Update last reviewer view via websockets. Nickname %s for queue %s", nickname, queue)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.global_nickname
     reviewer_image_url = get_profile_picture(db_user)
@@ -147,7 +148,7 @@ def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_u
     :param use_https: Boolean
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'main')
+    LOG.debug("Private method for updating last reviewer view")
     params = '?reviewer_name=' + reviewer_name + '&img_url=' + reviewer_image_url + '&queue=' + queue
 
     port = __get_port()
@@ -170,11 +171,11 @@ def __open_url(url):
     """
     try:
         resp = urllib.request.urlopen(url)
-        logger('Websocket.lib', 'Content of request {}'.format(resp.read()))
+        LOG.debug("COntent of request %s", resp.read())
     except Exception as e:
-        logger('Websocket.lib', 'Error {} by calling {}'.format(e, url), error=True)
+        LOG.error("Error %s by calling %s", e, url)
         return None
-    logger('Websocket.lib', 'Status code of request {}'.format(resp.getcode()))
+    LOG.debug("Status code of request: %s", resp.getcode())
     return resp.getcode()
 
 
