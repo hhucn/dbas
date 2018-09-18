@@ -448,8 +448,8 @@ class TestPosition(TestCaseWithConfig):
         response: dict = apiviews.discussion_init(
             construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug}))
 
-        positions = [position.texts[0] for position in response['items']]
-        self.assertIn(self.test_body["position"], positions)
+        positions = [position.texts[0] for position in response['positions']]
+        self.assertIn(self.test_body['position'], positions)
 
     def test_invalid_body(self):
         request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug})
