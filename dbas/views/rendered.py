@@ -57,7 +57,7 @@ def notfound(request):
             LOG.debug("Redirect to %s/", service)
             return HTTPFound(location=service + '/')
 
-    LOG.debug("COnfiguration for 404 page in %s-request. Path: %s, view name: %s, matchdict: %s, params: %s",
+    LOG.debug("Configuration for 404 page in %s-request. Path: %s, view name: %s, matchdict: %s, params: %s",
               request.method, request.path, request.view_name, request.matchdict, request.params)
 
     # clear url

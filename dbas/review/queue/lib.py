@@ -24,7 +24,7 @@ def get_all_allowed_reviews_for_user(session, session_keyword, db_user, review_t
     :param db_user: current user
     :param review_type: data table of reviews
     :param last_reviewer_type: data table of last reviewers
-    :return: all revies, list of already seen reviews as uids, list of already reviewed reviews as uids, boolean if the
+    :return: all reviews, list of already seen reviews as uids, list of already reviewed reviews as uids, boolean if the
     user reviews for the first time in this session
     """
     # only get arguments, which the user has not seen yet

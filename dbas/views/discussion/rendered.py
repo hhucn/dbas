@@ -35,7 +35,7 @@ def discussion_overview(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    LOG.debug("Return a discussion overview dicstionary")
+    LOG.debug("Return a discussion overview dictionary")
     ui_locales = get_language_from_cookie(request)
     issue_dict = get_issues_overview_for(request.validated['user'], request.application_url)
 
@@ -179,7 +179,7 @@ def dontknow_argument(request) -> dict:
     :param request: request of the web server
     :return: dict
     """
-    LOG.debug("Do not now an argument for this step. %s", request.matchdict)
+    LOG.debug("Do not know an argument for this step. %s", request.matchdict)
 
     db_argument: Argument = request.validated['argument']
 

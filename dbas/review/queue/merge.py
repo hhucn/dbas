@@ -262,7 +262,7 @@ class MergeQueue(QueueABC):
         :return:
         """
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_review.premisegroup_uid).all()
-        oem_fulltext = str([DBDiscussionSession.query(Statement).get(p.statement_uid).get_text() for p in db_premises])
+        oem_fulltext = str([p.statement.get_text() for p in db_premises])
         full_text = oem_fulltext
         db_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).all()
         if db_values:
