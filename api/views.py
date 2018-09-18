@@ -5,12 +5,13 @@ return JSON objects which can then be used in external websites.
 
 .. note:: Methods **must not** have the same name as their assigned Service.
 """
+from typing import List
+
 from cornice import Service
 from cornice.resource import resource, view
 from pyramid.httpexceptions import HTTPSeeOther
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
-from typing import List
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
@@ -18,7 +19,7 @@ import dbas.views.discussion as dbas
 from api.lib import extract_items_and_bubbles
 from api.models import Item, Bubble, Reference
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue
+from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReferences
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.handler.user import set_new_oauth_user
@@ -224,12 +225,12 @@ def discussion_init(request):
                                                                Statement.uid.in_(issues_statements),
                                                                Statement.is_position == True).all()
 
-    items = [Item([pos.get_textversion().content], "/{}/attitude/{}".format(db_issue.slug, pos.uid))
-             for pos in db_positions]
+    positions = [Item([pos.get_textversion().content], "/{}/attitude/{}".format(db_issue.slug, pos.uid))
+                 for pos in db_positions]
 
     return {
         'bubbles': [Bubble(bubble) for bubble in bubbles],
-        'items': items
+        'positions': positions
     }
 
 
@@ -393,18 +394,13 @@ def get_references(request: Request):
     :param request: request
     :return: References assigned to the queried URL
     """
-    host = request.GET.get("host")
-    path = request.GET.get("path")
+    host = request.host
+    path = request.path
     log.debug("Querying references for host: {}, path: {}".format(host, path))
-    if host and path:
-        refs_db = get_references_for_url(host, path)
-        if refs_db is not None:
-            return {
-                "references": [Reference(ref) for ref in refs_db]
-            }
-        else:
-            return error("Could not retrieve references")
-    return error("Could not parse your origin")
+    refs_db: List[StatementReferences] = get_references_for_url(host, path)
+    return {
+        "references": [Reference(ref) for ref in refs_db]
+    }
 
 
 @reference_usages.get()

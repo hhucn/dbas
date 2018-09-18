@@ -448,8 +448,8 @@ class TestPosition(TestCaseWithConfig):
         response: dict = apiviews.discussion_init(
             construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug}))
 
-        positions = [position.texts[0] for position in response['items']]
-        self.assertIn(self.test_body["position"], positions)
+        positions = [position.texts[0] for position in response['positions']]
+        self.assertIn(self.test_body['position'], positions)
 
     def test_invalid_body(self):
         request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug})
@@ -515,14 +515,7 @@ class TestUser(TestCaseWithConfig):
 
 
 class TestReferences(TestCaseWithConfig):
-    def setUp(self):
-        self.statement_reference: StatementReferences = DBDiscussionSession.query(StatementReferences).get(2)
-
-    def assertError(self, response):
-        self.assertIn('status', response)
-        self.assertEqual(response.get('status'), 'error')
-
-    def assertValidReferences(self, response, expected_references: List[Reference] = None):
+    def __assert_valid_references(self, response, expected_references: List[Reference] = None):
         references = response.get('references')
         self.assertIn('references', response)
         self.assertIsInstance(references, list)
@@ -534,34 +527,30 @@ class TestReferences(TestCaseWithConfig):
     def test_missing_parameters_should_return_error(self):
         request: IRequest = construct_dummy_request(params={})
         response = apiviews.get_references(request)
-        self.assertError(response)
+        self.__assert_valid_references(response, [])
 
     def test_missing_path_should_return_error(self):
-        request: IRequest = construct_dummy_request(params={
-            'host': 'foo',
-        })
+        request: IRequest = construct_dummy_request()
+        request.host = 'foo'
         response = apiviews.get_references(request)
-        self.assertError(response)
+        self.__assert_valid_references(response, [])
 
     def test_missing_host_should_return_error(self):
-        request: IRequest = construct_dummy_request(params={
-            'path': 'foo',
-        })
+        request: IRequest = construct_dummy_request()
+        request.path = 'foo'
         response = apiviews.get_references(request)
-        self.assertError(response)
+        self.__assert_valid_references(response, [])
 
     def test_empty_list_when_no_references_in_database(self):
-        request: IRequest = construct_dummy_request(params={
-            'host': 'foo',
-            'path': 'foo',
-        })
+        request: IRequest = construct_dummy_request()
+        request.host = 'foo'
+        request.path = 'foo'
         response = apiviews.get_references(request)
-        self.assertValidReferences(response, [])
+        self.__assert_valid_references(response, [])
 
     def test_query_one_reference_should_return_list_of_references(self):
-        request: IRequest = construct_dummy_request(params={
-            'host': 'localhost:3449',
-            'path': '/',
-        })
+        request: IRequest = construct_dummy_request()
+        request.host = 'localhost:3449'
+        request.path = '/'
         response = apiviews.get_references(request)
-        self.assertValidReferences(response, [Reference(self.statement_reference)])
+        self.__assert_valid_references(response, [Reference(self.statement_reference)])

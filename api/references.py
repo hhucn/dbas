@@ -3,6 +3,7 @@ Handle references from other websites, prepare, store and load them into D-BAS.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
+from typing import List
 
 import transaction
 
@@ -84,7 +85,7 @@ def get_all_references_by_reference_text(ref_text=None):
         return refs
 
 
-def get_references_for_url(host=None, path=None):
+def get_references_for_url(host=None, path=None) -> List[StatementReferences]:
     """
     Query database for given URL and return all references.
 
@@ -97,6 +98,8 @@ def get_references_for_url(host=None, path=None):
     """
     if host and path:
         return DBDiscussionSession.query(StatementReferences).filter_by(host=host, path=path).all()
+    else:
+        return []
 
 
 def get_reference_by_id(ref_id=None):
