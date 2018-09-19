@@ -1,3 +1,11 @@
+### 1.10.4 (2018-09-19)
+- Precompile chameleon templates for production !587
+- Remove own logger and use built-in python logger !586 !578
+- Re-add "change password" for dbas-users !585
+- Simplify reference retrieval via API !584
+- Fix loop in review queue after user participated !583
+- Remove RSS feed !582
+
 ### 1.10.3 (2018-09-14)
 - Fix parse error of history in URL
 - Make discussion-sidebar more mobile friendly
