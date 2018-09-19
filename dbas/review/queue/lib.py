@@ -1,13 +1,11 @@
 import logging
 import random
 import transaction
-from typing import List, Union
+from typing import List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Issue, Statement, StatementToIssue, sql_timestamp_pretty_print, \
-    Premise, User, ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, ReviewEdit, \
-    LastReviewerEdit, ReviewDuplicate, LastReviewerDuplicate, ReviewMerge, ReviewSplit, LastReviewerMerge, \
-    LastReviewerSplit
+    Premise, User, AbstractReviewCase, AbstractLastReviewerCase
 from dbas.lib import get_text_for_argument_uid, get_profile_picture
 from dbas.review.mapper import get_review_modal_mapping, get_last_reviewer_by_key
 from dbas.review.reputation import get_reputation_of, reputation_borders
@@ -308,10 +306,8 @@ def get_review_count_for(review_type, last_reviewer_type, db_user):
     return len(db_reviews)
 
 
-def add_vote_for(db_user: User, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
-                                                 ReviewOptimization, ReviewSplit], is_okay: bool,
-                 db_reviewer_type: Union[LastReviewerDelete, LastReviewerDuplicate, LastReviewerEdit, LastReviewerMerge,
-                                         LastReviewerOptimization, LastReviewerSplit]) -> True:
+def add_vote_for(db_user: User, db_review: AbstractReviewCase, is_okay: bool,
+                 db_reviewer_type: AbstractLastReviewerCase) -> True:
     """
     Add vote for a specific review
 
