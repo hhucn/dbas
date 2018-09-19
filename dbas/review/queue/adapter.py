@@ -1,10 +1,8 @@
-from typing import Union, Tuple
-
 from beaker.session import Session
+from typing import Union, Tuple, Optional
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewSplit, ReviewOptimization, ReviewMerge, ReviewEdit, ReviewDelete, \
-    ReviewDuplicate
+from dbas.database.discussion_model import User, AbstractReviewCase
 from dbas.lib import get_profile_picture
 from dbas.review import FlaggedBy
 from dbas.review.mapper import get_review_model_by_key, get_last_reviewer_by_key, get_title_by_key, get_queue_by_key
@@ -70,8 +68,7 @@ class QueueAdapter():
 
         return self.__wrap_subpage_dict(ret_dict, button_set)
 
-    def add_vote(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge, ReviewOptimization,
-                                        ReviewSplit], is_okay: bool):
+    def add_vote(self, db_review: AbstractReviewCase, is_okay: bool):
         """
         Adds an vote for this queue. If any (positive or negative) limit is reached, the flagged element will ...
 
@@ -100,8 +97,7 @@ class QueueAdapter():
         """
         return self.queue.get_review_count(review_uid)
 
-    def cancel_ballot(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
-                                             ReviewOptimization, ReviewSplit]):
+    def cancel_ballot(self, db_review: AbstractReviewCase):
         """
         Cancels any ongoing vote
 
@@ -110,8 +106,7 @@ class QueueAdapter():
         """
         return self.queue.cancel_ballot(self.db_user, db_review)
 
-    def revoke_ballot(self, db_review: Union[ReviewDelete, ReviewDuplicate, ReviewEdit, ReviewMerge,
-                                             ReviewOptimization, ReviewSplit]):
+    def revoke_ballot(self, db_review: AbstractReviewCase):
         """
         Revokes/Undo the implications of any successfull reviewed element
 
@@ -120,7 +115,7 @@ class QueueAdapter():
         """
         return self.queue.revoke_ballot(self.db_user, db_review)
 
-    def element_in_queue(self, **kwargs) -> Union[None, FlaggedBy]:
+    def element_in_queue(self, **kwargs) -> Optional[FlaggedBy]:
         """
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
@@ -129,7 +124,9 @@ class QueueAdapter():
         """
 
         queues = [get_queue_by_key(key) for key in review_queues]
-        status = [queue().element_in_queue(self.db_user, argument_uid=kwargs.get('argument_uid'), statement_uid=kwargs.get('statement_uid'), premisegroup_uid=kwargs.get('premisegroup_uid')) for queue in queues]
+        status = [queue().element_in_queue(self.db_user, argument_uid=kwargs.get('argument_uid'),
+                                           statement_uid=kwargs.get('statement_uid'),
+                                           premisegroup_uid=kwargs.get('premisegroup_uid')) for queue in queues]
         if FlaggedBy.user in status:
             return FlaggedBy.user
 
@@ -138,7 +135,7 @@ class QueueAdapter():
 
         return None
 
-    def get_history_table_row(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit], entry, **kwargs):
+    def get_history_table_row(self, db_review: AbstractReviewCase, entry, **kwargs):
         """
         Returns a row the the history/ongoing page for the given review element
 
@@ -149,7 +146,7 @@ class QueueAdapter():
         """
         return self.queue.get_history_table_row(db_review, entry, **kwargs)
 
-    def get_text_of_element(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]) -> str:
+    def get_text_of_element(self, db_review: AbstractReviewCase) -> str:
         """
         Returns full text of the given element
 
@@ -158,7 +155,7 @@ class QueueAdapter():
         """
         return self.queue.get_text_of_element(db_review)
 
-    def get_all_votes_for(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]) -> Tuple[list, list]:
+    def get_all_votes_for(self, db_review: AbstractReviewCase) -> Tuple[list, list]:
         """
         Returns all pro and con votes for the given element
 

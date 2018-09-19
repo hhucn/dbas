@@ -6,7 +6,7 @@ Provides helping function for flagging arguments.
 
 import logging
 import transaction
-from typing import Union
+from typing import Union, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
@@ -56,7 +56,7 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
 
 
 def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument_uid: Union[int, None],
-               statement_uid: Union[int, None], extra_uid: Union[int, None], db_user: User, tn: Translator) -> dict:
+               statement_uid: Optional[int], extra_uid: Optional[int], db_user: User, tn: Translator) -> dict:
     """
 
     :param reason:
