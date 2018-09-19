@@ -1,7 +1,8 @@
 FROM python:3.6.4-slim-stretch
-MAINTAINER Christian Meter <meter@cs.uni-duesseldorf.de>
 
 ENV locs /etc/locale.gen
+ENV TEMPLATE_FOLDER /dbas/dbas/templates/
+ENV CHAMELEON_CACHE ${TEMPLATE_FOLDER}cache
 
 RUN apt-get update -qq && \
     apt-get install -yqq curl gnupg2 && \
@@ -36,8 +37,8 @@ RUN pip install -q -U pip && \
     apt-get clean -y
 
 COPY . /dbas/
-ENV CHAMELEON_CACHE /dbas/dbas/templates/cache
-RUN ./build_assets.sh && python3 precompile_templates.py --dir /dbas/dbas/templates/
+
+RUN ./build_assets.sh && python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
 
 EXPOSE 4284
 CMD sh -c "alembic upgrade head && pserve development.ini --reload"
