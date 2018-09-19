@@ -2,12 +2,13 @@
   <div class="links" style="padding-bottom: 0.5em">
     <ul>
       <li>
-        <i class="fa fa-copyright" aria-hidden="true"></i>
-        <span>${extras.year} Krauthoff</span>
+        <a href="https://www.cn.hhu.de/en.html">
+          <i class="fa fa-copyright" aria-hidden="true"></i><span>${extras.year} hhucn</span>
+        </a>
       </li>
       <li>
         <a href="/imprint">
-          <i class="fa fa-copyright" aria-hidden="true"></i><span i18n:translate="imprint">Imprint</span>
+          <i class="fa fa-file-text" aria-hidden="true"></i><span i18n:translate="imprint">Imprint</span>
         </a>
       </li>
       <li>
