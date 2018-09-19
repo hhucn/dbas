@@ -1,15 +1,14 @@
 # Adaptee for the optimizations queue. Every accepted optimization will be an edit.
+import logging
 import random
-from typing import Union, Tuple
-
 import transaction
 from beaker.session import Session
+from typing import Union, Tuple
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerOptimization, ReviewOptimization, ReviewEdit, \
     ReviewEditValue, Statement, Issue, Argument, Premise, ReviewCanceled, OptimizationReviewLocks, get_now
-from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, get_text_for_statement_uid
-from dbas.logger import logger
+from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement
 from dbas.review import FlaggedBy
 from dbas.review.queue import max_votes, key_optimization, max_lock_time_in_sec
 from dbas.review.queue.abc_queue import QueueABC
@@ -20,6 +19,8 @@ from dbas.review.reputation import get_reason_by_action, ReputationReasons, \
     add_reputation_and_send_popup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 class OptimizationQueue(QueueABC):
@@ -50,7 +51,7 @@ class OptimizationQueue(QueueABC):
         :param translator: Translator
         :return: dict()
         """
-        logger('OptimizationQueue', 'main')
+        LOG.debug("Setting up the sub-page for the optimization-queue")
         all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user,
                                                         ReviewOptimization, LastReviewerOptimization)
 
@@ -59,8 +60,9 @@ class OptimizationQueue(QueueABC):
         if not all_rev_dict['reviews']:
             all_rev_dict['already_seen_reviews'] = list()
             extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
-            db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(ReviewOptimization.is_executed == False,
-                                                                              ReviewOptimization.detector_uid != db_user.uid)
+            db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(
+                ReviewOptimization.is_executed == False,
+                ReviewOptimization.detector_uid != db_user.uid)
             if len(all_rev_dict['already_voted_reviews']) > 0:
                 db_reviews = db_reviews.filter(~ReviewOptimization.uid.in_(all_rev_dict['already_voted_reviews']))
             all_rev_dict['reviews'] = db_reviews.all()
@@ -126,7 +128,7 @@ class OptimizationQueue(QueueABC):
         :param kwargs: optional, keyworded arguments
         :return:
         """
-        logger('OptimizationQueue', 'main')
+        LOG.debug("Add a vote for optimization")
         # add new review
         db_new_review = LastReviewerOptimization(db_user.uid, db_review.uid, not is_okay)
         DBDiscussionSession.add(db_new_review)
@@ -204,7 +206,8 @@ class OptimizationQueue(QueueABC):
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
         :param db_user: current user
-        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update this!
+        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid.
+        Please update this!
         """
         db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(
             argument_uid=kwargs.get('argument_uid'),
@@ -234,6 +237,7 @@ class OptimizationQueue(QueueABC):
         Returns all pro and con votes for the given element
 
         :param db_review: current review element
+        :param application_url: The applications URL
         :return:
         """
         db_all_votes = DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid)
@@ -265,12 +269,12 @@ class OptimizationQueue(QueueABC):
         :param translator:
         :return:
         """
-        logger('ReviewQueues', 'main')
+        LOG.debug("Lock an Optimization-Review")
         # check if author locked an item and maybe tidy up old locks
         db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
         if db_locks:
             if self.is_review_locked(db_locks.review_optimization_uid):
-                logger('ReviewQueues', 'review already locked')
+                LOG.debug("Review was already locked")
                 return {
                     'success': '',
                     'info': translator.get(_.dataAlreadyLockedByYou),
@@ -281,7 +285,7 @@ class OptimizationQueue(QueueABC):
 
         # is already locked?
         if self.is_review_locked(db_review.uid):
-            logger('ReviewQueues', 'already locked', warning=True)
+            LOG.warning("Already locked case")
             return {
                 'success': '',
                 'info': translator.get(_.dataAlreadyLockedByOthers),
@@ -293,7 +297,7 @@ class OptimizationQueue(QueueABC):
         transaction.commit()
         success = translator.get(_.dataAlreadyLockedByYou)
 
-        logger('ReviewQueues', 'review locked')
+        LOG.debug("Review locked")
         return {
             'success': success,
             'info': '',
@@ -309,7 +313,7 @@ class OptimizationQueue(QueueABC):
         :return:
         """
         self.tidy_up_optimization_locks()
-        logger('ReviewQueues', 'main')
+        LOG.debug("Unlocking Optimization-Review")
         DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=db_review.uid).delete()
         DBDiscussionSession.flush()
         transaction.commit()
@@ -327,7 +331,7 @@ class OptimizationQueue(QueueABC):
         :return: Boolean
         """
         self.tidy_up_optimization_locks()
-        logger('ReviewQueues', 'main')
+        LOG.debug("Check whether review %s is locked.", review_uid)
         db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
             review_optimization_uid=review_uid).first()
         if not db_lock:
@@ -341,7 +345,7 @@ class OptimizationQueue(QueueABC):
 
         :return: None
         """
-        logger('ReviewQueues', 'main')
+        LOG.debug("Enter Tidy up function")
         db_locks = DBDiscussionSession.query(OptimizationReviewLocks).all()
         for lock in db_locks:
             if (get_now() - lock.locked_since).seconds >= max_lock_time_in_sec:
@@ -355,20 +359,20 @@ class OptimizationQueue(QueueABC):
         :param db_argument: Argument.uid
         :return: list of strings
         """
-        logger('OptimizationQueue', 'main')
+        LOG.debug("Get all parts of an argument as string")
         ret_list = list()
 
         # get premise of current argument
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
         premises_uids = [premise.uid for premise in db_premises]
         for uid in premises_uids:
-            logger('OptimizationQueue', 'add premise of argument ' + str(db_argument.uid))
-            text = get_text_for_statement_uid(uid)
-            ret_list.append(self.__get_part_dict('premise', text, db_argument.uid, uid))
+            LOG.debug("Add premise of argument %s", db_argument.uid)
+            statement = DBDiscussionSession.query(Statement).get(uid)
+            ret_list.append(self.__get_part_dict('premise', statement.get_text(), db_argument.uid, uid))
 
         if db_argument.argument_uid is None:  # get conclusion of current argument
             conclusion = db_argument.get_conclusion_text()
-            logger('OptimizationQueue', 'add statement of argument ' + str(db_argument.uid))
+            LOG.debug("Add statement of argument %s", db_argument.uid)
             ret_list.append(self.__get_part_dict('conclusion', conclusion, db_argument.uid, db_argument.conclusion_uid))
         else:  # or get the conclusions argument
             db_conclusions_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
@@ -380,15 +384,16 @@ class OptimizationQueue(QueueABC):
                     premisegroup_uid=db_argument.premisegroup_uid).all()
                 premises_uids = [premise.uid for premise in db_premises]
                 for uid in premises_uids:
-                    text = get_text_for_statement_uid(uid)
-                    logger('OptimizationQueue', 'add premise of argument ' + str(db_conclusions_argument.uid))
-                    ret_list.append(self.__get_part_dict('premise', text, db_conclusions_argument.uid, uid))
+                    statement = DBDiscussionSession.query(Statement).get(uid)
+                    LOG.debug("Add premise of argument %s", db_conclusions_argument.uid)
+                    ret_list.append(
+                        self.__get_part_dict('premise', statement.get_text(), db_conclusions_argument.uid, uid))
 
                 db_conclusions_argument = DBDiscussionSession.query(Argument).get(db_conclusions_argument.argument_uid)
 
             # get the last conclusion of the chain
             conclusion = db_conclusions_argument.get_conclusion_text()
-            logger('OptimizationQueue', 'add statement of argument ' + str(db_conclusions_argument.uid))
+            LOG.debug("Add statement of argument %s", db_conclusions_argument.uid)
             ret_list.append(self.__get_part_dict('conclusion', conclusion, db_conclusions_argument.uid,
                                                  db_conclusions_argument.conclusion_uid))
 
@@ -452,8 +457,7 @@ class OptimizationQueue(QueueABC):
         # sort the new edits by argument uid
         argument_dict, statement_dict = self.__prepare_dicts_for_proposals(data)
 
-        logger('OptimizationQueue',
-               'detector {}, statements {}, arguments {}'.format(db_user.uid, statement_dict, argument_dict))
+        LOG.debug("Detector %s, statements %s, arguments %s", db_user.uid, statement_dict, argument_dict)
 
         # add reviews
         new_edits = list()
@@ -464,7 +468,7 @@ class OptimizationQueue(QueueABC):
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
                 ReviewEdit.detector_uid == db_user.uid,
                 ReviewEdit.argument_uid == argument_uid).order_by(ReviewEdit.uid.desc()).first()
-            logger('OptimizationQueue', 'New ReviewEdit with uid ' + str(db_review_edit.uid) + ' (argument)')
+            LOG.debug("New ReviewEdit with uid %s (argument)", db_review_edit.uid)
 
             for edit in argument_dict[argument_uid]:
                 new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid,
@@ -479,7 +483,7 @@ class OptimizationQueue(QueueABC):
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
                 ReviewEdit.detector_uid == db_user.uid,
                 ReviewEdit.statement_uid == statement_uid).order_by(ReviewEdit.uid.desc()).first()
-            logger('OptimizationQueue', 'New ReviewEdit with uid ' + str(db_review_edit.uid) + ' (statement)')
+            LOG.debug("New ReviewEdit with uid %s (statement)", db_review_edit.uid)
 
             for edit in statement_dict[statement_uid]:
                 new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid,

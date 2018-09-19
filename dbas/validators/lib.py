@@ -4,10 +4,12 @@ Common functions shared between the validators.
 
 from sys import _getframe
 
+import logging
 from pyramid.request import Request
 
 from dbas.lib import escape_string
-from dbas.logger import logger
+
+LOG = logging.getLogger(__name__)
 
 
 def add_error(request: Request, verbose_short: str, verbose_long: str = None, location: str = 'body',
@@ -23,7 +25,7 @@ def add_error(request: Request, verbose_short: str, verbose_long: str = None, lo
     :return:
     """
     error_msg = verbose_short if not verbose_long else verbose_short + ', additional infos:' + verbose_long
-    logger('validation', _getframe(1).f_code.co_name + ': ' + error_msg, error=True)
+    LOG.error("%s: %s", _getframe(1).f_code.co_name, error_msg)
     request.errors.add(location, verbose_short, verbose_long)
     request.errors.status = status_code
 

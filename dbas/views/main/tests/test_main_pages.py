@@ -3,7 +3,7 @@ import unittest
 from pyramid import testing
 
 from dbas.helper.test import verify_dictionary_of_view
-from dbas.views.main.rendered import imprint, news, privacy, experiment, index, faq, docs, rss, health
+from dbas.views.main.rendered import imprint, news, privacy, experiment, index, faq, docs, health
 
 
 class MainImprintViewTests(unittest.TestCase):
@@ -101,20 +101,6 @@ class MainDocsViewTests(unittest.TestCase):
     def test_page(self):
         request = testing.DummyRequest()
         response = docs(request)
-        verify_dictionary_of_view(response)
-
-
-class MainRssViewTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_page(self):
-        request = testing.DummyRequest()
-        response = rss(request)
         verify_dictionary_of_view(response)
 
 

@@ -1,3 +1,5 @@
+import logging
+
 import dbas.handler.issue as issue_helper
 from dbas.database.discussion_model import Argument, User, Issue, Statement
 from dbas.handler import user
@@ -7,10 +9,11 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.steps import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
 from dbas.lib import Relations
-from dbas.logger import logger
 from dbas.review.reputation import ReputationReasons, add_reputation_and_check_review_access
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 def init(db_issue: Issue, db_user: User) -> dict:
@@ -22,7 +25,7 @@ def init(db_issue: Issue, db_user: User) -> dict:
     :param db_user: User
     :return: prepared collection with first elements for the discussion
     """
-    logger('Core', 'main')
+    LOG.debug("Entering init of discussion.core")
     slug = db_issue.slug
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
@@ -54,7 +57,7 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: s
     :return: prepared collection dict for the discussion
     :rtype: dict
     """
-    logger('Core', 'attitude')
+    LOG.debug("Entering attitude function of discussion.core")
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = db_issue.lang
@@ -73,7 +76,8 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: s
     }
 
 
-def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, attitude: str, history, path) -> dict:
+def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, user_attitude: str, history,
+                      path) -> dict:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
@@ -81,15 +85,15 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, a
     :param db_issue:
     :param db_user:
     :param db_statement:
-    :param attitude:
+    :param user_attitude:
     :param history:
     :param path:
     :return:
     """
-    logger('Justify statement discussion', 'main')
+    LOG.debug("Entering justify_statement")
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-    item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, attitude,
+    item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, user_attitude,
                                                                 history, path)
     return {
         'issues': issue_dict,
@@ -112,7 +116,7 @@ def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, hi
     :param path:
     :return:
     """
-    logger('Justify statement discussion', 'main')
+    LOG.debug("Entering dont_know_argument")
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     item_dict, discussion_dict = handle_justification_dontknow(db_issue, db_user, db_argument, history, path)
@@ -125,8 +129,8 @@ def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, hi
     }
 
 
-def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, attitude: str, relation: str, history: str,
-                     path: str) -> dict:
+def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, user_attitude: str, relation: str,
+                     history: str, path: str) -> dict:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
@@ -134,16 +138,16 @@ def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, atti
     :param db_issue:
     :param db_user:
     :param db_argument:
-    :param attitude:
+    :param user_attitude:
     :param relation:
     :param history:
     :param path:
     :return:
     """
-    logger('Justify argument discussion', 'main')
+    LOG.debug("Entering justify_argument")
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-    item_dict, discussion_dict = handle_justification_argument(db_issue, db_user, db_argument, attitude, relation,
+    item_dict, discussion_dict = handle_justification_argument(db_issue, db_user, db_argument, user_attitude, relation,
                                                                history, path)
 
     return {
@@ -169,7 +173,7 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     :param path:
     :return:
     """
-    logger('Core', 'Entering discussion.reaction')
+    LOG.debug("Entering reaction function")
     # set votes and reputation
     broke_limit = add_reputation_and_check_review_access(db_user, ReputationReasons.first_argument_click)
 
@@ -203,7 +207,7 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     :param path:
     :return:
     """
-    logger('Core', 'Entering discussion.support')
+    LOG.debug("Entering support function")
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
@@ -235,7 +239,7 @@ def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: boo
     :param path:
     :return:
     """
-    logger('Core', 'Entering discussion.choose')
+    LOG.debug("Entering choose function")
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
@@ -260,11 +264,15 @@ def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: str, pa
     Initialize the jump step for an argument in a discussion. Creates helper and returns a dictionary containing
     several feedback options regarding this argument.
 
-    :param request_dict: dict out of pyramid's request object including issue, slug and history and more
+    :param db_issue: The issue that shall be jumped to
+    :param db_user: The concerning user
+    :param db_argument:
+    :param history:
+    :param path:
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
-    logger('Core', 'Entering discussion.jzmp')
+    LOG.debug("Entering jump function")
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']

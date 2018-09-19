@@ -1,9 +1,11 @@
+import logging
+
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import MarkedStatement
-from dbas.lib import get_text_for_statement_uid
-from dbas.logger import logger
+from dbas.database.discussion_model import MarkedStatement, Statement
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
+
+LOG = logging.getLogger(__name__)
 
 
 def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive, _tn):
@@ -16,14 +18,16 @@ def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive,
     :param _tn: Translator
     :return: String, String
     """
-    logger('BubbleHelper', '{} {}'.format(stmt_uid, is_supportive))
-    text = get_text_for_statement_uid(stmt_uid)
+    LOG.debug("%s is supportive? %s", stmt_uid, is_supportive)
+    statement = DBDiscussionSession.query(Statement).get(stmt_uid)
+    text = statement.get_text()
 
     if _tn.get_lang() == 'de':
         intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
         add_premise_text = start_with_capital(intro) + ' ' + text
     else:
-        add_premise_text = start_with_capital(text) + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea).strip()
+        add_premise_text = start_with_capital(text) + ' ' + _tn.get(
+            _.holds if is_supportive else _.isNotAGoodIdea).strip()
     add_premise_text += ', ...'
 
     is_users_opinion = False

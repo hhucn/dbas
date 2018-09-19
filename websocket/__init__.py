@@ -3,8 +3,10 @@ REST API for websockets.
 
 .. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
+import logging
 from pyramid.config import Configurator
-from dbas.logger import logger
+
+LOG = logging.getLogger(__name__)
 
 
 def init(config):
@@ -22,4 +24,4 @@ def includeme(config):
 
 
 if __name__ == "__main__":
-    logger("i", "in too")
+    LOG.debug("Starting websockets")

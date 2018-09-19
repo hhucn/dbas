@@ -9,14 +9,14 @@ Used lib: http://requests-oauthlib.readthedocs.io/en/latest/examples/examples.ht
 Manage Google Client IDs: https://apps.twitter.com/
 """
 
+import logging
 import os
-
 from requests_oauthlib.oauth1_session import OAuth1Session
 
 from dbas.auth.oauth import get_oauth_ret_dict
 from dbas.handler.user import oauth_values
-from dbas.logger import logger
 
+LOG = logging.getLogger(__name__)
 CLIENT_ID = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
 CLIENT_SECRET = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
 
@@ -31,7 +31,7 @@ def start_flow(**kwargs):
     redirect_uri = kwargs.get('redirect_uri')
     request = kwargs.get('request')
 
-    logger('Twitter OAuth', 'Read OAuth id/secret: none? {}'.format(CLIENT_ID is None, CLIENT_SECRET is None))
+    LOG.debug("Read OAuth id/secret: none? %s/%s", CLIENT_ID is None, CLIENT_SECRET is None)
 
     request_token_url = 'https://api.twitter.com/oauth/request_token'
     authorization_url = 'https://api.twitter.com/oauth/authorize'
@@ -43,7 +43,7 @@ def start_flow(**kwargs):
     request.session['twitter_oauth_token'] = resp.get('oauth_token')
     request.session['twitter_oauth_token_secret'] = resp.get('oauth_token_secret')
 
-    logger('Twitter OAuth', 'Please go to {} and authorize access'.format(authorization_url))
+    LOG.debug("Please go to %s and authorize access", authorization_url)
     return {'authorization_url': url, 'error': ''}
 
 
@@ -59,7 +59,7 @@ def continue_flow(request, redirect_response):
     client_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
     client_secret = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
 
-    logger('Twitter OAuth', 'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
+    LOG.debug("Read OAuth id/secret: none? %s/%s", client_id is None, client_secret is None)
 
     pincode = redirect_response.split('oauth_verifier=')[1]
 

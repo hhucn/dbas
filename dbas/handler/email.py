@@ -4,20 +4,22 @@ Provides class for sending an email
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import logging
 import os
 import smtplib
+from pyramid_mailer import Mailer
+from pyramid_mailer.message import Message
 from socket import error as socket_error
 
-from pyramid_mailer import Mailer
-
-from dbas.lib import get_global_url
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Language, Statement
-from dbas.logger import logger
+from dbas.lib import get_global_url
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import get_text_for_add_text_message, get_text_for_edit_text_message, get_text_for_add_argument_message
+from dbas.strings.text_generator import get_text_for_add_text_message, get_text_for_edit_text_message, \
+    get_text_for_add_argument_message
 from dbas.strings.translator import Translator
-from pyramid_mailer.message import Message
+
+LOG = logging.getLogger(__name__)
 
 
 def send_mail_due_to_added_text(lang, url, recipient, mailer):
@@ -54,7 +56,8 @@ def send_mail_due_to_added_argument(lang, url, recipient, mailer):
     return send_mail(mailer, subject, body, recipient.email, lang)
 
 
-def send_mail_due_to_edit_text(statement_uid: int, previous_author: User, current_author: User, url: str, mailer: Mailer):
+def send_mail_due_to_edit_text(statement_uid: int, previous_author: User, current_author: User, url: str,
+                               mailer: Mailer):
     """
     Will send an email to the author of the statement.
 
@@ -93,10 +96,10 @@ def send_mail(mailer, subject, body, recipient, lang):
     :param lang: current language
     :return: duple with boolean for sent message, message-string
     """
-    logger('email_helper', 'sending mail with subject \'' + subject + '\' to ' + recipient)
+    LOG.debug("Sending mail with subject '%s' to %s", subject, recipient)
     _t = Translator(lang)
     if not mailer:
-        logger('email_helper', 'mailer is none', error=True)
+        LOG.debug("Mailer is none")
         return False, _t.get(_.internalKeyError)
 
     send_message = False
@@ -114,19 +117,19 @@ def send_mail(mailer, subject, body, recipient, lang):
     except smtplib.SMTPConnectError as exception:
         code = str(exception.smtp_code)
         error = str(exception.smtp_error)
-        logger('email_helper', 'exception smtplib.SMTPConnectError smtp code / error ' + code + '/' + error, error=True)
+        LOG.debug("Exception smtplib.SMTPConnectionError smtp code / error %s / %s", code, error)
         message = _t.get(_.emailWasNotSent)
     except socket_error as serr:
-        logger('email_helper', 'socket error while sending ' + str(serr), error=True)
+        LOG.debug("Socker error while sending %s", serr)
         message = _t.get(_.emailWasNotSent)
 
     return send_message, message
 
 
 def __thread_to_send_mail(mailer, message, recipient, body):
-    logger('email_helper', 'Start thread to send mail to {} with {}'.format(recipient, body[:30]))
+    LOG.debug("Start thread to send mail to %s with %s", recipient, body[:30])
     try:
         mailer.send_immediately(message, fail_silently=False)
     except TypeError as e:
-        logger('email_helper', 'TypeError {}'.format(e), error=True)
-    logger('email_helper', 'End thread to send mail to {} with {}'.format(recipient, body[:30]))
+        LOG.debug("TypeError %s", e)
+    LOG.debug("End thread to send mail to %s with %s", recipient, body[:30])

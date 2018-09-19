@@ -5,15 +5,16 @@ Provides helping function round about the news.
 """
 
 import arrow
+import logging
 import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, News, sql_timestamp_pretty_print
-from dbas.handler.rss import create_news_rss
-from dbas.logger import logger
+
+LOG = logging.getLogger(__name__)
 
 
-def set_news(title: str, text: str, db_user: User, lang: str, main_page: str) -> dict():
+def set_news(title: str, text: str, db_user: User, lang: str, main_page: str) -> dict:
     """
     Sets a new news into the news table
 
@@ -24,7 +25,7 @@ def set_news(title: str, text: str, db_user: User, lang: str, main_page: str) ->
     :param main_page: url
     :return:
     """
-    logger('NewsHelper', 'def')
+    LOG.debug("Entering set_news function")
 
     author = db_user.firstname
     if db_user.firstname != 'admin':
@@ -43,8 +44,6 @@ def set_news(title: str, text: str, db_user: User, lang: str, main_page: str) ->
         'news': text
     }
 
-    create_news_rss(main_page, lang)
-
     return return_dict
 
 
@@ -55,7 +54,7 @@ def get_news(ui_locales):
     :param ui_locales:
     :return: dict()
     """
-    logger('NewsHelper', 'main')
+    LOG.debug("Entering get_news function")
     db_news = DBDiscussionSession.query(News).order_by(News.date.desc()).all()
     ret_news = []
     for news in db_news:
@@ -82,7 +81,7 @@ def get_latest_news(ui_locales):
     :return: dict()
     :return:
     """
-    logger('NewsHelper', 'main')
+    LOG.debug("Entering get_latest_news function")
     db_news = DBDiscussionSession.query(News).order_by(News.date.desc()).all()
     ret_news = []
     for index, news in enumerate(db_news[:5]):

@@ -4,11 +4,12 @@ Provides methods for comparing strings.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import difflib
-import re
 from collections import OrderedDict
 from itertools import islice
 
+import difflib
+import logging
+import re
 from Levenshtein import distance
 from sqlalchemy import func
 
@@ -16,9 +17,9 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
 from dbas.helper.url import UrlManager
 from dbas.lib import get_public_profile_picture, nick_of_anonymous_user, get_enabled_statement_as_query
-from dbas.logger import logger
 from search.requester import elastic_search
 
+LOG = logging.getLogger(__name__)
 list_length = 5
 max_count_zeros = 5
 index_zeros = 3
@@ -28,7 +29,7 @@ mechanism = 'Levensthein'
 
 def get_nicknames(db_user: User, value: str):
     """
-
+    :param db_user: The user which nickname shall be returned.
     :param value:
     :return:
     """
@@ -53,7 +54,7 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
     try:
         return elastic_search(db_issue, search_value, mode, statement_uid)
     except Exception as ex:
-        logger('Matcher', 'An error occurred while requesting elasticsearch: {}'.format(ex), error=True)
+        LOG.warning("Could not request data from elasticsearch because of error: %s", ex)
 
     return __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
 

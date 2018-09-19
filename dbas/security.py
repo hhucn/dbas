@@ -4,14 +4,17 @@ Security module of D-BAS, where the groups are set
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import logging
 from pyramid.security import Allow, Everyone
-from dbas.logger import logger
-from .database import DBDiscussionSession
-from .database.discussion_model import User, Group
 from sqlalchemy.exc import InternalError
 
+from .database import DBDiscussionSession
+from .database.discussion_model import User, Group
 
-class RootFactory(object):
+LOG = logging.getLogger(__name__)
+
+
+class RootFactory():
     """
     Defines the ACL
     """
@@ -32,19 +35,18 @@ def groupfinder(nick, _):
     :param request: request
     :return: given group as list or empty list
     """
-
-    logger('security', 'nick: ' + nick)
+    LOG.debug("nick: %s", nick)
     try:
         user = DBDiscussionSession.query(User).filter_by(nickname=nick).first()
     except InternalError as i:
-        logger('security', str(i), error=True)
+        LOG.error("%s", i)
         return []
 
     if user:
         group = DBDiscussionSession.query(Group).get(user.group_uid)
         if group:
-            logger('security', 'return [group:' + group.name + ']')
+            LOG.debug("return [group: %s]", group.name)
             return ['group:' + group.name]
 
-    logger('security', 'return []')
+    LOG.debug("return []")
     return []

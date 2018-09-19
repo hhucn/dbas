@@ -1,7 +1,8 @@
 FROM python:3.6.4-slim-stretch
-MAINTAINER Christian Meter <meter@cs.uni-duesseldorf.de>
 
 ENV locs /etc/locale.gen
+ENV TEMPLATE_FOLDER /dbas/dbas/templates/
+ENV CHAMELEON_CACHE ${TEMPLATE_FOLDER}cache
 
 RUN apt-get update -qq && \
     apt-get install -yqq curl gnupg2 && \
@@ -9,7 +10,7 @@ RUN apt-get update -qq && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update -qq && \
-    apt-get install -yqq ruby2.3-dev rubygems build-essential libfontconfig nodejs locales libsasl2-dev libldap2-dev libssl-dev gettext bzip2 autoconf libffi-dev gcc iproute2 yarn&& \
+    apt-get install -yqq ruby2.3-dev rubygems build-essential libfontconfig nodejs locales libsasl2-dev libldap2-dev libssl-dev gettext bzip2 autoconf libffi-dev gcc iproute2 yarn && \
     (yes | gem install sass) && \
     npm install google-closure-compiler-js -g && \
     touch $locs && \
@@ -37,7 +38,7 @@ RUN pip install -q -U pip && \
 
 COPY . /dbas/
 
-RUN ./build_assets.sh
+RUN ./build_assets.sh && python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
 
 EXPOSE 4284
 CMD sh -c "alembic upgrade head && pserve development.ini --reload"

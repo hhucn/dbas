@@ -91,7 +91,7 @@ AjaxReviewHandler.prototype.un_lockOptimizationReview = function (review_uid, sh
     ajaxSkeleton(url, 'POST', data, done, fail);
 };
 
-AjaxReviewHandler.prototype.__ajax_skeleton = function(url, data){
+AjaxReviewHandler.prototype.__ajax_skeleton = function (url, data) {
     'use strict';
     var done = function () {
         if (window.location.href.indexOf('/review/')) {
@@ -116,7 +116,7 @@ AjaxReviewHandler.prototype.reviewDeleteArgument = function (should_delete, revi
         should_delete: should_delete,
         review_uid: parseInt(review_uid)
     };
-    this.__ajax_skeleton(url, data);
+    this.__ajax_skeleton(url, data, false);
 };
 
 /**
@@ -131,7 +131,7 @@ AjaxReviewHandler.prototype.reviewEditArgument = function (is_edit_okay, review_
         is_edit_okay: is_edit_okay,
         review_uid: parseInt(review_uid)
     };
-    this.__ajax_skeleton(url, data);
+    this.__ajax_skeleton(url, data, false);
 };
 
 /**
@@ -146,7 +146,7 @@ AjaxReviewHandler.prototype.reviewDuplicateStatement = function (is_duplicate, r
         is_duplicate: is_duplicate,
         review_uid: parseInt(review_uid)
     };
-    this.__ajax_skeleton(url, data);
+    this.__ajax_skeleton(url, data, false);
 };
 
 /**
@@ -176,17 +176,17 @@ AjaxReviewHandler.prototype.reviewOptimizationArgument = function (should_optimi
 
 /**
  *
- * @param should_merged
+ * @param should_merge
  * @param review_uid
  */
-AjaxReviewHandler.prototype.reviewMergeStatement = function (should_merged, review_uid) {
+AjaxReviewHandler.prototype.reviewMergeStatement = function (should_merge, review_uid) {
     'use strict';
     var url = 'review_merged_premisegroup';
     var data = {
         should_merge: should_merge,
         review_uid: parseInt(review_uid)
     };
-    this.__ajax_skeleton(url, data);
+    this.__ajax_skeleton(url, data, false);
 };
 
 /**
@@ -201,7 +201,7 @@ AjaxReviewHandler.prototype.reviewSplitStatement = function (should_split, revie
         should_split: should_split,
         review_uid: parseInt(review_uid)
     };
-    this.__ajax_skeleton(url, data);
+    this.__ajax_skeleton(url, data, false);
 };
 
 /**
@@ -216,7 +216,7 @@ AjaxReviewHandler.prototype.undoReview = function (queue, uid) {
         queue: queue,
         uid: parseInt(uid)
     };
-    this.__ajax_skeleton(url, data);
+    this.__ajax_skeleton(url, data, true, uid);
 };
 
 /**
@@ -231,17 +231,20 @@ AjaxReviewHandler.prototype.cancelReview = function (queue, uid) {
         queue: queue,
         uid: parseInt(uid)
     };
-    this.__ajax_skeleton(url, data);
+    this.__ajax_skeleton(url, data, true, uid);
 };
 
-AjaxReviewHandler.prototype.__ajax_skeleton = function (url, data) {
+AjaxReviewHandler.prototype.__ajax_skeleton = function (url, data, remove_element_on_success, uid) {
     'use strict';
     var done = function (data) {
-        if (data.info.length !== 0) {
+        if ($.type(data) === 'object' && 'info' in data && data.info.length !== 0) {
             setGlobalInfoHandler(_t(ohsnap), data.info);
         } else {
-            setGlobalSuccessHandler('Yep!', data.success);
-            $('#' + queue + uid).remove();
+            setGlobalSuccessHandler('Yep!', data);
+            if (remove_element_on_success) {
+                $('#' + queue + uid).remove();
+            }
+            new Review().reloadPage();
         }
     };
     var fail = function (data) {

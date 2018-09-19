@@ -3,7 +3,7 @@ Introducing an admin interface to enable easy database management.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-
+import logging
 from cornice import Service
 from pyramid.httpexceptions import exception_response
 
@@ -11,13 +11,13 @@ import admin.lib as lib
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.logger import logger
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.database import valid_table_name
 from dbas.validators.user import valid_user_as_admin, valid_user_optional
 from dbas.views import user_logout
 from dbas.views.helper import project_name
 
+LOG = logging.getLogger(__name__)
 #
 # CORS configuration
 #
@@ -90,7 +90,7 @@ def main_admin(request):
     :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('Admin', 'def')
+    LOG.debug("def")
     db_user = request.validated['user']
 
     should_log_out = user.update_last_action(request.validated['user'])
@@ -126,7 +126,7 @@ def main_table(request):
     :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('Admin', 'def')
+    LOG.debug("def")
     should_log_out = user.update_last_action(request.validated['user'])
     if should_log_out:
         return user_logout(request, True)
@@ -160,7 +160,7 @@ def main_update(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('Admin', 'def ' + str(request.params))
+    LOG.debug("def %s", request.params)
     table = request.validated['table']
     uids = request.validated['uids']
     keys = request.validated['keys']
@@ -177,7 +177,7 @@ def main_delete(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('Admin', 'def ' + str(request.json_body))
+    LOG.debug("def %s", request.json_body)
     return lib.delete_row(request.validated['table'], request.validated['uids'])
 
 
@@ -190,7 +190,7 @@ def main_add(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('Admin', 'def ' + str(request.json_body))
+    LOG.debug("def %s", request.json_body)
     return lib.add_row(request.validated['table'], request.validated['new_data'])
 
 
@@ -198,7 +198,7 @@ def main_add(request):
 def generate_api_token(request):
     owner = request.params['owner']
     token = lib.generate_application_token(owner)
-    logger('Admin', 'API-Token for {} was created.'.format(owner))
+    LOG.debug("API-Token for %s was created.", owner)
     return {'token': token}
 
 
@@ -206,4 +206,4 @@ def generate_api_token(request):
 def revoke_api_token(request):
     token_id = request.matchdict['id']
     lib.revoke_application_token(token_id)
-    logger('Admin', 'API-Token {} was revoked.'.format(token_id))
+    LOG.debug("API-Token %s was revoked.", token_id)

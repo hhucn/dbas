@@ -1,16 +1,15 @@
 # Adaptee for the edit queue. Every edit results in a new textversion of a statement.
 import difflib
-from typing import List, Union, Tuple
-
+import logging
 import transaction
 from beaker.session import Session
+from typing import List, Union, Tuple
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerEdit, ReviewEdit, ReviewEditValue, TextVersion, \
     ReviewCanceled, Statement, Argument, Premise
 from dbas.handler.textversion import propose_new_textversion_for_statement
 from dbas.lib import get_text_for_argument_uid
-from dbas.logger import logger
 from dbas.review import FlaggedBy, txt_len_history_page
 from dbas.review.queue import max_votes, min_difference, key_edit, Code
 from dbas.review.queue.abc_queue import QueueABC
@@ -20,6 +19,8 @@ from dbas.review.reputation import get_reason_by_action, ReputationReasons, \
     add_reputation_and_send_popup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 class EditQueue(QueueABC):
@@ -50,7 +51,7 @@ class EditQueue(QueueABC):
         :param translator: Translator
         :return: dict()
         """
-        logger('EditQueue', 'main')
+        LOG.debug("Setting up the page for the edit queue")
         all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user, ReviewEdit,
                                                         LastReviewerEdit)
 
@@ -74,8 +75,7 @@ class EditQueue(QueueABC):
         stats = get_reporter_stats_for_review(rev_dict['rnd_review'], translator.get_lang(), application_url)
 
         if not db_edit_value:
-            rnd_review = rev_dict['rnd_review']
-            logger('EditQueue', f'ReviewEdit {rnd_review.uid} has no edit value!', error=True)
+            LOG.warning("ReviewEdit %s has no edit value!", rev_dict['rnd_review'].uid)
             # get all valid reviews
             db_allowed_reviews = DBDiscussionSession.query(ReviewEdit).filter(
                 ReviewEdit.uid.in_(DBDiscussionSession.query(ReviewEditValue.review_edit_uid))).all()
@@ -95,8 +95,8 @@ class EditQueue(QueueABC):
         self.__difference_between_string(rev_dict['text'], db_edit_value.content, correction_list)
         correction = ''.join(correction_list)
 
-        rev_dict[f'already_seen_reviews'].append(not rev_dict['rnd_review'].uid)
-        session[f'already_seen_{self.key}'] = rev_dict[f'already_seen_reviews']
+        rev_dict['already_seen_reviews'].append(rev_dict['rnd_review'].uid)
+        session[f'already_seen_{self.key}'] = rev_dict['already_seen_reviews']
 
         return {
             'stats': stats,
@@ -124,7 +124,7 @@ class EditQueue(QueueABC):
         :param kwargs: optional, keyworded arguments
         :return:
         """
-        logger('EditQueue', 'main')
+        LOG.debug("Add a vote for edit queue")
         db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
         rep_reason = None
 
@@ -231,7 +231,8 @@ class EditQueue(QueueABC):
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
         :param db_user: current user
-        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update this!
+        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update
+        this!
         """
         db_review = DBDiscussionSession.query(ReviewEdit).filter_by(
             argument_uid=kwargs.get('argument_uid'),
@@ -296,6 +297,7 @@ class EditQueue(QueueABC):
         Returns all pro and con votes for the given element
 
         :param db_review: current review element
+        :param application_url: The applications URL
         :return:
         """
         db_all_votes = DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid)
@@ -314,26 +316,27 @@ class EditQueue(QueueABC):
         :param db_user: User
         :param uid: Statement.uid
         :param text: New content for statement
-        :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success, 0 otherwise
+        :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success,
+        0 otherwise
         """
         db_statement = DBDiscussionSession.query(Statement).get(uid)
         if not db_statement:
-            logger('review.lib', f'statement {uid} not found (return {Code.DOESNT_EXISTS})')
+            LOG.warning("Statement %s not found (return %s)", uid, Code.DOESNT_EXISTS)
             return Code.DOESNT_EXISTS
 
         # already set an correction for this?
         if self.is_statement_in_edit_queue(uid):  # if we already have an edit, skip this
-            logger('review.lib', f'statement {uid} already got an edit (return {Code.DUPLICATE})')
+            LOG.warning("Statement %s already got an edit (return %s)", uid, Code.DUPLICATE)
             return Code.DUPLICATE
 
         # is text different?
         db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
         if len(text) > 0 and db_tv.content.lower().strip() != text.lower().strip():
-            logger('review.lib', f'added review element for {uid} (return {Code.SUCCESS})')
+            LOG.debug("Added review element for %s. (return %s)", uid, Code.SUCCESS)
             DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=uid))
             return Code.SUCCESS
 
-        logger('review.lib', f'no case for {uid} (return {Code.ERROR})')
+        LOG.debug("No case for %s (return %s)", uid, Code.ERROR)
         return Code.ERROR
 
     @staticmethod
@@ -348,7 +351,7 @@ class EditQueue(QueueABC):
         """
         db_statement = DBDiscussionSession.query(Statement).get(uid)
         if not db_statement:
-            logger('review.lib', f'{uid} not found')
+            LOG.debug("ID %s not found while setting up ReviewEditValue", uid)
             return Code.ERROR
 
         db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
@@ -358,10 +361,10 @@ class EditQueue(QueueABC):
                                                                           ReviewEdit.statement_uid == uid).order_by(
                 ReviewEdit.uid.desc()).first()
             DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, uid, 'statement', text))
-            logger('review.lib', f'{uid} - \'{text}\' accepted')
+            LOG.debug("%s - '%s' accepted", uid, text)
             return Code.SUCCESS
 
-        logger('review.lib', f'{uid} - \'{text}\' malicious edit')
+        LOG.debug("%s - '%s' malicious edit", uid, text)
         return Code.ERROR
 
     @staticmethod
@@ -374,7 +377,8 @@ class EditQueue(QueueABC):
         :return: Boolean
         """
         db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
-                                                                             ReviewEdit.is_executed == is_executed).count()
+                                                                             ReviewEdit.is_executed == is_executed) \
+            .count()
         return db_already_edit_count > 0
 
     @staticmethod

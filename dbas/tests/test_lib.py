@@ -2,10 +2,11 @@ from datetime import date
 
 import transaction
 
-from dbas import lib, get_enabled_issues_as_query
+from dbas import lib
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, Issue, Premise
 from dbas.helper.url import UrlManager
+from dbas.lib import get_enabled_issues_as_query
 from dbas.lib import get_enabled_statement_as_query, get_enabled_arguments_as_query, get_enabled_premises_as_query, \
     get_visible_issues_for_user_as_query
 from dbas.tests.utils import TestCaseWithConfig

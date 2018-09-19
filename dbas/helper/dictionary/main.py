@@ -4,26 +4,30 @@ Provides helping function for dictionaries.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import arrow
 import datetime
+import logging
 import os
 import random
+
+import arrow
 from pyramid.registry import Registry
 
+from dbas.auth.login import PW_FOR_LDAP_USER
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Language, Group, Issue, Argument
 from dbas.handler import user
 from dbas.handler.notification import count_of_new_notifications, get_box_for
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode, \
     nick_of_anonymous_user, get_global_url, usage_of_matomo, usage_of_modern_bubbles
-from dbas.logger import logger
 from dbas.review.queue.lib import get_count_of_all, get_complete_review_count
 from dbas.review.reputation import get_reputation_of, limit_to_open_issues
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+LOG = logging.getLogger(__name__)
 
-class DictionaryHelper(object):
+
+class DictionaryHelper():
     """
     General function for dictionaries as well as the extras-dict()
     """
@@ -50,7 +54,7 @@ class DictionaryHelper(object):
         :return: dictionary
         """
         return_dict = dict()
-        logger('DictionaryHelper', 'count: ' + str(count))
+        LOG.debug("Count: %s", count)
         items = list(ordered_dict.items())
 
         if count < 0:
@@ -104,9 +108,9 @@ class DictionaryHelper(object):
         :param ongoing_discussion: Boolean
         :return: dict()
         """
-        logger('DictionaryHelper', 'def')
+        LOG.debug("Entering prepare_extras_dict")
 
-        is_user_from_ldap = None
+        is_user_from_ldap = False
         is_logged_in = False
         nickname = None
         public_nickname = None
@@ -116,7 +120,7 @@ class DictionaryHelper(object):
         is_special = False
 
         if db_user:
-            is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP')
+            is_user_from_ldap = db_user.validate_password(PW_FOR_LDAP_USER)
             is_logged_in = True
             nickname = db_user.nickname
             public_nickname = db_user.public_nickname
@@ -235,7 +239,7 @@ class DictionaryHelper(object):
             'db_public_nickname': public_nick,
             'db_mail': db_user.email,
             'has_mail': db_user.email is not 'None',
-            'can_change_password': not use_with_ldap and db_user.token is None,
+            'can_change_password': not use_with_ldap and db_user.token in [None, ""],
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
             'edits_done': edits,
@@ -275,7 +279,7 @@ class DictionaryHelper(object):
         :param supportive: supportive
         :return: None
         """
-        logger('DictionaryHelper', 'main')
+        LOG.debug("Entering add_discussion_end_text")
         _tn = Translator(self.discussion_lang)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         gender = db_user.gender if db_user else None
@@ -455,7 +459,7 @@ class DictionaryHelper(object):
         :param extras_dict: current dict()
         :return: dict()
         """
-        logger('DictionaryHelper', 'def')
+        LOG.debug("Entering add_language_options_for_extra_dict")
         lang_is_en = self.system_lang != 'de'
         lang_is_de = self.system_lang == 'de'
         extras_dict.update({
@@ -615,7 +619,8 @@ class DictionaryHelper(object):
             'issue_writable': _tn_sys.get(_.issueWritableDescription)
         }
 
-    def __add_login_button_properties(self, return_dict):
+    @staticmethod
+    def __add_login_button_properties(return_dict):
         """
         Check if oauth client ids are available and updates the dict
 

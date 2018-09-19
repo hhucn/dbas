@@ -1,12 +1,13 @@
+import logging
 import requests
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue
 from dbas.helper.url import UrlManager
-from dbas.logger import logger
 from search.routes import get_statements_with_value_path, get_duplicates_or_reasons_path, \
     get_edits_path, get_suggestions_path
 
+LOG = logging.getLogger(__name__)
 mechanism = 'elastic'
 
 
@@ -17,7 +18,7 @@ def response_as_dict(query: str) -> dict:
     :param query: path to search at
     :return: return results as a dict
     """
-    logger('ElasticRequester', 'Call {}'.format(query))
+    LOG.debug("Call %s", query)
     return requests.get(query, timeout=1.0).json()
 
 

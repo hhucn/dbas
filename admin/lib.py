@@ -2,13 +2,14 @@
 #
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-import hashlib
-import os
 import time
-from datetime import datetime
 
 import arrow
+import hashlib
+import logging
+import os
 import transaction
+from datetime import datetime
 from pyramid.httpexceptions import exception_response
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 
@@ -17,13 +18,14 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     SeenStatement, SeenArgument, TextVersion, PremiseGroup, Premise, Argument, ClickedArgument, ClickedStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
-    ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate, \
+    ReviewCanceled, RevokedContent, RevokedContentHistory, LastReviewerDuplicate, ReviewDuplicate, \
     RevokedDuplicate, MarkedArgument, MarkedStatement, History, APIToken, StatementOrigins, StatementToIssue
 from dbas.lib import get_text_for_premisegroup_uid, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_profile_picture
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 table_mapper = {
     'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
@@ -64,7 +66,6 @@ table_mapper = {
     'RevokedContent'.lower(): {'table': RevokedContent, 'name': 'RevokedContent'},
     'RevokedContentHistory'.lower(): {'table': RevokedContentHistory, 'name': 'RevokedContentHistory'},
     'RevokedDuplicate'.lower(): {'table': RevokedDuplicate, 'name': 'RevokedDuplicate'},
-    'RSS'.lower(): {'table': RSS, 'name': 'RSS'}
 }
 
 # list of all columns with FK of users/statement table
@@ -83,14 +84,13 @@ def get_overview(page):
     :param page: Name of the overview page
     :return: [[{'name': .., 'content': [{'name': .., 'count': .., 'href': ..}, ..] }], ..]
     """
-    logger('AdminLib', 'main')
+    LOG.debug("main")
     return_list = list()
 
     # all tables for the 'general' group
     general = list()
     general.append(__get_dash_dict('Issue', page + 'Issue'))
     general.append(__get_dash_dict('Language', page + 'Language'))
-    general.append(__get_dash_dict('RSS', page + 'RSS'))
 
     # all tables for the 'users' group
     users = list()
@@ -167,7 +167,7 @@ def get_table_dict(table_name, main_page):
     :param main_page: URL
     :return: Dictionary with head, row, count and has_elements
     """
-    logger('AdminLib', str(table_name))
+    LOG.debug("%s", table_name)
 
     # check for elements
     table = table_mapper[table_name.lower()]['table']
@@ -255,7 +255,7 @@ def get_rows_of(columns, db_elements, main_page):
 
     :param columns: which should be displayed
     :param db_elements: which should be displayed
-    :params main_page: URL
+    :param main_page: URL
     :return: []
     """
     db_languages = DBDiscussionSession.query(Language)
@@ -365,16 +365,16 @@ def update_row(table_name, uids, keys, values):
     try:
         update_dict = __update_row_dict(table, values, keys, _tn)
     except ProgrammingError as e:
-        logger('AdminLib', str(e), error=True)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     try:
         __update_row(table, table_name, uids, update_dict)
     except IntegrityError as e:
-        logger('AdminLib', str(e), error=True)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
     except ProgrammingError as e:
-        logger('AdminLib', str(e), error=True)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     DBDiscussionSession.flush()
@@ -392,7 +392,7 @@ def delete_row(table_name, uids):
     :param _tn: Translator
     :return: Empty string or error message
     """
-    logger('AdminLib', table_name + ' ' + str(uids))
+    LOG.debug("%s %s", table_name, uids)
     table = table_mapper[table_name.lower()]['table']
     try:
         # check if there is a table, where uid is not the PK!
@@ -406,10 +406,10 @@ def delete_row(table_name, uids):
             DBDiscussionSession.query(table).filter_by(uid=uids[0]).delete()
 
     except IntegrityError as e:
-        logger('AdminLib', str(e), error=True)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
     except ProgrammingError as e:
-        logger('AdminLib', str(e), error=True)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     DBDiscussionSession.flush()
@@ -425,7 +425,7 @@ def add_row(table_name, data):
     :param data: Dictionary with data for the update
     :return: Empty string or error message
     """
-    logger('AdminLib', str(data))
+    LOG.debug("%s", data)
 
     table = table_mapper[table_name.lower()]['table']
     try:
@@ -434,7 +434,7 @@ def add_row(table_name, data):
         new_one = table(**data)
         DBDiscussionSession.add(new_one)
     except IntegrityError as e:
-        logger('AdminLib', str(e), error=True)
+        LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
 
     DBDiscussionSession.flush()
@@ -448,7 +448,6 @@ def update_badge():
 
     :return: dict(), string
     """
-    logger('AdminLib', '')
     ret_array = []
     for t in table_mapper:
         ret_array.append({

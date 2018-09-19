@@ -4,10 +4,10 @@ Introducing an graph manager.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import logging
 from cornice import Service
 
 from dbas.handler.language import get_language_from_cookie
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.core import has_keywords, validate
@@ -15,6 +15,7 @@ from dbas.validators.discussion import valid_issue_by_id
 from graph.lib import get_d3_data, get_opinion_data, get_path_of_user
 from graph.partial_graph import get_partial_graph_for_argument, get_partial_graph_for_statement
 
+LOG = logging.getLogger(__name__)
 # =============================================================================
 # SERVICES - Define services for several actions of D-BAS
 # =============================================================================
@@ -36,7 +37,7 @@ partial_graph = Service(name='d3js_partial',
 @complete_graph.post()
 @validate(valid_issue_by_id)
 def get_d3_complete_dump(request):
-    logger('Graph', 'main: ' + str(request.json_body))
+    LOG.debug("Creating a complete d3 dump. %s", request.json_body)
     path = request.json_body.get('path', '')
     db_issue = request.validated['issue']
 
@@ -58,7 +59,7 @@ def get_d3_complete_dump(request):
 @partial_graph.post()
 @validate(valid_issue_by_id, has_keywords(('uid', int), ('is_argument', bool), ('path', str)))
 def get_d3_partial_dump(request):
-    logger('Graph', 'main: ' + str(request.json_body))
+    LOG.debug("Create partial d3 dump. %s", request.json_body)
     path = request.validated['path']
     uid = request.validated['uid']
     is_argument = request.validated['is_argument']
