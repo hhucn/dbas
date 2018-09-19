@@ -1,9 +1,8 @@
 import logging
-from os import environ
-from typing import List, Tuple, Dict, Union, Any
-
 import transaction
+from os import environ
 from sqlalchemy import func
+from typing import List, Tuple, Dict, Any, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
@@ -288,7 +287,7 @@ def set_statement(text: str, db_user: User, is_position: bool, db_issue: Issue) 
     return db_statement, False
 
 
-def __check_duplicate(db_issue: Issue, text: str) -> Union[Statement, None]:
+def __check_duplicate(db_issue: Issue, text: str) -> Optional[Statement]:
     """
     Check if there is already a textversion with the given text. If true the statement2issue relation will be
     checked and set and the duplicate (Statement) returned
@@ -532,7 +531,7 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
 
 def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclusion: Statement, is_supportive,
                                    db_issue: Issue) \
-        -> Tuple[Union[Argument, None], List[int]]:
+        -> Tuple[Optional[Argument], List[int]]:
     """
     Consumes the input to create a new argument
 
@@ -565,7 +564,7 @@ def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclu
 
 
 def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, argument_uid, is_supportive,
-                              db_issue: Issue) -> Union[Argument, None]:
+                              db_issue: Issue) -> Optional[Argument]:
     """
     Connects the given id's to a new argument
 
