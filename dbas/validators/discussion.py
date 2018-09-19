@@ -2,9 +2,8 @@
 Discussion-related validators for statements, arguments, ...
 """
 from os import environ
-from typing import Callable, Set, Union
-
 from pyramid.request import Request
+from typing import Callable, Set, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGroup, StatementToIssue
@@ -79,7 +78,8 @@ def valid_issue_by_slug(request: Request) -> bool:
                 request.validated['issue'] = db_issue
                 return True
 
-        add_error(request, 'Invalid slug \'{}\' for issue'.format(request.validated['slug']), location='path', status_code=404)
+        add_error(request, 'Invalid slug \'{}\' for issue'.format(request.validated['slug']), location='path',
+                  status_code=404)
     return False
 
 
@@ -177,8 +177,9 @@ def valid_position(request):
             add_error(request, 'Queried statement is not a valid position', location='path')
             return False
 
-        db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter(StatementToIssue.statement_uid == position_id,
-                                                                                 StatementToIssue.issue_uid == request.validated['issue'].uid).first()
+        db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter(
+            StatementToIssue.statement_uid == position_id,
+            StatementToIssue.issue_uid == request.validated['issue'].uid).first()
         if not db_statement2issues:
             add_error(request, 'Position does not belong to the queried issue', location='path')
             return False
@@ -494,7 +495,7 @@ def valid_text_values(request):
 # -----------------------------------------------------------------------------
 # Helper functions
 
-def __validate_enabled_entity(request: Request, db_issue: Union[Issue, None], entity, entity_id):
+def __validate_enabled_entity(request: Request, db_issue: Optional[Issue], entity, entity_id):
     """
     Get entity-id from path and query it in the database. Check if it belongs to the queried issue and if it is disabled.
 

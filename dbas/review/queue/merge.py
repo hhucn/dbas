@@ -3,7 +3,7 @@ import logging
 import random
 import transaction
 from beaker.session import Session
-from typing import Union, Tuple
+from typing import Tuple, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerMerge, ReviewMerge, \
@@ -234,7 +234,7 @@ class MergeQueue(QueueABC):
         transaction.commit()
         return True
 
-    def element_in_queue(self, db_user: User, **kwargs) -> Union[None, FlaggedBy]:
+    def element_in_queue(self, db_user: User, **kwargs) -> Optional[FlaggedBy]:
         """
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
