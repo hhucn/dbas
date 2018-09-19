@@ -24,5 +24,4 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       URL: ${URL}
-      CHAMELEON_CACHE: /dbas/dbas/templates/cache
     tmpfs: /tmp
