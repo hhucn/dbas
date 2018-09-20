@@ -4,13 +4,14 @@ Handler for user-accounts
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import arrow
 import logging
 import random
-import transaction
 import uuid
 from datetime import date, timedelta
-from typing import Tuple
+from typing import Tuple, List
+
+import arrow
+import transaction
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
@@ -930,3 +931,13 @@ def delete(db_user: User):
     DBDiscussionSession.query(Message).filter_by(from_author_uid=db_user.uid).delete()
     DBDiscussionSession.query(Message).filter_by(to_author_uid=db_user.uid).delete()
     DBDiscussionSession.query(User).filter_by(uid=db_user.uid).delete()
+
+
+def get_list_of_admins() -> List[User]:
+    """
+    Returns a list of users which a member of the admin group. If this list is empty, D-BAS is misconfigured.
+    :return:
+    """
+    db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
+    db_admins = DBDiscussionSession.query(User).filter_by(group_uid=db_admin_group.uid).all()
+    return db_admins
