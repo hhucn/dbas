@@ -7,7 +7,7 @@ import arrow
 import logging
 import transaction
 from enum import Enum
-from typing import Union
+from typing import Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason, sql_timestamp_pretty_print
@@ -184,7 +184,7 @@ def __collect_points(reputation_history):
     return sum([history.reputations.points for history in reputation_history])
 
 
-def get_reason_by_action(reason: ReputationReasons) -> Union[ReputationReason, None]:
+def get_reason_by_action(reason: ReputationReasons) -> Optional[ReputationReason]:
     """
     Returns the reason string from database by its action. Currently we have the following actions:
      - first_position -> rep_reason_first_position
@@ -254,7 +254,7 @@ def add_reputation_and_check_review_access(db_user: User, reason: ReputationReas
     return broke_limit
 
 
-def add_reputation_and_send_popup(db_user: User, db_rep_reason: Union[None, ReputationReason], main_page: str,
+def add_reputation_and_send_popup(db_user: User, db_rep_reason: Optional[ReputationReason], main_page: str,
                                   translator: Translator) -> bool:
     """
     Adds reputation to a specific user and checks (send info popup) to this user. Returns true if the user now has

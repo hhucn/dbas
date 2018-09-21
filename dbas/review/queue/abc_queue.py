@@ -1,12 +1,10 @@
 # Source interface for the review queues
 
 from abc import ABCMeta, abstractmethod
-from typing import Union, Tuple
-
 from requests import Session
+from typing import Tuple
 
-from dbas.database.discussion_model import User, ReviewDelete, ReviewEdit, ReviewMerge, ReviewOptimization, \
-    ReviewSplit, ReviewDuplicate
+from dbas.database.discussion_model import User, AbstractReviewCase
 from dbas.strings.translator import Translator
 
 
@@ -46,8 +44,7 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def add_vote(self, db_user: User, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge,
-                                                       ReviewOptimization, ReviewSplit], is_okay: bool, main_page: str,
+    def add_vote(self, db_user: User, db_review: AbstractReviewCase, is_okay: bool, main_page: str,
                  translator: Translator, **kwargs):
         """
 
@@ -81,7 +78,7 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def cancel_ballot(self, db_user: User, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
+    def cancel_ballot(self, db_user: User, db_review: AbstractReviewCase):
         """
 
         :param db_user:
@@ -91,7 +88,7 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def revoke_ballot(self, db_user: User, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]):
+    def revoke_ballot(self, db_user: User, db_review: AbstractReviewCase):
         """
 
         :param db_user:
@@ -110,7 +107,7 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_history_table_row(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit], entry, **kwargs):
+    def get_history_table_row(self, db_review: AbstractReviewCase, entry, **kwargs):
         """
 
         :param db_review:
@@ -121,7 +118,7 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_text_of_element(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit]) -> str:
+    def get_text_of_element(self, db_review: AbstractReviewCase) -> str:
         """
 
         :param db_review:
@@ -130,7 +127,8 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_all_votes_for(self, db_review: Union[ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewMerge, ReviewOptimization, ReviewSplit], application_url: str) -> Tuple[list, list]:
+    def get_all_votes_for(self, db_review: AbstractReviewCase,
+                          application_url: str) -> Tuple[list, list]:
         """
 
         :param db_review:

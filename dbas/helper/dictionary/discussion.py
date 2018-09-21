@@ -4,7 +4,7 @@ Provides helping function for dictionaries, which are used in discussions.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
-from typing import Union, List
+from typing import List, Optional
 
 import dbas.handler.history as history_handler
 from dbas.database import DBDiscussionSession
@@ -350,8 +350,8 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_argumentation(self, db_user_argument: Argument, arg_sys_id: Union[int, None],
-                                   attack: Union[Relations, None], history: str, db_user: User) -> dict:
+    def get_dict_for_argumentation(self, db_user_argument: Argument, arg_sys_id: Optional[int],
+                                   attack: Optional[Relations], history: str, db_user: User) -> dict:
         """
         Prepares the discussion dict with all bubbles for the argumentation window.
 
