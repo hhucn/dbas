@@ -1,3 +1,8 @@
+### 1.10.5 (2018-09-21)
+- Fix login flow for LDAP users !591
+- Kick hardcoded admin from notifications !590
+- Add abstract base class for review queues !589
+
 ### 1.10.4 (2018-09-19)
 - Precompile chameleon templates for production !587
 - Remove own logger and use built-in python logger !586 !578

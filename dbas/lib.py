@@ -16,7 +16,7 @@ from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
 from sqlalchemy import func
-from typing import List, Union
+from typing import List, Optional
 from urllib import parse
 from uuid import uuid4
 
@@ -718,7 +718,7 @@ def get_text_for_premisegroup_uid(uid):
     return ' {} '.format(_t.get(_.aand)).join(texts)
 
 
-def get_text_for_statement_uid(uid: int, colored_position=False) -> Union[None, str]:
+def get_text_for_statement_uid(uid: int, colored_position=False) -> Optional[str]:
     """
     Returns text of statement with given uid
 
@@ -747,7 +747,7 @@ def get_text_for_statement_uid(uid: int, colored_position=False) -> Union[None, 
     return sb + content + se
 
 
-def get_text_for_premise(uid: int, colored_position: bool = False) -> Union[None, str]:
+def get_text_for_premise(uid: int, colored_position: bool = False) -> Optional[str]:
     """
     Returns text of premise with given uid
 

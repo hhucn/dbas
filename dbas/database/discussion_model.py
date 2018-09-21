@@ -3,16 +3,16 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import warnings
-from typing import List
-
 import arrow
+import warnings
+from abc import abstractmethod
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
+from typing import List
 
 from dbas.database import DBDiscussionSession, DiscussionBase
 from dbas.strings.keywords import Keywords as _
@@ -1297,7 +1297,34 @@ class Message(DiscussionBase):
         self.read = was_read
 
 
-class ReviewDelete(DiscussionBase):
+class AbstractReviewCase(DiscussionBase):
+    __abstract__ = True  # Needed for SQLAlchemy
+    uid = NotImplemented
+    detector_uid = NotImplemented
+    timestamp = NotImplemented
+
+    @abstractmethod
+    def set_executed(self, is_executed):
+        pass
+
+    @abstractmethod
+    def set_revoked(self, is_revoked):
+        pass
+
+    @abstractmethod
+    def update_timestamp(self):
+        pass
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+
+        if cls.uid is NotImplemented or \
+                cls.detector_uid is NotImplemented or \
+                cls.timestamp is NotImplemented:
+            raise NotImplementedError("Your subclass of AbstractReviewCase did not define all columns")
+
+
+class ReviewDelete(AbstractReviewCase):
     """
     ReviewDelete-table with several columns.
     """
@@ -1360,7 +1387,7 @@ class ReviewDelete(DiscussionBase):
         self.timestamp = get_now()
 
 
-class ReviewEdit(DiscussionBase):
+class ReviewEdit(AbstractReviewCase):
     """
     -table with several columns.
     """
@@ -1450,7 +1477,7 @@ class ReviewEditValue(DiscussionBase):
         self.content = content
 
 
-class ReviewOptimization(DiscussionBase):
+class ReviewOptimization(AbstractReviewCase):
     """
     ReviewOptimization-table with several columns.
     """
@@ -1511,7 +1538,7 @@ class ReviewOptimization(DiscussionBase):
         self.timestamp = get_now()
 
 
-class ReviewDuplicate(DiscussionBase):
+class ReviewDuplicate(AbstractReviewCase):
     """
     ReviewDuplicate-table with several columns.
     """
@@ -1573,7 +1600,7 @@ class ReviewDuplicate(DiscussionBase):
         self.timestamp = get_now()
 
 
-class ReviewMerge(DiscussionBase):
+class ReviewMerge(AbstractReviewCase):
     """
     Review-table with several columns.
     """
@@ -1630,7 +1657,7 @@ class ReviewMerge(DiscussionBase):
         self.timestamp = get_now()
 
 
-class ReviewSplit(DiscussionBase):
+class ReviewSplit(AbstractReviewCase):
     """
     Review-table with several columns.
     """
@@ -1748,7 +1775,28 @@ class ReviewDeleteReason(DiscussionBase):
         self.reason = reason
 
 
-class LastReviewerDelete(DiscussionBase):
+class AbstractLastReviewerCase(DiscussionBase):
+    __abstract__ = True  # Needed for SQLAlchemy
+    uid = NotImplemented
+    reviewer_uid = NotImplemented
+    review_uid = NotImplemented
+    timestamp = NotImplemented
+
+    @abstractmethod
+    def __eq__(self, other):
+        pass
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+
+        if cls.uid is NotImplemented or \
+                cls.review_uid is NotImplemented or \
+                cls.reviewer_uid is NotImplemented or \
+                cls.timestamp is NotImplemented:
+            raise NotImplementedError("Your subclass of AbstractLastReviewerCase did not define all columns")
+
+
+class LastReviewerDelete(AbstractLastReviewerCase):
     """
     LastReviewerDelete-table with several columns.
     """
@@ -1779,7 +1827,7 @@ class LastReviewerDelete(DiscussionBase):
         return self.uid == other.uid
 
 
-class LastReviewerDuplicate(DiscussionBase):
+class LastReviewerDuplicate(AbstractLastReviewerCase):
     """
     LastReviewerDuplicate-table with several columns.
     """
@@ -1810,7 +1858,7 @@ class LastReviewerDuplicate(DiscussionBase):
         return self.uid == other.uid
 
 
-class LastReviewerEdit(DiscussionBase):
+class LastReviewerEdit(AbstractLastReviewerCase):
     """
     LastReviewerEdit-table with several columns.
     """
@@ -1840,7 +1888,7 @@ class LastReviewerEdit(DiscussionBase):
         return self.uid == other.uid
 
 
-class LastReviewerOptimization(DiscussionBase):
+class LastReviewerOptimization(AbstractLastReviewerCase):
     """
     Inits a row in current last reviewer edit table
     """
@@ -1871,7 +1919,7 @@ class LastReviewerOptimization(DiscussionBase):
         return self.uid == other.uid
 
 
-class LastReviewerSplit(DiscussionBase):
+class LastReviewerSplit(AbstractLastReviewerCase):
     """
     Inits a row in current last reviewer split table
     """
@@ -1902,7 +1950,7 @@ class LastReviewerSplit(DiscussionBase):
         return self.uid == other.uid
 
 
-class LastReviewerMerge(DiscussionBase):
+class LastReviewerMerge(AbstractLastReviewerCase):
     """
     Inits a row in current last reviewer merge table
     """
