@@ -412,7 +412,7 @@ def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, s
 
 def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, supportive: bool, db_issue: Issue,
                                 db_user: User, history, mailer):
-    LOG.debug("Entering __receive_urls_of_start_premises")
+    LOG.debug("Entering __set_url_of_start_premises")
 
     # arguments=0: empty input
     # arguments=1: deliver new url

@@ -10,15 +10,13 @@ import dbas.handler.email as email_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Language, Argument, \
     sql_timestamp_pretty_print
-from dbas.handler import user
-from dbas.lib import escape_string, get_profile_picture, nick_of_anonymous_user
+from dbas.handler import user as user_handler
+from dbas.lib import escape_string, get_profile_picture
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, \
     get_text_for_add_argument_message
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
-
-NICK_OF_ADMIN = 'Tobias'
 
 
 def send_users_notification(author, recipient, title, text, ui_locales) -> dict:
@@ -177,7 +175,7 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
                                                 increase_counter=True)
 
     # find admin, because generic mails are being sent by the admin
-    db_admin = DBDiscussionSession.query(User).filter_by(nickname=NICK_OF_ADMIN).first()
+    db_admin = user_handler.get_list_of_admins()[0]
 
     # get topic and content for messages to both authors
     topic1 = _t_root.get(_.statementAdded)
@@ -232,7 +230,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, mailer):
         email_helper.send_mail_due_to_added_text(user_lang, url, db_author, mailer)
 
     # find admin
-    db_admin = DBDiscussionSession.query(User).filter_by(nickname=NICK_OF_ADMIN).first()
+    db_admin = user_handler.get_list_of_admins()[0]
 
     topic = _t_user.get(_.argumentAdded)
     content = get_text_for_add_argument_message(db_author.firstname, user_lang, url, True)
@@ -255,13 +253,7 @@ def send_welcome_notification(user, translator):
     """
     topic = translator.get(_.welcome)
     content = translator.get(_.welcomeMessage)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-    if not db_user:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=NICK_OF_ADMIN).first()
-        if not db_user:
-            db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-            if not db_user:
-                return
+    db_user = user_handler.get_list_of_admins()[0]
     notification = Message(from_author_uid=db_user.uid, to_author_uid=user, topic=topic, content=content, is_inbox=True)
     DBDiscussionSession.add(notification)
     DBDiscussionSession.flush()
@@ -372,7 +364,7 @@ def read_notifications(uids_list, db_user) -> dict:
     :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
-    user.update_last_action(db_user)
+    user_handler.update_last_action(db_user)
 
     for uid in uids_list:
         DBDiscussionSession.query(Message).filter(Message.uid == uid,
@@ -395,7 +387,7 @@ def delete_notifications(uids_list, db_user, ui_locales, application_url) -> dic
     :param application_url: Url of the App
     :return: Dictionary with info and/or error
     """
-    user.update_last_action(db_user)
+    user_handler.update_last_action(db_user)
     _tn = Translator(ui_locales)
 
     for uid in uids_list:
