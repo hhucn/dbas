@@ -16,7 +16,6 @@ from dbas.auth.ldap import verify_ldap_user_data
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group
 from dbas.handler import user
-from dbas.handler.password import get_hashed_password
 from dbas.lib import escape_string, get_user_by_case_insensitive_nickname, \
     get_user_by_case_insensitive_public_nickname
 from dbas.strings.keywords import Keywords as _, Keywords
@@ -94,19 +93,22 @@ def __check_in_local_known_user(db_user: User, password: str, _tn) -> dict:
     :return: dict()
     """
     LOG.debug("user: %s", db_user.nickname)
-    if db_user.validate_password(password):
-        return {'user': db_user}
 
-    if not (db_user.validate_password(PW_FOR_LDAP_USER) or db_user.password is get_hashed_password(
-            PW_FOR_LDAP_USER)):
+    if db_user.validate_password(PW_FOR_LDAP_USER):
+        # is ldap
+        data = verify_ldap_user_data(db_user.nickname, password, _tn)
+        if data['error']:
+            LOG.debug("Invalid password for the ldap user")
+            return {'error': data['error']}
+        else:
+            return {'user': db_user}
+
+    # check no-ldap user
+    elif db_user.validate_password(password):
+        return {'user': db_user}
+    else:
         LOG.debug("Invalid password for the local user")
         return {'error': _tn.get(_.userPasswordNotMatch)}
-
-    data = verify_ldap_user_data(db_user.nickname, password, _tn)
-    if data['error']:
-        return {'error': data['error']}
-
-    return {'user': db_user}
 
 
 def register_user_with_json_data(data, lang, mailer: Mailer):
