@@ -333,7 +333,6 @@ class User(DiscussionBase):
         """
         self.set_group("users")
 
-
     def is_special(self):
         """
         Check, if the user is member of the special group

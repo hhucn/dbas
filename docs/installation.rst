@@ -148,6 +148,17 @@ Those special variables are defined as bellow.
 | MIN_LENGTH_OF_STATEMENT    | The minimal length of any statement, default 10                        |
 +----------------------------+------------------------------------------------------------------------+
 
+Add user as admin
+-----------------
+
+A CLI function is offered to promote a user to an admin (or demote him)
+Usage::
+
+    promote_to_admin <nickname>
+    demote_to_user <nickname>
+
+You can find your username in the settings.
+
 OAuth
 -----
 
