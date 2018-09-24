@@ -3,16 +3,17 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import arrow
 import warnings
 from abc import abstractmethod
+from typing import List
+
+import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
-from typing import List
 
 from dbas.database import DBDiscussionSession, DiscussionBase
 from dbas.strings.keywords import Keywords as _
@@ -207,7 +208,7 @@ class User(DiscussionBase):
         :param surname: String
         :param nickname: String
         :param email: String
-        :param password: String
+        :param password: String (hashed)
         :param gender: String
         :param group_uid: int
         :param token:
@@ -310,6 +311,29 @@ class User(DiscussionBase):
         """
         return DBDiscussionSession.query(Group).filter_by(name='admins').first().uid == self.group_uid
 
+    def set_group(self, group_name: str):
+        """
+        Sets the group of a user based of the name for the group.
+        :param group_name:
+        :return:
+        """
+        self.groups = DBDiscussionSession.query(Group).filter_by(name=group_name).one()
+
+    def promote_to_admin(self):
+        """
+        Promotes the user to an admin. WOW
+        :return:
+        """
+        self.set_group("admins")
+
+    def demote_to_user(self):
+        """
+        Demotes the user to a regular user.
+        :return:
+        """
+        self.set_group("users")
+
+
     def is_special(self):
         """
         Check, if the user is member of the special group
@@ -334,6 +358,10 @@ class User(DiscussionBase):
         :return: True, if the user is member of the admin group
         """
         return DBDiscussionSession.query(Settings).filter_by(author_uid=self.uid).first()
+
+    @staticmethod
+    def by_nickname(nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
+        return DBDiscussionSession.query(User).filter_by(nickname=nickname).one()
 
 
 class Settings(DiscussionBase):
