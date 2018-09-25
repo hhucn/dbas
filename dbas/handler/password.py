@@ -6,8 +6,9 @@ Class for handling passwords.
 
 import logging
 import random
+
+import bcrypt
 import transaction
-from cryptacular.bcrypt import BCRYPTPasswordManager
 from pyramid_mailer import Mailer
 from sqlalchemy import func
 
@@ -46,14 +47,15 @@ def get_rnd_passwd(pw_len: int = 10) -> str:
     return pwstring
 
 
-def get_hashed_password(password):
+def get_hashed_password(password: str):
     """
     Returns hashed password
 
     :param password: String
     :return: String
     """
-    return BCRYPTPasswordManager().encode(password)
+    # hashpw returns bytes. they have to be decoded in order to be stored as 'text' in the db
+    return bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()).decode("utf-8")
 
 
 def request_password(email: str, mailer: Mailer, _tn: Translator):
