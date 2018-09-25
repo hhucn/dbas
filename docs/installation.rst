@@ -157,6 +157,11 @@ Usage::
     promote_to_admin <nickname>
     demote_to_user <nickname>
 
+If you are in a docker environment, don't forget to call this command inside the
+containers::
+
+    docker-compose exec web promote_to_admin <nickname>
+
 You can find your username in the settings.
 
 OAuth
