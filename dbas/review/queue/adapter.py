@@ -1,5 +1,5 @@
 from beaker.session import Session
-from typing import Union, Tuple, Optional
+from typing import Tuple, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, AbstractReviewCase
@@ -7,13 +7,8 @@ from dbas.lib import get_profile_picture
 from dbas.review import FlaggedBy
 from dbas.review.mapper import get_review_model_by_key, get_last_reviewer_by_key, get_title_by_key, get_queue_by_key
 from dbas.review.queue import review_queues, key_ongoing, key_history
-from dbas.review.queue.delete import DeleteQueue
-from dbas.review.queue.duplicate import DuplicateQueue
-from dbas.review.queue.edit import EditQueue
+from dbas.review.queue.abc_queue import QueueABC
 from dbas.review.queue.lib import get_review_count_for
-from dbas.review.queue.merge import MergeQueue
-from dbas.review.queue.optimization import OptimizationQueue
-from dbas.review.queue.split import SplitQueue
 from dbas.review.reputation import get_reputation_of, reputation_icons, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
@@ -26,7 +21,7 @@ class QueueAdapter():
     """
 
     def __init__(self,
-                 queue: Union[DeleteQueue, DuplicateQueue, EditQueue, MergeQueue, OptimizationQueue, SplitQueue] = None,
+                 queue: QueueABC = None,
                  db_user: User = None,
                  application_url: str = '',
                  translator: Translator = '',
@@ -119,7 +114,8 @@ class QueueAdapter():
         """
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
-        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update this!
+        :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update
+        this!
         :return:
         """
 
