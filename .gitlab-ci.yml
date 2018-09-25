@@ -84,7 +84,7 @@ unit:
   artifacts:
     paths:
       - coverage.xml
-    expire_in: 10 mins
+    expire_in: 1 hrs
 
 sonar:
   image: hhucn/sonar-scanner

@@ -653,11 +653,7 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
             LOG.debug("Old password is wrong")
             message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
         else:
-            hashed_pw = password_handler.get_hashed_password(new_pw)
-
-            # set the hashed one
-            user.password = hashed_pw
-            DBDiscussionSession.add(user)
+            user.change_password(new_pw)
             transaction.commit()
 
             LOG.debug("Password was changed")

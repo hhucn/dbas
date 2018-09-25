@@ -26,7 +26,6 @@ requires = [
     'zope.sqlalchemy',
     'docutils',
     'WebTest',
-    'cryptacular',
     'validate_email',
     'splinter',
     'lingua',
