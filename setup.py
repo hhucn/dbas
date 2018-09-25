@@ -65,5 +65,7 @@ setup(name='dbas',
       init_empty_sql = dbas.database.initializedb:blank_file
       init_drop_sql = dbas.database.initializedb:drop_it
       init_dummy_votes = dbas.database.initializedb:init_dummy_votes
+      promote_to_admin = dbas.console_scripts:promote_user
+      demote_to_user = dbas.console_scripts:demote_user
       """,
       )
