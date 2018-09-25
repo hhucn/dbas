@@ -5,7 +5,7 @@ D-BAS database Model
 """
 import warnings
 from abc import abstractmethod
-from typing import List
+from typing import List, Set
 
 import arrow
 import bcrypt
@@ -554,6 +554,10 @@ class Statement(DiscussionBase):
     @hybrid_property
     def textversions(self):
         return self.get_textversion()
+
+    @hybrid_property
+    def issues(self) -> Set[Issue]:
+        return set(DBDiscussionSession.query(Issue).join(Premise).join(Statement).filter(Statement.uid == self.uid))
 
     @hybrid_property
     def issue_uid(self):
