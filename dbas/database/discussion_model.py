@@ -3,16 +3,17 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import arrow
 import warnings
 from abc import abstractmethod
-from cryptacular.bcrypt import BCRYPTPasswordManager
+from typing import List
+
+import arrow
+import bcrypt
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
-from typing import List
 
 from dbas.database import DBDiscussionSession, DiscussionBase
 from dbas.strings.keywords import Keywords as _
@@ -232,15 +233,23 @@ class User(DiscussionBase):
     def __str__(self):
         return self.public_nickname
 
-    def validate_password(self, password):
+    def validate_password(self, password: str) -> bool:
         """
         Validates given password with against the saved one
 
         :param password: String
         :return: Boolean
         """
-        manager = BCRYPTPasswordManager()
-        return manager.check(self.password, password)
+        return bcrypt.checkpw(password.encode('utf8'), self.password.encode('utf8'))
+
+    def change_password(self, new_password: str):
+        """
+        Sets a new password for a user.
+
+        :param new_password: The new *unhashed* password for the user
+        :return: Nothing
+        """
+        self.password = bcrypt.hashpw(new_password.encode('utf8'), bcrypt.gensalt()).decode('utf-8')
 
     def update_last_login(self):
         """

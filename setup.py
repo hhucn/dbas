@@ -1,6 +1,7 @@
 import os
 
 from setuptools import setup, find_packages
+
 from dbas.views.helper import version
 
 # @author Tobias Krauthoff
@@ -25,7 +26,6 @@ requires = [
     'zope.sqlalchemy',
     'docutils',
     'WebTest',
-    'cryptacular',
     'validate_email',
     'splinter',
     'lingua',
