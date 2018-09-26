@@ -19,6 +19,9 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       URL: ${URL}
+      DBAS_PROTOCOL: http
+      SEARCH_NAME: search
+      SEARCH_PORT: 5000
     # env_file:  # Optional if you want to change passwords
     #  - production.env
     tmpfs: /tmp
