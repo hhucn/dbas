@@ -73,6 +73,7 @@ Thanks to all former contributors! In order of appearance:
 
 ## License
 
-Copyright © 2016 - 2018 hhucn
+Copyright (c) 2016 - 2018 Tobias Krauthoff, Christian Meter  
+Copyright (c) 2018 hhucn
 
 Distributed under the [MIT License](LICENSE).

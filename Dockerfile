@@ -1,4 +1,4 @@
-FROM python:3.6.4-slim-stretch
+FROM python:3.7-slim
 
 ENV locs /etc/locale.gen
 ENV TEMPLATE_FOLDER /dbas/dbas/templates/
