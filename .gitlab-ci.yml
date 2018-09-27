@@ -21,10 +21,14 @@ stages:
     DB_PW: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
 
     # for search
-    DB_NAME: discussion
-    SEARCH_PORT: 5000
-    DBAS_PROTOCOL: http
-    SEARCH_NAME: search
+    APPLICATION_HOST: web
+    APPLICATION_PORT: 4284
+    APPLICATION_PROTOCOL: http
+    DATABASE_NAME: discussion
+    DATABASE_PASSWORD: ${DB_PW}
+    DATABASE_HOST: ${DB_HOST}
+    DATABASE_PORT: ${DB_PORT}
+    DATABASE_USER: ${DB_USER}
 
     AUTHN_SECRET: "89#s3cr3t_15"
     URL: "https://dbas.cs.uni-duesseldorf.de"
