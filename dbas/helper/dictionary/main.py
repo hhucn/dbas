@@ -239,7 +239,7 @@ class DictionaryHelper():
             'db_public_nickname': public_nick,
             'db_mail': db_user.email,
             'has_mail': db_user.email is not 'None',
-            'can_change_password': not use_with_ldap and db_user.token in [None, ""],
+            'can_change_password': not use_with_ldap and db_user.oauth_provider is None,
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
             'edits_done': edits,
