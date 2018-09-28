@@ -39,14 +39,6 @@ build_test_images:
     - docker tag $CI_REGISTRY_IMAGE/db $CI_REGISTRY_IMAGE/db:testing
     - docker push $CI_REGISTRY_IMAGE/db:testing
 
-build_frontend_test_image:
-  stage: build
-  script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - cd frontendtest
-    - docker build -t $CI_REGISTRY_IMAGE/frontendtest --pull .
-    - docker push $CI_REGISTRY_IMAGE/frontendtest
-
 flake8:
   stage: test
   script:
