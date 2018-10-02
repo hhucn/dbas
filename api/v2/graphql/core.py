@@ -144,10 +144,15 @@ class IssueGraph(SQLAlchemyObjectType):
         return resolve_field_query(kwargs, info, StatementGraph)
 
     def resolve_positions(self, info, **kwargs):
-        return resolve_list_query({**kwargs, "issue_uid": self.uid, "is_position": True}, info, StatementGraph)
+        return DBDiscussionSession.query(Statement).join(Premise).filter(Premise.issue_uid == self.uid,
+                                                                         Premise.is_disabled == False,
+                                                                         Statement.is_position == True).filter_by(
+            **kwargs)
 
     def resolve_statements(self, info, **kwargs):
-        return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, StatementGraph)
+        return DBDiscussionSession.query(Statement).join(Premise).filter(Premise.issue_uid == self.uid,
+                                                                         Premise.is_disabled == False).filter_by(
+            **kwargs)
 
     def resolve_arguments(self, info, **kwargs):
         return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, ArgumentGraph)
