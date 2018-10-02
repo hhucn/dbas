@@ -1,9 +1,11 @@
 import logging
+
 import requests
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue
 from dbas.helper.url import UrlManager
+from dbas.strings.fuzzy_modes import FuzzyMode
 from search.routes import get_statements_with_value_path, get_duplicates_or_reasons_path, \
     get_edits_path, get_suggestions_path
 
@@ -104,16 +106,16 @@ def elastic_search(db_issue: Issue, search_value: str, mode: int, statement_uid:
     """
     return_dict = {'distance_name': mechanism}
 
-    if mode in [0, 2]:  # start statement / premise
+    if mode in [FuzzyMode.START_STATEMENT.value, FuzzyMode.START_PREMISE.value]:  # start statement / premise
         return_dict['values'] = get_suggestions(db_issue.uid, mode == 0, search_value)
 
-    elif mode == 1:  # edit statement popup
+    elif mode in [FuzzyMode.EDIT_STATEMENT.value]:  # edit statement popup
         return_dict['values'] = get_edits(db_issue.uid, statement_uid, search_value)
 
-    elif mode in [3, 4]:  # adding reasons / duplicates
+    elif mode in [FuzzyMode.ADD_REASON.value, FuzzyMode.FIND_DUPLICATE.value]:  # adding reasons / duplicates
         return_dict['values'] = get_duplicates_or_reasons(db_issue.uid, statement_uid, search_value)
 
-    elif mode in [8, 9]:  # search everything
+    elif mode in [FuzzyMode.FIND_MERGESPLIT.value, FuzzyMode.FIND_STATEMENT.value]:  # search everything
         return_dict['values'] = get_statements_with_value(db_issue.uid, search_value)
 
     return return_dict
