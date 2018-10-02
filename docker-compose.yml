@@ -24,4 +24,7 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       URL: ${URL}
+      SEARCH_NAME: search
+      SEARCH_PORT: 5000
+      DBAS_PROTOCOL: http
     tmpfs: /tmp
