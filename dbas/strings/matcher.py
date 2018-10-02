@@ -4,12 +4,12 @@ Provides methods for comparing strings.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from collections import OrderedDict
-from itertools import islice
-
 import difflib
 import logging
 import re
+from collections import OrderedDict
+from itertools import islice
+
 from Levenshtein import distance
 from sqlalchemy import func
 
@@ -17,6 +17,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
 from dbas.helper.url import UrlManager
 from dbas.lib import get_public_profile_picture, nick_of_anonymous_user, get_enabled_statement_as_query
+from dbas.strings.fuzzy_modes import FuzzyMode
 from search.requester import elastic_search
 
 LOG = logging.getLogger(__name__)
@@ -62,19 +63,19 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
 def __levensthein_search(db_user: User, db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
     return_dict = {'distance_name': mechanism}
 
-    if mode in [0, 2]:  # start statement / premise
+    if mode in [FuzzyMode.START_STATEMENT.value, FuzzyMode.START_PREMISE.value]:  # start statement / premise
         return_dict['values'] = get_suggestions_for_positions(search_value, db_issue.uid, mode == 0)
 
-    elif mode == 1:  # edit statement popup
+    elif mode in [FuzzyMode.EDIT_STATEMENT.value]:  # edit statement popup
         return_dict['values'] = get_strings_for_edits(search_value, statement_uid)
 
-    elif mode in [3, 4]:  # adding reasons / duplicates
+    elif mode in [FuzzyMode.ADD_REASON.value, FuzzyMode.FIND_DUPLICATE.value]:  # adding reasons / duplicates
         return_dict['values'] = get_strings_for_duplicates_or_reasons(search_value, db_issue.uid, statement_uid)
 
-    elif mode == 5:  # getting public nicknames
+    elif mode in [FuzzyMode.FIND_USER.value]:  # getting public nicknames
         return_dict['values'] = get_strings_for_public_nickname(search_value, db_user.global_nickname)
 
-    elif mode in [8, 9]:  # search everything
+    elif mode in [FuzzyMode.FIND_MERGESPLIT.value, FuzzyMode.FIND_STATEMENT.value]:  # search everything
         return_dict['values'] = get_all_statements_with_value(search_value, db_issue.uid)
 
     return return_dict
