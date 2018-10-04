@@ -106,16 +106,16 @@ def elastic_search(db_issue: Issue, search_value: str, mode: int, statement_uid:
     """
     return_dict = {'distance_name': mechanism}
 
-    if mode in [FuzzyMode.START_STATEMENT.value, FuzzyMode.START_PREMISE.value]:  # start statement / premise
+    if mode in [FuzzyMode.START_STATEMENT, FuzzyMode.START_PREMISE]:  # start statement / premise
         return_dict['values'] = get_suggestions(db_issue.uid, mode == 0, search_value)
 
-    elif mode in [FuzzyMode.EDIT_STATEMENT.value]:  # edit statement popup
+    elif mode == FuzzyMode.EDIT_STATEMENT:  # edit statement popup
         return_dict['values'] = get_edits(db_issue.uid, statement_uid, search_value)
 
-    elif mode in [FuzzyMode.ADD_REASON.value, FuzzyMode.FIND_DUPLICATE.value]:  # adding reasons / duplicates
+    elif mode in [FuzzyMode.ADD_REASON, FuzzyMode.FIND_DUPLICATE]:  # adding reasons / duplicates
         return_dict['values'] = get_duplicates_or_reasons(db_issue.uid, statement_uid, search_value)
 
-    elif mode in [FuzzyMode.FIND_MERGESPLIT.value, FuzzyMode.FIND_STATEMENT.value]:  # search everything
+    elif mode in [FuzzyMode.FIND_MERGESPLIT, FuzzyMode.FIND_STATEMENT]:  # search everything
         return_dict['values'] = get_statements_with_value(db_issue.uid, search_value)
 
     return return_dict

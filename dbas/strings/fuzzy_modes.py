@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class FuzzyMode(Enum):
+class FuzzyMode(IntEnum):
     START_STATEMENT = 0
     EDIT_STATEMENT = 1
     START_PREMISE = 2
