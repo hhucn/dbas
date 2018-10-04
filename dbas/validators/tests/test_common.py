@@ -75,7 +75,7 @@ class TestFuzzySearch(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
     def test_valid_modes_returns_true(self):
-        for mode in [case.value for case in FuzzyMode]:
+        for mode in list(FuzzyMode):
             request = construct_dummy_request({'type': mode})
             response = valid_fuzzy_search_mode(request)
             self.assertTrue(response)

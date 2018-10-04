@@ -77,7 +77,7 @@ def valid_fuzzy_search_mode(request):
     :return:
     """
     mode = request.json_body['type']
-    if mode in [case.value for case in FuzzyMode]:
+    if mode in list(FuzzyMode):
         request.validated['type'] = mode
         return True
     else:
