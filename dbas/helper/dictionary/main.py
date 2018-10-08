@@ -385,7 +385,7 @@ class DictionaryHelper():
         :return: None
         """
         discussion_dict['mode'] = 'dont_know'
-        endtext = _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
+        endtext = _tn.get(_.discussionEndLinkTextRestartDiscussion)
 
         if len(current_premise) != 0:
             if gender == 'f':
@@ -440,7 +440,7 @@ class DictionaryHelper():
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
             mid_text += _tn.get(_.firstPremiseText2)
         else:
-            endtext = _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
+            endtext = _tn.get(_.discussionEndLinkTextRestartDiscussion)
             mid_text += _tn.get(_.discussionEnd) + ' ' + endtext
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
