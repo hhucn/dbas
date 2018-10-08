@@ -576,6 +576,7 @@ def __http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
     )
 
 
+@zinit.post(require_csrf=False)
 @positions.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body)
 def add_position_with_premise(request):
