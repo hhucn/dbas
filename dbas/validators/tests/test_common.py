@@ -4,6 +4,7 @@ import hypothesis.strategies as st
 from hypothesis import given
 from pyramid.httpexceptions import HTTPFound
 
+from dbas.strings.fuzzy_modes import FuzzyMode
 from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 from dbas.validators.common import valid_lang_cookie_fallback, valid_language, check_authentication, \
     valid_fuzzy_search_mode
@@ -74,7 +75,7 @@ class TestFuzzySearch(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
     def test_valid_modes_returns_true(self):
-        for mode in [0, 1, 2, 3, 4, 8, 9]:
+        for mode in list(FuzzyMode):
             request = construct_dummy_request({'type': mode})
             response = valid_fuzzy_search_mode(request)
             self.assertTrue(response)

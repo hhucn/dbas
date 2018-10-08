@@ -9,6 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Language, User
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.user import update_last_action
+from dbas.strings.fuzzy_modes import FuzzyMode
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.lib import add_error, escape_if_string
@@ -76,7 +77,7 @@ def valid_fuzzy_search_mode(request):
     :return:
     """
     mode = request.json_body['type']
-    if mode in [0, 1, 2, 3, 4, 8, 9]:
+    if mode in list(FuzzyMode):
         request.validated['type'] = mode
         return True
     else:
