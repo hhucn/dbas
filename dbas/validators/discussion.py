@@ -89,7 +89,6 @@ def __check_for_empty_fields(title: str, info: str, long_info: str, request: dic
     This method checks if there is a empty field in the data of the new issue.
     It also creates a error-message with the empty fields.
 
-
     :param title: The title of the new issue
     :param info: The info of the new issue
     :param long_info: The long info of the new issue
@@ -97,7 +96,7 @@ def __check_for_empty_fields(title: str, info: str, long_info: str, request: dic
     :return: a dict with a boolean which tells if there is any empty field and a equivalent error-message.
     """
     _tn = Translator(get_language_from_cookie(request))
-    error = _tn.get(_.newIssueErrorMsg) + ' '
+    error = _tn.get(_.newIssueErrorMsg) + ': '
 
     title_is_empty = title.strip() is ''
     info_is_empty = info.strip() is ''
@@ -121,7 +120,6 @@ def __check_for_duplicated_field(title: str, info: str, long_info: str, request:
     This method checks if there is a duplication in any field of the new issue.
     It also creates a error-message with the fields which are containing the duplication.
 
-
     :param title: The title of the new issue
     :param info: The info of the new issue
     :param long_info: The long info of the new issue
@@ -129,7 +127,7 @@ def __check_for_duplicated_field(title: str, info: str, long_info: str, request:
     :return: a dict with a boolean which tells if there is any duplicated field and a equivalent error-message.
     """
     _tn = Translator(get_language_from_cookie(request))
-    error = _tn.get(_.duplicate) + ' '
+    error = _tn.get(_.duplicate) + ': '
 
     title_is_duplicate = DBDiscussionSession.query(Issue).filter_by(title=title).all()
     info_is_duplicate = DBDiscussionSession.query(Issue).filter_by(info=info).all()
@@ -165,7 +163,7 @@ def valid_new_issue(request):
 
     new_issue = __check_for_empty_fields(title=title, info=info, long_info=long_info, request=request)
     if new_issue.get('contains_empty_field'):
-        add_error(request, 'There is a empty field', new_issue.get('error'))
+        add_error(request, 'There is an empty field', new_issue.get('error'))
         return False
     new_issue = __check_for_duplicated_field(title=title, info=info, long_info=long_info, request=request)
     if new_issue.get('contains_duplicated_field'):
