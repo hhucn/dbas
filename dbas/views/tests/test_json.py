@@ -23,7 +23,7 @@ class AjaxTest(unittest.TestCase):
         request = testing.DummyRequest(
             json_body={
                 'value': 'cat',
-                'type': self.fuzzy_mode.START_STATEMENT.value,
+                'type': self.fuzzy_mode.START_STATEMENT,
                 'statement_uid': 0,
                 'issue': 2
             })
@@ -35,7 +35,7 @@ class AjaxTest(unittest.TestCase):
         request = testing.DummyRequest(
             json_body={
                 'value': 'cat',
-                'type': self.fuzzy_mode.EDIT_STATEMENT.value,
+                'type': self.fuzzy_mode.EDIT_STATEMENT,
                 'statement_uid': 1,
                 'issue': 2
             })
@@ -47,7 +47,7 @@ class AjaxTest(unittest.TestCase):
         request = testing.DummyRequest(
             json_body={
                 'value': 'cat',
-                'type': self.fuzzy_mode.START_PREMISE.value,
+                'type': self.fuzzy_mode.START_PREMISE,
                 'statement_uid': 0,
                 'issue': 2
             })
@@ -59,7 +59,7 @@ class AjaxTest(unittest.TestCase):
         request = testing.DummyRequest(
             json_body={
                 'value': 'cat',
-                'type': self.fuzzy_mode.ADD_REASON.value,
+                'type': self.fuzzy_mode.ADD_REASON,
                 'statement_uid': 0,
                 'issue': 2
             })
@@ -71,7 +71,7 @@ class AjaxTest(unittest.TestCase):
         request = testing.DummyRequest(
             json_body={
                 'value': 'cat',
-                'type': self.fuzzy_mode.FIND_DUPLICATE.value,
+                'type': self.fuzzy_mode.FIND_DUPLICATE,
                 'statement_uid': 0,
                 'issue': 2
             })
@@ -83,7 +83,7 @@ class AjaxTest(unittest.TestCase):
         request = testing.DummyRequest(
             json_body={
                 'value': 'cat',
-                'type': self.fuzzy_mode.FIND_USER.value,
+                'type': self.fuzzy_mode.FIND_USER,
                 'statement_uid': 0,
                 'issue': 2
             })
@@ -95,7 +95,7 @@ class AjaxTest(unittest.TestCase):
         request = testing.DummyRequest(
             json_body={
                 'value': 'cat',
-                'type': self.fuzzy_mode.FIND_MERGESPLIT.value,
+                'type': self.fuzzy_mode.FIND_MERGESPLIT,
                 'statement_uid': 0,
                 'issue': 2
             })
@@ -107,7 +107,7 @@ class AjaxTest(unittest.TestCase):
         request = testing.DummyRequest(
             json_body={
                 'value': 'cat',
-                'type': self.fuzzy_mode.FIND_STATEMENT.value,
+                'type': self.fuzzy_mode.FIND_STATEMENT,
                 'statement_uid': 0,
                 'issue': 2
             })

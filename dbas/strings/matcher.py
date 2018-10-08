@@ -63,19 +63,19 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
 def __levensthein_search(db_user: User, db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
     return_dict = {'distance_name': mechanism}
 
-    if mode in [FuzzyMode.START_STATEMENT.value, FuzzyMode.START_PREMISE.value]:  # start statement / premise
+    if mode in [FuzzyMode.START_STATEMENT, FuzzyMode.START_PREMISE]:  # start statement / premise
         return_dict['values'] = get_suggestions_for_positions(search_value, db_issue.uid, mode == 0)
 
-    elif mode in [FuzzyMode.EDIT_STATEMENT.value]:  # edit statement popup
+    elif mode == FuzzyMode.EDIT_STATEMENT:  # edit statement popup
         return_dict['values'] = get_strings_for_edits(search_value, statement_uid)
 
-    elif mode in [FuzzyMode.ADD_REASON.value, FuzzyMode.FIND_DUPLICATE.value]:  # adding reasons / duplicates
+    elif mode in [FuzzyMode.ADD_REASON, FuzzyMode.FIND_DUPLICATE]:  # adding reasons / duplicates
         return_dict['values'] = get_strings_for_duplicates_or_reasons(search_value, db_issue.uid, statement_uid)
 
-    elif mode in [FuzzyMode.FIND_USER.value]:  # getting public nicknames
+    elif mode == FuzzyMode.FIND_USER:  # getting public nicknames
         return_dict['values'] = get_strings_for_public_nickname(search_value, db_user.global_nickname)
 
-    elif mode in [FuzzyMode.FIND_MERGESPLIT.value, FuzzyMode.FIND_STATEMENT.value]:  # search everything
+    elif mode in [FuzzyMode.FIND_MERGESPLIT, FuzzyMode.FIND_STATEMENT]:  # search everything
         return_dict['values'] = get_all_statements_with_value(search_value, db_issue.uid)
 
     return return_dict
