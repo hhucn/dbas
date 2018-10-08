@@ -467,6 +467,17 @@ class TestPosition(TestCaseWithConfig):
         response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 401)
 
+    def test_same_position_and_reason_returns_error(self):
+        request = create_request_with_token_header(
+            json_body={
+                'position': 'same-position-and-reason',
+                'reason': 'same-position-and-reason'
+            }
+        )
+
+        response: Response = apiviews.add_position_with_premise(request)
+        self.assertEqual(response.status_code, 400)
+
 
 class TestUser(TestCaseWithConfig):
     test_body = {
