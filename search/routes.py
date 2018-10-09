@@ -54,3 +54,15 @@ def get_suggestions_path(issue_uid: int, position: bool, search_value: str = '')
     """
     suffix = '/suggestions?id={}&position={}&search={}'.format(issue_uid, position, search_value)
     return ROUTE_API + suffix
+
+
+def get_statements_path(value: str):
+    """
+    This is the route to query all similar statements in the search index of version 2.
+
+    :param value: The string to be searched for
+    :return: The regarding path which is required by search
+    """
+
+    suffix = '/v2/statement?q={}'.format(value)
+    return ROUTE_API + suffix

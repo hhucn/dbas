@@ -7,7 +7,7 @@ from dbas.database.discussion_model import Issue
 from dbas.helper.url import UrlManager
 from dbas.strings.fuzzy_modes import FuzzyMode
 from search.routes import get_statements_with_value_path, get_duplicates_or_reasons_path, \
-    get_edits_path, get_suggestions_path
+    get_edits_path, get_suggestions_path, get_statements_path
 
 LOG = logging.getLogger(__name__)
 mechanism = 'elastic'
@@ -119,3 +119,14 @@ def elastic_search(db_issue: Issue, search_value: str, mode: int, statement_uid:
         return_dict['values'] = get_statements_with_value(db_issue.uid, search_value)
 
     return return_dict
+
+
+def get_statements_with_similarity_to(value: str):
+    """
+    This method queries all statements which have a similarity to the search value.
+
+    :param value: The search value to be searched for
+    :return: A dictionary with the related statements and all necessary information
+    """
+    query = get_statements_path(value=value)
+    return response_as_dict(query=query)
