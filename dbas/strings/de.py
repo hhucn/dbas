@@ -547,7 +547,7 @@ de_lang = {
     _.priv_access_history_queue: 'Zugriff auf alle früheren Entscheidungen',
     _.priv_access_ongoing_queue: 'Zugriff auf alle aktuellen Entscheidungen',
     _.privacy_policy: 'Datenschutzerklärung',
-    _.premiseAndConclusionAreEqual: 'Begründung und Behauptung sind gleich.',
+    _.premiseAndConclusionAreEqual: 'Begründung und Behauptung dürfen nicht identisch sein',
     _.publications: 'Veröffentlichungen',
     _.queueDelete: 'Löschen',
     _.queueOptimization: 'Optimieren',

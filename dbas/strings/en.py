@@ -545,7 +545,7 @@ en_lang = {
     _.priv_access_history_queue: 'Access to all reviews of the past',
     _.priv_access_ongoing_queue: 'Access to all ongoing reviews',
     _.privacy_policy: 'Privacy Policy',
-    _.premiseAndConclusionAreEqual: 'Premise and conclusion are equal',
+    _.premiseAndConclusionAreEqual: 'Premise and conclusion may not be identical',
     _.publications: 'Publications',
     _.queueDelete: 'Deletes',
     _.queueOptimization: 'Optimizations',
