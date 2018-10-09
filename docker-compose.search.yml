@@ -2,6 +2,7 @@ version: "3.2"
 services:
   search:
     image: hhucn/dbas-search:develop
+    restart: on-failure
     ports:
       - "9200:9200"
       - "5000:5000"
