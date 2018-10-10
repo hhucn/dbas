@@ -17,7 +17,7 @@ class TestRequester(TestCaseWithConfig):
 
     def test_request_as_dict_is_not_empty(self):
         result = response_as_dict(ROUTE_API + '/suggestions?id=2')
-        self.assertNotEqual(0, len(result.get('result')))
+        self.assertNotEqual(0, len(result.get('results')))
 
     def test_suggestions_not_empty_1(self):
         results = get_suggestions(2, True)

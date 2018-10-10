@@ -36,11 +36,11 @@ class TestRoutes(TestCaseWithConfig):
         response = requests.get(ROUTE_API + '/suggestions?id=1')
         response = json.loads(response.text)
         self.assertEqual(len(response), 1)
-        self.assertEqual(len(response.get('result')), 0)
+        self.assertEqual(len(response.get('results')), 0)
 
     def test_valid_path_no_empty_result(self):
         response = requests.get(ROUTE_API + '/suggestions?id=5')
         print(ROUTE_API + '/suggestions?id=5')
         response = json.loads(response.text)
         self.assertGreaterEqual(len(response), 1)
-        self.assertNotEqual(len(response.get('result')), 0)
+        self.assertNotEqual(len(response.get('results')), 0)
