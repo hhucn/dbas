@@ -11,8 +11,6 @@ stages:
   services:
     - name: $CI_REGISTRY/cn-tsn/project/dbas/dbas/db:testing
       alias: db
-    - name: hhucn/dbas-search:develop
-      alias: search
   image: $CI_REGISTRY/cn-tsn/project/dbas/dbas:experimental
   variables:
     AUTHN_SECRET: 89#s3cr3t_15
