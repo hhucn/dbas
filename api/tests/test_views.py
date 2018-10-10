@@ -554,3 +554,31 @@ class TestReferences(TestCaseWithConfig):
         request.path = '/'
         response = apiviews.get_references(request)
         self.__assert_valid_references(response, [Reference(self.statement_reference)])
+
+
+class TestFindStatements(TestCaseWithConfig):
+    def test_missing_parameter_gives_error(self):
+        request = construct_dummy_request()
+        response: IRequest = apiviews.find_statements_fn(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_wrong_parameter_gives_error(self):
+        request = construct_dummy_request(params={'coconut': ''})
+        response: IRequest = apiviews.find_statements_fn(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_wrong_parameter_with_correct_value_gives_error(self):
+        request = construct_dummy_request(params={'coconut': 'cat'})
+        response: IRequest = apiviews.find_statements_fn(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_correct_parameter_with_wrong_value_gives_error(self):
+        request = construct_dummy_request(params={'q': ''})
+        response: IRequest = apiviews.find_statements_fn(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_correct_parameter_with_correct_value_should_succeed(self):
+        request = construct_dummy_request(params={'q': 'foo'})
+        response: IRequest = apiviews.find_statements_fn(request)
+        self.assertIn('results', response)
+        self.assertIsInstance(response.get('results'), list)

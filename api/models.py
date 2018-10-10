@@ -1,6 +1,6 @@
 from typing import List
 
-from dbas.database.discussion_model import StatementReferences, Issue, Statement
+from dbas.database.discussion_model import StatementReferences, Issue, Statement, TextVersion, User
 from dbas.helper.url import url_to_statement
 from dbas.lib import unhtmlify
 
@@ -98,3 +98,77 @@ class Reference:
             "text": self.reference,
             "url": self.url
         }
+
+
+class ApiAuthor:
+    """
+    This class models a Author as it is required for the results by searching with Levensthein.
+    """
+
+    def __init__(self, author: User):
+        self.uid: int = author.uid
+        self.nickname: str = author.nickname
+
+    def __json__(self):
+        return {
+            "uid": self.uid,
+            "nickname": self.nickname
+        }
+
+
+class ApiIssue:
+    """
+    This class models a Issue as it is required for the results by searching with Levensthein.
+    """
+
+    def __init__(self, issue: Issue):
+        self.uid: int = issue.uid
+        self.slug: str = issue.slug
+        self.language: str = issue.lang
+        self.title: str = issue.title
+        self.info: str = issue.info
+
+    def __json__(self):
+        return {
+            "uid": self.uid,
+            "slug": self.slug,
+            "lang": self.language,
+            "title": self.title,
+            "info": self.info
+        }
+
+
+class ApiStatement(object):
+    """
+    This class models a Statement as it is required for the results by searching with Levensthein.
+    """
+
+    def __init__(self, statement: Statement, textversion: TextVersion):
+        self.isPosition: bool = statement.is_position
+        self.uid: int = statement.uid
+        self.text: str = textversion.content
+
+    def __json__(self):
+        return {
+            "isPosition": self.isPosition,
+            "uid": self.uid,
+            "text": self.text
+        }
+
+
+def LevenstheinApiDataMapping(statement: ApiStatement, author: ApiAuthor, issue: ApiIssue) -> dict:
+    """
+    This is the json format of the results by searching with Levensthein.
+
+    :param statement: See ApiStatement
+    :param author: See ApiAuthor
+    :param issue: See ApiIssue
+    :return: The data-structure which is used for the results in the searching interface.
+    """
+    return {
+        "isPosition": statement.__json__().get("isPosition"),
+        "uid": statement.__json__().get("uid"),
+        "text": statement.__json__().get("text"),
+        "author": author.__json__(),
+        "issue": issue.__json__()
+    }

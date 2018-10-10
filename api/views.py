@@ -5,6 +5,7 @@ return JSON objects which can then be used in external websites.
 
 .. note:: Methods **must not** have the same name as their assigned Service.
 """
+import logging
 from typing import List
 
 from cornice import Service
@@ -24,13 +25,15 @@ from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.handler.user import set_new_oauth_user
 from dbas.lib import (get_all_arguments_by_statement,
-                      get_all_arguments_with_text_by_statement_id,
-                      get_text_for_argument_uid, resolve_issue_uid_to_slug, create_speechbubble_dict, BubbleTypes,
+                      get_text_for_argument_uid, create_speechbubble_dict, BubbleTypes,
                       Attitudes, Relations)
+from dbas.strings.matcher import get_all_statements_by_levensthein_similar_to
 from dbas.strings.translator import Keywords as _, get_translation, Translator
+from dbas.validators.common import valid_q_parameter
 from dbas.validators.core import has_keywords, validate, has_maybe_keywords
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
+from search.requester import get_statements_with_similarity_to
 from .lib import logger
 from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, \
     valid_api_token
@@ -39,6 +42,7 @@ from .references import (get_all_references_by_reference_text,
 from .templates import error
 
 log = logger()
+LOG = logging.getLogger(__name__)
 
 #
 # CORS configuration
@@ -123,7 +127,7 @@ reference_usages = Service(name="reference_usages",
                            cors_policy=cors_policy)
 
 find_statements = Service(name="find_statements",
-                          path="/statements/{issue}/{type}/{value}",
+                          path="/search",
                           description="Query database to get closest statements",
                           cors_policy=cors_policy)
 
@@ -465,6 +469,7 @@ def user_logout(request):
 # =============================================================================
 
 @find_statements.get()
+@validate(valid_q_parameter)
 def find_statements_fn(request):
     """
     Receives search requests, queries database to find all occurrences and returns these results with the correct URL
@@ -472,26 +477,13 @@ def find_statements_fn(request):
 
     :param request:
     :return: json conform dictionary of all occurrences
-
     """
-    api_data = dict()
-    api_data["issue"] = request.matchdict["issue"]
-    api_data["mode"] = request.matchdict["type"]
-    api_data["value"] = request.matchdict["value"]
-    results = dbas.fuzzy_search(request, api_data=api_data)
-
-    issue_uid = api_data["issue"]
-
-    return_dict = dict()
-    return_dict["distance_name"] = results["distance_name"]
-    return_dict["values"] = []
-
-    for statement in results["values"]:
-        statement_uid = statement["statement_uid"]
-        statement["issue"] = {"uid": issue_uid, "slug": resolve_issue_uid_to_slug(issue_uid)}
-        statement["arguments"] = get_all_arguments_with_text_by_statement_id(statement_uid)
-        return_dict["values"].append(statement)
-    return return_dict
+    query_string = request.validated['query']
+    try:
+        return get_statements_with_similarity_to(query_string)
+    except Exception as ex:
+        LOG.warning("Could not request data from elasticsearch because of error: %s", ex)
+    return get_all_statements_by_levensthein_similar_to(query_string)
 
 
 # =============================================================================
