@@ -1,8 +1,9 @@
 import logging
-import transaction
 from os import environ
-from sqlalchemy import func
 from typing import List, Tuple, Dict, Any, Optional
+
+import transaction
+from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
@@ -431,7 +432,6 @@ def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, s
     email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid,
                                                           Attitudes.AGREE if supportive else Attitudes.DISAGREE)
     nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, mailer)
-
     prepared_dict['url'] = url
 
 

@@ -559,6 +559,29 @@ def valid_text_values(request):
     return False
 
 
+def valid_reason_and_position_not_equal(request) -> bool:
+    """
+    Check if provided position and reason have the same content.
+
+    :param request:
+    :return:
+    """
+    if not valid_new_position_in_body(request) or not valid_reason_in_body(request) or not valid_issue_by_slug(request):
+        return False
+
+    position: str = request.validated.get('position-text').strip().lower()
+    reason: str = request.validated.get('reason-text').strip().lower()
+    issue: Issue = request.validated.get('issue')
+
+    _tn = Translator(issue.lang)
+
+    if position == reason:
+        add_error(request, _tn.get(_.premiseAndConclusionAreEqual))
+        return False
+
+    return True
+
+
 # -----------------------------------------------------------------------------
 # Helper functions
 

@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 German translations of the keywords
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 from .keywords import Keywords as _
 
@@ -163,7 +161,7 @@ en_lang = {
     _.butIDoNotBelieveReasonForReject: 'But I do not believe that this is a reason for reject',
     _.butTheyDoNotBelieveCounter: 'But they do {}not{} believe that this is {}a good counter-argument for{}',
     _.butSheDoesNotBelieveCounter: 'But she does {}not{} believe that this is {}a good counter-argument for{}',
-    _.butHeDoesNotBelieveCounter: 'But he do {}not{} believe that this is {}a good counter-argument for{}',
+    _.butHeDoesNotBelieveCounter: 'But he does {}not{} believe that this is {}a good counter-argument for{}',
     _.butTheyDoNotBelieveArgument: 'But they do {}not{} believe that this is {}a good argument for{}',
     _.butSheDoesNotBelieveArgument: 'But she does {}not{} believe that this is {}a good argument for{}',
     _.butHeDoesNotBelieveArgument: 'But he does {}not{} believe that this is {}a good argument for{}',
@@ -171,8 +169,8 @@ en_lang = {
     _.butOtherParticipantsDontHaveArgument: 'but other participants do not have any argument for that.',
     _.butOtherParticipantsDontHaveCounterArgument: 'but other participants do not have any counter argument for that.',
     _.butWhich: 'but which one',
-    _.butThisDoesNotRejectArgument: 'But this does not rejects the argument that',
-    _.butThisDoesNotRejectStatement: 'But this does not rejects the statement that',
+    _.butThisDoesNotRejectArgument: 'But this does not reject the argument that',
+    _.butThisDoesNotRejectStatement: 'But this does not reject the statement that',
     _.but: 'but',
     _.butYouCounteredWithInterest: 'You did not agree with this because',
     _.butYouCounteredWithArgument: 'You did not agree with this because',
@@ -240,9 +238,8 @@ en_lang = {
     _.discussionStart: 'Discussions Overview',
     _.discussionEndAndReadOnly: 'The discussion ends here. Unfortunately the discussion was set as read only, so that no new statements can be added.',
     _.discussionCongratulationEnd: 'The discussion ends here, because there is no other counter argument at the moment.',
-    _.discussionEndLinkTextLoggedIn: 'You can restart the discussion with the button at the bottom left.',
-    _.discussionEndLinkTextNotLoggedIn: 'You can restart the discussion with the button at the bottom left.',
-    _.discussionEndLinkTextWithQueueLoggedIn: 'Are you looking for things to do? Take a look at the <a id="discussionEndReview">review section</a>. Alternatively you can restart the discussion with the button at the bottom left.',
+    _.discussionEndLinkTextRestartDiscussion: 'You can restart the discussion with the button below.',
+    _.discussionEndLinkTextWithQueueLoggedIn: 'Are you looking for things to do? Take a look at the <a id="discussionEndReview">review section</a>. Alternatively you can restart the discussion with the button below.',
     _.discussionEndLinkTextWithQueueNotLoggedIn: 'Are you looking for things to do? <a  data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">Login</a> and take a look at the <a id="discussionEndReview">review section</a>. Alternatively you can restart the discussion with the button at the bottom left.',
     _.discussionInfoTooltipSg: 'The discussion was started at {} {} and has just {} argument. Come and join in!',
     _.discussionInfoTooltipPl: 'The discussion was started at {} {} and already has {} arguments.',
@@ -548,7 +545,7 @@ en_lang = {
     _.priv_access_history_queue: 'Access to all reviews of the past',
     _.priv_access_ongoing_queue: 'Access to all ongoing reviews',
     _.privacy_policy: 'Privacy Policy',
-    _.premiseAndConclusionAreEqual: 'Premise and conclusion are equal',
+    _.premiseAndConclusionAreEqual: 'Premise and conclusion may not be identical',
     _.publications: 'Publications',
     _.queueDelete: 'Deletes',
     _.queueOptimization: 'Optimizations',
