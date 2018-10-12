@@ -139,6 +139,8 @@ Those special variables are defined as bellow.
 +----------------------------+------------------------------------------------------------------------+
 | DBAS_PROTOCOL              | The Protocol which is used by the running dbas container (e.g. http)   |
 +----------------------------+------------------------------------------------------------------------+
+| SEARCH_PROTOCOL            | The Protocol which is used by the running search container (e.g. http) |
++----------------------------+------------------------------------------------------------------------+
 | SEARCH_PORT                | Port of the container which returns the search results, default 5000   |
 +----------------------------+------------------------------------------------------------------------+
 | SEARCH_NAME                | Name of the container which returns the search results, default search |

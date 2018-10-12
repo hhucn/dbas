@@ -5,6 +5,7 @@ Collection of pyramids views components of D-BAS' core.
 """
 
 import logging
+
 from cornice.util import json_error
 from pyramid.view import view_config
 
@@ -20,6 +21,7 @@ from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_id, valid_statement, valid_text_length_of, valid_any_issue_by_id
 from dbas.validators.lib import add_error
 from dbas.validators.user import valid_user, valid_user_optional, valid_user_as_author
+from search.requester import get_statements_with_similarity_to
 
 LOG = logging.getLogger(__name__)
 
@@ -169,6 +171,19 @@ def switch_language(request):
     LOG.debug("Switching the language: %s", request.json_body)
     lang = set_language(request, request.validated['lang'])
     return {'_LOCALE_': lang}
+
+
+@view_config(route_name='get_suggestion_with_similarity_to', renderer='json')
+def get_suggestion_with_similarity_to(request):
+    """
+    Get statements an all regarding information to a given search value.
+    The results statements which have a similarity to the search value.
+
+    :param request: current request of the server
+    :return: List of statements with a similarity to the search value
+    """
+    value = request.params.get('q')
+    return get_statements_with_similarity_to(value)
 
 
 # ajax - for sending news

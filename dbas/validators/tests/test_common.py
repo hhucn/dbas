@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPFound
 from dbas.strings.fuzzy_modes import FuzzyMode
 from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 from dbas.validators.common import valid_lang_cookie_fallback, valid_language, check_authentication, \
-    valid_fuzzy_search_mode
+    valid_fuzzy_search_mode, valid_q_parameter
 
 
 class ValidLanguageTest(TestCaseWithConfig):
@@ -80,3 +80,25 @@ class TestFuzzySearch(TestCaseWithConfig):
             response = valid_fuzzy_search_mode(request)
             self.assertTrue(response)
             self.assertIsInstance(response, bool)
+
+
+class ValidQGetParameter(TestCaseWithConfig):
+    def test_q_is_missing_should_return_false(self):
+        request = construct_dummy_request(params={})
+        response = valid_q_parameter(request)
+        self.assertFalse(response)
+
+    def test_q_is_set_but_is_empty_should_return_true(self):
+        request = construct_dummy_request(params={'q': ''})
+        response = valid_q_parameter(request)
+        self.assertFalse(response)
+
+    def test_q_is_set_but_is_not_escaped_should_return_true(self):
+        request = construct_dummy_request(params={'q': '<foo'})
+        response = valid_q_parameter(request)
+        self.assertTrue(response)
+
+    def test_q_is_set_and_valid_should_return_true(self):
+        request = construct_dummy_request(params={'q': 'foo'})
+        response = valid_q_parameter(request)
+        self.assertTrue(response)

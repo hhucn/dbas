@@ -20,7 +20,7 @@ from admin.lib import generate_application_token
 from api.login import token_to_database
 # ------------------------------------------------------------------------------
 # Tests
-from api.models import Reference
+from api.models import DataReference
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, StatementReferences
 from dbas.lib import get_user_by_case_insensitive_nickname, Relations, Attitudes
@@ -467,6 +467,17 @@ class TestPosition(TestCaseWithConfig):
         response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 401)
 
+    def test_same_position_and_reason_returns_error(self):
+        request = create_request_with_token_header(
+            json_body={
+                'position': 'same-position-and-reason',
+                'reason': 'same-position-and-reason'
+            }
+        )
+
+        response: Response = apiviews.add_position_with_premise(request)
+        self.assertEqual(response.status_code, 400)
+
 
 class TestUser(TestCaseWithConfig):
     test_body = {
@@ -515,7 +526,7 @@ class TestUser(TestCaseWithConfig):
 
 
 class TestReferences(TestCaseWithConfig):
-    def __assert_valid_references(self, response, expected_references: List[Reference] = None):
+    def __assert_valid_references(self, response, expected_references: List[DataReference] = None):
         references = response.get('references')
         self.assertIn('references', response)
         self.assertIsInstance(references, list)
@@ -553,4 +564,32 @@ class TestReferences(TestCaseWithConfig):
         request.host = 'localhost:3449'
         request.path = '/'
         response = apiviews.get_references(request)
-        self.__assert_valid_references(response, [Reference(self.statement_reference)])
+        self.__assert_valid_references(response, [DataReference(self.statement_reference)])
+
+
+class TestFindStatements(TestCaseWithConfig):
+    def test_missing_parameter_gives_error(self):
+        request = construct_dummy_request()
+        response: IRequest = apiviews.find_statements_fn(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_wrong_parameter_gives_error(self):
+        request = construct_dummy_request(params={'coconut': ''})
+        response: IRequest = apiviews.find_statements_fn(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_wrong_parameter_with_correct_value_gives_error(self):
+        request = construct_dummy_request(params={'coconut': 'cat'})
+        response: IRequest = apiviews.find_statements_fn(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_correct_parameter_with_wrong_value_gives_error(self):
+        request = construct_dummy_request(params={'q': ''})
+        response: IRequest = apiviews.find_statements_fn(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_correct_parameter_with_correct_value_should_succeed(self):
+        request = construct_dummy_request(params={'q': 'foo'})
+        response: IRequest = apiviews.find_statements_fn(request)
+        self.assertIn('results', response)
+        self.assertIsInstance(response.get('results'), list)

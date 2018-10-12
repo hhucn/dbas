@@ -6,6 +6,7 @@ Provides methods for comparing strings.
 
 import difflib
 import logging
+import operator
 import re
 from collections import OrderedDict
 from itertools import islice
@@ -13,6 +14,7 @@ from itertools import islice
 from Levenshtein import distance
 from sqlalchemy import func
 
+from api.models import DataStatement, transform_levensthein_search_results, DataAuthor, DataIssue
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
 from dbas.helper.url import UrlManager
@@ -88,7 +90,6 @@ def get_all_statements_with_value(search_value: str, issue_uid: int) -> list:
     :param issue_uid: uid of the issue to be searched in
     :param search_value: text to be searched for
     :return: statements matching the given search value in the given issue, uses levensthein.
-
     """
     issues_statements_uids = [el.statement_uid for el in
                               DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=issue_uid).all()]
@@ -107,6 +108,38 @@ def get_all_statements_with_value(search_value: str, issue_uid: int) -> list:
     return_array = __sort_array(return_array)
 
     return return_array[:list_length]
+
+
+def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
+    """
+    Returns the top 10 of the matching statements for the search_value.
+    This method calculates the the similarity with the levensthein-distance.
+    The results are sorted from best to worst match
+
+    :param search_value: text to be searched for
+    :return: statements matching the given search by using levensthein-distance(sorted best to worst).
+    """
+
+    matching_results = []
+
+    statements = DBDiscussionSession.query(Statement).all()
+    for statement in statements:
+        textversion: TextVersion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).first()
+        author: User = DBDiscussionSession.query(User).filter_by(uid=textversion.author_uid).first()
+        statement_to_issue: StatementToIssue = DBDiscussionSession.query(StatementToIssue).filter_by(
+            statement_uid=statement.uid).first()
+        issue: Issue = DBDiscussionSession.query(Issue).filter_by(uid=statement_to_issue.issue_uid).first()
+        result: dict = transform_levensthein_search_results(statement=DataStatement(statement, textversion),
+                                                            author=DataAuthor(author),
+                                                            issue=DataIssue(issue))
+        score = int(get_distance(search_value, textversion.content))
+        matching_results = matching_results + [(result, score)]
+
+    matching_results.sort(key=operator.itemgetter(1), reverse=False)
+    matching_results = [result[0] for result in matching_results]
+    return {
+        "results": matching_results[:return_count]
+    }
 
 
 def get_suggestions_for_positions(search_value: str, issue_uid: int, position: bool) -> list:

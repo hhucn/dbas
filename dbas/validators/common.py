@@ -9,6 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Language, User
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.user import update_last_action
+from dbas.lib import escape_string
 from dbas.strings.fuzzy_modes import FuzzyMode
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -83,3 +84,20 @@ def valid_fuzzy_search_mode(request):
     else:
         add_error(request, 'Invalid fuzzy mode')
         return False
+
+
+def valid_q_parameter(request):
+    """
+    Validate that a q-GET parameter is given.
+
+    :param request: Request
+    :return:
+    """
+    query_string: str = request.params.get('q')
+    if not query_string:
+        add_error(request, 'GET-Parameter \'q\' is missing or empty',
+                  'Provide a \'q\'-GET Parameter, which is the query-string to search in the database',
+                  location='querystring')
+        return False
+    request.validated['query'] = escape_string(query_string)
+    return True
