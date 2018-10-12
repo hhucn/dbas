@@ -14,7 +14,7 @@ from itertools import islice
 from Levenshtein import distance
 from sqlalchemy import func
 
-from api.models import DataStatement, LevenstheinApiDataMapping, DataAuthor, DataIssue
+from api.models import DataStatement, transform_levensthein_search_results, DataAuthor, DataIssue
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
 from dbas.helper.url import UrlManager
@@ -128,9 +128,9 @@ def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
         author = DBDiscussionSession.query(User).filter_by(uid=textversion.author_uid).first()
         statement_to_issue = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=statement.uid).first()
         issue = DBDiscussionSession.query(Issue).filter_by(uid=statement_to_issue.issue_uid).first()
-        result = LevenstheinApiDataMapping(statement=DataStatement(statement, textversion),
-                                           author=DataAuthor(author),
-                                           issue=DataIssue(issue))
+        result = transform_levensthein_search_results(statement=DataStatement(statement, textversion),
+                                                      author=DataAuthor(author),
+                                                      issue=DataIssue(issue))
         score = int(get_distance(search_value, textversion.content))
         matching_results = matching_results + [(result, score)]
 

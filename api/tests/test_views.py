@@ -20,7 +20,7 @@ from admin.lib import generate_application_token
 from api.login import token_to_database
 # ------------------------------------------------------------------------------
 # Tests
-from api.models import Reference
+from api.models import DataReference
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, StatementReferences
 from dbas.lib import get_user_by_case_insensitive_nickname, Relations, Attitudes
@@ -526,7 +526,7 @@ class TestUser(TestCaseWithConfig):
 
 
 class TestReferences(TestCaseWithConfig):
-    def __assert_valid_references(self, response, expected_references: List[Reference] = None):
+    def __assert_valid_references(self, response, expected_references: List[DataReference] = None):
         references = response.get('references')
         self.assertIn('references', response)
         self.assertIsInstance(references, list)
@@ -564,7 +564,7 @@ class TestReferences(TestCaseWithConfig):
         request.host = 'localhost:3449'
         request.path = '/'
         response = apiviews.get_references(request)
-        self.__assert_valid_references(response, [Reference(self.statement_reference)])
+        self.__assert_valid_references(response, [DataReference(self.statement_reference)])
 
 
 class TestFindStatements(TestCaseWithConfig):

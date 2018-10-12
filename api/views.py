@@ -18,7 +18,7 @@ import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
 import dbas.views.discussion as dbas
 from api.lib import extract_items_and_bubbles
-from api.models import Item, Bubble, Reference
+from api.models import DataItem, DataBubble, DataReference
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReferences
 from dbas.handler.arguments import set_arguments_premises
@@ -230,11 +230,11 @@ def discussion_init(request):
                                                                Statement.uid.in_(issues_statements),
                                                                Statement.is_position == True).all()
 
-    positions = [Item([pos.get_textversion().content], "/{}/attitude/{}".format(db_issue.slug, pos.uid))
+    positions = [DataItem([pos.get_textversion().content], "/{}/attitude/{}".format(db_issue.slug, pos.uid))
                  for pos in db_positions]
 
     return {
-        'bubbles': [Bubble(bubble) for bubble in bubbles],
+        'bubbles': [DataBubble(bubble) for bubble in bubbles],
         'positions': positions
     }
 
@@ -404,7 +404,7 @@ def get_references(request: Request):
     log.debug("Querying references for host: {}, path: {}".format(host, path))
     refs_db: List[StatementReferences] = get_references_for_url(host, path)
     return {
-        "references": [Reference(ref) for ref in refs_db]
+        "references": [DataReference(ref) for ref in refs_db]
     }
 
 

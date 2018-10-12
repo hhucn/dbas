@@ -5,7 +5,7 @@ from dbas.helper.url import url_to_statement
 from dbas.lib import unhtmlify
 
 
-class Item:
+class DataItem:
     """
     Entity to construct items-dict.
     """
@@ -35,7 +35,7 @@ class Item:
         }
 
 
-class Bubble:
+class DataBubble:
     """
     Converted bubble which is returned by the API.
     """
@@ -84,7 +84,7 @@ class Bubble:
         }
 
 
-class Reference:
+class DataReference:
     def __init__(self, statement_reference: StatementReferences):
         self.uid: int = statement_reference.uid
         self.reference: str = statement_reference.reference
@@ -156,7 +156,7 @@ class DataStatement(object):
         }
 
 
-def LevenstheinApiDataMapping(statement: DataStatement, author: DataAuthor, issue: DataIssue) -> dict:
+def transform_levensthein_search_results(statement: DataStatement, author: DataAuthor, issue: DataIssue) -> dict:
     """
     This is the json format of the results by searching with Levensthein.
 

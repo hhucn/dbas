@@ -11,12 +11,13 @@ import warnings
 from functools import reduce
 from html import escape
 from typing import Tuple
+
 from webob import Response, exc
 
 # =============================================================================
 # Other
 # =============================================================================
-from api.models import Item, Bubble
+from api.models import DataItem, DataBubble
 
 
 def logger():
@@ -148,7 +149,7 @@ def extract_items_and_bubbles(prepared_discussion: dict) -> Tuple[list, list]:
     :param prepared_discussion:
     :return:
     """
-    items = [Item([premise['title'] for premise in item['premises']], item['url'])
+    items = [DataItem([premise['title'] for premise in item['premises']], item['url'])
              for item in prepared_discussion['items']['elements']]
-    bubbles = [Bubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
+    bubbles = [DataBubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
     return bubbles, items
