@@ -32,6 +32,7 @@ from dbas.strings.translator import Keywords as _, get_translation, Translator
 from dbas.validators.common import valid_q_parameter
 from dbas.validators.core import has_keywords, validate, has_maybe_keywords
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
+    valid_reason_and_position_not_equal, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
 from search.requester import get_statements_with_similarity_to
 from .lib import logger
@@ -568,8 +569,10 @@ def __http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
     )
 
 
+@zinit.post(require_csrf=False)
 @positions.post(require_csrf=False)
-@validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body)
+@validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body,
+          valid_reason_and_position_not_equal)
 def add_position_with_premise(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
