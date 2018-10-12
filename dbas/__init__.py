@@ -150,6 +150,7 @@ def main(global_config, **settings):
     config.add_route('set_seen_statements', '{url:.*}set_seen_statements')
     config.add_route('mark_statement_or_argument', '{url:.*}mark_statement_or_argument')
     config.add_route('set_discussion_properties', '{url:.*}set_discussion_properties')
+    config.add_route('get_suggestion_with_similarity_to', '/search')
 
     # logic at the end, otherwise the * pattern will do shit
     config.add_route('discussion_support', '/discuss/{slug}/support/{arg_id_user:\d+}/{arg_id_sys:\d+}')

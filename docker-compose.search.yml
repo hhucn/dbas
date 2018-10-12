@@ -2,12 +2,16 @@ version: "3.2"
 services:
   search:
     image: hhucn/dbas-search:develop
+    restart: on-failure
     ports:
       - "9200:9200"
       - "5000:5000"
     environment:
-      DB_PW: ${DB_PW}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_USER: ${DB_USER}
-
+      APPLICATION_HOST: web
+      APPLICATION_PORT: 4284
+      APPLICATION_PROTOCOL: http
+      DATABASE_NAME: discussion
+      DATABASE_PASSWORD: ${DB_PW}
+      DATABASE_HOST: ${DB_HOST}
+      DATABASE_PORT: ${DB_PORT}
+      DATABASE_USER: ${DB_USER}

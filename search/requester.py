@@ -7,7 +7,7 @@ from dbas.database.discussion_model import Issue
 from dbas.helper.url import UrlManager
 from dbas.strings.fuzzy_modes import FuzzyMode
 from search.routes import get_statements_with_value_path, get_duplicates_or_reasons_path, \
-    get_edits_path, get_suggestions_path
+    get_edits_path, get_suggestions_path, get_statements_path
 
 LOG = logging.getLogger(__name__)
 mechanism = 'elastic'
@@ -35,7 +35,7 @@ def get_suggestions(issue_uid: int, position: bool, search_value: str = '') -> d
     :return: suggestions of the textversions fitting the given parameters
     """
     query = get_suggestions_path(issue_uid, position, search_value)
-    return response_as_dict(query)['result']
+    return response_as_dict(query)['results']
 
 
 def get_statements_with_value(issue_uid: int, search_value: str = '') -> list:
@@ -53,7 +53,7 @@ def get_statements_with_value(issue_uid: int, search_value: str = '') -> list:
     _um = UrlManager(slug=slug)
 
     results = []
-    current_results = response_as_dict(query)['result']
+    current_results = response_as_dict(query)['results']
     if current_results is not None:
         results = list(map(lambda res: {
             'text': res['text'],
@@ -76,7 +76,7 @@ def get_duplicates_or_reasons(issue_uid: int, statement_uid: int, search_value: 
     :return: duplicates or reasons fitting the parameters
     """
     query = get_duplicates_or_reasons_path(issue_uid, statement_uid, search_value)
-    return response_as_dict(query)['result']
+    return response_as_dict(query)['results']
 
 
 def get_edits(issue_uid: int, statement_uid: int, search_value=''):
@@ -89,7 +89,7 @@ def get_edits(issue_uid: int, statement_uid: int, search_value=''):
     :return: edits fitting the parameters
     """
     query = get_edits_path(issue_uid, statement_uid, search_value)
-    return response_as_dict(query)['result']
+    return response_as_dict(query)['results']
 
 
 def elastic_search(db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
@@ -119,3 +119,14 @@ def elastic_search(db_issue: Issue, search_value: str, mode: int, statement_uid:
         return_dict['values'] = get_statements_with_value(db_issue.uid, search_value)
 
     return return_dict
+
+
+def get_statements_with_similarity_to(value: str):
+    """
+    This method queries all statements which have a similarity to the search value.
+
+    :param value: The search value to be searched for
+    :return: A dictionary with the related statements and all necessary information
+    """
+    query = get_statements_path(value=value)
+    return response_as_dict(query=query)
