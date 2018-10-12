@@ -100,7 +100,7 @@ class Reference:
         }
 
 
-class ApiAuthor:
+class DataAuthor:
     """
     This class models a Author as it is required for the results by searching with Levensthein.
     """
@@ -116,7 +116,7 @@ class ApiAuthor:
         }
 
 
-class ApiIssue:
+class DataIssue:
     """
     This class models a Issue as it is required for the results by searching with Levensthein.
     """
@@ -138,7 +138,7 @@ class ApiIssue:
         }
 
 
-class ApiStatement(object):
+class DataStatement(object):
     """
     This class models a Statement as it is required for the results by searching with Levensthein.
     """
@@ -156,7 +156,7 @@ class ApiStatement(object):
         }
 
 
-def LevenstheinApiDataMapping(statement: ApiStatement, author: ApiAuthor, issue: ApiIssue) -> dict:
+def LevenstheinApiDataMapping(statement: DataStatement, author: DataAuthor, issue: DataIssue) -> dict:
     """
     This is the json format of the results by searching with Levensthein.
 
