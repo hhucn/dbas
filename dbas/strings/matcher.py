@@ -124,13 +124,14 @@ def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
 
     statements = DBDiscussionSession.query(Statement).all()
     for statement in statements:
-        textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).first()
-        author = DBDiscussionSession.query(User).filter_by(uid=textversion.author_uid).first()
-        statement_to_issue = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=statement.uid).first()
-        issue = DBDiscussionSession.query(Issue).filter_by(uid=statement_to_issue.issue_uid).first()
-        result = transform_levensthein_search_results(statement=DataStatement(statement, textversion),
-                                                      author=DataAuthor(author),
-                                                      issue=DataIssue(issue))
+        textversion: TextVersion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).first()
+        author: User = DBDiscussionSession.query(User).filter_by(uid=textversion.author_uid).first()
+        statement_to_issue: StatementToIssue = DBDiscussionSession.query(StatementToIssue).filter_by(
+            statement_uid=statement.uid).first()
+        issue: Issue = DBDiscussionSession.query(Issue).filter_by(uid=statement_to_issue.issue_uid).first()
+        result: dict = transform_levensthein_search_results(statement=DataStatement(statement, textversion),
+                                                            author=DataAuthor(author),
+                                                            issue=DataIssue(issue))
         score = int(get_distance(search_value, textversion.content))
         matching_results = matching_results + [(result, score)]
 
