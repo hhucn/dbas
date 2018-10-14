@@ -1,15 +1,12 @@
 import unittest
 
-import transaction
-
-from dbas.tests.utils import construct_dummy_request
-
-from dbas.views import choose
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Premise, SeenStatement, User
 from dbas.helper.test import verify_dictionary_of_view
+from dbas.tests.utils import construct_dummy_request
+from dbas.views import choose
 
 
 class DiscussionChoseViewTests(unittest.TestCase):
@@ -44,7 +41,6 @@ class DiscussionChoseViewTests(unittest.TestCase):
     def test_page_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         DBDiscussionSession.query(User).filter_by(nickname='Tobias').first().update_last_login()
-        transaction.commit()
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
 
         request = construct_dummy_request(match_dict={
