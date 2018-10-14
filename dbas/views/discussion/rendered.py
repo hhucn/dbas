@@ -1,11 +1,14 @@
 import logging
+
 from pyramid.httpexceptions import HTTPFound
+from pyramid.request import Request
 from pyramid.view import view_config
 
 from dbas.auth.login import oauth_providers
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Argument, User
 from dbas.discussion import core as discussion
+from dbas.events import ParticipatedInDiscussion
 from dbas.handler import issue as issue_handler, history as history_handler
 from dbas.handler.issue import get_issues_overview_for
 from dbas.handler.language import get_language_from_cookie
@@ -25,6 +28,12 @@ from dbas.views.helper import main_dict, modify_discussion_url, modify_discussio
     append_extras_dict_during_justification_argument, modifiy_issue_main_url
 
 LOG = logging.getLogger(__name__)
+
+
+def emit_participation(request: Request):
+    if request.validated['user'] and request.validated['issue']:
+        event = ParticipatedInDiscussion(request.validated['user'], request.validated['issue'])
+        request.registry.notify(event)
 
 
 @view_config(route_name='discussion_overview', renderer='../../templates/discussion/myoverview.pt', permission='use')
@@ -84,6 +93,7 @@ def init(request):
     :return: dictionary
     """
     LOG.debug("Configuration for initial discussion. %s", request.matchdict)
+    emit_participation(request)
 
     prepared_discussion = discussion.init(request.validated['issue'], request.validated['user'])
     modify_discussion_url(prepared_discussion)
@@ -117,6 +127,7 @@ def attitude(request):
     :return: dictionary
     """
     LOG.debug("View attitude: %s", request.matchdict)
+    emit_participation(request)
 
     db_statement = request.validated['statement']
     db_issue = request.validated['issue']
@@ -148,6 +159,7 @@ def justify_statement(request) -> dict:
     :return: dict
     """
     LOG.debug("Justify a statement. %s", request.matchdict)
+    emit_participation(request)
 
     db_statement: Statement = request.validated['statement']
 
@@ -180,6 +192,7 @@ def dontknow_argument(request) -> dict:
     :return: dict
     """
     LOG.debug("Do not know an argument for this step. %s", request.matchdict)
+    emit_participation(request)
 
     db_argument: Argument = request.validated['argument']
 
@@ -210,6 +223,7 @@ def justify_argument(request) -> dict:
     :return: dict
     """
     LOG.debug("Justify an argument. %s", request.matchdict)
+    emit_participation(request)
 
     db_argument: Argument = request.validated['argument']
     db_issue = request.validated['issue']
@@ -240,6 +254,7 @@ def reaction(request):
     :return: dictionary
     """
     LOG.debug("React to a step. %s", request.validated)
+    emit_participation(request)
 
     db_user = request.validated['user']
     db_issue = request.validated['issue']
@@ -269,6 +284,7 @@ def support(request):
     :return: dictionary
     """
     LOG.debug("Support a statement. %s", request.matchdict)
+    emit_participation(request)
 
     db_user = request.validated['user']
     db_issue = request.validated['issue']
@@ -297,6 +313,7 @@ def finish(request):
     :return:
     """
     LOG.debug("Finish the discussion. %s", request.matchdict)
+    emit_participation(request)
 
     db_user = request.validated['user']
     db_issue = request.validated['issue']
@@ -349,6 +366,7 @@ def choose(request):
     """
     # '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
     LOG.debug("Choose a statement. %s", request.matchdict)
+    emit_participation(request)
 
     db_user = request.validated['user']
     db_issue = request.validated['issue']
@@ -383,6 +401,7 @@ def jump(request):
     :return: dictionary
     """
     # '/discuss/{slug}/jump/{arg_id}'
+    emit_participation(request)
 
     db_user = request.validated['user']
     db_issue = request.validated['issue']
