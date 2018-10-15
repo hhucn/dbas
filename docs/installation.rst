@@ -139,6 +139,8 @@ Those special variables are defined as bellow.
 +----------------------------+------------------------------------------------------------------------+
 | DBAS_PROTOCOL              | The Protocol which is used by the running dbas container (e.g. http)   |
 +----------------------------+------------------------------------------------------------------------+
+| SEARCH_PROTOCOL            | The Protocol which is used by the running search container (e.g. http) |
++----------------------------+------------------------------------------------------------------------+
 | SEARCH_PORT                | Port of the container which returns the search results, default 5000   |
 +----------------------------+------------------------------------------------------------------------+
 | SEARCH_NAME                | Name of the container which returns the search results, default search |
@@ -147,6 +149,22 @@ Those special variables are defined as bellow.
 +----------------------------+------------------------------------------------------------------------+
 | MIN_LENGTH_OF_STATEMENT    | The minimal length of any statement, default 10                        |
 +----------------------------+------------------------------------------------------------------------+
+
+Add user as admin
+-----------------
+
+A CLI function is offered to promote a user to an admin (or demote him)
+Usage::
+
+    promote_to_admin <nickname>
+    demote_to_user <nickname>
+
+If you are in a docker environment, don't forget to call this command inside the
+containers::
+
+    docker-compose exec web promote_to_admin <nickname>
+
+You can find your username in the settings.
 
 OAuth
 -----

@@ -1,7 +1,5 @@
 """
 Namespace for functions used to resolve Queries on the database for GraphQL.
-
-.. sectionauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 from typing import Dict
 

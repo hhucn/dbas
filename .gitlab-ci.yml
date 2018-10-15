@@ -11,23 +11,14 @@ stages:
   services:
     - name: $CI_REGISTRY/cn-tsn/project/dbas/dbas/db:testing
       alias: db
-    - name: hhucn/dbas-search:develop
-      alias: search
   image: $CI_REGISTRY/cn-tsn/project/dbas/dbas:experimental
   variables:
+    AUTHN_SECRET: 89#s3cr3t_15
     DB_HOST: db
-    DB_PORT: "5432"
-    DB_USER: "postgres"
-    DB_PW: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
-
-    # for search
-    DB_NAME: discussion
-    SEARCH_PORT: 5000
-    DBAS_PROTOCOL: http
-    SEARCH_NAME: search
-
-    AUTHN_SECRET: "89#s3cr3t_15"
-    URL: "https://dbas.cs.uni-duesseldorf.de"
+    DB_PORT: 5432
+    DB_USER: postgres
+    DB_PW: DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!
+    URL: https://dbas.cs.uni-duesseldorf.de
   before_script:
     - alembic upgrade head && pserve development.ini --reload &
 
@@ -47,14 +38,6 @@ build_test_images:
     - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
     - docker tag $CI_REGISTRY_IMAGE/db $CI_REGISTRY_IMAGE/db:testing
     - docker push $CI_REGISTRY_IMAGE/db:testing
-
-build_frontend_test_image:
-  stage: build
-  script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - cd frontendtest
-    - docker build -t $CI_REGISTRY_IMAGE/frontendtest --pull .
-    - docker push $CI_REGISTRY_IMAGE/frontendtest
 
 flake8:
   stage: test
@@ -84,7 +67,7 @@ unit:
   artifacts:
     paths:
       - coverage.xml
-    expire_in: 10 mins
+    expire_in: 1 hrs
 
 sonar:
   image: hhucn/sonar-scanner

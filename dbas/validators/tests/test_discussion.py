@@ -1,4 +1,5 @@
 from nose.tools import assert_in
+from pyramid.interfaces import IRequest
 
 import dbas.validators.discussion as discussion
 from dbas.lib import Relations, Attitudes
@@ -250,7 +251,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
             self.assertFalse(response)
             self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'id': (2, )})
+        request = construct_dummy_request(match_dict={'id': (2,)})
         response = discussion.valid_premisegroup_in_path(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -507,6 +508,26 @@ class TestValidPosition(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
         self.assertIn('issue', request.validated)
         self.assertIn('position', request.validated)
+
+
+class TestValidReasonAndPositionNotEqual(TestCaseWithConfig):
+    def test_same_content_should_return_false(self):
+        request: IRequest = construct_dummy_request(json_body={
+            'position': 'same-position-and-reason',
+            'reason': 'same-position-and-reason'
+        })
+        self.assertFalse(discussion.valid_reason_and_position_not_equal(request))
+
+    def test_different_position_and_reason_is_valid(self):
+        request: IRequest = construct_dummy_request(
+            match_dict={
+                'slug': self.issue_cat_or_dog.slug
+            },
+            json_body={
+                'position': 'some position',
+                'reason': 'some valid reason for it'
+            })
+        self.assertTrue(discussion.valid_reason_and_position_not_equal(request))
 
 
 class TestValidReactionArguments(TestCaseWithConfig):
