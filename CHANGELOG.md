@@ -1,3 +1,17 @@
+### 1.10.6 (2018-10-15)
+- Add CLI function to promote / demote a user to an admin !595
+- Add more detailed error-msgs in issues !604
+- Add route to add new position !605
+- Add validators for form-inputs in the discussion !605
+- Add public API route `/api/search?q=foo` to search for statements (support for 3rd party applications) !607
+- Fix resolve of statements in GraphiQL !600
+- Fix Login-problem for API users, which could no longer change their passwords !598
+- Refactor magic numbers in Fuzzy Mode !601 !602
+- Refactor environment variables !597 !607
+- Language fixes !603
+- Use Abstract Base Class and generalize Queues !596 !597
+- Remove deprecated cryptacular with bcrypt !594
+
 ### 1.10.5 (2018-09-21)
 - Fix login flow for LDAP users !591
 - Kick hardcoded admin from notifications !590
