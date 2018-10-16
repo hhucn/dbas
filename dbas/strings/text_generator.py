@@ -3,7 +3,7 @@
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement
-from dbas.lib import get_author_data, Relations
+from dbas.lib import get_author_data, Relations, get_global_url
 from dbas.strings.lib import start_with_capital, start_with_small
 from .keywords import Keywords as _
 from .translator import Translator
@@ -487,30 +487,19 @@ def get_text_for_edit_text_message(lang, nickname, orginal, edit, url, for_html=
         return _t.get(_.editTextMessage).format(nickname, orginal, edit, url)
 
 
-def get_text_for_add_text_message(nickname, lang, url, for_html=True):
+def get_text_for_message(nickname, lang, url, message_content, for_html=True):
     """
-    Returns text for the adding an statement
+    This method creates a email message used in a email.
 
-    :param nickname: User.nickname
-    :param lang: Language.ui_locales
-    :param url: String
-    :param for_html: Boolean
-    :return:
+    :param nickname: The nickname of the addressed user
+    :param lang: The language to be used in the email
+    :param url: The url for the user where he can find the changes
+    :param message_content: The key variable which will be translated into a message
+    :param for_html: A boolean to determine if the Message should contain a clickable link
+    :return: A Message addressed to a user which can contain a clickable or non-clickable link
     """
-    return __get_text_for_add_something(nickname, lang, url, _.statementAddedMessageContent, for_html)
 
-
-def get_text_for_add_argument_message(nickname, lang, url, for_html=True):
-    """
-    Returns text for the adding an argument
-
-    :param nickname: User.nickname
-    :param lang: Language.ui_locales
-    :param url: String
-    :param for_html: Boolean
-    :return:
-    """
-    return __get_text_for_add_something(nickname, lang, url, _.argumentAddedMessageContent, for_html)
+    return __get_text_for_add_something(nickname, lang, url, message_content, for_html)
 
 
 def __get_text_for_add_something(nickname, lang, url, keyword, for_html=True):
@@ -519,9 +508,10 @@ def __get_text_for_add_something(nickname, lang, url, keyword, for_html=True):
     intro = _t.get(keyword).format(nickname)
     clickForMore = start_with_capital(_t.get(_.clickForMore))
     if for_html:
-        url = f'/discuss{url}'
+        url = f'{get_global_url()}/discuss{url}'
         url = f'<a href="{url}">{clickForMore}</a>'
-
+    else:
+        url = get_global_url() + '/discuss' + url
     return f'{intro}{nl}{clickForMore}: {url}'
 
 

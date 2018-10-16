@@ -1,10 +1,11 @@
 import itertools
+import unittest
 
 import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, MarkedArgument
-from dbas.lib import Relations
+from dbas.lib import Relations, get_global_url
 from dbas.strings import text_generator as tg
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
@@ -289,37 +290,6 @@ class TextGeneratorText(TestCaseWithConfig):
         self.assertIsNone(tg.get_author_or_first_supporter_of_element(arg, user1, True))
         self.assertIsNone(tg.get_author_or_first_supporter_of_element(arg, user2, True))
 
-    def test_get_text_for_edit_text_message(self):
-        text = tg.get_text_for_edit_text_message('en', 'Tobias', 'oem', 'edit', 'some_url', True)
-        self.assertEqual(text,
-                         'Your original statement was edited by Tobias<br>From: oem<br>To: edit<br>Where: <a href="some_url">some_url</a>')
-
-        text = tg.get_text_for_edit_text_message('en', 'Tobias', 'oem', 'edit', 'some_url', False)
-        self.assertEqual(text, 'Your original statement was edited by Tobias\nFrom: oem\nTo: edit\nWhere: some_url')
-
-        text = tg.get_text_for_edit_text_message('de', 'Tobias', 'oem', 'edit', 'some_url', True)
-        self.assertEqual(text,
-                         'Ihr Text wurde geändert von Tobias<br>Von: oem<br>Zu: edit<br>Wo: <a href="some_url">some_url</a>')
-
-        text = tg.get_text_for_edit_text_message('de', 'Tobias', 'oem', 'edit', 'some_url', False)
-        self.assertEqual(text, 'Ihr Text wurde geändert von Tobias\nVon: oem\nZu: edit\nWo: some_url')
-
-    def test_get_text_for_add_text_message(self):
-        text = tg.get_text_for_add_text_message('Tobias', 'en', 'some_url', True)
-        self.assertEqual(text,
-                         'Hey, someone has added his/her opinion regarding your argument!<br>Where: <a href="some_url">some_url</a>')
-
-        text = tg.get_text_for_add_text_message('Tobias', 'en', 'some_url', False)
-        self.assertEqual(text, '''Hey, someone has added his/her opinion regarding your argument!\nWhere: some_url''')
-
-    def test_get_text_for_add_argument_message(self):
-        text = tg.get_text_for_add_argument_message('Tobias', 'en', 'some_url', True)
-        self.assertEqual(text,
-                         'Hey, someone has added his/her argument regarding your argument!<br>Where: <a href="some_url">some_url</a>')
-
-        text = tg.get_text_for_add_argument_message('Tobias', 'en', 'some_url', False)
-        self.assertEqual(text, '''Hey, someone has added his/her argument regarding your argument!\nWhere: some_url''')
-
     def test_get_text_for_confrontation_without_attack(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
@@ -532,3 +502,32 @@ class TextGeneratorText(TestCaseWithConfig):
                                                              user_arg, sys_arg, color_html)
             self.assertEqual(gender, 'n')
             self.assertEqual(sys_text, text)
+
+
+class TestTextGeneration(unittest.TestCase):
+    def setUp(self):
+        self.name = 'Coconut'
+        self.url = '/Coconut/Seagull'
+
+    def test_get_text_for_add_text_message(self):
+        for language, is_html, message in list(itertools.product(['en', 'de'],
+                                                                 [True, False],
+                                                                 [_.statementAddedMessageContent,
+                                                                  _.argumentAddedMessageContent])
+                                               ):
+            text = tg.get_text_for_message(self.name, language, self.url, message, is_html)
+            _t = Translator(language)
+            intro = _t.get(message).format(self.name)
+            if is_html:
+                intro = intro + '<br>' + _t.get(_.clickForMore) + ': <a href="{}/discuss{}">' + _t.get(
+                    _.clickForMore) + '</a>'
+                intro = intro.format(
+                    get_global_url(),
+                    self.url)
+            else:
+                intro = intro + '\n' + _t.get(_.clickForMore)
+                intro = intro + ': {}/discuss{}'.format(
+                    get_global_url(),
+                    self.url)
+            self.assertEqual(text, intro)
+            print(text)

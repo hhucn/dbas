@@ -13,8 +13,7 @@ from dbas.database.discussion_model import User, TextVersion, Message, Language,
 from dbas.handler import user as user_handler
 from dbas.lib import escape_string, get_profile_picture
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, \
-    get_text_for_add_argument_message
+from dbas.strings.text_generator import get_text_for_message
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
 
@@ -38,96 +37,6 @@ def send_users_notification(author, recipient, title, text, ui_locales) -> dict:
         'recipient_avatar': get_profile_picture(recipient, 20)
     }
     return prepared_dict
-
-
-def send_edit_text_notification(db_user, textversion, path, mailer):
-    """
-    Sends an notification to the root-author and last author, when their text was edited.
-
-    :param db_user: Current User
-    :param textversion: new Textversion
-    :param path: curren path
-    :param mailer: Instance of pyramid mailer
-    :return: None
-    """
-    all_textversions = DBDiscussionSession.query(TextVersion).filter_by(
-        statement_uid=textversion.statement_uid).order_by(TextVersion.uid.desc()).all()
-    oem = all_textversions[-1]
-    root_author = oem.author_uid
-    new_author = textversion.author_uid
-    last_author = all_textversions[-2].author_uid if len(all_textversions) > 1 else root_author
-    settings_root_author = root_author.settings
-    settings_last_author = last_author.settings
-
-    # create content
-    db_editor = DBDiscussionSession.query(User).get(new_author)
-    db_settings = db_editor.settings
-    editor_ui_locales = db_settings.lang
-
-    # add some information for highlights
-    if path is not None:
-        path += '?edited_statement=' + str(textversion.statement_uid)
-
-    if settings_root_author.should_send_mails is True \
-            and root_author != db_user.uid \
-            and path is not None:
-        email_helper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, db_editor, path, mailer)
-
-    if new_author != last_author \
-            and settings_last_author.should_send_mails is True \
-            and new_author != db_user.uid \
-            and path is not None:
-        email_helper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, db_editor, path, mailer)
-
-    # check for different authors
-    if root_author == new_author:
-        return None
-
-    # send notifications
-    user_lang1 = DBDiscussionSession.query(Language).get(settings_root_author.lang_uid).ui_locales
-    user_lang2 = DBDiscussionSession.query(Language).get(settings_last_author.lang_uid).ui_locales
-    if settings_root_author.should_send_notifications \
-            and root_author != db_user.uid:
-        _t_user = Translator(user_lang1)
-        db_root_author = DBDiscussionSession.query(User).get(root_author)
-        send_request_for_info_popup_to_socketio(db_root_author.nickname, _t_user.get(_.textChange), path,
-                                                increase_counter=True)
-
-    if last_author != root_author \
-            and last_author != new_author \
-            and last_author != db_user.uid \
-            and settings_last_author.should_send_notifications:
-        _t_user = Translator(user_lang2)
-        db_last_author = DBDiscussionSession.query(User).get(last_author)
-        send_request_for_info_popup_to_socketio(db_last_author.nickname, _t_user.get(_.textChange), path,
-                                                increase_counter=True)
-
-    _t1 = Translator(user_lang1)
-    topic1 = _t1.get(_.textversionChangedTopic)
-    content1 = get_text_for_edit_text_message(editor_ui_locales, db_editor.public_nickname, textversion.content,
-                                              oem.content, path)
-
-    _t2 = Translator(user_lang2)
-    topic2 = _t2.get(_.textversionChangedTopic)
-    content2 = get_text_for_edit_text_message(editor_ui_locales, db_editor.public_nickname, textversion.content,
-                                              oem.content, path)
-
-    notifications = []
-    if new_author != root_author:
-        notifications.append(Message(from_author_uid=new_author,
-                                     to_author_uid=root_author,
-                                     topic=topic1,
-                                     content=content1,
-                                     is_inbox=True))
-    if new_author != last_author:
-        notifications.append(Message(from_author_uid=new_author,
-                                     to_author_uid=last_author,
-                                     topic=topic2,
-                                     content=content2,
-                                     is_inbox=True))
-    if len(notifications) > 0:
-        DBDiscussionSession.add_all(notifications)
-        DBDiscussionSession.flush()
 
 
 def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
@@ -179,10 +88,10 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
 
     # get topic and content for messages to both authors
     topic1 = _t_root.get(_.statementAdded)
-    content1 = get_text_for_add_text_message(db_root_author.firstname, root_lang, url, True)
+    content1 = get_text_for_message(db_root_author.firstname, root_lang, url, _.statementAddedMessageContent, True)
 
     topic2 = _t_editor.get(_.statementAdded)
-    content2 = get_text_for_add_text_message(db_last_editor.firstname, editor_lang, url, True)
+    content2 = get_text_for_message(db_last_editor.firstname, editor_lang, url, _.statementAddedMessageContent, True)
 
     if db_root_author != db_user:
         DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
@@ -233,7 +142,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, mailer):
     db_admin = user_handler.get_list_of_admins()[0]
 
     topic = _t_user.get(_.argumentAdded)
-    content = get_text_for_add_argument_message(db_author.firstname, user_lang, url, True)
+    content = get_text_for_message(db_author.firstname, user_lang, url, _.argumentAddedMessageContent, True)
 
     DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
                                     to_author_uid=db_author.uid,
