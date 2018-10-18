@@ -665,7 +665,7 @@ en_lang = {
     _.argumentAdded: 'Argument was added',
     _.positionAdded: 'Position was added',
     _.statementAddedMessageContent: 'Hey {},\n\nsomeone has added his/her opinion regarding your argument!',
-    _.argumentAddedMessageContent: 'Hey, someone has added his/her argument regarding your argument!',
+    _.argumentAddedMessageContent: 'Hey {},\n\nsomeone has added his/her argument regarding your argument!',
     _.statementIndex: 'Written statements - Last 30 Days',
     _.statementIndexInfo: 'Count of added Statements',
     _.sureThat: 'I\'m reasonably sure that ',

@@ -8,6 +8,7 @@ import logging
 import os
 import smtplib
 from socket import error as socket_error
+from threading import Thread
 
 from pyramid_mailer.message import Message
 
@@ -60,21 +61,20 @@ def send_mail(mailer, subject, body, recipient, lang):
 
     # try sending an catching errors
     try:
-        from threading import Thread
         t = Thread(target=__thread_to_send_mail, args=(mailer, message, recipient, body,))
         t.start()
         send_message = True
-        message = _t.get(_.emailWasSent)
+        status_message = _t.get(_.emailWasSent)
     except smtplib.SMTPConnectError as exception:
         code = str(exception.smtp_code)
         error = str(exception.smtp_error)
         LOG.debug("Exception smtplib.SMTPConnectionError smtp code / error %s / %s", code, error)
-        message = _t.get(_.emailWasNotSent)
+        status_message = _t.get(_.emailWasNotSent)
     except socket_error as serr:
         LOG.debug("Socker error while sending %s", serr)
-        message = _t.get(_.emailWasNotSent)
+        status_message = _t.get(_.emailWasNotSent)
 
-    return send_message, message
+    return send_message, status_message, message
 
 
 def __thread_to_send_mail(mailer, message, recipient, body):
