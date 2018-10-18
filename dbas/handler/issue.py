@@ -5,11 +5,11 @@ Provides helping function for issues.
 """
 from datetime import date, timedelta
 from json import JSONDecodeError
-from math import ceil
 from typing import Optional, List
 
 import arrow
 import transaction
+from math import ceil
 from pyramid.request import Request
 from slugify import slugify
 
@@ -274,7 +274,6 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     """
     db_issues: List[Issue] = get_visible_issues_for_user(db_user)
     db_issues.sort(key=lambda issue: issue.uid)
-    print(db_issues)
     date_dict = {}
     readable = []
     writable = []

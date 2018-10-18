@@ -1,7 +1,9 @@
+from dataclasses import dataclass
+
 from dbas.database.discussion_model import Issue, User
 
 
-class ParticipatedInDiscussion(object):
-    def __init__(self, user: User, issue: Issue):
-        self.user = user
-        self.issue = issue
+@dataclass
+class ParticipatedInDiscussion:
+    user: User
+    issue: Issue
