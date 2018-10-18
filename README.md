@@ -21,12 +21,12 @@ Ensure that the following tools are installed:
 * [Docker](https://docs.docker.com/engine/installation/)
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
-Then copy the `skeleton.env` to `development.env` and fill out the fields you need.
-At least the following field should be set:
- - `DB_*` ; Please fill out every value of your used database.
- - `MAIL_*`; Please fill out every value of your mail server.
- - `WEBSOCKET_PORT` with the port of the small node.js server. Default is 5222. On modification, please set the new port on `websocket/static/js/websocket.js` too. 
- - `MIN_LENGTH_OF_STATEMENT` is the minimal length of any statement in D-BAS. We think, that `10` is a good default value.
+## Environment variables
+D-BAS need some environment variables to be set for running properly.
+By default those variables which are required by D-BAS are stored in `.env`.
+To get further details on which variables are set or how they can be added/changed take a look at the documentation [here](https://dbas.cs.uni-duesseldorf.de/docs/installation.html).
+
+## Run D-BAS
 
 Then follow these steps:
 
