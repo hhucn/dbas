@@ -4,25 +4,25 @@ Common, pure functions used by the D-BAS.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from collections import defaultdict
-
 import hashlib
 import locale
 import logging
 import os
 import re
 import warnings
+from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
-from sqlalchemy import func
 from typing import List, Optional
 from urllib import parse
 from uuid import uuid4
 
+from sqlalchemy import func
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, Settings, \
-    ClickedArgument, ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup, StatementToIssue
+    ClickedArgument, ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.translator import Translator
@@ -1291,30 +1291,15 @@ def get_enabled_issues_as_query():
     return DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
 
 
-def get_visible_issues_for_user_as_query(user_uid):
+def get_visible_issues_for_user(user: User) -> List[Issue]:
     """
     Returns query with all issues, which are visible for the user
 
-    :param user_uid:
+    :param user:
     :return: Query
     """
-    db_valid_issues = DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
-                                                              Issue.is_private == False).all()
-    set_of_visited_issues = {tmp.uid for tmp in db_valid_issues}
 
-    db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user_uid).all()
+    db_issues = set(DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                            Issue.is_private == False).all())
 
-    statement_uids = [el.statement_uid for el in db_clicked_statements]
-    db_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(statement_uids)).all()
-
-    statement_uids = [st.uid for st in db_statements]
-    db_statement2issues = DBDiscussionSession.query(StatementToIssue).filter(
-        StatementToIssue.statement_uid.in_(statement_uids)).all()
-
-    issue_ids = [st.issue_uid for st in db_statement2issues]
-    db_valid_issues = DBDiscussionSession.query(Issue).filter(Issue.uid.in_(issue_ids)).all()
-
-    for issue in db_valid_issues:
-        set_of_visited_issues.add(issue.uid)
-
-    return DBDiscussionSession.query(Issue).filter(Issue.uid.in_(list(set_of_visited_issues)))
+    return list(db_issues.union(user.participates_in))

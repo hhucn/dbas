@@ -8,6 +8,7 @@ We are not deleting opposite votes for detecting opinion changes!
 """
 
 import logging
+
 import transaction
 
 from dbas.database import DBDiscussionSession
@@ -44,8 +45,6 @@ def add_click_for_argument(db_argument: Argument, db_user: User) -> bool:
         else:
             LOG.debug("Undercut depth 2")
             __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user)
-
-    transaction.commit()
 
     return True
 
