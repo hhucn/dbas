@@ -90,9 +90,9 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
     body += _tn.get(_.newPwdIs) + rnd_pwd + '\n\n'
     body += _tn.get(_.newPwdInfo)
     subject = _tn.get(_.dbasPwdRequest)
-    success, message = send_mail(mailer, subject, body, email, db_language.ui_locales)
+    success, success_message, message = send_mail(mailer, subject, body, email, db_language.ui_locales)
 
     return {
         'success': success,
-        'message': message
+        'message': success_message
     }

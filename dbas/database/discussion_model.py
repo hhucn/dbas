@@ -69,6 +69,7 @@ class Issue(DiscussionBase):
 
     users = relationship('User', foreign_keys=[author_uid])
     languages = relationship('Language', foreign_keys=[lang_uid])
+    participating_users = relationship('User', secondary='user_participation')
 
     def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
                  is_read_only=False):
@@ -195,6 +196,8 @@ class User(DiscussionBase):
     oauth_provider_id = Column(Text, nullable=True)
 
     groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
+    history: List['History'] = relationship('History', back_populates='author')
+    participates_in = relationship('Issue', secondary='user_participation')
 
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='',
                  token_timestamp=None, oauth_provider='', oauth_provider_id=''):
@@ -366,6 +369,15 @@ class User(DiscussionBase):
     @staticmethod
     def by_nickname(nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
         return DBDiscussionSession.query(User).filter_by(nickname=nickname).one()
+
+
+class UserParticipation(DiscussionBase):
+    __tablename__ = 'user_participation'
+    user_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
+    issue_uid = Column(Integer, ForeignKey('issues.uid'), primary_key=True)
+
+    user = relationship('User')
+    issue = relationship('Issue')
 
 
 class Settings(DiscussionBase):
@@ -757,8 +769,8 @@ class TextVersion(DiscussionBase):
     timestamp = Column(ArrowType, default=get_now())
     is_disabled = Column(Boolean, nullable=False)
 
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    users = relationship('User', foreign_keys=[author_uid])
+    statement = relationship('Statement', foreign_keys=[statement_uid])
+    author = relationship('User', foreign_keys=[author_uid])
 
     def __init__(self, content, author, statement_uid=None, is_disabled=False):
         """
@@ -1079,7 +1091,7 @@ class History(DiscussionBase):
     path = Column(Text, nullable=False)
     timestamp = Column(ArrowType, default=get_now())
 
-    users = relationship('User', foreign_keys=[author_uid])
+    author = relationship('User', foreign_keys=[author_uid], back_populates='history')
 
     def __init__(self, author_uid, path):
         """

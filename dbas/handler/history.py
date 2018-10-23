@@ -4,8 +4,7 @@ Provides helping function for creating the history as bubbles.
 .. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 import transaction
 from pyramid.request import Request
@@ -37,7 +36,6 @@ def save_issue_uid(issue_uid: int, db_user: User):
     db_settings = db_user.settings
     db_settings.set_last_topic_uid(issue_uid)
     DBDiscussionSession.add(db_settings)
-    transaction.commit()
 
 
 def get_last_issue_of(db_user: User) -> Optional[Issue]:

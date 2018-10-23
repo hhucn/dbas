@@ -49,7 +49,6 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         self.statement_reference: StatementReferences = DBDiscussionSession.query(StatementReferences).get(2)
 
         DBDiscussionSession.query(Argument).get(1).set_disabled(True)
-        transaction.commit()
 
     def tearDown(self):
         DBDiscussionSession.query(Argument).get(1).set_disabled(False)
