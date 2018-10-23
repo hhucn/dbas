@@ -3,6 +3,7 @@ FROM python:3.7-slim
 ENV locs /etc/locale.gen
 ENV TEMPLATE_FOLDER /dbas/dbas/templates/
 ENV CHAMELEON_CACHE ${TEMPLATE_FOLDER}cache
+ENV TZ Europe/Berlin
 
 RUN apt-get update -qq && \
     apt-get install -yqq curl gnupg2 && \
@@ -17,7 +18,8 @@ RUN apt-get update -qq && \
     echo "de_DE.UTF-8 UTF-8" >> $locs && \
     echo "en_US.UTF-8 UTF-8" >> $locs && \
     locale-gen && \
-    echo "Europe/Berlin" > /etc/timezone && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime &&\
+    echo $TZ > /etc/timezone && \
     dpkg-reconfigure -f noninteractive tzdata && \
     apt-get remove -y --purge curl bzip2 && \
     apt-get autoremove -y && \
