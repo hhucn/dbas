@@ -326,7 +326,10 @@ def valid_relation(request):
     return True
 
 
-def valid_statement(location, depends_on: Set[Callable[[Request], bool]] = set()) -> Callable[[Request], bool]:
+def valid_statement(location, depends_on: Set[Callable[[Request], bool]] = None) -> Callable[[Request], bool]:
+    if depends_on is None:
+        depends_on = set()
+
     def inner(request):
         if depends_on and not all([dependence(request) for dependence in depends_on if depends_on]):
             return False
@@ -341,7 +344,10 @@ def valid_statement(location, depends_on: Set[Callable[[Request], bool]] = set()
     return inner
 
 
-def valid_argument(location, depends_on: Set[Callable[[Request], bool]] = set()) -> Callable[[Request], bool]:
+def valid_argument(location, depends_on: Set[Callable[[Request], bool]] = None) -> Callable[[Request], bool]:
+    if depends_on is None:
+        depends_on = set()
+
     def inner(request):
         if not all([dependence(request) for dependence in depends_on if depends_on]):
             return False
