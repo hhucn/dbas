@@ -28,8 +28,6 @@ class IssueHandlerTests(TestCaseWithConfig):
         self.assertTrue(len(response['issue']) >= 0)
 
         DBDiscussionSession.query(Issue).filter_by(title=title).delete()
-        DBDiscussionSession.flush()
-        transaction.commit()
 
     def test_prepare_json_of_issue(self):
         response = ih.prepare_json_of_issue(self.issue_town, self.user_anonymous)

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Build CSS, JS and Python assets
-
+set -e
 echo ":: Build D-BAS"
 python3 setup.py --quiet develop
 

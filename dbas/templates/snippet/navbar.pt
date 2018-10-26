@@ -5,6 +5,9 @@
         <a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right">
           <img src="${request.static_url('dbas:static/images/logo/black.svg')}" alt="D-BAS Logo"><span>D-BAS</span>
         </a>
+        <div class="navbar-brand ajaxloader">
+          <img class="center rotating" src="${request.static_url('dbas:static/images/icons/ajax-icon.png')}" alt="loading">
+        </div>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
           <span class="sr-only" i18n:translate="Toggle Navigation">Toggle navigation</span>
           <span class="icon-bar"></span>

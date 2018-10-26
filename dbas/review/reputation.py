@@ -3,11 +3,11 @@ Provides helping function for handling reputation.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
-import arrow
 import logging
-import transaction
 from enum import Enum
 from typing import Optional
+
+import arrow
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason, sql_timestamp_pretty_print
@@ -154,7 +154,6 @@ def add_reputation_for(db_user: User, db_reason: ReputationReason):
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()
-    transaction.commit()
     return True
 
 

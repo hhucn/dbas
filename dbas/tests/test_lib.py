@@ -6,9 +6,8 @@ from dbas import lib
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, Issue, Premise
 from dbas.helper.url import UrlManager
-from dbas.lib import get_enabled_issues_as_query
-from dbas.lib import get_enabled_statement_as_query, get_enabled_arguments_as_query, get_enabled_premises_as_query, \
-    get_visible_issues_for_user_as_query
+from dbas.lib import get_enabled_issues_as_query, get_enabled_statement_as_query, get_enabled_arguments_as_query, \
+    get_enabled_premises_as_query, get_visible_issues_for_user
 from dbas.tests.utils import TestCaseWithConfig
 
 
@@ -421,7 +420,7 @@ class TestVisibilityOfDisabledEntites(TestCaseWithConfig):
         self.assertEqual(res_len, query_len)
 
     def test_get_visible_issues_for_user_as_query(self):
-        issue_uids = [issue.uid for issue in get_visible_issues_for_user_as_query(self.user_christian.uid).all()]
+        issue_uids = [issue.uid for issue in get_visible_issues_for_user(self.user_christian)]
         self.assertCountEqual(issue_uids, [2, 3, 4, 5, 7, 8])
 
     def test_is_argument_disabled_due_to_disabled_statements(self):

@@ -1,3 +1,11 @@
+### 1.11.0 (2018-10-26)
+- Add overview to see link-only discussions in "My Discussions" !610
+- Add new spinner icon, which does not block the website !614
+- Fix build process so that build script really fails if there is an error !612
+- Fix mutable return values in validators !617
+- Fix Model resolving with GraphQL !616
+- Fix URL in sent mails !611
+
 ### 1.10.6 (2018-10-15)
 - Add CLI function to promote / demote a user to an admin !595
 - Add more detailed error-msgs in issues !604

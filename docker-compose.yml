@@ -14,7 +14,7 @@ services:
     build: .
     command: bash -c "sleep 8 && alembic upgrade head && pserve development.ini --reload"
     volumes:
-      - .:/dbas
+    - .:/dbas:delegated
     ports:
       - "4284:4284"
     environment:

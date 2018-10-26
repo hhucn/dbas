@@ -119,8 +119,7 @@ class StatementGraph(SQLAlchemyObjectType):
 
     @staticmethod
     def plural():
-        return graphene.List(StatementGraph, is_position=graphene.Boolean(), issue_uid=graphene.Int(),
-                             is_disabled=graphene.Boolean())
+        return graphene.List(StatementGraph, is_position=graphene.Boolean(), is_disabled=graphene.Boolean())
 
 
 class StatementReferencesGraph(SQLAlchemyObjectType):
@@ -136,23 +135,10 @@ class StatementOriginsGraph(SQLAlchemyObjectType):
 
 class IssueGraph(SQLAlchemyObjectType):
     position = StatementGraph.singular()
-    positions = StatementGraph.plural()
-    statements = StatementGraph.plural()
     arguments = ArgumentGraph.plural()
 
     def resolve_position(self, info, **kwargs):
         return resolve_field_query(kwargs, info, StatementGraph)
-
-    def resolve_positions(self, info, **kwargs):
-        return DBDiscussionSession.query(Statement).join(Premise).filter(Premise.issue_uid == self.uid,
-                                                                         Premise.is_disabled == False,
-                                                                         Statement.is_position == True).filter_by(
-            **kwargs)
-
-    def resolve_statements(self, info, **kwargs):
-        return DBDiscussionSession.query(Statement).join(Premise).filter(Premise.issue_uid == self.uid,
-                                                                         Premise.is_disabled == False).filter_by(
-            **kwargs)
 
     def resolve_arguments(self, info, **kwargs):
         return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, ArgumentGraph)
@@ -174,8 +160,7 @@ class IssueGraph(SQLAlchemyObjectType):
 class UserGraph(SQLAlchemyObjectType):
     class Meta:
         model = User
-        exclude_fields = ["last_action", "last_login", "registered", "token", "token_timestamp", "password", "nickname",
-                          "firstname", "surname", "gender", "email", "group_uid", "groups"]
+        only_fields = ["uid", "public_nickname", "last_action", "registered", "last_login"]
 
 
 class LanguageGraph(SQLAlchemyObjectType):

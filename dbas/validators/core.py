@@ -1,7 +1,7 @@
 """
 Core validation class for validators.
 """
-from typing import Tuple
+from typing import Tuple, List, Callable, Optional
 
 from cornice import Errors
 from cornice.util import json_error
@@ -111,11 +111,11 @@ class validate(object):
         def my_view(request)
     """
 
-    def __init__(self, *validators):
-        self.validators = validators
+    def __init__(self, *validators: List[Callable[[Request], Optional[bool]]]):
+        self.validators: List[Callable[[Request], Optional[bool]]] = validators
 
-    def __call__(self, func):
-        def inner(request):
+    def __call__(self, func: Callable[[Request], dict]):
+        def inner(request: Request):
             if not hasattr(request, 'validated'):
                 setattr(request, 'validated', {})
             if not hasattr(request, 'errors'):
