@@ -30,7 +30,7 @@ from dbas.lib import (get_all_arguments_by_statement,
 from dbas.strings.matcher import get_all_statements_by_levensthein_similar_to
 from dbas.strings.translator import Keywords as _, get_translation, Translator
 from dbas.validators.common import valid_q_parameter
-from dbas.validators.core import has_keywords, validate, has_maybe_keywords
+from dbas.validators.core import has_keywords_in_json_path, validate, has_maybe_keywords
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_reason_and_position_not_equal, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
@@ -399,6 +399,10 @@ def get_references(request: Request):
     :param request: request
     :return: References assigned to the queried URL
     """
+    from pprint import pprint
+    pprint(request)
+    pprint(request.params)
+
     host = request.host
     path = request.path
     log.debug("Querying references for host: {}, path: {}".format(host, path))
@@ -429,7 +433,7 @@ def get_reference_usages(request: Request):
 # =============================================================================
 
 @login.post(require_csrf=False)
-@validate(has_keywords(('nickname', str), ('password', str)), validate_credentials)
+@validate(has_keywords_in_json_path(('nickname', str), ('password', str)), validate_credentials)
 def user_login(request):
     """
     Check provided credentials and return a token, if it is a valid user. The function body is only executed,
@@ -663,8 +667,9 @@ class ApiUser(object):
 
     @staticmethod
     @validate(valid_api_token,
-              has_keywords(('firstname', str), ('lastname', str), ('nickname', str), ('email', str), ('gender', str),
-                           ('id', int), ('locale', str), ('service', str)))
+              has_keywords_in_json_path(('firstname', str), ('lastname', str), ('nickname', str), ('email', str),
+                                        ('gender', str),
+                                        ('id', int), ('locale', str), ('service', str)))
     def _collection_post(request):
         result = set_new_oauth_user(request.json_body,
                                     request.json_body['id'],

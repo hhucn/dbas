@@ -1,4 +1,5 @@
 import logging
+
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
@@ -18,7 +19,7 @@ from dbas.review.queue.merge import MergeQueue
 from dbas.review.queue.optimization import OptimizationQueue
 from dbas.review.queue.split import SplitQueue
 from dbas.strings.translator import Translator
-from dbas.validators.core import validate, has_keywords, has_maybe_keywords
+from dbas.validators.core import validate, has_keywords_in_json_path, has_maybe_keywords
 from dbas.validators.database import valid_database_model
 from dbas.validators.discussion import valid_premisegroup, valid_text_values, valid_statement, valid_argument
 from dbas.validators.reviews import valid_review_reason, valid_not_executed_review, valid_uid_as_row_in_review_queue
@@ -30,7 +31,7 @@ LOG = logging.getLogger(__name__)
 
 
 @view_config(route_name='flag_argument_or_statement', renderer='json')
-@validate(valid_user, valid_review_reason, has_keywords(('uid', int), ('is_argument', bool)),
+@validate(valid_user, valid_review_reason, has_keywords_in_json_path(('uid', int), ('is_argument', bool)),
           has_maybe_keywords(('extra_uid', int, None)))
 def flag_argument_or_statement(request):
     """
@@ -50,7 +51,7 @@ def flag_argument_or_statement(request):
 
 
 @view_config(route_name='split_or_merge_statement', renderer='json')
-@validate(valid_user, valid_premisegroup, valid_text_values, has_keywords(('key', str)))
+@validate(valid_user, valid_premisegroup, valid_text_values, has_keywords_in_json_path(('key', str)))
 def split_or_merge_statement(request):
     """
     Flags a statement for a specific reason
@@ -72,7 +73,7 @@ def split_or_merge_statement(request):
 
 
 @view_config(route_name='split_or_merge_premisegroup', renderer='json')
-@validate(valid_user, valid_premisegroup, has_keywords(('key', str)))
+@validate(valid_user, valid_premisegroup, has_keywords_in_json_path(('key', str)))
 def split_or_merge_premisegroup(request):
     """
     Flags a premisegroup for a specific reason
@@ -93,7 +94,8 @@ def split_or_merge_premisegroup(request):
 
 
 @view_config(route_name='review_delete_argument', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewDelete), has_keywords(('should_delete', bool)))
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewDelete),
+          has_keywords_in_json_path(('should_delete', bool)))
 def review_delete_argument(request):
     """
     Values for the review for an argument, which should be deleted
@@ -115,7 +117,8 @@ def review_delete_argument(request):
 
 
 @view_config(route_name='review_edit_argument', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewEdit), has_keywords(('is_edit_okay', bool)))
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewEdit),
+          has_keywords_in_json_path(('is_edit_okay', bool)))
 def review_edit_argument(request):
     """
     Values for the review for an argument, which should be edited
@@ -137,7 +140,8 @@ def review_edit_argument(request):
 
 
 @view_config(route_name='review_duplicate_statement', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewDuplicate), has_keywords(('is_duplicate', bool)))
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewDuplicate),
+          has_keywords_in_json_path(('is_duplicate', bool)))
 def review_duplicate_statement(request):
     """
     Values for the review for an argument, which is maybe a duplicate
@@ -160,7 +164,7 @@ def review_duplicate_statement(request):
 
 @view_config(route_name='review_optimization_argument', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewOptimization),
-          has_keywords(('should_optimized', bool), ('new_data', list)))
+          has_keywords_in_json_path(('should_optimized', bool), ('new_data', list)))
 def review_optimization_argument(request):
     """
     Values for the review for an argument, which should be optimized
@@ -183,7 +187,8 @@ def review_optimization_argument(request):
 
 
 @view_config(route_name='review_splitted_premisegroup', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewSplit), has_keywords(('should_split', bool)))
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewSplit),
+          has_keywords_in_json_path(('should_split', bool)))
 def review_splitted_premisegroup(request):
     """
     Values for the review for a premisegroup, which should be splitted
@@ -205,7 +210,8 @@ def review_splitted_premisegroup(request):
 
 
 @view_config(route_name='review_merged_premisegroup', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewMerge), has_keywords(('should_merge', bool)))
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewMerge),
+          has_keywords_in_json_path(('should_merge', bool)))
 def review_merged_premisegroup(request):
     """
     Values for the review for a statement, which should be merged
@@ -227,7 +233,7 @@ def review_merged_premisegroup(request):
 
 
 @view_config(route_name='undo_review', renderer='json')
-@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
+@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords_in_json_path(('queue', str)))
 def undo_review(request):
     """
     Trys to undo a done review process
@@ -247,7 +253,7 @@ def undo_review(request):
 
 
 @view_config(route_name='cancel_review', renderer='json')
-@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
+@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords_in_json_path(('queue', str)))
 def cancel_review(request):
     """
     Trys to cancel an ongoing review
@@ -267,7 +273,7 @@ def cancel_review(request):
 
 
 @view_config(route_name='review_lock', renderer='json', require_csrf=False)
-@validate(valid_user, valid_database_model('review_uid', ReviewOptimization), has_keywords(('lock', bool)))
+@validate(valid_user, valid_database_model('review_uid', ReviewOptimization), has_keywords_in_json_path(('lock', bool)))
 def review_lock(request):
     """
     Locks an optimization review so that the user can do an edit

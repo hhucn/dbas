@@ -17,7 +17,7 @@ from dbas.handler.references import set_reference, get_references
 from dbas.helper.query import generate_short_url
 from dbas.lib import escape_string
 from dbas.validators.common import valid_language, valid_fuzzy_search_mode
-from dbas.validators.core import has_keywords, validate
+from dbas.validators.core import has_keywords_in_json_path, validate
 from dbas.validators.discussion import valid_issue_by_id, valid_statement, valid_text_length_of, valid_any_issue_by_id
 from dbas.validators.lib import add_error
 from dbas.validators.user import valid_user, valid_user_optional, valid_user_as_author
@@ -66,7 +66,7 @@ def main_api(request):
 
 # ajax - for shorten url
 @view_config(route_name='get_shortened_url', renderer='json')
-@validate(has_keywords(('url', str)))
+@validate(has_keywords_in_json_path(('url', str)))
 def get_shortened_url(request):
     """
     Shortens url with the help of a python lib
@@ -97,8 +97,8 @@ def get_news(request):
 # ajax - for getting all users with the same opinion
 @view_config(route_name='get_user_with_same_opinion', renderer='json')
 @validate(valid_language, valid_user_optional,
-          has_keywords(('uids', list), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool),
-                       ('is_position', bool)))
+          has_keywords_in_json_path(('uids', list), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool),
+                                    ('is_position', bool)))
 def get_users_with_opinion(request):
     """
     ajax interface for getting a dump
@@ -119,7 +119,7 @@ def get_users_with_opinion(request):
 
 
 @view_config(route_name='get_references', renderer='json')
-@validate(has_keywords(('uids', list), ('is_argument', bool)))
+@validate(has_keywords_in_json_path(('uids', list), ('is_argument', bool)))
 def get_reference(request):
     """
     Returns all references for an argument or statement
@@ -136,7 +136,7 @@ def get_reference(request):
 
 @view_config(route_name='set_references', renderer='json')
 @validate(valid_user, valid_any_issue_by_id, valid_statement('json_body'),
-          has_keywords(('reference', str), ('ref_source', str)))
+          has_keywords_in_json_path(('reference', str), ('ref_source', str)))
 def set_references(request):
     """
     Sets a reference for a statement or an arguments
@@ -207,7 +207,7 @@ def send_news(request):
 # ajax - for fuzzy search
 @view_config(route_name='fuzzy_search', renderer='json')
 @validate(valid_issue_by_id, valid_user_optional, valid_fuzzy_search_mode,
-          has_keywords(('value', str), ('statement_uid', int)))
+          has_keywords_in_json_path(('value', str), ('statement_uid', int)))
 def fuzzy_search(request):
     """
     ajax interface for fuzzy string search
@@ -230,7 +230,7 @@ def fuzzy_search(request):
 
 # ajax - for fuzzy search of nickname
 @view_config(route_name='fuzzy_nickname_search', renderer='json')
-@validate(valid_user_optional, has_keywords(('value', str)))
+@validate(valid_user_optional, has_keywords_in_json_path(('value', str)))
 def fuzzy_nickname_search(request):
     """
     ajax interface for fuzzy string search
