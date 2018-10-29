@@ -6,7 +6,7 @@ from dbas.tests.utils import TestCaseWithConfig
 
 class TestStatementOrigins(TestCaseWithConfig):
     def test_initialization(self):
-        origin = StatementOrigins("my-id", "my-host", 1, self.user_christian.uid, self.statement_cat_or_dog.uid)
+        origin = StatementOrigins("my-id", "my-host", 1, self.user_christian.nickname, self.statement_cat_or_dog.uid)
         self.assertTrue(origin)
 
 
