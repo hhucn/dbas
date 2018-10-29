@@ -1,7 +1,13 @@
 # coding=utf-8
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement, Issue, User, UserParticipation
+from dbas.database.discussion_model import Statement, Issue, User, UserParticipation, StatementOrigins
 from dbas.tests.utils import TestCaseWithConfig
+
+
+class TestStatementOrigins(TestCaseWithConfig):
+    def test_initialization(self):
+        origin = StatementOrigins("my-id", "my-host", 1, self.user_christian.uid, self.statement_cat_or_dog.uid)
+        self.assertTrue(origin)
 
 
 class StatementTests(TestCaseWithConfig):
