@@ -678,19 +678,19 @@ class StatementOrigins(DiscussionBase):
     author = relationship('User', foreign_keys=[author_uid])
     statement = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, entity_id, aggregate_id, author, version, statement_uid):
+    def __init__(self, entity_id, aggregate_id, author_uid, version, statement_uid):
         """
         Initialize the origin.
 
         :param entity_id: external id of the entity, e.g. a statement
-        :param aggregate_id: the original host where the entitity was first introduced into the system
-        :param author: external author of the statement
+        :param aggregate_id: the original host where the entity was first introduced into the system
+        :param author_uid: author of the statement
         :param version: current version, might be different from 1 if the entity was updated
         :param statement_uid: local statement where this origin needs to be assigned to
         """
         self.entity_id = entity_id
         self.aggregate_id = aggregate_id
-        self.author = author
+        self.author_uid = author_uid
         self.version = version
         self.statement_uid = statement_uid
 
