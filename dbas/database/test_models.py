@@ -11,7 +11,6 @@ class StatementTests(TestCaseWithConfig):
 
         for statement in some_statments:
             issues = statement.issues
-            self.assertIsInstance(issues, set)
             for issue in issues:
                 self.assertIsInstance(issue, Issue)
 

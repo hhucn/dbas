@@ -58,10 +58,6 @@
 
 <div metal:use-macro="load: snippet/footer.pt"></div>
 
-<div class="ajaxloader">
-  <img class="center rotating" src="${request.static_url('dbas:static/images/icons/ajax-icon.png')}" alt="loading">
-</div>
-
 <div metal:use-macro="load: snippet/js-scripts.pt"></div>
 
 <!-- Matomo -->

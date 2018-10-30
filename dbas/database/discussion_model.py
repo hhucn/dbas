@@ -5,7 +5,7 @@ D-BAS database Model
 """
 import warnings
 from abc import abstractmethod
-from typing import List, Set
+from typing import List
 
 import arrow
 import bcrypt
@@ -70,6 +70,10 @@ class Issue(DiscussionBase):
     users = relationship('User', foreign_keys=[author_uid])
     languages = relationship('Language', foreign_keys=[lang_uid])
     participating_users = relationship('User', secondary='user_participation')
+    statements = relationship('Statement', secondary='statement_to_issue')
+
+    positions = relationship('Statement', secondary='statement_to_issue', viewonly=True,
+                             secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
 
     def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
                  is_read_only=False):
@@ -487,6 +491,8 @@ class Statement(DiscussionBase):
     is_position = Column(Boolean)
     is_disabled = Column(Boolean, nullable=False)
 
+    issues = relationship('Issue', secondary='statement_to_issue', back_populates='statements')
+
     def __init__(self, is_position, is_disabled=False):
         """
         Inits a row in current statement table
@@ -565,12 +571,8 @@ class Statement(DiscussionBase):
         return self.get_textversion()
 
     @hybrid_property
-    def issues(self) -> Set[Issue]:
-        return set(DBDiscussionSession.query(Issue).join(Premise).join(Statement).filter(Statement.uid == self.uid))
-
-    @hybrid_property
     def issue_uid(self):
-        warnings.warn("Use the entries of StatementToIssue instead.", DeprecationWarning)
+        warnings.warn("Use 'issues' instead.", DeprecationWarning)
         return DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=self.uid).first().issue_uid
 
     def get_textversion(self):
@@ -704,6 +706,7 @@ class StatementToIssue(DiscussionBase):
         :param statement:
         :param issue:
         """
+        warnings.warn("Use Statement.issues and Issue.statements instead.", DeprecationWarning)
         self.statement_uid = statement
         self.issue_uid = issue
 
