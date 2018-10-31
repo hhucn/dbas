@@ -26,7 +26,7 @@ def __store_origin(origin: DataOrigin, statement_uid: int) -> Optional[Statement
 
 
 def add_origin_for_list_of_statements(origin: DataOrigin, list_of_statement_uids: List[int]) \
-        -> List[Optional[StatementOrigins]]:
+        -> Optional[List[StatementOrigins]]:
     """
     Create a new origin and connect it to the newly created statements.
 
@@ -34,5 +34,7 @@ def add_origin_for_list_of_statements(origin: DataOrigin, list_of_statement_uids
     :param list_of_statement_uids: List of statement_uids containing newly created statements
     :return:
     """
+    if not isinstance(list_of_statement_uids, list):
+        return None
     newly_added_statement_uids: Set[int] = set(list_of_statement_uids)
     return [__store_origin(origin, statement_uid) for statement_uid in newly_added_statement_uids]
