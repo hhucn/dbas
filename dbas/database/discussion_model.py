@@ -664,26 +664,26 @@ class StatementReferences(DiscussionBase):
 
 class StatementOrigins(DiscussionBase):
     """
-    Add an origin to the statement. Comes from external services, like the aggregators.
+    Add an origin to the statement. Comes from external services, like the EDEN-aggregators.
     """
     __tablename__ = 'statement_origins'
     uid = Column(Integer, primary_key=True)
     entity_id = Column(Text, nullable=True)
     aggregate_id = Column(Text, nullable=True)
-    author = Column(Text, nullable=True)
     version = Column(Integer, nullable=True)
     statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
+    author = Column(Text, nullable=True)
     created = Column(ArrowType, default=get_now())
 
-    statements = relationship('Statement', foreign_keys=[statement_uid])
+    statement = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, entity_id, aggregate_id, author, version, statement_uid):
+    def __init__(self, entity_id: str, aggregate_id: str, version: int, author: str, statement_uid: int):
         """
         Initialize the origin.
 
         :param entity_id: external id of the entity, e.g. a statement
-        :param aggregate_id: the original host where the entitity was first introduced into the system
-        :param author: external author of the statement
+        :param aggregate_id: the original host where the entity was first introduced into the system
+        :param author: author of the statement
         :param version: current version, might be different from 1 if the entity was updated
         :param statement_uid: local statement where this origin needs to be assigned to
         """
