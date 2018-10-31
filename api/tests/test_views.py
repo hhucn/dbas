@@ -355,16 +355,14 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
 
 class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
     def test_add_valid_reason(self):
-        # Add position
         request: IRequest = create_request_with_token_header(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': '18',
             'attitude': 'agree',
             'relation': 'undercut'
         }, json_body={
-            'reason': 'because i need to'
+            'reason': 'because i need to',
         })
-
         response: Response = apiviews.add_premise_to_argument(request)
         self.assertEqual(response.status_code, 303, response.body)
 
@@ -375,6 +373,44 @@ class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
 
         response: Response = apiviews.add_premise_to_argument(request)
         self.assertEqual(response.status_code, 400)
+
+    def test_add_valid_reason_with_valid_origin(self):
+        request: IRequest = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': '18',
+            'attitude': 'agree',
+            'relation': 'undercut'
+        }, json_body={
+            'reason': 'because i need to',
+            'origin': {
+                'entity-id': 23,
+                'aggregate-id': 'evil.com',
+                'author': 'penguin',
+                'version': 666
+            }
+        })
+
+        response: Response = apiviews.add_premise_to_argument(request)
+        self.assertEqual(response.status_code, 303, response.body)
+
+    def test_add_valid_reason_with_malformed_origin(self):
+        request: IRequest = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': '18',
+            'attitude': 'agree',
+            'relation': 'undercut'
+        }, json_body={
+            'reason': 'because i need to',
+            'origin': {
+                'entity-id': 23,
+                'aggregate-id': 'evil.com',
+                'author': 'penguin',
+                # missing: 'version'
+            }
+        })
+
+        response: Response = apiviews.add_premise_to_argument(request)
+        self.assertEqual(response.status_code, 400, response.body)
 
 
 class TestDiscussionReaction(TestCaseWithConfig):

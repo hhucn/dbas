@@ -17,9 +17,9 @@ from pyramid.request import Request
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
 import dbas.views.discussion as dbas
-from api.lib import extract_items_and_bubbles
+from api.lib import extract_items_and_bubbles, flatten
 from api.models import DataItem, DataBubble, DataReference, DataOrigin
-from api.origins import add_origin_for_premises
+from api.origins import add_origin_for_list_of_statements
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReferences
 from dbas.handler.arguments import set_arguments_premises
@@ -609,20 +609,21 @@ def add_premise_to_statement(request: IRequest):
                                history, request.mailer)
 
     if origin:
-        add_origin_for_premises(origin, pd['statement_uids'])
+        add_origin_for_list_of_statements(origin, flatten(pd['statement_uids']))
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
 
 
 @justify_argument.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_reason_in_body, valid_argument(location="path"), valid_relation,
-          valid_attitude, has_maybe_keywords(('reference', str, None)))
+          valid_attitude, has_maybe_keywords(('reference', str, None)), valid_optional_origin)
 def add_premise_to_argument(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
     db_argument: Argument = request.validated['argument']
     reference_text: str = request.validated['reference']
     relation: Relations = request.validated['relation']
+    origin: DataOrigin = request.validated['origin']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     if reference_text:
@@ -631,6 +632,9 @@ def add_premise_to_argument(request):
 
     pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
                                 history, request.mailer)
+
+    if origin:
+        add_origin_for_list_of_statements(origin, pd['statement_uids'])
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
 
