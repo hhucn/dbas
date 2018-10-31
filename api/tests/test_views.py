@@ -491,7 +491,6 @@ class TestPosition(TestCaseWithConfig):
     }
 
     def test_add_valid_position(self):
-        # Add position
         request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug},
                                                    json_body=self.test_body)
 
@@ -528,9 +527,24 @@ class TestPosition(TestCaseWithConfig):
                 'reason': 'same-position-and-reason'
             }
         )
-
         response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 400)
+
+    def test_add_valid_position_with_valid_origin(self):
+        request = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug
+        }, json_body={
+            'position': 'we should do something entirely else',
+            'reason': 'because i need to',
+            'origin': {
+                'entity-id': 23,
+                'aggregate-id': 'evil.com',
+                'author': 'penguin',
+                'version': 666
+            }
+        })
+        response: Response = apiviews.add_position_with_premise(request)
+        self.assertEqual(response.status_code, 303)
 
 
 class TestUser(TestCaseWithConfig):

@@ -573,10 +573,11 @@ def __http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
 @zinit.post(require_csrf=False)
 @positions.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body,
-          valid_reason_and_position_not_equal)
+          valid_reason_and_position_not_equal, valid_optional_origin)
 def add_position_with_premise(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
+    origin: DataOrigin = request.validated['origin']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
@@ -586,6 +587,10 @@ def add_position_with_premise(request):
 
     pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
                                request.mailer)
+
+    if origin:
+        add_origin_for_list_of_statements(origin, new_position['statement_uids'])
+        add_origin_for_list_of_statements(origin, flatten(pd['statement_uids']))
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
 
