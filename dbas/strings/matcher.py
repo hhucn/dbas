@@ -28,6 +28,7 @@ max_count_zeros = 5
 index_zeros = 3
 return_count = 10  # same number as in googles suggest list (16.12.2015)
 mechanism = 'Levensthein'
+similarity_threshold_in_percent = 0.3
 
 
 def get_nicknames(db_user: User, value: str):
@@ -110,6 +111,19 @@ def get_all_statements_with_value(search_value: str, issue_uid: int) -> list:
     return return_array[:list_length]
 
 
+def __get_levensthein_similarity_in_percent(a: str, b: str) -> float:
+    """
+    This method calculated the levensthein similarity between two string in percent.
+
+    :param a:
+    :param b:
+    :return: Levensthein distance between two strings in percent.
+    """
+    lev_dist: int = int(get_distance(a, b))
+    bigger: int = max(len(a), len(b))
+    return float((bigger - lev_dist) / bigger)
+
+
 def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
     """
     Returns the top 10 of the matching statements for the search_value.
@@ -133,7 +147,10 @@ def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
                                                             author=DataAuthor(author),
                                                             issue=DataIssue(issue))
         score = int(get_distance(search_value, textversion.content))
-        matching_results = matching_results + [(result, score)]
+        print(__get_levensthein_similarity_in_percent(search_value, textversion.content))
+        if __get_levensthein_similarity_in_percent(search_value,
+                                                   textversion.content) >= similarity_threshold_in_percent:
+            matching_results = matching_results + [(result, score)]
 
     matching_results.sort(key=operator.itemgetter(1), reverse=False)
     matching_results = [result[0] for result in matching_results]
