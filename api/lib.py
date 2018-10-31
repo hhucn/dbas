@@ -54,7 +54,7 @@ def json_to_dict(col):
     return json.loads(col)
 
 
-def flatten(l: List[List[any]]) -> Optional[List[int]]:
+def flatten(l: List[List[any]]) -> Optional[List[any]]:
     """
     Flattens a list.
 
