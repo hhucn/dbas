@@ -150,7 +150,7 @@ def attitude(request):
 @validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}),
           valid_attitude)
 def justify_statement(request) -> dict:
-    """
+    r"""
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
     Path: /discuss/{slug}/justify/{statement_id:\d+}/{attitude}
@@ -183,7 +183,7 @@ def justify_statement(request) -> dict:
              permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def dontknow_argument(request) -> dict:
-    """
+    r"""
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
     Path: /discuss/{slug}/justify/{argument_id:\d+}/dontknow}
@@ -214,7 +214,7 @@ def dontknow_argument(request) -> dict:
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}),
           valid_attitude, valid_relation)
 def justify_argument(request) -> dict:
-    """
+    r"""
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
     Path: /discuss/{slug}/justify/{argument_id:\d+}/{attitude}/{relation}
@@ -245,7 +245,7 @@ def justify_argument(request) -> dict:
 @view_config(route_name='discussion_reaction', renderer='../../templates/discussion/main.pt', permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_reaction_arguments, valid_relation)
 def reaction(request):
-    """
+    r"""
     View configuration for discussion step, where we will ask the user for her reaction (support, undercut, rebut)...
 
     Path: /discuss/{slug}/reaction/{arg_id_user:\d+}/{relation}/{arg_id_sys:\d+}

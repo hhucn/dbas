@@ -76,30 +76,30 @@ reaction = Service(name='api_reaction',
                    cors_policy=cors_policy)
 
 justify_statement = Service(name='api_justify_statement',
-                            path='/{slug}/justify/{statement_id:\d+}/{attitude:(' + '|'.join(
+                            path=r'/{slug}/justify/{statement_id:\d+}/{attitude:(' + '|'.join(
                                 map(str, Attitudes)) + ')}',
                             description='Discussion Justify',
                             cors_policy=cors_policy)
 
 dontknow_argument = Service(name='api_dontknow_argument',
-                            path='/{slug}/justify/{argument_id:\d+}/dontknow',
+                            path=r'/{slug}/justify/{argument_id:\d+}/dontknow',
                             description='Discussion Dont Know',
                             cors_policy=cors_policy)
 
 justify_argument = Service(name='api_justify_argument',
-                           path='/{slug}/justify/{argument_id:\d+}' +
-                                '/{attitude:(' + '|'.join(map(str, Attitudes)) + ')}' +
-                                '/{relation:(' + '|'.join(map(str, Relations)) + ')}',
+                           path=r'/{slug}/justify/{argument_id:\d+}' +
+                                r'/{attitude:(' + '|'.join(map(str, Attitudes)) + ')}' +
+                                r'/{relation:(' + '|'.join(map(str, Relations)) + ')}',
                            description='Discussion Justify',
                            cors_policy=cors_policy)
 
 attitude = Service(name='api_attitude',
-                   path='/{slug}/attitude/{position_id:\d+}',
+                   path=r'/{slug}/attitude/{position_id:\d+}',
                    description='Discussion Attitude',
                    cors_policy=cors_policy)
 
 finish = Service(name='api_finish',
-                 path='/{slug}/finish/{argument_id:\d+}',
+                 path=r'/{slug}/finish/{argument_id:\d+}',
                  description='End of a discussion',
                  cors_policy=cors_policy)
 
@@ -644,7 +644,7 @@ def add_premise_to_argument(request):
     return __http_see_other_with_cors_header('/api' + pd['url'])
 
 
-@resource(collection_path='/users', path='/users/{id:\d+}', cors_policy=cors_policy)
+@resource(collection_path='/users', path=r'/users/{id:\d+}', cors_policy=cors_policy)
 class ApiUser(object):
     def __init__(self, request, context=None):
         self.request = request
