@@ -276,6 +276,24 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
         DBDiscussionSession.query(StatementReferences).filter_by(reference=test_reference).delete()
         transaction.commit()
 
+    def test_add_valid_reason_with_origin(self):
+        # Add position
+        request = create_request_with_token_header(match_dict={
+            "slug": self.issue_cat_or_dog.slug,
+            "statement_id": 2,
+            "attitude": Attitudes.DISAGREE.value,
+        }, json_body={
+            "reason": "this is sparta",
+            "origin": {
+                "entity-id": 42,
+                "aggregate-id": "example.com",
+                "author": "kangaroo",
+                "version": 10
+            }
+        })
+        response: Response = apiviews.add_premise_to_statement(request)
+        self.assertEqual(response.status_code, 303, response.body)
+
 
 class TestDiscussionJustifyArgument(TestCaseWithConfig):
     def test_successful_discussion_justify_argument(self):

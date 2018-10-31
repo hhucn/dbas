@@ -689,7 +689,7 @@ class StatementOrigins(DiscussionBase):
         """
         self.entity_id = entity_id
         self.aggregate_id = aggregate_id
-        self.author_uid = author
+        self.author = author
         self.version = version
         self.statement_uid = statement_uid
 

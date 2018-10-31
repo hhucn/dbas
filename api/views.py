@@ -18,7 +18,8 @@ import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
 import dbas.views.discussion as dbas
 from api.lib import extract_items_and_bubbles
-from api.models import DataItem, DataBubble, DataReference
+from api.models import DataItem, DataBubble, DataReference, DataOrigin
+from api.origins import add_origin_for_premises
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReferences
 from dbas.handler.arguments import set_arguments_premises
@@ -37,8 +38,7 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_position, vali
 from dbas.validators.eden import valid_optional_origin
 from search.requester import get_statements_with_similarity_to
 from .lib import logger
-from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, \
-    valid_api_token
+from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, valid_api_token
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url, store_reference)
 from .templates import error
@@ -597,16 +597,19 @@ def add_premise_to_statement(request: IRequest):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
     db_statement: Statement = request.validated['statement']
-    reference_text: str = request.validated["reference"]
+    reference_text: str = request.validated['reference']
     is_supportive = request.validated['attitude'] == Attitudes.AGREE
+    origin: DataOrigin = request.validated['origin']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     if reference_text:
         store_reference(reference_text, request.host, request.path, db_user, db_statement, db_issue)
 
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
-                               history,
-                               request.mailer)
+                               history, request.mailer)
+
+    if origin:
+        add_origin_for_premises(origin, pd['statement_uids'])
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
 
@@ -627,8 +630,7 @@ def add_premise_to_argument(request):
             store_reference(reference_text, request.host, request.path, db_user, premise.statement, db_issue)
 
     pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
-                                history,
-                                request.mailer)
+                                history, request.mailer)
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
 

@@ -20,6 +20,8 @@ def valid_optional_origin(request):
     author: str = origin.get("author")
     version: int = to_int(origin.get("version"))
 
+    print("\n\n\nfoo")
+
     if entity_id is None or aggregate_id is None or author is None or version is None:
         # If there is an origin, it should be well-formed
         received_keys = ", ".join(k for k in origin.keys())
