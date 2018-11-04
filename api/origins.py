@@ -1,11 +1,9 @@
 """
 Receive and store statement origins.
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
+from typing import Optional, List, Set
 
-import transaction
-
+from api.models import DataOrigin
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementOrigins
 from .lib import logger
@@ -13,26 +11,30 @@ from .lib import logger
 log = logger()
 
 
-def store_origin(api_data, statement_uid):
+def __store_origin(origin: DataOrigin, statement_uid: int) -> Optional[StatementOrigins]:
     """
     Extract origin of an entity, e.g. a statement, from api_data and store it into the database.
-
-    :param api_data: user provided data
-    :param statement_uid: the statement the origin should be assigned to
-    :return:
     """
-    origin = api_data.get("origin")
-    if not origin:
-        return None
+    log.debug("Storing origin from %s by %s for statement %d", str(origin.aggregate_id), str(origin.author),
+              statement_uid)
 
-    entity_id = origin.get("entity-id")
-    aggregate_id = origin.get("aggregate-id")
-    author = origin.get("author")
-    version = origin.get("version")
-
-    db_origin = StatementOrigins(entity_id, aggregate_id, author, version, statement_uid)
+    db_origin: StatementOrigins = StatementOrigins(origin.entity_id, origin.aggregate_id, origin.version, origin.author,
+                                                   statement_uid)
     if db_origin:
         DBDiscussionSession.add(db_origin)
-        DBDiscussionSession.flush()
-        transaction.commit()
         return db_origin
+
+
+def add_origin_for_list_of_statements(origin: DataOrigin, list_of_statement_uids: List[int]) \
+        -> Optional[List[StatementOrigins]]:
+    """
+    Create a new origin and connect it to the newly created statements.
+
+    :param origin: Describes where the data comes from, if reused
+    :param list_of_statement_uids: List of statement_uids containing newly created statements
+    :return:
+    """
+    if not isinstance(list_of_statement_uids, list):
+        return None
+    newly_added_statement_uids: Set[int] = set(list_of_statement_uids)
+    return [__store_origin(origin, statement_uid) for statement_uid in newly_added_statement_uids]

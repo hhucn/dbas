@@ -1,4 +1,4 @@
 [flake8]
-ignore = E501, E221, E241, E712
+ignore = E501, E221, E241, E712, W504, W605, W503
 max-line-length = 160
 exclude = tests/*,migrations/versions,dbas/views/__init__.py
