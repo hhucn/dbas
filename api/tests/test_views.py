@@ -68,7 +68,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
     @settings(deadline=1000)
     def test_login_wrong_password(self, password: str):
         pwd = password.replace('\x00', '')
-        pwd = pwd.replace('iamatestuser2016', '¯\_(ツ)_/¯')
+        pwd = pwd.replace('iamatestuser2016', r'¯\_(ツ)_/¯')
         request = construct_dummy_request({
             'nickname': 'Walter',
             'password': pwd
@@ -81,7 +81,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
 
     def test_login_wrong_user(self):
         request = construct_dummy_request({
-            'nickname': '¯\_(ツ)_/¯',
+            'nickname': r'¯\_(ツ)_/¯',
             'password': 'thankgoditsfriday'
         })
         response = apiviews.user_login(request)
