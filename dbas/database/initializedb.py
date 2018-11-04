@@ -3,12 +3,12 @@
 Init scripts for database
 """
 
-import sys
-
-import arrow
 import logging
 import os
 import random
+import sys
+
+import arrow
 import transaction
 from pyramid.paster import get_appsettings, setup_logging
 
@@ -346,7 +346,7 @@ def setup_news_db(session, ui_locale):
                   date=arrow.get('2015-05-27'),
                   author='Tobias Krauthoff',
                   news='Every news can now be shared via FB, G+, Twitter and Mail. Not very important, but in some'
-                       +' kind it is...')
+                       + ' kind it is...')
     news15 = News(title='Tests and JS',
                   date=arrow.get('2015-05-26'),
                   author='Tobias Krauthoff',
