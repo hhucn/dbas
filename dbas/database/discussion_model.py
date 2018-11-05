@@ -31,7 +31,10 @@ def sql_timestamp_pretty_print(ts, lang='en', humanize=True, with_exact_time=Fal
     :return: String
     """
     if humanize:
+        # if lang == 'de':
         ts = ts.to('Europe/Berlin')
+        # else:
+        #    ts = ts.to('US/Pacific')
         return ts.humanize(locale=lang)
     else:
         if lang == 'de':
@@ -89,7 +92,7 @@ class Issue(DiscussionBase):
         self.is_disabled = is_disabled
         self.is_private = is_private
         self.is_read_only = is_read_only
-        self.date = get_now().naive
+        self.date = get_now()
 
     @hybrid_property
     def lang(self):
