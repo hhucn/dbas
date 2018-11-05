@@ -119,6 +119,10 @@ def __get_levensthein_similarity_in_percent(a: str, b: str) -> float:
     :param b:
     :return: Levensthein distance between two strings in percent.
     """
+
+    if len(a) == 0 or len(b) == 0:
+        return 0
+
     lev_dist: int = int(get_distance(a, b))
     bigger: int = max(len(a), len(b))
     return float((bigger - lev_dist) / bigger)
@@ -147,7 +151,6 @@ def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
                                                             author=DataAuthor(author),
                                                             issue=DataIssue(issue))
         score = int(get_distance(search_value, textversion.content))
-        print(__get_levensthein_similarity_in_percent(search_value, textversion.content))
         if __get_levensthein_similarity_in_percent(search_value,
                                                    textversion.content) >= similarity_threshold_in_percent:
             matching_results = matching_results + [(result, score)]
