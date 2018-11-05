@@ -27,7 +27,7 @@ query = Service(name='query',
 
 @query.get()
 def query_route(request):
-    """
+    r"""
     Query database based on Facebook's GraphQL Library.
     Parameters must be coded into a "q" GET parameter, e.g.
     `curl "localhost:4284/api/v2/query?q=query\{statements\{uid,isStartpoint\}\}"`

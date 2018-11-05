@@ -1,8 +1,9 @@
 import logging
 import random
-import transaction
 from os import environ
-from typing import List
+from typing import List, Tuple, Optional
+
+import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Argument, Premise, MarkedArgument, ClickedArgument, \
@@ -54,7 +55,7 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
         'statement_uids': statement_uids
     }
 
-    if url == -1:
+    if url is None:
         return prepared_dict
 
     # add reputation
@@ -134,7 +135,7 @@ def get_arguments_by_statement_uid(db_statement: Statement, db_issue: Issue) -> 
 
 
 def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_infos: dict, db_issue: Issue, db_user: User,
-                                                           mailer):
+                                                           mailer) -> Tuple[Optional[str], Optional[List[int]], str]:
     """
     Inserts given text in premisegroups as new arguments in dependence of the parameters and returns a URL
 
@@ -170,7 +171,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
                 error = new_argument
             else:
                 error = '{} ({}: {} {})'.format(a, b, c, d)
-            return -1, None, error
+            return None, None, error
 
         new_argument_uids.append(new_argument.uid)
 
@@ -220,7 +221,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
 
 
 def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um,
-                                                                          supportive):
+                                                                          supportive) -> str:
     """
     Return the 'choose' url, when the user entered more than one premise for an argument
 

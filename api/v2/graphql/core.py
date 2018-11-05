@@ -17,6 +17,7 @@ from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReferences, \
     StatementOrigins, PremiseGroup, Premise, Argument
+from graph.lib import get_d3_data
 
 
 class ArrowTypeScalar(Scalar):
@@ -71,6 +72,9 @@ class ArgumentGraph(SQLAlchemyObjectType):
 
 
 class StatementGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = Statement
+
     text = graphene.String()
     textversions = graphene.Field(TextVersionGraph)
     arguments = ArgumentGraph.plural()
@@ -109,9 +113,6 @@ class StatementGraph(SQLAlchemyObjectType):
             Argument.argument_uid.in_(sq)
         )
 
-    class Meta:
-        model = Statement
-
     @staticmethod
     def singular():
         return graphene.Field(StatementGraph, uid=graphene.Int(), is_position=graphene.Boolean(),
@@ -136,6 +137,8 @@ class StatementOriginsGraph(SQLAlchemyObjectType):
 class IssueGraph(SQLAlchemyObjectType):
     position = StatementGraph.singular()
     arguments = ArgumentGraph.plural()
+    complete_graph = graphene.Field(graphene.JSONString,
+                                    description="Returns the data for the whole graph-view as a JSON-String")
 
     def resolve_position(self, info, **kwargs):
         return resolve_field_query(kwargs, info, StatementGraph)
@@ -155,6 +158,10 @@ class IssueGraph(SQLAlchemyObjectType):
     def plural():
         return graphene.List(IssueGraph, slug=graphene.String(), title=graphene.String(),
                              is_disabled=graphene.Boolean())
+
+    def resolve_complete_graph(self, info, **kwargs):
+        graph, _ = get_d3_data(DBDiscussionSession.query(Issue).get(self.uid))
+        return graph
 
 
 class UserGraph(SQLAlchemyObjectType):
@@ -233,7 +240,7 @@ class Query(graphene.ObjectType):
         return StatementReferencesGraph.get_query(info).all()
 
     def resolve_statement_origin(self, info, **kwargs):
-        return resolve_field_query(kwargs, info,  StatementOriginsGraph)
+        return resolve_field_query(kwargs, info, StatementOriginsGraph)
 
     def resolve_issue(self, info, **kwargs):
         return resolve_field_query(kwargs, info, IssueGraph)

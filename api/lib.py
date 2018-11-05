@@ -10,7 +10,7 @@ import logging
 import warnings
 from functools import reduce
 from html import escape
-from typing import Tuple
+from typing import Tuple, List, Optional
 
 from webob import Response, exc
 
@@ -54,7 +54,7 @@ def json_to_dict(col):
     return json.loads(col)
 
 
-def flatten(l):
+def flatten(l: List[List[any]]) -> Optional[List[any]]:
     """
     Flattens a list.
 

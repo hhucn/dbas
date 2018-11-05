@@ -661,26 +661,26 @@ class StatementReferences(DiscussionBase):
 
 class StatementOrigins(DiscussionBase):
     """
-    Add an origin to the statement. Comes from external services, like the aggregators.
+    Add an origin to the statement. Comes from external services, like the EDEN-aggregators.
     """
     __tablename__ = 'statement_origins'
     uid = Column(Integer, primary_key=True)
     entity_id = Column(Text, nullable=True)
     aggregate_id = Column(Text, nullable=True)
-    author = Column(Text, nullable=True)
     version = Column(Integer, nullable=True)
     statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
+    author = Column(Text, nullable=True)
     created = Column(ArrowType, default=get_now())
 
-    statements = relationship('Statement', foreign_keys=[statement_uid])
+    statement = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, entity_id, aggregate_id, author, version, statement_uid):
+    def __init__(self, entity_id: str, aggregate_id: str, version: int, author: str, statement_uid: int):
         """
         Initialize the origin.
 
         :param entity_id: external id of the entity, e.g. a statement
-        :param aggregate_id: the original host where the entitity was first introduced into the system
-        :param author: external author of the statement
+        :param aggregate_id: the original host where the entity was first introduced into the system
+        :param author: author of the statement
         :param version: current version, might be different from 1 if the entity was updated
         :param statement_uid: local statement where this origin needs to be assigned to
         """
@@ -838,10 +838,10 @@ class Premise(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
-    statement = relationship('Statement', foreign_keys=[statement_uid])
-    author = relationship('User', foreign_keys=[author_uid])
-    issue = relationship('Issue', foreign_keys=[issue_uid])
+    premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid], back_populates='premises')
+    statement = relationship(Statement, foreign_keys=[statement_uid])
+    author = relationship(User, foreign_keys=[author_uid])
+    issue = relationship(Issue, foreign_keys=[issue_uid])
 
     def __init__(self, premisesgroup, statement, is_negated, author, issue, is_disabled=False):
         """
@@ -929,9 +929,10 @@ class PremiseGroup(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     author_uid = Column(Integer, ForeignKey('users.uid'))
 
-    author = relationship('User', foreign_keys=[author_uid])
+    author = relationship(User, foreign_keys=[author_uid])
+    premises = relationship(Premise, back_populates='premisegroup')
 
-    def __init__(self, author):
+    def __init__(self, author: int):
         """
         Initializes a row in current premisesGroup-table
 
@@ -945,15 +946,6 @@ class PremiseGroup(DiscussionBase):
         texts = [premise.get_text() for premise in db_premises]
         lang = DBDiscussionSession.query(Statement).get(db_premises[0].statement.uid).lang
         return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
-
-    @hybrid_property
-    def premises(self) -> List[Premise]:
-        """
-        Return all premises in this premise group
-
-        :return: List of Premises
-        """
-        return DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).all()
 
 
 class Argument(DiscussionBase):
