@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import List
 
 from dbas.database.discussion_model import StatementReferences, Issue, Statement, TextVersion, User
@@ -138,7 +139,7 @@ class DataIssue:
         }
 
 
-class DataStatement(object):
+class DataStatement:
     """
     This class models a Statement as it is required for the results by searching with Levensthein.
     """
@@ -154,6 +155,17 @@ class DataStatement(object):
             "uid": self.uid,
             "text": self.text
         }
+
+
+@dataclass
+class DataOrigin:
+    """
+    Store an origin from the API.
+    """
+    entity_id: str
+    aggregate_id: str
+    author: str
+    version: int
 
 
 def transform_levensthein_search_results(statement: DataStatement, author: DataAuthor, issue: DataIssue) -> dict:

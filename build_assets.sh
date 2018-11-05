@@ -8,9 +8,9 @@ echo ":: Install JS libs"
 yarn install
 
 echo ":: Compile and compress JS"
-google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,d3,discussion,review}/*.js > dbas/static/js/dbas.min.js
-google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./websocket/static/js/*.js > websocket/static/js/websocket.min.js
-google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./admin/static/js/main/*.js > admin/static/js/admin.min.js
+npx google-closure-compiler --create_source_map dbas/static/js/dbas.min.js.map --compilation_level SIMPLE --js ./dbas/static/js/{main,ajax,d3,discussion,review}/*.js --js_output_file dbas/static/js/dbas.min.js
+npx google-closure-compiler --create_source_map websocket/static/js/websocket.min.js.map --compilation_level SIMPLE --js ./websocket/static/js/*.js --js_output_file websocket/static/js/websocket.min.js
+npx google-closure-compiler --create_source_map admin/static/js/admin.min.js.map --compilation_level SIMPLE --js ./admin/static/js/main/*.js --js_output_file admin/static/js/admin.min.js
 
 echo ":: Compile and compress SASS"
 sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed

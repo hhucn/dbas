@@ -48,7 +48,7 @@ class AuthLoginTest(TestCaseWithConfig):
         self.assertNotIn('error', response)
         self.assertIn('user', response)
 
-        response = login_local_user('definitelynotauser', '¯\_(ツ)_/¯', DummyMailer, lang=_tn)
+        response = login_local_user('definitelynotauser', r'¯\_(ツ)_/¯', DummyMailer, lang=_tn)
         self.assertTrue(isinstance(response, dict))
         self.assertIn('error', response)
         self.assertNotIn('user', response)
