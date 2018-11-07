@@ -1,8 +1,10 @@
-from beaker.session import Session
 from typing import Tuple, Optional
 
+from beaker.session import Session
+from slugify import slugify
+
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, AbstractReviewCase
+from dbas.database.discussion_model import User, AbstractReviewCase, Issue
 from dbas.lib import get_profile_picture
 from dbas.review import FlaggedBy
 from dbas.review.mapper import get_review_model_by_key, get_last_reviewer_by_key, get_title_by_key, get_queue_by_key
@@ -52,13 +54,15 @@ class QueueAdapter():
         button_set = {f'is_{key}': False for key in review_queues}
         button_set[f'is_{queue_name}'] = True
         subpage_dict = self.queue.get_queue_information(self.db_user, session, self.application_url, self.translator)
-
+        slug = slugify(subpage_dict.get('issue_titles')[0])
+        issue = DBDiscussionSession.query(Issue).filter_by(slug=slug).one_or_none()
         ret_dict = {
             'page_name': queue_name,
             'reviewed_element': subpage_dict,
             'session': subpage_dict['session']
         }
-        if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
+        if (subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict[
+            'stats'] is None) or self.db_user not in issue.participating_users:
             return self.__wrap_subpage_dict({}, button_set)
 
         return self.__wrap_subpage_dict(ret_dict, button_set)

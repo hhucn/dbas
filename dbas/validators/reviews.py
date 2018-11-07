@@ -6,8 +6,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
-from dbas.review.queue import review_queues, all_queues
 from dbas.review.mapper import get_review_model_by_key
+from dbas.review.queue import review_queues, all_queues
 from dbas.review.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
