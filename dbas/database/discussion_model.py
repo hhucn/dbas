@@ -202,9 +202,10 @@ class User(DiscussionBase):
     oauth_provider = Column(Text, nullable=True)
     oauth_provider_id = Column(Text, nullable=True)
 
-    groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
+    groups: List['Group'] = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
     history: List['History'] = relationship('History', back_populates='author')
-    participates_in = relationship('Issue', secondary='user_participation')
+    participates_in: List['Issue'] = relationship('Issue', secondary='user_participation')
+    arguments: List['Argument'] = relationship('Argument', back_populates='author')
 
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='',
                  token_timestamp=None, oauth_provider='', oauth_provider_id=''):
@@ -494,7 +495,8 @@ class Statement(DiscussionBase):
     is_position = Column(Boolean)
     is_disabled = Column(Boolean, nullable=False)
 
-    issues = relationship('Issue', secondary='statement_to_issue', back_populates='statements')
+    issues: List[Issue] = relationship('Issue', secondary='statement_to_issue', back_populates='statements')
+    arguments: List['Argument'] = relationship('Argument', back_populates='conclusion')
 
     def __init__(self, is_position, is_disabled=False):
         """
@@ -932,8 +934,9 @@ class PremiseGroup(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     author_uid = Column(Integer, ForeignKey('users.uid'))
 
-    author = relationship(User, foreign_keys=[author_uid])
-    premises = relationship(Premise, back_populates='premisegroup')
+    author: List[User] = relationship(User, foreign_keys=[author_uid])
+    premises: List[Premise] = relationship(Premise, back_populates='premisegroup')
+    arguments: List['Argument'] = relationship('Argument', back_populates='premisegroup')
 
     def __init__(self, author: int):
         """
@@ -959,7 +962,7 @@ class Argument(DiscussionBase):
     """
     __tablename__ = 'arguments'
     uid = Column(Integer, primary_key=True)
-    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'), nullable=False)
     conclusion_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
     argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
     is_supportive = Column(Boolean, nullable=False)
@@ -968,11 +971,15 @@ class Argument(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
-    conclusion = relationship('Statement', foreign_keys=[conclusion_uid])
-    users = relationship('User', foreign_keys=[author_uid])
-    arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
-    issues = relationship('Issue', foreign_keys=[issue_uid])
+    premisegroup = relationship(PremiseGroup, foreign_keys=[premisegroup_uid], back_populates='arguments')
+    conclusion = relationship('Statement', foreign_keys=[conclusion_uid], back_populates='arguments')
+    issues = relationship(Issue, foreign_keys=[issue_uid])
+
+    author = relationship('User', back_populates='arguments')
+    argument: 'Argument' = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid,
+                                        back_populates='arguments')
+
+    arguments: List['Argument'] = relationship('Argument', remote_side=argument_uid, back_populates='argument')
 
     def __init__(self, premisegroup, is_supportive, author, issue: int, conclusion=None, argument=None,
                  is_disabled=False):
