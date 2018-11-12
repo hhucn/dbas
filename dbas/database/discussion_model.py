@@ -3,6 +3,7 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import datetime
 import warnings
 from abc import abstractmethod
 from typing import List
@@ -49,7 +50,7 @@ def get_now():
 
     :return: arrow data type
     """
-    return arrow.utcnow().to('local')
+    return arrow.get(datetime.datetime.now())
 
 
 class Issue(DiscussionBase):

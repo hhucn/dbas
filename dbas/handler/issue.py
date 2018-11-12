@@ -5,11 +5,11 @@ Provides helping function for issues.
 """
 from datetime import date, timedelta
 from json import JSONDecodeError
+from math import ceil
 from typing import Optional, List
 
 import arrow
 import transaction
-from math import ceil
 from pyramid.request import Request
 from slugify import slugify
 
