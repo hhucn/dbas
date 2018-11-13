@@ -203,7 +203,7 @@ class User(DiscussionBase):
     oauth_provider_id = Column(Text, nullable=True)
 
     groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
-    history: List['History'] = relationship('History', back_populates='author')
+    history: List['History'] = relationship('History', back_populates='author', order_by='History.timestamp')
     participates_in = relationship('Issue', secondary='user_participation')
 
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='',
