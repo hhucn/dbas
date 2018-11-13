@@ -5,7 +5,7 @@ D-BAS database Model
 """
 import warnings
 from abc import abstractmethod
-from typing import List
+from typing import List, Set
 
 import arrow
 import bcrypt
@@ -492,11 +492,12 @@ class Statement(DiscussionBase):
     """
     __tablename__ = 'statements'
     uid = Column(Integer, primary_key=True)
-    is_position = Column(Boolean)
+    is_position = Column(Boolean, nullable=False)
     is_disabled = Column(Boolean, nullable=False)
 
     issues: List[Issue] = relationship('Issue', secondary='statement_to_issue', back_populates='statements')
     arguments: List['Argument'] = relationship('Argument', back_populates='conclusion')
+    premises: List['Premise'] = relationship('Premise', back_populates='statement')
 
     def __init__(self, is_position, is_disabled=False):
         """
@@ -606,6 +607,33 @@ class Statement(DiscussionBase):
 
     def get_html(self) -> str:
         return self.get_text(html=True)
+
+    def flat_statements_below(self) -> Set['Statement']:
+        """Recursively steps down through a discussion starting at a statement to get all statements below."""
+        return Statement.__step_down_statement(self)
+
+    @staticmethod
+    def __step_down_argument(argument: 'Argument') -> Set['Statement']:
+        result_set = set()
+        if argument.premisegroup:
+            for premise in argument.premisegroup.premises:
+                size_before = len(result_set)
+                result_set.add(premise.statement)
+
+                # check if we have run above this statement once in the past, should prevent loops
+                if len(result_set) != size_before:
+                    result_set = result_set.union(Statement.__step_down_statement(premise.statement))
+        for argument in argument.arguments:
+            result_set = result_set.union(Statement.__step_down_argument(argument))
+        return result_set
+
+    @staticmethod
+    def __step_down_statement(statement: 'Statement') -> Set['Statement']:
+        result_set = set()
+
+        for argument in statement.arguments:
+            result_set = result_set.union(Statement.__step_down_argument(argument))
+        return result_set
 
 
 class StatementReferences(DiscussionBase):
@@ -844,7 +872,7 @@ class Premise(DiscussionBase):
     is_disabled = Column(Boolean, nullable=False)
 
     premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid], back_populates='premises')
-    statement = relationship(Statement, foreign_keys=[statement_uid])
+    statement = relationship(Statement, foreign_keys=[statement_uid], back_populates='premises')
     author = relationship(User, foreign_keys=[author_uid])
     issue = relationship(Issue, foreign_keys=[issue_uid])
 

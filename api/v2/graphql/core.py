@@ -3,7 +3,6 @@ GraphQL Core. Here are the models listed, which can be queried by GraphQl.
 
 .. sectionauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-from typing import Set
 
 import arrow
 import graphene
@@ -81,8 +80,6 @@ class StatementGraph(SQLAlchemyObjectType):
     rebuts = ArgumentGraph.plural()
     undercuts = ArgumentGraph.plural()
 
-    statement_texts_below = graphene.List(graphene.String,
-                                          description="Returns all texts from the statements in the tree below this statement")
 
     def resolve_textversions(self, info, **kwargs):
         return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
@@ -111,31 +108,6 @@ class StatementGraph(SQLAlchemyObjectType):
             Argument.argument_uid.in_(sq)
         )
 
-    def resolve_statement_texts_below(self: Statement, info):
-        """Recursively steps downthrought a discussion starting at a statement to get all texts from statements."""
-
-        def step_down_argument(argument: Argument) -> Set[Statement]:
-            result_set = set()
-            if argument.premisegroup:
-                for premise in argument.premisegroup.premises:
-                    size_before = len(result_set)
-                    result_set.add(premise.statement)
-
-                    # check if we have run above this statement once in the past, should prevent loops
-                    if len(result_set) != size_before:
-                        result_set = result_set.union(step_down_statement(premise.statement))
-            for argument in argument.arguments:
-                result_set = result_set.union(step_down_argument(argument))
-            return result_set
-
-        def step_down_statement(statement: Statement) -> Set[Statement]:
-            result_set = set()
-            for argument in statement.arguments:
-                result_set = result_set.union(step_down_argument(argument))
-            return result_set
-
-        return [statement.get_text() for statement in list(step_down_statement(self))]
-
     @staticmethod
     def singular():
         return graphene.Field(StatementGraph, uid=graphene.Int(), is_position=graphene.Boolean(),
@@ -144,6 +116,12 @@ class StatementGraph(SQLAlchemyObjectType):
     @staticmethod
     def plural():
         return graphene.List(StatementGraph, is_position=graphene.Boolean(), is_disabled=graphene.Boolean())
+
+    flat_statements_below = graphene.Dynamic(lambda: graphene.NonNull(StatementGraph.plural(),
+                                                                      description="Returns all texts from the statements in the tree below this statement"))
+
+    def resolve_flat_statements_below(self: Statement, _info):
+        return self.flat_statements_below()
 
 
 class StatementReferencesGraph(SQLAlchemyObjectType):
