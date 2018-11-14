@@ -3,6 +3,7 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import datetime
 import warnings
 from abc import abstractmethod
 from typing import List
@@ -43,13 +44,13 @@ def sql_timestamp_pretty_print(ts, lang='en', humanize=True, with_exact_time=Fal
             return ts.format('YYYY-MM-DD' + (', HH:mm:ss ' if with_exact_time else ''))
 
 
-def get_now():
+def get_now() -> ArrowType:
     """
     Returns local server time
 
     :return: arrow data type
     """
-    return arrow.utcnow().to('local')
+    return arrow.get(datetime.datetime.now())
 
 
 class Issue(DiscussionBase):
