@@ -57,11 +57,10 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
     """
 
     history = db_user.history
-    seen_statements = get_seen_statements_from(history[len(history) - 1].path)
+    seen_statements = get_seen_statements_from(history[len(history) - 1].path) if history != [] else []
 
     try:
         elastic_results = elastic_search(db_issue, search_value, mode, statement_uid)
-        print(elastic_results)
         elastic_results['values'] = [item for item in elastic_results.get('values') if
                                      item.get('statement_uid') not in seen_statements]
         return elastic_results
