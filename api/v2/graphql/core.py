@@ -80,7 +80,6 @@ class StatementGraph(SQLAlchemyObjectType):
     rebuts = ArgumentGraph.plural()
     undercuts = ArgumentGraph.plural()
 
-
     def resolve_textversions(self, info, **kwargs):
         return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
 
