@@ -203,7 +203,7 @@ class User(DiscussionBase):
     oauth_provider = Column(Text, nullable=True)
     oauth_provider_id = Column(Text, nullable=True)
 
-    groups: List['Group'] = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
+    group: 'Group' = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
     history: List['History'] = relationship('History', back_populates='author')
     participates_in: List['Issue'] = relationship('Issue', secondary='user_participation')
     arguments: List['Argument'] = relationship('Argument', back_populates='author')
@@ -334,7 +334,7 @@ class User(DiscussionBase):
         :param group_name:
         :return:
         """
-        self.groups = DBDiscussionSession.query(Group).filter_by(name=group_name).one()
+        self.group = DBDiscussionSession.query(Group).filter_by(name=group_name).one()
 
     def promote_to_admin(self):
         """
