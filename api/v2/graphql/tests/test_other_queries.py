@@ -87,7 +87,7 @@ class TestQueryArguments(TestCaseWithConfig):
                     premisegroup {
                         uid
                     }
-                    users {
+                    author {
                         publicNickname
                     }
                 }
@@ -98,7 +98,7 @@ class TestQueryArguments(TestCaseWithConfig):
         group = arguments[0]
         self.assertIsNotNone(group)
         self.assertIn('uid', group)
-        self.assertIn('users', group)
-        self.assertIn('publicNickname', group.get('users'))
+        self.assertIn('author', group)
+        self.assertIn('publicNickname', group.get('author'))
         self.assertIn('premisegroup', group)
         self.assertIn('uid', group.get("premisegroup"))

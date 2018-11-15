@@ -6,7 +6,7 @@ D-BAS database Model
 import datetime
 import warnings
 from abc import abstractmethod
-from typing import List
+from typing import List, Set, Optional
 
 import arrow
 import bcrypt
@@ -75,6 +75,7 @@ class Issue(DiscussionBase):
     languages = relationship('Language', foreign_keys=[lang_uid])
     participating_users = relationship('User', secondary='user_participation')
     statements = relationship('Statement', secondary='statement_to_issue')
+    all_arguments = relationship('Argument', back_populates='issue')
 
     positions = relationship('Statement', secondary='statement_to_issue', viewonly=True,
                              secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
@@ -203,9 +204,10 @@ class User(DiscussionBase):
     oauth_provider = Column(Text, nullable=True)
     oauth_provider_id = Column(Text, nullable=True)
 
-    groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
+    group: 'Group' = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
     history: List['History'] = relationship('History', back_populates='author', order_by='History.timestamp')
-    participates_in = relationship('Issue', secondary='user_participation')
+    participates_in: List['Issue'] = relationship('Issue', secondary='user_participation')
+    arguments: List['Argument'] = relationship('Argument', back_populates='author')
 
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='',
                  token_timestamp=None, oauth_provider='', oauth_provider_id=''):
@@ -333,7 +335,7 @@ class User(DiscussionBase):
         :param group_name:
         :return:
         """
-        self.groups = DBDiscussionSession.query(Group).filter_by(name=group_name).one()
+        self.group = DBDiscussionSession.query(Group).filter_by(name=group_name).one()
 
     def promote_to_admin(self):
         """
@@ -492,10 +494,12 @@ class Statement(DiscussionBase):
     """
     __tablename__ = 'statements'
     uid = Column(Integer, primary_key=True)
-    is_position = Column(Boolean)
+    is_position = Column(Boolean, nullable=False)
     is_disabled = Column(Boolean, nullable=False)
 
-    issues = relationship('Issue', secondary='statement_to_issue', back_populates='statements')
+    issues: List[Issue] = relationship('Issue', secondary='statement_to_issue', back_populates='statements')
+    arguments: List['Argument'] = relationship('Argument', back_populates='conclusion')
+    premises: List['Premise'] = relationship('Premise', back_populates='statement')
 
     def __init__(self, is_position, is_disabled=False):
         """
@@ -605,6 +609,33 @@ class Statement(DiscussionBase):
 
     def get_html(self) -> str:
         return self.get_text(html=True)
+
+    def flat_statements_below(self) -> Set['Statement']:
+        """Recursively steps down through a discussion starting at a statement to get all statements below."""
+        return Statement.__step_down_statement(self)
+
+    @staticmethod
+    def __step_down_argument(argument: 'Argument') -> Set['Statement']:
+        result_set = set()
+        if argument.premisegroup:
+            for premise in argument.premisegroup.premises:
+                size_before = len(result_set)
+                result_set.add(premise.statement)
+
+                # check if we have run above this statement once in the past, should prevent loops
+                if len(result_set) != size_before:
+                    result_set = result_set.union(Statement.__step_down_statement(premise.statement))
+        for argument in argument.attacked_by:
+            result_set = result_set.union(Statement.__step_down_argument(argument))
+        return result_set
+
+    @staticmethod
+    def __step_down_statement(statement: 'Statement') -> Set['Statement']:
+        result_set = set()
+
+        for argument in statement.arguments:
+            result_set = result_set.union(Statement.__step_down_argument(argument))
+        return result_set
 
 
 class StatementReferences(DiscussionBase):
@@ -843,7 +874,7 @@ class Premise(DiscussionBase):
     is_disabled = Column(Boolean, nullable=False)
 
     premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid], back_populates='premises')
-    statement = relationship(Statement, foreign_keys=[statement_uid])
+    statement = relationship(Statement, foreign_keys=[statement_uid], back_populates='premises')
     author = relationship(User, foreign_keys=[author_uid])
     issue = relationship(Issue, foreign_keys=[issue_uid])
 
@@ -933,8 +964,9 @@ class PremiseGroup(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     author_uid = Column(Integer, ForeignKey('users.uid'))
 
-    author = relationship(User, foreign_keys=[author_uid])
-    premises = relationship(Premise, back_populates='premisegroup')
+    author: List[User] = relationship(User, foreign_keys=[author_uid])
+    premises: List[Premise] = relationship(Premise, back_populates='premisegroup')
+    arguments: List['Argument'] = relationship('Argument', back_populates='premisegroup')
 
     def __init__(self, author: int):
         """
@@ -959,24 +991,35 @@ class Argument(DiscussionBase):
     Additionally there is a relation, timestamp, author, weight, ...
     """
     __tablename__ = 'arguments'
-    uid = Column(Integer, primary_key=True)
-    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
-    conclusion_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
-    is_supportive = Column(Boolean, nullable=False)
-    author_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'), nullable=False)
+    conclusion_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=True)
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
+    is_supportive: bool = Column(Boolean, nullable=False)
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    issue_uid = Column(Integer, ForeignKey('issues.uid'))
-    is_disabled = Column(Boolean, nullable=False)
+    issue_uid: int = Column(Integer, ForeignKey('issues.uid'))
+    is_disabled: bool = Column(Boolean, nullable=False)
 
-    premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
-    conclusion = relationship('Statement', foreign_keys=[conclusion_uid])
-    users = relationship('User', foreign_keys=[author_uid])
-    arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
-    issues = relationship('Issue', foreign_keys=[issue_uid])
+    premisegroup: PremiseGroup = relationship(PremiseGroup, foreign_keys=[premisegroup_uid], back_populates='arguments')
+    conclusion: Optional[Statement] = relationship('Statement', foreign_keys=[conclusion_uid],
+                                                   back_populates='arguments')
 
-    def __init__(self, premisegroup, is_supportive, author, issue: int, conclusion=None, argument=None,
-                 is_disabled=False):
+    issue: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
+
+    author: User = relationship('User', back_populates='arguments')
+    attacks: Optional['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid,
+                                                 back_populates='attacked_by')
+    attacked_by: List['Argument'] = relationship('Argument', remote_side=argument_uid, back_populates='attacks')
+
+    # these are only for legacy support. use attacked_by and author instead
+    issues: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
+    arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
+    users: User = relationship('User', foreign_keys=[author_uid])
+
+    def __init__(self, premisegroup: int, is_supportive: bool, author: int, issue: int, conclusion: int = None,
+                 argument: int = None,
+                 is_disabled: bool = False):
         """
         Initializes a row in current argument-table
 

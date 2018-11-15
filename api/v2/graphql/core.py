@@ -53,7 +53,6 @@ def convert_column_to_arrow(ttype, column, registry=None):
 class TextVersionGraph(SQLAlchemyObjectType):
     class Meta:
         model = TextVersion
-        exclude_fields = "timestamp"
 
 
 class ArgumentGraph(SQLAlchemyObjectType):
@@ -77,7 +76,6 @@ class StatementGraph(SQLAlchemyObjectType):
 
     text = graphene.String()
     textversions = graphene.Field(TextVersionGraph)
-    arguments = ArgumentGraph.plural()
     supports = ArgumentGraph.plural()
     rebuts = ArgumentGraph.plural()
     undercuts = ArgumentGraph.plural()
@@ -85,12 +83,8 @@ class StatementGraph(SQLAlchemyObjectType):
     def resolve_textversions(self, info, **kwargs):
         return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
 
-    def resolve_text(self, info, **kwargs):
-        return DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == self.uid).order_by(
-            TextVersion.timestamp.desc()).first().content
-
-    def resolve_arguments(self, info, **kwargs):
-        return resolve_list_query({**kwargs, "conclusion_uid": self.uid}, info, ArgumentGraph)
+    def resolve_text(self: Statement, info):
+        return self.get_text()
 
     def resolve_supports(self, info, **kwargs):
         return resolve_list_query({**kwargs, "is_supportive": True, "conclusion_uid": self.uid}, info, ArgumentGraph)
@@ -121,6 +115,12 @@ class StatementGraph(SQLAlchemyObjectType):
     @staticmethod
     def plural():
         return graphene.List(StatementGraph, is_position=graphene.Boolean(), is_disabled=graphene.Boolean())
+
+    flat_statements_below = graphene.Dynamic(lambda: graphene.NonNull(StatementGraph.plural(),
+                                                                      description="Returns all texts from the statements in the tree below this statement"))
+
+    def resolve_flat_statements_below(self: Statement, _info):
+        return self.flat_statements_below()
 
 
 class StatementReferencesGraph(SQLAlchemyObjectType):

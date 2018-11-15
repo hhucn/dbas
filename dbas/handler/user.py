@@ -195,9 +195,9 @@ def is_in_group(nickname, groupname):
     :param groupname: Group.name
     :return: Boolean
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
+    db_user: User = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
     LOG.debug("Entering is_in_group")
-    return db_user and db_user.groups.name == groupname
+    return db_user and db_user.group.name == groupname
 
 
 def is_admin(nickname):
@@ -207,9 +207,9 @@ def is_admin(nickname):
     :param nickname: current user name
     :return: true, if user is admin, false otherwise
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
+    db_user: User = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
     LOG.debug("Entering is_admin")
-    return db_user and db_user.groups.name == 'admins'
+    return db_user and db_user.group.name == 'admins'
 
 
 def get_public_data(user_id: int, lang: str):
