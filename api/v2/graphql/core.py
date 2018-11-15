@@ -123,9 +123,10 @@ class StatementGraph(SQLAlchemyObjectType):
         return self.flat_statements_below()
 
 
-class StatementReferencesGraph(SQLAlchemyObjectType):
+class UserGraph(SQLAlchemyObjectType):
     class Meta:
-        model = StatementReferences
+        model = User
+        only_fields = ["uid", "public_nickname", "last_action", "registered", "last_login"]
 
 
 class StatementOriginsGraph(SQLAlchemyObjectType):
@@ -164,12 +165,6 @@ class IssueGraph(SQLAlchemyObjectType):
         return graph
 
 
-class UserGraph(SQLAlchemyObjectType):
-    class Meta:
-        model = User
-        only_fields = ["uid", "public_nickname", "last_action", "registered", "last_login"]
-
-
 class LanguageGraph(SQLAlchemyObjectType):
     class Meta:
         model = Language
@@ -193,6 +188,24 @@ class PremiseGraph(SQLAlchemyObjectType):
     class Meta:
         model = Premise
 
+
+class StatementReferencesGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = StatementReferences
+
+    # for legacy support
+    users = graphene.Field(UserGraph, deprecation_reason="Use `author` instead")
+    issues = graphene.Field(IssueGraph, deprecation_reason="Use `issue` instead")
+    statements = graphene.Field(StatementGraph, deprecation_reason="Use `statement` instead")
+
+    def resolve_users(self: StatementReferences, info):
+        return resolve_field_query({"uid": self.author_uid}, info, UserGraph)
+
+    def resolve_issues(self: StatementReferences, info):
+        return resolve_field_query({"uid": self.issue_uid}, info, IssueGraph)
+
+    def resolve_statements(self: StatementReferences, info):
+        return resolve_field_query({"uid": self.statement_uid}, info, StatementGraph)
 
 # -----------------------------------------------------------------------------
 # Query-Definition
