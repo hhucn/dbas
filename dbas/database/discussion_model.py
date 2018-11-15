@@ -5,7 +5,7 @@ D-BAS database Model
 """
 import warnings
 from abc import abstractmethod
-from typing import List, Set
+from typing import List, Set, Optional
 
 import arrow
 import bcrypt
@@ -74,6 +74,7 @@ class Issue(DiscussionBase):
     languages = relationship('Language', foreign_keys=[lang_uid])
     participating_users = relationship('User', secondary='user_participation')
     statements = relationship('Statement', secondary='statement_to_issue')
+    all_arguments = relationship('Argument', back_populates='issue')
 
     positions = relationship('Statement', secondary='statement_to_issue', viewonly=True,
                              secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
@@ -623,7 +624,7 @@ class Statement(DiscussionBase):
                 # check if we have run above this statement once in the past, should prevent loops
                 if len(result_set) != size_before:
                     result_set = result_set.union(Statement.__step_down_statement(premise.statement))
-        for argument in argument.arguments:
+        for argument in argument.attacked_by:
             result_set = result_set.union(Statement.__step_down_argument(argument))
         return result_set
 
@@ -989,28 +990,35 @@ class Argument(DiscussionBase):
     Additionally there is a relation, timestamp, author, weight, ...
     """
     __tablename__ = 'arguments'
-    uid = Column(Integer, primary_key=True)
-    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'), nullable=False)
-    conclusion_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
-    is_supportive = Column(Boolean, nullable=False)
-    author_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'), nullable=False)
+    conclusion_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=True)
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
+    is_supportive: bool = Column(Boolean, nullable=False)
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    issue_uid = Column(Integer, ForeignKey('issues.uid'))
-    is_disabled = Column(Boolean, nullable=False)
+    issue_uid: int = Column(Integer, ForeignKey('issues.uid'))
+    is_disabled: bool = Column(Boolean, nullable=False)
 
-    premisegroup = relationship(PremiseGroup, foreign_keys=[premisegroup_uid], back_populates='arguments')
-    conclusion = relationship('Statement', foreign_keys=[conclusion_uid], back_populates='arguments')
-    issues = relationship(Issue, foreign_keys=[issue_uid])
+    premisegroup: PremiseGroup = relationship(PremiseGroup, foreign_keys=[premisegroup_uid], back_populates='arguments')
+    conclusion: Optional[Statement] = relationship('Statement', foreign_keys=[conclusion_uid],
+                                                   back_populates='arguments')
 
-    author = relationship('User', back_populates='arguments')
-    argument: 'Argument' = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid,
-                                        back_populates='arguments')
+    issue: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
 
-    arguments: List['Argument'] = relationship('Argument', remote_side=argument_uid, back_populates='argument')
+    author: User = relationship('User', back_populates='arguments')
+    attacks: Optional['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid,
+                                                 back_populates='attacked_by')
+    attacked_by: List['Argument'] = relationship('Argument', remote_side=argument_uid, back_populates='attacks')
 
-    def __init__(self, premisegroup, is_supportive, author, issue: int, conclusion=None, argument=None,
-                 is_disabled=False):
+    # these are only for legacy support. use attacked_by and author instead
+    issues: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
+    arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
+    users: User = relationship('User', foreign_keys=[author_uid])
+
+    def __init__(self, premisegroup: int, is_supportive: bool, author: int, issue: int, conclusion: int = None,
+                 argument: int = None,
+                 is_disabled: bool = False):
         """
         Initializes a row in current argument-table
 
