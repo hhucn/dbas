@@ -31,7 +31,7 @@ from dbas.lib import (get_all_arguments_by_statement,
 from dbas.strings.matcher import get_all_statements_by_levensthein_similar_to
 from dbas.strings.translator import Keywords as _, get_translation, Translator
 from dbas.validators.common import valid_q_parameter
-from dbas.validators.core import has_keywords_in_json_path, validate, has_maybe_keywords
+from dbas.validators.core import has_keywords_in_json_path, validate, has_maybe_keywords, has_keywords_in_path
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_reason_and_position_not_equal, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
@@ -393,6 +393,7 @@ def discussion_finish(request):
 # =============================================================================
 
 @references.get()
+@validate(has_keywords_in_path(('host', str), ('path', str), location="params"))
 def get_references(request: Request):
     """
     Query database to get stored references from site. Generate a list with text versions of references.
@@ -400,12 +401,8 @@ def get_references(request: Request):
     :param request: request
     :return: References assigned to the queried URL
     """
-    from pprint import pprint
-    pprint(request)
-    pprint(request.params)
-
-    host = request.host
-    path = request.path
+    host = request.validated["host"]
+    path = request.validated["path"]
     log.debug("Querying references for host: {}, path: {}".format(host, path))
     refs_db: List[StatementReferences] = get_references_for_url(host, path)
     return {
