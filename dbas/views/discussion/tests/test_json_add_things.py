@@ -22,7 +22,6 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-
     def delete_last_argument_by_conclusion_uid(self, uid):
         db_new_arg = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=uid).order_by(
             Argument.uid.desc()).first()

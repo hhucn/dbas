@@ -207,6 +207,7 @@ class StatementReferencesGraph(SQLAlchemyObjectType):
     def resolve_statements(self: StatementReferences, info):
         return resolve_field_query({"uid": self.statement_uid}, info, StatementGraph)
 
+
 # -----------------------------------------------------------------------------
 # Query-Definition
 

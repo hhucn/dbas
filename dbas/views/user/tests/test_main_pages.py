@@ -17,7 +17,6 @@ class MainNotificationsViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-
     def test_page(self):
         request = testing.DummyRequest()
         response = notifications(request)
@@ -29,7 +28,6 @@ class MainSettingsViewTestsNotLoggedIn(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-
     def test_page(self):
         request = testing.DummyRequest()
         self.assertEqual(400, settings(request).status_code)
@@ -40,7 +38,6 @@ class MainSettingsViewTestsLoggedIn(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
 
     def test_page(self):
         request = testing.DummyRequest()
@@ -58,7 +55,6 @@ class MainSettingsViewTestsPassword(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
 
     def test_page_failure(self):
         request = testing.DummyRequest(params={
@@ -109,7 +105,6 @@ class MainUserView(unittest.TestCase):
         db_settings = db_user.settings
         db_settings.set_show_public_nickname(True)
         transaction.commit()
-
 
     def test_page(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()

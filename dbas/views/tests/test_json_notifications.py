@@ -14,7 +14,6 @@ class AjaxNotificationTest(unittest.TestCase):
         self.config.include('pyramid_chameleon')
         self.test_author_uid = 2
 
-
     def add_messages(self):
         DBDiscussionSession.add(Message(from_author_uid=1,
                                         to_author_uid=self.test_author_uid,

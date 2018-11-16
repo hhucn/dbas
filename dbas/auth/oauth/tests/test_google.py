@@ -10,7 +10,6 @@ class OAuthGoogleLoginTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
-
     def test_login_google(self):
         redirect_uri = 'http://lvh.me:4284/discuss?service=google'
         resp = google.start_flow(redirect_uri=redirect_uri)

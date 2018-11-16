@@ -14,7 +14,6 @@ class DiscussionInitViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-
     def test_page(self):
         # check count of seen by statements
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
@@ -69,7 +68,6 @@ class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-
     def test_page(self):
         request = testing.DummyRequest()
         response = discussion_overview(request)
@@ -86,7 +84,6 @@ class MainMyDiscussionViewTestsLoggedIn(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
 
     def test_page(self):
         request = testing.DummyRequest()

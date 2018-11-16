@@ -10,7 +10,6 @@ class OAuthTwitterLoginTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
-
     def test_login_twitter(self):
         try:
             redirect_uri = 'http://lvh.me:4284/discuss?service=twitter'

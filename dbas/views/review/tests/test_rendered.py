@@ -16,7 +16,6 @@ class MainReviewViewTestsNotLoggedIn(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-
     def test_page(self):
         request = testing.DummyRequest()
         response = index(request)
@@ -27,7 +26,6 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
 
     def test_page_not_logged_in(self):
         request = testing.DummyRequest()
@@ -52,7 +50,6 @@ class ReviewReputationViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
 
     def test_page_not_logged_in(self):
         request = testing.DummyRequest()
@@ -115,7 +112,6 @@ class ReviewOngoingViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-
     def test_page_not_logged_in(self):
         request = testing.DummyRequest()
         response = ongoing(request)
@@ -136,7 +132,6 @@ class ReviewHistoryViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
 
     def test_page(self):
         request = testing.DummyRequest()

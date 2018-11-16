@@ -13,7 +13,6 @@ class NotFoundViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-
     def test_page(self):
         request = construct_dummy_request()
         response = notfound(request)
