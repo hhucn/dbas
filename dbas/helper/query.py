@@ -5,11 +5,12 @@ Provides helping function for database querys.
 """
 
 import logging
+from typing import Union, Tuple
+
 import transaction
 from pyshorteners import Shorteners, Shortener
 from pyshorteners.exceptions import ShorteningErrorException
 from requests.exceptions import ReadTimeout, ConnectionError
-from typing import Union, Tuple
 from urllib3.exceptions import NewConnectionError
 
 from dbas.database import DBDiscussionSession
@@ -77,7 +78,6 @@ def __mark_or_unmark_it(stmt_or_arg: Union[Statement, Argument], should_mark, db
         DBDiscussionSession.query(table).filter(column == stmt_or_arg.uid).delete()
 
     DBDiscussionSession.flush()
-    transaction.commit()
 
     return {'success': _t.get(_.opinionSaved), 'error': ''}
 

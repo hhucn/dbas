@@ -18,8 +18,6 @@ class DiscussionChoseViewTests(unittest.TestCase):
         self.is_supportive = False
         self.is_argument = True
 
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page(self):
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()

@@ -16,8 +16,6 @@ class AjaxTest(unittest.TestCase):
         self.config.include('pyramid_mailer.testing')
         self.fuzzy_mode = FuzzyMode
 
-    def tearDown(self):
-        testing.tearDown()
 
     def test_fuzzy_search_mode_0(self):
         request = testing.DummyRequest(

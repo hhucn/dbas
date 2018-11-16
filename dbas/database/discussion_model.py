@@ -327,6 +327,9 @@ class User(DiscussionBase):
             'nickname': self.nickname
         }
 
+    def is_anonymous(self):
+        return self.uid == 0
+
     def is_admin(self):
         """
         Check, if the user is member of the admin group

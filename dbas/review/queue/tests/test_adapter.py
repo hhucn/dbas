@@ -18,8 +18,6 @@ class AdapterTest(unittest.TestCase):
         self.user = DBDiscussionSession.query(User).get(2)
         self.other_user = DBDiscussionSession.query(User).get(21)
 
-    def tearDown(self):
-        testing.tearDown()
 
     def test_get_review_queues_as_lists(self):
         _tn = Translator('en')

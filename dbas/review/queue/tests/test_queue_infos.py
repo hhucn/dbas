@@ -16,8 +16,6 @@ class QueueInfosTest(unittest.TestCase):
         self.config.include('pyramid_chameleon')
         self.user = DBDiscussionSession.query(User).get(2)
 
-    def tearDown(self):
-        testing.tearDown()
 
     def test_get_subpage_empty_session(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

@@ -38,8 +38,6 @@ class TestJustifyStatement(unittest.TestCase):
         clear_seen_by_of('Björn')
         clear_clicks_of('Björn')
 
-    def tearDown(self):
-        testing.tearDown()
 
     def test_justify_statement_page(self):
         vote_dict = get_meta_clicks()
@@ -137,8 +135,6 @@ class TestJustifyArgument(unittest.TestCase):
         clear_seen_by_of('Björn')
         clear_clicks_of('Björn')
 
-    def tearDown(self):
-        testing.tearDown()
 
     def __call_function_and_count_seen_clicked_arguments(self):
         request = construct_dummy_request(match_dict={
@@ -245,8 +241,6 @@ class TestDontKnowArgument(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-    def tearDown(self):
-        testing.tearDown()
 
     def test_dont_know_page(self):
         vote_dict = get_meta_clicks()

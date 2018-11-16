@@ -17,8 +17,6 @@ class AjaxReferencesTest(unittest.TestCase):
 
         # test every ajax method, which is not used in other classes
 
-    def tearDown(self):
-        testing.tearDown()
 
     def test_get_references_empty(self):
         from dbas.views import get_reference as ajax

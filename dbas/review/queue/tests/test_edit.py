@@ -12,8 +12,6 @@ class EditQueueTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
-    def tearDown(self):
-        testing.tearDown()
 
     def test_is_statement_in_edit_queue(self):
         db_review_edits = DBDiscussionSession.query(ReviewEdit).all()

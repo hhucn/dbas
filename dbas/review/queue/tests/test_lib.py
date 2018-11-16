@@ -9,8 +9,6 @@ class LibTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
-    def tearDown(self):
-        testing.tearDown()
 
     def test_get_reputation_reason_by_action(self):
         for action in ReputationReasons.list():

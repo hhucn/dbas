@@ -12,8 +12,6 @@ class OAuthFacebookLoginTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
-    def tearDown(self):
-        testing.tearDown()
 
     def test_login_facebook(self):
         request: Request = DummyRequest()

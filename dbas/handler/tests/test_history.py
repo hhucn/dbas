@@ -1,5 +1,3 @@
-import transaction
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import History, Issue
 from dbas.handler import history
@@ -17,7 +15,6 @@ class HistoryHandlerTests(TestCaseWithConfig):
         settings.set_last_topic_uid(self.first_issue.uid)
         DBDiscussionSession.add(settings)
         DBDiscussionSession.flush()
-        transaction.commit()
 
     def test_save_issue_uid(self):
         settings = self.user_tobi.settings
