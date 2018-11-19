@@ -7,7 +7,7 @@ from typing import List
 
 import transaction
 
-from api.extractor import extract_reference_information, extract_author_information, extract_issue_information
+from api.models import DataAuthor, DataIssue
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion, Statement
 from dbas.helper.url import url_to_statement
@@ -69,19 +69,20 @@ def get_all_references_by_reference_text(ref_text=None):
     """
     if ref_text:
         refs = list()
-        matched = DBDiscussionSession.query(StatementReferences).filter_by(reference=ref_text).all()
+        matched: List[StatementReferences] = DBDiscussionSession.query(StatementReferences).filter(
+            StatementReferences.reference == ref_text).all()
         for reference in matched:
-            user = DBDiscussionSession.query(User).get(reference.author_uid)
-            issue = DBDiscussionSession.query(Issue).get(reference.issue_uid)
-            textversion = DBDiscussionSession.query(TextVersion).get(reference.statement_uid)
-            statement_url = url_to_statement(issue, reference.statement)
-            refs.append({"reference": extract_reference_information(reference),
-                         "author": extract_author_information(user),
-                         "issue": extract_issue_information(issue),
-                         "arguments": get_all_arguments_with_text_by_statement_id(reference.statement_uid),
-                         "statement": {"uid": reference.statement_uid,
-                                       "url": statement_url,
-                                       "text": textversion.content}})
+            textversion: TextVersion = reference.statement.get_textversion()
+            statement_url = url_to_statement(reference.issue, reference.statement)
+            refs.append({
+                "reference": reference,
+                "author": DataAuthor(reference.author),
+                "issue": DataIssue(reference.issue),
+                "arguments": get_all_arguments_with_text_by_statement_id(reference.statement_uid),
+                "statement": {"uid": reference.statement_uid,
+                              "url": statement_url,
+                              "text": textversion.content}
+            })
         return refs
 
 
@@ -100,14 +101,3 @@ def get_references_for_url(host=None, path=None) -> List[StatementReferences]:
         return DBDiscussionSession.query(StatementReferences).filter_by(host=host, path=path).all()
     else:
         return []
-
-
-def get_reference_by_id(ref_id=None):
-    """
-    Query database to get a reference by its id.
-
-    :param ref_id: StatementReferences.uid
-    :return: StatementReference
-    """
-    if ref_id:
-        return DBDiscussionSession.query(StatementReferences).get(ref_id)

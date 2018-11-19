@@ -108,9 +108,9 @@ class DataAuthor:
 
     def __init__(self, author: User):
         self.uid: int = author.uid
-        self.nickname: str = author.nickname
+        self.nickname: str = author.public_nickname
 
-    def __json__(self):
+    def __json__(self, _request=None):
         return {
             "uid": self.uid,
             "nickname": self.nickname
@@ -129,7 +129,7 @@ class DataIssue:
         self.title: str = issue.title
         self.info: str = issue.info
 
-    def __json__(self):
+    def __json__(self, _request=None):
         return {
             "uid": self.uid,
             "slug": self.slug,
