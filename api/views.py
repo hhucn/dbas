@@ -40,7 +40,7 @@ from search.requester import get_statements_with_similarity_to
 from .lib import logger
 from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, valid_api_token
 from .references import (get_all_references_by_reference_text,
-                         get_reference_by_id, get_references_for_url, store_reference)
+                         get_references_for_url, store_reference)
 from .templates import error
 
 log = logger()
@@ -411,6 +411,7 @@ def get_references(request: Request):
 
 
 @reference_usages.get()
+@validate(has_keywords_in_path(('ref_uid', int)))
 def get_reference_usages(request: Request):
     """
     Return a JSON object containing all information about the stored reference and its usages.
@@ -419,8 +420,9 @@ def get_reference_usages(request: Request):
     :return: JSON with all information about the stored reference
     :rtype: list
     """
-    ref_uid = request.matchdict["ref_uid"]
-    db_ref = get_reference_by_id(ref_uid)
+    ref_uid = request.validated["ref_uid"]
+    log.debug("Retrieving reference usages for ref_uid {}".format(ref_uid))
+    db_ref: StatementReferences = DBDiscussionSession.query(StatementReferences).get(ref_uid)
     if db_ref:
         return get_all_references_by_reference_text(db_ref.reference)
     return error("Reference could not be found")
