@@ -861,7 +861,8 @@ class AjaxReviewTest(unittest.TestCase):
             self.assertNotEqual(arg.premisegroup_uid, tmp_arg.premisegroup_uid)
 
         # remove added args
-        add_args = DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=db_review_split.uid).all()
+        add_args = DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(
+            review_uid=db_review_split.uid).all()
         self.assertEqual(len(add_args), 1)  # one argument was added and one was modified
         map(lambda arg: DBDiscussionSession.query(Argument).filter_by(arg.uid).delete(), add_args)
 
@@ -869,7 +870,8 @@ class AjaxReviewTest(unittest.TestCase):
             DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review_split.uid).delete()
             DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=db_review_split.uid).delete()
             DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review_split.uid).delete()
-            DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=db_review_split.uid).delete()
+            DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(
+                review_uid=db_review_split.uid).delete()
             DBDiscussionSession.flush()
             DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=pgroup_uid).delete()
             DBDiscussionSession.flush()

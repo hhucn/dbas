@@ -8,7 +8,6 @@ import logging
 import random
 
 import bcrypt
-import transaction
 from pyramid_mailer import Mailer
 from sqlalchemy import func
 
@@ -82,7 +81,7 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
     # set the hashed one
     db_user.password = hashed_pwd
     DBDiscussionSession.add(db_user)
-    transaction.commit()
+    # transaction.commit()
 
     db_language = DBDiscussionSession.query(Language).get(db_user.settings.lang_uid)
 

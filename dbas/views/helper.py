@@ -1,5 +1,6 @@
 import logging
 import re
+
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.registry import Registry
 from pyramid.request import Request
@@ -70,7 +71,6 @@ def prepare_request_dict(request: Request):
     :return:
     """
     LOG.debug("Preparing request dict for renderer")
-
     db_user = request.validated['user']
     nickname = db_user.nickname if db_user.nickname != nick_of_anonymous_user else None
     db_last_topic = history_handler.get_last_issue_of(db_user)

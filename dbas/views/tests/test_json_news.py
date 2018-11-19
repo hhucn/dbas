@@ -14,9 +14,6 @@ class AjaxNewsTest(unittest.TestCase):
 
         # test every ajax method, which is not used in other classes
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_get_news_view(self):
         from dbas.views import get_news as ajax
         request = testing.DummyRequest(params={}, matchdict={})
