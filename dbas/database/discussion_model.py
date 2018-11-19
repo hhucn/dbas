@@ -620,9 +620,9 @@ class StatementReferences(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
     created = Column(ArrowType, default=get_now())
 
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    users = relationship('User', foreign_keys=[author_uid])
-    issues = relationship('Issue', foreign_keys=[issue_uid])
+    statement = relationship('Statement', foreign_keys=[statement_uid])
+    author = relationship('User', foreign_keys=[author_uid])
+    issue = relationship('Issue', foreign_keys=[issue_uid])
 
     def __init__(self, reference: str, host: str, path: str, author_uid: int, statement_uid: int, issue_uid: int):
         """
@@ -643,14 +643,6 @@ class StatementReferences(DiscussionBase):
         self.statement_uid = statement_uid
         self.issue_uid = issue_uid
 
-    @hybrid_property
-    def issue(self) -> Issue:
-        return DBDiscussionSession.query(Issue).get(self.issue_uid)
-
-    @hybrid_property
-    def statement(self) -> Statement:
-        return DBDiscussionSession.query(Statement).get(self.statement_uid)
-
     def get_statement_text(self, html: bool = False) -> str:
         """
         Gets the current references text from the statement, without trailing punctuation.
@@ -660,6 +652,15 @@ class StatementReferences(DiscussionBase):
         """
         db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
         return db_statement.get_text(html)
+
+    def __json__(self, _request=None):
+        return {
+            "uid": self.uid,
+            "title": self.reference,
+            "host": self.host,
+            "path": self.path,
+            "statement-uid": self.statement_uid
+        }
 
 
 class StatementOrigins(DiscussionBase):
