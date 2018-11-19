@@ -201,7 +201,7 @@ def pretty_print_timestamp(ts, lang):
     return datetime.strptime(str(ts), '%Y-%m-%d').strftime(formatter)
 
 
-def get_all_arguments_by_statement(statement_uid, include_disabled=False):
+def get_all_arguments_by_statement(statement_uid, include_disabled=False) -> Optional[List[Argument]]:
     """
     Returns a list of all arguments where the statement is a conclusion or member of the premisegroup
 
@@ -209,7 +209,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :param include_disabled: Boolean
     :return: [Arguments]
     """
-    LOG.debug("main %s, include_disabled %s", statement_uid, include_disabled)
+    LOG.debug("Retrieving all argumenty by statement-uid: %s, include_disabled %s", statement_uid, include_disabled)
     db_arguments = __get_arguments_of_conclusion(statement_uid, include_disabled)
     arg_array = [arg for arg in db_arguments] if db_arguments else []
 
@@ -277,7 +277,7 @@ def __get_arguments_of_conclusion(statement_uid, include_disabled):
     return db_arguments.all() if db_arguments else []
 
 
-def get_all_arguments_with_text_by_statement_id(statement_uid):
+def get_all_arguments_with_text_by_statement_id(statement_uid) -> List[dict]:
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
@@ -287,12 +287,11 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
-    LOG.debug("main %s", statement_uid)
-    arguments = get_all_arguments_by_statement(statement_uid)
-    results = []
+    LOG.debug("Retrieving arguments for statement uid: %s", statement_uid)
+    arguments: List[Argument] = get_all_arguments_by_statement(statement_uid)
     if arguments:
-        results = [{'uid': arg.uid, 'text': get_text_for_argument_uid(arg.uid)} for arg in arguments]
-    return results
+        return [{'uid': arg.uid, 'text': get_text_for_argument_uid(arg.uid)} for arg in arguments]
+    return []
 
 
 def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager, color_statement=False,
