@@ -37,13 +37,11 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_position, vali
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
 from dbas.validators.eden import valid_optional_origin
 from search.requester import get_statements_with_similarity_to
-from .lib import logger
 from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, valid_api_token
 from .references import (get_all_references_by_reference_text,
-                         get_references_for_url, store_reference)
+                         store_reference)
 from .templates import error
 
-log = logger()
 LOG = logging.getLogger(__name__)
 
 #
@@ -403,8 +401,9 @@ def get_references(request: Request):
     """
     host = request.validated["host"]
     path = request.validated["path"]
-    log.debug("Querying references for host: {}, path: {}".format(host, path))
-    refs_db: List[StatementReferences] = get_references_for_url(host, path)
+    LOG.debug("Querying references for host: {}, path: {}".format(host, path))
+    refs_db: List[StatementReferences] = DBDiscussionSession.query(StatementReferences).filter_by(host=host,
+                                                                                                  path=path).all()
     return {
         "references": [DataReference(ref) for ref in refs_db]
     }
@@ -421,7 +420,7 @@ def get_reference_usages(request: Request):
     :rtype: list
     """
     ref_uid = request.validated["ref_uid"]
-    log.debug("Retrieving reference usages for ref_uid {}".format(ref_uid))
+    LOG.debug("Retrieving reference usages for ref_uid {}".format(ref_uid))
     db_ref: StatementReferences = DBDiscussionSession.query(StatementReferences).get(ref_uid)
     if db_ref:
         return get_all_references_by_reference_text(db_ref.reference)
@@ -443,7 +442,7 @@ def user_login(request):
     :return: token and nickname
     """
     nickname = request.validated['nickname']
-    log.debug('User authenticated: {}'.format(nickname))
+    LOG.debug('User authenticated: {}'.format(nickname))
     return {
         'nickname': nickname,
         'token': request.validated['token']
@@ -460,7 +459,7 @@ def user_logout(request):
     :return:
     """
     nickname = request.validated['user']
-    log.debug('User logged out: {}'.format(nickname))
+    LOG.debug('User logged out: {}'.format(nickname))
     request.session.invalidate()
     token_to_database(request.validated['user'], None)
     return {
