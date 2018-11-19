@@ -21,7 +21,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def sql_timestamp_pretty_print(ts, lang='en', humanize=True, with_exact_time=False):
+def sql_timestamp_pretty_print(ts, lang: str = 'en', humanize: bool = True, with_exact_time: bool = False):
     """
     Pretty printing for sql timestamp in dependence of the language.
 
@@ -59,21 +59,24 @@ class Issue(DiscussionBase):
     Each issue has text and a creation date
     """
     __tablename__ = 'issues'
-    uid = Column(Integer, primary_key=True)
-    title = Column(Text, nullable=False)
-    slug = Column(Text, nullable=False, unique=True)
-    info = Column(Text, nullable=False)
-    long_info = Column(Text, nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    title: str = Column(Text, nullable=False)
+    slug: str = Column(Text, nullable=False, unique=True)
+    info: str = Column(Text, nullable=False)
+    long_info: str = Column(Text, nullable=False)
     date = Column(ArrowType, default=get_now())
-    author_uid = Column(Integer, ForeignKey('users.uid'))
-    lang_uid = Column(Integer, ForeignKey('languages.uid'))
-    is_disabled = Column(Boolean, nullable=False)
-    is_private = Column(Boolean, nullable=False, server_default="False")
-    is_read_only = Column(Boolean, nullable=False, server_default="False")
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
+    lang_uid: int = Column(Integer, ForeignKey('languages.uid'))
+    is_disabled: bool = Column(Boolean, nullable=False)
+    is_private: bool = Column(Boolean, nullable=False, server_default="False")
+    is_read_only: bool = Column(Boolean, nullable=False, server_default="False")
 
-    users = relationship('User', foreign_keys=[author_uid])
-    languages = relationship('Language', foreign_keys=[lang_uid])
-    participating_users = relationship('User', secondary='user_participation')
+    users: 'User' = relationship('User', foreign_keys=[author_uid])  # deprecated
+    author: 'User' = relationship('User', foreign_keys=[author_uid], back_populates='authored_issues')
+    languages = relationship('Language', foreign_keys=[lang_uid])  # deprecated
+    language: 'Language' = relationship('Language', foreign_keys=[lang_uid])
+    participating_users: List['User'] = relationship('User', secondary='user_participation',
+                                                     back_populates='participates_in')
     statements = relationship('Statement', secondary='statement_to_issue')
     all_arguments = relationship('Argument', back_populates='issue')
 
@@ -149,9 +152,9 @@ class Language(DiscussionBase):
     language-table with several columns.
     """
     __tablename__ = 'languages'
-    uid = Column(Integer, primary_key=True)
-    name = Column(Text, nullable=False)
-    ui_locales = Column(Text, nullable=False, unique=True)
+    uid: int = Column(Integer, primary_key=True)
+    name: str = Column(Text, nullable=False)
+    ui_locales: str = Column(Text, nullable=False, unique=True)
 
     def __init__(self, name, ui_locales):
         """
@@ -167,8 +170,8 @@ class Group(DiscussionBase):
     Each group has a name
     """
     __tablename__ = 'groups'
-    uid = Column(Integer, primary_key=True)
-    name = Column(Text, nullable=False, unique=True)
+    uid: int = Column(Integer, primary_key=True)
+    name: str = Column(Text, nullable=False, unique=True)
 
     def __init__(self, name):
         """
@@ -187,27 +190,30 @@ class User(DiscussionBase):
     User-table with several columns.
     """
     __tablename__ = 'users'
-    uid = Column(Integer, primary_key=True)
-    firstname = Column(Text, nullable=False)
-    surname = Column(Text, nullable=False)
-    nickname = Column(Text, nullable=False, unique=True)
-    public_nickname = Column(Text, nullable=False)
-    email = Column(Text, nullable=False)
-    gender = Column(Text, nullable=False)
-    password = Column(Text, nullable=False)
-    group_uid = Column(Integer, ForeignKey('groups.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    firstname: str = Column(Text, nullable=False)
+    surname: str = Column(Text, nullable=False)
+    nickname: str = Column(Text, nullable=False, unique=True)
+    public_nickname: str = Column(Text, nullable=False)
+    email: str = Column(Text, nullable=False)
+    gender: str = Column(Text, nullable=False)
+    password: str = Column(Text, nullable=False)
+    group_uid: int = Column(Integer, ForeignKey('groups.uid'))
     last_action = Column(ArrowType, default=get_now())
     last_login = Column(ArrowType, default=get_now())
     registered = Column(ArrowType, default=get_now())
-    token = Column(Text, nullable=True)
+    token: str = Column(Text, nullable=True)
     token_timestamp = Column(ArrowType, nullable=True)
-    oauth_provider = Column(Text, nullable=True)
-    oauth_provider_id = Column(Text, nullable=True)
+    oauth_provider: str = Column(Text, nullable=True)
+    oauth_provider_id: str = Column(Text, nullable=True)
 
     group: 'Group' = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
     history: List['History'] = relationship('History', back_populates='author', order_by='History.timestamp')
-    participates_in: List['Issue'] = relationship('Issue', secondary='user_participation')
+    participates_in: List['Issue'] = relationship('Issue', secondary='user_participation',
+                                                  back_populates='participating_users')
     arguments: List['Argument'] = relationship('Argument', back_populates='author')
+    authored_issues: List[Issue] = relationship('Issue', back_populates='author')
+    settings: 'Settings' = relationship('Settings', back_populates='user', uselist=False)
 
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='',
                  token_timestamp=None, oauth_provider='', oauth_provider_id=''):
@@ -321,6 +327,9 @@ class User(DiscussionBase):
             'nickname': self.nickname
         }
 
+    def is_anonymous(self):
+        return self.uid == 0
+
     def is_admin(self):
         """
         Check, if the user is member of the admin group
@@ -367,15 +376,6 @@ class User(DiscussionBase):
         """
         return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
 
-    @hybrid_property
-    def settings(self):
-        """
-        Check, if the user is member of the admin group
-
-        :return: True, if the user is member of the admin group
-        """
-        return DBDiscussionSession.query(Settings).filter_by(author_uid=self.uid).first()
-
     @staticmethod
     def by_nickname(nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
         return DBDiscussionSession.query(User).filter_by(nickname=nickname).one()
@@ -383,11 +383,11 @@ class User(DiscussionBase):
 
 class UserParticipation(DiscussionBase):
     __tablename__ = 'user_participation'
-    user_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
-    issue_uid = Column(Integer, ForeignKey('issues.uid'), primary_key=True)
+    user_uid: int = Column(Integer, ForeignKey('users.uid'), primary_key=True)
+    issue_uid: int = Column(Integer, ForeignKey('issues.uid'), primary_key=True)
 
-    user = relationship('User')
-    issue = relationship('Issue')
+    user: User = relationship('User')
+    issue: Issue = relationship('Issue')
 
 
 class Settings(DiscussionBase):
@@ -395,17 +395,17 @@ class Settings(DiscussionBase):
     Settings-table with several columns.
     """
     __tablename__ = 'settings'
-    author_uid = Column(Integer, ForeignKey('users.uid'), nullable=True, primary_key=True)
-    should_send_mails = Column(Boolean, nullable=False)
-    should_send_notifications = Column(Boolean, nullable=False)
-    should_show_public_nickname = Column(Boolean, nullable=False)
-    last_topic_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
-    lang_uid = Column(Integer, ForeignKey('languages.uid'))
-    keep_logged_in = Column(Boolean, nullable=False)
+    author_uid: int = Column(Integer, ForeignKey('users.uid'), nullable=True, primary_key=True)
+    should_send_mails: bool = Column(Boolean, nullable=False)
+    should_send_notifications: bool = Column(Boolean, nullable=False)
+    should_show_public_nickname: bool = Column(Boolean, nullable=False)
+    last_topic_uid: int = Column(Integer, ForeignKey('issues.uid'), nullable=False)
+    lang_uid: int = Column(Integer, ForeignKey('languages.uid'))
+    keep_logged_in: bool = Column(Boolean, nullable=False)
 
-    users = relationship('User', foreign_keys=[author_uid])
-    issues = relationship('Issue', foreign_keys=[last_topic_uid])
-    languages = relationship('Language', foreign_keys=[lang_uid])
+    user: User = relationship('User', foreign_keys=[author_uid], back_populates='settings')
+    last_topic: Issue = relationship('Issue')
+    language: Language = relationship('Language')
 
     def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=2,
                  keep_logged_in=False):
@@ -475,7 +475,7 @@ class Settings(DiscussionBase):
 
     @hybrid_property
     def lang(self) -> str:
-        return self.languages.ui_locales
+        return self.language.ui_locales
 
     def should_hold_the_login(self, keep_logged_in):
         """
@@ -493,9 +493,9 @@ class Statement(DiscussionBase):
     Each statement has link to its text
     """
     __tablename__ = 'statements'
-    uid = Column(Integer, primary_key=True)
-    is_position = Column(Boolean, nullable=False)
-    is_disabled = Column(Boolean, nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    is_position: bool = Column(Boolean, nullable=False)
+    is_disabled: bool = Column(Boolean, nullable=False)
 
     issues: List[Issue] = relationship('Issue', secondary='statement_to_issue', back_populates='statements')
     arguments: List['Argument'] = relationship('Argument', back_populates='conclusion')
@@ -643,18 +643,18 @@ class StatementReferences(DiscussionBase):
     From API: Reference to be stored and assigned to a statement.
     """
     __tablename__ = 'statement_references'
-    uid = Column(Integer, primary_key=True)
-    reference = Column(Text, nullable=False)
-    host = Column(Text, nullable=False)
-    path = Column(Text, nullable=False)
-    author_uid = Column(Integer, ForeignKey('users.uid'), nullable=False)
-    statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
-    issue_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    reference: str = Column(Text, nullable=False)
+    host: str = Column(Text, nullable=False)
+    path: str = Column(Text, nullable=False)
+    author_uid: int = Column(Integer, ForeignKey('users.uid'), nullable=False)
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=False)
+    issue_uid: int = Column(Integer, ForeignKey('issues.uid'), nullable=False)
     created = Column(ArrowType, default=get_now())
 
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    users = relationship('User', foreign_keys=[author_uid])
-    issues = relationship('Issue', foreign_keys=[issue_uid])
+    statement: Statement = relationship('Statement')
+    author: User = relationship('User')
+    issue: Issue = relationship('Issue')
 
     def __init__(self, reference: str, host: str, path: str, author_uid: int, statement_uid: int, issue_uid: int):
         """
@@ -675,14 +675,6 @@ class StatementReferences(DiscussionBase):
         self.statement_uid = statement_uid
         self.issue_uid = issue_uid
 
-    @hybrid_property
-    def issue(self) -> Issue:
-        return DBDiscussionSession.query(Issue).get(self.issue_uid)
-
-    @hybrid_property
-    def statement(self) -> Statement:
-        return DBDiscussionSession.query(Statement).get(self.statement_uid)
-
     def get_statement_text(self, html: bool = False) -> str:
         """
         Gets the current references text from the statement, without trailing punctuation.
@@ -699,15 +691,15 @@ class StatementOrigins(DiscussionBase):
     Add an origin to the statement. Comes from external services, like the EDEN-aggregators.
     """
     __tablename__ = 'statement_origins'
-    uid = Column(Integer, primary_key=True)
-    entity_id = Column(Text, nullable=True)
-    aggregate_id = Column(Text, nullable=True)
-    version = Column(Integer, nullable=True)
-    statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
-    author = Column(Text, nullable=True)
+    uid: int = Column(Integer, primary_key=True)
+    entity_id: str = Column(Text, nullable=True)
+    aggregate_id: str = Column(Text, nullable=True)
+    version: int = Column(Integer, nullable=True)
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=False)
+    author: str = Column(Text, nullable=True)
     created = Column(ArrowType, default=get_now())
 
-    statement = relationship('Statement', foreign_keys=[statement_uid])
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
     def __init__(self, entity_id: str, aggregate_id: str, version: int, author: str, statement_uid: int):
         """
@@ -728,12 +720,12 @@ class StatementOrigins(DiscussionBase):
 
 class StatementToIssue(DiscussionBase):
     __tablename__ = 'statement_to_issue'
-    uid = Column(Integer, primary_key=True)
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
-    issue_uid = Column(Integer, ForeignKey('issues.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
+    issue_uid: int = Column(Integer, ForeignKey('issues.uid'))
 
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    issues = relationship('Issue', foreign_keys=[issue_uid])
+    statement: Statement = relationship('Statement')
+    issue: Issue = relationship('Issue')
 
     def __init__(self, statement, issue):
         """
@@ -752,12 +744,13 @@ class SeenStatement(DiscussionBase):
     A statement is marked as seen, if it is/was selectable during the justification steps
     """
     __tablename__ = 'seen_statements'
-    uid = Column(Integer, primary_key=True)
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
-    user_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
+    user_uid: int = Column(Integer, ForeignKey('users.uid'))
 
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    users = relationship('User', foreign_keys=[user_uid])
+    statement: Statement = relationship('Statement')
+
+    user: User = relationship('User')
 
     def __init__(self, statement_uid, user_uid):
         """
@@ -776,12 +769,12 @@ class SeenArgument(DiscussionBase):
     An argument is marked as seen, if the user has vote for it or if the argument is presented as attack
     """
     __tablename__ = 'seen_arguments'
-    uid = Column(Integer, primary_key=True)
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
-    user_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'))
+    user_uid: int = Column(Integer, ForeignKey('users.uid'))
 
-    arguments = relationship('Argument', foreign_keys=[argument_uid])
-    users = relationship('User', foreign_keys=[user_uid])
+    argument: 'Argument' = relationship('Argument', foreign_keys=[argument_uid])
+    user: User = relationship('User', foreign_keys=[user_uid])
 
     def __init__(self, argument_uid, user_uid):
         """
@@ -800,15 +793,15 @@ class TextVersion(DiscussionBase):
     Each text versions has link to the recent link and fields for content, author, timestamp and weight
     """
     __tablename__ = 'textversions'
-    uid = Column(Integer, primary_key=True)
-    statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
-    content = Column(Text, nullable=False)
-    author_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=True)
+    content: str = Column(Text, nullable=False)
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_disabled = Column(Boolean, nullable=False)
+    is_disabled: bool = Column(Boolean, nullable=False)
 
-    statement = relationship('Statement', foreign_keys=[statement_uid])
-    author = relationship('User', foreign_keys=[author_uid])
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
+    author: User = relationship('User', foreign_keys=[author_uid])
 
     def __init__(self, content, author, statement_uid=None, is_disabled=False):
         """
@@ -864,19 +857,20 @@ class Premise(DiscussionBase):
     a timestamp as well as a boolean whether it is negated
     """
     __tablename__ = 'premises'
-    uid = Column(Integer, primary_key=True)
-    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
-    is_negated = Column(Boolean, nullable=False)
-    author_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'))
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
+    is_negated: bool = Column(Boolean, nullable=False)
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    issue_uid = Column(Integer, ForeignKey('issues.uid'))
-    is_disabled = Column(Boolean, nullable=False)
+    issue_uid: int = Column(Integer, ForeignKey('issues.uid'))
+    is_disabled: bool = Column(Boolean, nullable=False)
 
-    premisegroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid], back_populates='premises')
-    statement = relationship(Statement, foreign_keys=[statement_uid], back_populates='premises')
-    author = relationship(User, foreign_keys=[author_uid])
-    issue = relationship(Issue, foreign_keys=[issue_uid])
+    premisegroup: 'PremiseGroup' = relationship('PremiseGroup', foreign_keys=[premisegroup_uid],
+                                                back_populates='premises')
+    statement: Statement = relationship(Statement, foreign_keys=[statement_uid], back_populates='premises')
+    author: User = relationship(User, foreign_keys=[author_uid])
+    issue: Issue = relationship(Issue, foreign_keys=[issue_uid])
 
     def __init__(self, premisesgroup, statement, is_negated, author, issue, is_disabled=False):
         """
@@ -961,8 +955,8 @@ class PremiseGroup(DiscussionBase):
     Each premisesGroup has a id and an author
     """
     __tablename__ = 'premisegroups'
-    uid = Column(Integer, primary_key=True)
-    author_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
 
     author: List[User] = relationship(User, foreign_keys=[author_uid])
     premises: List[Premise] = relationship(Premise, back_populates='premisegroup')
@@ -1128,12 +1122,12 @@ class History(DiscussionBase):
     Each user will be tracked
     """
     __tablename__ = 'history'
-    uid = Column(Integer, primary_key=True)
-    author_uid = Column(Integer, ForeignKey('users.uid'))
-    path = Column(Text, nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
+    path: str = Column(Text, nullable=False)
     timestamp = Column(ArrowType, default=get_now())
 
-    author = relationship('User', foreign_keys=[author_uid], back_populates='history')
+    author: User = relationship('User', foreign_keys=[author_uid], back_populates='history')
 
     def __init__(self, author_uid, path):
         """
@@ -1154,15 +1148,15 @@ class ClickedArgument(DiscussionBase):
     An argument will be voted, if the user has selected the premise and conclusion of this argument.
     """
     __tablename__ = 'clicked_arguments'
-    uid = Column(Integer, primary_key=True)
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
-    author_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'))
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_up_vote = Column(Boolean, nullable=False)
-    is_valid = Column(Boolean, nullable=False)
+    is_up_vote: bool = Column(Boolean, nullable=False)
+    is_valid: bool = Column(Boolean, nullable=False)
 
-    arguments = relationship('Argument', foreign_keys=[argument_uid])
-    users = relationship('User', foreign_keys=[author_uid])
+    argument: Argument = relationship('Argument')
+    user: User = relationship('User')
 
     def __init__(self, argument_uid, author_uid, is_up_vote=True, is_valid=True):
         """
@@ -1214,15 +1208,15 @@ class ClickedStatement(DiscussionBase):
     or if the statement is used as part of an argument.
     """
     __tablename__ = 'clicked_statements'
-    uid = Column(Integer, primary_key=True)
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
-    author_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_up_vote = Column(Boolean, nullable=False)
-    is_valid = Column(Boolean, nullable=False)
+    is_up_vote: bool = Column(Boolean, nullable=False)
+    is_valid: bool = Column(Boolean, nullable=False)
 
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    users = relationship('User', foreign_keys=[author_uid])
+    statement: Statement = relationship('Statement')
+    user: User = relationship('User', foreign_keys=[author_uid])
 
     def __init__(self, statement_uid, author_uid, is_up_vote=True, is_valid=True):
         """
@@ -1272,13 +1266,13 @@ class MarkedArgument(DiscussionBase):
     MarkedArgument-table with several columns.
     """
     __tablename__ = 'marked_arguments'
-    uid = Column(Integer, primary_key=True)
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
-    author_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'))
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
-    arguments = relationship('Argument', foreign_keys=[argument_uid])
-    users = relationship('User', foreign_keys=[author_uid])
+    argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
+    user: User = relationship('User', foreign_keys=[author_uid])
 
     def __init__(self, argument, user):
         """
@@ -1309,13 +1303,13 @@ class MarkedStatement(DiscussionBase):
     MarkedStatement-table with several columns.
     """
     __tablename__ = 'marked_statements'
-    uid = Column(Integer, primary_key=True)
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
-    author_uid = Column(Integer, ForeignKey('users.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    users = relationship('User', foreign_keys=[author_uid])
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
+    user: User = relationship('User', foreign_keys=[author_uid])
 
     def __init__(self, statement, user):
         """
@@ -1346,17 +1340,17 @@ class Message(DiscussionBase):
     Message-table with several columns.
     """
     __tablename__ = 'messages'
-    uid = Column(Integer, primary_key=True)
-    from_author_uid = Column(Integer, ForeignKey('users.uid'))
-    to_author_uid = Column(Integer, ForeignKey('users.uid'))
-    topic = Column(Text, nullable=False)
-    content = Column(Text, nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    from_author_uid: int = Column(Integer, ForeignKey('users.uid'))
+    to_author_uid: int = Column(Integer, ForeignKey('users.uid'))
+    topic: str = Column(Text, nullable=False)
+    content: str = Column(Text, nullable=False)
     timestamp = Column(ArrowType, default=get_now())
-    read = Column(Boolean, nullable=False)
-    is_inbox = Column(Boolean, nullable=False)
+    read: bool = Column(Boolean, nullable=False)
+    is_inbox: bool = Column(Boolean, nullable=False)
 
-    from_users = relationship('User', foreign_keys=[from_author_uid])
-    to_users = relationship('User', foreign_keys=[to_author_uid])
+    sender: User = relationship('User', foreign_keys=[from_author_uid])
+    receiver: User = relationship('User', foreign_keys=[to_author_uid])
 
     def __init__(self, from_author_uid, to_author_uid, topic, content, is_inbox=True, read=False):
         """
@@ -1419,19 +1413,19 @@ class ReviewDelete(AbstractReviewCase):
     ReviewDelete-table with several columns.
     """
     __tablename__ = 'review_deletes'
-    uid = Column(Integer, primary_key=True)
-    detector_uid = Column(Integer, ForeignKey('users.uid'))
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    detector_uid: int = Column(Integer, ForeignKey('users.uid'))
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'))
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_executed = Column(Boolean, nullable=False, default=False)
-    reason_uid = Column(Integer, ForeignKey('review_delete_reasons.uid'))
-    is_revoked = Column(Boolean, nullable=False, default=False)
+    is_executed: bool = Column(Boolean, nullable=False, default=False)
+    reason_uid: int = Column(Integer, ForeignKey('review_delete_reasons.uid'))
+    is_revoked: bool = Column(Boolean, nullable=False, default=False)
 
-    detectors = relationship('User', foreign_keys=[detector_uid])
-    arguments = relationship('Argument', foreign_keys=[argument_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    reasons = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
+    detector: User = relationship('User', foreign_keys=[detector_uid])
+    argument: Optional[Argument] = relationship('Argument', foreign_keys=[argument_uid])
+    statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
+    reason: 'ReviewDeleteReason' = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
 
     def __init__(self, detector, argument=None, statement=None, reason=None, is_executed=False, is_revoked=False):
         """
@@ -1482,17 +1476,17 @@ class ReviewEdit(AbstractReviewCase):
     -table with several columns.
     """
     __tablename__ = 'review_edits'
-    uid = Column(Integer, primary_key=True)
-    detector_uid = Column(Integer, ForeignKey('users.uid'))
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    detector_uid: int = Column(Integer, ForeignKey('users.uid'))
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'))
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_executed = Column(Boolean, nullable=False, default=False)
-    is_revoked = Column(Boolean, nullable=False, default=False)
+    is_executed: bool = Column(Boolean, nullable=False, default=False)
+    is_revoked: bool = Column(Boolean, nullable=False, default=False)
 
-    detectors = relationship('User', foreign_keys=[detector_uid])
-    arguments = relationship('Argument', foreign_keys=[argument_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
+    detector: User = relationship('User', foreign_keys=[detector_uid])
+    argument: Optional[Argument] = relationship('Argument', foreign_keys=[argument_uid])
+    statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
 
     def __init__(self, detector, argument=None, statement=None, is_executed=False, is_revoked=False):
         """
@@ -1543,14 +1537,14 @@ class ReviewEditValue(DiscussionBase):
     ReviewEditValue-table with several columns.
     """
     __tablename__ = 'review_edit_values'
-    uid = Column(Integer, primary_key=True)
-    review_edit_uid = Column(Integer, ForeignKey('review_edits.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
-    typeof = Column(Text, nullable=False)
-    content = Column(Text, nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    review_edit_uid: int = Column(Integer, ForeignKey('review_edits.uid'))
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
+    typeof: str = Column(Text, nullable=False)
+    content: str = Column(Text, nullable=False)
 
-    reviews = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
+    review: ReviewEdit = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
+    statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
 
     def __init__(self, review_edit, statement, typeof, content):
         """
@@ -1572,17 +1566,17 @@ class ReviewOptimization(AbstractReviewCase):
     ReviewOptimization-table with several columns.
     """
     __tablename__ = 'review_optimizations'
-    uid = Column(Integer, primary_key=True)
-    detector_uid = Column(Integer, ForeignKey('users.uid'))
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    detector_uid: int = Column(Integer, ForeignKey('users.uid'))
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'))
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_executed = Column(Boolean, nullable=False, default=False)
-    is_revoked = Column(Boolean, nullable=False, default=False)
+    is_executed: bool = Column(Boolean, nullable=False, default=False)
+    is_revoked: bool = Column(Boolean, nullable=False, default=False)
 
-    detectors = relationship('User', foreign_keys=[detector_uid])
-    arguments = relationship('Argument', foreign_keys=[argument_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
+    detector: User = relationship('User', foreign_keys=[detector_uid])
+    argument: Optional[Argument] = relationship('Argument', foreign_keys=[argument_uid])
+    statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
 
     def __init__(self, detector, argument=None, statement=None, is_executed=False, is_revoked=False):
         """
@@ -1633,17 +1627,17 @@ class ReviewDuplicate(AbstractReviewCase):
     ReviewDuplicate-table with several columns.
     """
     __tablename__ = 'review_duplicates'
-    uid = Column(Integer, primary_key=True)
-    detector_uid = Column(Integer, ForeignKey('users.uid'))
-    duplicate_statement_uid = Column(Integer, ForeignKey('statements.uid'))
-    original_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    detector_uid: int = Column(Integer, ForeignKey('users.uid'))
+    duplicate_statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
+    original_statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_executed = Column(Boolean, nullable=False, default=False)
-    is_revoked = Column(Boolean, nullable=False, default=False)
+    is_executed: bool = Column(Boolean, nullable=False, default=False)
+    is_revoked: bool = Column(Boolean, nullable=False, default=False)
 
-    detectors = relationship('User', foreign_keys=[detector_uid])
-    duplicate_statement = relationship('Statement', foreign_keys=[duplicate_statement_uid])
-    original_statement = relationship('Statement', foreign_keys=[original_statement_uid])
+    detector: User = relationship('User', foreign_keys=[detector_uid])
+    duplicate_statement: Statement = relationship('Statement', foreign_keys=[duplicate_statement_uid])
+    original_statement: Statement = relationship('Statement', foreign_keys=[original_statement_uid])
 
     def __init__(self, detector, duplicate_statement=None, original_statement=None, is_executed=False,
                  is_revoked=False):
@@ -1695,15 +1689,15 @@ class ReviewMerge(AbstractReviewCase):
     Review-table with several columns.
     """
     __tablename__ = 'review_merge'
-    uid = Column(Integer, primary_key=True)
-    detector_uid = Column(Integer, ForeignKey('users.uid'))
-    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    detector_uid: int = Column(Integer, ForeignKey('users.uid'))
+    premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_executed = Column(Boolean, nullable=False, default=False)
-    is_revoked = Column(Boolean, nullable=False, default=False)
+    is_executed: bool = Column(Boolean, nullable=False, default=False)
+    is_revoked: bool = Column(Boolean, nullable=False, default=False)
 
-    detectors = relationship('User', foreign_keys=[detector_uid])
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
+    detector: User = relationship('User', foreign_keys=[detector_uid])
+    premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
     def __init__(self, detector, premisegroup, is_executed=False, is_revoked=False):
         """
@@ -1752,15 +1746,15 @@ class ReviewSplit(AbstractReviewCase):
     Review-table with several columns.
     """
     __tablename__ = 'review_split'
-    uid = Column(Integer, primary_key=True)
-    detector_uid = Column(Integer, ForeignKey('users.uid'))
-    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    detector_uid: int = Column(Integer, ForeignKey('users.uid'))
+    premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_executed = Column(Boolean, nullable=False, default=False)
-    is_revoked = Column(Boolean, nullable=False, default=False)
+    is_executed: bool = Column(Boolean, nullable=False, default=False)
+    is_revoked: bool = Column(Boolean, nullable=False, default=False)
 
-    detectors = relationship('User', foreign_keys=[detector_uid])
-    premisegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
+    detector: User = relationship('User', foreign_keys=[detector_uid])
+    premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
     def __init__(self, detector, premisegroup, is_executed=False, is_revoked=False):
         """
@@ -1809,11 +1803,11 @@ class ReviewSplitValues(DiscussionBase):
     Review-table with several columns.
     """
     __tablename__ = 'review_split_values'
-    uid = Column(Integer, primary_key=True)
-    review_uid = Column(Integer, ForeignKey('review_split.uid'))
-    content = Column(Text, nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    review_uid: int = Column(Integer, ForeignKey('review_split.uid'))
+    content: str = Column(Text, nullable=False)
 
-    reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
+    review: ReviewSplit = relationship('ReviewSplit', foreign_keys=[review_uid])
 
     def __init__(self, review, content):
         """
@@ -1831,11 +1825,11 @@ class ReviewMergeValues(DiscussionBase):
     Review-table with several columns.
     """
     __tablename__ = 'review_merge_values'
-    uid = Column(Integer, primary_key=True)
-    review_uid = Column(Integer, ForeignKey('review_merge.uid'))
-    content = Column(Text, nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    review_uid: int = Column(Integer, ForeignKey('review_merge.uid'))
+    content: str = Column(Text, nullable=False)
 
-    reviews = relationship('ReviewMerge', foreign_keys=[review_uid])
+    review: ReviewMerge = relationship('ReviewMerge', foreign_keys=[review_uid])
 
     def __init__(self, review, content):
         """
@@ -1853,10 +1847,10 @@ class ReviewDeleteReason(DiscussionBase):
     ReviewDeleteReason-table with several columns.
     """
     __tablename__ = 'review_delete_reasons'
-    uid = Column(Integer, primary_key=True)
-    reason = Column(Text, nullable=False, unique=True)
+    uid: int = Column(Integer, primary_key=True)
+    reason: str = Column(Text, nullable=False, unique=True)
 
-    def __init__(self, reason):
+    def __init__(self, reason: str):
         """
         Inits a row in current review delete reason table
 
@@ -1891,14 +1885,14 @@ class LastReviewerDelete(AbstractLastReviewerCase):
     LastReviewerDelete-table with several columns.
     """
     __tablename__ = 'last_reviewers_delete'
-    uid = Column(Integer, primary_key=True)
-    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
-    review_uid = Column(Integer, ForeignKey('review_deletes.uid'))
-    is_okay = Column(Boolean, nullable=False, default=False)
+    uid: int = Column(Integer, primary_key=True)
+    reviewer_uid: int = Column(Integer, ForeignKey('users.uid'))
+    review_uid: int = Column(Integer, ForeignKey('review_deletes.uid'))
+    is_okay: bool = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
-    reviewer = relationship('User', foreign_keys=[reviewer_uid])
-    review = relationship('ReviewDelete', foreign_keys=[review_uid])
+    reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
+    review: ReviewDelete = relationship('ReviewDelete', foreign_keys=[review_uid])
 
     def __init__(self, reviewer, review, is_okay):
         """
@@ -1922,14 +1916,14 @@ class LastReviewerDuplicate(AbstractLastReviewerCase):
     LastReviewerDuplicate-table with several columns.
     """
     __tablename__ = 'last_reviewers_duplicates'
-    uid = Column(Integer, primary_key=True)
-    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
-    review_uid = Column(Integer, ForeignKey('review_duplicates.uid'))
-    is_okay = Column(Boolean, nullable=False, default=False)
+    uid: int = Column(Integer, primary_key=True)
+    reviewer_uid: int = Column(Integer, ForeignKey('users.uid'))
+    review_uid: int = Column(Integer, ForeignKey('review_duplicates.uid'))
+    is_okay: bool = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
-    reviewer = relationship('User', foreign_keys=[reviewer_uid])
-    review = relationship('ReviewDuplicate', foreign_keys=[review_uid])
+    reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
+    review: ReviewDuplicate = relationship('ReviewDuplicate', foreign_keys=[review_uid])
 
     def __init__(self, reviewer, review, is_okay):
         """
@@ -1953,14 +1947,14 @@ class LastReviewerEdit(AbstractLastReviewerCase):
     LastReviewerEdit-table with several columns.
     """
     __tablename__ = 'last_reviewers_edit'
-    uid = Column(Integer, primary_key=True)
-    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
-    review_uid = Column(Integer, ForeignKey('review_edits.uid'))
-    is_okay = Column(Boolean, nullable=False, default=False)
+    uid: int = Column(Integer, primary_key=True)
+    reviewer_uid: int = Column(Integer, ForeignKey('users.uid'))
+    review_uid: int = Column(Integer, ForeignKey('review_edits.uid'))
+    is_okay: bool = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
-    reviewer = relationship('User', foreign_keys=[reviewer_uid])
-    review = relationship('ReviewEdit', foreign_keys=[review_uid])
+    reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
+    review: ReviewEdit = relationship('ReviewEdit', foreign_keys=[review_uid])
 
     def __init__(self, reviewer, review, is_okay):
         """
@@ -1983,14 +1977,14 @@ class LastReviewerOptimization(AbstractLastReviewerCase):
     Inits a row in current last reviewer edit table
     """
     __tablename__ = 'last_reviewers_optimization'
-    uid = Column(Integer, primary_key=True)
-    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
-    review_uid = Column(Integer, ForeignKey('review_optimizations.uid'))
-    is_okay = Column(Boolean, nullable=False, default=False)
+    uid: int = Column(Integer, primary_key=True)
+    reviewer_uid: int = Column(Integer, ForeignKey('users.uid'))
+    review_uid: int = Column(Integer, ForeignKey('review_optimizations.uid'))
+    is_okay: bool = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
-    reviewer = relationship('User', foreign_keys=[reviewer_uid])
-    review = relationship('ReviewOptimization', foreign_keys=[review_uid])
+    reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
+    review: ReviewOptimization = relationship('ReviewOptimization', foreign_keys=[review_uid])
 
     def __init__(self, reviewer, review, is_okay):
         """
@@ -2014,14 +2008,14 @@ class LastReviewerSplit(AbstractLastReviewerCase):
     Inits a row in current last reviewer split table
     """
     __tablename__ = 'last_reviewers_split'
-    uid = Column(Integer, primary_key=True)
-    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
-    review_uid = Column(Integer, ForeignKey('review_split.uid'))
-    should_split = Column(Boolean, nullable=False, default=False)
+    uid: int = Column(Integer, primary_key=True)
+    reviewer_uid: int = Column(Integer, ForeignKey('users.uid'))
+    review_uid: int = Column(Integer, ForeignKey('review_split.uid'))
+    should_split: bool = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
-    reviewer = relationship('User', foreign_keys=[reviewer_uid])
-    review = relationship('ReviewSplit', foreign_keys=[review_uid])
+    reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
+    review: ReviewSplit = relationship('ReviewSplit', foreign_keys=[review_uid])
 
     def __init__(self, reviewer, review, should_split):
         """
@@ -2045,14 +2039,14 @@ class LastReviewerMerge(AbstractLastReviewerCase):
     Inits a row in current last reviewer merge table
     """
     __tablename__ = 'last_reviewers_merge'
-    uid = Column(Integer, primary_key=True)
-    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
-    review_uid = Column(Integer, ForeignKey('review_merge.uid'))
-    should_merge = Column(Boolean, nullable=False, default=False)
+    uid: int = Column(Integer, primary_key=True)
+    reviewer_uid: int = Column(Integer, ForeignKey('users.uid'))
+    review_uid: int = Column(Integer, ForeignKey('review_merge.uid'))
+    should_merge: bool = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
-    reviewer = relationship('User', foreign_keys=[reviewer_uid])
-    review = relationship('ReviewMerge', foreign_keys=[review_uid])
+    reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
+    review: ReviewMerge = relationship('ReviewMerge', foreign_keys=[review_uid])
 
     def __init__(self, reviewer, review, should_merge):
         """
@@ -2076,13 +2070,14 @@ class ReputationHistory(DiscussionBase):
     ReputationHistory-table with several columns.
     """
     __tablename__ = 'reputation_history'
-    uid = Column(Integer, primary_key=True)
-    reputator_uid = Column(Integer, ForeignKey('users.uid'))
-    reputation_uid = Column(Integer, ForeignKey('reputation_reasons.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    reputator_uid: int = Column(Integer, ForeignKey('users.uid'))
+    reputation_uid: int = Column(Integer, ForeignKey('reputation_reasons.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
-    reputators = relationship('User', foreign_keys=[reputator_uid])
-    reputations = relationship('ReputationReason', foreign_keys=[reputation_uid])
+    user: User = relationship('User', foreign_keys=[reputator_uid])
+    reputations: 'ReputationReason' = relationship('ReputationReason', foreign_keys=[reputation_uid])  # deprecated
+    reason_for_reputation: 'ReputationReason' = relationship('ReputationReason', foreign_keys=[reputation_uid])
 
     def __init__(self, reputator, reputation):
         """
@@ -2101,9 +2096,9 @@ class ReputationReason(DiscussionBase):
     ReputationReason-table with several columns.
     """
     __tablename__ = 'reputation_reasons'
-    uid = Column(Integer, primary_key=True)
-    reason = Column(Text, nullable=False, unique=True)
-    points = Column(Integer, nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    reason: str = Column(Text, nullable=False, unique=True)
+    points: int = Column(Integer, nullable=False)
 
     def __init__(self, reason, points):
         """
@@ -2121,12 +2116,12 @@ class OptimizationReviewLocks(DiscussionBase):
     OptimizationReviewLocks-table with several columns.
     """
     __tablename__ = 'optimization_review_locks'
-    author_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
-    review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'))
+    author_uid: int = Column(Integer, ForeignKey('users.uid'), primary_key=True)
+    review_optimization_uid: int = Column(Integer, ForeignKey('review_optimizations.uid'))
     locked_since = Column(ArrowType, default=get_now(), nullable=True)
 
-    authors = relationship('User', foreign_keys=[author_uid])
-    review_optimization = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
+    authors: User = relationship('User', foreign_keys=[author_uid])
+    review_optimization: ReviewOptimization = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
 
     def __init__(self, author, review_optimization):
         """
@@ -2145,24 +2140,26 @@ class ReviewCanceled(DiscussionBase):
     ReviewCanceled-table with several columns.
     """
     __tablename__ = 'review_canceled'
-    uid = Column(Integer, primary_key=True)
-    author_uid = Column(Integer, ForeignKey('users.uid'))
-    review_edit_uid = Column(Integer, ForeignKey('review_edits.uid'), nullable=True)
-    review_delete_uid = Column(Integer, ForeignKey('review_deletes.uid'), nullable=True)
-    review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'), nullable=True)
-    review_duplicate_uid = Column(Integer, ForeignKey('review_duplicates.uid'), nullable=True)
-    review_merge_uid = Column(Integer, ForeignKey('review_merge.uid'), nullable=True)
-    review_split_uid = Column(Integer, ForeignKey('review_split.uid'), nullable=True)
+    uid: int = Column(Integer, primary_key=True)
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
+    review_edit_uid: int = Column(Integer, ForeignKey('review_edits.uid'), nullable=True)
+    review_delete_uid: int = Column(Integer, ForeignKey('review_deletes.uid'), nullable=True)
+    review_optimization_uid: int = Column(Integer, ForeignKey('review_optimizations.uid'), nullable=True)
+    review_duplicate_uid: int = Column(Integer, ForeignKey('review_duplicates.uid'), nullable=True)
+    review_merge_uid: int = Column(Integer, ForeignKey('review_merge.uid'), nullable=True)
+    review_split_uid: int = Column(Integer, ForeignKey('review_split.uid'), nullable=True)
     was_ongoing = Column(Boolean)
     timestamp = Column(ArrowType, default=get_now())
 
-    authors = relationship('User', foreign_keys=[author_uid])
-    edits = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
-    deletes = relationship('ReviewDelete', foreign_keys=[review_delete_uid])
-    optimizations = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
-    duplicates = relationship('ReviewDuplicate', foreign_keys=[review_duplicate_uid])
-    merges = relationship('ReviewMerge', foreign_keys=[review_merge_uid])
-    plits = relationship('ReviewSplit', foreign_keys=[review_split_uid])
+    # deprecated
+    author: User = relationship('User', foreign_keys=[author_uid])
+    edit: Optional[ReviewEdit] = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
+    delete: Optional[ReviewDelete] = relationship('ReviewDelete', foreign_keys=[review_delete_uid])
+    optimization: Optional[ReviewOptimization] = relationship('ReviewOptimization',
+                                                              foreign_keys=[review_optimization_uid])
+    duplicate: Optional[ReviewDuplicate] = relationship('ReviewDuplicate', foreign_keys=[review_duplicate_uid])
+    merge: Optional[ReviewMerge] = relationship('ReviewMerge', foreign_keys=[review_merge_uid])
+    split: Optional[ReviewSplit] = relationship('ReviewSplit', foreign_keys=[review_split_uid])
 
     def __init__(self, author, review_data, was_ongoing=False):
         """
@@ -2188,15 +2185,15 @@ class RevokedContent(DiscussionBase):
     RevokedContent-table with several columns.
     """
     __tablename__ = 'revoked_content'
-    uid = Column(Integer, primary_key=True)
-    author_uid = Column(Integer, ForeignKey('users.uid'))
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    author_uid: int = Column(Integer, ForeignKey('users.uid'))
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'))
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
-    authors = relationship('User', foreign_keys=[author_uid])
-    arguments = relationship('Argument', foreign_keys=[argument_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
+    author: User = relationship('User', foreign_keys=[author_uid])
+    argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
     def __init__(self, author, argument=None, statement=None):
         """
@@ -2217,16 +2214,16 @@ class RevokedContentHistory(DiscussionBase):
     RevokedContentHistory-table with several columns.
     """
     __tablename__ = 'revoked_content_history'
-    uid = Column(Integer, primary_key=True)
-    old_author_uid = Column(Integer, ForeignKey('users.uid'))
-    new_author_uid = Column(Integer, ForeignKey('users.uid'))
-    textversion_uid = Column(Integer, ForeignKey('textversions.uid'), nullable=True)
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
+    uid: int = Column(Integer, primary_key=True)
+    old_author_uid: int = Column(Integer, ForeignKey('users.uid'))
+    new_author_uid: int = Column(Integer, ForeignKey('users.uid'))
+    textversion_uid: int = Column(Integer, ForeignKey('textversions.uid'), nullable=True)
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
 
-    old_authors = relationship('User', foreign_keys=[old_author_uid])
-    new_authors = relationship('User', foreign_keys=[new_author_uid])
-    textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
-    arguments = relationship('Argument', foreign_keys=[argument_uid])
+    old_author: User = relationship('User', foreign_keys=[old_author_uid])
+    new_author: User = relationship('User', foreign_keys=[new_author_uid])
+    textversion: TextVersion = relationship('TextVersion', foreign_keys=[textversion_uid])
+    argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
 
     def __init__(self, old_author_uid, new_author_uid, textversion_uid=None, argument_uid=None):
         """
@@ -2248,20 +2245,18 @@ class RevokedDuplicate(DiscussionBase):
     RevokedDuplicate-table with several columns.
     """
     __tablename__ = 'revoked_duplicate'
-    uid = Column(Integer, primary_key=True)
-    review_uid = Column(Integer, ForeignKey('review_duplicates.uid'))
-
-    bend_position = Column(Boolean, nullable=False)
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
-
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
-    premise_uid = Column(Integer, ForeignKey('premises.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    review_uid: int = Column(Integer, ForeignKey('review_duplicates.uid'))
+    bend_position: bool = Column(Boolean, nullable=False)
+    statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'))
+    premise_uid: int = Column(Integer, ForeignKey('premises.uid'))
 
     timestamp = Column(ArrowType, default=get_now())
-    review = relationship('ReviewDuplicate', foreign_keys=[review_uid])
-    arguments = relationship('Argument', foreign_keys=[argument_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    premises = relationship('Premise', foreign_keys=[premise_uid])
+    review: ReviewDuplicate = relationship('ReviewDuplicate', foreign_keys=[review_uid])
+    argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
+    premises: Premise = relationship('Premise', foreign_keys=[premise_uid])
 
     def __init__(self, review, bend_position=False, statement=None, conclusion_of_argument=None, premise=None):
         """
@@ -2286,15 +2281,15 @@ class PremiseGroupSplitted(DiscussionBase):
     PremiseGroupSplitted-table with several columns.
     """
     __tablename__ = 'premisegroup_splitted'
-    uid = Column(Integer, primary_key=True)
-    review_uid = Column(Integer, ForeignKey('review_split.uid'))
-    old_premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
-    new_premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    review_uid: int = Column(Integer, ForeignKey('review_split.uid'))
+    old_premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'))
+    new_premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
-    reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
-    old_premisegroups = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
-    new_premisegroups = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
+    review: ReviewSplit = relationship('ReviewSplit', foreign_keys=[review_uid])
+    old_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
+    new_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
     def __init__(self, review, old_premisegroup, new_premisegroup):
         """
@@ -2315,15 +2310,15 @@ class PremiseGroupMerged(DiscussionBase):
     Table with several columns to indicate which statement should be merged to a new one
     """
     __tablename__ = 'premisegroup_merged'
-    uid = Column(Integer, primary_key=True)
-    review_uid = Column(Integer, ForeignKey('review_merge.uid'))
-    old_premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
-    new_premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    review_uid: int = Column(Integer, ForeignKey('review_merge.uid'))
+    old_premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'))
+    new_premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
-    reviews = relationship('ReviewMerge', foreign_keys=[review_uid])
-    old_premisegroups = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
-    new_premisegroups = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
+    review: ReviewMerge = relationship('ReviewMerge', foreign_keys=[review_uid])
+    old_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
+    new_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
     def __init__(self, review, old_premisegroup, new_premisegroup):
         """
@@ -2344,15 +2339,15 @@ class StatementReplacementsByPremiseGroupSplit(DiscussionBase):
     List of replaced statements through split action of a pgroup
     """
     __tablename__ = 'statement_replacements_by_premisegroup_split'
-    uid = Column(Integer, primary_key=True)
-    review_uid = Column(Integer, ForeignKey('review_split.uid'))
-    old_statement_uid = Column(Integer, ForeignKey('statements.uid'))
-    new_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    review_uid: int = Column(Integer, ForeignKey('review_split.uid'))
+    old_statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
+    new_statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
-    reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
-    old_statements = relationship('Statement', foreign_keys=[old_statement_uid])
-    new_statements = relationship('Statement', foreign_keys=[new_statement_uid])
+    review: ReviewSplit = relationship('ReviewSplit', foreign_keys=[review_uid])
+    old_statement: Statement = relationship('Statement', foreign_keys=[old_statement_uid])
+    new_statement: Statement = relationship('Statement', foreign_keys=[new_statement_uid])
 
     def __init__(self, review, old_statement, new_statement):
         """
@@ -2373,15 +2368,15 @@ class StatementReplacementsByPremiseGroupMerge(DiscussionBase):
     List of replaced statements through merge action of a pgroup
     """
     __tablename__ = 'statement_replacements_by_premisegroups_merge'
-    uid = Column(Integer, primary_key=True)
-    review_uid = Column(Integer, ForeignKey('review_split.uid'))
-    old_statement_uid = Column(Integer, ForeignKey('statements.uid'))
-    new_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    review_uid: int = Column(Integer, ForeignKey('review_split.uid'))
+    old_statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
+    new_statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
-    reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
-    old_statements = relationship('Statement', foreign_keys=[old_statement_uid])
-    new_statements = relationship('Statement', foreign_keys=[new_statement_uid])
+    review: ReviewSplit = relationship('ReviewSplit', foreign_keys=[review_uid])
+    old_statement: Statement = relationship('Statement', foreign_keys=[old_statement_uid])
+    new_statement: Statement = relationship('Statement', foreign_keys=[new_statement_uid])
 
     def __init__(self, review, old_statement, new_statement):
         """
@@ -2402,13 +2397,13 @@ class ArgumentsAddedByPremiseGroupSplit(DiscussionBase):
     List of added arguments through the split of a pgroup
     """
     __tablename__ = 'arguments_added_by_premisegroups_split'
-    uid = Column(Integer, primary_key=True)
-    review_uid = Column(Integer, ForeignKey('review_split.uid'))
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
+    uid: int = Column(Integer, primary_key=True)
+    review_uid: int = Column(Integer, ForeignKey('review_split.uid'))
+    argument_uid: int = Column(Integer, ForeignKey('arguments.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
-    reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
-    arguments = relationship('Argument', foreign_keys=[argument_uid])
+    review: ReviewSplit = relationship('ReviewSplit', foreign_keys=[review_uid])
+    argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
 
     def __init__(self, review, argument):
         """
@@ -2428,11 +2423,11 @@ class News(DiscussionBase):
     """
     __tablename__ = 'news'
     __table_args__ = {'schema': 'news'}
-    uid = Column(Integer, primary_key=True)
-    title = Column(Text, nullable=False)
-    author = Column(Text, nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    title: str = Column(Text, nullable=False)
+    author: str = Column(Text, nullable=False)
     date = Column(ArrowType, nullable=False)
-    news = Column(Text, nullable=False)
+    news: str = Column(Text, nullable=False)
 
     def __init__(self, title, author, news, date):
         """
@@ -2449,11 +2444,11 @@ class APIToken(DiscussionBase):
         Hashes of tokens generated by an admin
     """
     __tablename__ = 'api_tokens'
-    id = Column(Integer, primary_key=True)
+    id: int = Column(Integer, primary_key=True)
     created = Column(DateTime, nullable=False)
-    token = Column(String, nullable=False, unique=True)
-    owner = Column(Text, nullable=False)
-    disabled = Column(Boolean, nullable=False, server_default="False")
+    token: str = Column(String, nullable=False, unique=True)
+    owner: str = Column(Text, nullable=False)
+    disabled: bool = Column(Boolean, nullable=False, server_default="False")
 
     def __init__(self, created, token, owner, disabled=False):
         """
@@ -2477,10 +2472,10 @@ class ShortLinks(DiscussionBase):
     Shortened link with several columns.
     """
     __tablename__ = 'short_links'
-    uid = Column(Integer, primary_key=True)
-    service = Column(Text, nullable=False)
-    long_url = Column(Text, nullable=False)
-    short_url = Column(Text, nullable=False)
+    uid: int = Column(Integer, primary_key=True)
+    service: str = Column(Text, nullable=False)
+    long_url: str = Column(Text, nullable=False)
+    short_url: str = Column(Text, nullable=False)
     timestamp = Column(ArrowType, default=get_now())
 
     def __init__(self, service, long_url, short_url):

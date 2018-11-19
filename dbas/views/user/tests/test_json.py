@@ -18,9 +18,6 @@ class AjaxTest(unittest.TestCase):
         self.config.include('pyramid_chameleon')
         self.config.include('pyramid_mailer.testing')
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_user_login_wrong_nick(self):
         from dbas.views import user_login as ajax
         request = testing.DummyRequest(json_body={

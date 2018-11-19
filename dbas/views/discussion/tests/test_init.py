@@ -1,6 +1,5 @@
 import unittest
 
-import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
@@ -14,9 +13,6 @@ class DiscussionInitViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page(self):
         # check count of seen by statements
@@ -46,7 +42,6 @@ class DiscussionInitViewTests(unittest.TestCase):
         el_count = len(response['items']['elements']) - 1  # -1 for login / add
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
         self.assertEqual(len_db_seen1 + el_count, len_db_seen2)
-        transaction.commit()  # normally pyramid_tm does this
 
     def test_page_logged_in_again(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -66,16 +61,12 @@ class DiscussionInitViewTests(unittest.TestCase):
         # remove seen statements
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
-        transaction.commit()
 
 
 class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page(self):
         request = testing.DummyRequest()
@@ -93,9 +84,6 @@ class MainMyDiscussionViewTestsLoggedIn(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page(self):
         request = testing.DummyRequest()

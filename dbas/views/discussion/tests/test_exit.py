@@ -11,11 +11,7 @@ class DiscussionFinishViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_page(self):
-
         request = testing.DummyRequest()
         response = dexit(request)
         verify_dictionary_of_view(response)

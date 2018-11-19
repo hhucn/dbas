@@ -6,7 +6,6 @@ Provides helping function for creating the history as bubbles.
 import logging
 from typing import List, Optional
 
-import transaction
 from pyramid.request import Request
 
 from dbas.database import DBDiscussionSession
@@ -45,9 +44,10 @@ def get_last_issue_of(db_user: User) -> Optional[Issue]:
     :param db_user: User
     :return: Issue.uid or 0
     """
-    if not db_user or db_user.nickname == nick_of_anonymous_user:
+    if not db_user or db_user.is_anonymous():
         return None
-    db_issue = DBDiscussionSession.query(Issue).get(db_user.settings.last_topic_uid)
+
+    db_issue = db_user.settings.last_topic
     if not db_issue:
         return None
 
@@ -443,7 +443,6 @@ def delete_in_database(db_user: User) -> True:
     """
     DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.flush()
-    transaction.commit()
     return True
 
 

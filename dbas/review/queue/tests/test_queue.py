@@ -19,9 +19,6 @@ class QueueTest(unittest.TestCase):
         self.user = DBDiscussionSession.query(User).get(2)
         self.tn = Translator('en')
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_get_subpage_of_queue(self):
         for key in review_queues:
             queue = get_queue_by_key(key)

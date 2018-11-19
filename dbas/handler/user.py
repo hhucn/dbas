@@ -159,7 +159,6 @@ def update_last_action(db_user: User) -> bool:
     should_log_out = diff > timeout_in_sec and not db_user.settings.keep_logged_in
     db_user.update_last_action()
 
-    transaction.commit()
     return should_log_out
 
 
@@ -654,7 +653,6 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
             message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
         else:
             user.change_password(new_pw)
-            transaction.commit()
 
             LOG.debug("Password was changed")
             message = _t.get(_.pwdChanged)  # 'Your password was changed'
