@@ -16,8 +16,7 @@ from pyramid.request import Request
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
-import dbas.views.discussion as dbas
-from api.lib import extract_items_and_bubbles, flatten
+from api.lib import extract_items_and_bubbles, flatten, split_url
 from api.models import DataItem, DataBubble, DataReference, DataOrigin
 from api.origins import add_origin_for_list_of_statements
 from dbas.database import DBDiscussionSession
@@ -36,6 +35,7 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_position, vali
     valid_reason_and_position_not_equal, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
 from dbas.validators.eden import valid_optional_origin
+from dbas.views import jump
 from search.requester import get_statements_with_similarity_to
 from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, valid_api_token
 from .references import (get_all_references_by_reference_text,
@@ -148,7 +148,7 @@ text_for_argument = Service(name="argument_text_block",
 # Jump into the discussion
 #
 jump_to_zargument = Service(name="jump_to_argument",  # Need this 'z' to call this after the other jumps
-                            path="/{slug}/jump/{arg_uid}",
+                            path="/{slug}/jump/{argument_id}",
                             description="Jump to an argument",
                             cors_policy=cors_policy)
 
@@ -494,31 +494,20 @@ def find_statements_fn(request):
 # JUMPING - jump to specific position in the discussion
 # =============================================================================
 
-def jump_preparation(request):
-    """
-    Prepare api_data and extract all relevant information from the request.
-
-    :param request:
-    :return:
-
-    """
-    slug = request.matchdict["slug"]
-    arg_uid = int(request.matchdict["arg_uid"])
-    nickname = None
-    session_id = None
-    return {"slug": slug, "arg_uid": arg_uid, "nickname": nickname, "session_id": session_id}
-
-
 @jump_to_zargument.get()
 def jump_to_argument_fn(request):
     """
-    Given a slug, arg_uid and a nickname, jump directly to an argument to provoke user interaction.
+    Jump directly to an argument to provoke user interaction.
 
     :param request:
     :return: Argument with a list of possible interactions
-
     """
-    return dbas.jump(request)
+    response = jump(request)
+    bubbles, items = extract_items_and_bubbles(response)
+    return {
+        'bubbles': bubbles,
+        'items': items
+    }
 
 
 # =============================================================================
@@ -608,9 +597,10 @@ def add_premise_to_statement(request: IRequest):
     is_supportive = request.validated['attitude'] == Attitudes.AGREE
     origin: DataOrigin = request.validated['origin']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    host, path = split_url(request.environ.get("HTTP_REFERER"))
 
     if reference_text:
-        store_reference(reference_text, request.host, request.path, db_user, db_statement, db_issue)
+        store_reference(reference_text, host, path, db_user, db_statement, db_issue)
 
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
                                history, request.mailer)
@@ -632,10 +622,11 @@ def add_premise_to_argument(request):
     relation: Relations = request.validated['relation']
     origin: DataOrigin = request.validated['origin']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    host, path = split_url(request.environ.get("HTTP_REFERER"))
 
     if reference_text:
         for premise in db_argument.premisegroup.premises:
-            store_reference(reference_text, request.host, request.path, db_user, premise.statement, db_issue)
+            store_reference(reference_text, host, path, db_user, premise.statement, db_issue)
 
     pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
                                 history, request.mailer)
