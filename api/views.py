@@ -561,6 +561,21 @@ def __http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
     )
 
 
+def __store_origin_and_reference(db_issue: Issue, db_user: User, origin: DataOrigin, host: str, path: str,
+                                 reference_text: str, statement_uids: List[int]):
+    """
+    Takes all newly created statements and stores the reference and origin for it, if provided.
+    """
+    if reference_text:
+        for statement_uid in statement_uids:
+            db_new_statement: Statement = DBDiscussionSession.query(Statement).get(statement_uid)
+            store_reference(reference_text, host, path, db_user, db_new_statement, db_issue)
+    if origin:
+        add_origin_for_list_of_statements(origin, statement_uids)
+
+
+# -----------------------------------------------------------------------------
+
 @zinit.post(require_csrf=False)
 @positions.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body,
@@ -599,14 +614,10 @@ def add_premise_to_statement(request: IRequest):
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     host, path = split_url(request.environ.get("HTTP_REFERER"))
 
-    if reference_text:
-        store_reference(reference_text, host, path, db_user, db_statement, db_issue)
-
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
                                history, request.mailer)
 
-    if origin:
-        add_origin_for_list_of_statements(origin, flatten(pd['statement_uids']))
+    __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, flatten(pd['statement_uids']))
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
 
@@ -631,8 +642,7 @@ def add_premise_to_argument(request):
     pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
                                 history, request.mailer)
 
-    if origin:
-        add_origin_for_list_of_statements(origin, pd['statement_uids'])
+    __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, pd['statement_uids'])
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
 

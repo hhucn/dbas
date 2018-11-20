@@ -99,5 +99,4 @@ def split_url(referer: str) -> Tuple[str, str]:
     :return:
     """
     url: ParseResult = urlparse(referer)
-    host = "{}://{}".format(url.scheme, url.netloc)
-    return host, url.path
+    return url.netloc, url.path
