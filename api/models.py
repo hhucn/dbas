@@ -66,7 +66,7 @@ class DataBubble(JSONBase):
 class DataReference(JSONBase):
     def __init__(self, statement_reference: StatementReferences):
         self.uid: int = statement_reference.uid
-        self.reference: str = statement_reference.reference
+        self.text: str = statement_reference.reference
         issue: Issue = statement_reference.issue
         statement: Statement = statement_reference.statement
         self.url: str = url_to_statement(issue, statement)
@@ -90,7 +90,7 @@ class DataIssue(JSONBase):
     def __init__(self, issue: Issue):
         self.uid: int = issue.uid
         self.slug: str = issue.slug
-        self.language: str = issue.lang
+        self.lang: str = issue.lang
         self.title: str = issue.title
         self.info: str = issue.info
 

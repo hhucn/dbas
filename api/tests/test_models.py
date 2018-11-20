@@ -30,7 +30,7 @@ class TestModels(TestCaseWithConfig):
         sr = DataReference(ref)
         self.assertIsInstance(sr.__json__(), dict)
         for key in sr.__json__().keys():
-            self.assertIn(key, ['uid', 'reference', 'url'])
+            self.assertIn(key, ['uid', 'text', 'url'])
 
     def test_DataAuthor_to_json(self):
         user = DBDiscussionSession.query(User).filter_by(uid=1).first()
@@ -44,7 +44,7 @@ class TestModels(TestCaseWithConfig):
         di = DataIssue(issue)
         self.assertIsInstance(di.__json__(), dict)
         for key in di.__json__().keys():
-            self.assertIn(key, ['uid', 'slug', 'language', 'title', 'info'])
+            self.assertIn(key, ['uid', 'slug', 'lang', 'title', 'info'])
 
     def test_DataStatement_to_json(self):
         statement = DBDiscussionSession.query(Statement).filter_by(uid=1).first()
