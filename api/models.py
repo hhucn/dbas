@@ -115,21 +115,3 @@ class DataOrigin:
     aggregate_id: str
     author: str
     version: int
-
-
-def transform_levensthein_search_results(statement: DataStatement, author: DataAuthor, issue: DataIssue) -> dict:
-    """
-    This is the json format of the results by searching with Levensthein.
-
-    :param statement: See ApiStatement
-    :param author: See ApiAuthor
-    :param issue: See ApiIssue
-    :return: The data-structure which is used for the results in the searching interface.
-    """
-    return {
-        "isPosition": statement.__json__().get("isPosition"),
-        "uid": statement.__json__().get("uid"),
-        "text": statement.__json__().get("text"),
-        "author": author.__json__(),
-        "issue": issue.__json__()
-    }
