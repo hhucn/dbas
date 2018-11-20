@@ -17,6 +17,7 @@ from sqlalchemy import func
 from api.models import DataStatement, DataAuthor, DataIssue
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
+from dbas.handler.history import get_seen_statements_from
 from dbas.helper.url import UrlManager
 from dbas.lib import get_public_profile_picture, nick_of_anonymous_user, get_enabled_statement_as_query
 from dbas.strings.fuzzy_modes import FuzzyMode
@@ -55,12 +56,21 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
     :return: Dictionary with the corresponding search results
     """
 
+    history = db_user.history
+    seen_statements = get_seen_statements_from(history[len(history) - 1].path) if history != [] else []
+
     try:
-        return elastic_search(db_issue, search_value, mode, statement_uid)
+        elastic_results = elastic_search(db_issue, search_value, mode, statement_uid)
+        elastic_results['values'] = [item for item in elastic_results.get('values') if
+                                     item.get('statement_uid') not in seen_statements]
+        return elastic_results
     except Exception as ex:
         LOG.warning("Could not request data from elasticsearch because of error: %s", ex)
 
-    return __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
+    levensthein_results = __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
+    levensthein_results['values'] = [item for item in levensthein_results.get('values') if
+                                     item.get('statement_uid') not in seen_statements]
+    return levensthein_results
 
 
 def __levensthein_search(db_user: User, db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:

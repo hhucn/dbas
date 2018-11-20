@@ -8,7 +8,6 @@ import binascii
 import hashlib
 import json
 import os
-import warnings
 from datetime import datetime
 from typing import Union
 
@@ -20,15 +19,9 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.lib import get_user_by_case_insensitive_nickname, nick_of_anonymous_user
 from dbas.validators.lib import add_error
-from .lib import HTTP401, json_to_dict, logger
+from .lib import json_to_dict, logger
 
 log = logger()
-
-
-def __raise_401(msg):
-    warnings.warn("Use built-in Cornice functions instead.", DeprecationWarning)
-    log.info("[API] " + msg)
-    raise HTTP401(msg)
 
 
 def __create_salt(nickname):
@@ -38,7 +31,7 @@ def __create_salt(nickname):
     return rnd + timestamp + nickname
 
 
-def __create_token(nickname, alg='sha512'):
+def __create_token(nickname, alg='sha512') -> hashlib:
     """
     Use the system's urandom function to generate a random token and convert it
     to ASCII.
@@ -121,7 +114,7 @@ def valid_token_optional(request, **_kwargs):
         request.validated['user'] = DBDiscussionSession.query(User).get(1)
 
 
-def valid_token(request, **_kwargs):
+def valid_token(request, **_kwargs) -> bool:
     """
     Validate the submitted token. Checks if a user is logged in and prepares a
     dictionary, which is then passed to DBAS.
@@ -135,7 +128,7 @@ def valid_token(request, **_kwargs):
         add_error(request, "Received invalid or empty authentication token",
                   verbose_long="Please provide the authentication token in the X-Authentication field!",
                   location="header", status_code=401)
-        return
+        return False
 
     try:
         payload = json_to_dict(htoken)
@@ -144,7 +137,7 @@ def valid_token(request, **_kwargs):
         add_error(request, "Invalid JSON in token")
 
 
-def valid_api_token(request, **kwargs):
+def valid_api_token(request, **kwargs) -> bool:
     valid_token(request, **kwargs)
     if request.validated.get('auth-by-api-token', False):
         return True
@@ -153,7 +146,7 @@ def valid_api_token(request, **kwargs):
         return False
 
 
-def validate_credentials(request, **_kwargs):
+def validate_credentials(request, **_kwargs) -> None:
     """
     Parse credentials from POST request and validate it against DBA-S'
     database.

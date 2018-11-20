@@ -12,9 +12,6 @@ class DiscussionAttitudeViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_page(self):
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',

@@ -1,4 +1,5 @@
 import logging
+
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
@@ -73,7 +74,7 @@ def settings(request):
     ui_locales = get_language_from_cookie(request)
     old_pw, new_pw, confirm_pw, message = '', '', '', ''
     success, error = False, False
-    db_user = request.validated['user']
+    db_user: User = request.validated['user']
 
     if 'form.passwordchange.submitted' in request.params:
         old_pw = escape_string(request.params['passwordold'])

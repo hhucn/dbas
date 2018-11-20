@@ -368,7 +368,7 @@ def choose(request):
     LOG.debug("Choose a statement. %s", request.matchdict)
     emit_participation(request)
 
-    db_user = request.validated['user']
+    db_user: User = request.validated['user']
     db_issue = request.validated['issue']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)

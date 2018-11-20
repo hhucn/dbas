@@ -1,20 +1,16 @@
 import unittest
 
-from dbas.views import jump
-
-from dbas.tests.utils import construct_dummy_request
 from pyramid import testing
 
 from dbas.helper.test import verify_dictionary_of_view
+from dbas.tests.utils import construct_dummy_request
+from dbas.views import jump
 
 
 class DiscussionJumpViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page(self):
         request = construct_dummy_request(match_dict={

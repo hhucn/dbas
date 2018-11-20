@@ -25,6 +25,8 @@ class TestCaseWithDatabase(unittest.TestCase):
         DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
     def tearDown(self):
+        transaction.abort()
+        DBDiscussionSession.remove()
         testing.tearDown()
 
 
@@ -52,7 +54,6 @@ class TestCaseWithConfig(TestCaseWithDatabase):
 
     def tearDown(self):
         DBDiscussionSession.query(Argument).get(1).set_disabled(False)
-        transaction.commit()
         super().tearDown()
 
 

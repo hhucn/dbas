@@ -16,9 +16,6 @@ class MainReviewViewTestsNotLoggedIn(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_page(self):
         request = testing.DummyRequest()
         response = index(request)
@@ -29,9 +26,6 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page_not_logged_in(self):
         request = testing.DummyRequest()
@@ -56,9 +50,6 @@ class ReviewReputationViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page_not_logged_in(self):
         request = testing.DummyRequest()
@@ -88,8 +79,6 @@ class ReviewContentViewTests(unittest.TestCase):
         DBDiscussionSession.flush()
         transaction.commit()
 
-    def tearDown(self):
-        testing.tearDown()
         clear_clicks_of('Tobias')
         clear_seen_by_of('Tobias')
         self.db_tobias.last_login = self.last_login_of_tobias
@@ -123,9 +112,6 @@ class ReviewOngoingViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_page_not_logged_in(self):
         request = testing.DummyRequest()
         response = ongoing(request)
@@ -146,9 +132,6 @@ class ReviewHistoryViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page(self):
         request = testing.DummyRequest()

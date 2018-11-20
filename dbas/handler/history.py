@@ -6,7 +6,6 @@ Provides helping function for creating the history as bubbles.
 import logging
 from typing import List, Optional
 
-import transaction
 from pyramid.request import Request
 
 from dbas.database import DBDiscussionSession
@@ -18,14 +17,14 @@ from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_te
     bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, Relations, Attitudes, \
     relation_mapper
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.lib import start_with_capital, start_with_small
+from dbas.strings.lib import start_with_capital, start_with_small, replace_multiple_chars
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
 from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
 
 
-def save_issue_uid(issue_uid: int, db_user: User):
+def save_issue_uid(issue_uid: int, db_user: User) -> None:
     """
     Saves the Issue.uid for an user
 
@@ -45,16 +44,17 @@ def get_last_issue_of(db_user: User) -> Optional[Issue]:
     :param db_user: User
     :return: Issue.uid or 0
     """
-    if not db_user or db_user.nickname == nick_of_anonymous_user:
+    if not db_user or db_user.is_anonymous():
         return None
-    db_issue = DBDiscussionSession.query(Issue).get(db_user.settings.last_topic_uid)
+
+    db_issue = db_user.settings.last_topic
     if not db_issue:
         return None
 
     return None if db_issue.is_disabled else db_issue
 
 
-def split(history):
+def split(history: str) -> list:
     """
     Splits history by specific keyword and removes leading '/'
 
@@ -64,7 +64,17 @@ def split(history):
     return [his[1:] if his[0:1] == '/' else his for his in history.split('-')]
 
 
-def create_bubbles(history, nickname='', lang='', slug=''):
+def get_seen_statements_from(path: str) -> set:
+    """
+    This method returns a list of statement_uids which the user has seen or chosen while discussing
+
+    :param path: Should be the latest path in the history of the current user
+    :return: a list of seen statement_uids
+    """
+    return set([int(s) for s in replace_multiple_chars(path, ['/', '-', '?'], ' ').split() if s.isdigit()])
+
+
+def create_bubbles(history: str, nickname: str = '', lang: str = '', slug: str = '') -> List[dict]:
     """
     Creates the bubbles for every history step
 
@@ -107,26 +117,8 @@ def create_bubbles(history, nickname='', lang='', slug=''):
     return bubble_array
 
 
-def __is_last_step_duplicate(index, step, splitted_history, main_url):
-    """
-    Check if the last step in the history are duplicates
-
-    :param index: int
-    :param step: String
-    :param splitted_history: [String]
-    :param main_url: String
-    :return: Boolean
-    """
-    if step not in main_url:
-        return False
-
-    if 'justify/' in splitted_history[index:] or 'reaction/' in splitted_history[index:]:
-        return False
-
-    return True
-
-
-def __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url):
+def __prepare_justify_statement_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
+                                     url: str) -> None:
     """
     Preparation for creating the justification bubbles
 
@@ -156,7 +148,8 @@ def __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, u
             bubble_array += bubbles
 
 
-def __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_history, url):
+def __prepare_reaction_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
+                            splitted_history: list, url: str) -> None:
     """
     Preparation for creating the reaction bubbles
 
@@ -175,7 +168,7 @@ def __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_h
         bubble_array += bubbles
 
 
-def __prepare_support_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str):
+def __prepare_support_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str) -> None:
     """
     Preparation for creating the support bubbles
 
@@ -198,7 +191,7 @@ def __prepare_support_step(bubble_array: List[dict], index: int, step: str, db_u
         bubble_array += bubble
 
 
-def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
+def __get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str, url: str) -> List[dict]:
     """
     Creates bubbles for the justify-keyword for an statement.
 
@@ -257,29 +250,7 @@ def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: 
     return [bubble_user, bubble_system]
 
 
-def __get_bubble_from_attitude_step(step, nickname, lang, url):
-    """
-    Creates bubbles for the attitude-keyword for an statement.
-
-    :param step: String
-    :param nickname: User.nickname
-    :param lang: ui_locales
-    :param url: String
-    :return: [dict()]
-    """
-    steps = step.split('/')
-    uid = int(steps[1])
-    text = DBDiscussionSession.query(Statement).get(uid).get_text()
-    if lang != 'de':
-        text = start_with_capital(text)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    bubble = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=text, omit_bubble_url=False,
-                                      statement_uid=uid, db_user=db_user, lang=lang)
-
-    return [bubble]
-
-
-def __get_bubble_from_dont_know_step(step, db_user, lang):
+def __get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> List[dict]:
     """
     Creates bubbles for the don't-know-reaction for a statement.
 
@@ -316,7 +287,8 @@ def __get_bubble_from_dont_know_step(step, db_user, lang):
     return [user_bubble, sys_bubble]
 
 
-def get_bubble_from_reaction_step(step, db_user, lang, split_history, url, color_steps=False):
+def get_bubble_from_reaction_step(step: str, db_user: User, lang: str, split_history: list, url: str,
+                                  color_steps: bool = False) -> list:
     """
     Creates bubbles for the reaction-keyword.
 
@@ -347,8 +319,9 @@ def get_bubble_from_reaction_step(step, db_user, lang, split_history, url, color
                                              additional_uid, attack)
 
 
-def __create_reaction_history_bubbles(step, db_user, lang, splitted_history, url, color_steps, uid, additional_uid,
-                                      attack):
+def __create_reaction_history_bubbles(step: str, db_user: User, lang: str, splitted_history: list, url: str,
+                                      color_steps: list, uid: int, additional_uid: int,
+                                      attack) -> list:
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
     last_relation = splitted_history[-1].split('/')[2] if len(splitted_history) > 1 else ''
 
@@ -444,7 +417,7 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
     DBDiscussionSession.flush()
 
 
-def get_from_database(db_user: User, lang: str):
+def get_from_database(db_user: User, lang: str) -> List[dict]:
     """
     Returns history from database
 
@@ -461,7 +434,7 @@ def get_from_database(db_user: User, lang: str):
     return return_array
 
 
-def delete_in_database(db_user):
+def delete_in_database(db_user: User) -> True:
     """
     Deletes history from database
 
@@ -470,7 +443,6 @@ def delete_in_database(db_user):
     """
     DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.flush()
-    transaction.commit()
     return True
 
 
