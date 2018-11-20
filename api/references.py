@@ -5,7 +5,6 @@ from typing import List
 
 import transaction
 
-from api.models import DataAuthor, DataIssue
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion, Statement
 from dbas.helper.url import url_to_statement
@@ -59,8 +58,6 @@ def get_all_references_by_reference_text(ref_text=None):
             statement_url = url_to_statement(reference.issue, reference.statement)
             refs.append({
                 "reference": reference,
-                "author": DataAuthor(reference.author),
-                "issue": DataIssue(reference.issue),
                 "arguments": get_all_arguments_with_text_by_statement_id(reference.statement_uid),
                 "statement": {"uid": reference.statement_uid,
                               "url": statement_url,

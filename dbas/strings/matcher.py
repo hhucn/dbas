@@ -14,7 +14,7 @@ from itertools import islice
 from Levenshtein import distance
 from sqlalchemy import func
 
-from api.models import DataStatement, transform_levensthein_search_results, DataAuthor, DataIssue
+from api.models import DataStatement, transform_levensthein_search_results, DataIssue
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
 from dbas.handler.history import get_seen_statements_from
@@ -158,7 +158,7 @@ def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
             statement_uid=statement.uid).first()
         issue: Issue = DBDiscussionSession.query(Issue).filter_by(uid=statement_to_issue.issue_uid).first()
         result: dict = transform_levensthein_search_results(statement=DataStatement(statement, textversion),
-                                                            author=DataAuthor(author),
+                                                            author=author,
                                                             issue=DataIssue(issue))
         score = int(get_distance(search_value, textversion.content))
         if __get_levensthein_similarity_in_percent(search_value,

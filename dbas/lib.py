@@ -1,8 +1,5 @@
 """
 Common, pure functions used by the D-BAS.
-
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import hashlib
 import locale
@@ -209,7 +206,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False) -> Opt
     :param include_disabled: Boolean
     :return: [Arguments]
     """
-    LOG.debug("Retrieving all argumenty by statement-uid: %s, include_disabled %s", statement_uid, include_disabled)
+    LOG.debug("Retrieving all arguments by statement-uid: %s, include_disabled %s", statement_uid, include_disabled)
     db_arguments = __get_arguments_of_conclusion(statement_uid, include_disabled)
     arg_array = [arg for arg in db_arguments] if db_arguments else []
 
@@ -290,7 +287,10 @@ def get_all_arguments_with_text_by_statement_id(statement_uid) -> List[dict]:
     LOG.debug("Retrieving arguments for statement uid: %s", statement_uid)
     arguments: List[Argument] = get_all_arguments_by_statement(statement_uid)
     if arguments:
-        return [{'uid': arg.uid, 'text': get_text_for_argument_uid(arg.uid)} for arg in arguments]
+        return [{'uid': arg.uid,
+                 'text': get_text_for_argument_uid(arg.uid),
+                 'author': arg.author,
+                 'issue': arg.issue} for arg in arguments]
     return []
 
 

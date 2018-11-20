@@ -101,22 +101,6 @@ class DataReference:
         }
 
 
-class DataAuthor:
-    """
-    This class models a Author as it is required for the results by searching with Levensthein.
-    """
-
-    def __init__(self, author: User):
-        self.uid: int = author.uid
-        self.nickname: str = author.public_nickname
-
-    def __json__(self, _request=None):
-        return {
-            "uid": self.uid,
-            "nickname": self.nickname
-        }
-
-
 class DataIssue:
     """
     This class models a Issue as it is required for the results by searching with Levensthein.
@@ -168,7 +152,7 @@ class DataOrigin:
     version: int
 
 
-def transform_levensthein_search_results(statement: DataStatement, author: DataAuthor, issue: DataIssue) -> dict:
+def transform_levensthein_search_results(statement: DataStatement, author: User, issue: DataIssue) -> dict:
     """
     This is the json format of the results by searching with Levensthein.
 
@@ -181,6 +165,6 @@ def transform_levensthein_search_results(statement: DataStatement, author: DataA
         "isPosition": statement.__json__().get("isPosition"),
         "uid": statement.__json__().get("uid"),
         "text": statement.__json__().get("text"),
-        "author": author.__json__(),
+        "author": author,
         "issue": issue.__json__()
     }
