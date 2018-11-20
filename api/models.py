@@ -6,7 +6,12 @@ from dbas.helper.url import url_to_statement
 from dbas.lib import unhtmlify
 
 
-class DataItem:
+class JSONBase:
+    def __json__(self):
+        return vars(self)
+
+
+class DataItem(JSONBase):
     """
     Entity to construct items-dict.
     """
@@ -22,21 +27,8 @@ class DataItem:
         self.htmls = htmls
         self.texts = [unhtmlify(html) for html in htmls]
 
-    def __json__(self, _request):
-        """
-        Convert entity to JSON.
 
-        :param _request: Request
-        :return:
-        """
-        return {
-            'htmls': self.htmls,
-            'texts': self.texts,
-            'url': self.url
-        }
-
-
-class DataBubble:
+class DataBubble(JSONBase):
     """
     Converted bubble which is returned by the API.
     """
@@ -65,43 +57,22 @@ class DataBubble:
 
         :param bubble:
         """
-        self.bubble_type = self.__demultiplex_bubbletype(bubble)
+        self.type = self.__demultiplex_bubbletype(bubble)
         self.html = bubble['message']
         self.url = bubble['bubble_url'] if bubble['bubble_url'] != '' else None
         self.text = unhtmlify(bubble['message'])
 
-    def __json__(self, _request):
-        """
-        Convert entity to JSON.
 
-        :param _request: Request
-        :return:
-        """
-        return {
-            'type': self.bubble_type,
-            'html': self.html,
-            'text': self.text,
-            'url': self.url
-        }
-
-
-class DataReference:
+class DataReference(JSONBase):
     def __init__(self, statement_reference: StatementReferences):
         self.uid: int = statement_reference.uid
         self.reference: str = statement_reference.reference
-        self.issue: Issue = statement_reference.issue
-        self.statement: Statement = statement_reference.statement
-        self.url: str = url_to_statement(self.issue, self.statement)
-
-    def __json__(self, _request):
-        return {
-            "uid": self.uid,
-            "text": self.reference,
-            "url": self.url
-        }
+        issue: Issue = statement_reference.issue
+        statement: Statement = statement_reference.statement
+        self.url: str = url_to_statement(issue, statement)
 
 
-class DataAuthor:
+class DataAuthor(JSONBase):
     """
     This class models a Author as it is required for the results by searching with Levensthein.
     """
@@ -110,14 +81,8 @@ class DataAuthor:
         self.uid: int = author.uid
         self.nickname: str = author.nickname
 
-    def __json__(self):
-        return {
-            "uid": self.uid,
-            "nickname": self.nickname
-        }
 
-
-class DataIssue:
+class DataIssue(JSONBase):
     """
     This class models a Issue as it is required for the results by searching with Levensthein.
     """
@@ -129,17 +94,8 @@ class DataIssue:
         self.title: str = issue.title
         self.info: str = issue.info
 
-    def __json__(self):
-        return {
-            "uid": self.uid,
-            "slug": self.slug,
-            "lang": self.language,
-            "title": self.title,
-            "info": self.info
-        }
 
-
-class DataStatement:
+class DataStatement(JSONBase):
     """
     This class models a Statement as it is required for the results by searching with Levensthein.
     """
@@ -148,13 +104,6 @@ class DataStatement:
         self.isPosition: bool = statement.is_position
         self.uid: int = statement.uid
         self.text: str = textversion.content
-
-    def __json__(self):
-        return {
-            "isPosition": self.isPosition,
-            "uid": self.uid,
-            "text": self.text
-        }
 
 
 @dataclass
