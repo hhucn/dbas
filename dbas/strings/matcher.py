@@ -14,7 +14,7 @@ from itertools import islice
 from Levenshtein import distance
 from sqlalchemy import func
 
-from api.models import DataStatement, transform_levensthein_search_results, DataIssue
+from api.models import DataStatement, DataIssue
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
 from dbas.handler.history import get_seen_statements_from
@@ -157,9 +157,9 @@ def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
         statement_to_issue: StatementToIssue = DBDiscussionSession.query(StatementToIssue).filter_by(
             statement_uid=statement.uid).first()
         issue: Issue = DBDiscussionSession.query(Issue).filter_by(uid=statement_to_issue.issue_uid).first()
-        result: dict = transform_levensthein_search_results(statement=DataStatement(statement, textversion),
-                                                            author=author,
-                                                            issue=DataIssue(issue))
+        result: dict = __transform_levensthein_search_results(statement=DataStatement(statement, textversion),
+                                                              author=author,
+                                                              issue=DataIssue(issue))
         score = int(get_distance(search_value, textversion.content))
         if __get_levensthein_similarity_in_percent(search_value,
                                                    textversion.content) >= similarity_threshold_in_percent:
@@ -429,3 +429,21 @@ def __highlight_fuzzy_string(target: str, search_value: str) -> str:
     """
     res = re.compile(re.escape(search_value), re.IGNORECASE)
     return res.sub('<em>{}</em>'.format(search_value), target)
+
+
+def __transform_levensthein_search_results(statement: DataStatement, author: DataAuthor, issue: DataIssue) -> dict:
+    """
+    This is the json format of the results by searching with Levensthein.
+
+    :param statement: See ApiStatement
+    :param author: See ApiAuthor
+    :param issue: See ApiIssue
+    :return: The data-structure which is used for the results in the searching interface.
+    """
+    return {
+        "isPosition": statement.__json__().get("isPosition"),
+        "uid": statement.__json__().get("uid"),
+        "text": statement.__json__().get("text"),
+        "author": author.__json__(),
+        "issue": issue.__json__()
+    }
