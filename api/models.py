@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from dbas.database.discussion_model import StatementReferences, Issue, Statement, TextVersion, User
+from dbas.database.discussion_model import StatementReferences, Issue, Statement, TextVersion
 from dbas.helper.url import url_to_statement
 from dbas.lib import unhtmlify
 
