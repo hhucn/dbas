@@ -17,7 +17,7 @@ from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
 
 
-class QueueAdapter():
+class QueueAdapter:
     """
     Adapter for the different queue adaptees
     """
@@ -61,8 +61,8 @@ class QueueAdapter():
             'reviewed_element': subpage_dict,
             'session': subpage_dict['session']
         }
-        if (subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict[
-            'stats'] is None) or self.db_user not in issue.participating_users:
+        if (subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None) \
+                or self.db_user not in issue.participating_users:
             return self.__wrap_subpage_dict({}, button_set)
 
         return self.__wrap_subpage_dict(ret_dict, button_set)
