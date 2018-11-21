@@ -1,6 +1,6 @@
-from api.models import DataItem, DataBubble, DataReference, DataAuthor, DataIssue, DataStatement
+from api.models import DataItem, DataBubble, DataReference, DataIssue, DataStatement
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences, User, Issue, Statement, TextVersion
+from dbas.database.discussion_model import StatementReferences, Issue, Statement, TextVersion
 from dbas.tests.utils import TestCaseWithConfig
 
 
@@ -31,13 +31,6 @@ class TestModels(TestCaseWithConfig):
         self.assertIsInstance(sr.__json__(), dict)
         for key in sr.__json__().keys():
             self.assertIn(key, ['uid', 'text', 'url'])
-
-    def test_DataAuthor_to_json(self):
-        user = DBDiscussionSession.query(User).filter_by(uid=1).first()
-        da = DataAuthor(user)
-        self.assertIsInstance(da.__json__(), dict)
-        for key in da.__json__().keys():
-            self.assertIn(key, ['uid', 'nickname'])
 
     def test_DataIssue_to_json(self):
         issue = DBDiscussionSession.query(Issue).filter_by(uid=1).first()

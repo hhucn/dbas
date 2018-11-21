@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from dbas.database.discussion_model import StatementReferences, Issue, Statement, TextVersion, User
+from dbas.database.discussion_model import StatementReferences, Issue, Statement, TextVersion
 from dbas.helper.url import url_to_statement
 from dbas.lib import unhtmlify
 
@@ -70,16 +70,6 @@ class DataReference(JSONBase):
         issue: Issue = statement_reference.issue
         statement: Statement = statement_reference.statement
         self.url: str = url_to_statement(issue, statement)
-
-
-class DataAuthor(JSONBase):
-    """
-    This class models a Author as it is required for the results by searching with Levensthein.
-    """
-
-    def __init__(self, author: User):
-        self.uid: int = author.uid
-        self.nickname: str = author.nickname
 
 
 class DataIssue(JSONBase):

@@ -11,6 +11,7 @@ import warnings
 from functools import reduce
 from html import escape
 from typing import Tuple, List, Optional
+from urllib.parse import ParseResult, urlparse
 
 from api.models import DataItem, DataBubble
 
@@ -88,3 +89,14 @@ def extract_items_and_bubbles(prepared_discussion: dict) -> Tuple[list, list]:
              for item in prepared_discussion['items']['elements']]
     bubbles = [DataBubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
     return bubbles, items
+
+
+def split_url(referer: str) -> Tuple[str, str]:
+    """
+    Split referer into host and path.
+
+    :param referer: request.environ.get("HTTP_REFERER")
+    :return:
+    """
+    url: ParseResult = urlparse(referer)
+    return url.netloc, url.path

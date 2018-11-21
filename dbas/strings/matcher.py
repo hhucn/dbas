@@ -14,7 +14,7 @@ from itertools import islice
 from Levenshtein import distance
 from sqlalchemy import func
 
-from api.models import DataStatement, DataAuthor, DataIssue
+from api.models import DataStatement, DataIssue
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
 from dbas.handler.history import get_seen_statements_from
@@ -158,7 +158,7 @@ def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
             statement_uid=statement.uid).first()
         issue: Issue = DBDiscussionSession.query(Issue).filter_by(uid=statement_to_issue.issue_uid).first()
         result: dict = __transform_levensthein_search_results(statement=DataStatement(statement, textversion),
-                                                              author=DataAuthor(author),
+                                                              author=author,
                                                               issue=DataIssue(issue))
         score = int(get_distance(search_value, textversion.content))
         if __get_levensthein_similarity_in_percent(search_value,
@@ -431,7 +431,7 @@ def __highlight_fuzzy_string(target: str, search_value: str) -> str:
     return res.sub('<em>{}</em>'.format(search_value), target)
 
 
-def __transform_levensthein_search_results(statement: DataStatement, author: DataAuthor, issue: DataIssue) -> dict:
+def __transform_levensthein_search_results(statement: DataStatement, author: User, issue: DataIssue) -> dict:
     """
     This is the json format of the results by searching with Levensthein.
 
@@ -441,9 +441,9 @@ def __transform_levensthein_search_results(statement: DataStatement, author: Dat
     :return: The data-structure which is used for the results in the searching interface.
     """
     return {
-        "isPosition": statement.__json__().get("isPosition"),
-        "uid": statement.__json__().get("uid"),
-        "text": statement.__json__().get("text"),
-        "author": author.__json__(),
-        "issue": issue.__json__()
+        "isPosition": statement.isPosition,
+        "uid": statement.uid,
+        "text": statement.text,
+        "author": author,
+        "issue": issue
     }

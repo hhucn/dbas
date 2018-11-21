@@ -376,6 +376,12 @@ class User(DiscussionBase):
         """
         return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
 
+    def __json__(self, _request=None):
+        return {
+            "uid": self.uid,
+            "nickname": self.public_nickname
+        }
+
     @staticmethod
     def by_nickname(nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
         return DBDiscussionSession.query(User).filter_by(nickname=nickname).one()
@@ -684,6 +690,16 @@ class StatementReferences(DiscussionBase):
         """
         db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
         return db_statement.get_text(html)
+
+    def __json__(self, _request=None):
+        return {
+            "uid": self.uid,
+            "title": self.reference,
+            "host": self.host,
+            "path": self.path,
+            "statement-uid": self.statement_uid,
+            "author": self.author
+        }
 
 
 class StatementOrigins(DiscussionBase):
