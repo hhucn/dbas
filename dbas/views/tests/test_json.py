@@ -16,9 +16,6 @@ class AjaxTest(unittest.TestCase):
         self.config.include('pyramid_mailer.testing')
         self.fuzzy_mode = FuzzyMode
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_fuzzy_search_mode_0(self):
         request = testing.DummyRequest(
             json_body={
@@ -143,7 +140,9 @@ class AjaxTest(unittest.TestCase):
         binary_combination = list(itertools.product([True, False], repeat=3))
         for b1, b2, b3 in binary_combination:
             request = testing.DummyRequest(
-                json_body={'uid': 4, 'is_argument': b1, 'should_mark': b2, 'step': 'reaction/4/undercut/6',
-                           'is_supportive': b3})
+                json_body={
+                    'uid': 4, 'is_argument': b1, 'should_mark': b2, 'step': 'reaction/4/undercut/6',
+                    'is_supportive': b3
+                })
             response = ajax(request)
             self.assertTrue(len(response['text']) > 0)

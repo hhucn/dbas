@@ -1,3 +1,20 @@
+### 1.12.0 (2018-11-21)
+- Add GraphQL Route to return all statements below a specific position !627
+- Add GraphQL Route to export complete graph as JSON data !623
+- Add origin to statements !620
+- Extend API to support jumps, adding references and retrieving reference usages !618
+- Improve search results to only present statements, which have not already been seen !629
+- Improve search results when no ElasticSearch is enabled !621
+- Remove unused code !626
+- Replace deprecated google-closure library !624
+- Refactor api.models !632
+- Fix timezone !628
+- Fix infinite loop in review queue !622
+- Fix flake8 issues !625
+- Fix wrong transaction commits !631
+
+When updating from 1.11.0: The GraphQL Route "premise.users" has been renamed to "premise.author"
+
 ### 1.11.0 (2018-10-26)
 - Add overview to see link-only discussions in "My Discussions" !610
 - Add new spinner icon, which does not block the website !614

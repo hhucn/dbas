@@ -68,7 +68,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
     @settings(deadline=1000)
     def test_login_wrong_password(self, password: str):
         pwd = password.replace('\x00', '')
-        pwd = pwd.replace('iamatestuser2016', '¯\_(ツ)_/¯')
+        pwd = pwd.replace('iamatestuser2016', r'¯\_(ツ)_/¯')
         request = construct_dummy_request({
             'nickname': 'Walter',
             'password': pwd
@@ -81,7 +81,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
 
     def test_login_wrong_user(self):
         request = construct_dummy_request({
-            'nickname': '¯\_(ツ)_/¯',
+            'nickname': r'¯\_(ツ)_/¯',
             'password': 'thankgoditsfriday'
         })
         response = apiviews.user_login(request)
@@ -276,6 +276,24 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
         DBDiscussionSession.query(StatementReferences).filter_by(reference=test_reference).delete()
         transaction.commit()
 
+    def test_add_valid_reason_with_origin(self):
+        # Add position
+        request = create_request_with_token_header(match_dict={
+            "slug": self.issue_cat_or_dog.slug,
+            "statement_id": 2,
+            "attitude": Attitudes.DISAGREE.value,
+        }, json_body={
+            "reason": "this is sparta",
+            "origin": {
+                "entity-id": 42,
+                "aggregate-id": "example.com",
+                "author": "kangaroo",
+                "version": 10
+            }
+        })
+        response: Response = apiviews.add_premise_to_statement(request)
+        self.assertEqual(response.status_code, 303, response.body)
+
 
 class TestDiscussionJustifyArgument(TestCaseWithConfig):
     def test_successful_discussion_justify_argument(self):
@@ -337,16 +355,14 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
 
 class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
     def test_add_valid_reason(self):
-        # Add position
         request: IRequest = create_request_with_token_header(match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': '18',
             'attitude': 'agree',
             'relation': 'undercut'
         }, json_body={
-            'reason': 'because i need to'
+            'reason': 'because i need to',
         })
-
         response: Response = apiviews.add_premise_to_argument(request)
         self.assertEqual(response.status_code, 303, response.body)
 
@@ -357,6 +373,44 @@ class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
 
         response: Response = apiviews.add_premise_to_argument(request)
         self.assertEqual(response.status_code, 400)
+
+    def test_add_valid_reason_with_valid_origin(self):
+        request: IRequest = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': '18',
+            'attitude': 'agree',
+            'relation': 'undercut'
+        }, json_body={
+            'reason': 'because i need to',
+            'origin': {
+                'entity-id': 23,
+                'aggregate-id': 'evil.com',
+                'author': 'penguin',
+                'version': 666
+            }
+        })
+
+        response: Response = apiviews.add_premise_to_argument(request)
+        self.assertEqual(response.status_code, 303, response.body)
+
+    def test_add_valid_reason_with_malformed_origin(self):
+        request: IRequest = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': '18',
+            'attitude': 'agree',
+            'relation': 'undercut'
+        }, json_body={
+            'reason': 'because i need to',
+            'origin': {
+                'entity-id': 23,
+                'aggregate-id': 'evil.com',
+                'author': 'penguin',
+                # missing: 'version'
+            }
+        })
+
+        response: Response = apiviews.add_premise_to_argument(request)
+        self.assertEqual(response.status_code, 400, response.body)
 
 
 class TestDiscussionReaction(TestCaseWithConfig):
@@ -437,7 +491,6 @@ class TestPosition(TestCaseWithConfig):
     }
 
     def test_add_valid_position(self):
-        # Add position
         request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug},
                                                    json_body=self.test_body)
 
@@ -474,9 +527,24 @@ class TestPosition(TestCaseWithConfig):
                 'reason': 'same-position-and-reason'
             }
         )
-
         response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 400)
+
+    def test_add_valid_position_with_valid_origin(self):
+        request = create_request_with_token_header(match_dict={
+            'slug': self.issue_cat_or_dog.slug
+        }, json_body={
+            'position': 'we should do something entirely else',
+            'reason': 'because i need to',
+            'origin': {
+                'entity-id': 23,
+                'aggregate-id': 'evil.com',
+                'author': 'penguin',
+                'version': 666
+            }
+        })
+        response: Response = apiviews.add_position_with_premise(request)
+        self.assertEqual(response.status_code, 303)
 
 
 class TestUser(TestCaseWithConfig):
@@ -538,31 +606,35 @@ class TestReferences(TestCaseWithConfig):
     def test_missing_parameters_should_return_error(self):
         request: IRequest = construct_dummy_request(params={})
         response = apiviews.get_references(request)
-        self.__assert_valid_references(response, [])
+        self.assertEqual(response.status_code, 400)
 
     def test_missing_path_should_return_error(self):
-        request: IRequest = construct_dummy_request()
-        request.host = 'foo'
+        request: IRequest = construct_dummy_request(params={
+            "host": "foo"
+        })
         response = apiviews.get_references(request)
-        self.__assert_valid_references(response, [])
+        self.assertEqual(response.status_code, 400)
 
     def test_missing_host_should_return_error(self):
-        request: IRequest = construct_dummy_request()
-        request.path = 'foo'
+        request: IRequest = construct_dummy_request(params={
+            "path": "foo"
+        })
         response = apiviews.get_references(request)
-        self.__assert_valid_references(response, [])
+        self.assertEqual(response.status_code, 400)
 
     def test_empty_list_when_no_references_in_database(self):
-        request: IRequest = construct_dummy_request()
-        request.host = 'foo'
-        request.path = 'foo'
+        request: IRequest = construct_dummy_request(params={
+            "host": "foo",
+            "path": "foo"
+        })
         response = apiviews.get_references(request)
         self.__assert_valid_references(response, [])
 
     def test_query_one_reference_should_return_list_of_references(self):
-        request: IRequest = construct_dummy_request()
-        request.host = 'localhost:3449'
-        request.path = '/'
+        request: IRequest = construct_dummy_request(params={
+            "host": "localhost:3449",
+            "path": "/"
+        })
         response = apiviews.get_references(request)
         self.__assert_valid_references(response, [DataReference(self.statement_reference)])
 

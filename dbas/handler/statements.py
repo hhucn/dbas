@@ -40,7 +40,7 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
 
     user.update_last_action(db_user)
 
-    new_statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
+    new_statement: Statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)

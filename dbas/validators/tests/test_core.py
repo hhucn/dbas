@@ -1,26 +1,25 @@
 from pyramid.testing import DummyRequest
 
-from dbas.validators.core import validate
-
 from dbas.tests.utils import construct_dummy_request
 from dbas.validators import core
+from dbas.validators.core import validate
 
 
 def test_has_keywords():
     request = construct_dummy_request()
-    fn = core.has_keywords(('foo', int))
+    fn = core.has_keywords_in_json_path(('foo', int))
     response = fn(request)
     assert type(response) == bool
     assert response is False
 
     request = construct_dummy_request({'foo': 'bar'})
-    fn = core.has_keywords(('foo', int))
+    fn = core.has_keywords_in_json_path(('foo', int))
     response = fn(request)
     assert type(response) == bool
     assert response is False
 
     request = construct_dummy_request({'foo': 2})
-    fn = core.has_keywords(('foo', int))
+    fn = core.has_keywords_in_json_path(('foo', int))
     response = fn(request)
     assert type(response) == bool
     assert response is True

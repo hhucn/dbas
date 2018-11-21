@@ -1,4 +1,5 @@
 import logging
+
 from pyramid.view import view_config
 
 from dbas.database import DBDiscussionSession
@@ -14,7 +15,7 @@ from dbas.helper.query import mark_statement_or_argument
 from dbas.lib import relation_mapper, escape_string, get_discussion_language
 from dbas.strings.translator import Translator
 from dbas.validators.common import valid_language
-from dbas.validators.core import validate, has_keywords
+from dbas.validators.core import validate, has_keywords_in_json_path
 from dbas.validators.discussion import valid_any_issue_by_id, valid_issue_not_readonly, valid_conclusion, \
     valid_premisegroups, valid_argument, valid_new_issue, valid_statement_or_argument, valid_issue_by_id, \
     valid_statement
@@ -151,7 +152,7 @@ def delete_statistics(request):
 
 
 @view_config(route_name='set_discussion_properties', renderer='json')
-@validate(valid_user, valid_any_issue_by_id, has_keywords(('property', bool), ('value', str)))
+@validate(valid_user, valid_any_issue_by_id, has_keywords_in_json_path(('property', bool), ('value', str)))
 def set_discussion_properties(request):
     """
     Set availability, read-only, ... flags in the admin panel.
@@ -170,7 +171,7 @@ def set_discussion_properties(request):
 
 
 @view_config(route_name='set_new_start_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, has_keywords(('position', str), ('reason', str)))
+@validate(valid_user, valid_issue_not_readonly, has_keywords_in_json_path(('position', str), ('reason', str)))
 def set_new_start_argument(request):
     """
     Inserts a new argument as starting point into the database
@@ -203,7 +204,7 @@ def set_new_start_argument(request):
 
 @view_config(route_name='set_new_start_premise', renderer='json')
 @validate(valid_user, valid_issue_not_readonly, valid_conclusion, valid_premisegroups,
-          has_keywords(('supportive', bool)))
+          has_keywords_in_json_path(('supportive', bool)))
 def set_new_start_premise(request):
     """
     Sets new premise for the start
@@ -225,7 +226,7 @@ def set_new_start_premise(request):
 
 @view_config(route_name='set_new_premises_for_argument', renderer='json')
 @validate(valid_user, valid_premisegroups, valid_argument(location='json_body', depends_on={valid_issue_not_readonly}),
-          has_keywords(('attack_type', str)))
+          has_keywords_in_json_path(('attack_type', str)))
 def set_new_premises_for_argument(request):
     """
     Sets a new premise for an argument
@@ -246,7 +247,7 @@ def set_new_premises_for_argument(request):
 
 
 @view_config(route_name='set_correction_of_statement', renderer='json')
-@validate(valid_user, has_keywords(('elements', list)))
+@validate(valid_user, has_keywords_in_json_path(('elements', list)))
 def set_correction_of_some_statements(request):
     """
     Sets a new textvalue for a statement
@@ -263,7 +264,8 @@ def set_correction_of_some_statements(request):
 
 
 @view_config(route_name='set_new_issue', renderer='json')
-@validate(valid_user, valid_language, valid_new_issue, has_keywords(('is_public', bool), ('is_read_only', bool)))
+@validate(valid_user, valid_language, valid_new_issue,
+          has_keywords_in_json_path(('is_public', bool), ('is_read_only', bool)))
 def set_new_issue(request):
     """
 
@@ -282,7 +284,7 @@ def set_new_issue(request):
 
 
 @view_config(route_name='set_seen_statements', renderer='json')
-@validate(valid_user, has_keywords(('uids', list)))
+@validate(valid_user, has_keywords_in_json_path(('uids', list)))
 def set_statements_as_seen(request):
     """
     Set statements as seen, when they were hidden
@@ -296,8 +298,8 @@ def set_statements_as_seen(request):
 
 
 @view_config(route_name='mark_statement_or_argument', renderer='json')
-@validate(valid_user, valid_statement_or_argument, has_keywords(('step', str), ('is_supportive', bool),
-                                                                ('should_mark', bool)))
+@validate(valid_user, valid_statement_or_argument, has_keywords_in_json_path(('step', str), ('is_supportive', bool),
+                                                                             ('should_mark', bool)))
 def mark_or_unmark_statement_or_argument(request):
     """
     Set statements as seen, when they were hidden
@@ -317,7 +319,7 @@ def mark_or_unmark_statement_or_argument(request):
 
 
 @view_config(route_name='get_logfile_for_statements', renderer='json')
-@validate(valid_issue_by_id, has_keywords(('uids', list)))
+@validate(valid_issue_by_id, has_keywords_in_json_path(('uids', list)))
 def get_logfile_for_some_statements(request):
     """
     Returns the changelog of a statement

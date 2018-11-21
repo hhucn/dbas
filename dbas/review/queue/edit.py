@@ -1,9 +1,10 @@
 # Adaptee for the edit queue. Every edit results in a new textversion of a statement.
 import difflib
 import logging
+from typing import List, Tuple, Optional
+
 import transaction
 from beaker.session import Session
-from typing import List, Tuple, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerEdit, ReviewEdit, ReviewEditValue, TextVersion, \
@@ -75,13 +76,6 @@ class EditQueue(QueueABC):
         stats = get_reporter_stats_for_review(rev_dict['rnd_review'], translator.get_lang(), application_url)
 
         if not db_edit_value:
-            LOG.warning("ReviewEdit %s has no edit value!", rev_dict['rnd_review'].uid)
-            # get all valid reviews
-            db_allowed_reviews = DBDiscussionSession.query(ReviewEdit).filter(
-                ReviewEdit.uid.in_(DBDiscussionSession.query(ReviewEditValue.review_edit_uid))).all()
-
-            if len(db_allowed_reviews) > 0:  # get new one
-                return self.get_queue_information(db_user, session, application_url, translator)
             return {
                 'stats': None,
                 'text': None,

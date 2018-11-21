@@ -1,6 +1,6 @@
+import logging
 from time import sleep
 
-import logging
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
 from pyramid.view import view_config
@@ -15,7 +15,7 @@ from dbas.helper.query import set_user_language
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import valid_lang_cookie_fallback
-from dbas.validators.core import has_keywords, has_maybe_keywords, validate
+from dbas.validators.core import has_keywords_in_json_path, has_maybe_keywords, validate
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
 from dbas.validators.user import valid_user
@@ -24,7 +24,7 @@ LOG = logging.getLogger(__name__)
 
 
 @view_config(request_method='POST', route_name='user_login', renderer='json')
-@validate(has_keywords(('user', str), ('password', str), ('keep_login', bool)),
+@validate(has_keywords_in_json_path(('user', str), ('password', str), ('keep_login', bool)),
           has_maybe_keywords(('redirect_url', str, '')))
 def user_login(request):
     """
@@ -96,7 +96,8 @@ def user_delete(request):
 
 @view_config(route_name='user_registration', renderer='json')
 @validate(valid_lang_cookie_fallback,
-          has_keywords(('nickname', str), ('email', str), ('gender', str), ('password', str), ('passwordconfirm', str)),
+          has_keywords_in_json_path(('nickname', str), ('email', str), ('gender', str), ('password', str),
+                                    ('passwordconfirm', str)),
           has_maybe_keywords(('firstname', str, ''), ('lastname', str, '')))
 def user_registration(request):
     """
@@ -119,7 +120,7 @@ def user_registration(request):
 
 
 @view_config(route_name='user_password_request', renderer='json')
-@validate(valid_lang_cookie_fallback, has_keywords(('email', str)))
+@validate(valid_lang_cookie_fallback, has_keywords_in_json_path(('email', str)))
 def user_password_request(request):
     """
     Sends an email, when the user requests his password
@@ -133,7 +134,7 @@ def user_password_request(request):
 
 
 @view_config(route_name='set_user_setting', renderer='json')
-@validate(valid_user, has_keywords(('settings_value', bool), ('service', str)))
+@validate(valid_user, has_keywords_in_json_path(('settings_value', bool), ('service', str)))
 def set_user_settings(request):
     """
     Sets a specific setting of the user.
@@ -168,7 +169,7 @@ def set_user_lang(request):
 
 
 @view_config(route_name='notifications_read', renderer='json')
-@validate(valid_user, has_keywords(('ids', list)))
+@validate(valid_user, has_keywords_in_json_path(('ids', list)))
 def set_notifications_read(request):
     """
     Set a notification as read
@@ -181,7 +182,7 @@ def set_notifications_read(request):
 
 
 @view_config(route_name='notifications_delete', renderer='json')
-@validate(valid_user, has_keywords(('ids', list)))
+@validate(valid_user, has_keywords_in_json_path(('ids', list)))
 def set_notifications_delete(request):
     """
     Request the removal of a notification
@@ -215,7 +216,7 @@ def send_some_notification(request):
 
 # ajax - for getting all users with the same opinion
 @view_config(route_name='get_public_user_data', renderer='json')
-@validate(has_keywords(('user_id', int)))
+@validate(has_keywords_in_json_path(('user_id', int)))
 def get_public_user_data(request):
     """
     Returns dictionary with public user data

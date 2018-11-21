@@ -1,5 +1,6 @@
 import logging
 import re
+
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.registry import Registry
 from pyramid.request import Request
@@ -13,7 +14,7 @@ from dbas.lib import usage_of_modern_bubbles, nick_of_anonymous_user, Attitudes
 
 LOG = logging.getLogger(__name__)
 name = 'D-BAS'
-version = '1.11.0'
+version = '1.12.0'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -70,7 +71,6 @@ def prepare_request_dict(request: Request):
     :return:
     """
     LOG.debug("Preparing request dict for renderer")
-
     db_user = request.validated['user']
     nickname = db_user.nickname if db_user.nickname != nick_of_anonymous_user else None
     db_last_topic = history_handler.get_last_issue_of(db_user)

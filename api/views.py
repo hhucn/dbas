@@ -16,9 +16,9 @@ from pyramid.request import Request
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
-import dbas.views.discussion as dbas
-from api.lib import extract_items_and_bubbles
-from api.models import DataItem, DataBubble, DataReference
+from api.lib import extract_items_and_bubbles, flatten, split_url
+from api.models import DataItem, DataBubble, DataReference, DataOrigin
+from api.origins import add_origin_for_list_of_statements
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReferences
 from dbas.handler.arguments import set_arguments_premises
@@ -30,19 +30,18 @@ from dbas.lib import (get_all_arguments_by_statement,
 from dbas.strings.matcher import get_all_statements_by_levensthein_similar_to
 from dbas.strings.translator import Keywords as _, get_translation, Translator
 from dbas.validators.common import valid_q_parameter
-from dbas.validators.core import has_keywords, validate, has_maybe_keywords
+from dbas.validators.core import has_keywords_in_json_path, validate, has_maybe_keywords, has_keywords_in_path
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_reason_and_position_not_equal, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
+from dbas.validators.eden import valid_optional_origin
+from dbas.views import jump
 from search.requester import get_statements_with_similarity_to
-from .lib import logger
-from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, \
-    valid_api_token
+from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, valid_api_token
 from .references import (get_all_references_by_reference_text,
-                         get_reference_by_id, get_references_for_url, store_reference)
+                         store_reference)
 from .templates import error
 
-log = logger()
 LOG = logging.getLogger(__name__)
 
 #
@@ -75,30 +74,30 @@ reaction = Service(name='api_reaction',
                    cors_policy=cors_policy)
 
 justify_statement = Service(name='api_justify_statement',
-                            path='/{slug}/justify/{statement_id:\d+}/{attitude:(' + '|'.join(
+                            path=r'/{slug}/justify/{statement_id:\d+}/{attitude:(' + '|'.join(
                                 map(str, Attitudes)) + ')}',
                             description='Discussion Justify',
                             cors_policy=cors_policy)
 
 dontknow_argument = Service(name='api_dontknow_argument',
-                            path='/{slug}/justify/{argument_id:\d+}/dontknow',
+                            path=r'/{slug}/justify/{argument_id:\d+}/dontknow',
                             description='Discussion Dont Know',
                             cors_policy=cors_policy)
 
 justify_argument = Service(name='api_justify_argument',
-                           path='/{slug}/justify/{argument_id:\d+}' +
-                                '/{attitude:(' + '|'.join(map(str, Attitudes)) + ')}' +
-                                '/{relation:(' + '|'.join(map(str, Relations)) + ')}',
+                           path=r'/{slug}/justify/{argument_id:\d+}' +
+                                r'/{attitude:(' + '|'.join(map(str, Attitudes)) + ')}' +
+                                r'/{relation:(' + '|'.join(map(str, Relations)) + ')}',
                            description='Discussion Justify',
                            cors_policy=cors_policy)
 
 attitude = Service(name='api_attitude',
-                   path='/{slug}/attitude/{position_id:\d+}',
+                   path=r'/{slug}/attitude/{position_id:\d+}',
                    description='Discussion Attitude',
                    cors_policy=cors_policy)
 
 finish = Service(name='api_finish',
-                 path='/{slug}/finish/{argument_id:\d+}',
+                 path=r'/{slug}/finish/{argument_id:\d+}',
                  description='End of a discussion',
                  cors_policy=cors_policy)
 
@@ -149,7 +148,7 @@ text_for_argument = Service(name="argument_text_block",
 # Jump into the discussion
 #
 jump_to_zargument = Service(name="jump_to_argument",  # Need this 'z' to call this after the other jumps
-                            path="/{slug}/jump/{arg_uid}",
+                            path="/{slug}/jump/{argument_id}",
                             description="Jump to an argument",
                             cors_policy=cors_policy)
 
@@ -392,6 +391,7 @@ def discussion_finish(request):
 # =============================================================================
 
 @references.get()
+@validate(has_keywords_in_path(('host', str), ('path', str), location="params"))
 def get_references(request: Request):
     """
     Query database to get stored references from site. Generate a list with text versions of references.
@@ -399,16 +399,18 @@ def get_references(request: Request):
     :param request: request
     :return: References assigned to the queried URL
     """
-    host = request.host
-    path = request.path
-    log.debug("Querying references for host: {}, path: {}".format(host, path))
-    refs_db: List[StatementReferences] = get_references_for_url(host, path)
+    host = request.validated["host"]
+    path = request.validated["path"]
+    LOG.debug("Querying references for host: {}, path: {}".format(host, path))
+    refs_db: List[StatementReferences] = DBDiscussionSession.query(StatementReferences).filter_by(host=host,
+                                                                                                  path=path).all()
     return {
         "references": [DataReference(ref) for ref in refs_db]
     }
 
 
 @reference_usages.get()
+@validate(has_keywords_in_path(('ref_uid', int)))
 def get_reference_usages(request: Request):
     """
     Return a JSON object containing all information about the stored reference and its usages.
@@ -417,8 +419,9 @@ def get_reference_usages(request: Request):
     :return: JSON with all information about the stored reference
     :rtype: list
     """
-    ref_uid = request.matchdict["ref_uid"]
-    db_ref = get_reference_by_id(ref_uid)
+    ref_uid = request.validated["ref_uid"]
+    LOG.debug("Retrieving reference usages for ref_uid {}".format(ref_uid))
+    db_ref: StatementReferences = DBDiscussionSession.query(StatementReferences).get(ref_uid)
     if db_ref:
         return get_all_references_by_reference_text(db_ref.reference)
     return error("Reference could not be found")
@@ -429,7 +432,7 @@ def get_reference_usages(request: Request):
 # =============================================================================
 
 @login.post(require_csrf=False)
-@validate(has_keywords(('nickname', str), ('password', str)), validate_credentials)
+@validate(has_keywords_in_json_path(('nickname', str), ('password', str)), validate_credentials)
 def user_login(request):
     """
     Check provided credentials and return a token, if it is a valid user. The function body is only executed,
@@ -439,7 +442,7 @@ def user_login(request):
     :return: token and nickname
     """
     nickname = request.validated['nickname']
-    log.debug('User authenticated: {}'.format(nickname))
+    LOG.debug('User authenticated: {}'.format(nickname))
     return {
         'nickname': nickname,
         'token': request.validated['token']
@@ -456,7 +459,7 @@ def user_logout(request):
     :return:
     """
     nickname = request.validated['user']
-    log.debug('User logged out: {}'.format(nickname))
+    LOG.debug('User logged out: {}'.format(nickname))
     request.session.invalidate()
     token_to_database(request.validated['user'], None)
     return {
@@ -491,31 +494,20 @@ def find_statements_fn(request):
 # JUMPING - jump to specific position in the discussion
 # =============================================================================
 
-def jump_preparation(request):
-    """
-    Prepare api_data and extract all relevant information from the request.
-
-    :param request:
-    :return:
-
-    """
-    slug = request.matchdict["slug"]
-    arg_uid = int(request.matchdict["arg_uid"])
-    nickname = None
-    session_id = None
-    return {"slug": slug, "arg_uid": arg_uid, "nickname": nickname, "session_id": session_id}
-
-
 @jump_to_zargument.get()
 def jump_to_argument_fn(request):
     """
-    Given a slug, arg_uid and a nickname, jump directly to an argument to provoke user interaction.
+    Jump directly to an argument to provoke user interaction.
 
     :param request:
     :return: Argument with a list of possible interactions
-
     """
-    return dbas.jump(request)
+    response = jump(request)
+    bubbles, items = extract_items_and_bubbles(response)
+    return {
+        'bubbles': bubbles,
+        'items': items
+    }
 
 
 # =============================================================================
@@ -569,13 +561,29 @@ def __http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
     )
 
 
+def __store_origin_and_reference(db_issue: Issue, db_user: User, origin: DataOrigin, host: str, path: str,
+                                 reference_text: str, statement_uids: List[int]):
+    """
+    Takes all newly created statements and stores the reference and origin for it, if provided.
+    """
+    if reference_text:
+        for statement_uid in statement_uids:
+            db_new_statement: Statement = DBDiscussionSession.query(Statement).get(statement_uid)
+            store_reference(reference_text, host, path, db_user, db_new_statement, db_issue)
+    if origin:
+        add_origin_for_list_of_statements(origin, statement_uids)
+
+
+# -----------------------------------------------------------------------------
+
 @zinit.post(require_csrf=False)
 @positions.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body,
-          valid_reason_and_position_not_equal)
+          valid_reason_and_position_not_equal, valid_optional_origin)
 def add_position_with_premise(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
+    origin: DataOrigin = request.validated['origin']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
@@ -586,53 +594,60 @@ def add_position_with_premise(request):
     pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
                                request.mailer)
 
+    if origin:
+        add_origin_for_list_of_statements(origin, new_position['statement_uids'])
+        add_origin_for_list_of_statements(origin, flatten(pd['statement_uids']))
+
     return __http_see_other_with_cors_header('/api' + pd['url'])
 
 
 @justify_statement.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_reason_in_body, valid_statement(location="path"),
-          valid_attitude, has_maybe_keywords(('reference', str, None)))
+          valid_attitude, has_maybe_keywords(('reference', str, None)), valid_optional_origin)
 def add_premise_to_statement(request: IRequest):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
     db_statement: Statement = request.validated['statement']
-    reference_text: str = request.validated["reference"]
+    reference_text: str = request.validated['reference']
     is_supportive = request.validated['attitude'] == Attitudes.AGREE
+    origin: DataOrigin = request.validated['origin']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
-
-    if reference_text:
-        store_reference(reference_text, request.host, request.path, db_user, db_statement, db_issue)
+    host, path = split_url(request.environ.get("HTTP_REFERER"))
 
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
-                               history,
-                               request.mailer)
+                               history, request.mailer)
+
+    __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, flatten(pd['statement_uids']))
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
 
 
 @justify_argument.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_reason_in_body, valid_argument(location="path"), valid_relation,
-          valid_attitude, has_maybe_keywords(('reference', str, None)))
+          valid_attitude, has_maybe_keywords(('reference', str, None)), valid_optional_origin)
 def add_premise_to_argument(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
     db_argument: Argument = request.validated['argument']
     reference_text: str = request.validated['reference']
     relation: Relations = request.validated['relation']
+    origin: DataOrigin = request.validated['origin']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    host, path = split_url(request.environ.get("HTTP_REFERER"))
 
     if reference_text:
         for premise in db_argument.premisegroup.premises:
-            store_reference(reference_text, request.host, request.path, db_user, premise.statement, db_issue)
+            store_reference(reference_text, host, path, db_user, premise.statement, db_issue)
 
     pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
-                                history,
-                                request.mailer)
+                                history, request.mailer)
+
+    __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, pd['statement_uids'])
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
 
 
-@resource(collection_path='/users', path='/users/{id:\d+}', cors_policy=cors_policy)
+@resource(collection_path='/users', path=r'/users/{id:\d+}', cors_policy=cors_policy)
 class ApiUser(object):
     def __init__(self, request, context=None):
         self.request = request
@@ -663,8 +678,9 @@ class ApiUser(object):
 
     @staticmethod
     @validate(valid_api_token,
-              has_keywords(('firstname', str), ('lastname', str), ('nickname', str), ('email', str), ('gender', str),
-                           ('id', int), ('locale', str), ('service', str)))
+              has_keywords_in_json_path(('firstname', str), ('lastname', str), ('nickname', str), ('email', str),
+                                        ('gender', str),
+                                        ('id', int), ('locale', str), ('service', str)))
     def _collection_post(request):
         result = set_new_oauth_user(request.json_body,
                                     request.json_body['id'],

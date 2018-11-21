@@ -159,7 +159,6 @@ def update_last_action(db_user: User) -> bool:
     should_log_out = diff > timeout_in_sec and not db_user.settings.keep_logged_in
     db_user.update_last_action()
 
-    transaction.commit()
     return should_log_out
 
 
@@ -195,9 +194,9 @@ def is_in_group(nickname, groupname):
     :param groupname: Group.name
     :return: Boolean
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
+    db_user: User = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
     LOG.debug("Entering is_in_group")
-    return db_user and db_user.groups.name == groupname
+    return db_user and db_user.group.name == groupname
 
 
 def is_admin(nickname):
@@ -207,9 +206,9 @@ def is_admin(nickname):
     :param nickname: current user name
     :return: true, if user is admin, false otherwise
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
+    db_user: User = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
     LOG.debug("Entering is_admin")
-    return db_user and db_user.groups.name == 'admins'
+    return db_user and db_user.group.name == 'admins'
 
 
 def get_public_data(user_id: int, lang: str):
@@ -654,7 +653,6 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
             message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
         else:
             user.change_password(new_pw)
-            transaction.commit()
 
             LOG.debug("Password was changed")
             message = _t.get(_.pwdChanged)  # 'Your password was changed'

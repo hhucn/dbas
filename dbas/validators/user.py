@@ -1,4 +1,3 @@
-
 """
 When testing for valid / authenticated users, use these functions.
 """
@@ -8,7 +7,7 @@ from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.validators.core import has_keywords
+from dbas.validators.core import has_keywords_in_json_path
 from dbas.validators.lib import add_error
 
 
@@ -52,7 +51,7 @@ def valid_user_as_author_of_statement(request):
     :param request:
     :return:
     """
-    if not has_keywords(('statement_id', int))(request):
+    if not has_keywords_in_json_path(('statement_id', int))(request):
         return False
 
     statement_id = request.validated['statement_id']

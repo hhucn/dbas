@@ -18,9 +18,6 @@ class DiscussionChoseViewTests(unittest.TestCase):
         self.is_supportive = False
         self.is_argument = True
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_page(self):
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
 
@@ -28,7 +25,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'slug': 'cat-or-dog',
             'is_argument': self.is_argument,
             'is_supportive': self.is_supportive,
-            'id': (self.arg_uid, ),
+            'id': (self.arg_uid,),
             'pgroup_ids': [self.pgroup_uid],
         })
         response = choose(request)
@@ -47,7 +44,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'slug': 'cat-or-dog',
             'is_argument': self.is_argument,
             'is_supportive': self.is_supportive,
-            'id': (self.arg_uid, ),
+            'id': (self.arg_uid,),
             'pgroup_ids': [self.pgroup_uid],
         })
         response = choose(request)
@@ -63,7 +60,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'slug': 'cat-or-dog',
             'is_argument': self.is_argument,
             'is_supportive': self.is_supportive,
-            'id': (self.arg_uid, ),
+            'id': (self.arg_uid,),
             'pgroup_ids': [self.pgroup_uid, 'a'],
         })
         response = choose(request)
@@ -73,7 +70,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'slug': 'cat-or-doggy-dog',
             'is_argument': self.is_argument,
             'is_supportive': self.is_supportive,
-            'id': (self.arg_uid, ),
+            'id': (self.arg_uid,),
             'pgroup_ids': [self.pgroup_uid, 'a'],
         })
         response = choose(request)
@@ -83,7 +80,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'slug': 'cat-or-doggy-dog',
             'is_argument': self.is_argument,
             'is_supportive': self.is_supportive,
-            'id': (self.arg_uid, ),
+            'id': (self.arg_uid,),
             'pgroup_ids': [self.pgroup_uid, 55],
         })
         response = choose(request)

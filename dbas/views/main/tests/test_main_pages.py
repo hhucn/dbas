@@ -11,9 +11,6 @@ class MainImprintViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_page(self):
         request = testing.DummyRequest()
         response = imprint(request)
@@ -24,9 +21,6 @@ class MainFieldexperimentViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page(self):
         request = testing.DummyRequest()
@@ -39,9 +33,6 @@ class MainNewsViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_page(self):
         request = testing.DummyRequest()
         response = news(request)
@@ -52,9 +43,6 @@ class MainPrivacyViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page(self):
         request = testing.DummyRequest()
@@ -67,9 +55,6 @@ class MainPageViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_page(self):
         request = testing.DummyRequest()
         response = index(request)
@@ -80,9 +65,6 @@ class MainFaqViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page(self):
         request = testing.DummyRequest()
@@ -95,9 +77,6 @@ class MainDocsViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-    def tearDown(self):
-        testing.tearDown()
-
     def test_page(self):
         request = testing.DummyRequest()
         response = docs(request)
@@ -108,9 +87,6 @@ class MainHealthViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_page(self):
         request = testing.DummyRequest()

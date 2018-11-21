@@ -4,8 +4,7 @@ from pyramid import testing
 
 import dbas.review.queue.lib
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ReviewOptimization
-from dbas.database.discussion_model import User
+from dbas.database.discussion_model import ReviewOptimization, User
 from dbas.review import FlaggedBy
 from dbas.review.queue.adapter import QueueAdapter
 from dbas.review.queue.optimization import OptimizationQueue
@@ -17,9 +16,6 @@ class AdapterTest(unittest.TestCase):
         self.config = testing.setUp()
         self.user = DBDiscussionSession.query(User).get(2)
         self.other_user = DBDiscussionSession.query(User).get(21)
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_get_review_queues_as_lists(self):
         _tn = Translator('en')

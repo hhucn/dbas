@@ -4,6 +4,7 @@ Introducing an admin interface to enable easy database management.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
+
 from cornice import Service
 from pyramid.httpexceptions import exception_response
 
@@ -11,7 +12,7 @@ import admin.lib as lib
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.validators.core import has_keywords, validate
+from dbas.validators.core import has_keywords_in_json_path, validate
 from dbas.validators.database import valid_table_name
 from dbas.validators.user import valid_user_as_admin, valid_user_optional
 from dbas.views import user_logout
@@ -152,7 +153,8 @@ def main_table(request):
 
 
 @update_row.post()
-@validate(valid_user_as_admin, valid_table_name, has_keywords(('keys', list), ('uids', list), ('values', list)))
+@validate(valid_user_as_admin, valid_table_name,
+          has_keywords_in_json_path(('keys', list), ('uids', list), ('values', list)))
 def main_update(request):
     """
     View configuration for updating any row
@@ -169,7 +171,7 @@ def main_update(request):
 
 
 @delete_row.post()
-@validate(valid_user_as_admin, valid_table_name, has_keywords(('uids', list)))
+@validate(valid_user_as_admin, valid_table_name, has_keywords_in_json_path(('uids', list)))
 def main_delete(request):
     """
     View configuration for deleting any row
@@ -182,7 +184,7 @@ def main_delete(request):
 
 
 @add_row.post()
-@validate(valid_user_as_admin, valid_table_name, has_keywords(('new_data', dict)))
+@validate(valid_user_as_admin, valid_table_name, has_keywords_in_json_path(('new_data', dict)))
 def main_add(request):
     """
     View configuration for adding any row

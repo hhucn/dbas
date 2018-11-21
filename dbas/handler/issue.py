@@ -5,11 +5,11 @@ Provides helping function for issues.
 """
 from datetime import date, timedelta
 from json import JSONDecodeError
+from math import ceil
 from typing import Optional, List
 
 import arrow
 import transaction
-from math import ceil
 from pyramid.request import Request
 from slugify import slugify
 
@@ -145,9 +145,9 @@ def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict:
         'info': db_issue.info,
         'stat_count': get_number_of_statements(db_issue.uid),
         'date': sql_timestamp_pretty_print(db_issue.date, lang),
-        'author': db_issue.users.public_nickname,
+        'author': db_issue.author.public_nickname,
         'error': '',
-        'author_url': '/user/{}'.format(db_issue.users.uid),
+        'author_url': '/user/{}'.format(db_issue.author.uid),
         'enabled': 'disabled' if str(uid) == str(db_issue.uid) else 'enabled'
     }
     return issue_dict

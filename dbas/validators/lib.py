@@ -42,3 +42,12 @@ def escape_if_string(data: dict, key: str):
     if val and isinstance(val, str):
         return escape_string(val)
     return val
+
+
+def to_int(version):
+    if version is not None:
+        try:
+            version = int(version)
+        except ValueError:
+            version = None
+    return version
