@@ -7,7 +7,7 @@ from dbas.lib import unhtmlify
 
 
 class JSONBase:
-    def __json__(self):
+    def __json__(self, _request=None):
         return vars(self)
 
 
