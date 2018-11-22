@@ -1,3 +1,6 @@
+### 1.12.1 (2018-11-22)
+- Fix API routes, add second positional argument to JSONBase !633
+
 ### 1.12.0 (2018-11-21)
 - Add GraphQL Route to return all statements below a specific position !627
 - Add GraphQL Route to export complete graph as JSON data !623
