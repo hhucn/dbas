@@ -40,7 +40,7 @@ python-twitter==3.4.2
 paste==2.0.3
 psycopg2_binary==2.7.5
 python-ldap==3.1.0
-requests==2.18.4
+requests==2.20.1
 requests_oauthlib==1.0.0
 selenium==3.12.0
 slugify==0.0.1
