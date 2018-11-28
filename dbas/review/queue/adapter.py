@@ -54,7 +54,9 @@ class QueueAdapter:
         button_set = {f'is_{key}': False for key in review_queues}
         button_set[f'is_{queue_name}'] = True
         subpage_dict = self.queue.get_queue_information(self.db_user, session, self.application_url, self.translator)
-        slug = slugify(subpage_dict.get('issue_titles')[0])
+        if subpage_dict is None or subpage_dict.get('issue_titles') is None:
+            return self.__wrap_subpage_dict(session, button_set)
+        slug = slugify(*subpage_dict.get('issue_titles'))
         issue = DBDiscussionSession.query(Issue).filter_by(slug=slug).one_or_none()
         ret_dict = {
             'page_name': queue_name,
