@@ -53,7 +53,6 @@ def convert_column_to_arrow(ttype, column, registry=None):
 class TextVersionGraph(SQLAlchemyObjectType):
     class Meta:
         model = TextVersion
-        exclude_fields = "timestamp"
 
 
 class ArgumentGraph(SQLAlchemyObjectType):
@@ -77,7 +76,6 @@ class StatementGraph(SQLAlchemyObjectType):
 
     text = graphene.String()
     textversions = graphene.Field(TextVersionGraph)
-    arguments = ArgumentGraph.plural()
     supports = ArgumentGraph.plural()
     rebuts = ArgumentGraph.plural()
     undercuts = ArgumentGraph.plural()
@@ -85,12 +83,8 @@ class StatementGraph(SQLAlchemyObjectType):
     def resolve_textversions(self, info, **kwargs):
         return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
 
-    def resolve_text(self, info, **kwargs):
-        return DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == self.uid).order_by(
-            TextVersion.timestamp.desc()).first().content
-
-    def resolve_arguments(self, info, **kwargs):
-        return resolve_list_query({**kwargs, "conclusion_uid": self.uid}, info, ArgumentGraph)
+    def resolve_text(self: Statement, info):
+        return self.get_text()
 
     def resolve_supports(self, info, **kwargs):
         return resolve_list_query({**kwargs, "is_supportive": True, "conclusion_uid": self.uid}, info, ArgumentGraph)
@@ -122,10 +116,17 @@ class StatementGraph(SQLAlchemyObjectType):
     def plural():
         return graphene.List(StatementGraph, is_position=graphene.Boolean(), is_disabled=graphene.Boolean())
 
+    flat_statements_below = graphene.Dynamic(lambda: graphene.NonNull(StatementGraph.plural(),
+                                                                      description="Returns all texts from the statements in the tree below this statement"))
 
-class StatementReferencesGraph(SQLAlchemyObjectType):
+    def resolve_flat_statements_below(self: Statement, _info):
+        return self.flat_statements_below()
+
+
+class UserGraph(SQLAlchemyObjectType):
     class Meta:
-        model = StatementReferences
+        model = User
+        only_fields = ["uid", "public_nickname", "last_action", "registered", "last_login"]
 
 
 class StatementOriginsGraph(SQLAlchemyObjectType):
@@ -164,12 +165,6 @@ class IssueGraph(SQLAlchemyObjectType):
         return graph
 
 
-class UserGraph(SQLAlchemyObjectType):
-    class Meta:
-        model = User
-        only_fields = ["uid", "public_nickname", "last_action", "registered", "last_login"]
-
-
 class LanguageGraph(SQLAlchemyObjectType):
     class Meta:
         model = Language
@@ -192,6 +187,25 @@ class PremiseGroupGraph(SQLAlchemyObjectType):
 class PremiseGraph(SQLAlchemyObjectType):
     class Meta:
         model = Premise
+
+
+class StatementReferencesGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = StatementReferences
+
+    # for legacy support
+    users = graphene.Field(UserGraph, deprecation_reason="Use `author` instead")
+    issues = graphene.Field(IssueGraph, deprecation_reason="Use `issue` instead")
+    statements = graphene.Field(StatementGraph, deprecation_reason="Use `statement` instead")
+
+    def resolve_users(self: StatementReferences, info):
+        return resolve_field_query({"uid": self.author_uid}, info, UserGraph)
+
+    def resolve_issues(self: StatementReferences, info):
+        return resolve_field_query({"uid": self.issue_uid}, info, IssueGraph)
+
+    def resolve_statements(self: StatementReferences, info):
+        return resolve_field_query({"uid": self.statement_uid}, info, StatementGraph)
 
 
 # -----------------------------------------------------------------------------

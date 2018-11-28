@@ -38,6 +38,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         clear_clicks_of('Björn')
         clear_reputation_of_user(self.user_bjoern)
         clear_reputation_of_user(self.user_tobi)
+        super().tearDown()
 
     def test_page(self):
         len_db_seen_s1 = DBDiscussionSession.query(SeenStatement).count()

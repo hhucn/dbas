@@ -7,14 +7,14 @@ Unit tests for our validators
 
 from dbas.database.discussion_model import ReviewDelete
 from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
-from dbas.validators.core import has_keywords
+from dbas.validators.core import has_keywords_in_json_path
 from dbas.validators.reviews import valid_not_executed_review
 
 
 class TestHasKeywords(TestCaseWithConfig):
     def test_has_one_keyword(self):
         request = construct_dummy_request({'string': 'foo'})
-        response = has_keywords(('string', str))(request)
+        response = has_keywords_in_json_path(('string', str))(request)
         self.assertTrue(response)
         self.assertIn('string', request.validated)
 
@@ -23,7 +23,7 @@ class TestHasKeywords(TestCaseWithConfig):
             'string': 'foo',
             'bool': True
         })
-        response = has_keywords(('string', str), ('bool', bool))(request)
+        response = has_keywords_in_json_path(('string', str), ('bool', bool))(request)
         self.assertTrue(response)
         self.assertIn('string', request.validated)
         self.assertIn('bool', request.validated)
@@ -33,26 +33,26 @@ class TestHasKeywords(TestCaseWithConfig):
             'int': 4,
             'float': 4.0
         })
-        response = has_keywords(('int', int), ('float', float))(request)
+        response = has_keywords_in_json_path(('int', int), ('float', float))(request)
         self.assertTrue(response)
         self.assertIn('int', request.validated)
         self.assertIn('float', request.validated)
 
     def test_has_list_keywords(self):
         request = construct_dummy_request({'list': ['<:)']})
-        response = has_keywords(('list', list))(request)
+        response = has_keywords_in_json_path(('list', list))(request)
         self.assertTrue(response)
         self.assertIn('list', request.validated)
 
     def test_has_keywords_with_wrong_type(self):
         request = construct_dummy_request({'int': 4})
-        response = has_keywords(('int', float))(request)
+        response = has_keywords_in_json_path(('int', float))(request)
         self.assertFalse(response)
         self.assertNotIn('int', request.validated)
 
     def test_has_keywords_without_keyword(self):
         request = construct_dummy_request({'foo': 42})
-        response = has_keywords(('bar', int))(request)
+        response = has_keywords_in_json_path(('bar', int))(request)
         self.assertFalse(response)
         self.assertNotIn('bar', request.validated)
 

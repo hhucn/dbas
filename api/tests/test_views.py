@@ -606,31 +606,35 @@ class TestReferences(TestCaseWithConfig):
     def test_missing_parameters_should_return_error(self):
         request: IRequest = construct_dummy_request(params={})
         response = apiviews.get_references(request)
-        self.__assert_valid_references(response, [])
+        self.assertEqual(response.status_code, 400)
 
     def test_missing_path_should_return_error(self):
-        request: IRequest = construct_dummy_request()
-        request.host = 'foo'
+        request: IRequest = construct_dummy_request(params={
+            "host": "foo"
+        })
         response = apiviews.get_references(request)
-        self.__assert_valid_references(response, [])
+        self.assertEqual(response.status_code, 400)
 
     def test_missing_host_should_return_error(self):
-        request: IRequest = construct_dummy_request()
-        request.path = 'foo'
+        request: IRequest = construct_dummy_request(params={
+            "path": "foo"
+        })
         response = apiviews.get_references(request)
-        self.__assert_valid_references(response, [])
+        self.assertEqual(response.status_code, 400)
 
     def test_empty_list_when_no_references_in_database(self):
-        request: IRequest = construct_dummy_request()
-        request.host = 'foo'
-        request.path = 'foo'
+        request: IRequest = construct_dummy_request(params={
+            "host": "foo",
+            "path": "foo"
+        })
         response = apiviews.get_references(request)
         self.__assert_valid_references(response, [])
 
     def test_query_one_reference_should_return_list_of_references(self):
-        request: IRequest = construct_dummy_request()
-        request.host = 'localhost:3449'
-        request.path = '/'
+        request: IRequest = construct_dummy_request(params={
+            "host": "localhost:3449",
+            "path": "/"
+        })
         response = apiviews.get_references(request)
         self.__assert_valid_references(response, [DataReference(self.statement_reference)])
 

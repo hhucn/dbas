@@ -14,7 +14,7 @@ from dbas.input_validator import is_integer, related_with_support, check_belongi
 from dbas.lib import Relations, Attitudes, attitude_mapper, relation_mapper
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.validators.core import has_keywords, has_keywords_in_path
+from dbas.validators.core import has_keywords_in_json_path, has_keywords_in_path
 from dbas.validators.lib import add_error, escape_if_string
 
 
@@ -153,7 +153,7 @@ def valid_new_issue(request):
     :param request:
     :return:
     """
-    fn_validator = has_keywords(('title', str), ('info', str), ('long_info', str))
+    fn_validator = has_keywords_in_json_path(('title', str), ('info', str), ('long_info', str))
     if not fn_validator(request):
         return False
 

@@ -187,7 +187,6 @@ def send_notification(from_user, to_user, topic, content, mainpage):
                                is_inbox=False, read=True)
     DBDiscussionSession.add_all([notification_in, notification_out])
     DBDiscussionSession.flush()
-    transaction.commit()
 
     db_settings = to_user.settings
     if db_settings.should_send_notifications:

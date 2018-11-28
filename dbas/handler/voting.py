@@ -158,8 +158,8 @@ def add_seen_statement(statement_uid: int, db_user: User):
     LOG.debug("Statement %s, for user %s", statement_uid, db_user.uid)
 
     val = __statement_seen_by_user(db_user, statement_uid)
-    if val:
-        transaction.commit()
+    # if val:
+    #    transaction.commit()
 
     return val
 
@@ -210,7 +210,7 @@ def clear_vote_and_seen_values_of_user(db_user):
     DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
 
     DBDiscussionSession.flush()
-    transaction.commit()
+    # transaction.commit()
     return True
 
 

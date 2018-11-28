@@ -10,7 +10,7 @@ from pyramid.request import Request
 from dbas.validators.lib import add_error
 
 
-def has_keywords(*keywords: Tuple[str, type]):
+def has_keywords_in_json_path(*keywords: Tuple[str, type]):
     """
     Verify that specified keywords exist in the request.json_body.
 
@@ -36,18 +36,20 @@ def has_keywords(*keywords: Tuple[str, type]):
     return valid_keywords
 
 
-def has_keywords_in_path(*keywords: Tuple[str, type]):
+def has_keywords_in_path(*keywords: Tuple[str, type], location='matchdict'):
     """
-    Verify that specified keywords exist in the request.matchdict.
+    Verify that specified keywords exist in the request object.
 
-    :param keywords: tuple of keys and their expected types in request.json_body
+    :param keywords: tuple of keys and their expected types in request
+    :param location: specify dictionary in request object, where the data is stored
     :return:
     """
 
     def valid_keywords(request: Request, **_kwargs):
         error_occured = False
         for (keyword, ktype) in keywords:
-            value = request.matchdict.get(keyword)
+            request_attribute: dict = getattr(request, location)
+            value = request_attribute.get(keyword)
             if value is not None and isinstance(value, ktype):
                 request.validated[keyword] = value
             elif value is not None:
@@ -65,7 +67,7 @@ def has_keywords_in_path(*keywords: Tuple[str, type]):
                           '{} is {}, expected {}'.format(keyword, type(value), ktype))
                 error_occured = True
             else:
-                add_error(request, 'Parameter {} is missing in path'.format(keyword))
+                add_error(request, 'Parameter {} is missing in {}'.format(keyword, location))
                 error_occured = True
         return not error_occured
 

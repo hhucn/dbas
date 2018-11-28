@@ -13,7 +13,6 @@ class QueueInfosTest(TestCaseWithConfig):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        # self.user = DBDiscussionSession.query(User).get(2)
         self.db_user: User = User.by_nickname("Björn")
         self.issue: Issue = DBDiscussionSession.query(Issue).get(2)
 

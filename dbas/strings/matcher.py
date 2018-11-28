@@ -14,9 +14,10 @@ from itertools import islice
 from Levenshtein import distance
 from sqlalchemy import func
 
-from api.models import DataStatement, transform_levensthein_search_results, DataAuthor, DataIssue
+from api.models import DataStatement, DataIssue
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
+from dbas.handler.history import get_seen_statements_from
 from dbas.helper.url import UrlManager
 from dbas.lib import get_public_profile_picture, nick_of_anonymous_user, get_enabled_statement_as_query
 from dbas.strings.fuzzy_modes import FuzzyMode
@@ -55,12 +56,21 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
     :return: Dictionary with the corresponding search results
     """
 
+    history = db_user.history
+    seen_statements = get_seen_statements_from(history[len(history) - 1].path) if history != [] else []
+
     try:
-        return elastic_search(db_issue, search_value, mode, statement_uid)
+        elastic_results = elastic_search(db_issue, search_value, mode, statement_uid)
+        elastic_results['values'] = [item for item in elastic_results.get('values') if
+                                     item.get('statement_uid') not in seen_statements]
+        return elastic_results
     except Exception as ex:
         LOG.warning("Could not request data from elasticsearch because of error: %s", ex)
 
-    return __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
+    levensthein_results = __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
+    levensthein_results['values'] = [item for item in levensthein_results.get('values') if
+                                     item.get('statement_uid') not in seen_statements]
+    return levensthein_results
 
 
 def __levensthein_search(db_user: User, db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
@@ -147,9 +157,9 @@ def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
         statement_to_issue: StatementToIssue = DBDiscussionSession.query(StatementToIssue).filter_by(
             statement_uid=statement.uid).first()
         issue: Issue = DBDiscussionSession.query(Issue).filter_by(uid=statement_to_issue.issue_uid).first()
-        result: dict = transform_levensthein_search_results(statement=DataStatement(statement, textversion),
-                                                            author=DataAuthor(author),
-                                                            issue=DataIssue(issue))
+        result: dict = __transform_levensthein_search_results(statement=DataStatement(statement, textversion),
+                                                              author=author,
+                                                              issue=DataIssue(issue))
         score = int(get_distance(search_value, textversion.content))
         if __get_levensthein_similarity_in_percent(search_value,
                                                    textversion.content) >= similarity_threshold_in_percent:
@@ -419,3 +429,21 @@ def __highlight_fuzzy_string(target: str, search_value: str) -> str:
     """
     res = re.compile(re.escape(search_value), re.IGNORECASE)
     return res.sub('<em>{}</em>'.format(search_value), target)
+
+
+def __transform_levensthein_search_results(statement: DataStatement, author: User, issue: DataIssue) -> dict:
+    """
+    This is the json format of the results by searching with Levensthein.
+
+    :param statement: See ApiStatement
+    :param author: See ApiAuthor
+    :param issue: See ApiIssue
+    :return: The data-structure which is used for the results in the searching interface.
+    """
+    return {
+        "isPosition": statement.isPosition,
+        "uid": statement.uid,
+        "text": statement.text,
+        "author": author,
+        "issue": issue
+    }

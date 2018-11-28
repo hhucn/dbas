@@ -5,12 +5,13 @@ Introducing an graph manager.
 """
 
 import logging
+
 from cornice import Service
 
 from dbas.handler.language import get_language_from_cookie
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.validators.core import has_keywords, validate
+from dbas.validators.core import has_keywords_in_json_path, validate
 from dbas.validators.discussion import valid_issue_by_id
 from graph.lib import get_d3_data, get_opinion_data, get_path_of_user
 from graph.partial_graph import get_partial_graph_for_argument, get_partial_graph_for_statement
@@ -57,7 +58,7 @@ def get_d3_complete_dump(request):
 
 
 @partial_graph.post()
-@validate(valid_issue_by_id, has_keywords(('uid', int), ('is_argument', bool), ('path', str)))
+@validate(valid_issue_by_id, has_keywords_in_json_path(('uid', int), ('is_argument', bool), ('path', str)))
 def get_d3_partial_dump(request):
     LOG.debug("Create partial d3 dump. %s", request.json_body)
     path = request.validated['path']
