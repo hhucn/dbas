@@ -51,7 +51,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
-        self.assertIn('password', request.validated)
         self.assertIn('token', response)
         self.assertIn('nickname', response)
 
@@ -60,7 +59,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         request.json_body = {'nickname': 'Walter'}
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
-        self.assertNotIn('password', request.validated)
         self.assertEqual(400, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
@@ -75,7 +73,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
-        self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
@@ -86,7 +83,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
-        self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
@@ -97,7 +93,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
-        self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
