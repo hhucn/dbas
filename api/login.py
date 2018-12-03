@@ -159,6 +159,7 @@ def validate_credentials(request, **_kwargs) -> None:
 
     nickname = request.validated['nickname']
     password = request.validated['password']
+    del request.validated['password']
 
     # Check in DB-AS' database, if the user's credentials are valid
     logged_in = login_local_user(nickname, password, request.mailer)
