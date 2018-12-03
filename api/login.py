@@ -162,12 +162,12 @@ def validate_credentials(request, **_kwargs) -> None:
 
     # Check in DB-AS' database, if the user's credentials are valid
     logged_in = login_local_user(nickname, password, request.mailer)
-    db_user = logged_in.get('user')
+    db_user: User = logged_in.get('user')
     if db_user:
         token = __create_token(db_user.nickname)
         token_to_database(db_user, token)
-        request.validated['nickname'] = db_user.nickname
-        request.validated['user'] = db_user
+        request.validated['nickname']: str = db_user.nickname
+        request.validated['user']: User = db_user
         request.validated['token'] = token
     else:
         add_error(request, 'Could not login user', location="header", status_code=401)

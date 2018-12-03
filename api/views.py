@@ -441,10 +441,11 @@ def user_login(request):
     :param request:
     :return: token and nickname
     """
-    nickname = request.validated['nickname']
-    LOG.debug('User authenticated: {}'.format(nickname))
+    user: User = request.validated['user']
+    LOG.debug('User authenticated: {}'.format(user.public_nickname))
     return {
-        'nickname': nickname,
+        'nickname': user.public_nickname,
+        'uid': user.uid,
         'token': request.validated['token']
     }
 
