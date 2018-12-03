@@ -232,7 +232,7 @@ class Query(graphene.ObjectType):
     premises = graphene.List(PremiseGraph, premisegroup_uid=graphene.Int())
     premisegroup = graphene.Field(PremiseGroupGraph, uid=graphene.Int())
     premisegroups = graphene.List(PremiseGroupGraph)
-    user = graphene.Field(UserGraph)
+    user = graphene.Field(UserGraph, uid=graphene.Int())
     textversions = graphene.List(TextVersionGraph)
 
     def resolve_statement(self, info, **kwargs):

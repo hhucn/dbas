@@ -449,7 +449,7 @@ def user_login(request):
     }
 
 
-@logout.get(require_csrf=False)
+@logout.post(require_csrf=False)
 @validate(valid_token)
 def user_logout(request):
     """
