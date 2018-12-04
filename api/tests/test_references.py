@@ -8,6 +8,6 @@ class TestStoreReference(TestCaseWithConfig):
         ref = store_reference(ref_text, "kangar.oo", "/schnapspralinen", self.user_christian, self.statement_town,
                               self.issue_town)
         self.assertTrue(ref)
-        self.assertEqual(ref.reference, ref_text)
+        self.assertEqual(ref.text, ref_text)
         self.assertEqual(self.statement_town.uid, ref.statement_uid)
         self.assertEqual(self.user_christian.uid, ref.author_uid)

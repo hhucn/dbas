@@ -15,7 +15,7 @@ from sqlalchemy_utils import ArrowType
 
 from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReferences, \
+from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReference, \
     StatementOrigins, PremiseGroup, Premise, Argument
 from graph.lib import get_d3_data
 
@@ -189,22 +189,22 @@ class PremiseGraph(SQLAlchemyObjectType):
         model = Premise
 
 
-class StatementReferencesGraph(SQLAlchemyObjectType):
+class StatementReferenceGraph(SQLAlchemyObjectType):
     class Meta:
-        model = StatementReferences
+        model = StatementReference
 
     # for legacy support
     users = graphene.Field(UserGraph, deprecation_reason="Use `author` instead")
     issues = graphene.Field(IssueGraph, deprecation_reason="Use `issue` instead")
     statements = graphene.Field(StatementGraph, deprecation_reason="Use `statement` instead")
 
-    def resolve_users(self: StatementReferences, info):
+    def resolve_users(self: StatementReference, info):
         return resolve_field_query({"uid": self.author_uid}, info, UserGraph)
 
-    def resolve_issues(self: StatementReferences, info):
+    def resolve_issues(self: StatementReference, info):
         return resolve_field_query({"uid": self.issue_uid}, info, IssueGraph)
 
-    def resolve_statements(self: StatementReferences, info):
+    def resolve_statements(self: StatementReference, info):
         return resolve_field_query({"uid": self.statement_uid}, info, StatementGraph)
 
 
@@ -223,8 +223,8 @@ class Query(graphene.ObjectType):
     statements = StatementGraph.plural()
     argument = ArgumentGraph.singular()
     arguments = ArgumentGraph.plural()
-    statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
-    statement_references = graphene.List(StatementReferencesGraph)
+    statement_reference = graphene.Field(StatementReferenceGraph, uid=graphene.Int())
+    statement_references = graphene.List(StatementReferenceGraph)
     statement_origin = graphene.Field(StatementOriginsGraph, uid=graphene.Int(), statement_uid=graphene.Int())
     issue = IssueGraph.singular()
     issues = IssueGraph.plural()
@@ -248,10 +248,10 @@ class Query(graphene.ObjectType):
         return resolve_list_query(kwargs, info, ArgumentGraph)
 
     def resolve_statement_reference(self, info, **kwargs):
-        return resolve_field_query(kwargs, info, StatementReferencesGraph)
+        return resolve_field_query(kwargs, info, StatementReferenceGraph)
 
     def resolve_statement_references(self, info, **kwargs):
-        return StatementReferencesGraph.get_query(info).all()
+        return StatementReferenceGraph.get_query(info).all()
 
     def resolve_statement_origin(self, info, **kwargs):
         return resolve_field_query(kwargs, info, StatementOriginsGraph)

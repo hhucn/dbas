@@ -1,6 +1,6 @@
 from api.models import DataItem, DataBubble, DataReference, DataIssue, DataStatement
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences, Issue, Statement, TextVersion
+from dbas.database.discussion_model import StatementReference, Issue, Statement, TextVersion
 from dbas.tests.utils import TestCaseWithConfig
 
 
@@ -26,7 +26,7 @@ class TestModels(TestCaseWithConfig):
             self.assertIn(key, ['type', 'html', 'url', 'text'])
 
     def test_DataReference_to_json(self):
-        ref = DBDiscussionSession.query(StatementReferences).filter_by(statement_uid=15).first()
+        ref = DBDiscussionSession.query(StatementReference).filter_by(statement_uid=15).first()
         sr = DataReference(ref)
         self.assertIsInstance(sr.__json__(), dict)
         for key in sr.__json__().keys():

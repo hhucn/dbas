@@ -12,7 +12,7 @@ from pyramid.testing import DummyRequest
 from pyramid_mailer.mailer import DummyMailer
 
 from dbas.database import DBDiscussionSession, get_dbas_db_configuration
-from dbas.database.discussion_model import Issue, Statement, Argument, User, StatementReferences
+from dbas.database.discussion_model import Issue, Statement, Argument, User, StatementReference
 from dbas.helper.test import add_settings_to_appconfig
 
 
@@ -48,7 +48,7 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         self.user_tobi: User = DBDiscussionSession.query(User).get(2)
         self.user_christian: User = DBDiscussionSession.query(User).get(3)
         self.user_bjoern: User = DBDiscussionSession.query(User).get(4)
-        self.statement_reference: StatementReferences = DBDiscussionSession.query(StatementReferences).get(2)
+        self.statement_reference: StatementReference = DBDiscussionSession.query(StatementReference).get(2)
 
         DBDiscussionSession.query(Argument).get(1).set_disabled(True)
 
