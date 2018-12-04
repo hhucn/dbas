@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from dbas.database.discussion_model import StatementReferences, Issue, Statement, TextVersion
+from dbas.database.discussion_model import StatementReference, Issue, Statement, TextVersion
 from dbas.helper.url import url_to_statement
 from dbas.lib import unhtmlify
 
@@ -64,9 +64,9 @@ class DataBubble(JSONBase):
 
 
 class DataReference(JSONBase):
-    def __init__(self, statement_reference: StatementReferences):
+    def __init__(self, statement_reference: StatementReference):
         self.uid: int = statement_reference.uid
-        self.text: str = statement_reference.reference
+        self.text: str = statement_reference.text
         issue: Issue = statement_reference.issue
         statement: Statement = statement_reference.statement
         self.url: str = url_to_statement(issue, statement)

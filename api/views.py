@@ -20,7 +20,7 @@ from api.lib import extract_items_and_bubbles, flatten, split_url
 from api.models import DataItem, DataBubble, DataReference, DataOrigin
 from api.origins import add_origin_for_list_of_statements
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReferences
+from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReference
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.handler.user import set_new_oauth_user
@@ -402,8 +402,8 @@ def get_references(request: Request):
     host = request.validated["host"]
     path = request.validated["path"]
     LOG.debug("Querying references for host: {}, path: {}".format(host, path))
-    refs_db: List[StatementReferences] = DBDiscussionSession.query(StatementReferences).filter_by(host=host,
-                                                                                                  path=path).all()
+    refs_db: List[StatementReference] = DBDiscussionSession.query(StatementReference).filter_by(host=host,
+                                                                                                path=path).all()
     return {
         "references": [DataReference(ref) for ref in refs_db]
     }
@@ -421,9 +421,9 @@ def get_reference_usages(request: Request):
     """
     ref_uid = request.validated["ref_uid"]
     LOG.debug("Retrieving reference usages for ref_uid {}".format(ref_uid))
-    db_ref: StatementReferences = DBDiscussionSession.query(StatementReferences).get(ref_uid)
+    db_ref: StatementReference = DBDiscussionSession.query(StatementReference).get(ref_uid)
     if db_ref:
-        return get_all_references_by_reference_text(db_ref.reference)
+        return get_all_references_by_reference_text(db_ref.text)
     return error("Reference could not be found")
 
 

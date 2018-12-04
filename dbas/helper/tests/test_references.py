@@ -1,7 +1,5 @@
-import transaction
-
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences, User, Statement, StatementToIssue
+from dbas.database.discussion_model import StatementReference, User, Statement, StatementToIssue
 from dbas.handler.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.lib import get_text_for_statement_uid
 from dbas.tests.utils import TestCaseWithConfig
@@ -50,9 +48,7 @@ class ReferenceHelperTest(TestCaseWithConfig):
                             db_statement2issue.issue_uid)
         self.assertTrue(val)
 
-        DBDiscussionSession.query(StatementReferences).filter_by(reference='some_reference#42').delete()
-        DBDiscussionSession.flush()
-        transaction.commit()
+        DBDiscussionSession.query(StatementReference).filter_by(text='some_reference#42').delete()
 
     def __validate_reference_data(self, uids, ddict):
         for key in ddict:
@@ -62,7 +58,7 @@ class ReferenceHelperTest(TestCaseWithConfig):
                 self.assertIn('uid', ref)
                 self.assertIn('statement_text', ref)
                 self.assertEquals(ref['statement_text'], get_text_for_statement_uid(key))
-                db_ref = DBDiscussionSession.query(StatementReferences).get(ref['uid'])
+                db_ref = DBDiscussionSession.query(StatementReference).get(ref['uid'])
                 self.assertEquals(ref['statement_text'], get_text_for_statement_uid(db_ref.statement_uid))
 
     def __validate_reference_text(self, uids, ddict):

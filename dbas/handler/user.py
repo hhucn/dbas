@@ -17,7 +17,7 @@ import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, ClickedStatement, ClickedArgument, TextVersion, Settings, \
     ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print, MarkedArgument, \
-    MarkedStatement, ReviewDuplicate, Language, StatementReferences, SeenStatement, SeenArgument, PremiseGroup, \
+    MarkedStatement, ReviewDuplicate, Language, StatementReference, SeenStatement, SeenArgument, PremiseGroup, \
     Premise, History, Message, ReviewEditValue, ReviewMerge, ReviewSplit, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerEdit, LastReviewerOptimization, \
     LastReviewerSplit, LastReviewerMerge, ReputationHistory, ReviewCanceled, RevokedContent, RevokedContentHistory, \
@@ -917,7 +917,7 @@ def delete(db_user: User):
     DBDiscussionSession.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
     DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(StatementReferences).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(StatementReference).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=db_user.uid).delete()

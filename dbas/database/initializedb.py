@@ -14,7 +14,7 @@ from pyramid.paster import get_appsettings, setup_logging
 
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, get_dbas_db_configuration
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
-    Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, SeenArgument, SeenStatement, \
+    Settings, ClickedArgument, ClickedStatement, StatementReference, Language, SeenArgument, SeenStatement, \
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, \
     ReputationReason, ReviewMerge, ReviewSplit, ReviewSplitValues, ReviewMergeValues, \
     ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument, \
@@ -136,7 +136,7 @@ def drop_it(argv=sys.argv):
         DBDiscussionSession.query(ClickedStatement).delete()
         DBDiscussionSession.query(StatementToIssue).delete()
         DBDiscussionSession.query(Message).delete()
-        DBDiscussionSession.query(StatementReferences).delete()
+        DBDiscussionSession.query(StatementReference).delete()
         DBDiscussionSession.query(Premise).delete()
         DBDiscussionSession.query(TextVersion).delete()
         DBDiscussionSession.query(Issue).delete()
@@ -1162,15 +1162,15 @@ def __setup_fieltests_de_discussion_database(session, db_issue):
     session.add_all([argument1, argument2, argument3, argument4, argument6, argument7, argument8, argument9])
     session.flush()
 
-    reference1 = StatementReferences(
-        reference="In anderen Fächern übersteigt das Interesse bei den Abiturientinnen und Abiturienten das Angebot an Studienplätzen, in manchen Fällen um ein Vielfaches.",
+    reference1 = StatementReference(
+        text="In anderen Fächern übersteigt das Interesse bei den Abiturientinnen und Abiturienten das Angebot an Studienplätzen, in manchen Fällen um ein Vielfaches.",
         host="http://www.faz.net/",
         path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
         author_uid=db_user.uid,
         statement_uid=statement1.uid,
         issue_uid=db_issue.uid)
-    reference3 = StatementReferences(
-        reference="Kern der Kritik am Numerus clausus ist seit jeher die mangelnde Vergleichbarkeit des Abiturschnitts",
+    reference3 = StatementReference(
+        text="Kern der Kritik am Numerus clausus ist seit jeher die mangelnde Vergleichbarkeit des Abiturschnitts",
         host="http://www.faz.net/",
         path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
         author_uid=db_user.uid,
@@ -2311,32 +2311,32 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
     session.flush()
 
     # Add references
-    reference200 = StatementReferences(
-        reference="Ein Radar überwacht den Abstand, eine Frontkamera erkennt Fahrspuren und andere Verkehrsteilnehmer, und je sechs Ultraschallsensoren vorne und hinten helfen beim Einparken und messen während der Fahrt Distanzen im Zentimeterbereich",
+    reference200 = StatementReference(
+        text="Ein Radar überwacht den Abstand, eine Frontkamera erkennt Fahrspuren und andere Verkehrsteilnehmer, und je sechs Ultraschallsensoren vorne und hinten helfen beim Einparken und messen während der Fahrt Distanzen im Zentimeterbereich",
         host="localhost:3449",
         path="/devcards/index.html",
         author_uid=5,
         statement_uid=statement213.uid,
         issue_uid=issue4.uid)
-    reference201 = StatementReferences(
-        reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist",
+    reference201 = StatementReference(
+        text="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist",
         host="localhost:3449",
         path="/",
         author_uid=5,
         statement_uid=statement213.uid,
         issue_uid=issue4.uid)
-    reference014 = StatementReferences(reference="Katzen sind kleine Tiger",
-                                       host="http://www.iflscience.com/",
-                                       path="plants-and-animals/no-your-cat-isnt-plotting-kill-youbut-it-has-lions-personality/",
-                                       author_uid=2,
-                                       statement_uid=statement14.uid,
-                                       issue_uid=issue2.uid)
-    reference015 = StatementReferences(reference="Katzen sind kleine Tiger",
-                                       host="http://www.iflscience.com/",
-                                       path="plants-and-animals/no-your-cat-isnt-plotting-kill-youbut-it-has-lions-personality/",
-                                       author_uid=2,
-                                       statement_uid=statement15.uid,
-                                       issue_uid=issue2.uid)
+    reference014 = StatementReference(text="Katzen sind kleine Tiger",
+                                      host="http://www.iflscience.com/",
+                                      path="plants-and-animals/no-your-cat-isnt-plotting-kill-youbut-it-has-lions-personality/",
+                                      author_uid=2,
+                                      statement_uid=statement14.uid,
+                                      issue_uid=issue2.uid)
+    reference015 = StatementReference(text="Katzen sind kleine Tiger",
+                                      host="http://www.iflscience.com/",
+                                      path="plants-and-animals/no-your-cat-isnt-plotting-kill-youbut-it-has-lions-personality/",
+                                      author_uid=2,
+                                      statement_uid=statement15.uid,
+                                      issue_uid=issue2.uid)
     session.add_all([reference200, reference201, reference014, reference015])
     session.flush()
 

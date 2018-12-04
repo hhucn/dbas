@@ -22,7 +22,7 @@ from api.login import token_to_database
 # Tests
 from api.models import DataReference
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, StatementReferences
+from dbas.database.discussion_model import Issue, StatementReference
 from dbas.lib import get_user_by_case_insensitive_nickname, Relations, Attitudes
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
@@ -261,14 +261,14 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
             'reference': test_reference
         })
         response: Response = apiviews.add_premise_to_statement(request)
-        added_references: List[StatementReferences] = DBDiscussionSession.query(StatementReferences) \
-            .filter_by(reference=test_reference).all()
+        added_references: List[StatementReference] = DBDiscussionSession.query(StatementReference) \
+            .filter_by(text=test_reference).all()
 
         self.assertGreater(len(added_references), 0)
         self.assertEqual(request.validated['reference'], test_reference)
         self.assertEqual(response.status_code, 303)
 
-        DBDiscussionSession.query(StatementReferences).filter_by(reference=test_reference).delete()
+        DBDiscussionSession.query(StatementReference).filter_by(text=test_reference).delete()
         transaction.commit()
 
     def test_add_valid_reason_with_origin(self):

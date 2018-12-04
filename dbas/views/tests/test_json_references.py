@@ -4,7 +4,7 @@ import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences, StatementToIssue
+from dbas.database.discussion_model import StatementReference, StatementToIssue
 from dbas.views import set_references, get_reference
 
 
@@ -57,7 +57,7 @@ class AjaxReferencesTest(unittest.TestCase):
         request = testing.DummyRequest(json_body={
             'statement_id': 17,
             'issue': issue_uid,
-            'reference': 'This is a source',
+            'text': 'This is a source',
             'ref_source': 'http://www.google.de/some_source',
         })
         self.assertTrue(set_references(request))
@@ -73,5 +73,5 @@ class AjaxReferencesTest(unittest.TestCase):
             self.assertTrue(len(response['data'][uid]) != 0)
             self.assertTrue(len(response['text'][uid]) != 0)
 
-        DBDiscussionSession.query(StatementReferences).filter_by(statement_uid=17).delete()
+        DBDiscussionSession.query(StatementReference).filter_by(statement_uid=17).delete()
         transaction.commit()
