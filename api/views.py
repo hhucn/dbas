@@ -459,7 +459,7 @@ def user_logout(request):
     :param request:
     :return:
     """
-    nickname = request.validated['user']
+    nickname = request.validated['user'].nickname
     LOG.debug('User logged out: {}'.format(nickname))
     request.session.invalidate()
     token_to_database(request.validated['user'], None)
