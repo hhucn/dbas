@@ -4,7 +4,7 @@ import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, UserParticipation
+from dbas.database.discussion_model import Issue
 from dbas.database.discussion_model import User, ReviewCanceled, ReviewEditValue, PremiseGroupSplitted, \
     PremiseGroupMerged
 from dbas.review.mapper import get_queue_by_key, get_review_model_by_key, get_last_reviewer_by_key
@@ -16,17 +16,17 @@ from dbas.tests.utils import TestCaseWithConfig
 
 class SubpageQueueTest(TestCaseWithConfig):
     def setUp(self):
+        super(SubpageQueueTest, self).setUp()
         self.config = testing.setUp()
-        self.user = DBDiscussionSession.query(User).get(1)
+        self.db_user: User = self.user_bjoern
+        self.issue: Issue = self.issue_cat_or_dog
         self.tn = Translator('en')
 
     def test_get_subpage_of_queue(self):
-        db_user: User = User.by_nickname("Björn")
-        issue: Issue = DBDiscussionSession.query(Issue).get(2)
-        db_user.participates_in.append(issue)
+        self.db_user.participates_in.append(self.issue)
         for key in review_queues:
             queue = get_queue_by_key(key)
-            adapter = QueueAdapter(queue=queue(), db_user=db_user, application_url='main', translator=self.tn)
+            adapter = QueueAdapter(queue=queue(), db_user=self.db_user, application_url='main', translator=self.tn)
             subpage = adapter.get_subpage_of_queue({}, key)
             self.assertIn('elements', subpage)
             self.assertIn('no_arguments_to_review', subpage)
@@ -34,9 +34,6 @@ class SubpageQueueTest(TestCaseWithConfig):
             self.assertIn('session', subpage)
             self.assertTrue(key, subpage['elements']['page_name'])
             self.assertIn('reviewed_element', subpage['elements'])
-
-        DBDiscussionSession.query(UserParticipation).filter_by(
-            user_uid=db_user.uid, issue_uid=issue.uid).delete()
 
 
 class QueueTest(unittest.TestCase):
