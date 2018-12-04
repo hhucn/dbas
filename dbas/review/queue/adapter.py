@@ -57,7 +57,7 @@ class QueueAdapter:
         if subpage_dict is None or subpage_dict.get('issue_titles') is None:
             return self.__wrap_subpage_dict(session, button_set)
         slug = slugify(*subpage_dict.get('issue_titles'))
-        issue = DBDiscussionSession.query(Issue).filter_by(slug=slug).one_or_none()
+        issue: Issue = DBDiscussionSession.query(Issue).filter_by(slug=slug).one_or_none()
         ret_dict = {
             'page_name': queue_name,
             'reviewed_element': subpage_dict,
