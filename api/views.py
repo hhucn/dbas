@@ -10,13 +10,13 @@ from typing import List
 
 from cornice import Service
 from cornice.resource import resource, view
-from pyramid.httpexceptions import HTTPSeeOther
+from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
-from api.lib import extract_items_and_bubbles, flatten, split_url
+from api.lib import extract_items_and_bubbles, flatten, split_url, shallow_patch
 from api.models import DataItem, DataBubble, DataReference, DataOrigin
 from api.origins import add_origin_for_list_of_statements
 from dbas.database import DBDiscussionSession
@@ -130,11 +130,6 @@ find_statements = Service(name="find_statements",
                           path="/search",
                           description="Query database to get closest statements",
                           cors_policy=cors_policy)
-
-issues = Service(name="issues",
-                 path="/issues",
-                 description="Get issues",
-                 cors_policy=cors_policy)
 
 #
 # Build text-blocks
@@ -526,16 +521,40 @@ def get_text_for_argument(request):
 # GET INFORMATION - several functions to get information from the database
 # =============================================================================
 
-@issues.get()
-def get_issues(_request):
-    """
-    Returns a list of active issues.
 
-    :param _request:
-    :return: List of active issues.
-    """
-    return DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
-                                                   Issue.is_private == False).all()
+@resource(collection_path='/issues', path=r'/issues/{slug:[a-z0-9]+(?:-[a-z0-9]+)*}', cors_policy=cors_policy)
+class ApiIssue(object):
+    modifiable = frozenset({"title", "info", "long_info"})
+
+    def __init__(self, request, context=None):
+        self.request: Request = request
+
+    def get(self):
+        return self._get(self.request)
+
+    @staticmethod
+    @validate(valid_issue_by_slug)
+    def _get(request):
+        return request.validated['issue']
+
+    @view(require_csrf=False)
+    def patch(self):
+        return self._patch(self.request)
+
+    @staticmethod
+    @validate(valid_token, valid_issue_by_slug)
+    def _patch(request: Request):
+        db_issue: Issue = request.validated['issue']
+        db_user: User = request.validated['user']
+        if db_user.is_admin() or db_user is db_issue.author:
+            shallow_patch(db_issue, request.json_body, allowed_fields=ApiIssue.modifiable)
+            return db_issue
+        else:
+            return HTTPUnauthorized()
+
+    def collection_get(self):
+        return DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                       Issue.is_private == False).all()
 
 
 # -----------------------------------------------------------------------------

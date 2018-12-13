@@ -135,6 +135,10 @@ class Issue(DiscussionBase):
         """
         self.is_read_only = is_read_only
 
+    @staticmethod
+    def by_slug(slug: str) -> 'Issue':
+        return DBDiscussionSession.query(Issue).filter(Issue.slug == slug).one()
+
     def __json__(self, _request):
         return {
             "title": self.title,
