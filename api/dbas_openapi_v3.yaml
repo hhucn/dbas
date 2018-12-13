@@ -1,0 +1,873 @@
+openapi: 3.0.0
+servers:
+  - url: 'http://localhost:4284/api'
+  - url: 'https://dbas.cs.uni-duesseldorf.de/api'
+info:
+  version: "1"
+  title: D-BAS
+  
+paths:
+  /login:
+    post:
+      summary: Login and get a token
+      description: >-
+        This operation shows how to override the global security defined above,
+        as we want to open it up for all users.
+      tags:
+        - user-management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nickname: 
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nickname:
+                    type: string
+                  token:
+                    type: string
+                    
+  /logout:
+    post:
+      summary: Logout the current user
+      description: >-
+        Log out the current user and perform database operations to invalidate the
+        token and to delete the session
+      tags:
+        - user-management
+      parameters:
+        - $ref: '#/components/parameters/authentication-token'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nickname:
+                    type: string
+                  token:
+                    type: string
+      security: 
+        - token: []
+  
+  /users:
+    get:
+      summary: List users
+      tags:
+        - user-management
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/user'
+    post:
+      summary: Add a new external (oauth) user
+      description: >-
+        Add a new external (oauth) user. Requires an API-Token!  
+      tags:
+        - user-management
+      parameters:
+        - $ref: '#/components/parameters/authentication-token'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/oauth_user'
+      responses:
+        201:
+          description: The user was created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+        400:
+          description: An error like 'Nickname taken'
+      security: 
+        - token: []
+  
+  /users/{id}:
+    get:
+      summary: single user
+      tags:
+        - user-management
+      parameters:
+        - name: id
+          description: ID of a user.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        404:
+          description: This user-id does not exist.
+  
+  /issues:
+    get:
+      summary: List all issues.
+      description: Contains links to the next step.
+      tags: 
+        - discussion
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issue'
+                
+  /{slug}:
+    get:
+      summary: List positions.
+      description:
+        Lists all available positions for a specific issue.
+      tags: 
+        - discussion
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+      responses:
+        200:
+          description: List of positions. The url of a position links into the discussion.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/items-and-bubbles'
+        410:
+          description: Issue no longer available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error-message'
+    post:
+      summary: Add position. Same as /{slug}/positions.
+      tags:
+        - add
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                position:
+                  type: string
+                reason:
+                  type: string
+                reference:
+                  type: string
+                  example: This optional reference supports the given reason
+                origin:
+                  $ref: '#/components/schemas/origin'
+      responses:
+        303:
+          description: Redirects to one of the other routes to procede. 
+      security: 
+        - token: []
+        
+    
+
+  /{slug}/positions:
+    post:
+      summary: Add position.
+      tags: 
+        - add
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                position:
+                  type: string
+                reason:
+                  type: string
+                reference:
+                  type: string
+                  example: This optional reference supports the given reason
+                origin:
+                  $ref: '#/components/schemas/origin'
+      responses:
+        303:
+          description: Redirects to one of the other routes to procede. 
+      security: 
+        - token: []
+          
+  /{slug}/attitude/{position}:
+    get:
+      tags: 
+        - discussion
+      summary: agree, disagree, don't know fields
+      description: Returns links to the next step in the discussion, depending on the user's attitude.
+        Also contains speech bubbles.
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: position
+          description: ID of a position from the issue.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  attitudes:
+                    type: object
+                    properties:
+                      agree:
+                        $ref: '#/components/schemas/item'
+                      disagree:
+                        $ref: '#/components/schemas/item'
+                      dontknow:
+                        $ref: '#/components/schemas/item'
+                  bubbles:
+                    $ref: '#/components/schemas/bubbles'
+  
+  /{slug}/justify/{argument-id}/{attitude}/{relation}:
+    get:
+      tags: 
+        - discussion
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: argument-id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: attitude
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [agree, disagree, dontknow]
+        - name: relation
+          in: path
+          required: true
+          allowEmptyValue: true
+          schema:
+            $ref: '#/components/schemas/mode'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/items-and-bubbles'
+    post:
+      tags: 
+        - add
+      summary: Add premise to an argument.
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: argument-id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: attitude
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [agree, disagree, dontknow]
+        - name: relation
+          in: path
+          required: true
+          allowEmptyValue: true
+          schema:
+            $ref: '#/components/schemas/mode'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/justifying-response'
+      responses:
+        303:
+          description: Redirects to one of the other routes to procede.
+      security: 
+        - token: []
+                
+  /{slug}/justify/{statement-id}/{attitude}:
+    get:
+      tags: 
+        - discussion
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: statement-id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: attitude
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [agree, disagree, dontknow]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/justifying-response'
+    post:
+      tags: 
+        - add
+      summary: Add premise to a conclusion.
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: statement-id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: attitude
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [agree, disagree, dontknow]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: Because cats are cute
+                reference:
+                  type: string
+                  example: This reference supports the given reason
+                origin:
+                  $ref: '#/components/schemas/origin'
+              required:
+                - reason
+      responses:
+        303:
+          description: Redirects to one of the other routes to procede.
+      security: 
+        - token: []
+          
+      
+  /{slug}/reaction/{arg-user}/{relation}/{arg-sys}:
+    get:
+      summary: Reaction-options for an argument in a discussion.
+      description: Returns links to the next step in the discussion, depending on the user's attitude towards the argument of the system.
+        Also contains speech bubbles.
+      tags: 
+        - discussion
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - $ref: '#/components/parameters/arg-user'
+        - $ref: '#/components/parameters/arg-sys'
+        - name: relation
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/mode'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bubbles:
+                    $ref: '#/components/schemas/bubbles'
+                  attacks:
+                    type: object
+                    properties:
+                      undermine:
+                        $ref: '#/components/schemas/reaction-item'
+                      undercut:
+                        $ref: '#/components/schemas/reaction-item'
+                      support:
+                        $ref: '#/components/schemas/reaction-item'
+                      rebut:
+                        $ref: '#/components/schemas/reaction-item'
+                      no_opinion:
+                        $ref: '#/components/schemas/reaction-item'
+  
+  /{slug}/finish/{argument-id}:
+    get:
+      summary: Bubbles for the end of a discussion.
+      tags: 
+        - discussion
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: argument-id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bubbles:
+                    $ref: '#/components/schemas/bubbles'
+                    
+  /{slug}/jump/{argument-id}:
+    get:
+      tags: 
+        - discussion
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: argument-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/items-and-bubbles'
+                    
+  /search:
+    get:
+      summary: Search statements in D-BAS
+      tags: 
+        - search
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    $ref: '#/components/schemas/search-results'  
+  
+  /references:
+    get:
+      summary: Query references by host and path
+      tags: 
+        - references
+      parameters:
+        - name: host
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: path
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  references:
+                    $ref: '#/components/schemas/reference'  
+
+  /reference/usages/{reference-id}:
+    get:
+      summary: Query all usages of a reference in the context of all discussions.
+      tags:
+        - references
+      parameters:
+        - name: reference-id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reference:
+                      type: object
+                      properties:
+                        uid:
+                          type: integer
+                        title:
+                          type: string
+                        host:
+                          type: string
+                        path:
+                          type: string
+                        statement-uid:
+                          type: integer
+                        author:
+                          $ref: '#/components/schemas/dataauthor'
+                    arguments:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          uid:
+                            type: integer
+                          text:
+                            $ref: '#/components/schemas/text'
+                          author:
+                            $ref: '#/components/schemas/dataauthor'
+                          issue:
+                            $ref: '#/components/schemas/issue'
+                    statement:
+                      type: object
+                      properties:
+                        uid:
+                          type: integer
+                        text:
+                          $ref: '#/components/schemas/text'
+                        url:
+                          $ref: '#/components/schemas/url'
+
+
+components:
+  schemas:
+    bubbles:
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [user, system, status, info]
+          url:
+            type: string
+          html:
+            $ref: '#/components/schemas/html'
+          text:
+            $ref: '#/components/schemas/text'
+    reference:
+      type: array
+      items:
+        type: object
+        properties:
+          uid:
+            type: integer
+          text:
+            $ref: '#/components/schemas/text'
+          url:
+            $ref: '#/components/schemas/url'
+    search-results:
+      type: array
+      items:
+        type: object
+        properties:
+          uid:
+            type: integer
+          isPosition:
+            type: boolean
+          text:
+            $ref: '#/components/schemas/text'
+          author:
+            type: object
+            properties:
+              uid:
+                type: integer
+              nickname:
+                type: string
+          issue:
+            type: object
+            properties:
+              uid:
+                type: integer
+              slug:
+                $ref: '#/components/schemas/slug'
+              language:
+                type: string
+                format: ISO-639-1
+              title:
+                type: string
+              info:
+                type: string
+    issue:
+      type: object
+      properties:
+        slug:
+          $ref: '#/components/schemas/slug'
+        title:
+          type: string
+        summary:
+          type: string
+        description:
+          type: string
+        url:
+          $ref: '#/components/schemas/url'
+        author:
+          type: string
+        language:
+          type: string
+          format: ISO-639-1
+        date:
+          type: string
+          format: date-time
+    mode:
+      type: string
+      enum: [undermine, rebut, undercut, support]
+        
+    item:
+      type: object
+      properties:
+        htmls:
+          type: array
+          items:
+            $ref: '#/components/schemas/html'
+        texts:
+          type: array
+          items:
+            $ref: '#/components/schemas/text'
+        url:
+          type: string
+          example: '/path/to/next/step'
+    
+    reaction-item:
+      allOf:
+        - $ref: '#/components/schemas/item'
+        - type: object
+          properties:
+            attack-url:
+              type: string
+              example: '/cat-or-dog/justify/13/t'
+    
+    items-and-bubbles:
+      type: object
+      properties:
+        bubbles:
+          $ref: '#/components/schemas/bubbles'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/item'
+            
+    error-message:
+      type: object
+      properties:
+        status: 
+          type: string
+          example: error
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error'
+          
+    error:
+      type: object
+      properties:
+        location:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          
+    oauth_user:
+      type: object
+      properties:
+        firstname:
+          type: string
+          example: Jimmy
+        lastname:
+          type: string
+          example: McJimbo
+        nickname:
+          type: string
+          example: TheGreatJimbo
+        service:
+          type: string
+          example: jeb
+        locale:
+          type: string
+          example: de_DE
+        email:
+          type: string
+          example: jim@bo.com
+        gender:
+          type: string
+          example: m w n
+        id:
+          type: integer
+          example: 12345678247354
+          
+    user:
+      type: object
+      properties:
+        nickname:
+          type: string
+        id:
+          type: integer
+          
+    dataauthor:
+      type: object
+      properties:
+        uid:
+          type: integer
+        nickname:
+          type: string
+    dataissue:
+      type: object
+      properties:
+        uid:
+          type: integer
+        slug:
+          $ref: '#/components/schemas/slug'
+        lang:
+          type: string
+        title:
+          type: string
+        info:
+          type: string
+        
+    html:
+      type: string
+      example: 'I am text with <strong>html</strong>'
+    text:
+      type: string
+      example: 'I am pure text'
+    url:
+      type: string
+      example: '/cat-or-dog'
+    slug:
+      type: string
+      example: cat-or-dog
+      pattern: '/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/'
+    
+    justifying-response:
+      type: object
+      properties:
+        reason:
+          type: string
+          example: Because cats are cute
+        reference:
+          type: string
+          example: This optional reference supports the given reason
+        origin:
+          $ref: '#/components/schemas/origin'
+      required:
+        - reason
+    
+    origin:
+      type: object
+      properties:
+        entity-id:
+          type: string
+        aggregate-id:
+          type: string
+        author:
+          type: string
+        version:
+          type: integer
+    
+##########################################      
+      
+  parameters:
+    slug-param:
+      name: slug
+      description: Slug of the issue.
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/slug'
+        
+    arg-user:
+      name: arg-user
+      description: The argument the user has to defend.
+      in: path
+      required: true
+      schema:
+        type: integer
+        
+    arg-sys:
+      name: arg-sys
+      description: The attacking argument of the system.
+      in: path
+      required: true
+      schema:
+        type: integer
+        
+    authentication-token:
+      name: X-Authentication
+      in: header
+      description: User-authentication token
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            example: {"nickname": "Christian", "token":"mytoken"}
+            properties:
+              nickname:
+                type: string
+              token:
+                type: string
+            
+    
+  
+  securitySchemes:
+    token:
+      type: apiKey
+      description: '{"nickname": "Christian", "token":"mytoken"}'
+      name: X-Authentication
+      in: header

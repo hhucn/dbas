@@ -132,13 +132,51 @@ class TestSystemRoutes(unittest.TestCase):
         self.assertEqual(response['nickname'], nickname)
 
 
-class TestIssues(unittest.TestCase):
+class TestIssues(TestCaseWithConfig):
     def test_get_issues(self):
         request = construct_dummy_request()
-        response = apiviews.get_issues(request)
+        response = apiviews.ApiIssue(request).collection_get()
         self.assertIsInstance(response, list)
         for issue in response:
             self.assertIsInstance(issue, Issue)
+
+    def test_get_issue(self):
+        request = construct_dummy_request(match_dict={"slug": "cat-or-dog"})
+        response = apiviews.ApiIssue(request).get()
+        self.assertIsInstance(response, Issue)
+        self.assertEqual(response.slug, "cat-or-dog")
+
+    def test_patch_issue(self):
+        updated_issue = {
+            "title": "kads änd dokz",
+            "id": 60,
+            "long_info": "tl;dr",
+            "something": "else"
+        }
+
+        # test without token
+        request = construct_dummy_request(match_dict={"slug": "cat-or-dog"}, json_body=updated_issue)
+        response: Response = apiviews.ApiIssue(request).patch()
+        self.assertEqual(response.status_int, 401,
+                         "Should only be possible with a token for the admin or the author of the issue")
+
+        # test with insufficent token
+        request = create_request_with_token_header(match_dict={"slug": "cat-or-dog"}, json_body=updated_issue)
+        response: Response = apiviews.ApiIssue(request).patch()
+        self.assertEqual(response.status_int, 401, "Walter should only do this, if he is admin or author of the issue")
+
+        # just right
+        request = create_request_with_token_header(match_dict={"slug": "cat-or-dog"}, json_body=updated_issue,
+                                                   nickname="Tobias")
+        issue: Issue = apiviews.ApiIssue(request).patch()
+        db_issue: Issue = Issue.by_slug("cat-or-dog")
+        self.assertIs(issue, db_issue, "Tobias is admin AND author of the issue, he should be authorized.")
+
+        self.assertEqual(db_issue.title, updated_issue['title'])
+        self.assertEqual(db_issue.long_info, updated_issue['long_info'])
+        self.assertNotEqual(db_issue.uid, updated_issue['id'],
+                            f"According to {apiviews.ApiIssue.modifiable} the id should not be mutatable!")
+        self.assertNotIn("something", dir(db_issue))
 
 
 class TestDiscussionAttitude(TestCaseWithConfig):
