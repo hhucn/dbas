@@ -9,7 +9,6 @@ from math import ceil
 from typing import Optional, List
 
 import arrow
-import transaction
 from pyramid.request import Request
 from slugify import slugify
 
@@ -52,7 +51,6 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
                                   is_private=not is_public,
                                   lang_uid=db_lang.uid))
     DBDiscussionSession.flush()
-    transaction.commit()
     db_issue = DBDiscussionSession.query(Issue).filter(Issue.title == title, Issue.info == info).first()
 
     return {'issue': get_issue_dict_for(db_issue, 0, db_lang.ui_locales)}
@@ -368,10 +366,6 @@ def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty,
         db_issue.set_read_only(not value)
     else:
         return {'error': translator.get(_.internalKeyError)}
-
-    DBDiscussionSession.add(db_issue)
-    DBDiscussionSession.flush()
-    transaction.commit()
 
     return {'error': ''}
 
