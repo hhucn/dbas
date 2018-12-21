@@ -2,7 +2,6 @@
 
   <script src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
   <script src="${request.static_url('dbas:static/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js')}"></script>
-  <script src="${request.static_url('dbas:static/node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js')}"></script>
   <script src="${request.static_url('dbas:static/node_modules/bootstrap-tour/build/js/bootstrap-tour-standalone.min.js')}"></script>
   <script src="${request.static_url('dbas:static/node_modules/datatables/media/js/jquery.dataTables.min.js')}"></script>
   <script src="${request.static_url('dbas:static/node_modules/datatables-bootstrap/js/dataTables.bootstrap.js')}"></script>

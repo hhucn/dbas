@@ -53,7 +53,7 @@
             </td>
             <td>${issue.date}</td>
             <td>
-              <input class="discussion-enable-toggle issue-property" type="checkbox" data-toggle="toggle"
+              <input class="discussion-enable-toggle issue-property" type="checkbox"
                      data-keyword="enable"
                      data-size="mini"
                      data-onstyle="success"
@@ -61,14 +61,14 @@
                      data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
             </td>
             <td>
-              <input class="discussion-public-toggle issue-property" type="checkbox" data-toggle="toggle"
+              <input class="discussion-public-toggle issue-property" type="checkbox"
                      data-keyword="public"
                      data-size="mini"
                      data-onstyle="success"
                      data-offstyle="danger" checked="${issue.is_public}" data-uid="${issue.uid}"
                      data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
             <td>
-              <input class="discussion-writable-toggle issue-property" type="checkbox" data-toggle="toggle"
+              <input class="discussion-writable-toggle issue-property" type="checkbox"
                      data-keyword="writable"
                      data-size="mini"
                      data-onstyle="success"

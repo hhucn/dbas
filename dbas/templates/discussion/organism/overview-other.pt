@@ -68,7 +68,7 @@
               <i tal:condition="not:issue.is_enabled" class="fa fa-times text-danger" aria-hidden="true"></i>
             </td>
             <td tal:condition="extras.is_admin">
-              <input class="discussion-enable-toggle issue-property" type="checkbox" data-toggle="toggle"
+              <input class="discussion-enable-toggle issue-property" type="checkbox"
                      data-keyword="enable"
                      data-size="mini"
                      data-onstyle="success"
@@ -80,7 +80,7 @@
               <i tal:condition="not:issue.is_writable" class="fa fa-times text-danger" aria-hidden="true"></i>
             </td>
             <td tal:condition="extras.is_admin">
-              <input class="discussion-public-toggle issue-property" type="checkbox" data-toggle="toggle"
+              <input class="discussion-public-toggle issue-property" type="checkbox"
                      data-keyword="public"
                      data-size="mini"
                      data-onstyle="success"
@@ -88,7 +88,7 @@
                      data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
             </td>
             <td tal:condition="extras.is_admin">
-              <input class="discussion-writable-toggle issue-property" type="checkbox" data-toggle="toggle"
+              <input class="discussion-writable-toggle issue-property" type="checkbox"
                      data-keyword="writable"
                      data-size="mini"
                      data-onstyle="success"
