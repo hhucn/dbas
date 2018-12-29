@@ -148,6 +148,9 @@ class Issue(DiscussionBase):
             "url": "/" + self.slug,
             "language": self.lang,
             "date": self.date.format(),
+            "is_read_only": self.read_only,
+            "is_private": self.is_private,
+            "is_disabled": self.is_disabled
         }
 
 
