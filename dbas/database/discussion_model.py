@@ -209,8 +209,6 @@ class User(DiscussionBase):
     last_action = Column(ArrowType, default=get_now())
     last_login = Column(ArrowType, default=get_now())
     registered = Column(ArrowType, default=get_now())
-    token: str = Column(Text, nullable=True)
-    token_timestamp = Column(ArrowType, nullable=True)
     oauth_provider: str = Column(Text, nullable=True)
     oauth_provider_id: str = Column(Text, nullable=True)
 
@@ -222,8 +220,8 @@ class User(DiscussionBase):
     authored_issues: List[Issue] = relationship('Issue', back_populates='author')
     settings: 'Settings' = relationship('Settings', back_populates='user', uselist=False)
 
-    def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='',
-                 token_timestamp=None, oauth_provider='', oauth_provider_id=''):
+    def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, oauth_provider='',
+                 oauth_provider_id=''):
         """
         Initializes a row in current user-table
 
@@ -248,8 +246,6 @@ class User(DiscussionBase):
         self.last_action = get_now()
         self.last_login = get_now()
         self.registered = get_now()
-        self.token = token
-        self.token_timestamp = token_timestamp
         self.oauth_provider = oauth_provider
         self.oauth_provider_id = oauth_provider_id
 
@@ -290,21 +286,6 @@ class User(DiscussionBase):
         """
         self.last_action = get_now()
 
-    def update_token_timestamp(self):
-        """
-        Refreshed tokens timestamp
-
-        :return: None
-        """
-        self.token_timestamp = get_now()
-
-    def set_token(self, token):
-        """
-        Set token
-
-        :return: None
-        """
-        self.token = token
 
     def set_public_nickname(self, nick):
         """
@@ -392,6 +373,9 @@ class User(DiscussionBase):
     @staticmethod
     def by_nickname(nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
         return DBDiscussionSession.query(User).filter_by(nickname=nickname).one()
+
+    def gen_token(self, request):
+        Walter
 
 
 class UserParticipation(DiscussionBase):

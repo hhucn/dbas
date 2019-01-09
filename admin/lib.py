@@ -600,6 +600,15 @@ def __hash_token_with_owner(owner, token):
     return hashlib.sha256((owner + token).encode()).hexdigest()
 
 
+def is_api_token(token: str) -> bool:
+    """
+    Checks if the provided token COULD be an api-token
+    :param token:
+    :return:
+    """
+    return token[5] == ":"
+
+
 def check_api_token(token: str) -> bool:
     """
     Checks if a token is valid or not.

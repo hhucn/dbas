@@ -24,4 +24,6 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       URL: ${URL}
+      KEY_PATH: devkey.pem
+      PUBKEY_PATH: devpublic.pem
     tmpfs: /tmp

@@ -37,7 +37,7 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_position, vali
 from dbas.validators.eden import valid_optional_origin
 from dbas.views import jump
 from search.requester import get_statements_with_similarity_to
-from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, valid_api_token
+from .login import validate_credentials, valid_token, valid_token_optional, valid_api_token
 from .references import (get_all_references_by_reference_text,
                          store_reference)
 from .templates import error
@@ -449,7 +449,9 @@ def user_login(request):
 @validate(valid_token)
 def user_logout(request):
     """
-    If user is logged in and has token, remove the token from the database and perform logout.
+    If user is logged in perform logout.
+
+    DEPRECATED: Just invalidates the session.. so doesn't do anything. Just forget the your token.
 
     :param request:
     :return:
@@ -457,7 +459,7 @@ def user_logout(request):
     nickname = request.validated['user'].nickname
     LOG.debug('User logged out: {}'.format(nickname))
     request.session.invalidate()
-    token_to_database(request.validated['user'], None)
+
     return {
         'status': 'ok',
         'message': 'Successfully logged out'
@@ -713,3 +715,15 @@ class ApiUser(object):
         else:
             request.response.status = 400
             return result["error"]
+
+
+@resource(path=r'/pubkey')
+class PubKey(object):
+    def __init__(self, request, context=None):
+        self.request: Request = request
+
+    def get(self):
+        response = self.request.response
+        response.content_type = "text/plain"
+        response.text = self.request.registry.settings["public_key"]
+        return response
