@@ -19,6 +19,8 @@ stages:
     DB_USER: postgres
     DB_PW: DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!
     URL: https://dbas.cs.uni-duesseldorf.de
+    KEY_PATH: devkey.pem
+    PUBKEY_PATH: devpublic.pem
   before_script:
     - alembic upgrade head && pserve development.ini --reload &
 
