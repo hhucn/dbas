@@ -7,6 +7,7 @@ import unittest
 
 import transaction
 from cornice import Errors
+from dbas import get_key_pair
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid_mailer.mailer import DummyMailer
@@ -21,6 +22,7 @@ class TestCaseWithDatabase(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         settings = add_settings_to_appconfig()
+        settings.update(get_key_pair())
         DBDiscussionSession.remove()
         DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
