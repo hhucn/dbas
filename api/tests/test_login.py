@@ -1,6 +1,7 @@
 import unittest
 
 from api.login import validate_credentials, valid_token
+from api.tests.test_views import create_request_with_token_header
 from dbas.tests.utils import construct_dummy_request
 
 
@@ -38,10 +39,7 @@ class ValidTokenTest(unittest.TestCase):
         self.assertNotIn('user', request.validated)
 
     def test_valid_token(self):
-        nickname = 'Walter'
-        # token = jwt.encode({"nickname": nickname}, request.registry.settings['secret_key'], algorithm='ES256')
-        request = construct_dummy_request()
-        request.headers[self.header] = 'Bearer ' + token
+        request = create_request_with_token_header()
         valid_token(request)
         self.assertEqual(len(request.errors), 0)
         self.assertIn('user', request.validated)

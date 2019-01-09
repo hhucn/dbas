@@ -286,7 +286,6 @@ class User(DiscussionBase):
         """
         self.last_action = get_now()
 
-
     def set_public_nickname(self, nick):
         """
         Set public nickname
@@ -373,9 +372,6 @@ class User(DiscussionBase):
     @staticmethod
     def by_nickname(nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
         return DBDiscussionSession.query(User).filter_by(nickname=nickname).one()
-
-    def gen_token(self, request):
-        Walter
 
 
 class UserParticipation(DiscussionBase):

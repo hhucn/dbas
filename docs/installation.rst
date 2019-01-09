@@ -74,6 +74,10 @@ The core variables which are stored in `.env` are:
 +--------------+------------------------------------------------------------------------+
 | URL          | The global url of D-BAS. (example: https://dbas.cs.uni-duesseldorf.de )|
 +--------------+------------------------------------------------------------------------+
+| KEY_PATH     | The path to the private key of your ES256 key pair. (For JWT)          |
++--------------+------------------------------------------------------------------------+
+| PUBKEY_PATH  | The path to the public key of your ES256 key pair.                     |
++--------------+------------------------------------------------------------------------+
 
 Special Variables
 -----------------

@@ -129,7 +129,7 @@ class TestSystemRoutes(unittest.TestCase):
         response = apiviews.whoami_fn(request)
         self.assertEqual(len(request.errors), 0)
         self.assertEqual(response['status'], 'ok')
-        self.assertEqual(response['nickname'], nickname)
+        self.assertEqual(response['nickname'], "Walter")
 
 
 class TestIssues(TestCaseWithConfig):

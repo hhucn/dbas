@@ -116,7 +116,6 @@ def valid_token(request, **_kwargs) -> bool:
     return False
 
 
-
 def valid_api_token(request, **kwargs) -> bool:
     valid_token(request, **kwargs)
     if request.validated.get('auth-by-api-token', False):
