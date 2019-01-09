@@ -40,7 +40,7 @@ def check_jwt(request, token) -> bool:
     secret = request.registry.settings['public_key']
     try:
         payload = jwt.decode(token, secret, algorithms=['ES256', 'ES512', 'ES384'])
-    except jwt.DecodeError as e:
+    except jwt.DecodeError:
         add_error(request, "Invalid token", status_code=401, location="header")
         return False
 
