@@ -144,7 +144,51 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/issue'
-                
+
+  /issues/{slug}:
+    parameters:
+        - $ref: '#/components/parameters/slug-param'
+    get:
+      summary: Returns a single Issue
+      tags:
+        - discussion
+      responses:
+        200:
+          description: A single Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/issue'
+    patch:
+      summary: Updates an Issue
+      description: Shallow merge the provided dict into the issue. The user either has to be an admin or the author of the issue.
+      tags:
+        - discussion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: kads or doks
+                info:
+                  type: string
+                long_info:
+                  type: string
+      responses:
+        200:
+          description: The updated Issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/issue'
+        401:
+          description: Unauthorized
+      security: 
+        - token: []
+
   /{slug}:
     get:
       summary: List positions.
@@ -863,11 +907,9 @@ components:
               token:
                 type: string
             
-    
-  
   securitySchemes:
     token:
-      type: apiKey
-      description: '{"nickname": "Christian", "token":"mytoken"}'
-      name: X-Authentication
-      in: header
+      type: http
+      scheme: bearer
+      description: "Example: \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJuaWNrbmFtZSI6IkNocmlzdGlhbiIsImlkIjozfQ.VWsWZ8vNTwe0rlYcr9kgI9ZjlUBnBZRJm3flXtOKzLR4lMLxVhhoe89ufu04UFfLhksFu7IMj9qGqIzZhhblaA\""
+      bearerFormat: JWT
