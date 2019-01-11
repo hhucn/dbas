@@ -171,7 +171,6 @@ def revoke_author_of_statement_content(db_statement: Statement, db_user: User):
     db_element = __revoke_statement(db_statement, db_user)
     DBDiscussionSession.add(RevokedContent(db_user.uid, statement=db_element.uid))
     DBDiscussionSession.flush()
-    transaction.commit()
     return True
 
 
@@ -189,7 +188,6 @@ def revoke_author_of_argument_content(db_argument: Argument, db_user: User):
     db_element = __revoke_argument(db_argument, db_user)
     DBDiscussionSession.add(RevokedContent(db_user.uid, argument=db_element.uid))
     DBDiscussionSession.flush()
-    transaction.commit()
     return True
 
 
@@ -212,7 +210,6 @@ def __revoke_statement(db_statement: Statement, db_user: User):
 
     DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
-    transaction.commit()
 
     return db_statement
 
@@ -242,7 +239,6 @@ def __revoke_argument(db_argument: Argument, db_user: User):
 
     DBDiscussionSession.add(db_argument)
     DBDiscussionSession.flush()
-    transaction.commit()
 
     return db_argument
 
@@ -263,7 +259,6 @@ def __disable_textversions(statement_uid, author_uid):
         DBDiscussionSession.add(textversion)
 
     DBDiscussionSession.flush()
-    transaction.commit()
 
 
 def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_author_uid):
@@ -286,7 +281,6 @@ def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_auth
         DBDiscussionSession.add(textversion)
         DBDiscussionSession.add(RevokedContentHistory(old_author_uid, new_author_uid, textversion_uid=textversion.uid))
         DBDiscussionSession.flush()
-        transaction.commit()
 
     return True
 
@@ -342,7 +336,6 @@ def generate_short_url(url) -> dict:
             db_url = ShortLinks(service, url, short_url)
         DBDiscussionSession.add(db_url)
         DBDiscussionSession.flush()
-        transaction.commit()
 
     rdict['url'] = short_url
     rdict['service_text'] = service_text

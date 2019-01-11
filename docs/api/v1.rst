@@ -40,6 +40,13 @@ requires a JSON-encoded body containing the keys "nickname" and "password". Post
 these credentials to this endpoint and you get a JSON-response containing the
 token used for authentication in the next steps.
 
+The token is returned as a JSON-web-token ( https://jwt.io/ ).
+The token is signed and can be verified using the public key at: ``/api/pubkey``
+We use ECDSA signature algorithm using SHA-256 hash algorithm.
+
+Beside the token, the ``nickname`` and the ``id`` are contained in the JSON response, for legacy reasons.
+These two properties are also encoded in the token itself.
+
 An example in Clojure with clj-http looks like this::
 
   (client/post "https://dbas.cs.uni-duesseldorf.de/api/login"
@@ -73,7 +80,7 @@ The response could then look like this (here in EDN-format)::
    :status 200,
    :length 200,
    :body
-   "{\"token\": \"Walter-97e7c23181a6bb8641775647b5d5dcbf01323feb50bfa45fd50aa8199bfba60d627a1645c7175e97595752f8a32c5252986c8e3448d635e1b20fdb4887bf4baf\"}"}
+   "{\"nickname\": \"Walter\", \"id\": 42, \"token\": \"eyJ0eXAiOiJKV1QiLCJbhGciOiJFUzI1NiJ9.eyJuaWNrbmFtZSI6IkNocmlzdGlhbiIsImlkIjozfQ.VWsWZ8vNTwe0rlYcr9kgI9ZjlUBnBZRJm3flXtOKzLR4lMLxVhhoe89ufu04UFfLhksFu7IMj9qGqIzZhhblaA\"}"}
 
 This token can then be parsed and used in your project::
 
@@ -89,19 +96,12 @@ This token can then be parsed and used in your project::
 Authenticate
 ------------
 
-We use an authentication header ``X-Authentication`` to recognize user and
-services. This header is a JSON-encoded string with a required key ``type`` and
-other keys the authentication might require. In the example of the
-user-authentication that is only the additional key ``token``. For example::
+We use the Bearer authentication schema like described in https://tools.ietf.org/html/rfc6750#section-6.1.1
+
+For example::
 
   (client/get "https://dbas.cs.uni-duesseldorf.de/api/"
-              {:headers {"X-Authentication"
-                         (json/write-str {:type "user" :token token})}})
-
-Other types might be possible in the future. Currently only "user" is a valid
-type. But the code is extensible and will support more types in the futures. We
-are currently working on the "facebook" type to let Facebook-Applications
-authenticate themselves. See the next section for a list of supported types.
+              {:headers {"Authorization" (str "Bearer " token})}})
 
 
 Authentication Types

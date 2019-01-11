@@ -74,6 +74,10 @@ The core variables which are stored in `.env` are:
 +--------------+------------------------------------------------------------------------+
 | URL          | The global url of D-BAS. (example: https://dbas.cs.uni-duesseldorf.de )|
 +--------------+------------------------------------------------------------------------+
+| KEY_PATH     | The path to the private key of your ES256 key pair. (For JWT)          |
++--------------+------------------------------------------------------------------------+
+| PUBKEY_PATH  | The path to the public key of your ES256 key pair.                     |
++--------------+------------------------------------------------------------------------+
 
 Special Variables
 -----------------
@@ -149,6 +153,17 @@ Those special variables are defined as bellow.
 +----------------------------+------------------------------------------------------------------------+
 | MIN_LENGTH_OF_STATEMENT    | The minimal length of any statement, default 10                        |
 +----------------------------+------------------------------------------------------------------------+
+
+Generate keys for the API
+-------------------------
+You have to generate an ec256 keypair for the generation of user api tokens.
+
+For example::
+
+    openssl ecparam -name prime256v1 -genkey -noout -out private-key.pem
+    openssl ec -in private-key.pem -pubout -out public-key.pem
+
+You have to provide a path to them in `KEY_PATH` and `PUBKEY_PATH `.
 
 Add user as admin
 -----------------
