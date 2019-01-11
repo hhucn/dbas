@@ -449,9 +449,9 @@ def user_login(request):
 @validate(valid_token)
 def user_logout(request):
     """
-    If user is logged in perform logout.
+    If user is logged in, log him out.
 
-    DEPRECATED: Just invalidates the session.. so doesn't do anything. Just forget the your token.
+    Just invalidates the session.. so doesn't do anything. Just forget your token.
 
     :param request:
     :return:

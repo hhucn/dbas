@@ -25,10 +25,19 @@ from dbas.database.discussion_model import Issue, StatementReference
 from dbas.lib import Relations, Attitudes
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
+user_tokens = {
+    "Walter": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJuaWNrbmFtZSI6IldhbHRlciIsImlkIjoxN30.fhhzFVGtCQAyWZbFfvj6N3JQF4GwYS4aCIchmzDF5YH2WY6-T48FANeSfs26Qc_RKtPoMchqjiSruBf6cwixlA",
+    "Tobias": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJuaWNrbmFtZSI6IlRvYmlhcyIsImlkIjoyfQ.nMgnFvB6tnrP_3jyghgOEjwp0ZWmzdfrjfzYXpNCwnambKRFrYOOzA_tf5MbcmhQMXRCYJsezhzBFr4GbWgLhQ"
+}
 
-def create_request_with_token_header(json_body=None, match_dict=None) -> IRequest:
+
+def create_request_with_token_header(json_body=None, match_dict=None, nickname="Walter") -> IRequest:
     # token for Walter
-    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJuaWNrbmFtZSI6IldhbHRlciIsImlkIjoxN30.fhhzFVGtCQAyWZbFfvj6N3JQF4GwYS4aCIchmzDF5YH2WY6-T48FANeSfs26Qc_RKtPoMchqjiSruBf6cwixlA"
+
+    if nickname not in user_tokens:
+        raise ValueError(f"Nickname has to be one of: {user_tokens.keys}")
+
+    token = user_tokens[nickname]
 
     request: IRequest = construct_dummy_request(json_body=json_body, match_dict=match_dict)
     request.headers['Authorization'] = "Bearer " + token
@@ -166,7 +175,8 @@ class TestIssues(TestCaseWithConfig):
         self.assertEqual(response.status_int, 401, "Walter should only do this, if he is admin or author of the issue")
 
         # just right
-        request = create_request_with_token_header(json_body=updated_issue, match_dict={"slug": "cat-or-dog"})
+        request = create_request_with_token_header(json_body=updated_issue, match_dict={"slug": "cat-or-dog"},
+                                                   nickname="Tobias")
         issue: Issue = apiviews.ApiIssue(request).patch()
         db_issue: Issue = Issue.by_slug("cat-or-dog")
         self.assertIs(issue, db_issue, "Tobias is admin AND author of the issue, he should be authorized.")

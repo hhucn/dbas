@@ -22,18 +22,18 @@ from dbas.views import review_delete_argument, revoke_statement_content, flag_ar
 class AjaxReviewTest(unittest.TestCase):
 
     def setUp(self):
+        super().setUp()
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         DBDiscussionSession.add(ReviewOptimization(detector=2, statement=10))
         DBDiscussionSession.flush()
-        transaction.commit()
         # test every ajax method, which is not used in other classes
 
     def tearDown(self):
         DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=2, statement_uid=10).delete()
         DBDiscussionSession.flush()
-        transaction.commit()
         testing.tearDown()
+        super().tearDown()
 
     def test_flag_argument_or_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
