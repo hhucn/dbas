@@ -25,7 +25,7 @@ def valid_optional_origin(request):
         received_keys = ", ".join(k for k in origin.keys())
         add_error(request,
                   "Origin malformed. Needs dictionary with keys \"entity-id (str)\", \"aggregate-id (str)\", "
-                  "\"author (str)\" and \"version (int)\". Received these keys: {}".format(received_keys))
+                  "\"author (object)\" and \"version (int)\". Received these keys: {}".format(received_keys))
         return False
 
     # Extract author and create native object
