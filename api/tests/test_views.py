@@ -325,8 +325,12 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
             "origin": {
                 "entity-id": 42,
                 "aggregate-id": "example.com",
-                "author": "kangaroo",
-                "version": 10
+                "version": 10,
+                "author": {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
             }
         }, match_dict={
             "slug": self.issue_cat_or_dog.slug,
@@ -422,7 +426,11 @@ class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
             'origin': {
                 'entity-id': 23,
                 'aggregate-id': 'evil.com',
-                'author': 'penguin',
+                'author': {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
                 'version': 666
             }
         }, match_dict={
@@ -577,8 +585,12 @@ class TestPosition(TestCaseWithConfig):
             'origin': {
                 'entity-id': 23,
                 'aggregate-id': 'evil.com',
-                'author': 'penguin',
-                'version': 666
+                'version': 666,
+                "author": {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
             }
         }, match_dict={
             'slug': self.issue_cat_or_dog.slug

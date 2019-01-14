@@ -26,7 +26,11 @@ class ValidOptionalOriginTest(TestCaseWithConfig):
             "origin": {
                 "entity-id": 42,
                 "aggregate-id": "example.com",
-                "author": "kangaroo"
+                "author": {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
             }
         })
         is_valid = valid_optional_origin(request)
@@ -37,8 +41,12 @@ class ValidOptionalOriginTest(TestCaseWithConfig):
             "origin": {
                 "entity-id": 42,
                 "aggregate-id": "example.com",
-                "author": "kangaroo",
-                "version": "1000"
+                "version": "1000",
+                "author": {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
             }
         })
         is_valid = valid_optional_origin(request)
@@ -49,7 +57,11 @@ class ValidOptionalOriginTest(TestCaseWithConfig):
             "origin": {
                 "entity-id": 42,
                 "aggregate-id": "example.com",
-                "author": "kangaroo",
+                "author": {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
                 "version": 1000
             }
         })
@@ -61,23 +73,31 @@ class ValidOptionalOriginTest(TestCaseWithConfig):
             "origin": {
                 "entity-id": 42,
                 "aggregate-id": "example.com",
-                "author": "kangaroo",
-                "version": "not a number"
+                "version": "not a number",
+                "author": {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
             }
         })
         is_valid = valid_optional_origin(request)
         self.assertFalse(is_valid)
 
-    @given(entity_id=st.text(), aggregate_id=st.text(), author=st.text(), version=st.integers())
-    def test_all_texts_and_integer_should_be_allowed(self, entity_id, aggregate_id, author, version):
-        if not entity_id or not aggregate_id or not author:
+    @given(entity_id=st.text(), aggregate_id=st.text(), version=st.integers())
+    def test_all_texts_and_integer_should_be_allowed(self, entity_id, aggregate_id, version):
+        if not entity_id or not aggregate_id:
             return
         request = construct_dummy_request(json_body={
             "origin": {
                 "entity-id": entity_id,
                 "aggregate-id": aggregate_id,
-                "author": author,
-                "version": version
+                "version": version,
+                "author": {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
             }
         })
         is_valid = valid_optional_origin(request)
