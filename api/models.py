@@ -97,11 +97,21 @@ class DataStatement(JSONBase):
 
 
 @dataclass
+class DataAuthor:
+    """
+    Remote authors contain multiple fields to show their origin.
+    """
+    is_dgep_native: bool
+    nickname: str
+    uid: int
+
+
+@dataclass
 class DataOrigin:
     """
     Store an origin from the API.
     """
     entity_id: str
     aggregate_id: str
-    author: str
+    author: DataAuthor
     version: int
