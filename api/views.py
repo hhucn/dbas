@@ -27,7 +27,7 @@ from dbas.handler.user import set_new_oauth_user
 from dbas.lib import (get_all_arguments_by_statement,
                       get_text_for_argument_uid, create_speechbubble_dict, BubbleTypes,
                       Attitudes, Relations)
-from dbas.strings.matcher import get_all_statements_by_levensthein_similar_to
+from dbas.strings.matcher import get_all_statements_matching
 from dbas.strings.translator import Keywords as _, get_translation, Translator
 from dbas.validators.common import valid_q_parameter
 from dbas.validators.core import has_keywords_in_json_path, validate, has_maybe_keywords, has_keywords_in_path
@@ -36,7 +36,6 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_position, vali
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
 from dbas.validators.eden import valid_optional_origin
 from dbas.views import jump
-from search.requester import get_statements_with_similarity_to
 from .login import validate_credentials, valid_token, valid_token_optional, valid_api_token
 from .references import (get_all_references_by_reference_text,
                          store_reference)
@@ -481,11 +480,10 @@ def find_statements_fn(request):
     :return: json conform dictionary of all occurrences
     """
     query_string = request.validated['query']
-    try:
-        return get_statements_with_similarity_to(query_string)
-    except Exception as ex:
-        LOG.warning("Could not request data from elasticsearch because of error: %s", ex)
-    return get_all_statements_by_levensthein_similar_to(query_string)
+
+    return {
+        "results": get_all_statements_matching(query_string)
+    }
 
 
 # =============================================================================

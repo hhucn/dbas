@@ -1,3 +1,6 @@
+import socket
+from contextlib import closing
+
 from search import ROUTE_API
 
 
@@ -66,3 +69,33 @@ def get_statements_path(value: str):
 
     suffix = '/v2/statement?q={}'.format(value)
     return ROUTE_API + suffix
+
+
+def is_socket_open(host, port):
+    """
+    This function checks whether the port of an existing host is open and addressable.
+
+    :param host: The existing host whose port is to be checked.
+    :param port: The port to be checked.
+    :return: True, if the port is open, otherwise False
+    """
+    with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
+        if sock.connect_ex((host, port)) == 0:
+            return True
+        else:
+            return False
+
+
+def is_host_resolved(hostname):
+    """
+    This function checks whether a host exists and is occupied.
+
+    :param hostname: The host to search for.
+    :return: True, if the host exists, otherwise False
+    """
+
+    try:
+        socket.gethostbyname(hostname)
+        return True
+    except socket.error:
+        return False
