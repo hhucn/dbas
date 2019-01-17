@@ -26,12 +26,9 @@ from search.requester import elastic_search, get_statements_with_similarity_to
 from search.routes import is_host_resolved, is_socket_open
 
 LOG = logging.getLogger(__name__)
-list_length = 5
-max_count_zeros = 5
-index_zeros = 3
-return_count = 10  # same number as in googles suggest list (16.12.2015)
-mechanism = 'Levensthein'
-similarity_threshold_in_percent = 0.3
+RESULT_LENGTH = 10  # same number as in googles suggest list (16.12.2015)
+MECHANISM = 'Levensthein'
+SIMILARITY_THRESHOLD_IN_PERCENT = 0.3
 
 
 def get_nicknames(db_user: User, value: str):
@@ -41,7 +38,7 @@ def get_nicknames(db_user: User, value: str):
     :return:
     """
     return {
-        'distance_name': mechanism,
+        'distance_name': MECHANISM,
         'values': get_strings_for_public_nickname(value, db_user.global_nickname)
     }
 
@@ -61,14 +58,12 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
     history = db_user.history
     seen_statements = get_seen_statements_from(history[len(history) - 1].path) if history != [] else []
 
-    try:
-        elastic_results = elastic_search(db_issue, search_value, mode, statement_uid)
-        elastic_results['values'] = [item for item in elastic_results.get('values') if
-                                     item.get('statement_uid') not in seen_statements]
-        return elastic_results
-    except Exception as ex:
-        LOG.warning("Could not request data from elasticsearch because of error: %s", ex)
-
+    if is_host_resolved(SEARCH_HOST):
+        if is_socket_open(SEARCH_HOST, SEARCH_PORT):
+            elastic_results = elastic_search(db_issue, search_value, mode, statement_uid)
+            elastic_results['values'] = [item for item in elastic_results.get('values') if
+                                         item.get('statement_uid') not in seen_statements]
+            return elastic_results
     levensthein_results = __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
     levensthein_results['values'] = [item for item in levensthein_results.get('values') if
                                      item.get('statement_uid') not in seen_statements]
@@ -76,7 +71,18 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
 
 
 def __levensthein_search(db_user: User, db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
-    return_dict = {'distance_name': mechanism}
+    """
+    This is the mode-specific equivalent of the Elasticsearch search.
+    The D-BAS specific modes are used and packaged in a corresponding response that is expected from the frontend.
+
+    :param db_user: Current user
+    :param db_issue: current issue the user looks at, used to get the uid of the issue to search at
+    :param search_value: users value, which should be the base for searching
+    :param mode: form of search the user chooses
+    :param statement_uid: the uid of the statement to be looked at
+    :return: Dictionary with the corresponding search results
+    """
+    return_dict = {'distance_name': MECHANISM}
 
     if mode in [FuzzyMode.START_STATEMENT, FuzzyMode.START_PREMISE]:  # start statement / premise
         return_dict['values'] = get_suggestions_for_positions(search_value, db_issue.uid, mode == 0)
@@ -120,7 +126,7 @@ def get_all_statements_with_value(search_value: str, issue_uid: int) -> list:
 
     return_array = __sort_array(return_array)
 
-    return return_array[:list_length]
+    return return_array[:RESULT_LENGTH]
 
 
 def __get_levensthein_similarity_in_percent(a: str, b: str) -> float:
@@ -131,7 +137,6 @@ def __get_levensthein_similarity_in_percent(a: str, b: str) -> float:
     :param b:
     :return: Levensthein distance between two strings in percent.
     """
-
     if len(a) == 0 or len(b) == 0:
         return 0
 
@@ -149,7 +154,6 @@ def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
     :param search_value: text to be searched for
     :return: statements matching the given search by using levensthein-distance(sorted best to worst).
     """
-
     matching_results = []
 
     statements = DBDiscussionSession.query(Statement).all()
@@ -164,12 +168,12 @@ def get_all_statements_by_levensthein_similar_to(search_value: str) -> dict:
                                                               issue=DataIssue(issue))
         score = int(get_distance(search_value, textversion.content))
         if __get_levensthein_similarity_in_percent(search_value,
-                                                   textversion.content) >= similarity_threshold_in_percent:
+                                                   textversion.content) >= SIMILARITY_THRESHOLD_IN_PERCENT:
             matching_results = matching_results + [(result, score)]
 
     matching_results.sort(key=operator.itemgetter(1), reverse=False)
     matching_results = [result[0] for result in matching_results]
-    return matching_results[:return_count]
+    return matching_results[:RESULT_LENGTH]
 
 
 def get_all_statements_matching(query_string: str) -> dict:
@@ -182,7 +186,6 @@ def get_all_statements_matching(query_string: str) -> dict:
     :param query_string: The search term.
     :return: A dictionary containing the results and additional information of the search.
     """
-
     if is_host_resolved(SEARCH_HOST):
         if is_socket_open(SEARCH_HOST, SEARCH_PORT):
             return get_statements_with_similarity_to(query_string)
@@ -212,7 +215,7 @@ def get_suggestions_for_positions(search_value: str, issue_uid: int, position: b
 
     return_array = __sort_array(return_array)
 
-    return return_array[:list_length]
+    return return_array[:RESULT_LENGTH]
 
 
 def get_strings_for_edits(search_value: str, statement_uid: int) -> list:
@@ -223,7 +226,6 @@ def get_strings_for_edits(search_value: str, statement_uid: int) -> list:
     :param statement_uid: the uid of the statement with edits
     :return: suggestions for edits of a certain statement matching the search_value
     """
-
     db_tvs = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).all()
 
     return_array = []
@@ -235,7 +237,7 @@ def get_strings_for_edits(search_value: str, statement_uid: int) -> list:
 
     return_array = __sort_array(return_array)
 
-    return return_array[:list_length]
+    return return_array[:RESULT_LENGTH]
 
 
 def get_strings_for_duplicates_or_reasons(search_value: str, issue_uid: int, statement_uid: int) -> list:
@@ -265,7 +267,7 @@ def get_strings_for_duplicates_or_reasons(search_value: str, issue_uid: int, sta
 
     return_array = __sort_array(return_array)
 
-    return return_array[:list_length]
+    return return_array[:RESULT_LENGTH]
 
 
 def get_strings_for_issues(search_value: str) -> list:
@@ -284,7 +286,7 @@ def get_strings_for_issues(search_value: str) -> list:
 
     return_array = __sort_array(return_array)
 
-    return return_array[:list_length]
+    return return_array[:RESULT_LENGTH]
 
 
 def get_strings_for_search(search_value: str) -> dict:
@@ -304,7 +306,7 @@ def get_strings_for_search(search_value: str) -> dict:
             tmp_dict[str(stat.uid)] = rd
 
     tmp_dict = __sort_dict(tmp_dict)
-    return_index = list(islice(tmp_dict, list_length))
+    return_index = list(islice(tmp_dict, RESULT_LENGTH))
     return_dict = OrderedDict()
     for index in return_index:
         return_dict[index] = tmp_dict[index]
@@ -353,7 +355,7 @@ def get_strings_for_public_nickname(search_value: str, nickname: str) -> list:
         })
 
     return_array = __sort_array(return_array)
-    return return_array[:list_length]
+    return return_array[:RESULT_LENGTH]
 
 
 def __sort_array(inlist: list) -> list:
@@ -366,7 +368,7 @@ def __sort_array(inlist: list) -> list:
     return_list = []
     newlist = sorted(inlist, key=lambda k: k['distance'])
 
-    if mechanism == 'SequenceMatcher':  # sort descending
+    if MECHANISM == 'SequenceMatcher':  # sort descending
         newlist = reversed(newlist)
 
     for index, dic in enumerate(newlist):
@@ -385,13 +387,13 @@ def __sort_dict(dictionary: dict) -> dict:
     """
     dictionary = OrderedDict(sorted(dictionary.items()))
     return_dict = OrderedDict()
-    for i in list(dictionary.keys())[0:return_count]:
+    for i in list(dictionary.keys())[0:RESULT_LENGTH]:
         return_dict[i] = dictionary[i]
-    if mechanism == 'SequenceMatcher':  # sort descending
+    if MECHANISM == 'SequenceMatcher':  # sort descending
         return_dict = OrderedDict(sorted(dictionary.items(), key=lambda kv: kv[0], reverse=True))
     else:  # sort ascending
         return_dict = OrderedDict()
-        for i in list(dictionary.keys())[0:return_count]:
+        for i in list(dictionary.keys())[0:RESULT_LENGTH]:
             return_dict[i] = dictionary[i]
     return return_dict
 
@@ -404,7 +406,7 @@ def get_distance(string_a: str, string_b: str) -> str:
     :param string_b: String
     :return: distance as zero filled string
     """
-    if mechanism == 'Levensthein':
+    if MECHANISM == 'Levensthein':
         return get_lev_distance(string_a, string_b)
     else:
         return get_difflib_distance(string_a, string_b)
@@ -419,7 +421,7 @@ def get_lev_distance(a: str, b: str) -> str:
     :return: distance between a and b
     """
     dist = distance(a.strip().lower(), b.strip().lower())
-    return str(dist).zfill(max_count_zeros)
+    return str(dist).zfill(RESULT_LENGTH)
 
 
 def get_difflib_distance(a: str, b: str) -> str:
@@ -432,7 +434,7 @@ def get_difflib_distance(a: str, b: str) -> str:
     """
     matcher = difflib.SequenceMatcher(lambda x: x == " ", a.lower(), b.lower())
     dist = str(round(matcher.ratio() * 100, 1))[:-2]
-    return str(dist).zfill(max_count_zeros)
+    return str(dist).zfill(RESULT_LENGTH)
 
 
 def __highlight_fuzzy_string(target: str, search_value: str) -> str:

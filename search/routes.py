@@ -66,7 +66,6 @@ def get_statements_path(value: str):
     :param value: The string to be searched for
     :return: The regarding path which is required by search
     """
-
     suffix = '/v2/statement?q={}'.format(value)
     return ROUTE_API + suffix
 
@@ -93,7 +92,6 @@ def is_host_resolved(hostname):
     :param hostname: The host to search for.
     :return: True, if the host exists, otherwise False
     """
-
     try:
         socket.gethostbyname(hostname)
         return True
