@@ -589,6 +589,7 @@ def __store_origin_and_reference(db_issue: Issue, db_user: User, origin: DataOri
     """
     if reference_text:
         for statement_uid in statement_uids:
+            LOG.info("Assigning reference to statement_uid %s", statement_uid)
             db_new_statement: Statement = DBDiscussionSession.query(Statement).get(statement_uid)
             store_reference(reference_text, host, path, db_user, db_new_statement, db_issue)
     if origin:
@@ -600,12 +601,14 @@ def __store_origin_and_reference(db_issue: Issue, db_user: User, origin: DataOri
 @zinit.post(require_csrf=False)
 @positions.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body,
-          valid_reason_and_position_not_equal, valid_optional_origin)
+          valid_reason_and_position_not_equal, has_maybe_keywords(('reference', str, None)), valid_optional_origin)
 def add_position_with_premise(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
+    reference_text: str = request.validated['reference']
     origin: DataOrigin = request.validated['origin']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    host, path = split_url(request.environ.get("HTTP_REFERER"))
 
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
 
@@ -614,6 +617,8 @@ def add_position_with_premise(request):
 
     pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
                                request.mailer)
+
+    __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, flatten(pd['statement_uids']))
 
     if origin:
         add_origin_for_list_of_statements(origin, new_position['statement_uids'])
