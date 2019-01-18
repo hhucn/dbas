@@ -42,7 +42,7 @@ def modify_discussion_url(prep_dict: dict):
 
 def modify_discussion_bubbles(prep_dict: dict, registry: Registry):
     """
-    Removes gravatars from the bubbles if we use the modern interface
+    Removes gravatar from the bubbles if we use the modern interface
 
     :param prep_dict:
     :param registry:
@@ -52,7 +52,6 @@ def modify_discussion_bubbles(prep_dict: dict, registry: Registry):
         for bubble in prep_dict['discussion']['bubbles']:
             if bubble['is_system']:
                 bubble['message'] = re.sub('<img[^>]*>', '', bubble['message'])
-                print(bubble['message'])
 
 
 def modifiy_issue_main_url(prep_dict: dict):
