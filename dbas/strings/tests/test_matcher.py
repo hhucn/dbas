@@ -6,7 +6,7 @@ from dbas.strings import matcher
 
 
 class StringMatcherTest(unittest.TestCase):
-    matcher.mechanism = 'Levensthein'
+    matcher.MECHANISM = 'Levensthein'
 
     def test_get_strings_for_start(self):
         return_array = matcher.get_suggestions_for_positions('cat', 2, True)
