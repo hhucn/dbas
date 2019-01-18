@@ -498,6 +498,7 @@ def jump_to_argument_fn(request):
     :param request:
     :return: Argument with a list of possible interactions
     """
+    request.validated["from_api"] = True
     response = jump(request)
     bubbles, items = extract_items_and_bubbles(response)
     return {

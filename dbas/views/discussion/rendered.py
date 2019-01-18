@@ -400,7 +400,6 @@ def jump(request):
     :param request: request of the web server
     :return: dictionary
     """
-    # '/discuss/{slug}/jump/{arg_id}'
     emit_participation(request)
 
     db_user = request.validated['user']
@@ -412,7 +411,9 @@ def jump(request):
 
     rdict = prepare_request_dict(request)
 
-    modify_discussion_url(prepared_discussion)
+    if not request.validated.get("from_api", False):
+        modify_discussion_url(prepared_discussion)
+
     modify_discussion_bubbles(prepared_discussion, request.registry)
     append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 

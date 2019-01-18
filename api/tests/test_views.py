@@ -717,3 +717,16 @@ class TestFindStatements(TestCaseWithConfig):
         response: IRequest = apiviews.find_statements_fn(request)
         self.assertIn('results', response)
         self.assertIsInstance(response.get('results'), list)
+
+
+class TestJump(TestCaseWithConfig):
+    def test_valid_jump_url_is_fine(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': self.argument_cat_or_dog.uid
+        })
+        response = apiviews.jump_to_argument_fn(request)
+        self.assertIsInstance(response, dict)
+        self.assertIn('items', response)
+        self.assertIn('bubbles', response)
+        self.assertTrue("/discuss/" not in response['items'][0].url)
