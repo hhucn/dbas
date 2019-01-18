@@ -72,7 +72,7 @@ def get_statements_path(value: str):
 
 def is_socket_open(host, port):
     """
-    This function checks whether the port of an existing host is open and addressable.
+    This checks whether the port of an existing host is open and addressable.
 
     :param host: The existing host whose port is to be checked.
     :param port: The port to be checked.
@@ -87,7 +87,7 @@ def is_socket_open(host, port):
 
 def is_host_resolved(hostname):
     """
-    This function checks whether a host exists and is occupied.
+    This checks whether a host exists and is occupied.
 
     :param hostname: The host to search for.
     :return: True, if the host exists, otherwise False
