@@ -19,6 +19,8 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       URL: ${URL}
+      KEY_PATH: ${KEY_PATH}
+      PUBKEY_PATH: ${PUBKEY_PATH}
     # env_file:  # Optional if you want to change passwords
     #  - production.env
     tmpfs: /tmp
