@@ -1,3 +1,6 @@
+### 1.13.1 (2019-01-12)
+- Add key-paths for production build to compose file
+
 ### 1.13.0 (2019-01-12)
 
 #### Common
