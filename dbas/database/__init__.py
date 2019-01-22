@@ -84,4 +84,4 @@ def get_db_environs(key, db_name: str, settings: dict = None) -> dict:
             errors += "DB_PORT\n"
 
         raise EnvironmentError(
-            "Misconfigured environment variables for database. Result the installation instructions.\n" + errors)
+            "Misconfigured environment variables for database. Consult the installation instructions.\n" + errors)

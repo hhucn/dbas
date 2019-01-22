@@ -27,7 +27,7 @@ def response_as_dict(query: str) -> dict:
 def get_suggestions(issue_uid: int, position: bool, search_value: str = '') -> dict:
     """
     Return the search results for suggestions of the textversions of statements fitting
-    the parametes.
+    the parameters.
 
     :param issue_uid: uid of the issue to search in
     :param position: the position of the statement
@@ -40,7 +40,7 @@ def get_suggestions(issue_uid: int, position: bool, search_value: str = '') -> d
 
 def get_statements_with_value(issue_uid: int, search_value: str = '') -> list:
     """
-    This method returns statements fitting the given parametes.
+    This method returns statements fitting the given parameters.
     It returns the result as a list of single dicts containing the information of each result
     with the data: text, statement_uid, content, score, url.
 

@@ -4,27 +4,29 @@ import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Issue
 from dbas.database.discussion_model import User, ReviewCanceled, ReviewEditValue, PremiseGroupSplitted, \
     PremiseGroupMerged
 from dbas.review.mapper import get_queue_by_key, get_review_model_by_key, get_last_reviewer_by_key
 from dbas.review.queue import review_queues, key_delete, key_merge, key_split, key_duplicate, key_edit, key_optimization
 from dbas.review.queue.adapter import QueueAdapter
 from dbas.strings.translator import Translator
+from dbas.tests.utils import TestCaseWithConfig
 
 
-class QueueTest(unittest.TestCase):
-
+class SubpageQueueTest(TestCaseWithConfig):
     def setUp(self):
+        super(SubpageQueueTest, self).setUp()
         self.config = testing.setUp()
-        self.user = DBDiscussionSession.query(User).get(2)
+        self.db_user: User = self.user_bjoern
+        self.issue: Issue = self.issue_cat_or_dog
         self.tn = Translator('en')
 
     def test_get_subpage_of_queue(self):
+        self.db_user.participates_in.append(self.issue)
         for key in review_queues:
             queue = get_queue_by_key(key)
-            adapter = QueueAdapter(queue=queue(), db_user=self.user, application_url='main', translator=self.tn)
-
-            print(key)
+            adapter = QueueAdapter(queue=queue(), db_user=self.db_user, application_url='main', translator=self.tn)
             subpage = adapter.get_subpage_of_queue({}, key)
             self.assertIn('elements', subpage)
             self.assertIn('no_arguments_to_review', subpage)
@@ -32,6 +34,17 @@ class QueueTest(unittest.TestCase):
             self.assertIn('session', subpage)
             self.assertTrue(key, subpage['elements']['page_name'])
             self.assertIn('reviewed_element', subpage['elements'])
+
+
+class QueueTest(unittest.TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+        self.user = DBDiscussionSession.query(User).get(1)
+        self.tn = Translator('en')
+
+    def tearDown(self):
+        testing.tearDown()
 
     def test_add_vote(self):
         # function is called in a more complex test/setting

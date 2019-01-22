@@ -1,4 +1,3 @@
-import transaction
 from pyramid import testing
 
 import dbas.handler.issue as ih
@@ -112,18 +111,15 @@ class IssueHandlerTests(TestCaseWithConfig):
 
         db_tobias = DBDiscussionSession.query(User).filter_by(nickname='Tobias').one_or_none()
         response = ih.set_discussions_properties(db_tobias, db_issue, enable, 'enable', translator)
-        transaction.commit()
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(DBDiscussionSession.query(Issue).filter_by(slug=issue_slug).one().is_disabled is False)
 
         enable = False
         response = ih.set_discussions_properties(db_tobias, db_issue, enable, 'enable', translator)
-        transaction.commit()
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(DBDiscussionSession.query(Issue).filter_by(slug=issue_slug).one().is_disabled is True)
 
         enable = True
         response = ih.set_discussions_properties(db_tobias, db_issue, enable, 'enable', translator)
-        transaction.commit()
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(DBDiscussionSession.query(Issue).filter_by(slug=issue_slug).one().is_disabled is False)

@@ -30,6 +30,8 @@ def main(global_config, **settings):
     # Patch in all environment variables
     settings.update(get_dbas_environs())
 
+    settings.update(get_key_pair())
+
     # Patch in beaker url
     settings.update(get_db_environs(key="session.url", db_name="beaker"))
 
@@ -210,3 +212,23 @@ def _environs_to_keys(key, prefix=""):
     striped_of_prefix = re.sub(prefix_pattern, "", key)
 
     return str(re.sub(single_underscore_pattern, ".", striped_of_prefix).replace('__', '_')).lower()
+
+
+def get_key_pair():
+    if 'KEY_PATH' not in os.environ or 'PUBKEY_PATH' not in os.environ:
+        raise EnvironmentError("Environment variable KEY_PATH or PUBKEY_PATH is missing")
+
+    key_path = os.environ['KEY_PATH']
+    pubkey_path = os.environ['PUBKEY_PATH']
+
+    with open(key_path) as key_file, open(pubkey_path) as pubkey_file:
+        secret_key = key_file.read()
+        public_key = pubkey_file.read()
+
+        if secret_key and public_key:
+            return {
+                "secret_key": secret_key,
+                "public_key": public_key
+            }
+        else:
+            raise EnvironmentError(f"Can't read key files at {key_path} and {pubkey_path}")

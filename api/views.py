@@ -10,24 +10,24 @@ from typing import List
 
 from cornice import Service
 from cornice.resource import resource, view
-from pyramid.httpexceptions import HTTPSeeOther
+from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
-from api.lib import extract_items_and_bubbles, flatten, split_url
+from api.lib import extract_items_and_bubbles, flatten, split_url, shallow_patch
 from api.models import DataItem, DataBubble, DataReference, DataOrigin
 from api.origins import add_origin_for_list_of_statements
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReferences
+from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReference
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.handler.user import set_new_oauth_user
 from dbas.lib import (get_all_arguments_by_statement,
                       get_text_for_argument_uid, create_speechbubble_dict, BubbleTypes,
                       Attitudes, Relations)
-from dbas.strings.matcher import get_all_statements_by_levensthein_similar_to
+from dbas.strings.matcher import get_all_statements_matching
 from dbas.strings.translator import Keywords as _, get_translation, Translator
 from dbas.validators.common import valid_q_parameter
 from dbas.validators.core import has_keywords_in_json_path, validate, has_maybe_keywords, has_keywords_in_path
@@ -36,8 +36,7 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_position, vali
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
 from dbas.validators.eden import valid_optional_origin
 from dbas.views import jump
-from search.requester import get_statements_with_similarity_to
-from .login import validate_credentials, valid_token, token_to_database, valid_token_optional, valid_api_token
+from .login import validate_credentials, valid_token, valid_token_optional, valid_api_token
 from .references import (get_all_references_by_reference_text,
                          store_reference)
 from .templates import error
@@ -130,11 +129,6 @@ find_statements = Service(name="find_statements",
                           path="/search",
                           description="Query database to get closest statements",
                           cors_policy=cors_policy)
-
-issues = Service(name="issues",
-                 path="/issues",
-                 description="Get issues",
-                 cors_policy=cors_policy)
 
 #
 # Build text-blocks
@@ -402,8 +396,8 @@ def get_references(request: Request):
     host = request.validated["host"]
     path = request.validated["path"]
     LOG.debug("Querying references for host: {}, path: {}".format(host, path))
-    refs_db: List[StatementReferences] = DBDiscussionSession.query(StatementReferences).filter_by(host=host,
-                                                                                                  path=path).all()
+    refs_db: List[StatementReference] = DBDiscussionSession.query(StatementReference).filter_by(host=host,
+                                                                                                path=path).all()
     return {
         "references": [DataReference(ref) for ref in refs_db]
     }
@@ -421,9 +415,9 @@ def get_reference_usages(request: Request):
     """
     ref_uid = request.validated["ref_uid"]
     LOG.debug("Retrieving reference usages for ref_uid {}".format(ref_uid))
-    db_ref: StatementReferences = DBDiscussionSession.query(StatementReferences).get(ref_uid)
+    db_ref: StatementReference = DBDiscussionSession.query(StatementReference).get(ref_uid)
     if db_ref:
-        return get_all_references_by_reference_text(db_ref.reference)
+        return get_all_references_by_reference_text(db_ref.text)
     return error("Reference could not be found")
 
 
@@ -441,27 +435,30 @@ def user_login(request):
     :param request:
     :return: token and nickname
     """
-    nickname = request.validated['nickname']
-    LOG.debug('User authenticated: {}'.format(nickname))
+    user: User = request.validated['user']
+    LOG.debug('User authenticated: {}'.format(user.public_nickname))
     return {
-        'nickname': nickname,
+        'nickname': user.public_nickname,
+        'uid': user.uid,
         'token': request.validated['token']
     }
 
 
-@logout.get(require_csrf=False)
+@logout.post(require_csrf=False)
 @validate(valid_token)
 def user_logout(request):
     """
-    If user is logged in and has token, remove the token from the database and perform logout.
+    If user is logged in, log him out.
+
+    Just invalidates the session.. so doesn't do anything. Just forget your token.
 
     :param request:
     :return:
     """
-    nickname = request.validated['user']
+    nickname = request.validated['user'].nickname
     LOG.debug('User logged out: {}'.format(nickname))
     request.session.invalidate()
-    token_to_database(request.validated['user'], None)
+
     return {
         'status': 'ok',
         'message': 'Successfully logged out'
@@ -483,11 +480,10 @@ def find_statements_fn(request):
     :return: json conform dictionary of all occurrences
     """
     query_string = request.validated['query']
-    try:
-        return get_statements_with_similarity_to(query_string)
-    except Exception as ex:
-        LOG.warning("Could not request data from elasticsearch because of error: %s", ex)
-    return get_all_statements_by_levensthein_similar_to(query_string)
+
+    return {
+        "results": get_all_statements_matching(query_string)
+    }
 
 
 # =============================================================================
@@ -502,6 +498,7 @@ def jump_to_argument_fn(request):
     :param request:
     :return: Argument with a list of possible interactions
     """
+    request.validated["from_api"] = True
     response = jump(request)
     bubbles, items = extract_items_and_bubbles(response)
     return {
@@ -525,16 +522,40 @@ def get_text_for_argument(request):
 # GET INFORMATION - several functions to get information from the database
 # =============================================================================
 
-@issues.get()
-def get_issues(_request):
-    """
-    Returns a list of active issues.
 
-    :param _request:
-    :return: List of active issues.
-    """
-    return DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
-                                                   Issue.is_private == False).all()
+@resource(collection_path='/issues', path=r'/issues/{slug:[a-z0-9]+(?:-[a-z0-9]+)*}', cors_policy=cors_policy)
+class ApiIssue(object):
+    modifiable = frozenset({"title", "info", "long_info"})
+
+    def __init__(self, request, context=None):
+        self.request: Request = request
+
+    def get(self):
+        return self._get(self.request)
+
+    @staticmethod
+    @validate(valid_issue_by_slug)
+    def _get(request):
+        return request.validated['issue']
+
+    @view(require_csrf=False)
+    def patch(self):
+        return self._patch(self.request)
+
+    @staticmethod
+    @validate(valid_token, valid_issue_by_slug)
+    def _patch(request: Request):
+        db_issue: Issue = request.validated['issue']
+        db_user: User = request.validated['user']
+        if db_user.is_admin() or db_user is db_issue.author:
+            shallow_patch(db_issue, request.json_body, allowed_fields=ApiIssue.modifiable)
+            return db_issue
+        else:
+            return HTTPUnauthorized()
+
+    def collection_get(self):
+        return DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                       Issue.is_private == False).all()
 
 
 # -----------------------------------------------------------------------------
@@ -568,6 +589,7 @@ def __store_origin_and_reference(db_issue: Issue, db_user: User, origin: DataOri
     """
     if reference_text:
         for statement_uid in statement_uids:
+            LOG.info("Assigning reference to statement_uid %s", statement_uid)
             db_new_statement: Statement = DBDiscussionSession.query(Statement).get(statement_uid)
             store_reference(reference_text, host, path, db_user, db_new_statement, db_issue)
     if origin:
@@ -579,12 +601,14 @@ def __store_origin_and_reference(db_issue: Issue, db_user: User, origin: DataOri
 @zinit.post(require_csrf=False)
 @positions.post(require_csrf=False)
 @validate(valid_token, valid_issue_by_slug, valid_new_position_in_body, valid_reason_in_body,
-          valid_reason_and_position_not_equal, valid_optional_origin)
+          valid_reason_and_position_not_equal, has_maybe_keywords(('reference', str, None)), valid_optional_origin)
 def add_position_with_premise(request):
     db_user: User = request.validated['user']
     db_issue: Issue = request.validated['issue']
+    reference_text: str = request.validated['reference']
     origin: DataOrigin = request.validated['origin']
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    host, path = split_url(request.environ.get("HTTP_REFERER"))
 
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
 
@@ -593,6 +617,8 @@ def add_position_with_premise(request):
 
     pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
                                request.mailer)
+
+    __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, flatten(pd['statement_uids']))
 
     if origin:
         add_origin_for_list_of_statements(origin, new_position['statement_uids'])
@@ -693,3 +719,15 @@ class ApiUser(object):
         else:
             request.response.status = 400
             return result["error"]
+
+
+@resource(path=r'/pubkey')
+class PubKey(object):
+    def __init__(self, request, context=None):
+        self.request: Request = request
+
+    def get(self):
+        response = self.request.response
+        response.content_type = "text/plain"
+        response.text = self.request.registry.settings["public_key"]
+        return response

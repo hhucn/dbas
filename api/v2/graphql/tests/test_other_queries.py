@@ -16,6 +16,7 @@ class TestQueryStatementReference(TestCaseWithConfig):
         """
         content = graphql_query(query)
         references = content.get("statementReferences")
+        self.assertGreaterEqual(len(references), 1, "statementReferences is empty")
         ref = references[0]
         self.assertIsNotNone(ref)
         self.assertIn('uid', ref)

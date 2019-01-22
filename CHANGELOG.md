@@ -1,3 +1,24 @@
+### 1.13.0 (2019-01-12)
+
+#### Common
+- Remove bootstrap-toggle !641
+- Optimize building process and don't minify minified files twice !642
+- Increase performance of search-engine !646
+- Restrict review-queue access to users who participated in the discussion !637
+- Let the API handle authors as objects when communicating with EDEN !645
+
+#### API
+- Add JWT support !644
+- Add PATCH route for issues !640
+- Add status-flag of issue !643
+- Add Cypher Output to retrieve neo4j-compatible discussions !649
+- Add route to bind a reference to a newly created position !648
+- Add uid to login-response !638
+- Extend API to return single Users !635
+- Change HTTP Method to POST to send token to API and revoke it !636
+- Remove /discuss prefix in jump-interface !647
+- Refactor fields of StatementReferences !639
+
 ### 1.12.1 (2018-11-22)
 - Fix API routes, add second positional argument to JSONBase !633
 

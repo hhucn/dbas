@@ -135,6 +135,10 @@ class Issue(DiscussionBase):
         """
         self.is_read_only = is_read_only
 
+    @staticmethod
+    def by_slug(slug: str) -> 'Issue':
+        return DBDiscussionSession.query(Issue).filter(Issue.slug == slug).one()
+
     def __json__(self, _request):
         return {
             "title": self.title,
@@ -144,6 +148,9 @@ class Issue(DiscussionBase):
             "url": "/" + self.slug,
             "language": self.lang,
             "date": self.date.format(),
+            "is_read_only": self.is_read_only,
+            "is_private": self.is_private,
+            "is_disabled": self.is_disabled
         }
 
 
@@ -202,8 +209,6 @@ class User(DiscussionBase):
     last_action = Column(ArrowType, default=get_now())
     last_login = Column(ArrowType, default=get_now())
     registered = Column(ArrowType, default=get_now())
-    token: str = Column(Text, nullable=True)
-    token_timestamp = Column(ArrowType, nullable=True)
     oauth_provider: str = Column(Text, nullable=True)
     oauth_provider_id: str = Column(Text, nullable=True)
 
@@ -215,8 +220,8 @@ class User(DiscussionBase):
     authored_issues: List[Issue] = relationship('Issue', back_populates='author')
     settings: 'Settings' = relationship('Settings', back_populates='user', uselist=False)
 
-    def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='',
-                 token_timestamp=None, oauth_provider='', oauth_provider_id=''):
+    def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, oauth_provider='',
+                 oauth_provider_id=''):
         """
         Initializes a row in current user-table
 
@@ -241,8 +246,6 @@ class User(DiscussionBase):
         self.last_action = get_now()
         self.last_login = get_now()
         self.registered = get_now()
-        self.token = token
-        self.token_timestamp = token_timestamp
         self.oauth_provider = oauth_provider
         self.oauth_provider_id = oauth_provider_id
 
@@ -282,22 +285,6 @@ class User(DiscussionBase):
         :return: None
         """
         self.last_action = get_now()
-
-    def update_token_timestamp(self):
-        """
-        Refreshed tokens timestamp
-
-        :return: None
-        """
-        self.token_timestamp = get_now()
-
-    def set_token(self, token):
-        """
-        Set token
-
-        :return: None
-        """
-        self.token = token
 
     def set_public_nickname(self, nick):
         """
@@ -506,6 +493,7 @@ class Statement(DiscussionBase):
     issues: List[Issue] = relationship('Issue', secondary='statement_to_issue', back_populates='statements')
     arguments: List['Argument'] = relationship('Argument', back_populates='conclusion')
     premises: List['Premise'] = relationship('Premise', back_populates='statement')
+    references: List['StatementReference'] = relationship('StatementReference', back_populates='statement')
 
     def __init__(self, is_position, is_disabled=False):
         """
@@ -644,13 +632,13 @@ class Statement(DiscussionBase):
         return result_set
 
 
-class StatementReferences(DiscussionBase):
+class StatementReference(DiscussionBase):
     """
     From API: Reference to be stored and assigned to a statement.
     """
     __tablename__ = 'statement_references'
     uid: int = Column(Integer, primary_key=True)
-    reference: str = Column(Text, nullable=False)
+    text: str = Column(Text, nullable=False)
     host: str = Column(Text, nullable=False)
     path: str = Column(Text, nullable=False)
     author_uid: int = Column(Integer, ForeignKey('users.uid'), nullable=False)
@@ -658,15 +646,15 @@ class StatementReferences(DiscussionBase):
     issue_uid: int = Column(Integer, ForeignKey('issues.uid'), nullable=False)
     created = Column(ArrowType, default=get_now())
 
-    statement: Statement = relationship('Statement')
+    statement: Statement = relationship('Statement', back_populates='references')
     author: User = relationship('User')
     issue: Issue = relationship('Issue')
 
-    def __init__(self, reference: str, host: str, path: str, author_uid: int, statement_uid: int, issue_uid: int):
+    def __init__(self, text: str, host: str, path: str, author_uid: int, statement_uid: int, issue_uid: int):
         """
         Store a real-world text-reference.
 
-        :param reference: String
+        :param text: String
         :param host: Host of URL
         :param path: Path of URL
         :param author_uid: User.uid
@@ -674,7 +662,7 @@ class StatementReferences(DiscussionBase):
         :param issue_uid: Issue.uid
         :return: None
         """
-        self.reference = reference
+        self.text = text
         self.host = host
         self.path = path
         self.author_uid = author_uid
@@ -694,7 +682,7 @@ class StatementReferences(DiscussionBase):
     def __json__(self, _request=None):
         return {
             "uid": self.uid,
-            "title": self.reference,
+            "title": self.text,
             "host": self.host,
             "path": self.path,
             "statement-uid": self.statement_uid,

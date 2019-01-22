@@ -1,6 +1,6 @@
 {
   "name": "D-BAS",
-  "version": "1.12.1",
+  "version": "1.13.0",
   "description": "system for dialog-based online argumentation",
   "main": "app.js",
   "repository": "git@github.com:hhucn/dbas",
@@ -9,7 +9,6 @@
   "dependencies": {
     "bootstrap": "^4.1.1",
     "bootstrap-slider": "^10.0.0",
-    "bootstrap-toggle": "^2.2.2",
     "bootstrap-tour": "^0.12.0",
     "chart.js": "^2.7.2",
     "cookieconsent": "^3.0.6",

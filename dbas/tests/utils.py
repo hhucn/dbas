@@ -11,8 +11,9 @@ from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid_mailer.mailer import DummyMailer
 
+from dbas import get_key_pair
 from dbas.database import DBDiscussionSession, get_dbas_db_configuration
-from dbas.database.discussion_model import Issue, Statement, Argument, User, StatementReferences
+from dbas.database.discussion_model import Issue, Statement, Argument, User, StatementReference
 from dbas.helper.test import add_settings_to_appconfig
 
 
@@ -21,6 +22,7 @@ class TestCaseWithDatabase(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         settings = add_settings_to_appconfig()
+        settings.update(get_key_pair())
         DBDiscussionSession.remove()
         DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
@@ -48,7 +50,7 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         self.user_tobi: User = DBDiscussionSession.query(User).get(2)
         self.user_christian: User = DBDiscussionSession.query(User).get(3)
         self.user_bjoern: User = DBDiscussionSession.query(User).get(4)
-        self.statement_reference: StatementReferences = DBDiscussionSession.query(StatementReferences).get(2)
+        self.statement_reference: StatementReference = DBDiscussionSession.query(StatementReference).get(2)
 
         DBDiscussionSession.query(Argument).get(1).set_disabled(True)
 
@@ -73,5 +75,14 @@ def construct_dummy_request(json_body: dict = None, match_dict: dict = None, val
     match_dict = match_dict if match_dict else {}
     validated = validated if validated else {}
     params = params if params else {}
-    return DummyRequest(json_body=json_body, matchdict=match_dict, validated=validated, params=params, errors=Errors(),
-                        mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, decorated={'extras': {}})
+
+    d_request = DummyRequest(json_body=json_body, matchdict=match_dict, validated=validated, params=params,
+                             errors=Errors(),
+                             mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, decorated={'extras': {}})
+
+    if d_request.registry.settings:
+        d_request.registry.settings.update(get_key_pair())
+    else:
+        d_request.registry.settings = get_key_pair()
+
+    return d_request

@@ -15,7 +15,7 @@ from sqlalchemy_utils import ArrowType
 
 from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReferences, \
+from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReference, \
     StatementOrigins, PremiseGroup, Premise, Argument
 from graph.lib import get_d3_data
 
@@ -140,6 +140,9 @@ class IssueGraph(SQLAlchemyObjectType):
     arguments = ArgumentGraph.plural()
     complete_graph = graphene.Field(graphene.JSONString,
                                     description="Returns the data for the whole graph-view as a JSON-String")
+    complete_graph_cypher = graphene.Field(graphene.String,
+                                           description="Return the graph data as Cypher CREATE statements for Neo4j.",
+                                           default_value={})
 
     def resolve_position(self, info, **kwargs):
         return resolve_field_query(kwargs, info, StatementGraph)
@@ -163,6 +166,45 @@ class IssueGraph(SQLAlchemyObjectType):
     def resolve_complete_graph(self, info, **kwargs):
         graph, _ = get_d3_data(DBDiscussionSession.query(Issue).get(self.uid))
         return graph
+
+    def resolve_complete_graph_cypher(self, info, **kwargs) -> str:
+        def dict2cypher(d: dict) -> str:
+            data = ["{key}: \"{data}\"".format(key=key, data=d[key]) for key in d.keys()]
+            return "{" + ",".join(data) + "}"
+
+        def node_to_cypher(node: dict) -> str:
+            data = {
+                'text': node['label'],
+                'time': node['timestamp'],
+                'author': node['author'].get('name', 'unknown')
+            }
+            t = node['type'] if node['type'] != "" else "argument"
+            return f"CREATE ({node['id']}:{t} {dict2cypher(data)})"
+
+        def edge_to_cypher(edge: dict) -> str:
+            if edge['source'].startswith('statement') and edge['target'].startswith('statement'):
+                rtype = "support" if edge["color"] == "greene" else "rebut"
+                return f"CREATE ({edge['source']})-[:{rtype}]->(:argument)-[:conclusion]->({edge['target']})"
+            else:
+                if edge['target'].startswith('argument'):
+                    if edge['color'] == "red":
+                        if edge['edge_type'] == "arrow":
+                            rtype = "undercut"
+                        else:
+                            rtype = "undermine"
+                    else:
+                        rtype = "support"
+                else:
+                    rtype = "conclusion"
+
+            return f"CREATE ({edge['source']})-[:{rtype}]->({edge['target']})"
+
+        graph, _ = get_d3_data(DBDiscussionSession.query(Issue).get(self.uid))
+
+        cypher_nodes = [node_to_cypher(node) for node in graph['nodes']]
+        cypher_edges = [edge_to_cypher(edge) for edge in graph['edges']]
+
+        return " ".join(cypher_nodes + cypher_edges)
 
 
 class LanguageGraph(SQLAlchemyObjectType):
@@ -189,22 +231,22 @@ class PremiseGraph(SQLAlchemyObjectType):
         model = Premise
 
 
-class StatementReferencesGraph(SQLAlchemyObjectType):
+class StatementReferenceGraph(SQLAlchemyObjectType):
     class Meta:
-        model = StatementReferences
+        model = StatementReference
 
     # for legacy support
     users = graphene.Field(UserGraph, deprecation_reason="Use `author` instead")
     issues = graphene.Field(IssueGraph, deprecation_reason="Use `issue` instead")
     statements = graphene.Field(StatementGraph, deprecation_reason="Use `statement` instead")
 
-    def resolve_users(self: StatementReferences, info):
+    def resolve_users(self: StatementReference, info):
         return resolve_field_query({"uid": self.author_uid}, info, UserGraph)
 
-    def resolve_issues(self: StatementReferences, info):
+    def resolve_issues(self: StatementReference, info):
         return resolve_field_query({"uid": self.issue_uid}, info, IssueGraph)
 
-    def resolve_statements(self: StatementReferences, info):
+    def resolve_statements(self: StatementReference, info):
         return resolve_field_query({"uid": self.statement_uid}, info, StatementGraph)
 
 
@@ -223,8 +265,8 @@ class Query(graphene.ObjectType):
     statements = StatementGraph.plural()
     argument = ArgumentGraph.singular()
     arguments = ArgumentGraph.plural()
-    statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
-    statement_references = graphene.List(StatementReferencesGraph)
+    statement_reference = graphene.Field(StatementReferenceGraph, uid=graphene.Int())
+    statement_references = graphene.List(StatementReferenceGraph)
     statement_origin = graphene.Field(StatementOriginsGraph, uid=graphene.Int(), statement_uid=graphene.Int())
     issue = IssueGraph.singular()
     issues = IssueGraph.plural()
@@ -232,7 +274,7 @@ class Query(graphene.ObjectType):
     premises = graphene.List(PremiseGraph, premisegroup_uid=graphene.Int())
     premisegroup = graphene.Field(PremiseGroupGraph, uid=graphene.Int())
     premisegroups = graphene.List(PremiseGroupGraph)
-    user = graphene.Field(UserGraph)
+    user = graphene.Field(UserGraph, uid=graphene.Int())
     textversions = graphene.List(TextVersionGraph)
 
     def resolve_statement(self, info, **kwargs):
@@ -248,10 +290,10 @@ class Query(graphene.ObjectType):
         return resolve_list_query(kwargs, info, ArgumentGraph)
 
     def resolve_statement_reference(self, info, **kwargs):
-        return resolve_field_query(kwargs, info, StatementReferencesGraph)
+        return resolve_field_query(kwargs, info, StatementReferenceGraph)
 
     def resolve_statement_references(self, info, **kwargs):
-        return StatementReferencesGraph.get_query(info).all()
+        return StatementReferenceGraph.get_query(info).all()
 
     def resolve_statement_origin(self, info, **kwargs):
         return resolve_field_query(kwargs, info, StatementOriginsGraph)

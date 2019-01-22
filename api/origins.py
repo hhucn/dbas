@@ -18,8 +18,8 @@ def __store_origin(origin: DataOrigin, statement_uid: int) -> Optional[Statement
     log.debug("Storing origin from %s by %s for statement %d", str(origin.aggregate_id), str(origin.author),
               statement_uid)
 
-    db_origin: StatementOrigins = StatementOrigins(origin.entity_id, origin.aggregate_id, origin.version, origin.author,
-                                                   statement_uid)
+    db_origin: StatementOrigins = StatementOrigins(origin.entity_id, origin.aggregate_id, origin.version,
+                                                   origin.author.nickname, statement_uid)
     if db_origin:
         DBDiscussionSession.add(db_origin)
         return db_origin

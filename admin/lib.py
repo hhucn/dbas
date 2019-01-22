@@ -2,19 +2,19 @@
 #
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-import time
-
-import arrow
 import hashlib
 import logging
 import os
-import transaction
+import time
 from datetime import datetime
+
+import arrow
+import transaction
 from pyramid.httpexceptions import exception_response
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
+from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReference, \
     SeenStatement, SeenArgument, TextVersion, PremiseGroup, Premise, Argument, ClickedArgument, ClickedStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
@@ -34,7 +34,7 @@ table_mapper = {
     'User'.lower(): {'table': User, 'name': 'User'},
     'Settings'.lower(): {'table': Settings, 'name': 'Settings'},
     'Statement'.lower(): {'table': Statement, 'name': 'Statement'},
-    'StatementReferences'.lower(): {'table': StatementReferences, 'name': 'StatementReferences'},
+    'StatementReference'.lower(): {'table': StatementReference, 'name': 'StatementReference'},
     'StatementOrigins'.lower(): {'table': StatementOrigins, 'name': 'StatementOrigins'},
     'StatementToIssue'.lower(): {'table': StatementToIssue, 'name': 'StatementToIssue'},
     'SeenStatement'.lower(): {'table': SeenStatement, 'name': 'SeenStatement'},
@@ -106,7 +106,7 @@ def get_overview(page):
     content.append(__get_dash_dict('StatementOrigins', page + 'StatementOrigins'))
     content.append(__get_dash_dict('StatementToIssue', page + 'StatementToIssue'))
     content.append(__get_dash_dict('TextVersion', page + 'TextVersion'))
-    content.append(__get_dash_dict('StatementReferences', page + 'StatementReferences'))
+    content.append(__get_dash_dict('StatementReference', page + 'StatementReference'))
     content.append(__get_dash_dict('PremiseGroup', page + 'PremiseGroup'))
     content.append(__get_dash_dict('Premise', page + 'Premise'))
     content.append(__get_dash_dict('Argument', page + 'Argument'))
@@ -598,6 +598,15 @@ def generate_application_token(owner: str) -> str:
 
 def __hash_token_with_owner(owner, token):
     return hashlib.sha256((owner + token).encode()).hexdigest()
+
+
+def is_api_token(token: str) -> bool:
+    """
+    Checks if the provided token COULD be an api-token
+    :param token:
+    :return:
+    """
+    return token[5] == ":"
 
 
 def check_api_token(token: str) -> bool:

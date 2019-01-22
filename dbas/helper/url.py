@@ -109,7 +109,7 @@ class UrlManager(object):
         Return url for the jump step in the discussion
 
         :param argument_uid: Argument.uid
-        :return: discuss/{slug}/jump/{argument_uid}
+        :return: {slug}/jump/{argument_uid}
         """
         url = '{}/jump/{}'.format(self.slug, argument_uid)
         return self.__return_discussion_url(url)

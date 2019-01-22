@@ -3,7 +3,9 @@ Unit tests for lib.py
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-from api.lib import flatten, merge_dicts
+import unittest
+
+from api.lib import flatten, merge_dicts, shallow_patch
 
 
 def test_flatten():
@@ -31,3 +33,21 @@ def test_merge_dicts():
     assert merge_dicts(a, a) == a
     assert merge_dicts(a, None) is None
     assert merge_dicts(a, b) == c
+
+
+class A(object):
+    a = 1
+    b = 2
+    c = 3
+
+
+class TestShallowPatch(unittest.TestCase):
+    def test_shallow_patch(self):
+        a = A()
+        allowed_fields = frozenset({"a"})
+        patch_value = {"a": 5, "c": 6, "d": 7}
+        shallow_patch(a, patch_value, allowed_fields=allowed_fields)
+        self.assertEqual(a.a, 5)
+        self.assertEqual(a.b, 2)
+        self.assertEqual(a.c, 3)
+        self.assertNotIn("d", dir(A()))

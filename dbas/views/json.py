@@ -136,7 +136,7 @@ def get_reference(request):
 
 @view_config(route_name='set_references', renderer='json')
 @validate(valid_user, valid_any_issue_by_id, valid_statement('json_body'),
-          has_keywords_in_json_path(('reference', str), ('ref_source', str)))
+          has_keywords_in_json_path(('text', str), ('ref_source', str)))
 def set_references(request):
     """
     Sets a reference for a statement or an arguments
@@ -146,11 +146,11 @@ def set_references(request):
     """
     LOG.debug("Set a reference for a statement or an argument. Request: %s", request.json_body)
     db_statement = request.validated['statement']
-    reference = escape_string(request.validated['reference'])
+    text = escape_string(request.validated['text'])
     source = escape_string(request.validated['ref_source'])
     db_user = request.validated['user']
     db_issue = request.validated['issue']
-    return set_reference(reference, source, db_user, db_statement, db_issue.uid)
+    return set_reference(text, source, db_user, db_statement, db_issue.uid)
 
 
 # ########################################

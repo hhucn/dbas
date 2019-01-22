@@ -62,9 +62,9 @@
                                        data-placement="bottom" tal:attributes="title settings.title_notifications"></i>
                                 </td>
                                 <td class="text-center">
-                                    <input id="receive-notifications-toggle" type="checkbox" data-toggle="toggle"
-                                           data-size="small" data-onstyle="success"
-                                           data-offstyle="danger" tal:attributes="checked settings.send_notifications; data-on settings.on; data-off settings.off">
+                                  <input id="receive-notifications-toggle" type="checkbox"
+                                         data-size="small" data-onstyle="success"
+                                         data-offstyle="danger" tal:attributes="checked settings.send_notifications; data-on settings.on; data-off settings.off">
                                 </td>
                             </tr>
                             <tr tal:condition="settings.has_mail">
@@ -75,9 +75,9 @@
                                        data-placement="bottom" tal:attributes="title settings.title_mails"></i>
                                 </td>
                                 <td class="text-center">
-                                    <input id="receive-mails-toggle" type="checkbox" data-toggle="toggle"
-                                           data-size="small" data-onstyle="success"
-                                           data-offstyle="danger" tal:attributes="checked settings.send_mails; data-on settings.on; data-off settings.off">
+                                  <input id="receive-mails-toggle" type="checkbox"
+                                         data-size="small" data-onstyle="success"
+                                         data-offstyle="danger" tal:attributes="checked settings.send_mails; data-on settings.on; data-off settings.off">
                                 </td>
                             </tr>
                             <tr>
@@ -88,9 +88,9 @@
                                        data-placement="bottom" tal:attributes="title settings.title_public_nick"></i>
                                 </td>
                                 <td class="text-center">
-                                    <input id="public-nick-toggle" type="checkbox" data-toggle="toggle"
-                                           data-size="small" data-onstyle="success"
-                                           data-offstyle="danger" tal:attributes="checked settings.public_nick; data-on settings.on; data-off settings.off">
+                                  <input id="public-nick-toggle" type="checkbox"
+                                         data-size="small" data-onstyle="success"
+                                         data-offstyle="danger" tal:attributes="checked settings.public_nick; data-on settings.on; data-off settings.off">
                                 </td>
                             </tr>
                             <tr>
@@ -142,9 +142,9 @@
                                     </span>
                                 </td>
                                 <td class="text-center">
-                                    <input id="guided-tour-toggle" type="checkbox" data-toggle="toggle"
-                                           data-size="small" data-onstyle="success"
-                                           data-offstyle="danger" tal:attributes="data-on settings.on; data-off settings.off">
+                                  <input id="guided-tour-toggle" type="checkbox"
+                                         data-size="small" data-onstyle="success"
+                                         data-offstyle="danger" tal:attributes="data-on settings.on; data-off settings.off">
                                 </td>
                             </tr>
                             <tr>

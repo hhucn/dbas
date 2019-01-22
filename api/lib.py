@@ -100,3 +100,18 @@ def split_url(referer: str) -> Tuple[str, str]:
     """
     url: ParseResult = urlparse(referer)
     return url.netloc, url.path
+
+
+def shallow_patch(obj: object, d: dict, allowed_fields: frozenset = frozenset()) -> None:
+    """
+    Shallow patch the provided dict into the object.
+    Only patch fields that are in the object and in `allowed_fields`
+
+    :param obj: The object to be patched, it will be mutated.
+    :param d: The dictionary to patch in, the keys have to be named the same as the fields of the object.
+    :param allowed_fields: Only fields in this set will be merged.
+    :return: Nothing. Your object has been changed.
+    """
+    for att in dir(obj):
+        if att in d and att in allowed_fields:
+            obj.__setattr__(att, d[att])

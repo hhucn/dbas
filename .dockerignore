@@ -8,11 +8,10 @@
 .cover*
 .git
 .gitignore
-.gitignore
-.gitlab-ci.yml
 .gitlab-ci.yml
 .hypothesis
 .idea
-.idea
 Dockerfile
 sessions.db
+
+*.min.js

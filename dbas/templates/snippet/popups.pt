@@ -839,7 +839,7 @@
                   <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
                      style="margin-right: 1em;" title="${extras.tag.issue_public}"></i>
                   <input style="margin: 1em 0 0 0;" checked
-                         id="popup-add-topic-public-toggle" type="checkbox" data-toggle="toggle"
+                         id="popup-add-topic-public-toggle" type="checkbox"
                          data-keyword="public"
                          data-size="mini"
                          data-onstyle="success"
@@ -856,7 +856,7 @@
                   <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
                      style="margin-right: 1em;" title="${extras.tag.issue_writable}"></i>
                   <input style="margin: 1em 0 0 0;"
-                         id="popup-add-topic-read-only-toggle" type="checkbox" data-toggle="toggle"
+                         id="popup-add-topic-read-only-toggle" type="checkbox"
                          data-keyword="public"
                          data-size="mini"
                          data-onstyle="success"
@@ -1334,7 +1334,7 @@
               <div id="modal-body-chart-place"></div>
               <div id="chart-btn-div">
                 <input id="chart-btn"
-                       data-toggle="toggle"
+
                        data-on="<i class='fa fa-bar-chart fa-pull-left fa-2x'></i>"
                        data-off="<i class='fa fa-pie-chart fa-2x'></i>"
                        checked type="checkbox"

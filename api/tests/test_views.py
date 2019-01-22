@@ -17,20 +17,30 @@ from pyramid.testing import DummyRequest
 
 import api.views as apiviews
 from admin.lib import generate_application_token
-from api.login import token_to_database
 # ------------------------------------------------------------------------------
 # Tests
 from api.models import DataReference
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, StatementReferences
-from dbas.lib import get_user_by_case_insensitive_nickname, Relations, Attitudes
+from dbas.database.discussion_model import Issue, StatementReference
+from dbas.lib import Relations, Attitudes
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
+user_tokens = {
+    "Walter": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJuaWNrbmFtZSI6IldhbHRlciIsImlkIjoxN30.fhhzFVGtCQAyWZbFfvj6N3JQF4GwYS4aCIchmzDF5YH2WY6-T48FANeSfs26Qc_RKtPoMchqjiSruBf6cwixlA",
+    "Tobias": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJuaWNrbmFtZSI6IlRvYmlhcyIsImlkIjoyfQ.nMgnFvB6tnrP_3jyghgOEjwp0ZWmzdfrjfzYXpNCwnambKRFrYOOzA_tf5MbcmhQMXRCYJsezhzBFr4GbWgLhQ"
+}
 
-def create_request_with_token_header(json_body=None, match_dict=None, nickname='Walter', token='mytoken') -> IRequest:
-    token_to_database(get_user_by_case_insensitive_nickname(nickname), token)
+
+def create_request_with_token_header(json_body=None, match_dict=None, nickname="Walter") -> IRequest:
+    # token for Walter
+
+    if nickname not in user_tokens:
+        raise ValueError(f"Nickname has to be one of: {user_tokens.keys}")
+
+    token = user_tokens[nickname]
+
     request: IRequest = construct_dummy_request(json_body=json_body, match_dict=match_dict)
-    request.headers['X-Authentication'] = json.dumps({'nickname': nickname, 'token': token})
+    request.headers['Authorization'] = "Bearer " + token
     return request
 
 
@@ -51,7 +61,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
-        self.assertIn('password', request.validated)
         self.assertIn('token', response)
         self.assertIn('nickname', response)
 
@@ -60,7 +69,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         request.json_body = {'nickname': 'Walter'}
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
-        self.assertNotIn('password', request.validated)
         self.assertEqual(400, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
@@ -75,7 +83,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
-        self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
@@ -86,7 +93,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
-        self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
@@ -97,7 +103,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
-        self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
@@ -129,21 +134,58 @@ class TestSystemRoutes(unittest.TestCase):
         self.assertEqual(response['status'], 'ok')
 
     def test_whoami_and_check_for_valid_token(self):
-        nickname = 'Walter'
-        request = create_request_with_token_header(nickname)
+        request = create_request_with_token_header()
         response = apiviews.whoami_fn(request)
         self.assertEqual(len(request.errors), 0)
         self.assertEqual(response['status'], 'ok')
-        self.assertEqual(response['nickname'], nickname)
+        self.assertEqual(response['nickname'], "Walter")
 
 
-class TestIssues(unittest.TestCase):
+class TestIssues(TestCaseWithConfig):
     def test_get_issues(self):
         request = construct_dummy_request()
-        response = apiviews.get_issues(request)
+        response = apiviews.ApiIssue(request).collection_get()
         self.assertIsInstance(response, list)
         for issue in response:
             self.assertIsInstance(issue, Issue)
+
+    def test_get_issue(self):
+        request = construct_dummy_request(match_dict={"slug": "cat-or-dog"})
+        response = apiviews.ApiIssue(request).get()
+        self.assertIsInstance(response, Issue)
+        self.assertEqual(response.slug, "cat-or-dog")
+
+    def test_patch_issue(self):
+        updated_issue = {
+            "title": "kads änd dokz",
+            "id": 60,
+            "long_info": "tl;dr",
+            "something": "else"
+        }
+
+        # test without token
+        request = construct_dummy_request(match_dict={"slug": "cat-or-dog"}, json_body=updated_issue)
+        response: Response = apiviews.ApiIssue(request).patch()
+        self.assertEqual(response.status_int, 401,
+                         "Should only be possible with a token for the admin or the author of the issue")
+
+        # test with insufficent token
+        request = create_request_with_token_header(json_body=updated_issue, match_dict={"slug": "cat-or-dog"})
+        response: Response = apiviews.ApiIssue(request).patch()
+        self.assertEqual(response.status_int, 401, "Walter should only do this, if he is admin or author of the issue")
+
+        # just right
+        request = create_request_with_token_header(json_body=updated_issue, match_dict={"slug": "cat-or-dog"},
+                                                   nickname="Tobias")
+        issue: Issue = apiviews.ApiIssue(request).patch()
+        db_issue: Issue = Issue.by_slug("cat-or-dog")
+        self.assertIs(issue, db_issue, "Tobias is admin AND author of the issue, he should be authorized.")
+
+        self.assertEqual(db_issue.title, updated_issue['title'])
+        self.assertEqual(db_issue.long_info, updated_issue['long_info'])
+        self.assertNotEqual(db_issue.uid, updated_issue['id'],
+                            f"According to {apiviews.ApiIssue.modifiable} the id should not be mutatable!")
+        self.assertNotIn("something", dir(db_issue))
 
 
 class TestDiscussionAttitude(TestCaseWithConfig):
@@ -237,59 +279,63 @@ class TestDiscussionJustifyStatementPOST(TestCaseWithConfig):
 
     def test_add_valid_reason(self):
         # Add position
-        request = create_request_with_token_header(match_dict={
+        request = create_request_with_token_header(json_body={'reason': "because i need to"}, match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'statement_id': 2,
             'attitude': Attitudes.DISAGREE.value
-        }, json_body={'reason': "because i need to"})
+        })
 
         response: Response = apiviews.add_premise_to_statement(request)
         self.assertEqual(response.status_code, 303, response.body)
 
     def test_invalid_body(self):
-        request: IRequest = create_request_with_token_header(match_dict={
-            'slug': self.issue_cat_or_dog.slug
-        }, json_body={
+        request: IRequest = create_request_with_token_header(json_body={
             'position': 'we should do something entirely else'
+        }, match_dict={
+            'slug': self.issue_cat_or_dog.slug
         })
         response: Response = apiviews.add_premise_to_statement(request)
         self.assertEqual(response.status_code, 400)
 
     def test_valid_reference_should_be_assigned_to_new_statement(self):
         test_reference = 'awesome reference'
-        request: IRequest = create_request_with_token_header(match_dict={
+        request: IRequest = create_request_with_token_header(json_body={
+            'reason': 'i am groot',
+            'reference': test_reference
+        }, match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'statement_id': 2,
             'attitude': Attitudes.DISAGREE.value
-        }, json_body={
-            'reason': 'i am groot',
-            'reference': test_reference
         })
         response: Response = apiviews.add_premise_to_statement(request)
-        added_references: List[StatementReferences] = DBDiscussionSession.query(StatementReferences) \
-            .filter_by(reference=test_reference).all()
+        added_references: List[StatementReference] = DBDiscussionSession.query(StatementReference) \
+            .filter_by(text=test_reference).all()
 
         self.assertGreater(len(added_references), 0)
         self.assertEqual(request.validated['reference'], test_reference)
         self.assertEqual(response.status_code, 303)
 
-        DBDiscussionSession.query(StatementReferences).filter_by(reference=test_reference).delete()
+        DBDiscussionSession.query(StatementReference).filter_by(text=test_reference).delete()
         transaction.commit()
 
     def test_add_valid_reason_with_origin(self):
         # Add position
-        request = create_request_with_token_header(match_dict={
-            "slug": self.issue_cat_or_dog.slug,
-            "statement_id": 2,
-            "attitude": Attitudes.DISAGREE.value,
-        }, json_body={
+        request = create_request_with_token_header(json_body={
             "reason": "this is sparta",
             "origin": {
                 "entity-id": 42,
                 "aggregate-id": "example.com",
-                "author": "kangaroo",
-                "version": 10
+                "version": 10,
+                "author": {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
             }
+        }, match_dict={
+            "slug": self.issue_cat_or_dog.slug,
+            "statement_id": 2,
+            "attitude": Attitudes.DISAGREE.value,
         })
         response: Response = apiviews.add_premise_to_statement(request)
         self.assertEqual(response.status_code, 303, response.body)
@@ -355,13 +401,13 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
 
 class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
     def test_add_valid_reason(self):
-        request: IRequest = create_request_with_token_header(match_dict={
+        request: IRequest = create_request_with_token_header(json_body={
+            'reason': 'because i need to',
+        }, match_dict={
             'slug': self.issue_cat_or_dog.slug,
             'argument_id': '18',
             'attitude': 'agree',
             'relation': 'undercut'
-        }, json_body={
-            'reason': 'because i need to',
         })
         response: Response = apiviews.add_premise_to_argument(request)
         self.assertEqual(response.status_code, 303, response.body)
@@ -375,31 +421,30 @@ class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
         self.assertEqual(response.status_code, 400)
 
     def test_add_valid_reason_with_valid_origin(self):
-        request: IRequest = create_request_with_token_header(match_dict={
-            'slug': self.issue_cat_or_dog.slug,
-            'argument_id': '18',
-            'attitude': 'agree',
-            'relation': 'undercut'
-        }, json_body={
+        request: IRequest = create_request_with_token_header(json_body={
             'reason': 'because i need to',
             'origin': {
                 'entity-id': 23,
                 'aggregate-id': 'evil.com',
-                'author': 'penguin',
+                'author': {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
                 'version': 666
             }
+        }, match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': '18',
+            'attitude': 'agree',
+            'relation': 'undercut'
         })
 
         response: Response = apiviews.add_premise_to_argument(request)
         self.assertEqual(response.status_code, 303, response.body)
 
     def test_add_valid_reason_with_malformed_origin(self):
-        request: IRequest = create_request_with_token_header(match_dict={
-            'slug': self.issue_cat_or_dog.slug,
-            'argument_id': '18',
-            'attitude': 'agree',
-            'relation': 'undercut'
-        }, json_body={
+        request: IRequest = create_request_with_token_header(json_body={
             'reason': 'because i need to',
             'origin': {
                 'entity-id': 23,
@@ -407,6 +452,11 @@ class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
                 'author': 'penguin',
                 # missing: 'version'
             }
+        }, match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': '18',
+            'attitude': 'agree',
+            'relation': 'undercut'
         })
 
         response: Response = apiviews.add_premise_to_argument(request)
@@ -491,8 +541,8 @@ class TestPosition(TestCaseWithConfig):
     }
 
     def test_add_valid_position(self):
-        request = create_request_with_token_header(match_dict={'slug': self.issue_cat_or_dog.slug},
-                                                   json_body=self.test_body)
+        request = create_request_with_token_header(json_body=self.test_body,
+                                                   match_dict={'slug': self.issue_cat_or_dog.slug})
 
         response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 303)
@@ -521,27 +571,29 @@ class TestPosition(TestCaseWithConfig):
         self.assertEqual(response.status_code, 401)
 
     def test_same_position_and_reason_returns_error(self):
-        request = create_request_with_token_header(
-            json_body={
-                'position': 'same-position-and-reason',
-                'reason': 'same-position-and-reason'
-            }
-        )
+        request = create_request_with_token_header(json_body={
+            'position': 'same-position-and-reason',
+            'reason': 'same-position-and-reason'
+        })
         response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 400)
 
     def test_add_valid_position_with_valid_origin(self):
-        request = create_request_with_token_header(match_dict={
-            'slug': self.issue_cat_or_dog.slug
-        }, json_body={
+        request = create_request_with_token_header(json_body={
             'position': 'we should do something entirely else',
             'reason': 'because i need to',
             'origin': {
                 'entity-id': 23,
                 'aggregate-id': 'evil.com',
-                'author': 'penguin',
-                'version': 666
+                'version': 666,
+                "author": {
+                    "dgep-native": True,
+                    "name": "anonymous",
+                    "id": 1,
+                },
             }
+        }, match_dict={
+            'slug': self.issue_cat_or_dog.slug
         })
         response: Response = apiviews.add_position_with_premise(request)
         self.assertEqual(response.status_code, 303)
@@ -665,3 +717,16 @@ class TestFindStatements(TestCaseWithConfig):
         response: IRequest = apiviews.find_statements_fn(request)
         self.assertIn('results', response)
         self.assertIsInstance(response.get('results'), list)
+
+
+class TestJump(TestCaseWithConfig):
+    def test_valid_jump_url_is_fine(self):
+        request = construct_dummy_request(match_dict={
+            'slug': self.issue_cat_or_dog.slug,
+            'argument_id': self.argument_cat_or_dog.uid
+        })
+        response = apiviews.jump_to_argument_fn(request)
+        self.assertIsInstance(response, dict)
+        self.assertIn('items', response)
+        self.assertIn('bubbles', response)
+        self.assertTrue("/discuss/" not in response['items'][0].url)
