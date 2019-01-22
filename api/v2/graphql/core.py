@@ -140,6 +140,9 @@ class IssueGraph(SQLAlchemyObjectType):
     arguments = ArgumentGraph.plural()
     complete_graph = graphene.Field(graphene.JSONString,
                                     description="Returns the data for the whole graph-view as a JSON-String")
+    complete_graph_cypher = graphene.Field(graphene.String,
+                                           description="Return the graph data as Cypher CREATE statements for Neo4j.",
+                                           default_value={})
 
     def resolve_position(self, info, **kwargs):
         return resolve_field_query(kwargs, info, StatementGraph)
@@ -163,6 +166,45 @@ class IssueGraph(SQLAlchemyObjectType):
     def resolve_complete_graph(self, info, **kwargs):
         graph, _ = get_d3_data(DBDiscussionSession.query(Issue).get(self.uid))
         return graph
+
+    def resolve_complete_graph_cypher(self, info, **kwargs) -> str:
+        def dict2cypher(d: dict) -> str:
+            data = ["{key}: \"{data}\"".format(key=key, data=d[key]) for key in d.keys()]
+            return "{" + ",".join(data) + "}"
+
+        def node_to_cypher(node: dict) -> str:
+            data = {
+                'text': node['label'],
+                'time': node['timestamp'],
+                'author': node['author'].get('name', 'unknown')
+            }
+            t = node['type'] if node['type'] != "" else "argument"
+            return f"CREATE ({node['id']}:{t} {dict2cypher(data)})"
+
+        def edge_to_cypher(edge: dict) -> str:
+            if edge['source'].startswith('statement') and edge['target'].startswith('statement'):
+                rtype = "support" if edge["color"] == "greene" else "rebut"
+                return f"CREATE ({edge['source']})-[:{rtype}]->(:argument)-[:conclusion]->({edge['target']})"
+            else:
+                if edge['target'].startswith('argument'):
+                    if edge['color'] == "red":
+                        if edge['edge_type'] == "arrow":
+                            rtype = "undercut"
+                        else:
+                            rtype = "undermine"
+                    else:
+                        rtype = "support"
+                else:
+                    rtype = "conclusion"
+
+            return f"CREATE ({edge['source']})-[:{rtype}]->({edge['target']})"
+
+        graph, _ = get_d3_data(DBDiscussionSession.query(Issue).get(self.uid))
+
+        cypher_nodes = [node_to_cypher(node) for node in graph['nodes']]
+        cypher_edges = [edge_to_cypher(edge) for edge in graph['edges']]
+
+        return " ".join(cypher_nodes + cypher_edges)
 
 
 class LanguageGraph(SQLAlchemyObjectType):
