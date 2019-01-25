@@ -582,9 +582,15 @@ Main.prototype.setInputExtraOptions = function (guiHandler, interactionHandler) 
         }
     };
     var sendStartStatement = function () {
+        var data = $("#add-statement-container-body :input").toArray()
+            .map(input => [input.dataset.key, input.value])
+            .reduce((accumulator, currentValue) => {
+                accumulator[currentValue[0]] = currentValue[1];
+                return accumulator
+            }, {});
         var position = $('#' + addStatementContainerMainInputPosId).val();
         var reason = $('#' + addStatementContainerMainInputResId).val();
-        interactionHandler.sendArgument(position, reason);
+        interactionHandler.sendArgument(position, reason, data);
     };
     var sendStartPremise = function () {
         conclusion = splits[splits.length - 2];

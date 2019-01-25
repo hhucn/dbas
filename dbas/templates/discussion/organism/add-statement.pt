@@ -26,6 +26,7 @@
             <div class="col-lg-9 col-md-7 col-sm-6">
               <input id="add-statement-container-main-input-position"
                      placeholder="${extras.tag.placeholder_position}"
+                     data-key="position"
                      class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
             </div>
           </div>
@@ -34,19 +35,19 @@
             <label for="add-statement-container-main-input-reason" class="col-lg-3 col-md-5 col-sm-6 control-label"
                    style="color: #666; font-size: 17px; margin-top: 0.4em;">${extras.title.because}</label>
             <div class="col-lg-9 col-md-7 col-sm-6">
-              <input id="add-statement-container-main-input-reason" placeholder="${extras.tag.placeholder_reason}"
+              <input id="add-statement-container-main-input-reason" data-key="reason"
+                     placeholder="${extras.tag.placeholder_reason}"
                      class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
             </div>
           </div>
           <br>
-          <p>${features}</p>
-          <br>
-          <div class="form-group" tal:condition="'budget_decision' in features">
+          <div class="form-group" tal:condition="'budget_decision' in issues.features">
             <label for="add-statement-container-cost" class="col-lg-3 col-md-5 col-sm-6 control-label"
                    style="color: #666; font-size: 17px; margin-top: 0.4em;">It has an estimated cost of </label>
             <div class="input-group col-lg-9 col-md-7 col-sm-6">
               <span class="input-group-addon">€</span>
-              <input id="add-statement-container-cost" placeholder="5000" type="number" min=0 step=10 max=20000
+              <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="5000" type="number" min=0
+                     step=10 max=20000
                      class="form-control" style="width: 100%" required>
             </div>
           </div>

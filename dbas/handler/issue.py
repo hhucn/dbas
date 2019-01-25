@@ -3,14 +3,13 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import arrow
 from datetime import date, timedelta
 from json import JSONDecodeError
 from math import ceil
-from typing import Optional, List
-
-import arrow
 from pyramid.request import Request
 from slugify import slugify
+from typing import Optional, List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
@@ -100,7 +99,8 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict:
         'tooltip': tooltip,
         'intro': _t.get(_.currentDiscussion),
         'duration': duration,
-        'read_only': db_issue.is_read_only
+        'read_only': db_issue.is_read_only,
+        'features': [str(feature) for feature in db_issue.features]
     }
 
 
