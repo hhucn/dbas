@@ -1,7 +1,7 @@
 import logging
 
 import dbas.handler.issue as issue_helper
-from dbas.database.discussion_model import Argument, User, Issue, Statement
+from dbas.database.discussion_model import Argument, User, Issue, Statement, Feature
 from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
@@ -40,7 +40,8 @@ def init(db_issue: Issue, db_user: User) -> dict:
         'issues': issue_dict,
         'discussion': discussion_dict,
         'items': item_dict,
-        'title': issue_dict['title']
+        'title': issue_dict['title'],
+        'features': [str(feature) for feature in db_issue.features]
     }
 
 

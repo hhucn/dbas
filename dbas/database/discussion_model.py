@@ -12,6 +12,7 @@ import arrow
 import bcrypt
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
@@ -82,6 +83,8 @@ class Issue(DiscussionBase):
 
     positions = relationship('Statement', secondary='statement_to_issue', viewonly=True,
                              secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
+
+    features: List['Feature'] = relationship('Feature', secondary='issue_features', back_populates='issues')
 
     def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
                  is_read_only=False):
@@ -2491,3 +2494,35 @@ class ShortLinks(DiscussionBase):
     def update_short_url(self, short_url):
         self.short_url = short_url
         self.timestamp = get_now()
+
+
+class Feature(DiscussionBase):
+    __tablename__ = 'feature'
+    identifier: str = Column(Text, primary_key=True)
+    issues: List[Issue] = relationship(Issue, secondary='issue_features', back_populates='features')
+
+    def __init__(self, identifier):
+        self.identifier = identifier
+
+    def __json__(self, _request):
+        return str(self.identifier)
+
+    def __str__(self):
+        return str(self.identifier)
+
+
+class IssueFeature(DiscussionBase):
+    __tablename__ = 'issue_features'
+    issue_id: int = Column(Integer, ForeignKey(Issue.uid), primary_key=True)
+    feature_identifier: str = Column(Text, ForeignKey(Feature.identifier), primary_key=True)
+
+
+class DecisionProcess(DiscussionBase):
+    __tablename__ = 'decidotron_decision_process'
+    issue_id: int = Column(Integer, ForeignKey(Issue.uid), primary_key=True)
+
+
+class PositionCost(DiscussionBase):
+    __tablename__ = 'decidotron_position_cost'
+    position_id: int = Column(Integer, ForeignKey(Statement.uid), primary_key=True)
+    cost: int = Column(Integer, nullable=False)

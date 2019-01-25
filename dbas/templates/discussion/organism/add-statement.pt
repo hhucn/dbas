@@ -38,6 +38,18 @@
                      class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
             </div>
           </div>
+          <br>
+          <p>${features}</p>
+          <br>
+          <div class="form-group" tal:condition="'budget_decision' in features">
+            <label for="add-statement-container-cost" class="col-lg-3 col-md-5 col-sm-6 control-label"
+                   style="color: #666; font-size: 17px; margin-top: 0.4em;">It has an estimated cost of </label>
+            <div class="input-group col-lg-9 col-md-7 col-sm-6">
+              <span class="input-group-addon">€</span>
+              <input id="add-statement-container-cost" placeholder="5000" type="number" min=0 step=10 max=20000
+                     class="form-control" style="width: 100%" required>
+            </div>
+          </div>
         </fieldset>
       </div>
       <div class="list-group" id="proposal-statement-list-group"></div>
