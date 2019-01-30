@@ -335,10 +335,22 @@ def valid_statement(location, depends_on: Set[Callable[[Request], bool]] = None)
             return False
 
         if __valid_id_from_location(request, 'statement_id', location):
-            request.validated['statement'] = __validate_enabled_entity(request, request.validated.get('issue'),
-                                                                       Statement,
-                                                                       request.validated['statement_id'])
-            return True if request.validated['statement'] else False
+            db_issue: Optional[Issue] = request.validated.get('issue')
+            statement_id = request.validated['statement_id']
+            db_statement: Statement = DBDiscussionSession.query(Statement).get(statement_id)
+            if not db_statement:
+                add_error(request, 'Statement with id {} could not be found'.format(statement_id), location='path')
+                return False
+            if db_statement.is_disabled:
+                add_error(request, 'Statement no longer available', location='path', status_code=410)
+                return False
+            if db_issue and db_statement not in db_issue.statements:
+                add_error(request, 'Statement does not belong to issue', location='path')
+                return False
+
+            request.validated['statement'] = db_statement
+
+            return True
         return False
 
     return inner
