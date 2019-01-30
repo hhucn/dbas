@@ -1,3 +1,6 @@
+### 1.13.2 (2019-01-30)
+- Fix Statement validation for cases where a Statement is in multiple Issues !652
+
 ### 1.13.1 (2019-01-12)
 - Add key-paths for production build to compose file
 
