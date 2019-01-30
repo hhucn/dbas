@@ -171,7 +171,8 @@ def set_discussion_properties(request):
 
 
 @view_config(route_name='set_new_start_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, has_keywords_in_json_path(('position', str), ('reason', str)))
+@validate(valid_user, valid_issue_not_readonly,
+          has_keywords_in_json_path(('position', str), ('reason', str), ('more', dict)))
 def set_new_start_argument(request):
     """
     Inserts a new argument as starting point into the database
@@ -185,7 +186,7 @@ def set_new_start_argument(request):
     # set the new position
     LOG.debug("Set conclusion/position")
     prepared_dict_pos = set_position(request.validated['user'], request.validated['issue'],
-                                     request.validated['position'])
+                                     request.validated['position'], request.validated['more'])
 
     if len(prepared_dict_pos['error']) == 0:
         LOG.debug("Set premise/reason")

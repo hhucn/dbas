@@ -586,7 +586,7 @@ Main.prototype.setInputExtraOptions = function (guiHandler, interactionHandler) 
             .map(input => [input.dataset.key, input.value])
             .reduce((accumulator, currentValue) => {
                 accumulator[currentValue[0]] = currentValue[1];
-                return accumulator
+                return accumulator;
             }, {});
         var position = $('#' + addStatementContainerMainInputPosId).val();
         var reason = $('#' + addStatementContainerMainInputResId).val();

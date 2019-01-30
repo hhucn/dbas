@@ -12,7 +12,6 @@ import arrow
 import bcrypt
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
-from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
@@ -137,6 +136,9 @@ class Issue(DiscussionBase):
         :return: None
         """
         self.is_read_only = is_read_only
+
+    def has_feature(self, descriptor) -> bool:
+        return descriptor in [feature.identifier for feature in self.features]
 
     @staticmethod
     def by_slug(slug: str) -> 'Issue':
@@ -2526,3 +2528,7 @@ class PositionCost(DiscussionBase):
     __tablename__ = 'decidotron_position_cost'
     position_id: int = Column(Integer, ForeignKey(Statement.uid), primary_key=True)
     cost: int = Column(Integer, nullable=False)
+
+    def __init__(self, position: Statement, cost: int):
+        self.position_id = position.uid
+        self.cost = cost
