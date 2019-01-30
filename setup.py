@@ -67,5 +67,6 @@ setup(name='dbas',
       init_dummy_votes = dbas.database.initializedb:init_dummy_votes
       promote_to_admin = dbas.console_scripts:promote_user
       demote_to_user = dbas.console_scripts:demote_user
+      setup_decidotron = dbas.database.initializedb:init_budget_discussion
       """,
       )

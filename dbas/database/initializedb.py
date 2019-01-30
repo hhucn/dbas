@@ -19,7 +19,7 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     ReputationReason, ReviewMerge, ReviewSplit, ReviewSplitValues, ReviewMergeValues, \
     ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument, \
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
-    ReviewCanceled, OptimizationReviewLocks, History, News, StatementToIssue
+    ReviewCanceled, OptimizationReviewLocks, History, News, StatementToIssue, Feature, IssueFeature
 from dbas.handler.password import get_hashed_password
 from dbas.lib import nick_of_anonymous_user
 
@@ -41,6 +41,31 @@ def usage(argv):
     cmd = os.path.basename(argv[0])
     print('usage: %s <config_uri>\n(example: "%s development.ini")' % (cmd, cmd))
     sys.exit(1)
+
+
+def init_budget_discussion(argv=sys.argv):
+    if len(argv) != 2:
+        usage(argv)
+    config_uri = argv[1]
+    setup_logging(config_uri)
+    settings = get_appsettings(config_uri)
+
+    discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
+    DBDiscussionSession.configure(bind=discussion_engine)
+    DiscussionBase.metadata.create_all(discussion_engine)
+
+    with transaction.manager:
+        issue = Issue(title="Was sollen wir mit 20.000€ anfangen?",
+                      info="Wir haben 20.000€ zur Verbesserung der Lehre, wie soll das Geld eingesetzt werden?",
+                      long_info="Zuviel Text",
+                      author_uid=User.by_nickname("Björn").uid,
+                      lang_uid=2)
+        feature = Feature('budget_decision')
+        DBDiscussionSession.add_all([issue, feature])
+        DBDiscussionSession.flush()
+        DBDiscussionSession.add(IssueFeature(issue.uid, feature.identifier))
+        transaction.commit()
 
 
 def main_discussion(argv=sys.argv):

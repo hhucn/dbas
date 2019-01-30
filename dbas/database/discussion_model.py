@@ -2518,6 +2518,10 @@ class IssueFeature(DiscussionBase):
     issue_id: int = Column(Integer, ForeignKey(Issue.uid), primary_key=True)
     feature_identifier: str = Column(Text, ForeignKey(Feature.identifier), primary_key=True)
 
+    def __init__(self, issue_id, feature_identifier):
+        self.issue_id = issue_id
+        self.feature_identifier = feature_identifier
+
 
 class DecisionProcess(DiscussionBase):
     __tablename__ = 'decidotron_decision_process'
