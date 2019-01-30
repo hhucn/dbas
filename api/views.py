@@ -618,7 +618,9 @@ def add_position_with_premise(request):
     pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
                                request.mailer)
 
-    __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, flatten(pd['statement_uids']))
+    statement_uids: List[int] = flatten(pd['statement_uids'])
+    LOG.info("Created %d statements: %s", len(statement_uids), statement_uids)
+    __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, statement_uids)
 
     if origin:
         add_origin_for_list_of_statements(origin, new_position['statement_uids'])
