@@ -375,7 +375,7 @@ def discussion_reaction(request):
 
 @support.get()
 @validate(valid_issue_by_slug, valid_token_optional, valid_support)
-def discussion_reaction(request):
+def discussion_support(request):
     """
     View configuration for discussion step, where we will present another supportive argument.
 
@@ -404,6 +404,7 @@ def discussion_reaction(request):
         'bubbles': bubbles,
         'attacks': dict(zip(keys, items))
     }
+
 
 @finish.get()
 @validate(valid_token_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))

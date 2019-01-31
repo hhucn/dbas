@@ -474,6 +474,39 @@ paths:
                         $ref: '#/components/schemas/reaction-item'
                       no_opinion:
                         $ref: '#/components/schemas/reaction-item'
+
+  /{slug}/support/{arg-user}/{arg-sys}:
+    get:
+      summary: Support-options for an argument in a discussion.
+      description: Returns links to the next step in the discussion, depending on the user's attitude towards the argument of the system.
+        Also contains speech bubbles.
+      tags:
+        - discussion
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - $ref: '#/components/parameters/arg-user'
+        - $ref: '#/components/parameters/arg-sys'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bubbles:
+                    $ref: '#/components/schemas/bubbles'
+                  attacks:
+                    type: object
+                    properties:
+                      undermine:
+                        $ref: '#/components/schemas/reaction-item'
+                      undercut:
+                        $ref: '#/components/schemas/reaction-item'
+                      support:
+                        $ref: '#/components/schemas/reaction-item'
+                      rebut:
+                        $ref: '#/components/schemas/reaction-item'
   
   /{slug}/finish/{argument-id}:
     get:
