@@ -380,8 +380,8 @@ def get_support_to_argument_text_list(lang):
 
     answers.append(_t.get(_.supportAnswer0).format(premise))
     answers.append(_t.get(_.supportAnswer3).format(premise))
-    answers.append(_t.get(_.supportAnswer1).format(premise))
     answers.append(_t.get(_.supportAnswer2).format(premise, conclusion))
+    answers.append(_t.get(_.supportAnswer1).format(premise))
 
     return answers
 

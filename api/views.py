@@ -33,9 +33,10 @@ from dbas.validators.common import valid_q_parameter
 from dbas.validators.core import has_keywords_in_json_path, validate, has_maybe_keywords, has_keywords_in_path
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_reason_and_position_not_equal, \
-    valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body
+    valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body, \
+    valid_support
 from dbas.validators.eden import valid_optional_origin
-from dbas.views import jump
+from dbas.views import jump, emit_participation
 from .login import validate_credentials, valid_token, valid_token_optional, valid_api_token
 from .references import (get_all_references_by_reference_text,
                          store_reference)
@@ -99,6 +100,11 @@ finish = Service(name='api_finish',
                  path=r'/{slug}/finish/{argument_id:\d+}',
                  description='End of a discussion',
                  cors_policy=cors_policy)
+
+support = Service(name='api_support',
+                  path=r'/{slug}/support/{arg_id_user:\d+}/{arg_id_sys:\d+}',
+                  description='Discussion Support',
+                  cors_policy=cors_policy)
 
 # add new stuff
 positions = Service(name='Positions',
@@ -357,6 +363,39 @@ def discussion_reaction(request):
                                               request.validated['arg_sys'],
                                               request.validated['relation'],
                                               history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
+
+    return {
+        'bubbles': bubbles,
+        'attacks': dict(zip(keys, items))
+    }
+
+
+@support.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_support)
+def discussion_support(request):
+    """
+    View configuration for discussion step, where we will present another supportive argument.
+
+    Path: /{slug}/support/{arg_id_user}/{arg_id_sys}
+
+    :param request: request
+    :return: bubbles for information and items for the next step
+    """
+    LOG.debug("Support a statement. %s", request.matchdict)
+    emit_participation(request)
+
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+
+    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    prepared_discussion = discussion.support(db_issue, db_user,
+                                             request.validated['arg_user'],
+                                             request.validated['arg_sys'],
+                                             history, request.path)
+
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
