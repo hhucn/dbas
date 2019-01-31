@@ -1,3 +1,7 @@
+### 1.13.3 (2019-01-31)
+- Fix bugs to avoid self-supporting statements !654
+- Add /support route to API !654
+
 ### 1.13.2 (2019-01-30)
 - Fix Statement validation for cases where a Statement is in multiple Issues !652
 
