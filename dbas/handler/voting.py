@@ -31,7 +31,7 @@ def add_click_for_argument(db_argument: Argument, db_user: User) -> bool:
     if db_user.nickname == nick_of_anonymous_user:
         LOG.debug("User is anonymous, not counting clicks")
         return False
-    LOG.debug("Increasting vote for argument %s ", db_argument.uid)
+    LOG.debug("Increasing vote for argument %s ", db_argument.uid)
 
     if db_argument.argument_uid is None:
         LOG.debug("Undercut depth 0")
@@ -217,7 +217,7 @@ def clear_vote_and_seen_values_of_user(db_user):
 def __click_argument(argument, user, is_up_vote):
     """
     Check if there is a vote for the argument. If not, we will create a new one, otherwise the current one will be
-    invalid an we will create a new entry.
+    invalid and we will create a new entry.
 
     :param argument: Argument
     :param user: User
@@ -272,7 +272,7 @@ def __click_argument(argument, user, is_up_vote):
 def __click_statement(statement, db_user, is_up_vote):
     """
     Check if there is a vote for the statement. If not, we will create a new one, otherwise the current one will be
-    invalid an we will create a new entry.
+    invalid and we will create a new entry.
 
     :param statement: Statement
     :param db_user: User
@@ -332,7 +332,7 @@ def __vote_premisesgroup(premisegroup_uid, user, is_up_vote):
 
 def __argument_seen_by_user(db_user, argument_uid):
     """
-    Adds an reference for an seen argument
+    Adds a reference for a seen argument
 
     :param db_user: current user
     :param argument_uid: uid of the argument
@@ -351,7 +351,7 @@ def __argument_seen_by_user(db_user, argument_uid):
 
 def __statement_seen_by_user(db_user, statement_uid):
     """
-    Adds an reference for an seen statement
+    Adds a reference for a seen statement
 
     :param db_user: current user
     :param statement_uid: uid of the statement
@@ -369,7 +369,7 @@ def __statement_seen_by_user(db_user, statement_uid):
 
 def __premisegroup_seen_by_user(db_user, premisegroup_uid):
     """
-    Adds an reference for an seen premisesgroup
+    Adds a reference for a seen premisesgroup
 
     :param db_user: current user
     :param premisegroup_uid: uid of the premisesgroup
