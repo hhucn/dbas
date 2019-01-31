@@ -986,7 +986,7 @@ class Argument(DiscussionBase):
     """
     Argument-table with several columns.
     Each argument has justifying statement(s) (premises) and the the statement-to-be-justified (argument or statement).
-    Additionally there is a relation, timestamp, author, weight, ...
+    Additionally there is a relation, timestamp, author, ...
     """
     __tablename__ = 'arguments'
     uid: int = Column(Integer, primary_key=True)

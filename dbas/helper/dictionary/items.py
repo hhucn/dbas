@@ -744,10 +744,12 @@ class ItemDictHelper(object):
             if url[i]:
                 answers.append({'text': item_text[i], 'url': url[i]})
 
+        relations = ['support', 'undermine', 'undercut', 'rebut']
+
         statements_array = []
         for no in range(0, len(answers)):
             arr = [{'title': answers[no]['text'], 'id': 0}]
-            statements_array.append(self.__create_answer_dict('jump' + str(no), arr, 'jump', answers[no]['url']))
+            statements_array.append(self.__create_answer_dict(relations[no], arr, relations[no], answers[no]['url']))
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 

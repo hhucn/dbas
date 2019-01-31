@@ -43,7 +43,7 @@ def get_dbas_db_configuration(db_name: str = 'discussion', settings: dict = None
     +--------------+-------------------------------------------------------------+
     | DB_USER | The database username. (example: dbas)                           |
     +--------------+-------------------------------------------------------------+
-    | DB_PW   | The passwort of the DB_USER (example: passw0rt123)               |
+    | DB_PW   | The password of the DB_USER (example: passw0rt123)               |
     +--------------+-------------------------------------------------------------+
 
 
