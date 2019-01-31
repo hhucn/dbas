@@ -405,7 +405,12 @@ def valid_support(request):
     db_arg_user = request.validated['arg_user']
     db_arg_sys = request.validated['arg_sys']
 
+    if db_arg_user == db_arg_sys:
+        add_error(request, verbose_short="The Arguments are the same!", location='path', status_code=404)
+        return False
+
     if not related_with_support(db_arg_user.uid, db_arg_sys.uid):
+        add_error(request, "The Arguments don't share the same opinion", location='path', status_code=404)
         return False
 
     return True
