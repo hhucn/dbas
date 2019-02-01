@@ -618,7 +618,7 @@ def check_api_token(token: str) -> bool:
     """
 
     token_components = token.split(":")
-    if len(token_components) is 2:
+    if len(token_components) == 2:
         hash_identifier, auth_token = token_components
 
         api_tokens = DBDiscussionSession.query(APIToken) \

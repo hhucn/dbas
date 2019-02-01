@@ -10,6 +10,7 @@ Manage Google Client IDs: https://console.developers.google.com/apis/credentials
 import json
 import logging
 import os
+
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, InvalidClientError, MissingTokenError
 from requests_oauthlib.oauth2_session import OAuth2Session
 
@@ -110,7 +111,7 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
         gender = 'm' if parsed_resp['gender'] == 'male' else 'f' if parsed_resp['gender'] == 'female' else ''
 
     user_data = __prepare_data(parsed_resp, gender, ui_locales)
-    missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
+    missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] == 'null']
 
     LOG.debug("user_data: %s", user_data)
     LOG.debug("missing_data: %s", missing_data)

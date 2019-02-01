@@ -306,7 +306,7 @@ class QueueAdapter:
 
         return {
             'elements': ret_dict,
-            'no_arguments_to_review': len(ret_dict) is 0,
+            'no_arguments_to_review': len(ret_dict) == 0,
             'button_set': button_set,
             'session': session
         }

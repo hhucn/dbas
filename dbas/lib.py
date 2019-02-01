@@ -661,7 +661,7 @@ def __build_nested_argument(arg_array: List[Argument], first_arg_by_user, user_c
 
     because = (', ' if local_lang == 'de' else ' ') + _t.get(_.because).lower() + ' '
 
-    if len(arg_array) % 2 is 0 and not first_arg_by_user and not anonymous_style:  # system starts
+    if len(arg_array) % 2 == 0 and not first_arg_by_user and not anonymous_style:  # system starts
         ret_value = _t.get(_.earlierYouArguedThat if user_changed_opinion else _.otherUsersSaidThat) + ' '
         tmp_users_opinion = True  # user after system
 
@@ -882,7 +882,7 @@ def pretty_print_options(message):
         pos = message.rfind('<')
         if message[pos - 1:pos] not in ['.', '?', '!']:
             message = message[0:pos] + '.' + message[pos:]
-    elif not message.endswith(tuple(['.', '?', '!'])) and id is not 'now':
+    elif not message.endswith(tuple(['.', '?', '!'])) and id != 'now':
         message += '.'
 
     return message
@@ -923,7 +923,7 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
         'special': False
     }
 
-    if uid is not 'now':
+    if uid != 'now':
         content = pretty_print_options(content)
 
     if bubble_type is BubbleTypes.SYSTEM and other_author is not None:

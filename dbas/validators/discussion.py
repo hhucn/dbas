@@ -98,9 +98,9 @@ def __check_for_empty_fields(title: str, info: str, long_info: str, request: dic
     _tn = Translator(get_language_from_cookie(request))
     error = _tn.get(_.newIssueErrorMsg) + ': '
 
-    title_is_empty = title.strip() is ''
-    info_is_empty = info.strip() is ''
-    long_info_is_emtpy = long_info.strip() is ''
+    title_is_empty = title.strip() == ''
+    info_is_empty = info.strip() == ''
+    long_info_is_emtpy = long_info.strip() == ''
 
     if title_is_empty:
         error = error + _tn.get(_.newIssueTitle) + ', '
