@@ -8,7 +8,7 @@ from dbas.auth.login import oauth_providers
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Argument, User
 from dbas.discussion import core as discussion
-from dbas.events import ParticipatedInDiscussion
+from dbas.events import ParticipatedInDiscussion, UserArgumentAgreement
 from dbas.handler import issue as issue_handler, history as history_handler
 from dbas.handler.issue import get_issues_overview_for
 from dbas.handler.language import get_language_from_cookie
@@ -33,6 +33,12 @@ LOG = logging.getLogger(__name__)
 def emit_participation(request: Request):
     if request.validated['user'] and request.validated['issue']:
         event = ParticipatedInDiscussion(request.validated['user'], request.validated['issue'])
+        request.registry.notify(event)
+
+
+def emit_agreement_with_argument(request: Request):
+    if request.validated['user'] and request.validated['argument']:
+        event = UserArgumentAgreement(request.validated['user'], request.validated['argument'])
         request.registry.notify(event)
 
 
@@ -314,6 +320,7 @@ def finish(request):
     """
     LOG.debug("Finish the discussion. %s", request.matchdict)
     emit_participation(request)
+    emit_agreement_with_argument(request)
 
     db_user = request.validated['user']
     db_issue = request.validated['issue']
