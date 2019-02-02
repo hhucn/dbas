@@ -18,7 +18,6 @@ imagesize>=1.0.0
 iso8601>=0.1.12
 Jinja2>=2.10.0
 lingua>=4.13
-ldap>=1.0.2
 Mako>=1.0.7
 MarkupSafe>=1.0
 mccabe>=0.6.1
