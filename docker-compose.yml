@@ -12,7 +12,7 @@ services:
 
   web:
     build: .
-    command: bash -c "sleep 8 && alembic upgrade head && pserve development.ini --reload"
+    command: bash -c "./wait-for-it.sh -h db -p 5432 && alembic upgrade head && pserve development.ini --reload"
     volumes:
     - .:/dbas:delegated
     ports:
