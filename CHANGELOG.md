@@ -1,3 +1,9 @@
+### 1.14.0 (2019-02-04)
+- Spelling fixes !656
+- Add wait-for-it and remove annoying sleeps !657
+- Expose profile picture via graphql !658
+- Fix Gravatar picture retrieval !659
+
 ### 1.13.3 (2019-01-31)
 - Fix bugs to avoid self-supporting statements !654
 - Add /support route to API !654

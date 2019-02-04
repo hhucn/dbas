@@ -35,7 +35,7 @@ def __modifiy_discussion_url(prep_dict: dict) -> dict:
     """
     # modify urls for the radio buttons
     for el in prep_dict:
-        if el is 'url':
+        if el == 'url':
             prep_dict['url'] = '/discuss' + prep_dict['url']
     return prep_dict
 

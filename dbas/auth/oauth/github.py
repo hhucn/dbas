@@ -10,6 +10,7 @@ Manage Github Client IDs: https://github.com/organizations/**YOUR_ACCOUNT**/sett
 import json
 import logging
 import os
+
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, InvalidClientError, MissingTokenError
 from requests_oauthlib.oauth2_session import OAuth2Session
 from slugify import slugify
@@ -105,7 +106,7 @@ def continue_flow(authorization_response, ui_locales):
     # 'updated_at': 2017-10-24T07:01:29Z
 
     user_data = __prepare_data(parsed_resp)
-    missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
+    missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] == 'null']
 
     LOG.debug("user_data: %s", user_data)
     LOG.debug("missing_data: %s", missing_data)

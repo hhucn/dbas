@@ -52,6 +52,7 @@ Afterwards everything should be fine.
 ## Maintainers
 
 * [Christian Meter](mailto:meter@cs.uni-duesseldorf.de)
+* Björn Ebbinghaus
 * [Tobias Krauthoff](mailto:krauthoff@cs.uni-duesseldorf.de) (Alumnus)
 
 
@@ -59,10 +60,8 @@ Afterwards everything should be fine.
 
 We thank all contributors to this project! In order of appearance:
 
-* Björn Ebbinghaus
 * Alexander Schneider
 * Marc Feger
-
 
 ### Former Contributors
 
@@ -74,6 +73,6 @@ Thanks to all former contributors! In order of appearance:
 ## License
 
 Copyright (c) 2016 - 2018 Tobias Krauthoff, Christian Meter  
-Copyright (c) 2018 hhucn
+Copyright (c) 2018-2019 hhucn
 
 Distributed under the [MIT License](LICENSE).

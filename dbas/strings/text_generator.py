@@ -756,7 +756,7 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
 
 
 def __translation_based_on_gender(_t, keyword_m, keyword_f, gender):
-    if gender is 'm':
+    if gender == 'm':
         return _t.get(keyword_m)
     else:
         return _t.get(keyword_f)
