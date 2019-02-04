@@ -19,7 +19,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue, StatementToIssue
 from dbas.handler.history import get_seen_statements_from
 from dbas.helper.url import UrlManager
-from dbas.lib import get_public_profile_picture, nick_of_anonymous_user, get_enabled_statement_as_query
+from dbas.lib import nick_of_anonymous_user, get_enabled_statement_as_query, \
+    get_profile_picture
 from dbas.strings.fuzzy_modes import FuzzyMode
 from search import SEARCH_HOST, SEARCH_PORT
 from search.requester import elastic_search, get_statements_with_similarity_to
@@ -351,7 +352,7 @@ def get_strings_for_public_nickname(search_value: str, nickname: str) -> list:
             'distance': dist,
             'text': user.public_nickname,
             'html': __highlight_fuzzy_string(user.public_nickname, search_value),
-            'avatar': get_public_profile_picture(user)
+            'avatar': get_profile_picture(user)
         })
 
     return_array = __sort_array(return_array)

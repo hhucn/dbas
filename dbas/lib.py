@@ -11,6 +11,7 @@ from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
+from random import randint
 from typing import List, Optional
 from urllib import parse
 from uuid import uuid4
@@ -1128,51 +1129,23 @@ def __get_all_premises_of_argument(argument):
     return ret_list
 
 
-def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: bool = False):
+def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: bool = False) -> str:
     """
-    Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
+    Returns the user's profile picture with the specified size.
 
     :param user: User
     :param size: Integer, default 80
     :param ignore_privacy_settings:
     :return: String
     """
-    additional_id = ''
-    if user and isinstance(user, User):
-        additional_id = '' if user.settings.should_show_public_nickname or ignore_privacy_settings else 'x'
-
-    return __get_gravatar(user, additional_id, size)
-
-
-def get_public_profile_picture(user: User, size: int = 80):
-    """
-    Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
-    If the user doesn't want an public profile, an anonymous image will be returned
-
-    :param user: User
-    :param size: Integer, default 80
-    :return: String
-    """
-    additional_id = ''
-    if user.settings.should_show_public_nickname:
-        additional_id = 'x'
-    if len(str(user.oauth_provider)) > 0:
-        additional_id = '{}{}'.format(user.oauth_provider, user.oauth_provider_id)
-
-    return __get_gravatar(user, additional_id, size)
-
-
-def __get_gravatar(user, additional_id, size):
     if user:
-        if str(user.email) == 'None':
-            email = (user.nickname + additional_id).encode('utf-8')
-        else:
-            email = (user.email + additional_id).encode('utf-8')
+        additional_id = '' if user.settings.should_show_public_nickname or ignore_privacy_settings else 'x'
+        email = (user.email + additional_id).encode('utf-8')
     else:
-        email = 'unknown'.encode('utf-8')
-    gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
-    gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
+        email = str(randint(0, 999999)).encode('utf-8')
 
+    gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
+    gravatar_url += parse.urlencode({'d': 'identicon', 's': str(size)})
     return gravatar_url
 
 
