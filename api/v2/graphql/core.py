@@ -17,6 +17,7 @@ from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReference, \
     StatementOrigins, PremiseGroup, Premise, Argument
+from dbas.lib import get_public_profile_picture
 from graph.lib import get_d3_data
 
 
@@ -124,6 +125,12 @@ class StatementGraph(SQLAlchemyObjectType):
 
 
 class UserGraph(SQLAlchemyObjectType):
+    profile_picture = graphene.Field(graphene.String, size=graphene.Int(),
+                                     description="The profile picture of the user")
+
+    def resolve_profile_picture(self, info, **kwargs):
+        return get_public_profile_picture(self, **kwargs)
+
     class Meta:
         model = User
         only_fields = ["uid", "public_nickname", "last_action", "registered", "last_login"]
