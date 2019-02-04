@@ -11,6 +11,7 @@ from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
+from random import randint
 from typing import List, Optional
 from urllib import parse
 from uuid import uuid4
@@ -1128,7 +1129,7 @@ def __get_all_premises_of_argument(argument):
     return ret_list
 
 
-def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: bool = False):
+def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: bool = False) -> str:
     """
     Returns the user's profile picture with the specified size.
 
@@ -1137,12 +1138,14 @@ def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: boo
     :param ignore_privacy_settings:
     :return: String
     """
-    additional_id = '' if user.settings.should_show_public_nickname or ignore_privacy_settings else 'x'
-    email = (user.email + additional_id).encode('utf-8')
+    if user:
+        additional_id = '' if user.settings.should_show_public_nickname or ignore_privacy_settings else 'x'
+        email = (user.email + additional_id).encode('utf-8')
+    else:
+        email = str(randint(0, 999999)).encode('utf-8')
 
     gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
     gravatar_url += parse.urlencode({'d': 'identicon', 's': str(size)})
-
     return gravatar_url
 
 
