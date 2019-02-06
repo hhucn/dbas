@@ -3,10 +3,13 @@ Logic for user login, token generation and validation
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-
+import datetime
 import json
+import time
+from typing import Union
 
 import jwt
+from pyramid.request import Request
 
 from admin.lib import check_api_token, is_api_token
 from dbas.auth.login import login_local_user
@@ -40,7 +43,10 @@ def check_jwt(request, token) -> bool:
     secret = request.registry.settings['public_key']
     try:
         payload = jwt.decode(token, secret, algorithms=['ES256', 'ES512', 'ES384'])
-    except jwt.DecodeError:
+    except jwt.ExpiredSignatureError as e:
+        add_error(request, "Token expired", verbose_long=str(e), status_code=401, location="header")
+        return False
+    except jwt.InvalidTokenError:
         add_error(request, "Invalid token", status_code=401, location="header")
         return False
 
@@ -125,6 +131,20 @@ def valid_api_token(request, **kwargs) -> bool:
         return False
 
 
+def get_api_token(request: Request, user: User, expires: Union[datetime.datetime, int] = None) -> str:
+    secret = request.registry.settings['secret_key']
+
+    payload = {'nickname': user.nickname, 'id': user.uid}
+    if expires:
+        payload['exp'] = expires
+
+    return jwt.encode(payload, secret, algorithm='ES256').decode("utf-8")
+
+def get_expiring_api_token(request: Request, user: User, minutes: int) -> str:
+    expires = int(time.time()) + (minutes * 60)  # seconds
+
+    return get_api_token(request, user, expires)
+
 def validate_credentials(request, **_kwargs) -> None:
     """
     Parse credentials from POST request and validate it against DBA-S'
@@ -136,8 +156,6 @@ def validate_credentials(request, **_kwargs) -> None:
     if request.errors:
         return
 
-    secret = request.registry.settings['secret_key']
-
     nickname = request.validated['nickname']
     password = request.validated['password']
     del request.validated['password']
@@ -146,9 +164,8 @@ def validate_credentials(request, **_kwargs) -> None:
     logged_in = login_local_user(nickname, password, request.mailer)
     db_user: User = logged_in.get('user')
     if db_user:
-        token = jwt.encode({'nickname': db_user.nickname, 'id': db_user.uid}, secret, algorithm='ES256')
         request.validated['nickname']: str = db_user.nickname
         request.validated['user']: User = db_user
-        request.validated['token'] = token
+        request.validated['token'] = get_api_token(request, db_user)
     else:
         add_error(request, 'Could not login user', location="header", status_code=401)
