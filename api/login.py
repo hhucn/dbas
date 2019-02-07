@@ -151,12 +151,14 @@ def user_payload(user: User):
         'id': user.uid
     }
 
+
 def get_api_token(request: Request, user: User, expires: Union[datetime.datetime, int] = None) -> str:
     payload = user_payload(user)
     if expires:
         payload['exp'] = expires
 
     return encode_payload(request, payload)
+
 
 def get_expiring_api_token(request: Request, user: User, minutes: int) -> str:
     expires = int(time.time()) + (minutes * 60)  # seconds
