@@ -50,6 +50,12 @@ def check_jwt(request, token) -> bool:
         add_error(request, "Invalid token", status_code=401, location="header")
         return False
 
+    if 'sub' in payload and payload['sub'] == 'tmp':
+        add_error(request, "Temporary token",
+                  verbose_long="You can use a temporary token only with an application token to get a general user token",
+                  status_code=401, location="header")
+        return False
+
     request.validated['user'] = DBDiscussionSession.query(User).get(payload['id'])
     request.validated['auth-by-api-token'] = False
     return True
@@ -131,19 +137,42 @@ def valid_api_token(request, **kwargs) -> bool:
         return False
 
 
-def get_api_token(request: Request, user: User, expires: Union[datetime.datetime, int] = None) -> str:
-    secret = request.registry.settings['secret_key']
+def encode_payload(request: Request, payload: dict) -> str:
+    if 'iat' not in payload:
+        payload['iat'] = int(
+            time.time())  # 'issued at' may be used for make all tokens before a specific time invalid (e.g. password change, "logout of all services")
 
-    payload = {'nickname': user.nickname, 'id': user.uid}
+    return jwt.encode(payload, request.registry.settings['secret_key'], algorithm='ES256').decode("utf-8")
+
+
+def user_payload(user: User):
+    return {
+        'nickname': user.nickname,
+        'id': user.uid
+    }
+
+def get_api_token(request: Request, user: User, expires: Union[datetime.datetime, int] = None) -> str:
+    payload = user_payload(user)
     if expires:
         payload['exp'] = expires
 
-    return jwt.encode(payload, secret, algorithm='ES256').decode("utf-8")
+    return encode_payload(request, payload)
 
 def get_expiring_api_token(request: Request, user: User, minutes: int) -> str:
     expires = int(time.time()) + (minutes * 60)  # seconds
 
     return get_api_token(request, user, expires)
+
+
+def get_tmp_token_for_external_service(request: Request, user: User, minutes: int = None) -> str:
+    payload = user_payload(user)
+    payload['sub'] = 'tmp'
+
+    if minutes:
+        payload['exp'] = int(time.time()) + (minutes * 60)
+
+    return encode_payload(request, payload)
+
 
 def validate_credentials(request, **_kwargs) -> None:
     """

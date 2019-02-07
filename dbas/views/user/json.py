@@ -1,10 +1,12 @@
 import logging
 from time import sleep
+from typing import Dict
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
 from pyramid.view import view_config
 
+from api import login
 from dbas.auth.login import login_local_user, register_user_with_json_data, __refresh_headers_and_url
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
@@ -226,3 +228,15 @@ def get_public_user_data(request):
     """
     LOG.debug("Return public user data. %s", request.json_body)
     return user.get_public_data(request.validated['user_id'], get_language_from_cookie(request))
+
+
+@view_config(route_name='get_temp_key', renderer='json')
+@validate(valid_user)
+def get_temp_key(request) -> Dict[str, str]:
+    """
+    Returns dictionary with a temporary token for the user.
+
+    :param request: request of the web server
+    :return: {'token': 'abacd.afadfgag.sagag'}
+    """
+    return {'token': login.get_tmp_token_for_external_service(request, request.validated['user'], 10)}

@@ -1,6 +1,20 @@
 <!-- sidebar of the discussion -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
   <ul id="dialog-sidebar" class="sidebar center">
+    <li tal:condition="'budget_decision' in issues.features">
+      <button id="decidotron-button" class="btn btn-primary btn-lg btn-block"
+              onclick="console.log('Blabla');
+                  $.ajax({url: '/get_temp_key',
+                  method: 'GET',
+                  dataType: 'json',
+                  contentType: 'application/json',
+                  headers: {'X-CSRF-Token': $('#' + hiddenCSRFTokenId).val()}})
+                  .done(function (data) {
+                  window.location = 'http://0.0.0.0:3000/preferences/${issues.slug}?token=' + data.token;});">
+        <i class="fa fa-check"></i>
+        <span class="sidebar-element" i18n:translate="Barometer">Vote!</span>
+      </button>
+    </li>
     <li id="restart-link" tal:condition="extras.ongoing_discussion">
       <a id="discussion-restart-btn" class="btn btn-link" href="/discuss/${extras.restart_url}">
         <i class="fa fa-repeat" aria-hidden="true"></i>
