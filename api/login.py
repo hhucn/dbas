@@ -36,13 +36,28 @@ def check_auth_token(request, nickname: str, token: str) -> bool:
             add_error(request, "Invalid token", status_code=401, location="header")
             return False
 
-    return check_jwt(request, token)
+    return check_jwt(request, token) and check_not_temporary_token(request)
+
+
+def check_not_temporary_token(request) -> bool:
+    payload = request.validated['token-payload']
+
+    if 'sub' in payload and payload['sub'] == 'tmp':
+        add_error(request, "Temporary token",
+                  verbose_long="You can use a temporary token only with an application token to get a general user token",
+                  status_code=401, location="header")
+        return False
+    return True
+
+
+def decode_jwt(request, token) -> dict:
+    secret = request.registry.settings['public_key']
+    return jwt.decode(token, secret, algorithms=['ES256', 'ES512', 'ES384'])
 
 
 def check_jwt(request, token) -> bool:
-    secret = request.registry.settings['public_key']
     try:
-        payload = jwt.decode(token, secret, algorithms=['ES256', 'ES512', 'ES384'])
+        payload = decode_jwt(request, token)
     except jwt.ExpiredSignatureError as e:
         add_error(request, "Token expired", verbose_long=str(e), status_code=401, location="header")
         return False
@@ -50,15 +65,11 @@ def check_jwt(request, token) -> bool:
         add_error(request, "Invalid token", status_code=401, location="header")
         return False
 
-    if 'sub' in payload and payload['sub'] == 'tmp':
-        add_error(request, "Temporary token",
-                  verbose_long="You can use a temporary token only with an application token to get a general user token",
-                  status_code=401, location="header")
-        return False
-
+    request.validated['token-payload'] = payload
     request.validated['user'] = DBDiscussionSession.query(User).get(payload['id'])
     request.validated['auth-by-api-token'] = False
     return True
+
 
 # #############################################################################
 # Validators

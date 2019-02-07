@@ -12,7 +12,7 @@
                   .done(function (data) {
                   window.location = 'http://0.0.0.0:3000/preferences/${issues.slug}?token=' + data.token;});">
         <i class="fa fa-check"></i>
-        <span class="sidebar-element" i18n:translate="Barometer">Vote!</span>
+        <span class="sidebar-element">Vote!</span>
       </button>
     </li>
     <li id="restart-link" tal:condition="extras.ongoing_discussion">
