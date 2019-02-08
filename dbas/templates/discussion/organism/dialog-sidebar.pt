@@ -13,12 +13,12 @@
                   .done(function (data) {
                   window.location = 'http://0.0.0.0:3000/preferences/${issues.slug}?token=' + data.token;});">
         <i class="fa fa-check"></i>
-        <span class="sidebar-element">Vote!</span>
+        <span>Vote!</span>
       </button>
       <button id="decidotron-button" disabled class="btn btn-primary btn-disabled btn-block"
            tal:condition="not extras.logged_in">
         <i class="fa fa-check"></i>
-        <span class="sidebar-element">Login to vote!</span>
+        <span>Login to vote!</span>
       </button>
     </li>
     <li id="restart-link" tal:condition="extras.ongoing_discussion">
