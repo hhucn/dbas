@@ -3,17 +3,18 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import arrow
 from datetime import date, timedelta
 from json import JSONDecodeError
 from math import ceil
+from typing import Optional, List
+
+import arrow
 from pyramid.request import Request
 from slugify import slugify
-from typing import Optional, List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
-    ClickedStatement, StatementToIssue, ClickedArgument
+    ClickedStatement, StatementToIssue, ClickedArgument, DecisionProcess
 from dbas.handler import user
 from dbas.handler.arguments import get_all_statements_for_args
 from dbas.handler.language import get_language_from_header
@@ -100,7 +101,9 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict:
         'intro': _t.get(_.currentDiscussion),
         'duration': duration,
         'read_only': db_issue.is_read_only,
-        'features': [str(feature) for feature in db_issue.features]
+        'features': [str(feature) for feature in db_issue.features],
+        'decidotron_budget': DecisionProcess.by_id(
+            db_issue.uid).to_dict() if 'budget_decision' in [str(feature) for feature in db_issue.features] else None
     }
 
 

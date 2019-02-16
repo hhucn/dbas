@@ -19,7 +19,7 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     ReputationReason, ReviewMerge, ReviewSplit, ReviewSplitValues, ReviewMergeValues, \
     ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument, \
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
-    ReviewCanceled, OptimizationReviewLocks, History, News, StatementToIssue, Feature, IssueFeature
+    ReviewCanceled, OptimizationReviewLocks, History, News, StatementToIssue, Feature, IssueFeature, DecisionProcess
 from dbas.handler.password import get_hashed_password
 from dbas.lib import nick_of_anonymous_user
 
@@ -44,6 +44,9 @@ def usage(argv):
 
 
 def init_budget_discussion(argv=sys.argv):
+    budget = 20000_00  # 20.000€ in cents
+
+
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -65,6 +68,8 @@ def init_budget_discussion(argv=sys.argv):
         DBDiscussionSession.add_all([issue, feature])
         DBDiscussionSession.flush()
         DBDiscussionSession.add(IssueFeature(issue.uid, feature.identifier))
+        DBDiscussionSession.add(DecisionProcess(issue.uid, budget, "€"))
+
         transaction.commit()
 
 

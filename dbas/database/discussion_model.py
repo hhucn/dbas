@@ -3,9 +3,9 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import datetime
 import warnings
 from abc import abstractmethod
+from datetime import datetime
 from typing import List, Set, Optional
 
 import arrow
@@ -13,7 +13,7 @@ import bcrypt
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy_utils import ArrowType
 
 from dbas.database import DBDiscussionSession, DiscussionBase
@@ -50,7 +50,7 @@ def get_now() -> ArrowType:
 
     :return: arrow data type
     """
-    return arrow.get(datetime.datetime.now())
+    return arrow.get(datetime.now())
 
 
 class Issue(DiscussionBase):
@@ -2526,6 +2526,41 @@ class IssueFeature(DiscussionBase):
 class DecisionProcess(DiscussionBase):
     __tablename__ = 'decidotron_decision_process'
     issue_id: int = Column(Integer, ForeignKey(Issue.uid), primary_key=True)
+    budget: int = Column(Integer, nullable=False, doc="Budget for an issue in cents")
+    currency_symbol: str = Column(String, nullable=True)
+    positions_end: datetime = Column(DateTime, nullable=True)
+    votes_end: datetime = Column(DateTime, nullable=True)
+
+    issue = relationship(Issue, backref=backref('decision_process', cascade="all, delete-orphan"))
+
+    def __init__(self, issue_id: int, budget: int, currency_symbol="€", positions_end=None, votes_end=None):
+        assert budget > 0
+        self.issue_id = issue_id
+        self.budget = budget
+        self.currency_symbol = currency_symbol
+        self.positions_end = positions_end
+        self.votes_end = votes_end
+
+    def budget_str(self):
+        return "{currency_symbol} {:.2f}".format(self.budget / 100, currency_symbol=self.currency_symbol)
+
+    @staticmethod
+    def by_id(issue_id: int) -> 'DecisionProcess':
+        return DBDiscussionSession.query(DecisionProcess).get(issue_id)
+
+    def position_ended(self):
+        return bool(self.positions_end) and self.positions_end > datetime.now()
+
+    def to_dict(self) -> dict:
+        return {
+            "budget": self.budget,
+            "currency_symbol": self.currency_symbol,
+            "budget_string": self.budget_str(),
+            "positions_end": self.positions_end,
+            "position_ended": self.position_ended(),
+            "votes_end": self.votes_end,
+            "votes_ended": bool(self.votes_end) and self.votes_end > datetime.now()
+        }
 
 
 class PositionCost(DiscussionBase):

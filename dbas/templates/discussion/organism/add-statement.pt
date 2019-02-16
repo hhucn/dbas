@@ -2,7 +2,8 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
 
   <div class="container colored-container" id="add-statement-container"
-       style="${extras.add_statement_container_style}">
+       style="${extras.add_statement_container_style}"
+       tal:condition="not 'budget_decision' in issues.features or not issues.decidotron_budget.position_ended">
     <button tal:condition="extras.close_statement_container" id="close-statement-container" type="button"
                                                              class="close" data-dismiss="modal" aria-label="Close">
       <span aria-hidden="true">&times;</span>
@@ -47,7 +48,7 @@
             <div class="input-group col-lg-9 col-md-7 col-sm-6">
               <span class="input-group-addon">€</span>
               <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="5000" type="number" min=0
-                     step=10 max=20000
+                     step=10 max="${issues.decidotron_budget.budget / 100}"
                      class="form-control" style="width: 100%" required>
             </div>
           </div>
@@ -57,6 +58,13 @@
       <input id="send-new-statement" type="button" class="btn btn-primary" data-dismiss="modal"
              data-toggle="tooltip" data-placement="bottom" value="${extras.buttons.save_my_statement}"
              name="${discussion.mode}"/>
+    </div>
+  </div>
+
+  <div class="container colored-container"
+       tal:condition="'budget_decision' in issues.features and issues.decidotron_budget.position_ended">
+    <div class="col-lg-12 text-center">
+      <p>Die Zeit zum hinzufügen von neuen Vorschlägen ist abgelaufen. Du kannst allerdings noch abstimmen!</p>
     </div>
   </div>
 
