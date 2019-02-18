@@ -143,7 +143,7 @@ function SettingsHandler() {
         setTimeout(function () {
             $('#' + settingsAlertDialog).fadeOut();
         }, 3000);
-        toggle_element.off('change').bootstrapToggle(settings_value ? 'off' : 'on').change(function () {
+        toggle_element.off('change').toggle(settings_value ? 'off' : 'on').change(function () {
             new AjaxSettingsHandler().setUserSetting(toggle_element, service);
         });
     };
@@ -347,7 +347,7 @@ $(function () {
     });
 
     var guided_toggle = $('#' + settingsGuidedTour);
-    guided_toggle.bootstrapToggle(Cookies.get(GUIDED_TOUR) ? 'off' : 'on');
+    guided_toggle.toggle(Cookies.get(GUIDED_TOUR) ? 'off' : 'on');
     guided_toggle.change(function guidedTourChange() {
         if ($(this).prop('checked')) {
             Cookies.remove(GUIDED_TOUR);
