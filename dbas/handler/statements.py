@@ -7,7 +7,8 @@ from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
-    sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue, PositionCost
+    sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
+from dbas.decidotron.lib import add_associated_cost, to_cents
 from dbas.handler import user, notification as nh
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
@@ -43,10 +44,9 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, more: dict
 
     new_statement: Statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
-    if db_issue.has_feature('budget_decision'):
-        associated_cost = PositionCost(new_statement, more['decidotron_cost'])
-        LOG.debug("Add Cost to position %d. Cost: %d", new_statement.get_text(), associated_cost)
-        DBDiscussionSession.add(associated_cost)
+    if 'decidotron_cost' in more:
+        cost = float(more['decidotron_cost'])
+        add_associated_cost(db_issue, new_statement, to_cents(cost))
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
