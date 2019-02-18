@@ -82,6 +82,34 @@ class OpinionHandlerTests(TestCaseWithConfig):
                                                                  lang=lang, main_page=main_page)
         self.assertEqual(response_wrong_id2['text'], None)
 
+    def test_verify_text_includes_point_of_view(self):
+        lang = 'en'
+        main_page = 'url'
+        path = 'http://0.0.0.0:4284/discuss/cat-or-dog/reaction/2/undermine/16?history=attitude/2-justify/2/agree'
+
+        response = get_user_and_opinions_for_argument(argument_uid=11,
+                                                      db_user=self.user_tobi,
+                                                      lang=lang,
+                                                      main_page=main_page,
+                                                      path=path)
+        self.assertTrue("my point of view" in response["opinions"][3]["text"])
+        for opinion in response["opinions"]:
+            self.assertFalse(">reason<" in opinion["text"])
+
+    def test_verify_text_generation_handling_dontknow(self):
+        lang = 'en'
+        main_page = 'url'
+        path = 'https://dbas.cs.uni-duesseldorf.de/discuss/town-has-to-cut-spending/justify/127/dontknow?history=/attitude/11'
+
+        response = get_user_and_opinions_for_argument(argument_uid=11,
+                                                      db_user=self.user_tobi,
+                                                      lang=lang,
+                                                      main_page=main_page,
+                                                      path=path)
+        self.assertTrue(">reason<" in response["opinions"][2]["text"])
+        for opinion in response["opinions"]:
+            self.assertFalse("my point of view" in opinion["text"])
+
     def verify_structure_of_argument_dictionary(self, response):
         # test structure of dictionary
 
