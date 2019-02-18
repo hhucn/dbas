@@ -4,6 +4,7 @@ Provides helping function for getting some opinions.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
+import re
 from typing import List
 
 from dbas.database import DBDiscussionSession
@@ -11,7 +12,7 @@ from dbas.database.discussion_model import Argument, Statement, User, ClickedArg
     SeenArgument, SeenStatement, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, \
     get_undermines_for_argument_uid, get_supports_for_argument_uid
-from dbas.lib import get_text_for_argument_uid, get_profile_picture, Relations
+from dbas.lib import get_text_for_argument_uid, get_profile_picture, Relations, Attitudes
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, \
@@ -55,7 +56,7 @@ def get_user_and_opinions_for_argument(argument_uid, db_user, lang, main_page, p
     if db_supporter:
         gender = db_supporter.gender
 
-    if '/d' in path.split('?')[0]:
+    if re.search(r'/%s/?$' % Attitudes.DONT_KNOW, path.split('?')[0]):
         relation_text = get_relation_text_dict_with_substitution(lang, False, is_dont_know=True, gender=gender)
     else:
         relation_text = get_relation_text_dict_with_substitution(lang, True, gender=gender)
