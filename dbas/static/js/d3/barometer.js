@@ -115,7 +115,7 @@ DiscussionBarometer.prototype.callbackIfDoneForGetDictionary = function (inputda
     this.removeContentOfModal();
 
     // change status of toggle
-    $('#chart-btn').bootstrapToggle('off');
+    $('#chart-btn').toggle('off');
     // add listener for buttons to change the type of chart
     this.addListenerForChartButtons();
     // create bar chart as default view

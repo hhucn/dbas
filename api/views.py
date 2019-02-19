@@ -530,6 +530,7 @@ def find_statements_fn(request):
 # =============================================================================
 
 @jump_to_zargument.get()
+@validate(valid_argument(location='path', depends_on={valid_issue_by_slug}))
 def jump_to_argument_fn(request):
     """
     Jump directly to an argument to provoke user interaction.

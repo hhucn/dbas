@@ -463,7 +463,7 @@ de_lang = {
     _.newNotification: 'Sie haben eine neue Benachrichtigung.',
     _.newMention: 'Sie wurden in einem Beitrag erwähnt.',
     _.newPremiseRadioButtonText: 'Nichts von all dem. Ich möchte einen neuen Grund angeben!',
-    _.newPremiseRadioButtonTextAsFirstOne: 'Ja, ich möchte einen neuen Grunde angeben!',
+    _.newPremiseRadioButtonTextAsFirstOne: 'Ja, ich möchte einen neuen Grund angeben!',
     _.newConclusionRadioButtonText: 'Nichts von all dem. Ich habe eine andere Idee!',
     _.newConclusionRadioButtonTextNewIdea: 'Ich habe eine neue Idee!',
     _.newIssueErrorMsg: 'Es fehlt',
