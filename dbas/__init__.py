@@ -71,6 +71,7 @@ def main(global_config, **settings):
     config.include('pyramid_mailer')
     config.include('pyramid_tm')
 
+    config.add_static_view(name='swagger-ui', path='api:swagger-ui/', cache_max_age=3600)
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
     config.add_static_view(name='websocket', path='websocket:static/', cache_max_age=3600)
     config.add_static_view(name='admin', path='admin:static/', cache_max_age=3600)
