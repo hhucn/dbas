@@ -52,7 +52,7 @@ Afterwards everything should be fine.
 ## Maintainers
 
 * [Christian Meter](mailto:meter@cs.uni-duesseldorf.de)
-* Björn Ebbinghaus
+* [Björn Ebbinghaus](mailto:bjoern.ebbinghaus@uni-duesseldorf.de)
 * [Tobias Krauthoff](mailto:krauthoff@cs.uni-duesseldorf.de) (Alumnus)
 
 

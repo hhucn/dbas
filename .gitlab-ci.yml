@@ -76,7 +76,7 @@ sonar:
   image: hhucn/sonar-scanner
   stage: analysis
   script:
-    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.14.0 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
+    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.15.0 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
   only:
     - development
   allow_failure: true
@@ -102,29 +102,6 @@ sast:
   only:
     - development
   when: always
-
-dependency_scanning:
-  stage: analysis
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  tags:
-    - 40c
-  script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run
-        --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}"
-        --volume "$PWD:/code"
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
-  artifacts:
-    paths: [gl-dependency-scanning-report.json]
-  when: always
-  only:
-    - development
 
 build_production_images:
   stage: build-images

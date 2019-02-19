@@ -232,11 +232,6 @@ bootstrap-slider@^10.0.0:
   resolved "https://registry.yarnpkg.com/bootstrap-slider/-/bootstrap-slider-10.0.2.tgz#442d84293aea248a31b1a3f976ac3737a7362a62"
   integrity sha1-RC2EKTrqJIoxsaP5dqw3N6c2KmI=
 
-bootstrap-toggle@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/bootstrap-toggle/-/bootstrap-toggle-2.2.2.tgz#2b88534fc1b998674f877f98ba0d8b5b743e96fe"
-  integrity sha1-K4hTT8G5mGdPh3+Yug2LW3Q+lv4=
-
 bootstrap-tour@^0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/bootstrap-tour/-/bootstrap-tour-0.12.0.tgz#c56eb48debe9cf788378a20184ef5a761b13b650"
