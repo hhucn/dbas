@@ -257,6 +257,11 @@ class EditQueue(QueueABC):
                 text = 'Review {} is malicious / no text for statement'.format(db_review.uid)
                 entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
                 entry['argument_oem_fulltext'] = text
+            elif len(db_textversions) == 1:
+                entry['is_innocent'] = False
+                text = 'Review {} is malicious / one text for statement'.format(db_review.uid)
+                entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
+                entry['argument_oem_fulltext'] = text
             else:
                 entry['argument_oem_shorttext'] = db_textversions[1].content[0:txt_len_history_page]
                 entry['argument_oem_fulltext'] = db_textversions[1].content
