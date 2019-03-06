@@ -1,9 +1,10 @@
 # Adaptee for the merge queue
 import logging
 import random
+from typing import Tuple, Optional
+
 import transaction
 from beaker.session import Session
-from typing import Tuple, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerMerge, ReviewMerge, \
@@ -41,7 +42,7 @@ class MergeQueue(QueueABC):
         else:
             self.key = key
 
-    def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator):
+    def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator) -> dict:
         """
         Setup the subpage for the merge queue
 
@@ -74,7 +75,7 @@ class MergeQueue(QueueABC):
                 'stats': None,
                 'text': None,
                 'reason': None,
-                'issue_titles': [],
+                'issue_titles': None,
                 'extra_info': None,
                 'session': session
             }
