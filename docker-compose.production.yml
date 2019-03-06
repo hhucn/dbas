@@ -10,7 +10,7 @@ services:
 
   web:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas
-    command: bash -c "./wait-for-it.sh -h db -p 5432 && alembic upgrade head && uwsgi --ini-paste production.ini"
+    command: bash -c "./wait-for-it.sh -t 0 -h db -p 5432 && alembic upgrade head && uwsgi --ini-paste production.ini"
     restart: unless-stopped
     environment:
       AUTHN_SECRET: ${AUTHN_SECRET}
