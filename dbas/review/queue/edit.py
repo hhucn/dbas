@@ -252,14 +252,9 @@ class EditQueue(QueueABC):
             db_textversions = DBDiscussionSession.query(TextVersion).filter_by(
                 statement_uid=db_review.statement_uid).order_by(
                 TextVersion.uid.desc()).all()
-            if len(db_textversions) == 0:
+            if len(db_textversions) == 0 or len(db_textversions) == 1:
                 entry['is_innocent'] = False
                 text = 'Review {} is malicious / no text for statement'.format(db_review.uid)
-                entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
-                entry['argument_oem_fulltext'] = text
-            elif len(db_textversions) == 1:
-                entry['is_innocent'] = False
-                text = 'Review {} is malicious / one text for statement'.format(db_review.uid)
                 entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
                 entry['argument_oem_fulltext'] = text
             else:
