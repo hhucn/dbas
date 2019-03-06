@@ -239,7 +239,7 @@ class EditQueue(QueueABC):
             return FlaggedBy.other
         return None
 
-    def get_history_table_row(self, db_review: ReviewEdit, entry, **kwargs):
+    def get_history_table_row(self, db_review: ReviewEdit, entry: dict, **kwargs) -> Optional[dict]:
         """
         Returns a row the the history/ongoing page for the given review element
 
@@ -253,7 +253,8 @@ class EditQueue(QueueABC):
                 statement_uid=db_review.statement_uid).order_by(
                 TextVersion.uid.desc()).all()
             if len(db_textversions) <= 1:
-                self.__set_too_few_textversions_for_review_entry(db_review, entry, len(db_textversions))
+                LOG.warning('Review {} is malicious, has only %d textversions' % len(db_textversions))
+                entry = None
             else:
                 entry['argument_oem_shorttext'] = db_textversions[1].content[0:txt_len_history_page]
                 entry['argument_oem_fulltext'] = db_textversions[1].content
@@ -426,14 +427,3 @@ class EditQueue(QueueABC):
         db_user = DBDiscussionSession.query(User).get(db_review.detector_uid)
         for value in db_values:
             propose_new_textversion_for_statement(db_user, value.statement_uid, value.content)
-
-    @staticmethod
-    def __set_too_few_textversions_for_review_entry(db_review: ReviewEdit, entry: dict, number_of_textversions: int):
-        if number_of_textversions == 0:
-            error_description = "no textversion for statement"
-        else:
-            error_description = "only one textversion for statement"
-        entry['is_innocent'] = False
-        text = 'Review {} is malicious / {}'.format(db_review.uid, error_description)
-        entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
-        entry['argument_oem_fulltext'] = text
