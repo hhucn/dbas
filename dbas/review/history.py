@@ -4,6 +4,7 @@ Provides helping function for the managing the queue with all executed decisions
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
+from typing import Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, sql_timestamp_pretty_print
@@ -98,7 +99,7 @@ def __get_executed_reviews_of(table, main_page, table_type, translator, is_execu
     return some_list
 
 
-def __get_executed_review_element_of(table_key, main_page, db_review, translator, is_executed):
+def __get_executed_review_element_of(table_key, main_page, db_review, translator, is_executed) -> Optional[dict]:
     """
 
     :param table_key: Shortcut for the table
@@ -111,6 +112,8 @@ def __get_executed_review_element_of(table_key, main_page, db_review, translator
     queue = get_queue_by_key(table_key)
     adapter = QueueAdapter(queue=queue(), application_url=main_page, translator=translator)
     full_text = adapter.get_text_of_element(db_review)
+    if not full_text:
+        return None
 
     # pretty print
     intro = translator.get(_.otherUsersSaidThat) + ' '

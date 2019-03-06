@@ -4,6 +4,7 @@ D-BAS database Model
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import datetime
+import logging
 import warnings
 from abc import abstractmethod
 from typing import List, Set, Optional
@@ -19,6 +20,8 @@ from sqlalchemy_utils import ArrowType
 from dbas.database import DBDiscussionSession, DiscussionBase
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 def sql_timestamp_pretty_print(ts, lang: str = 'en', humanize: bool = True, with_exact_time: bool = False):
@@ -558,18 +561,22 @@ class Statement(DiscussionBase):
         return DBDiscussionSession.query(Issue).get(db_statement2issues.issue_uid).lang
 
     @hybrid_property
-    def textversion_uid(self):
+    def textversion_uid(self) -> Optional[int]:
         """
-        The id of the latest textversion
+        The id of the latest textversion, or None if there is no enabled textversion
 
         :return:
         """
 
-        return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid, is_disabled=False).order_by(
-            TextVersion.timestamp.desc()).first().uid
+        textversion: TextVersion = DBDiscussionSession.query(TextVersion).filter_by(
+            statement_uid=self.uid, is_disabled=False).order_by(TextVersion.timestamp.desc()).first()
+        if textversion:
+            return textversion.uid
+        LOG.warning(f"Statement {self.uid} has no active textversion.")
+        return None
 
     @hybrid_property
-    def textversions(self):
+    def textversions(self) -> Optional["TextVersion"]:
         return self.get_textversion()
 
     @hybrid_property
@@ -577,22 +584,27 @@ class Statement(DiscussionBase):
         warnings.warn("Use 'issues' instead.", DeprecationWarning)
         return DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=self.uid).first().issue_uid
 
-    def get_textversion(self):
+    def get_textversion(self) -> Optional["TextVersion"]:
         """
-        Returns the latest textversion for this statement.
+        Returns the latest textversion for this statement or None if there is no active textversion.
 
         :return: TextVersion object
         """
-        return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
+        if self.textversion_uid:
+            return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
+        return None
 
-    def get_text(self, html: bool = False) -> str:
+    def get_text(self, html: bool = False) -> Optional[str]:
         """
         Gets the current text from the statement, without trailing punctuation.
 
         :param html: If True, returns a html span for coloring.
-        :return:
+        :return: None if there is no active textversion
         """
-        text = self.get_textversion().content
+        textversion = self.get_textversion()
+        if not textversion:
+            return None
+        text = textversion.content
         while text.endswith(('.', '?', '!')):
             text = text[:-1]
 
