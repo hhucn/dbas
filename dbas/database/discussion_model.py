@@ -872,6 +872,10 @@ class Premise(DiscussionBase):
 
     premisegroup: 'PremiseGroup' = relationship('PremiseGroup', foreign_keys=[premisegroup_uid],
                                                 back_populates='premises')
+    argument: 'Argument' = relationship('Argument', foreign_keys=[premisegroup_uid],
+                                        primaryjoin='Argument.premisegroup_uid == Premise.premisegroup_uid',
+                                        back_populates='premises')
+
     statement: Statement = relationship(Statement, foreign_keys=[statement_uid], back_populates='premises')
     author: User = relationship(User, foreign_keys=[author_uid])
     issue: Issue = relationship(Issue, foreign_keys=[issue_uid])
@@ -1000,6 +1004,9 @@ class Argument(DiscussionBase):
     is_disabled: bool = Column(Boolean, nullable=False)
 
     premisegroup: PremiseGroup = relationship(PremiseGroup, foreign_keys=[premisegroup_uid], back_populates='arguments')
+    premises: List[Premise] = relationship(Premise, foreign_keys=[Premise.premisegroup_uid],
+                                           primaryjoin='Argument.premisegroup_uid == Premise.premisegroup_uid',
+                                           back_populates='argument')
     conclusion: Optional[Statement] = relationship('Statement', foreign_keys=[conclusion_uid],
                                                    back_populates='arguments')
 
