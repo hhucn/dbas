@@ -104,9 +104,9 @@
                       </a>
                     </td>
                     <td class="center">
-                      <a tal:condition="history.is_history and rep.is_innocent" href="#" data-id="${rep.entry_id}"
-                                                                                data-queue="${past.queue}"
-                                                                                class="btn btn-danger btn-sm review-undo">
+                      <a tal:condition="history.is_history" href="#" data-id="${rep.entry_id}"
+                                                                     data-queue="${past.queue}"
+                                                                     class="btn btn-danger btn-sm review-undo">
                         <span i18n:translate="undo">Undo</span>
                       </a>
                       <a tal:condition="not:history.is_history" href="#" data-id="${rep.entry_id}"

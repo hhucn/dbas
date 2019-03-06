@@ -153,7 +153,6 @@ def __handle_table_of_review_element(table_key, review, short_text, full_text, i
     pdict['row_id'] = table_key + str(review.uid)
     pdict['argument_shorttext'] = short_text
     pdict['argument_fulltext'] = full_text
-    pdict['is_innocent'] = True
 
     queue = get_queue_by_key(table_key)
     adapter = QueueAdapter(queue())
