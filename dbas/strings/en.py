@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-German translations of the keywords
+English translations of the keywords
 """
 from .keywords import Keywords as _
 
