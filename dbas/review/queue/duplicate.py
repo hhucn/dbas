@@ -1,9 +1,10 @@
 # Adaptee for the duplicate queue.
 import logging
 import random
+from typing import Tuple, Optional
+
 import transaction
 from beaker.session import Session
-from typing import Tuple, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerDuplicate, ReviewDuplicate, Statement, RevokedDuplicate, \
@@ -233,7 +234,7 @@ class DuplicateQueue(QueueABC):
             return FlaggedBy.other
         return None
 
-    def get_history_table_row(self, db_review: ReviewDuplicate, entry, **kwargs):
+    def get_history_table_row(self, db_review: ReviewDuplicate, entry, **kwargs) -> Optional[dict]:
         """
         Returns a row the the history/ongoing page for the given review element
 
@@ -242,6 +243,9 @@ class DuplicateQueue(QueueABC):
         :param kwargs: "magic" -> atm keywords like is_executed, short_text and full_text. Please update this!
         :return:
         """
+        if not db_review.original_statement_uid:
+            LOG.warning(f"ReviewDuplicate {db_review.uid} has no original_statement_uid")
+            return None
         text = DBDiscussionSession.query(Statement).get(db_review.original_statement_uid).get_text()
         if text is None:
             text = '...'
