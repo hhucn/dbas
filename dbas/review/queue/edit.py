@@ -253,7 +253,7 @@ class EditQueue(QueueABC):
                 statement_uid=db_review.statement_uid).order_by(
                 TextVersion.uid.desc()).all()
             if len(db_textversions) <= 1:
-                LOG.warning('Review {} is malicious, has only %d textversions' % len(db_textversions))
+                LOG.warning(f'Review {db_review.uid} is malicious, has only {len(db_textversions)} textversions')
                 entry = None
             else:
                 entry['argument_oem_shorttext'] = db_textversions[1].content[0:txt_len_history_page]
