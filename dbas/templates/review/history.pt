@@ -11,10 +11,10 @@
           <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 0.5em;"></i>
           <span i18n:translate="current_decisions">Current decisions</span>!
         </h3>
-        <p class="lead text-center" tal:condition="history.has_access" i18n:translate="page_contains_list_past_votes">
+        <p class="lead text-center" tal:condition="history.is_history" i18n:translate="page_contains_list_past_votes">
           This page contains lists with an over of past votes for each queue
         </p>
-        <p class="lead text-center" tal:condition="not:history.has_access" i18n:translate="page_contains_list_ongoing_votes">
+        <p class="lead text-center" tal:condition="not:history.is_history" i18n:translate="page_contains_list_ongoing_votes">
           This page contains lists with an over of ongoing votes for each queue
         </p>
       </div>
