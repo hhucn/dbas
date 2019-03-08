@@ -276,6 +276,7 @@ function prepareLoginRegistrationPopup() {
         } else {
             $('#' + popupLoginWarningMessage).fadeIn("slow");
             $('#' + popupLoginWarningMessageText).text(text);
+            new AjaxLoginHandler().registration();
         }
 
     });
