@@ -182,27 +182,27 @@ def __check_login_params(firstname, lastname, nickname, email, password, passwor
     is_mail_valid = validate_email(email, check_mx=True)
 
     if len(firstname) == 0:
-        LOG.debug("firstname is empty", firstname)
+        LOG.debug("firstname is empty")
         return _.checkFirstname
 
     if len(lastname) == 0:
-        LOG.debug("lastename is empty", lastname)
+        LOG.debug("lastename is empty")
         return _.checkLastname
 
     if len(nickname) == 0:
-        LOG.debug("username is empty", nickname)
+        LOG.debug("username is empty")
         return _.checkNickname
 
     if len(email) == 0:
-        LOG.debug("email is empty", email)
+        LOG.debug("email is empty")
         return _.checkEmail
 
     if len(password) == 0:
-        LOG.debug("password is emtpy", email)
+        LOG.debug("password is emtpy")
         return _.checkPassword
 
     if len(passwordconfirm) == 0:
-        LOG.debug("password-confirm is empty", passwordconfirm)
+        LOG.debug("password-confirm is empty")
         return _.checkPasswordConfirm
 
     # are the password equal?
