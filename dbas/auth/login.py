@@ -132,6 +132,31 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     passwordconfirm = escape_string(data['passwordconfirm'])
     db_new_user = None
 
+    if len(firstname) == 0:
+        LOG.debug("firstname is empty", firstname)
+        return success, _tn.get(_.checkFirstname), db_new_user
+
+    if len(lastname) == 0:
+        LOG.debug("lastename is empty", lastname)
+        return success, _tn.get(_.checkLastname), db_new_user
+
+    if len(nickname) == 0:
+        LOG.debug("username is empty", nickname)
+        return success, _tn.get(_.checkNickname), db_new_user
+
+    if len(email) == 0:
+        LOG.debug("email is empty", email)
+        return success, _tn.get(_.checkEmail), db_new_user
+
+    if len(password) == 0:
+        LOG.debug("password is emtpy", email)
+        return success, _tn.get(_.checkPassword), db_new_user
+
+    if len(passwordconfirm) == 0:
+        LOG.debug("password-confirm is empty", passwordconfirm)
+        return success, _tn.get(_.checkPasswordConfirm), db_new_user
+
+
     msg = __check_login_params(nickname, email, password, passwordconfirm)
     if msg:
         return success, _tn.get(msg), db_new_user
