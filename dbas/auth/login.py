@@ -145,31 +145,8 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     except Exception as e:
         print(e)
 
-    if len(firstname) == 0:
-        LOG.debug("firstname is empty", firstname)
-        return success, _tn.get(_.checkFirstname), db_new_user
 
-    if len(lastname) == 0:
-        LOG.debug("lastename is empty", lastname)
-        return success, _tn.get(_.checkLastname), db_new_user
-
-    if len(nickname) == 0:
-        LOG.debug("username is empty", nickname)
-        return success, _tn.get(_.checkNickname), db_new_user
-
-    if len(email) == 0:
-        LOG.debug("email is empty", email)
-        return success, _tn.get(_.checkEmail), db_new_user
-
-    if len(password) == 0:
-        LOG.debug("password is emtpy", email)
-        return success, _tn.get(_.checkPassword), db_new_user
-
-    if len(passwordconfirm) == 0:
-        LOG.debug("password-confirm is empty", passwordconfirm)
-        return success, _tn.get(_.checkPasswordConfirm)
-
-    msg = __check_login_params(nickname, email, password, passwordconfirm)
+    msg = __check_login_params(firstname, lastname, nickname, email, password, passwordconfirm)
     if msg:
         return success, _tn.get(msg), db_new_user
 
@@ -201,11 +178,35 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     return success, msg, db_new_user
 
 
-def __check_login_params(nickname, email, password, passwordconfirm) -> Keywords:
+def __check_login_params(firstname, lastname, nickname, email, password, passwordconfirm) -> Keywords:
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
     db_nick2 = get_user_by_case_insensitive_public_nickname(nickname)
     db_mail = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
     is_mail_valid = validate_email(email, check_mx=True)
+
+    if len(firstname) == 0:
+        LOG.debug("firstname is empty", firstname)
+        return _.checkFirstname
+
+    if len(lastname) == 0:
+        LOG.debug("lastename is empty", lastname)
+        return _.checkLastname
+
+    if len(nickname) == 0:
+        LOG.debug("username is empty", nickname)
+        return _.checkNickname
+
+    if len(email) == 0:
+        LOG.debug("email is empty", email)
+        return _.checkEmail
+
+    if len(password) == 0:
+        LOG.debug("password is emtpy", email)
+        return _.checkPassword
+
+    if len(passwordconfirm) == 0:
+        LOG.debug("password-confirm is empty", passwordconfirm)
+        return _.checkPasswordConfirm
 
     # are the password equal?
     if not password == passwordconfirm:
@@ -230,6 +231,7 @@ def __check_login_params(nickname, email, password, passwordconfirm) -> Keywords
     if len(email) < 2 or not is_mail_valid:
         LOG.debug("E-Mail '%s' is too short or not valid otherwise", email)
         return _.mailNotValid
+
 
 
     return None
