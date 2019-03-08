@@ -123,14 +123,25 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     _tn = Translator(lang)
     success = ''
 
-    firstname = escape_string(data['firstname'])
-    lastname = escape_string(data['lastname'])
-    nickname = escape_string(data['nickname'])
-    email = escape_string(data['email'])
-    gender = escape_string(data['gender'])
-    password = escape_string(data['password'])
-    passwordconfirm = escape_string(data['passwordconfirm'])
+    firstname = ""
+    lastname = ""
+    nickname = ""
+    email = ""
+    gender = ""
+    password = ""
+    passwordconfirm = ""
     db_new_user = None
+
+    try:
+        firstname = escape_string(data['firstname'])
+        lastname = escape_string(data['lastname'])
+        nickname = escape_string(data['nickname'])
+        email = escape_string(data['email'])
+        gender = escape_string(data['gender'])
+        password = escape_string(data['password'])
+        passwordconfirm = escape_string(data['passwordconfirm'])
+    except Exception as e:
+        print(e)
 
     if len(firstname) == 0:
         LOG.debug("firstname is empty", firstname)
