@@ -239,7 +239,7 @@ class EditQueue(QueueABC):
             return FlaggedBy.other
         return None
 
-    def get_history_table_row(self, db_review: ReviewEdit, entry, **kwargs):
+    def get_history_table_row(self, db_review: ReviewEdit, entry: dict, **kwargs) -> Optional[dict]:
         """
         Returns a row the the history/ongoing page for the given review element
 
@@ -252,11 +252,9 @@ class EditQueue(QueueABC):
             db_textversions = DBDiscussionSession.query(TextVersion).filter_by(
                 statement_uid=db_review.statement_uid).order_by(
                 TextVersion.uid.desc()).all()
-            if len(db_textversions) == 0:
-                entry['is_innocent'] = False
-                text = 'Review {} is malicious / no text for statement'.format(db_review.uid)
-                entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
-                entry['argument_oem_fulltext'] = text
+            if len(db_textversions) <= 1:
+                LOG.warning(f'Review {db_review.uid} is malicious, has only {len(db_textversions)} textversions')
+                entry = None
             else:
                 entry['argument_oem_shorttext'] = db_textversions[1].content[0:txt_len_history_page]
                 entry['argument_oem_fulltext'] = db_textversions[1].content

@@ -3,6 +3,7 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import logging
 import warnings
 from abc import abstractmethod
 from datetime import datetime
@@ -19,6 +20,8 @@ from sqlalchemy_utils import ArrowType
 from dbas.database import DBDiscussionSession, DiscussionBase
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 def sql_timestamp_pretty_print(ts, lang: str = 'en', humanize: bool = True, with_exact_time: bool = False):
@@ -563,18 +566,22 @@ class Statement(DiscussionBase):
         return DBDiscussionSession.query(Issue).get(db_statement2issues.issue_uid).lang
 
     @hybrid_property
-    def textversion_uid(self):
+    def textversion_uid(self) -> Optional[int]:
         """
-        The id of the latest textversion
+        The id of the latest textversion, or None if there is no enabled textversion
 
         :return:
         """
 
-        return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid, is_disabled=False).order_by(
-            TextVersion.timestamp.desc()).first().uid
+        textversion: TextVersion = DBDiscussionSession.query(TextVersion).filter_by(
+            statement_uid=self.uid, is_disabled=False).order_by(TextVersion.timestamp.desc()).first()
+        if textversion:
+            return textversion.uid
+        LOG.warning(f"Statement {self.uid} has no active textversion.")
+        return None
 
     @hybrid_property
-    def textversions(self):
+    def textversions(self) -> Optional["TextVersion"]:
         return self.get_textversion()
 
     @hybrid_property
@@ -582,22 +589,27 @@ class Statement(DiscussionBase):
         warnings.warn("Use 'issues' instead.", DeprecationWarning)
         return DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=self.uid).first().issue_uid
 
-    def get_textversion(self):
+    def get_textversion(self) -> Optional["TextVersion"]:
         """
-        Returns the latest textversion for this statement.
+        Returns the latest textversion for this statement or None if there is no active textversion.
 
         :return: TextVersion object
         """
-        return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
+        if self.textversion_uid:
+            return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
+        return None
 
-    def get_text(self, html: bool = False) -> str:
+    def get_text(self, html: bool = False) -> Optional[str]:
         """
         Gets the current text from the statement, without trailing punctuation.
 
         :param html: If True, returns a html span for coloring.
-        :return:
+        :return: None if there is no active textversion
         """
-        text = self.get_textversion().content
+        textversion = self.get_textversion()
+        if not textversion:
+            return None
+        text = textversion.content
         while text.endswith(('.', '?', '!')):
             text = text[:-1]
 
@@ -877,6 +889,10 @@ class Premise(DiscussionBase):
 
     premisegroup: 'PremiseGroup' = relationship('PremiseGroup', foreign_keys=[premisegroup_uid],
                                                 back_populates='premises')
+    argument: 'Argument' = relationship('Argument', foreign_keys=[premisegroup_uid],
+                                        primaryjoin='Argument.premisegroup_uid == Premise.premisegroup_uid',
+                                        back_populates='premises')
+
     statement: Statement = relationship(Statement, foreign_keys=[statement_uid], back_populates='premises')
     author: User = relationship(User, foreign_keys=[author_uid])
     issue: Issue = relationship(Issue, foreign_keys=[issue_uid])
@@ -1005,6 +1021,9 @@ class Argument(DiscussionBase):
     is_disabled: bool = Column(Boolean, nullable=False)
 
     premisegroup: PremiseGroup = relationship(PremiseGroup, foreign_keys=[premisegroup_uid], back_populates='arguments')
+    premises: List[Premise] = relationship(Premise, foreign_keys=[Premise.premisegroup_uid],
+                                           primaryjoin='Argument.premisegroup_uid == Premise.premisegroup_uid',
+                                           back_populates='argument')
     conclusion: Optional[Statement] = relationship('Statement', foreign_keys=[conclusion_uid],
                                                    back_populates='arguments')
 
@@ -2531,16 +2550,18 @@ class DecisionProcess(DiscussionBase):
     positions_end: datetime = Column(DateTime, nullable=True)
     votes_start: datetime = Column(DateTime, nullable=True)
     votes_end: datetime = Column(DateTime, nullable=True)
+    host: str = Column(String, nullable=False)
 
     issue = relationship(Issue, backref=backref('decision_process', cascade="all, delete-orphan"))
 
-    def __init__(self, issue_id: int, budget: int, currency_symbol="€",
+    def __init__(self, issue_id: int, budget: int, host: str, currency_symbol="€",
                  positions_end: datetime = None,
                  votes_start: datetime = None,
                  votes_end: datetime = None):
         assert budget > 0
         self.issue_id = issue_id
         self.budget = budget
+        self.host = host
         self.currency_symbol = currency_symbol
         self.positions_end = positions_end
         self.votes_start = votes_start
@@ -2558,6 +2579,7 @@ class DecisionProcess(DiscussionBase):
 
     def to_dict(self) -> dict:
         return {
+            "host": self.host,
             "budget": self.budget,
             "currency_symbol": self.currency_symbol,
             "budget_string": self.budget_str(),

@@ -4,13 +4,15 @@ Provides helping function for the managing the queue with all executed decisions
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
+from typing import Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, sql_timestamp_pretty_print
 from dbas.lib import get_profile_picture
 from dbas.review import txt_len_history_page
 from dbas.review.mapper import get_review_model_by_key, get_queue_by_key
-from dbas.review.queue import key_edit, key_delete, key_duplicate, key_merge, key_split, review_queues
+from dbas.review.queue import key_edit, key_delete, key_duplicate, key_merge, key_split, review_queues, key_history, \
+    key_ongoing
 from dbas.review.queue.adapter import QueueAdapter
 from dbas.review.reputation import get_reputation_of, reputation_borders
 from dbas.review.reputation import reputation_icons
@@ -68,7 +70,7 @@ def __get_reviews_from_history_queue(main_page, db_user, translator, is_executed
         })
 
     return {
-        'has_access': is_executed and __has_access_to_history(db_user),
+        'has_access': __has_access_to_history(db_user, is_executed),
         'is_history': is_executed,
         'past_decision': past_decision
     }
@@ -98,7 +100,7 @@ def __get_executed_reviews_of(table, main_page, table_type, translator, is_execu
     return some_list
 
 
-def __get_executed_review_element_of(table_key, main_page, db_review, translator, is_executed):
+def __get_executed_review_element_of(table_key, main_page, db_review, translator, is_executed) -> Optional[dict]:
     """
 
     :param table_key: Shortcut for the table
@@ -111,6 +113,8 @@ def __get_executed_review_element_of(table_key, main_page, db_review, translator
     queue = get_queue_by_key(table_key)
     adapter = QueueAdapter(queue=queue(), application_url=main_page, translator=translator)
     full_text = adapter.get_text_of_element(db_review)
+    if not full_text:
+        return None
 
     # pretty print
     intro = translator.get(_.otherUsersSaidThat) + ' '
@@ -153,7 +157,6 @@ def __handle_table_of_review_element(table_key, review, short_text, full_text, i
     pdict['row_id'] = table_key + str(review.uid)
     pdict['argument_shorttext'] = short_text
     pdict['argument_fulltext'] = full_text
-    pdict['is_innocent'] = True
 
     queue = get_queue_by_key(table_key)
     adapter = QueueAdapter(queue())
@@ -177,7 +180,7 @@ def __get_user_dict_for_review(user_id, main_page):
     }
 
 
-def __has_access_to_history(db_user):
+def __has_access_to_history(db_user, is_executed: bool) -> bool:
     """
     Does the user has access to the history?
 
@@ -186,5 +189,6 @@ def __has_access_to_history(db_user):
     """
     reputation_count, is_user_author = get_reputation_of(db_user)
     rights = db_user.is_admin() or db_user.is_author()
-    points = reputation_count > reputation_borders['history']
+    queue_key = key_history if is_executed else key_ongoing
+    points = reputation_count > reputation_borders[queue_key]
     return rights or points

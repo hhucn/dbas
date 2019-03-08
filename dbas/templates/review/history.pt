@@ -11,10 +11,10 @@
           <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 0.5em;"></i>
           <span i18n:translate="current_decisions">Current decisions</span>!
         </h3>
-        <p class="lead text-center" tal:condition="history.has_access" i18n:translate="page_contains_list_past_votes">
+        <p class="lead text-center" tal:condition="history.is_history" i18n:translate="page_contains_list_past_votes">
           This page contains lists with an over of past votes for each queue
         </p>
-        <p class="lead text-center" tal:condition="not:history.has_access" i18n:translate="page_contains_list_ongoing_votes">
+        <p class="lead text-center" tal:condition="not:history.is_history" i18n:translate="page_contains_list_ongoing_votes">
           This page contains lists with an over of ongoing votes for each queue
         </p>
       </div>
@@ -104,9 +104,9 @@
                       </a>
                     </td>
                     <td class="center">
-                      <a tal:condition="history.is_history and rep.is_innocent" href="#" data-id="${rep.entry_id}"
-                                                                                data-queue="${past.queue}"
-                                                                                class="btn btn-danger btn-sm review-undo">
+                      <a tal:condition="history.is_history" href="#" data-id="${rep.entry_id}"
+                                                                     data-queue="${past.queue}"
+                                                                     class="btn btn-danger btn-sm review-undo">
                         <span i18n:translate="undo">Undo</span>
                       </a>
                       <a tal:condition="not:history.is_history" href="#" data-id="${rep.entry_id}"

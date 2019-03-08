@@ -1,15 +1,22 @@
+### 1.15.0 (2019-02-19)
+- Add a static OpenAPI definition view [!662](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/662)
+- Fix path detection in opinion barometer [!664](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/664)
+- Remove old bootstrapToggles entirely [!663](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/663)
+- Fix for a misssing check for valid input in the API [!661](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/661)
+- Reformat changelog merge request links, so they work on properly github.
+
 ### 1.14.0 (2019-02-04)
-- Spelling fixes !656
-- Add wait-for-it and remove annoying sleeps !657
-- Expose profile picture via graphql !658
-- Fix Gravatar picture retrieval !659
+- Spelling fixes [!656](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/656)
+- Add wait-for-it and remove annoying sleeps [!657](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/657)
+- Expose profile picture via graphql [!658](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/658)
+- Fix Gravatar picture retrieval [!659](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/659)
 
 ### 1.13.3 (2019-01-31)
-- Fix bugs to avoid self-supporting statements !654
-- Add /support route to API !654
+- Fix bugs to avoid self-supporting statements [!654](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/654)
+- Add /support route to API [!654](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/654)
 
 ### 1.13.2 (2019-01-30)
-- Fix Statement validation for cases where a Statement is in multiple Issues !652
+- Fix Statement validation for cases where a Statement is in multiple Issues [!652](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/652)
 
 ### 1.13.1 (2019-01-12)
 - Add key-paths for production build to compose file
@@ -17,78 +24,78 @@
 ### 1.13.0 (2019-01-12)
 
 #### Common
-- Remove bootstrap-toggle !641
-- Optimize building process and don't minify minified files twice !642
-- Increase performance of search-engine !646
-- Restrict review-queue access to users who participated in the discussion !637
-- Let the API handle authors as objects when communicating with EDEN !645
+- Remove bootstrap-toggle [!641](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/641)
+- Optimize building process and don't minify minified files twice [!642](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/642)
+- Increase performance of search-engine [!646](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/646)
+- Restrict review-queue access to users who participated in the discussion [!637](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/637)
+- Let the API handle authors as objects when communicating with EDEN [!645](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/645)
 
 #### API
-- Add JWT support !644
-- Add PATCH route for issues !640
-- Add status-flag of issue !643
-- Add Cypher Output to retrieve neo4j-compatible discussions !649
-- Add route to bind a reference to a newly created position !648
-- Add uid to login-response !638
-- Extend API to return single Users !635
-- Change HTTP Method to POST to send token to API and revoke it !636
-- Remove /discuss prefix in jump-interface !647
-- Refactor fields of StatementReferences !639
+- Add JWT support [!644](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/644)
+- Add PATCH route for issues [!640](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/640)
+- Add status-flag of issue [!643](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/643)
+- Add Cypher Output to retrieve neo4j-compatible discussions [!649](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/649)
+- Add route to bind a reference to a newly created position [!648](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/648)
+- Add uid to login-response [!638](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/638)
+- Extend API to return single Users [!635](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/635)
+- Change HTTP Method to POST to send token to API and revoke it [!636](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/636)
+- Remove /discuss prefix in jump-interface [!647](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/647)
+- Refactor fields of StatementReferences [!639](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/639)
 
 ### 1.12.1 (2018-11-22)
-- Fix API routes, add second positional argument to JSONBase !633
+- Fix API routes, add second positional argument to JSONBase [!633](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/633)
 
 ### 1.12.0 (2018-11-21)
-- Add GraphQL Route to return all statements below a specific position !627
-- Add GraphQL Route to export complete graph as JSON data !623
-- Add origin to statements !620
-- Extend API to support jumps, adding references and retrieving reference usages !618
-- Improve search results to only present statements, which have not already been seen !629
-- Improve search results when no ElasticSearch is enabled !621
-- Remove unused code !626
-- Replace deprecated google-closure library !624
-- Refactor api.models !632
-- Fix timezone !628
-- Fix infinite loop in review queue !622
-- Fix flake8 issues !625
-- Fix wrong transaction commits !631
+- Add GraphQL Route to return all statements below a specific position [!627](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/627)
+- Add GraphQL Route to export complete graph as JSON data [!623](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/623)
+- Add origin to statements [!620](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/620)
+- Extend API to support jumps, adding references and retrieving reference usages [!618](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/618)
+- Improve search results to only present statements, which have not already been seen [!629](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/629)
+- Improve search results when no ElasticSearch is enabled [!621](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/621)
+- Remove unused code [!626](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/626)
+- Replace deprecated google-closure library [!624](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/624)
+- Refactor api.models [!632](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/632)
+- Fix timezone [!628](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/628)
+- Fix infinite loop in review queue [!622](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/622)
+- Fix flake8 issues [!625](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/625)
+- Fix wrong transaction commits [!631](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/631)
 
 When updating from 1.11.0: The GraphQL Route "premise.users" has been renamed to "premise.author"
 
 ### 1.11.0 (2018-10-26)
-- Add overview to see link-only discussions in "My Discussions" !610
-- Add new spinner icon, which does not block the website !614
-- Fix build process so that build script really fails if there is an error !612
-- Fix mutable return values in validators !617
-- Fix Model resolving with GraphQL !616
-- Fix URL in sent mails !611
+- Add overview to see link-only discussions in "My Discussions" [!610](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/610)
+- Add new spinner icon, which does not block the website [!614](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/614)
+- Fix build process so that build script really fails if there is an error [!612](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/612)
+- Fix mutable return values in validators [!617](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/617)
+- Fix Model resolving with GraphQL [!616](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/616)
+- Fix URL in sent mails [!611](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/611)
 
 ### 1.10.6 (2018-10-15)
-- Add CLI function to promote / demote a user to an admin !595
-- Add more detailed error-msgs in issues !604
-- Add route to add new position !605
-- Add validators for form-inputs in the discussion !605
-- Add public API route `/api/search?q=foo` to search for statements (support for 3rd party applications) !607
-- Fix resolve of statements in GraphiQL !600
-- Fix Login-problem for API users, which could no longer change their passwords !598
-- Refactor magic numbers in Fuzzy Mode !601 !602
-- Refactor environment variables !597 !607
-- Language fixes !603
-- Use Abstract Base Class and generalize Queues !596 !597
-- Remove deprecated cryptacular with bcrypt !594
+- Add CLI function to promote / demote a user to an admin [!595](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/595)
+- Add more detailed error-msgs in issues [!604](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/604)
+- Add route to add new position [!605](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/605)
+- Add validators for form-inputs in the discussion [!605](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/605)
+- Add public API route `/api/search?q=foo` to search for statements (support for 3rd party applications) [!607](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/607)
+- Fix resolve of statements in GraphiQL [!600](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/600)
+- Fix Login-problem for API users, which could no longer change their passwords [!598](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/598)
+- Refactor magic numbers in Fuzzy Mode [!601](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/601) [!602](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/602)
+- Refactor environment variables [!597](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/597) [!607](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/607)
+- Language fixes [!603](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/603)
+- Use Abstract Base Class and generalize Queues [!596](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/596) [!597](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/597)
+- Remove deprecated cryptacular with bcrypt [!594](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/594)
 
 ### 1.10.5 (2018-09-21)
-- Fix login flow for LDAP users !591
-- Kick hardcoded admin from notifications !590
-- Add abstract base class for review queues !589
+- Fix login flow for LDAP users [!591](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/591)
+- Kick hardcoded admin from notifications [!590](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/590)
+- Add abstract base class for review queues [!589](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/589)
 
 ### 1.10.4 (2018-09-19)
-- Precompile chameleon templates for production !587
-- Remove own logger and use built-in python logger !586 !578
-- Re-add "change password" for dbas-users !585
-- Simplify reference retrieval via API !584
-- Fix loop in review queue after user participated !583
-- Remove RSS feed !582
+- Precompile chameleon templates for production [!587](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/587)
+- Remove own logger and use built-in python logger [!586](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/586) [!578](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/578)
+- Re-add "change password" for dbas-users [!585](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/585)
+- Simplify reference retrieval via API [!584](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/584)
+- Fix loop in review queue after user participated [!583](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/583)
+- Remove RSS feed [!582](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/582)
 
 ### 1.10.3 (2018-09-14)
 - Fix parse error of history in URL

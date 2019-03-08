@@ -24,9 +24,7 @@ Additionally, there is an authentication-mechanism, which is described in more
 detail, because this is a new / unique feature of the API, which is not used in
 the frontend.
 
-This API uses OpenAPI and is described `in this specification
-<https://app.swaggerhub.com/apis/MrOerni/D-BAS/1>`_, which is currently a
-work-in-progress.
+This API uses OpenAPI and is described in `/swagger-ui/dbas_openapi_v3.yaml </swagger-ui/dbas_openapi_v3.yaml>`_. You can interactivly explore the API under `/swagger-ui/ </swagger-ui/>`_.
 
 
 Authentication
