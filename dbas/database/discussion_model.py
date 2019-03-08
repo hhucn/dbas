@@ -2529,16 +2529,21 @@ class DecisionProcess(DiscussionBase):
     budget: int = Column(Integer, nullable=False, doc="Budget for an issue in cents")
     currency_symbol: str = Column(String, nullable=True)
     positions_end: datetime = Column(DateTime, nullable=True)
+    votes_start: datetime = Column(DateTime, nullable=True)
     votes_end: datetime = Column(DateTime, nullable=True)
 
     issue = relationship(Issue, backref=backref('decision_process', cascade="all, delete-orphan"))
 
-    def __init__(self, issue_id: int, budget: int, currency_symbol="€", positions_end=None, votes_end=None):
+    def __init__(self, issue_id: int, budget: int, currency_symbol="€",
+                 positions_end: datetime = None,
+                 votes_start: datetime = None,
+                 votes_end: datetime = None):
         assert budget > 0
         self.issue_id = issue_id
         self.budget = budget
         self.currency_symbol = currency_symbol
         self.positions_end = positions_end
+        self.votes_start = votes_start
         self.votes_end = votes_end
 
     def budget_str(self):
@@ -2558,6 +2563,8 @@ class DecisionProcess(DiscussionBase):
             "budget_string": self.budget_str(),
             "positions_end": self.positions_end,
             "position_ended": self.position_ended(),
+            "votes_start": self.votes_start,
+            "votes_started?": self.votes_start > datetime.now() if bool(self.votes_start) else True,
             "votes_end": self.votes_end,
             "votes_ended": bool(self.votes_end) and self.votes_end > datetime.now()
         }
