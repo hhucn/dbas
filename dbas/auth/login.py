@@ -143,7 +143,6 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     except Exception as e:
         print(e)
 
-
     msg = __check_login_params(firstname, lastname, nickname, email, password, passwordconfirm)
     if msg:
         return success, _tn.get(msg), db_new_user
