@@ -481,13 +481,7 @@ class ItemDictHelper(object):
         if len(db_premises) == 1:
             url = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, is_not_supportive)
         else:
-            uids = [db_argument.premisegroup_uid]
-            if db_argument.conclusion_uid is not None:
-                url = _um.get_url_for_choosing_premisegroup(False, db_argument.is_supportive,
-                                                            db_argument.conclusion_uid, uids)
-            else:
-                url = _um.get_url_for_choosing_premisegroup(True, db_argument.is_supportive, db_argument.argument_uid,
-                                                            uids)
+            url = _um.get_url_for_choosing_premisegroup([db_argument.premisegroup_uid])
         return url
 
     def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack, gender):

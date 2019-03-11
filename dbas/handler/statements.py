@@ -426,7 +426,7 @@ def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, s
 
     else:
         pgroups = [DBDiscussionSession.query(Argument).get(arg_uid).premisegroup_uid for arg_uid in new_argument_uids]
-        url = _um.get_url_for_choosing_premisegroup(False, supportive, db_conclusion.uid, pgroups)
+        url = _um.get_url_for_choosing_premisegroup(pgroups)
 
     # send notifications and mails
     email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid,
