@@ -123,25 +123,14 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     _tn = Translator(lang)
     success = ''
 
-    firstname = ""
-    lastname = ""
-    nickname = ""
-    email = ""
-    gender = ""
-    password = ""
-    passwordconfirm = ""
+    firstname = escape_string(data.get('firstname', ''))
+    lastname = escape_string(data.get('lastname', ''))
+    nickname = escape_string(data.get('nickname', ''))
+    email = escape_string(data.get('email', ''))
+    gender = escape_string(data.get('gender', ""))
+    password = escape_string(data.get('password', ''))
+    passwordconfirm = escape_string(data['passwordconfirm'])
     db_new_user = None
-
-    try:
-        firstname = escape_string(data['firstname'])
-        lastname = escape_string(data['lastname'])
-        nickname = escape_string(data['nickname'])
-        email = escape_string(data['email'])
-        gender = escape_string(data['gender'])
-        password = escape_string(data['password'])
-        passwordconfirm = escape_string(data['passwordconfirm'])
-    except KeyError as e:
-        LOG.debug(e)
 
     msg = __check_login_params(firstname, lastname, nickname, email, password, passwordconfirm)
     if msg:
