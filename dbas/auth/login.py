@@ -140,8 +140,8 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
         gender = escape_string(data['gender'])
         password = escape_string(data['password'])
         passwordconfirm = escape_string(data['passwordconfirm'])
-    except:
-        pass
+    except KeyError as e:
+        LOG.debug(e)
 
     msg = __check_login_params(firstname, lastname, nickname, email, password, passwordconfirm)
     if msg:
