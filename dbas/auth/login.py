@@ -198,14 +198,14 @@ def __check_login_params(firstname, lastname, nickname, email, password, passwor
         return _.checkEmail
 
     if len(password) == 0:
-        LOG.debug("password is emtpy")
+        LOG.debug("password is empty")
         return _.checkPassword
 
     if len(passwordconfirm) == 0:
         LOG.debug("password-confirm is empty")
         return _.checkPasswordConfirm
 
-    # are the password equal?
+    # are the passwords equal?
     if not password == passwordconfirm:
         LOG.debug("Passwords are not equal")
         return _.pwdNotEqual
