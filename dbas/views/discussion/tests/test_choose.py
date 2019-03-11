@@ -23,9 +23,6 @@ class DiscussionChoseViewTests(unittest.TestCase):
 
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
-            'is_argument': self.is_argument,
-            'is_supportive': self.is_supportive,
-            'id': (self.arg_uid,),
             'pgroup_ids': [self.pgroup_uid],
         })
         response = choose(request)
@@ -42,9 +39,6 @@ class DiscussionChoseViewTests(unittest.TestCase):
 
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
-            'is_argument': self.is_argument,
-            'is_supportive': self.is_supportive,
-            'id': (self.arg_uid,),
             'pgroup_ids': [self.pgroup_uid],
         })
         response = choose(request)
@@ -58,9 +52,6 @@ class DiscussionChoseViewTests(unittest.TestCase):
     def test_page_fail(self):
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-dog',
-            'is_argument': self.is_argument,
-            'is_supportive': self.is_supportive,
-            'id': (self.arg_uid,),
             'pgroup_ids': [self.pgroup_uid, 'a'],
         })
         response = choose(request)
@@ -68,9 +59,6 @@ class DiscussionChoseViewTests(unittest.TestCase):
 
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-doggy-dog',
-            'is_argument': self.is_argument,
-            'is_supportive': self.is_supportive,
-            'id': (self.arg_uid,),
             'pgroup_ids': [self.pgroup_uid, 'a'],
         })
         response = choose(request)
@@ -78,9 +66,6 @@ class DiscussionChoseViewTests(unittest.TestCase):
 
         request = construct_dummy_request(match_dict={
             'slug': 'cat-or-doggy-dog',
-            'is_argument': self.is_argument,
-            'is_supportive': self.is_supportive,
-            'id': (self.arg_uid,),
             'pgroup_ids': [self.pgroup_uid, 55],
         })
         response = choose(request)

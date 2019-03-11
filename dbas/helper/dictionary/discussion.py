@@ -650,12 +650,12 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_choosing(self, uid, is_uid_argument, is_supportive) -> dict:
+    def get_dict_for_choosing(self, uid: int, is_uid_argument, is_supportive) -> dict:
         """
         Prepares the discussion dict with all bubbles for the choosing an premise,
         when the user inserted more than one new premise.
 
-        :param uid: Argument.uid
+        :param uid: Argument.uid or Statement.uid
         :param is_uid_argument: Boolean
         :param is_supportive: Boolean
         :return:
