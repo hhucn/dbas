@@ -601,9 +601,9 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(db_review1 + 1, db_review2)
         self.assertEqual(db_values1 + 2, db_values2)
 
-        tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=20).first()
+        tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=16).first()
         DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=tmp.uid).delete()
-        DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=20).delete()
+        DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=16).delete()
         DBDiscussionSession.flush()
         transaction.commit()
 
@@ -638,7 +638,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_merge_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(json_body={
-            'uid': 20,
+            'uid': 24,
             'key': 'merge',
             'text_values': ['it is based on the cats race', 'not every cat is capricious']
         })
@@ -763,11 +763,11 @@ class AjaxReviewTest(unittest.TestCase):
         response = split_or_merge_premisegroup(request)
         self.assertEqual(response.status_code, 400)
 
-    def test_review_splitted_premisegroup(self, pgroup_uid=21, resetdb=True):
+    def test_review_splitted_premisegroup(self, statement_uid: int=25, pgroup_uid: int=21, resetdb: bool=True):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
         request = testing.DummyRequest(json_body={
-            'uid': pgroup_uid,
+            'uid': statement_uid,
             'key': 'split',
             'text_values': ['it is based on the cats race', 'not every cat is capricious']
         })
@@ -877,11 +877,11 @@ class AjaxReviewTest(unittest.TestCase):
             DBDiscussionSession.flush()
             transaction.commit()
 
-    def test_review_merged_premisegroup(self, pgroup_uid=27, resetdb=True):
+    def test_review_merged_premisegroup(self, statement_uid=31, pgroup_uid=27, resetdb=True):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
         request = testing.DummyRequest(json_body={
-            'uid': pgroup_uid,
+            'uid': statement_uid,
             'key': 'merge',
             'text_values': ['cats are small and fluffy']
         })
@@ -1026,11 +1026,11 @@ class AjaxReviewTest(unittest.TestCase):
         response = cancel_review(request)
         self.assertEqual(response.status_code, 400)
 
-    def test_cancel_review_splitted_premisegroup(self):
+    def test_cancel_review_split_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
         request = testing.DummyRequest(json_body={
-            'uid': 33,
+            'uid': 41,
             'key': key_split,
             'text_values': ['cats are small and fluffy', 'split it up, dude']
         })
@@ -1055,7 +1055,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
         request = testing.DummyRequest(json_body={
-            'uid': 15,
+            'uid': 19,
             'key': key_merge,
             'text_values': ['cats are small and fluffy']
         })
@@ -1118,7 +1118,7 @@ class AjaxReviewTest(unittest.TestCase):
         # get one argument with the old premisegroup
         db_argument_old = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=uid).first()
         old_text = get_text_for_argument_uid(db_argument_old.uid)
-        self.test_review_splitted_premisegroup(pgroup_uid=uid, resetdb=False)
+        self.test_review_splitted_premisegroup(statement_uid=26, pgroup_uid=uid, resetdb=False)
         # get one argument with the new premisegroup
         db_new_pgroup = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(old_premisegroup_uid=uid).first()
         db_argument_new1 = DBDiscussionSession.query(Argument).get(db_argument_old.uid)
@@ -1163,7 +1163,7 @@ class AjaxReviewTest(unittest.TestCase):
         # get one argument with the old premisegroup
         db_argument_old = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=uid).first()
         old_text = get_text_for_argument_uid(db_argument_old.uid)
-        self.test_review_merged_premisegroup(pgroup_uid=uid, resetdb=False)
+        self.test_review_merged_premisegroup(statement_uid=18, pgroup_uid=uid, resetdb=False)
         # get one argument with the new premisegroup
         db_new_pgroup = DBDiscussionSession.query(PremiseGroupMerged).filter_by(old_premisegroup_uid=uid).first()
         db_argument_new1 = DBDiscussionSession.query(Argument).get(db_argument_old.uid)
