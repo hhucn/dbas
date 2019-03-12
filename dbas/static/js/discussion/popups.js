@@ -529,7 +529,7 @@ PopupHandler.prototype.__buildMergeSplitPopup = function (key, uid) {
             values.push($(this).val());
         });
         new AjaxReviewHandler().splitOrMerge(uid, key, values);
-    }).prop('disabled', true);
+    }).prop('disabled', key === "merge");
 
     // hover and on-click-function for the add key
     $('#popup-' + key + '-statement-add').hover(function () {
