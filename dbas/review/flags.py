@@ -87,7 +87,7 @@ def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReason
 def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_values: list, db_user: User,
                                       tn: Translator) -> dict:
     """
-    Flags a statement for a merge or split event. On split, the statement of the pgroup will be splitted into the
+    Flags a statement for a merge or split event. On split, the statement of the pgroup will be split into the
     given text_values. On merge the statements of the pgroup will be connected by an and.
 
     :param key: either 'split' or 'merge'
