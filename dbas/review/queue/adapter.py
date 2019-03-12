@@ -313,4 +313,6 @@ class QueueAdapter:
 
     @staticmethod
     def __queue_is_empty(queue_information: dict):
-        return queue_information is None or queue_information.get('issue_titles') is None
+        return queue_information is None \
+            or queue_information.get('issue_titles') is None \
+            or len(queue_information.get('issue_titles')) == 0
