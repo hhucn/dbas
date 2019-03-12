@@ -459,6 +459,27 @@ def valid_premisegroup(request):
         return False
 
 
+def valid_statement_uid(request):
+    """
+    Validates the uid of a statement
+
+    :param request:
+    :return:
+    """
+    statement_uid = request.json_body.get('uid')
+    db_statement = None
+    if is_integer(statement_uid):
+        db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
+
+    if db_statement:
+        request.validated['statement'] = db_statement
+        return True
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        add_error(request, 'Valid statement uid is missing', _tn.get(_.internalError))
+        return False
+
+
 def valid_premisegroups(request):
     """
     Validates the correct build of premisegroups
