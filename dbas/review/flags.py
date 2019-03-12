@@ -5,8 +5,9 @@ Provides helping function for flagging arguments.
 """
 
 import logging
-import transaction
 from typing import Union, Optional
+
+import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
@@ -110,9 +111,9 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
             info = tn.get(_.alreadyFlaggedByOthers)
         return {'success': '', 'info': info}
 
-    if key is key_merge:
+    if key == key_merge:
         __add_merge_review(pgroup.uid, db_user.uid, text_values)
-    elif key is key_split:
+    elif key == key_split:
         __add_split_review(pgroup.uid, db_user.uid, text_values)
 
     success = tn.get(_.thxForFlagText)
