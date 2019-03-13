@@ -459,7 +459,7 @@ def valid_premisegroup(request):
         return False
 
 
-def valid_statement_uid(request):
+def valid_statement_uid(request) -> bool:
     """
     Validates the uid of a statement
 
@@ -469,7 +469,7 @@ def valid_statement_uid(request):
     statement_uid = request.json_body.get('uid')
     db_statement = None
     if is_integer(statement_uid):
-        db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
+        db_statement: Statement = DBDiscussionSession.query(Statement).get(statement_uid)
 
     if db_statement:
         request.validated['statement'] = db_statement
