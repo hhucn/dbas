@@ -3,8 +3,9 @@ import logging
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewOptimization, ReviewSplit, \
-    ReviewMerge
+    ReviewMerge, Statement, PremiseGroup, Premise
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.query import revoke_author_of_statement_content, revoke_author_of_argument_content
 from dbas.lib import get_discussion_language
@@ -21,7 +22,8 @@ from dbas.review.queue.split import SplitQueue
 from dbas.strings.translator import Translator
 from dbas.validators.core import validate, has_keywords_in_json_path, has_maybe_keywords
 from dbas.validators.database import valid_database_model
-from dbas.validators.discussion import valid_premisegroup, valid_text_values, valid_statement, valid_argument
+from dbas.validators.discussion import valid_premisegroup, valid_text_values, valid_statement, valid_argument, \
+    valid_statement_uid
 from dbas.validators.reviews import valid_review_reason, valid_not_executed_review, valid_uid_as_row_in_review_queue
 from dbas.validators.user import valid_user, valid_user_as_author, valid_user_as_author_of_statement, \
     valid_user_as_author_of_argument
@@ -51,7 +53,7 @@ def flag_argument_or_statement(request):
 
 
 @view_config(route_name='split_or_merge_statement', renderer='json')
-@validate(valid_user, valid_premisegroup, valid_text_values, has_keywords_in_json_path(('key', str)))
+@validate(valid_user, valid_statement_uid, valid_text_values, has_keywords_in_json_path(('key', str)))
 def split_or_merge_statement(request):
     """
     Flags a statement for a specific reason
@@ -63,7 +65,8 @@ def split_or_merge_statement(request):
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
     db_user = request.validated['user']
-    pgroup = request.validated['pgroup']
+    statement: Statement = request.validated['statement']
+    pgroup: PremiseGroup = DBDiscussionSession.query(Premise).filter(Premise.statement_uid == statement.uid).one().premisegroup
     key = request.validated['key']
     tvalues = request.validated['text_values']
 

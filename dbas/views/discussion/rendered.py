@@ -418,6 +418,6 @@ def jump(request):
         modify_discussion_url(prepared_discussion)
 
     modify_discussion_bubbles(prepared_discussion, request.registry)
-    append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
+    append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
 
     return prepared_discussion

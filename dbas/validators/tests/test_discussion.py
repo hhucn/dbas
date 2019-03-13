@@ -239,6 +239,32 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
+    def test_valid_statement_uid(self):
+        request = construct_dummy_request()
+        response = discussion.valid_statement_uid(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request({'uid': 200})
+        response = discussion.valid_statement_uid(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request({'uid': "79a"})
+        response = discussion.valid_statement_uid(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request({'uid': "79"})
+        response = discussion.valid_statement_uid(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request({'uid': 79})
+        response = discussion.valid_statement_uid(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
     def test_valid_premisegroups(self):
         request = construct_dummy_request()
         response = discussion.valid_premisegroups(request)
