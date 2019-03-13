@@ -763,7 +763,7 @@ class AjaxReviewTest(unittest.TestCase):
         response = split_or_merge_premisegroup(request)
         self.assertEqual(response.status_code, 400)
 
-    def test_review_splitted_premisegroup(self, statement_uid: int=25, pgroup_uid: int=21, resetdb: bool=True):
+    def test_review_splitted_premisegroup(self, statement_uid: int = 25, pgroup_uid: int = 21, resetdb: bool = True):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
         request = testing.DummyRequest(json_body={
