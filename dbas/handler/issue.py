@@ -14,7 +14,7 @@ from slugify import slugify
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
-    ClickedStatement, StatementToIssue, ClickedArgument, DecisionProcess
+    ClickedStatement, StatementToIssue, ClickedArgument
 from dbas.handler import user
 from dbas.handler.arguments import get_all_statements_for_args
 from dbas.handler.language import get_language_from_header
@@ -85,6 +85,8 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict:
     tooltip = _t.get(_.discussionInfoTooltipSg) if stat_count == 1 else _t.get(_.discussionInfoTooltipPl)
     tooltip = tooltip.format(date, time, stat_count)
 
+    decision_process = db_issue.decision_process
+
     return {
         'slug': slug,
         'lang': lang,
@@ -101,9 +103,7 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict:
         'intro': _t.get(_.currentDiscussion),
         'duration': duration,
         'read_only': db_issue.is_read_only,
-        'features': [str(feature) for feature in db_issue.features],
-        'decidotron_budget': DecisionProcess.by_id(
-            db_issue.uid).to_dict() if 'budget_decision' in [str(feature) for feature in db_issue.features] else None
+        'decidotron_budget': decision_process.to_dict() if decision_process else None
     }
 
 

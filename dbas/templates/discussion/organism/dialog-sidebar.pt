@@ -1,7 +1,7 @@
 <!-- sidebar of the discussion -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
   <ul id="dialog-sidebar" class="sidebar center">
-    <li tal:condition="'budget_decision' in issues.features">
+    <li tal:condition="issues.decidotron_budget">
       <button id="decidotron-button" class="btn btn-primary btn-lg btn-block"
            tal:condition="extras.logged_in and issues.decidotron_budget.votes_started"
               onclick="

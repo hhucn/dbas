@@ -14,7 +14,7 @@ import bcrypt
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
 
 from dbas.database import DBDiscussionSession, DiscussionBase
@@ -86,7 +86,8 @@ class Issue(DiscussionBase):
     positions = relationship('Statement', secondary='statement_to_issue', viewonly=True,
                              secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
 
-    features: List['Feature'] = relationship('Feature', secondary='issue_features', back_populates='issues')
+    decision_process: Optional['DecisionProcess'] = relationship('DecisionProcess', back_populates='issue',
+                                                                 uselist=False)
 
     def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
                  is_read_only=False):
@@ -139,9 +140,6 @@ class Issue(DiscussionBase):
         :return: None
         """
         self.is_read_only = is_read_only
-
-    def has_feature(self, descriptor) -> bool:
-        return descriptor in [feature.identifier for feature in self.features]
 
     @staticmethod
     def by_slug(slug: str) -> 'Issue':
@@ -240,8 +238,6 @@ class User(DiscussionBase):
         :param password: String (hashed)
         :param gender: String
         :param group_uid: int
-        :param token:
-        :param token_timestamp:
         """
         self.firstname = firstname
         self.surname = surname
@@ -2517,31 +2513,6 @@ class ShortLinks(DiscussionBase):
         self.timestamp = get_now()
 
 
-class Feature(DiscussionBase):
-    __tablename__ = 'feature'
-    identifier: str = Column(Text, primary_key=True)
-    issues: List[Issue] = relationship(Issue, secondary='issue_features', back_populates='features')
-
-    def __init__(self, identifier):
-        self.identifier = identifier
-
-    def __json__(self, _request):
-        return str(self.identifier)
-
-    def __str__(self):
-        return str(self.identifier)
-
-
-class IssueFeature(DiscussionBase):
-    __tablename__ = 'issue_features'
-    issue_id: int = Column(Integer, ForeignKey(Issue.uid), primary_key=True)
-    feature_identifier: str = Column(Text, ForeignKey(Feature.identifier), primary_key=True)
-
-    def __init__(self, issue_id, feature_identifier):
-        self.issue_id = issue_id
-        self.feature_identifier = feature_identifier
-
-
 class DecisionProcess(DiscussionBase):
     __tablename__ = 'decidotron_decision_process'
     issue_id: int = Column(Integer, ForeignKey(Issue.uid), primary_key=True)
@@ -2550,9 +2521,10 @@ class DecisionProcess(DiscussionBase):
     positions_end: datetime = Column(DateTime, nullable=True)
     votes_start: datetime = Column(DateTime, nullable=True)
     votes_end: datetime = Column(DateTime, nullable=True)
-    host: str = Column(String, nullable=False)
+    host: str = Column(String, nullable=False, doc="The host of the associated decidotron instance")
 
-    issue = relationship(Issue, backref=backref('decision_process', cascade="all, delete-orphan"))
+    issue = relationship(Issue,
+                         back_populates='decision_process')  # backref=backref('decision_process', cascade="all, delete-orphan"))
 
     def __init__(self, issue_id: int, budget: int, host: str, currency_symbol="€",
                  positions_end: datetime = None,
