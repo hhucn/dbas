@@ -46,11 +46,11 @@ function addBorderToActiveNavbar() {
 function addCookieConsent() {
     'use strict';
 
-    if (!Cookies.get('EU_COOKIE_LAW_CONSENT')){
+    if (!Cookies.get('EU_COOKIE_LAW_CONSENT')) {
         $('#privacy-policy-popup').show();
         $('#privacy-policy-text').text(_t(euCookiePopupText));
         $('#privacy-policy-link').html(_t(euCookiePopoupButton2));
-        $('#privacy-policy-btn').text(_t(euCookiePopoupButton1)).click(function(){
+        $('#privacy-policy-btn').text(_t(euCookiePopoupButton1)).click(function () {
             $('#privacy-policy-popup').hide();
             Cookies.set('EU_COOKIE_LAW_CONSENT', true, {expires: 180});
         });
@@ -274,9 +274,7 @@ function prepareLoginRegistrationPopup() {
             $('#' + popupLoginWarningMessage).hide();
             new AjaxLoginHandler().registration();
         } else {
-            $('#' + popupLoginWarningMessage).fadeIn("slow");
-            $('#' + popupLoginWarningMessageText).text(text);
-            new AjaxLoginHandler().registration();
+            new AjaxLoginHandler().registration(text);
         }
 
     });
@@ -341,7 +339,7 @@ function setTextWatcherInputLength(element, displayAtTop) {
     });
 }
 
-function __keyUpFuncForTextwatcher(element, field, minLength, maxLength, msg){
+function __keyUpFuncForTextwatcher(element, field, minLength, maxLength, msg) {
     'use strict';
     var text = element.val().trim();
     var currentLength = text.length;
@@ -413,20 +411,15 @@ $(document).ready(function () {
     // set current file to active
     if (path.indexOf(urlContact) !== -1) {
         setLinkActive('#' + contactLink);
-    }
-    else if (path.indexOf(urlLogin) !== -1) {
+    } else if (path.indexOf(urlLogin) !== -1) {
         setLinkActive('#' + loginLinkId);
-    }
-    else if (path.indexOf(urlDiscussions) !== -1) {
+    } else if (path.indexOf(urlDiscussions) !== -1) {
         setLinkActive('#' + myDiscussionsLink);
-    }
-    else if (path.indexOf(urlContent) !== -1) {
+    } else if (path.indexOf(urlContent) !== -1) {
         setLinkActive('#' + contentLink);
-    }
-    else if (path.indexOf(urlReview) !== -1) {
+    } else if (path.indexOf(urlReview) !== -1) {
         setLinkActive('#' + reviewLinkId);
-    }
-    else {
+    } else {
         setLinkActive('');
     }
 
