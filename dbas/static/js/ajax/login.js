@@ -45,7 +45,7 @@ function AjaxLoginHandler() {
             } else if (xhr.status === 302) {
                 location.href = xhr.getResponseHeader('Location');
             } else {
-                $('#' + popupLoginFailed).show();
+                $('#' + popupLoginWarningMessageText).show();
                 setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
             }
         };
@@ -95,7 +95,7 @@ function AjaxLoginHandler() {
     /**
      *
      */
-    this.registration = function () {
+    this.registration = function (error_message) {
         $('#' + popupLoginRegistrationFailed).hide();
         var gender = 'n';
         if ($('#' + popupLoginInlineRadioGenderM).is(':checked')) {
@@ -126,10 +126,12 @@ function AjaxLoginHandler() {
             $('#' + popupLoginPasswordconfirmInputId).val('');
         };
         var fail = function ajaxRegistrationFail(data) {
-            $('#' + popupLoginRegistrationFailed).show();
+            $('#' + popupLoginRegistrationInfo).show();
+            $('#' + popupLoginRegistrationInfo + '-message').text(error_message);
             $('#' + popupLoginPasswordInputId).val('');
             $('#' + popupLoginPasswordconfirmInputId).val('');
             setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
