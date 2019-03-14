@@ -45,6 +45,7 @@ function AjaxLoginHandler() {
             } else if (xhr.status === 302) {
                 location.href = xhr.getResponseHeader('Location');
             } else {
+                $('#' + popupLoginFailed).show();
                 setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
             }
         };
