@@ -1,7 +1,8 @@
 import logging
 import random
+from typing import List, Type
+
 import transaction
-from typing import List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Issue, Statement, StatementToIssue, sql_timestamp_pretty_print, \
@@ -274,7 +275,8 @@ def get_complete_review_count(db_user: User) -> int:
     return count
 
 
-def get_review_count_for(review_type, last_reviewer_type, db_user):
+def get_review_count_for(review_type: Type[AbstractReviewCase], last_reviewer_type: Type[AbstractLastReviewerCase],
+                         db_user: User) -> int:
     """
     Returns the count of reviews of *review_type* for the user with *nickname*, whereby all reviewed data
     of *last_reviewer_type* are not observed
@@ -286,24 +288,17 @@ def get_review_count_for(review_type, last_reviewer_type, db_user):
     """
     #  logger('ReviewQueues', '__get_review_count_for', 'main')
     if not db_user:
-        db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
-        return len(db_reviews)
+        return DBDiscussionSession.query(review_type).filter_by(is_executed=False).count()
 
-    # get all reviews but filter reviews, which
+    # get all reviews but filter reviews which
     # - the user has detected
     # - the user has reviewed
     db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
-    already_reviewed = []
-    for last_review in db_last_reviews_of_user:
-        already_reviewed.append(last_review.review_uid)
+    already_reviewed = [last_review.review_uid for last_review in db_last_reviews_of_user]
     db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
-                                                               review_type.detector_uid != db_user.uid)
-
-    if len(already_reviewed) > 0:
-        db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
-    db_reviews = db_reviews.all()
-
-    return len(db_reviews)
+                                                               review_type.detector_uid != db_user.uid,
+                                                               ~review_type.uid.in_(already_reviewed))
+    return db_reviews.count()
 
 
 def add_vote_for(db_user: User, db_review: AbstractReviewCase, is_okay: bool,
