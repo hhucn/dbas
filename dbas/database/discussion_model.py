@@ -1422,6 +1422,11 @@ class AbstractReviewCase(DiscussionBase):
     def update_timestamp(self):
         pass
 
+    @abstractmethod
+    def get_issues(self) -> [Issue]:
+        """Get the issues to which the statements of this review case belong"""
+        pass
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
 
@@ -1493,6 +1498,11 @@ class ReviewDelete(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        if self.argument:
+            return [self.argument.issue]
+        return self.statement.issues
+
 
 class ReviewEdit(AbstractReviewCase):
     """
@@ -1553,6 +1563,11 @@ class ReviewEdit(AbstractReviewCase):
         :return: None
         """
         self.timestamp = get_now()
+
+    def get_issues(self) -> [Issue]:
+        if self.argument:
+            return [self.argument.issue]
+        return self.statement.issues
 
 
 class ReviewEditValue(DiscussionBase):
@@ -1644,6 +1659,11 @@ class ReviewOptimization(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        if self.argument:
+            return [self.argument.issue]
+        return self.statement.issues
+
 
 class ReviewDuplicate(AbstractReviewCase):
     """
@@ -1706,6 +1726,9 @@ class ReviewDuplicate(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        return self.duplicate_statement.issues
+
 
 class ReviewMerge(AbstractReviewCase):
     """
@@ -1763,6 +1786,9 @@ class ReviewMerge(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        return [self.premisegroup.premises[0].issue]
+
 
 class ReviewSplit(AbstractReviewCase):
     """
@@ -1819,6 +1845,9 @@ class ReviewSplit(AbstractReviewCase):
         :return: None
         """
         self.timestamp = get_now()
+
+    def get_issues(self) -> [Issue]:
+        return [self.premisegroup.premises[0].issue]
 
 
 class ReviewSplitValues(DiscussionBase):

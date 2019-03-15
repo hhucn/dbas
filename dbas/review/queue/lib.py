@@ -279,7 +279,8 @@ def get_review_count_for(review_type: Type[AbstractReviewCase], last_reviewer_ty
                          db_user: User) -> int:
     """
     Returns the count of reviews of *review_type* for the user with *nickname*, whereby all reviewed data
-    of *last_reviewer_type* are not observed
+    of *last_reviewer_type* are not observed. Reviews for statements in issues the user has not participated in are
+    not returned
 
     :param review_type: ReviewEdit, ReviewOptimization or ...
     :param last_reviewer_type: LastReviewerEdit, LastReviewer...
@@ -298,7 +299,14 @@ def get_review_count_for(review_type: Type[AbstractReviewCase], last_reviewer_ty
     db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
                                                                review_type.detector_uid != db_user.uid,
                                                                ~review_type.uid.in_(already_reviewed))
-    return db_reviews.count()
+    # count only those reviews where the user participated in a related issue
+    reviews_with_participation = {r for r in db_reviews.all()
+                                  if db_user in participating_users_in_issues(r.get_issues())}
+    return len(reviews_with_participation)
+
+
+def participating_users_in_issues(issues: [Issue]) -> {User}:
+    return {u for i in issues for u in i.participating_users}
 
 
 def add_vote_for(db_user: User, db_review: AbstractReviewCase, is_okay: bool,
