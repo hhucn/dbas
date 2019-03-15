@@ -229,6 +229,7 @@ function prepareLoginRegistrationPopup() {
         }
     });
 
+
     $('#' + popupLoginForgotPasswordText).click(function () {
         var body = $('#' + popupLoginForgotPasswordBody);
         if (body.is(':visible')) {
