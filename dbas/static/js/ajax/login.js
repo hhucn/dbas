@@ -45,8 +45,8 @@ function AjaxLoginHandler() {
             } else if (xhr.status === 302) {
                 location.href = xhr.getResponseHeader('Location');
             } else {
-                $('#' + popupLoginRegistrationInfo).show();
-                $('#' + popupLoginRegistrationInfo + '-message').text(_t(userPasswordNotMatch));
+                $('#' + popupLoginFailed).show();
+                $('#' + popupLoginFailed + '-message').text(_t(userPasswordNotMatch));
                 setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
             }
         };
