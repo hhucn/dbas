@@ -50,9 +50,8 @@ def init_budget_discussion(argv=sys.argv):
         usage(argv)
     config_uri = argv[1]
     setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
 
-    discussion_engine = get_dbas_db_configuration('discussion', settings)
+    discussion_engine = get_dbas_db_configuration(settings=get_appsettings(config_uri))
     DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
@@ -63,8 +62,9 @@ def init_budget_discussion(argv=sys.argv):
                       long_info="Zuviel Text",
                       author_uid=User.by_nickname("Björn").uid,
                       lang_uid=2)
+        DBDiscussionSession.add(issue)
         DBDiscussionSession.flush()
-        DBDiscussionSession.add(DecisionProcess(issue.uid, budget, "€"))
+        DBDiscussionSession.add(DecisionProcess(issue.uid, budget, "http://0.0.0.0:3000"))
 
         transaction.commit()
 
