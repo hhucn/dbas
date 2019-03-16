@@ -12,7 +12,6 @@ from dbas.handler.notification import read_notifications, delete_notifications, 
 from dbas.handler.password import request_password
 from dbas.handler.settings import set_settings
 from dbas.helper.query import set_user_language
-from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import valid_lang_cookie_fallback
 from dbas.validators.core import has_keywords_in_json_path, has_maybe_keywords, validate
