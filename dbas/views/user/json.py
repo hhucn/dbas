@@ -96,8 +96,7 @@ def user_delete(request):
 @view_config(route_name='user_registration', renderer='json')
 @validate(valid_lang_cookie_fallback,
           has_keywords_in_json_path(('firstname', str), ('lastname', str), ('nickname', str), ('email', str),
-                                    ('gender', str), ('password', str),
-                                    ('passwordconfirm', str)))
+                                    ('gender', str), ('password', str), ('passwordconfirm', str)))
 def user_registration(request):
     """
     Registers new user with data given in the ajax request.
