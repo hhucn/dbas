@@ -35,10 +35,10 @@ def user_login(request):
     """
     LOG.debug("Login user with Nickname and Password")
     lang = get_language_from_cookie(request)
-    nickname = request.validated['user']
-    password = request.validated['password']
-    keep_login = request.validated['keep_login']
-    redirect_url = request.validated['redirect_url']
+    nickname = request.validated.get('user', '')
+    password = request.validated.get('password', '')
+    keep_login = request.validated.get('keep_login', '')
+    redirect_url = request.validated.get('redirect_url', '')
 
     login_data = login_local_user(nickname, password, request.mailer, lang)
 
