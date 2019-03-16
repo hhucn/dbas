@@ -131,7 +131,9 @@ function AjaxLoginHandler() {
             $('#' + popupLoginRegistrationInfo + '-message').text(error_message);
             $('#' + popupLoginPasswordInputId).val('');
             $('#' + popupLoginPasswordconfirmInputId).val('');
-            setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+            if (data === null) {
+                setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+            }
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
