@@ -44,7 +44,12 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, more: dict
 
     new_statement: Statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
-    if 'decidotron_cost' in more:
+    if db_issue.decision_process and 'decidotron_cost' not in more:
+        return {
+            'status': 'fail',  # best error management
+            'error': 'Cost missing for an issue with a decision_process'
+        }
+    elif 'decidotron_cost' in more:
         cost = float(more['decidotron_cost'])
         add_associated_cost(db_issue, new_statement, to_cents(cost))
 
