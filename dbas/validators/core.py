@@ -22,9 +22,9 @@ def has_keywords_in_json_path(*keywords: Tuple[str, type]):
         error_occured = False
         for (keyword, ktype) in keywords:
             value = request.json_body.get(keyword, '')
-            if value is not '' and isinstance(value, ktype):
+            if value != '' and isinstance(value, ktype):
                 request.validated[keyword] = value
-            elif value is '':
+            elif value == '':
                 add_error(request, 'Parameter {} is missing in body'.format(keyword))
                 error_occured = True
             else:
