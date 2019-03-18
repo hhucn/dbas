@@ -75,11 +75,9 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
     @given(password=st.text())
     @settings(deadline=1000)
     def test_login_wrong_password(self, password: str):
-        pwd = password.replace('\x00', '')
-        pwd = pwd.replace('iamatestuser2016', r'¯\_(ツ)_/¯')
         request = construct_dummy_request({
             'nickname': 'Walter',
-            'password': pwd
+            'password': '¯\_(ツ)_/¯'
         })
         response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
@@ -102,8 +100,8 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
             'password': 'thankgoditsfriday'
         })
         response = apiviews.user_login(request)
-        self.assertIn('nickname', request.validated)
-        self.assertEqual(401, response.status_code)
+        self.assertNotIn('nickname', request.validated)
+        self.assertEqual(400, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_logout_valid_user(self):
