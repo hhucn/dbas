@@ -2530,7 +2530,8 @@ class DecisionProcess(DiscussionBase):
                  positions_end: datetime = None,
                  votes_start: datetime = None,
                  votes_end: datetime = None):
-        assert budget > 0
+        if budget <= 0:
+            raise ValueError("The Budget has to be greater than 0!")
         self.issue_id = issue_id
         self.budget = budget
         self.host = host
