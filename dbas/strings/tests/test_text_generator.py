@@ -13,7 +13,7 @@ from dbas.strings.translator import Translator
 from dbas.tests.utils import TestCaseWithConfig
 
 
-class TextGeneratorText(TestCaseWithConfig):
+class TestTextGenerator(TestCaseWithConfig):
     def setUp(self):
         super().setUp()
         self.premise = 'some premise text'
@@ -231,9 +231,9 @@ class TextGeneratorText(TestCaseWithConfig):
         print(res)
         self.assertEqual(res[0], 'I accept the <span data-argumentation-type="attack">reason</span>.')
         self.assertEqual(res[1], 'The <span data-argumentation-type="attack">reason</span> does not hold.')
-        self.assertEqual(res[2], 'I want to add a new <span data-argumentation-type="attack">reason</span>.')
-        self.assertEqual(res[3],
+        self.assertEqual(res[2],
                          'The <span data-argumentation-type="attack">reason</span> does not support the <span data-argumentation-type="argument">assertion</span>.')
+        self.assertEqual(res[3], 'I want to add a new <span data-argumentation-type="attack">reason</span>.')
 
     def test_get_text_for_support(self):
         arg = DBDiscussionSession.query(Argument).get(2)
@@ -332,16 +332,15 @@ class TextGeneratorText(TestCaseWithConfig):
 
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
-
-            text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they do <span data-attitude="con">not</span> believe that this is <span data-attitude="con">a good '
+            text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they do <span data-attitude="con">not</span> believe that this is <span data-argumentation-type="argument">a good '
             if not color_html and not supportive:
-                text += 'counter-argument for</span></span> some conclusion text<span>. Other participants think that</span> some confrontation text<span>.'
+                text += 'counter-argument for</span></span> some conclusion text<span>. They think that</span> some confrontation text<span>.'
             elif not color_html and supportive:
-                text += 'argument for</span></span> some conclusion text<span>. Other participants think that</span> some confrontation text<span>.'
+                text += 'argument for</span></span> some conclusion text<span>. They think that</span> some confrontation text<span>.'
             elif color_html and not supportive:
-                text += 'counter-argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Other participants think that</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+                text += 'counter-argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. They think that</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
             elif color_html and supportive:
-                text += 'argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Other participants think that</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+                text += 'argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. They think that</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
             text += '<br><br>What do you think about that?</span>'
 
             sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
@@ -435,13 +434,13 @@ class TextGeneratorText(TestCaseWithConfig):
 
             text = '<span class="triangle-content-text">Andere Teilnehmer haben bisher keine Meinung dazu, dass some premise text. Aber sie glauben, dass es <span data-attitude="con">keine gute Begründung '
             if not color_html and not supportive:
-                text += 'dagegen</span> ist, <span data-attitude="con">dass</span></span> some conclusion text<span>. Die anderen Teilnehmer denken, dass</span> some confrontation text<span>.'
+                text += 'dagegen</span> ist, <span data-argumentation-type="argument">dass</span></span> some conclusion text<span>. Sie denken, dass</span> some confrontation text<span>.'
             elif not color_html and supportive:
-                text += 'dafür</span> ist, <span data-attitude="con">dass</span></span> some conclusion text<span>. Die anderen Teilnehmer denken, dass</span> some confrontation text<span>.'
+                text += 'dafür</span> ist, <span data-argumentation-type="argument">dass</span></span> some conclusion text<span>. Sie denken, dass</span> some confrontation text<span>.'
             elif color_html and not supportive:
-                text += 'dagegen</span> ist, <span data-attitude="con">dass</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Die anderen Teilnehmer denken, dass</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+                text += 'dagegen</span> ist, <span data-argumentation-type="argument">dass</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Sie denken, dass</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
             elif color_html and supportive:
-                text += 'dafür</span> ist, <span data-attitude="con">dass</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Die anderen Teilnehmer denken, dass</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+                text += 'dafür</span> ist, <span data-argumentation-type="argument">dass</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Sie denken, dass</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
             text += '<br><br>Was denken Sie darüber?</span>'
 
             sys_text, gender = tg.get_text_for_confrontation('de', 'Tobias', self.premise, self.conclusion,
