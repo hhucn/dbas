@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from typing import Optional
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement
+from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement, \
+    Argument
 from dbas.lib import get_author_data, Relations, get_global_url
 from dbas.strings.lib import start_with_capital, start_with_small
 from .keywords import Keywords as _
@@ -762,7 +764,7 @@ def __translation_based_on_gender(_t, keyword_m, keyword_f, gender):
         return _t.get(keyword_f)
 
 
-def get_name_link_of_arguments_author(argument, nickname, with_link=True):
+def get_name_link_of_arguments_author(argument: Argument, nickname: Optional[str], with_link: bool = True):
     """
     Will return author of the argument, if the first supporting user
 
@@ -793,7 +795,7 @@ def get_name_link_of_arguments_author(argument, nickname, with_link=True):
         else:
             return {
                 'user': None,
-                'text': '',
+                'link': '',
                 'gender': 'n',
                 'is_valid': False
             }
