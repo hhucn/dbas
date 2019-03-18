@@ -271,25 +271,6 @@ def get_strings_for_duplicates_or_reasons(search_value: str, issue_uid: int, sta
     return return_array[:RESULT_LENGTH]
 
 
-def get_strings_for_issues(search_value: str) -> list:
-    """
-    Checks different issue-strings for a match with given value
-
-    :param search_value: string
-    :return: dict()
-    """
-    db_issues = DBDiscussionSession.query(Issue).all()
-    return_array = []
-
-    for index, issue in enumerate(db_issues):
-        rd = __get_fuzzy_string_dict(current_text=search_value, return_text=issue.title)
-        return_array.append(rd)
-
-    return_array = __sort_array(return_array)
-
-    return return_array[:RESULT_LENGTH]
-
-
 def get_strings_for_search(search_value: str) -> dict:
     """
     Returns all statements which have a substring of the given value
