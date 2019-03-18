@@ -2560,7 +2560,7 @@ class DecisionProcess(DiscussionBase):
             "votes_start": self.votes_start,
             "votes_started": self.votes_start < datetime.now() if bool(self.votes_start) else True,
             "votes_end": self.votes_end,
-            "votes_ended": bool(self.votes_end) and self.votes_end > datetime.now()
+            "votes_ended": self.votes_end < datetime.now() if bool(self.votes_end) else False,
         }
 
 

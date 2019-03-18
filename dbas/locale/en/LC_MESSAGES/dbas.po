@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2019-03-08 16:22+0000\n"
+"POT-Creation-Date: 2019-03-18 22:52+0000\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -2487,48 +2487,57 @@ msgstr "My attacks"
 
 #. Default: Vote!
 #: templates/discussion/organism/dialog-sidebar.pt:16
-#, fuzzy
 msgid "decidotron_vote_button_label"
 msgstr "Vote!"
 
 #. Default: Login to vote!
 #: templates/discussion/organism/dialog-sidebar.pt:21
-#, fuzzy
 msgid "decidotron_login_to_vote_button_label"
 msgstr "Login to vote!"
 
+#. Default: Wählen ist möglich ab dem
+#. ${issues.decidotron_budget.votes_start.strftime("%d.%m.%Y um %H:%MUhr")}
+#: templates/discussion/organism/dialog-sidebar.pt:26
+msgid "decidotron_vote_will_start_at_button_label"
+msgstr "Voting will be possible from ${issues.decidotron_budget.votes_start.strftime('%d.%m.%Y at %H:%M')}"
+
+#. Default: Ergebnisse
+#: templates/discussion/organism/dialog-sidebar.pt:32
+msgid "decidotron_vote_results_button_label"
+msgstr "Results"
+
 #. Default: Restart Discussion
-#: templates/discussion/organism/dialog-sidebar.pt:27
+#: templates/discussion/organism/dialog-sidebar.pt:38
 msgid "restart_discussion"
 msgstr "Restart Discussion"
 
 #. Default: Share URL
-#: templates/discussion/organism/dialog-sidebar.pt:33
+#: templates/discussion/organism/dialog-sidebar.pt:44
 msgid "share_url"
 msgstr "Share URL"
 
 #. Default: Opinion Barometer
-#: templates/discussion/organism/dialog-sidebar.pt:39
+#: templates/discussion/organism/dialog-sidebar.pt:50
 msgid "Barometer"
 msgstr "Opinion Barometer"
 
 #. Default: Graph View
-#: templates/discussion/organism/dialog-sidebar.pt:45
+#: templates/discussion/organism/dialog-sidebar.pt:56
 msgid "graph_view"
 msgstr "Graph View"
 
 #. Default: Search for Statements
-#: templates/discussion/organism/dialog-sidebar.pt:51
+#: templates/discussion/organism/dialog-sidebar.pt:62
 msgid "search"
 msgstr "Search for Statements"
 
 #. Default: Ask a Friend
-#: templates/discussion/organism/dialog-sidebar.pt:57
+#: templates/discussion/organism/dialog-sidebar.pt:68
 msgid "ask_friend"
 msgstr "Ask a Friend"
 
 #. Default: Leave the Discussion
-#: templates/discussion/organism/dialog-sidebar.pt:63
+#: templates/discussion/organism/dialog-sidebar.pt:74
 msgid "exit_discussion"
 msgstr "Leave the Discussion"
 

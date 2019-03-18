@@ -2,8 +2,8 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
   <ul id="dialog-sidebar" class="sidebar center">
     <li tal:condition="issues.decidotron_budget">
-      <button id="decidotron-button" class="btn btn-primary btn-lg btn-block"
-           tal:condition="extras.logged_in and issues.decidotron_budget.votes_started"
+      <button id="decidotron-button" class="btn btn-primary btn-block btn-sm vote-started"
+           tal:condition="extras.logged_in and issues.decidotron_budget.votes_started and not issues.decidotron_budget.votes_ended"
               onclick="
                   $.ajax({url: '/get_temp_key',
                   method: 'GET',
@@ -15,15 +15,21 @@
         <i class="fa fa-check"></i>
         <span i18n:translate="decidotron_vote_button_label">Vote!</span>
       </button>
-      <button id="decidotron-button" disabled class="btn btn-primary btn-disabled btn-block"
+      <button id="decidotron-button" disabled class="btn btn-primary btn-disabled btn-block btn-sm vote-not-logged-in"
            tal:condition="not extras.logged_in and issues.decidotron_budget.votes_started">
         <i class="fa fa-check"></i>
         <span i18n:translate="decidotron_login_to_vote_button_label">Login to vote!</span>
       </button>
-      <button id="decidotron-button" disabled class="btn btn-primary btn-disabled btn-block"
+      <button id="decidotron-button" disabled class="btn btn-disabled btn-block btn-sm vote-not-started"
            tal:condition="not issues.decidotron_budget.votes_started">
         <i class="fa fa-check"></i>
-        <span i18n:translate="decidotron_login_to_vote_button_label">Wählen ist möglich ab dem ${issues.decidotron_budget.votes_start.strftime("%d.%m.%y %H:%MUhr")}</span>
+        <span i18n:translate="decidotron_vote_will_start_at_button_label">Wählen ist möglich ab dem ${issues.decidotron_budget.votes_start.strftime("%d.%m.%Y um %H:%MUhr")}</span>
+      </button>
+      <button id="decidotron-button" class="btn btn-default vote-ended"
+           tal:condition="issues.decidotron_budget.votes_ended"
+              href="${issues.decidotron_budget.host}/preferences/${issues.slug}">
+        <i class="fa fa-list-ol"></i>
+        <span i18n:translate="decidotron_vote_results_button_label">Ergebnisse</span>
       </button>
     </li>
     <li id="restart-link" tal:condition="extras.ongoing_discussion">

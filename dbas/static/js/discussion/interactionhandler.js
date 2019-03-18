@@ -196,10 +196,13 @@ InteractionHandler.prototype.callbackForSetAvailabilityOfDiscussion = function (
  *
  * @param position
  * @param reason
- * @param more
+ * @param feature_data
  */
-InteractionHandler.prototype.sendArgument = function (position, reason, more = {}) {
+InteractionHandler.prototype.sendArgument = function (position, reason, feature_data) {
     "use strict";
+
+    feature_data = (typeof feature_data !== 'undefined') ? feature_data : {};
+
     if (position.length === 0 || reason.length === 0) {
         $('#' + addStatementErrorContainer).show();
         $('#' + addStatementErrorMsg).text(_t(inputEmpty));
@@ -208,7 +211,7 @@ InteractionHandler.prototype.sendArgument = function (position, reason, more = {
         const data = {
             position: position,
             reason: reason,
-            more: more
+            feature_data: feature_data
         };
         new AjaxDiscussionHandler().sendNewStartArgument(data);
     }

@@ -27,14 +27,14 @@ from websocket.lib import send_request_for_info_popup_to_socketio
 LOG = logging.getLogger(__name__)
 
 
-def set_position(db_user: User, db_issue: Issue, statement_text: str, more: dict = {}) -> dict:
+def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_data: dict = {}) -> dict:
     """
     Set new position for current discussion and returns collection with the next url for the discussion.
 
     :param statement_text: The text of the new position statement.
     :param db_issue: The issue which gets the new position
     :param db_user: The user who sets the new position.
-    :param more: More data which is used by additional features
+    :param feature_data: More data which is used by additional features
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
@@ -44,13 +44,13 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, more: dict
 
     new_statement: Statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
-    if db_issue.decision_process and 'decidotron_cost' not in more:
+    if db_issue.decision_process and 'decidotron_cost' not in feature_data:
         return {
             'status': 'fail',  # best error management
             'error': 'Cost missing for an issue with a decision_process'
         }
-    elif 'decidotron_cost' in more:
-        cost = float(more['decidotron_cost'])
+    elif 'decidotron_cost' in feature_data:
+        cost = float(feature_data['decidotron_cost'])
         add_associated_cost(db_issue, new_statement, to_cents(cost))
 
     _um = UrlManager(db_issue.slug)
