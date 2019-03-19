@@ -270,14 +270,7 @@ function prepareLoginRegistrationPopup() {
                 break;
             }
         }
-
-        if (text === '') {
-            $('#' + popupLoginWarningMessage).hide();
-            new AjaxLoginHandler().registration();
-        } else {
-            new AjaxLoginHandler().registration(text);
-        }
-
+        new AjaxLoginHandler().registration(text);
     });
 
     // bind enter key
