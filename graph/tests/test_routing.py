@@ -1,3 +1,5 @@
+from cornice.util import _JSONError
+
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 from graph.views import get_d3_complete_dump, get_d3_partial_dump
 
@@ -31,8 +33,8 @@ class ViewTest(TestCaseWithConfig):
 
         request = construct_dummy_request({'issue': 2, 'uid': 2, 'is_argument': False, 'path': ''})
         ret_dict = get_d3_partial_dump(request)
-        self.assertEqual('', ret_dict.get('error', 'X'))
+        self.assertEqual(_JSONError, type(ret_dict))
 
         request = construct_dummy_request({'issue': 2, 'uid': 12, 'is_argument': True, 'path': ''})
         ret_dict = get_d3_partial_dump(request)
-        self.assertEqual('', ret_dict.get('error', 'X'))
+        self.assertEqual(_JSONError, type(ret_dict))
