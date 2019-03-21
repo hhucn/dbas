@@ -442,7 +442,7 @@ def get_text_for_confrontation(lang, nickname, premise, conclusion, sys_conclusi
         return '', ''
 
     _t = Translator(lang)
-    question = '{}.<br><br>{}?{}'.format(start_tag, _t.get(_.whatDoYouThinkAboutThat), end_tag)
+    question = '.<br><br>{}?'.format(_t.get(_.whatDoYouThinkAboutThat))
     sys_text = confrontation_text + question
     return sys_text, gender
 
@@ -603,8 +603,7 @@ def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, c
 
     bind = bind.format(start_con, end_tag, start_argument, end_tag)
 
-    confrontation_text = f'{intro} {premise}. {bind}{end_tag} {conclusion}{start_tag}. '
-    confrontation_text += f'{gender_think}{end_tag} {confrontation}'
+    confrontation_text = f'{intro} {premise}. {bind}{end_tag} {conclusion}. {gender_think} {confrontation}'
 
     return confrontation_text, data['gender'] if data['is_valid'] else ''
 
@@ -704,8 +703,7 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
     tmp = '{}{}{}'.format(tmp_start_tag, _t.get(accept if system_argument.is_supportive else reject), tmp_end_tag)
     bind = bind.format(tmp)
 
-    confrontation_text = '{}{} {}. {}{}{}{} {}'.format(intro, bind, conclusion, start_tag, say, point, end_tag,
-                                                       confrontation)
+    confrontation_text = f'{intro}{bind} {conclusion}. {say}{point} {confrontation}'
 
     return confrontation_text
 
@@ -753,7 +751,7 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
         if infos['is_okay']:
             bind = __translation_based_on_gender(_t, _.heSays, _.sheSays, infos['gender'])
 
-    confrontation_text = f'{intro} {conclusion}. {start_tag}{bind}:{end_tag} {confrontation}'
+    confrontation_text = f'{intro} {conclusion}. {bind}: {confrontation}'
     return confrontation_text
 
 
