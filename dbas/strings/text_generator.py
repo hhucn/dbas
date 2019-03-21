@@ -517,28 +517,21 @@ def __get_text_for_add_something(nickname, lang, url, keyword, for_html=True):
     return f'{intro}{nl}{clickForMore}: {url}'
 
 
-def __get_confrontation_text_for_undermine(nickname, premise, lang, system_argument, my_start_argument,
-                                           my_end_tag, confrontation):
+def __get_confrontation_text_for_undermine(nickname: str, premise: str, lang: str, system_argument: Argument,
+                                           my_argument_start_tag: str, my_end_tag: str, confrontation: str):
     """
     Returns the system bubble text for an undermine
 
     :param nickname: User.nickname
-    :param premise: String
+    :param premise
     :param lang: Language
-    :param system_argument: String
-    :param my_start_argument: String
-    :param my_end_tag: String
-    :param confrontation: String
+    :param system_argument
+    :param my_argument_start_tag
+    :param my_end_tag
+    :param confrontation
     :return:
     """
     _t = Translator(lang)
-
-    move_end_tag = False
-    if tag_type not in premise:
-        premise = start_tag + premise + end_tag
-    if tag_type not in confrontation:
-        confrontation = start_tag + confrontation + end_tag
-        move_end_tag = True
 
     data = get_name_link_of_arguments_author(system_argument, nickname)
     if data['is_valid']:
@@ -552,13 +545,8 @@ def __get_confrontation_text_for_undermine(nickname, premise, lang, system_argum
         pro_con_tag = start_pro
         hold_it = _t.get(_.hold)
 
-    outro = my_end_tag if move_end_tag else ''
-
-    confrontation_text = '{}{} {}{}{} {}{}{}{}{}{}, {}{} {}{}'.format(intro, end_tag, premise, pro_con_tag, start_tag,
-                                                                      my_start_argument, hold_it, my_end_tag, end_tag,
-                                                                      my_end_tag, start_tag,
-                                                                      _t.get(_.because).lower(), end_tag,
-                                                                      confrontation, outro)
+    because = _t.get(_.because).lower()
+    confrontation_text = f'{intro}{end_tag} {premise}{pro_con_tag} {my_argument_start_tag}{hold_it}{my_end_tag}{end_tag}, {because} {confrontation}'
 
     return confrontation_text, data['gender'] if data['is_valid'] else ''
 

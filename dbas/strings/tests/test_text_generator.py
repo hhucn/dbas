@@ -297,7 +297,7 @@ class TestTextGenerator(TestCaseWithConfig):
         attack = ''
         color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, False
         sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
+                                                         'another conclusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
         self.assertEqual(gender, '')
@@ -312,13 +312,13 @@ class TestTextGenerator(TestCaseWithConfig):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
             text = '<span class="triangle-content-text">Other participants think that</span> '
             if color_html:
-                text += '<span data-argumentation-type="argument">some premise text</span><span data-attitude="con"><span> <span data-argumentation-type="argument">does not hold</span></span></span><span>, because</span> <span data-argumentation-type="attack">'
+                text += '<span data-argumentation-type="argument">some premise text</span><span data-attitude="con"> <span data-argumentation-type="argument">does not hold</span></span>, because <span data-argumentation-type="attack">some confrontation text</span>'
             else:
-                text += '<span>some premise text</span><span data-attitude="con"><span> does not hold</span><span>, because</span> <span>'
-            text += 'some confrontation text</span>.<br><br>What do you think about that?'
+                text += 'some premise text<span data-attitude="con"> does not hold</span>, because some confrontation text'
+            text += '.<br><br>What do you think about that?'
 
             sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
-                                                             'another conlcusion', supportive, attack,
+                                                             'another conclusion', supportive, attack,
                                                              self.confrontation,
                                                              reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                              color_html)
@@ -344,7 +344,7 @@ class TestTextGenerator(TestCaseWithConfig):
             text += '<br><br>What do you think about that?'
 
             sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
-                                                             'another conlcusion', supportive, attack,
+                                                             'another conclusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
             self.assertEqual(gender, '')
@@ -395,7 +395,7 @@ class TestTextGenerator(TestCaseWithConfig):
             text += '<br><br>What do you think about that?'
 
             sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
-                                                             'another conlcusion', supportive, attack,
+                                                             'another conclusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
             self.assertEqual(gender, 'n')
@@ -411,13 +411,13 @@ class TestTextGenerator(TestCaseWithConfig):
 
             text = '<span class="triangle-content-text">Andere Teilnehmer denken, dass</span> '
             if color_html:
-                text += '<span data-argumentation-type="argument">some premise text</span><span data-attitude="con"><span> <span data-argumentation-type="argument">keine gute Idee ist</span></span></span><span>, weil</span> <span data-argumentation-type="attack">some confrontation text</span>'
+                text += '<span data-argumentation-type="argument">some premise text</span><span data-attitude="con"> <span data-argumentation-type="argument">keine gute Idee ist</span></span>, weil <span data-argumentation-type="attack">some confrontation text</span>'
             else:
-                text += '<span>some premise text</span><span data-attitude="con"><span> keine gute Idee ist</span><span>, weil</span> <span>some confrontation text</span>'
+                text += 'some premise text<span data-attitude="con"> keine gute Idee ist</span>, weil some confrontation text'
             text += '.<br><br>Was denken Sie darüber?'
 
             sys_text, gender = tg.get_text_for_confrontation('de', 'Tobias', self.premise, self.conclusion,
-                                                             'another conlcusion', supportive, attack,
+                                                             'another conclusion', supportive, attack,
                                                              self.confrontation,
                                                              reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                              color_html)
@@ -444,7 +444,7 @@ class TestTextGenerator(TestCaseWithConfig):
             text += '<br><br>Was denken Sie darüber?'
 
             sys_text, gender = tg.get_text_for_confrontation('de', 'Tobias', self.premise, self.conclusion,
-                                                             'another conlcusion', supportive, attack,
+                                                             'another conclusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
             self.assertEqual(gender, '')
