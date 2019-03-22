@@ -33,8 +33,8 @@ class ViewTest(TestCaseWithConfig):
 
         request = construct_dummy_request({'issue': 2, 'uid': 2, 'is_argument': False, 'path': ''})
         ret_dict = get_d3_partial_dump(request)
-        self.assertEqual(_JSONError, type(ret_dict))
+        self.assertIsInstance(ret_dict, _JSONError)
 
         request = construct_dummy_request({'issue': 2, 'uid': 12, 'is_argument': True, 'path': ''})
         ret_dict = get_d3_partial_dump(request)
-        self.assertEqual(_JSONError, type(ret_dict))
+        self.assertIsInstance(ret_dict, _JSONError)
