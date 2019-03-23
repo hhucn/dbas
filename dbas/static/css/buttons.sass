@@ -38,7 +38,9 @@
 
 .btn
   border-radius: 5px
-  &:not(.toggle) // skip the toggles
+
+  &:not(.toggle)
+    // skip the toggles
     -webkit-box-shadow: 0
     box-shadow: 0 0 0
 
@@ -47,12 +49,14 @@
   width: 9em
   border-style: solid
   margin-bottom: 1em
+
   span, i
     color: #ffffff
 
 .btn-dbas
   color: #2196F3
   background-color: #2196F3
+
   &:hover
     color: darken(#2196F3, 10%)
     background-color: darken(#2196F3, 10%)
@@ -60,6 +64,7 @@
 .btn-hhu
   color: #006ab3
   background-color: #006ab3
+
   &:hover
     color: darken(#006ab3, 10%)
     background-color: darken(#006ab3, 10%)
@@ -69,8 +74,10 @@
   background-color: #4285F4
   width: 125px
   padding: 0 16px 0 0
+
   img
     width: 35px
+
   &:hover
     color: #0E6CD2
     background-color: #0E6CD2
@@ -78,6 +85,7 @@
 .btn-facebook
   color: #3b5998
   background-color: #3b5998
+
   &:hover
     color: darken(#3b5998, 10%)
     background-color: darken(#3b5998, 10%)
@@ -85,6 +93,7 @@
 .btn-twitter
   color: #1da1f2
   background-color: #1da1f2
+
   &:hover
     color: darken(#1da1f2, 10%)
     background-color: darken(#1da1f2, 10%)
@@ -92,9 +101,14 @@
 .btn-github
   color: #333
   background-color: #333
+
   &:hover
     color: darken(#333, 10%)
     background-color: darken(#333, 10%)
 
 .btn-muted
   color: $muted-color
+
+.decidotron-button
+  max-width: 400px
+  margin: auto

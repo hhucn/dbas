@@ -85,6 +85,8 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict:
     tooltip = _t.get(_.discussionInfoTooltipSg) if stat_count == 1 else _t.get(_.discussionInfoTooltipPl)
     tooltip = tooltip.format(date, time, stat_count)
 
+    decision_process = db_issue.decision_process
+
     return {
         'slug': slug,
         'lang': lang,
@@ -100,7 +102,8 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict:
         'tooltip': tooltip,
         'intro': _t.get(_.currentDiscussion),
         'duration': duration,
-        'read_only': db_issue.is_read_only
+        'read_only': db_issue.is_read_only,
+        'decidotron_budget': decision_process.to_dict() if decision_process else None
     }
 
 

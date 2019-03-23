@@ -118,6 +118,7 @@ def main(global_config, **settings):
     config.add_route('get_infos_about_argument', '/{url:.*}get_infos_about_argument')
     config.add_route('get_user_with_same_opinion', '/{url:.*}get_user_with_same_opinion')
     config.add_route('get_public_user_data', '/{url:.*}get_public_user_data')
+    config.add_route('get_temp_key', "get_temp_key")
     config.add_route('get_user_history', 'get_user_history')
     config.add_route('get_all_edits', 'get_all_edits')
     config.add_route('get_all_posted_statements', 'get_all_posted_statements')

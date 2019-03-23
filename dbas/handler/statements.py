@@ -8,6 +8,7 @@ from sqlalchemy import func
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
+from dbas.decidotron.lib import add_associated_cost, to_cents
 from dbas.handler import user, notification as nh
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
@@ -26,13 +27,14 @@ from websocket.lib import send_request_for_info_popup_to_socketio
 LOG = logging.getLogger(__name__)
 
 
-def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
+def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_data: dict = {}) -> dict:
     """
     Set new position for current discussion and returns collection with the next url for the discussion.
 
     :param statement_text: The text of the new position statement.
     :param db_issue: The issue which gets the new position
     :param db_user: The user who sets the new position.
+    :param feature_data: More data which is used by additional features
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
@@ -41,6 +43,15 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
     user.update_last_action(db_user)
 
     new_statement: Statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
+
+    if db_issue.decision_process and 'decidotron_cost' not in feature_data:
+        return {
+            'status': 'fail',  # best error management
+            'error': 'Cost missing for an issue with a decision_process'
+        }
+    elif 'decidotron_cost' in feature_data:
+        cost = float(feature_data['decidotron_cost'])
+        add_associated_cost(db_issue, new_statement, to_cents(cost))
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
@@ -250,7 +261,6 @@ def insert_as_statement(text: str, db_user: User, db_issue: Issue, is_start=Fals
     # add marked statement
     DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
     DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
-    DBDiscussionSession.flush()
 
     return new_statement
 
@@ -322,7 +332,6 @@ def __add_statement(is_position: bool) -> Statement:
     db_statement = Statement(is_position=is_position)
     DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
-    transaction.commit()
     return db_statement
 
 
@@ -338,7 +347,6 @@ def __add_textversion(text: str, user_uid: int, statement_uid: int) -> TextVersi
     db_textversion = TextVersion(content=text, author=user_uid, statement_uid=statement_uid)
     DBDiscussionSession.add(db_textversion)
     DBDiscussionSession.flush()
-    transaction.commit()
     return db_textversion
 
 
