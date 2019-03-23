@@ -10,30 +10,32 @@ from pyramid.request import Request
 from dbas.validators.lib import add_error
 
 
-def has_keywords_in_json_path(*keywords: Tuple[str, type]):
-    """
-    Verify that specified keywords exist in the request.json_body.
-
-    :param keywords: tuple of keys and their expected types in request.json_body
-    :return:
-    """
-
+def spec_keyword_in_json_body(*keywords: Tuple[str, Callable[[any], bool]]):
     def valid_keywords(request: Request, **_kwargs):
         error_occured = False
-        for (keyword, ktype) in keywords:
-            value = request.json_body.get(keyword, '')
-            if value != '' and isinstance(value, ktype):
+        for (keyword, predicate) in keywords:
+            value = request.json_body.get(keyword)
+            if value is not None and predicate(value):
                 request.validated[keyword] = value
-            elif value == '':
+            elif value is None:
                 add_error(request, 'Parameter {} is missing in body'.format(keyword))
                 error_occured = True
             else:
-                add_error(request, 'Parameter {} has wrong type'.format(keyword),
-                          '{} is {}, expected {}'.format(keyword, type(value), ktype))
+                add_error(request, 'Parameter {} failed spec'.format(keyword))
                 error_occured = True
         return not error_occured
 
     return valid_keywords
+
+
+def has_keywords_in_json_path(*keywords: Tuple[str, type]):
+    """
+    Verify that specified keywords exist in the request.json_body.
+                                                                   |
+    :param keywords: tuple of keys an  |
+    :return:                                                  v
+    """
+    return spec_keyword_in_json_body(*[[keyword, lambda v: isinstance(v, ktype)] for [keyword, ktype] in keywords])
 
 
 def has_keywords_in_path(*keywords: Tuple[str, type], location='matchdict'):
