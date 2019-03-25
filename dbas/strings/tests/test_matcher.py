@@ -1,7 +1,5 @@
 import unittest
 
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
 from dbas.strings import matcher
 
 
@@ -18,22 +16,6 @@ class StringMatcherTest(unittest.TestCase):
     def test_get_strings_for_reasons(self):
         return_array = matcher.get_strings_for_duplicates_or_reasons('cat', 2, 2)
         self.check_string_matcher_array(return_array)
-
-    def test_get_strings_for_issues(self):
-        return_array = matcher.get_strings_for_issues('cat')
-        self.assertEqual(DBDiscussionSession.query(Issue).filter_by(is_disabled=False).count(), len(return_array))
-        count = 0
-        for entry in return_array:
-            if 'cat' in entry['text'].lower():
-                count += 1
-        self.assertEqual(count, 1)
-
-        return_array = matcher.get_strings_for_issues('ccaatt')
-        count = 0
-        for entry in return_array:
-            if 'ccaatt' in entry['text'].lower():
-                count += 1
-        self.assertEqual(count, 0)
 
     def test_get_strings_for_search(self):
         return_dict = matcher.get_strings_for_search('cat')
