@@ -1,6 +1,7 @@
 """
 Core validation class for validators.
 """
+import logging
 from typing import Tuple, List, Callable, Optional
 
 from cornice import Errors
@@ -9,19 +10,22 @@ from pyramid.request import Request
 
 from dbas.validators.lib import add_error
 
+LOG = logging.getLogger(__name__)
 
-def spec_keyword_in_json_body(*keywords: Tuple[str, Callable[[any], bool]]):
+
+def spec_keyword_in_json_body(*keywords: Tuple[type, str, Callable[[any], bool]]):
     def valid_keywords(request: Request, **_kwargs):
         error_occured = False
-        for (keyword, predicate) in keywords:
+        for (ktype, keyword, predicate) in keywords:
             value = request.json_body.get(keyword)
-            if value is not None and predicate(value):
+            if value is not None and predicate(value, ktype):
                 request.validated[keyword] = value
             elif value is None:
                 add_error(request, 'Parameter {} is missing in body'.format(keyword))
                 error_occured = True
             else:
-                add_error(request, 'Parameter {} failed spec'.format(keyword))
+                add_error(request,
+                          'Parameter {} failed spec. Value: {}.'.format(keyword, value))
                 error_occured = True
         return not error_occured
 
@@ -35,7 +39,8 @@ def has_keywords_in_json_path(*keywords: Tuple[str, type]):
     :param keywords: tuple of keys an  |
     :return:                                                  v
     """
-    return spec_keyword_in_json_body(*[[keyword, lambda v: isinstance(v, ktype)] for [keyword, ktype] in keywords])
+    validator_keywords = [[ktype, keyword, lambda v, k: isinstance(v, k)] for [keyword, ktype] in keywords]
+    return spec_keyword_in_json_body(*validator_keywords)
 
 
 def has_keywords_in_path(*keywords: Tuple[str, type], location='matchdict'):
