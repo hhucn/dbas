@@ -24,9 +24,11 @@ LOG = logging.getLogger(__name__)
 
 
 @view_config(request_method='POST', route_name='user_login', renderer='json')
-@validate(spec_keyword_in_json_body(("user", lambda user: isinstance(user, str) and user is not ""),
-                                    ("password", lambda password: isinstance(password, str) and password is not ""),
-                                    ('keep_login', lambda keep_login: isinstance(keep_login, bool))),
+@validate(spec_keyword_in_json_body((str, "user", lambda user, type: isinstance(user, type) and user is not ""),
+                                    (
+                                            str, "password",
+                                            lambda password, type: isinstance(password, type) and password is not ""),
+                                    (bool, 'keep_login', lambda keep_login, type: isinstance(keep_login, type))),
           has_maybe_keywords(('redirect_url', str, '')))
 def user_login(request):
     """
@@ -97,15 +99,20 @@ def user_delete(request):
 
 
 @view_config(route_name='user_registration', renderer='json')
-@validate(valid_lang_cookie_fallback,  # ("user", lambda user: isinstance(user, str) and user is not "")
-          spec_keyword_in_json_body(("firstname", lambda firstname: isinstance(firstname, str) and firstname is not ""),
-                                    ("lastname", lambda lastname: isinstance(lastname, str) and lastname is not ""),
-                                    ("nickname", lambda nickname: isinstance(nickname, str) and nickname is not ""),
-                                    ("email", lambda email: isinstance(email, str) and email is not ""),
-                                    ("gender", lambda gender: isinstance(gender, str) and gender is not ""),
-                                    ("password", lambda password: isinstance(password, str) and password is not ""),
-                                    ("passwordconfirm", lambda passwordconfirm: isinstance(passwordconfirm, str)
-                                                                                and passwordconfirm is not "")))
+@validate(valid_lang_cookie_fallback,
+          spec_keyword_in_json_body(
+              (str, "firstname", lambda firstname, type: isinstance(firstname, type) and firstname is not ""),
+              (str, "lastname",
+               lambda lastname, type: isinstance(lastname, type) and lastname is not ""),
+              (str, "nickname",
+               lambda nickname, type: isinstance(nickname, type) and nickname is not ""),
+              (str, "email", lambda email, type: isinstance(email, type) and email is not ""),
+              (str, "gender", lambda gender, type: isinstance(gender, type) and gender is not ""),
+              (str, "password",
+               lambda password, type: isinstance(password, type) and password is not ""),
+              (str, "passwordconfirm",
+               lambda passwordconfirm, type: isinstance(passwordconfirm, type)
+                                             and passwordconfirm is not "")))
 def user_registration(request):
     """
     Registers new user with data given in the ajax request.
