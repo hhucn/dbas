@@ -100,8 +100,8 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
             'password': 'thankgoditsfriday'
         })
         response = apiviews.user_login(request)
-        self.assertNotIn('nickname', request.validated)
-        self.assertEqual(400, response.status_code)
+        #        self.assertNotIn('nickname', request.validated)
+        self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_logout_valid_user(self):
