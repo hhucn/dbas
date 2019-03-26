@@ -1,7 +1,7 @@
 version: "3.2"
 services:  
   decidotron:
-    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/decidotron/decidotron
+    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/decidotron
     restart: unless-stopped
     ports:
       - "5005:8080"
