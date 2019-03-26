@@ -25,9 +25,8 @@ LOG = logging.getLogger(__name__)
 
 @view_config(request_method='POST', route_name='user_login', renderer='json')
 @validate(spec_keyword_in_json_body((str, "user", lambda user, type: isinstance(user, type) and user != ""),
-                                    (
-                                            str, "password",
-                                            lambda password, type: isinstance(password, type) and password != ""),
+                                    (str, "password",
+                                     lambda password, type: isinstance(password, type) and password != ""),
                                     (bool, 'keep_login', lambda keep_login, type: isinstance(keep_login, type))),
           has_maybe_keywords(('redirect_url', str, '')))
 def user_login(request):
