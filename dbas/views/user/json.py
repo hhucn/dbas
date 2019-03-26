@@ -24,10 +24,10 @@ LOG = logging.getLogger(__name__)
 
 
 @view_config(request_method='POST', route_name='user_login', renderer='json')
-@validate(spec_keyword_in_json_body((str, "user", lambda user, type: isinstance(user, type) and user is not ""),
+@validate(spec_keyword_in_json_body((str, "user", lambda user, type: isinstance(user, type) and user != ""),
                                     (
                                             str, "password",
-                                            lambda password, type: isinstance(password, type) and password is not ""),
+                                            lambda password, type: isinstance(password, type) and password != ""),
                                     (bool, 'keep_login', lambda keep_login, type: isinstance(keep_login, type))),
           has_maybe_keywords(('redirect_url', str, '')))
 def user_login(request):
@@ -101,18 +101,18 @@ def user_delete(request):
 @view_config(route_name='user_registration', renderer='json')
 @validate(valid_lang_cookie_fallback,
           spec_keyword_in_json_body(
-              (str, "firstname", lambda firstname, type: isinstance(firstname, type) and firstname is not ""),
+              (str, "firstname", lambda firstname, type: isinstance(firstname, type) and firstname != ""),
               (str, "lastname",
-               lambda lastname, type: isinstance(lastname, type) and lastname is not ""),
+               lambda lastname, type: isinstance(lastname, type) and lastname != ""),
               (str, "nickname",
-               lambda nickname, type: isinstance(nickname, type) and nickname is not ""),
-              (str, "email", lambda email, type: isinstance(email, type) and email is not ""),
-              (str, "gender", lambda gender, type: isinstance(gender, type) and gender is not ""),
+               lambda nickname, type: isinstance(nickname, type) and nickname != ""),
+              (str, "email", lambda email, type: isinstance(email, type) and email != ""),
+              (str, "gender", lambda gender, type: isinstance(gender, type) and gender != ""),
               (str, "password",
-               lambda password, type: isinstance(password, type) and password is not ""),
+               lambda password, type: isinstance(password, type) and password != ""),
               (str, "passwordconfirm",
                lambda passwordconfirm, type: isinstance(passwordconfirm, type)
-                                             and passwordconfirm is not "")))
+                                             and passwordconfirm != "")))
 def user_registration(request):
     """
     Registers new user with data given in the ajax request.
