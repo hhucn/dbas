@@ -359,7 +359,7 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     :param is_users_opinion: Boolean
     :return: String
     """
-    LOG.debug("main %s", uid)
+    LOG.debug("Constructing text for argument with uid %s", uid)
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return None

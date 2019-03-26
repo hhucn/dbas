@@ -37,7 +37,7 @@ from dbas.validators.discussion import valid_issue_by_slug, valid_position, vali
     valid_support
 from dbas.validators.eden import valid_optional_origin
 from dbas.views import jump, emit_participation
-from .login import validate_credentials, valid_token, valid_token_optional, valid_api_token
+from .login import validate_credentials, valid_token, valid_token_optional, valid_api_token, check_jwt, encode_payload
 from .references import (get_all_references_by_reference_text,
                          store_reference)
 from .templates import error
@@ -773,3 +773,32 @@ class PubKey(object):
         response.content_type = "text/plain"
         response.text = self.request.registry.settings["public_key"]
         return response
+
+
+@resource(path=r'/refresh-token')
+class TempToken():
+    def __init__(self, request, context=None):
+        self.request: Request = request
+        self.secret = request.registry.settings['secret_key']
+
+    @view(require_csrf=False)
+    def post(self):
+        return self._post(self.request)
+
+    @staticmethod
+    @validate(valid_api_token,
+              has_keywords_in_json_path(('token', str)))
+    def _post(request):
+        token = request.json_body['token']
+
+        if check_jwt(request, token):
+            payload = request.validated['token-payload']
+            if 'sub' in payload:
+                del payload['sub']
+                del payload['exp']
+
+            del payload['iat']
+            response = request.response
+            response.content_type = "text/plain"
+            response.text = encode_payload(request, payload)
+            return response

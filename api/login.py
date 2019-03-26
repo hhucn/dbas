@@ -3,10 +3,13 @@ Logic for user login, token generation and validation
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-
+import datetime
 import json
+import time
+from typing import Union
 
 import jwt
+from pyramid.request import Request
 
 from admin.lib import check_api_token, is_api_token
 from dbas.auth.login import login_local_user
@@ -33,20 +36,40 @@ def check_auth_token(request, nickname: str, token: str) -> bool:
             add_error(request, "Invalid token", status_code=401, location="header")
             return False
 
-    return check_jwt(request, token)
+    return check_jwt(request, token) and check_not_temporary_token(request)
+
+
+def check_not_temporary_token(request) -> bool:
+    payload = request.validated['token-payload']
+
+    if 'sub' in payload and payload['sub'] == 'tmp':
+        add_error(request, "Temporary token",
+                  verbose_long="You can use a temporary token only with an application token to get a general user token",
+                  status_code=401, location="header")
+        return False
+    return True
+
+
+def decode_jwt(request, token) -> dict:
+    secret = request.registry.settings['public_key']
+    return jwt.decode(token, secret, algorithms=['ES256', 'ES512', 'ES384'])
 
 
 def check_jwt(request, token) -> bool:
-    secret = request.registry.settings['public_key']
     try:
-        payload = jwt.decode(token, secret, algorithms=['ES256', 'ES512', 'ES384'])
-    except jwt.DecodeError:
+        payload = decode_jwt(request, token)
+    except jwt.ExpiredSignatureError as e:
+        add_error(request, "Token expired", verbose_long=str(e), status_code=401, location="header")
+        return False
+    except jwt.InvalidTokenError:
         add_error(request, "Invalid token", status_code=401, location="header")
         return False
 
+    request.validated['token-payload'] = payload
     request.validated['user'] = DBDiscussionSession.query(User).get(payload['id'])
     request.validated['auth-by-api-token'] = False
     return True
+
 
 # #############################################################################
 # Validators
@@ -125,6 +148,45 @@ def valid_api_token(request, **kwargs) -> bool:
         return False
 
 
+def encode_payload(request: Request, payload: dict) -> str:
+    if 'iat' not in payload:
+        payload['iat'] = int(
+            time.time())  # 'issued at' may be used for make all tokens before a specific time invalid (e.g. password change, "logout of all services")
+
+    return jwt.encode(payload, request.registry.settings['secret_key'], algorithm='ES256').decode("utf-8")
+
+
+def user_payload(user: User):
+    return {
+        'nickname': user.nickname,
+        'id': user.uid
+    }
+
+
+def get_api_token(request: Request, user: User, expires: Union[datetime.datetime, int] = None) -> str:
+    payload = user_payload(user)
+    if expires:
+        payload['exp'] = expires
+
+    return encode_payload(request, payload)
+
+
+def get_expiring_api_token(request: Request, user: User, minutes: int) -> str:
+    expires = int(time.time()) + (minutes * 60)  # seconds
+
+    return get_api_token(request, user, expires)
+
+
+def get_tmp_token_for_external_service(request: Request, user: User, minutes: int = None) -> str:
+    payload = user_payload(user)
+    payload['sub'] = 'tmp'
+
+    if minutes:
+        payload['exp'] = int(time.time()) + (minutes * 60)
+
+    return encode_payload(request, payload)
+
+
 def validate_credentials(request, **_kwargs) -> None:
     """
     Parse credentials from POST request and validate it against DBA-S'
@@ -136,8 +198,6 @@ def validate_credentials(request, **_kwargs) -> None:
     if request.errors:
         return
 
-    secret = request.registry.settings['secret_key']
-
     nickname = request.validated['nickname']
     password = request.validated['password']
     del request.validated['password']
@@ -146,9 +206,8 @@ def validate_credentials(request, **_kwargs) -> None:
     logged_in = login_local_user(nickname, password, request.mailer)
     db_user: User = logged_in.get('user')
     if db_user:
-        token = jwt.encode({'nickname': db_user.nickname, 'id': db_user.uid}, secret, algorithm='ES256')
         request.validated['nickname']: str = db_user.nickname
         request.validated['user']: User = db_user
-        request.validated['token'] = token
+        request.validated['token'] = get_api_token(request, db_user)
     else:
         add_error(request, 'Could not login user', location="header", status_code=401)

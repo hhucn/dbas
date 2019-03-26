@@ -239,20 +239,29 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
-    def test_valid_premisegroup_in_path(self):
+    def test_valid_statement_uid(self):
         request = construct_dummy_request()
-        response = discussion.valid_premisegroup_in_path(request)
+        response = discussion.valid_statement_uid(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        for uid in ['a', 0, 1000]:
-            request = construct_dummy_request(match_dict={'uid': uid})
-            response = discussion.valid_premisegroup_in_path(request)
-            self.assertFalse(response)
-            self.assertIsInstance(response, bool)
+        request = construct_dummy_request({'uid': 200})
+        response = discussion.valid_statement_uid(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'id': (2,)})
-        response = discussion.valid_premisegroup_in_path(request)
+        request = construct_dummy_request({'uid': "79a"})
+        response = discussion.valid_statement_uid(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request({'uid': "79"})
+        response = discussion.valid_statement_uid(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request({'uid': 79})
+        response = discussion.valid_statement_uid(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 

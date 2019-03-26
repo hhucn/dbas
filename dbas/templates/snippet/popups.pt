@@ -1076,7 +1076,7 @@
         </div>
         <div class="modal-body">
           <p class="lead" i18n:translate="split_multiple_statements">
-            Please enter the splitted version of the statement; one per input field.
+            Please enter the split version of the statement; one per input field.
           </p>
           <p class="well well-sm" id="popup-split-statement-text"></p>
           <div id="popup-split-statement-body"></div>
