@@ -266,7 +266,7 @@ def get_issues_overview_for(db_user: User, app_url: str) -> dict:
     }
 
 
-def get_issues_overview_on_start(db_user: User) -> dict:
+def get_issues_overview_on_start(db_user: User) -> dict: ###
     """
     Returns list with title, date, and count of statements for each visible issue
 
@@ -278,6 +278,7 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     date_dict = {}
     readable = []
     writable = []
+    featured = []
 
     # arg.uid to list of used statements fo speed up the __get_dict_for_charts(..)
     arg_stat_mapper = {}
@@ -295,19 +296,24 @@ def get_issues_overview_on_start(db_user: User) -> dict:
             'lang': {
                 'is_de': db_issue.lang == 'de',
                 'is_en': db_issue.lang == 'en',
-            }
+            },
+            'featured': db_issue.is_featured
         }
         if db_issue.is_read_only:
             readable.append(issue_dict)
         else:
             writable.append(issue_dict)
 
+        if db_issue.is_featured:
+            featured.append(issue_dict)
+
         # key needs to be a str to be parsed in the frontend as json
         date_dict[str(db_issue.uid)] = __get_dict_for_charts(db_issue, arg_stat_mapper)
     return {
         'issues': {
             'readable': readable,
-            'writable': writable
+            'writable': writable,
+            'featured': featured
         },
         'data': date_dict
     }

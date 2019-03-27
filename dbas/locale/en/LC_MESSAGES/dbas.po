@@ -2543,6 +2543,11 @@ msgstr "Ask a Friend"
 msgid "exit_discussion"
 msgstr "Leave the Discussion"
 
+#. Default: Hullabaloo
+#: ././templates/discussion/start.pt:19
+msgid "featured_issue"
+msgstr "Hullabaloo"
+
 #~ msgid "stay_tuned_rss"
 #~ msgstr ""
 #~ "Stay tuned and fetch the latest news and discussion contributions via RSS-"

@@ -2553,6 +2553,11 @@ msgstr "Frag einen Freund"
 msgid "exit_discussion"
 msgstr "Diskussion beenden"
 
+#. Default: Hullabaloo
+#: ././templates/discussion/start.pt:19
+msgid "featured_issue"
+msgstr "Tohuwabohu"
+
 #~ msgid "stay_tuned_rss"
 #~ msgstr ""
 #~ "Bleiben Sie mit den RSS-Feeds aktuell und bekommen Sie direkt die neusten "
