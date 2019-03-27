@@ -44,14 +44,22 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_da
 
     new_statement: Statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
-    if db_issue.decision_process and 'decidotron_cost' not in feature_data:
-        return {
-            'status': 'fail',  # best error management
-            'error': 'Cost missing for an issue with a decision_process'
-        }
-    elif 'decidotron_cost' in feature_data:
-        cost = float(feature_data['decidotron_cost'])
-        add_associated_cost(db_issue, new_statement, to_cents(cost))
+    if db_issue.decision_process:
+        if 'decidotron_cost' not in feature_data:
+            return {
+                'status': 'fail',  # best error management
+                'error': 'Cost missing for an issue with a decision_process'
+            }
+        else:
+            cost = to_cents(float(feature_data['decidotron_cost']))
+
+            if 0 < cost <= db_issue.decision_process.budget:
+                add_associated_cost(db_issue, new_statement, to_cents(cost))
+            else:
+                return {
+                    'status': 'fail',
+                    'error': 'Cost has to be 0 < cost <= {}. (In cents)'.format(db_issue.decision_process.budget)
+                }
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
