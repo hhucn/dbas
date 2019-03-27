@@ -529,4 +529,3 @@ class TestTextGeneration(unittest.TestCase):
                     get_global_url(),
                     self.url)
             self.assertEqual(text, intro)
-            print(text)
