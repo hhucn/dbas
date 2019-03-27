@@ -73,6 +73,7 @@ class Issue(DiscussionBase):
     is_disabled: bool = Column(Boolean, nullable=False)
     is_private: bool = Column(Boolean, nullable=False, server_default="False")
     is_read_only: bool = Column(Boolean, nullable=False, server_default="False")
+    is_featured: bool = Column(Boolean, nullable=False, server_default="False")
 
     users: 'User' = relationship('User', foreign_keys=[author_uid])  # deprecated
     author: 'User' = relationship('User', foreign_keys=[author_uid], back_populates='authored_issues')
@@ -90,7 +91,7 @@ class Issue(DiscussionBase):
                                                                  uselist=False)
 
     def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
-                 is_read_only=False):
+                 is_read_only=False, is_featured=False):
         """
         Initializes a row in current position-table
         """
@@ -104,6 +105,7 @@ class Issue(DiscussionBase):
         self.is_private = is_private
         self.is_read_only = is_read_only
         self.date = get_now()
+        self.is_featured = is_featured
 
     @hybrid_property
     def lang(self):
@@ -156,7 +158,8 @@ class Issue(DiscussionBase):
             "date": self.date.format(),
             "is_read_only": self.is_read_only,
             "is_private": self.is_private,
-            "is_disabled": self.is_disabled
+            "is_disabled": self.is_disabled,
+            "is_master": self.is_master,
         }
 
 
