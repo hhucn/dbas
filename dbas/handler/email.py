@@ -12,7 +12,6 @@ from threading import Thread
 
 from pyramid_mailer.message import Message
 
-from dbas.lib import get_global_url
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_message
 from dbas.strings.translator import Translator
@@ -54,8 +53,7 @@ def send_mail(mailer, subject, body, recipient, lang):
         LOG.debug("Mailer is none")
         return False, _t.get(_.internalKeyError)
 
-    send_message = False
-    body = body + '\n\n---\n' + _t.get(_.emailBodyText).format(get_global_url())
+    sent_message = False
     sender = os.environ.get("MAIL_DEFAULT__SENDER", None)
     message = Message(subject=subject, sender=sender, recipients=[recipient], body=body)
 
@@ -63,7 +61,7 @@ def send_mail(mailer, subject, body, recipient, lang):
     try:
         t = Thread(target=__thread_to_send_mail, args=(mailer, message, recipient, body,))
         t.start()
-        send_message = True
+        sent_message = True
         status_message = _t.get(_.emailWasSent)
     except smtplib.SMTPConnectError as exception:
         code = str(exception.smtp_code)
@@ -71,10 +69,10 @@ def send_mail(mailer, subject, body, recipient, lang):
         LOG.debug("Exception smtplib.SMTPConnectionError smtp code / error %s / %s", code, error)
         status_message = _t.get(_.emailWasNotSent)
     except socket_error as serr:
-        LOG.debug("Socker error while sending %s", serr)
+        LOG.debug("Socket error while sending %s", serr)
         status_message = _t.get(_.emailWasNotSent)
 
-    return send_message, status_message, message
+    return sent_message, status_message, message
 
 
 def __thread_to_send_mail(mailer, message, recipient, body):
