@@ -31,7 +31,7 @@ class TestMail(unittest.TestCase):
             body = get_text_for_message(nickname=DummyUser().firstname, lang=language, path=url,
                                         message_content=_.statementAddedMessageContent, for_html=for_html)
             was_send, was_send_msg, msg = send_mail(mailer=DummyMailer, subject=subject, body=body,
-                                                    recipient=DummyUser(),
+                                                    recipient=DummyUser().email,
                                                     lang=language)
             self.assertTrue(was_send)
             self.assertEqual(msg.body, body)
@@ -46,7 +46,7 @@ class TestMail(unittest.TestCase):
             body = get_text_for_message(nickname=DummyUser().firstname, lang=language, path=url,
                                         message_content=_.argumentAddedMessageContent, for_html=for_html)
             was_send, was_send_msg, msg = send_mail(mailer=DummyMailer, subject=subject, body=body,
-                                                    recipient=DummyUser(),
+                                                    recipient=DummyUser().email,
                                                     lang=language)
             self.assertTrue(was_send)
             self.assertEqual(msg.body, body)

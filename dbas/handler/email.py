@@ -9,7 +9,9 @@ import os
 import smtplib
 from socket import error as socket_error
 from threading import Thread
+from typing import Tuple
 
+from pyramid_mailer import Mailer
 from pyramid_mailer.message import Message
 
 from dbas.strings.keywords import Keywords as _
@@ -31,12 +33,12 @@ def send_mail_due_to_added_text(lang, url, recipient, mailer):
     """
     _t = Translator(lang)
     subject = _t.get(_.statementAdded)
-    body = get_text_for_message(recipient.firstname, lang, url, _.statementAddedMessageContent, True)
+    body = get_text_for_message(recipient.firstname, lang, url, _.statementAddedMessageContent, False)
 
     return send_mail(mailer, subject, body, recipient.email, lang)
 
 
-def send_mail(mailer, subject, body, recipient, lang):
+def send_mail(mailer: Mailer, subject: str, body: str, recipient: str, lang: str) -> Tuple[bool, str, Message]:
     """
     Try except block for sending an email
 
@@ -45,34 +47,29 @@ def send_mail(mailer, subject, body, recipient, lang):
     :param body: body text of the mail
     :param recipient: recipient of the mail
     :param lang: current language
-    :return: duple with boolean for sent message, message-string
+    :return: Triple with boolean for sent message, a verbose message and the complete message
     """
     LOG.debug("Sending mail with subject '%s' to %s", subject, recipient)
     _t = Translator(lang)
-    if not mailer:
-        LOG.debug("Mailer is none")
-        return False, _t.get(_.internalKeyError)
-
-    sent_message = False
-    sender = os.environ.get("MAIL_DEFAULT__SENDER", None)
+    was_mail_thread_started = False
+    sender = os.environ.get("MAIL_DEFAULT__SENDER")
     message = Message(subject=subject, sender=sender, recipients=[recipient], body=body)
 
-    # try sending an catching errors
     try:
         t = Thread(target=__thread_to_send_mail, args=(mailer, message, recipient, body,))
         t.start()
-        sent_message = True
+        was_mail_thread_started = True
         status_message = _t.get(_.emailWasSent)
     except smtplib.SMTPConnectError as exception:
         code = str(exception.smtp_code)
         error = str(exception.smtp_error)
-        LOG.debug("Exception smtplib.SMTPConnectionError smtp code / error %s / %s", code, error)
+        LOG.error("Exception smtplib.SMTPConnectionError smtp code / error %s / %s", code, error)
         status_message = _t.get(_.emailWasNotSent)
     except socket_error as serr:
-        LOG.debug("Socket error while sending %s", serr)
+        LOG.error("Socket error while sending %s", serr)
         status_message = _t.get(_.emailWasNotSent)
 
-    return sent_message, status_message, message
+    return was_mail_thread_started, status_message, message
 
 
 def __thread_to_send_mail(mailer, message, recipient, body):
@@ -80,5 +77,5 @@ def __thread_to_send_mail(mailer, message, recipient, body):
     try:
         mailer.send_immediately(message, fail_silently=False)
     except TypeError as e:
-        LOG.debug("TypeError %s", e)
+        LOG.error("TypeError %s", e)
     LOG.debug("End thread to send mail to %s with %s", recipient, body[:30])
