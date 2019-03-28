@@ -5,7 +5,7 @@ import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, MarkedArgument
-from dbas.lib import Relations, get_global_url
+from dbas.lib import Relations
 from dbas.strings import text_generator as tg
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
@@ -512,20 +512,11 @@ class TestTextGeneration(unittest.TestCase):
         for language, is_html, message in list(itertools.product(['en', 'de'],
                                                                  [True, False],
                                                                  [_.statementAddedMessageContent,
-                                                                  _.argumentAddedMessageContent])
-                                               ):
+                                                                  _.argumentAddedMessageContent])):
             text = tg.get_text_for_message(self.name, language, self.url, message, is_html)
-            _t = Translator(language)
-            intro = _t.get(message).format(self.name)
             if is_html:
-                intro = intro + '<br>' + _t.get(_.clickForMore) + ': <a href="{}/discuss{}">' + _t.get(
-                    _.clickForMore) + '</a>'
-                intro = intro.format(
-                    get_global_url(),
-                    self.url)
+                self.assertNotIn("\n", text)
+                self.assertIn("<br>", text)
             else:
-                intro = intro + '\n' + _t.get(_.clickForMore)
-                intro = intro + ': {}/discuss{}'.format(
-                    get_global_url(),
-                    self.url)
-            self.assertEqual(text, intro)
+                self.assertNotIn("<br>", text)
+                self.assertIn("\n", text)

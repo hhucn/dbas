@@ -9,7 +9,6 @@ from dbas.helper.url import UrlManager
 from dbas.lib import Attitudes, Relations
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_message
-from dbas.strings.translator import Translator
 
 
 class DummyUser:
@@ -28,7 +27,6 @@ class TestMail(unittest.TestCase):
         url = url.get_url_for_justifying_statement(statement_uid=123, attitude=Attitudes.AGREE)
 
         for language, for_html in list(itertools.product(['de', 'en'], [True, False])):
-            _t = Translator(language)
             subject = "Test Mail"
             body = get_text_for_message(nickname=DummyUser().firstname, lang=language, path=url,
                                         message_content=_.statementAddedMessageContent, for_html=for_html)
@@ -44,7 +42,6 @@ class TestMail(unittest.TestCase):
                                                    relation=Relations.REBUT,
                                                    confrontation_argument=35)
         for language, for_html in list(itertools.product(['de', 'en'], [True, False])):
-            _t = Translator(language)
             subject = "Test Mail"
             body = get_text_for_message(nickname=DummyUser().firstname, lang=language, path=url,
                                         message_content=_.argumentAddedMessageContent, for_html=for_html)
