@@ -212,3 +212,56 @@ are checking the syntax of the python and javascript code with::
 
     jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js
     flake8
+
+To execute tests using a running D-BAS docker container, use one of the following commands::
+
+    # run all tests
+    docker exec -it dbas_web_1 nosetests
+    # run all tests, verbose mode (prints names of executed tests)
+    docker exec -it dbas_web_1 nosetests -v
+    # execute only specific tests
+    docker exec -it dbas_web_1 nosetests -v dbas.review.queue.tests.test_lib
+
+NB: Some tests have side effects, rely on the side effects of previous tests, or require a clean environment (if you are
+using docker, do a ``docker-compose down && docker-compose up`` to get a clean environment).
+
+
+Debugger
+========
+
+You can use PyCharm’s remote debugging feature to debug D-BAS running in a docker container or debugging unit tests.
+
+To set up remote debugging, follow these steps:
+1. Install pydev inside your D-BAS docker contaier: ``docker exec dbas_web_1 pip install pydevd``
+2. Add ``pydevd`` to your ``requirements.txt``.
+3. In PyCharm, create a “Python Remote Debug” configuration for ``localhost:4444``.
+4. Add the following code snippet in the end of ``dbas/__init__.py``::
+    # NEVER COMMIT THIS
+    # based upon http://blog.digital-horror.com/how-to-setup-pycharms-remote-debugger-for-docker/
+    import pydevd
+
+    try:
+        pydevd.settrace('YOUR_IP', port=4444, stdoutToServer=True, stderrToServer=True)
+    except Exception as e:
+        print(e)
+
+Don’t forget to replace YOUR_IP with an ip of your development machine reachable from within the container, e.g.
+196.168.2.42.
+
+NB: If no remote debugger is running, D-BAS still works, but a ``ConnectionRefusedError`` is printed after few seconds.
+
+To debug a D-BAS instance:
+1. Start the remote debugger configuration.
+2. Restart the D-BAS instance (either manually with ``docker-compose up``, or by changing the code, which restarts D-BAS automatically).  
+3. PyCharm breaks the program when the debugger is connected. Click Continue.
+4. Debug as usual.
+
+To debug unit tests:
+1. If the remote debugger is already running, make sure that the running D-BAS instance is not connected to it (if it is, restart the debugger, which disconnects the connected instance and will wait for a new connection).
+2. Start the remote debugger if it is not running.
+3. Start the units tests.
+4. PyCharm breaks the program when the debugger is connected. Click Continue.
+5. Debug as usual.
+
+NB: If you start the unit tests while the remote debugger is already connected, the unit tests hang because they cannot
+connect to the debugger.
