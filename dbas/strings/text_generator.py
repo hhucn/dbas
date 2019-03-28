@@ -505,9 +505,10 @@ def get_text_for_message(nickname, lang, path, message_content, for_html=True) -
     clickForMore = start_with_capital(_t.get(_.clickForMore))
     dbas_url = get_global_url()
     message_appendix_auto_generated = _t.get(_.emailBodyText).format(dbas_url)
+    abs_path = f'{dbas_url}/discuss{path}'
 
-    link = f'<a href="{dbas_url}/discuss{path}">{clickForMore}</a>' if for_html else path
-    msg = f'{intro}\n\n{link}\n---\n\n{message_appendix_auto_generated}'
+    link = f'<a href="{abs_path}">{clickForMore}</a>' if for_html else abs_path
+    msg = f'{intro}\n\n{link}\n\n---\n\n{message_appendix_auto_generated}'
 
     return msg.replace("\n", "<br>") if for_html else msg
 
