@@ -24,10 +24,10 @@ LOG = logging.getLogger(__name__)
 
 
 @view_config(request_method='POST', route_name='user_login', renderer='json')
-@validate(spec_keyword_in_json_body((str, "user", lambda user, type: isinstance(user, type) and user != ""),
+@validate(spec_keyword_in_json_body((str, "user", lambda user, varType: isinstance(user, varType) and user != ""),
                                     (str, "password",
-                                     lambda password, type: isinstance(password, type) and password != ""),
-                                    (bool, 'keep_login', lambda keep_login, type: isinstance(keep_login, type))),
+                                     lambda password, varType: isinstance(password, varType) and password != ""),
+                                    (bool, 'keep_login', lambda keep_login, varType: isinstance(keep_login, varType))),
           has_maybe_keywords(('redirect_url', str, '')))
 def user_login(request):
     """
@@ -100,18 +100,17 @@ def user_delete(request):
 @view_config(route_name='user_registration', renderer='json')
 @validate(valid_lang_cookie_fallback,
           spec_keyword_in_json_body(
-              (str, "firstname", lambda firstname, type: isinstance(firstname, type) and firstname != ""),
+              (str, "firstname", lambda firstname, varType: isinstance(firstname, varType) and firstname != ""),
               (str, "lastname",
-               lambda lastname, type: isinstance(lastname, type) and lastname != ""),
+               lambda lastname, varType: isinstance(lastname, varType) and lastname != ""),
               (str, "nickname",
-               lambda nickname, type: isinstance(nickname, type) and nickname != ""),
-              (str, "email", lambda email, type: isinstance(email, type) and email != ""),
-              (str, "gender", lambda gender, type: isinstance(gender, type) and gender != ""),
+               lambda nickname, varType: isinstance(nickname, varType) and nickname != ""),
+              (str, "email", lambda email, varType: isinstance(email, varType) and email != ""),
+              (str, "gender", lambda gender, varType: isinstance(gender, varType) and gender != ""),
               (str, "password",
-               lambda password, type: isinstance(password, type) and password != ""),
+               lambda password, varType: isinstance(password, varType) and password != ""),
               (str, "passwordconfirm",
-               lambda passwordconfirm, type: isinstance(passwordconfirm, type)
-                                             and passwordconfirm != "")))
+               lambda passwordconfirm, varType: isinstance(passwordconfirm, varType) and passwordconfirm != "")))
 def user_registration(request):
     """
     Registers new user with data given in the ajax request.
