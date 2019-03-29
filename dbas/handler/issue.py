@@ -266,7 +266,7 @@ def get_issues_overview_for(db_user: User, app_url: str) -> dict:
     }
 
 
-def get_issues_overview_on_start(db_user: User) -> dict: ###
+def get_issues_overview_on_start(db_user: User) -> dict:
     """
     Returns list with title, date, and count of statements for each visible issue
 
