@@ -489,32 +489,28 @@ def get_text_for_edit_text_message(lang, nickname, orginal, edit, url, for_html=
         return _t.get(_.editTextMessage).format(nickname, orginal, edit, url)
 
 
-def get_text_for_message(nickname, lang, url, message_content, for_html=True):
+def get_text_for_message(nickname, lang, path, message_content, for_html=True) -> str:
     """
-    This method creates a email message used in a email.
+    This method creates a message used for example in mails or messages.
 
     :param nickname: The nickname of the addressed user
     :param lang: The language to be used in the email
-    :param url: The url for the user where he can find the changes
+    :param path: The url for the user where he can find the changes
     :param message_content: The key variable which will be translated into a message
     :param for_html: A boolean to determine if the Message should contain a clickable link
     :return: A Message addressed to a user which can contain a clickable or non-clickable link
     """
-
-    return __get_text_for_add_something(nickname, lang, url, message_content, for_html)
-
-
-def __get_text_for_add_something(nickname, lang, url, keyword, for_html=True):
-    nl = '<br>' if for_html else '\n'
     _t = Translator(lang)
-    intro = _t.get(keyword).format(nickname)
+    intro = _t.get(message_content).format(nickname)
     clickForMore = start_with_capital(_t.get(_.clickForMore))
-    if for_html:
-        url = f'{get_global_url()}/discuss{url}'
-        url = f'<a href="{url}">{clickForMore}</a>'
-    else:
-        url = get_global_url() + '/discuss' + url
-    return f'{intro}{nl}{clickForMore}: {url}'
+    dbas_url = get_global_url()
+    message_appendix_auto_generated = _t.get(_.emailBodyText).format(dbas_url)
+    abs_path = f'{dbas_url}/discuss{path}'
+
+    link = f'<a href="{abs_path}">{clickForMore}</a>' if for_html else abs_path
+    msg = f'{intro}\n\n{link}\n\n---\n\n{message_appendix_auto_generated}'
+
+    return msg.replace("\n", "<br>") if for_html else msg
 
 
 def __get_confrontation_text_for_undermine(nickname: str, premise: str, lang: str, system_argument: Argument,
