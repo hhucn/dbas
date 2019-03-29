@@ -5,6 +5,38 @@ from dbas.validators import core
 from dbas.validators.core import validate
 
 
+def test_spec_keywords():
+    request = construct_dummy_request()
+    fn = core.spec_keyword_in_json_body((int, 'foo', lambda foo, varType: isinstance(foo, varType)))
+    response = fn(request)
+    assert type(response) == bool
+    assert response is False
+
+    request = construct_dummy_request({'foo': 'bar'})
+    fn = core.spec_keyword_in_json_body((int, 'foo', lambda foo, varType: isinstance(foo, varType)))
+    response = fn(request)
+    assert type(response) == bool
+    assert response is False
+
+    request = construct_dummy_request({'foo': 2})
+    fn = core.spec_keyword_in_json_body((int, 'foo', lambda foo, varType: isinstance(foo, varType)))
+    response = fn(request)
+    assert type(response) == bool
+    assert response is True
+
+    request = construct_dummy_request({'foo': ''})
+    fn = core.spec_keyword_in_json_body((str, 'foo', lambda foo, varType: isinstance(foo, varType) and foo != ''))
+    response = fn(request)
+    assert type(response) == bool
+    assert response is False
+
+    request = construct_dummy_request({'foo': 'bar'})
+    fn = core.spec_keyword_in_json_body((str, 'foo', lambda foo, varType: isinstance(foo, varType) and foo != ''))
+    response = fn(request)
+    assert type(response) == bool
+    assert response is True
+
+
 def test_has_keywords():
     request = construct_dummy_request()
     fn = core.has_keywords_in_json_path(('foo', int))
