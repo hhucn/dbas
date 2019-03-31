@@ -54,13 +54,13 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_da
         else:
             cost = to_cents(float(feature_data['decidotron_cost']))
 
-            if 0 < cost <= db_issue.decision_process.budget:
+            if 0 <= cost <= db_issue.decision_process.budget:
                 add_associated_cost(db_issue, new_statement, to_cents(cost))
             else:
                 transaction.abort()
                 return {
                     'status': 'fail',
-                    'error': 'Cost has to be 0 < cost <= {}. (In cents)'.format(db_issue.decision_process.budget)
+                    'error': 'Cost has to be 0 <= cost <= {}. (In cents)'.format(db_issue.decision_process.budget)
                 }
 
     _um = UrlManager(db_issue.slug)
