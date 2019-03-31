@@ -48,10 +48,14 @@
               It has an estimated cost of </label>
             <div class="input-group col-lg-9 col-md-7 col-sm-6">
               <span class="input-group-addon">€</span>
-              <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="5000" type="number" min=0
-                     step=10 max="${issues.decidotron_budget.budget / 100}"
+              <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="2000" type="number"
+                     min=0
+                     step=50 max="${issues.decidotron_budget.budget / 100}"
                      class="form-control" style="width: 100%" required>
             </div>
+            <span
+                class="help-block">Bitte gib die geschätzte Kosten zwischen 0 € und ${issues.decidotron_budget.budget / 100}
+              € an.</span>
           </div>
         </fieldset>
       </div>
