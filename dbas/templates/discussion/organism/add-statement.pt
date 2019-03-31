@@ -47,15 +47,16 @@
                    style="color: #666; font-size: 17px; margin-top: 0.4em;" i18n:translate="decidotron_cost_of_position">
               It has an estimated cost of </label>
             <div class="input-group col-lg-9 col-md-7 col-sm-6">
-              <span class="input-group-addon">€</span>
+              <span class="input-group-addon">${issues.decidotron_budget.currency_symbol}</span>
               <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="2000" type="number"
                      min=0
                      step=50 max="${issues.decidotron_budget.budget / 100}"
                      class="form-control" style="width: 100%" required>
             </div>
             <span
-                class="help-block">Bitte gib die geschätzte Kosten zwischen 0 € und ${int(issues.decidotron_budget.budget / 100)}
-              € an.</span>
+                class="help-block">Bitte gib die geschätzte Kosten zwischen 0 ${issues.decidotron_budget.currency_symbol}
+              und ${int(issues.decidotron_budget.budget / 100)}
+                ${issues.decidotron_budget.currency_symbol} an.</span>
           </div>
         </fieldset>
       </div>
