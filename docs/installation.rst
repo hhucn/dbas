@@ -222,8 +222,9 @@ To execute tests using a running D-BAS docker container, use one of the followin
     # execute only specific tests
     docker-compose exec web nosetests -v dbas.review.queue.tests.test_lib
 
-NB: Some tests have side effects, rely on the side effects of previous tests, or require a clean environment (if you are
-using docker, do a ``docker-compose down && docker-compose up`` to get a clean environment).
+.. note::
+   Some tests have side effects, rely on the side effects of previous tests, or require a clean environment (if you are
+   using docker, do a ``docker-compose down && docker-compose up`` to get a clean environment).
 
 
 Debugger
@@ -248,7 +249,8 @@ To set up remote debugging, follow these steps:
 Don’t forget to replace YOUR_IP with an ip of your development machine reachable from within the container, e.g.
 196.168.2.42.
 
-NB: If no remote debugger is running, D-BAS still works, but a ``ConnectionRefusedError`` is printed after few seconds.
+.. note::
+   If no remote debugger is running, D-BAS still works, but a ``ConnectionRefusedError`` is printed after few seconds.
 
 To debug a D-BAS instance:
 1. Start the remote debugger configuration.
@@ -263,5 +265,6 @@ To debug unit tests:
 4. PyCharm breaks the program when the debugger is connected. Click Continue.
 5. Debug as usual.
 
-NB: If you start the unit tests while the remote debugger is already connected, the unit tests hang because they cannot
-connect to the debugger.
+.. note::
+   If you start the unit tests while the remote debugger is already connected, the unit tests hang because they cannot
+   connect to the debugger.
