@@ -33,10 +33,11 @@
         <i class="fa fa-check"></i>
         <span i18n:translate="decidotron_vote_button_label">Vote!</span>
       </a>
-      <button id="decidotron-button" disabled
+      <button id="decidotron-button"
               class="btn btn-primary btn-disabled btn-block decidotron-button vote-not-logged-in"
+              data-toggle="modal" data-target="#popup-login"
            tal:condition="not extras.logged_in and issues.decidotron_budget.votes_started">
-        <i class="fa fa-check"></i>
+        <i class="fa fa-sign-in"></i>
         <span i18n:translate="decidotron_login_to_vote_button_label">Login to vote!</span>
       </button>
       <button id="decidotron-button" disabled class="btn btn-disabled btn-block decidotron-button vote-not-started"
