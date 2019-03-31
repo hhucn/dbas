@@ -12,7 +12,7 @@
 
           $("#decidotron-button").on("click", function (e) {
             e.preventDefault();
-            url_base = '${issues.decidotron_budget.host}/preferences/${issues.slug}';
+            const url_base = '${issues.decidotron_budget.host}/preferences/${issues.slug}';
             $.ajax({
               url: '/get_temp_key',
               method: 'GET',
@@ -21,7 +21,7 @@
               headers: {'X-CSRF-Token': $('#' + hiddenCSRFTokenId).val()}
             })
                 .done(data => {
-                  url = url_base + '?token=' + data.token;
+                  const url = url_base + '?token=' + data.token;
                   // window.open(url, '_blank'); // open decidotron in a new tab
                   window.location = url; // open decidotron in the current tab
                 })
