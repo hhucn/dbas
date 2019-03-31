@@ -2,19 +2,27 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
 
   <div id="discussions-space">
-    <ul id="discussions-space-list">
-      <li tal:repeat="item items.elements" style="${item.style}">
-        <input tal:condition="python: item.url in ['login', 'add']" id="${item.id}" type="radio" name="discussion-button-group" data-url="${item.url}">
-        <input tal:condition="python: item.url not in ['login', 'add']" id="${item.id}" type="radio" name="discussion-button-group"
-                 onclick='location.href="${item.url}";' data-url="${item.url}">
-        <span tal:repeat="premise item.premises" tal:omit-tag="">
+    <ul id="discussions-space-list" class="list-group">
+      <li class="list-group-item" tal:repeat="item items.elements" style="${item.style}">
+        <div class="discussion-space-list-row__left-side" style="display: flex">
+          <input tal:condition="python: item.url in ['login', 'add']" id="${item.id}" type="radio"
+                                                                      name="discussion-button-group"
+                                                                      data-url="${item.url}">
+          <input tal:condition="python: item.url not in ['login', 'add']" id="${item.id}" type="radio"
+                                                                          name="discussion-button-group"
+                                                                          onclick='location.href="${item.url}";'
+                                                                          data-url="${item.url}">
+          <span tal:repeat="premise item.premises" tal:omit-tag="">
+
                   <label for="${item.id}" id="${premise.id}" data-toggle="tooltip"
                          data-placement="auto">${structure:premise.title}</label>
                   <label for="${item.id}" tal:condition="not:repeat.premise.end">${extras.tag.aand}</label>
                   <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
                   <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
-                    <div tal:omit-tag="" tal:condition="item.is_editable or item.is_markable or item.is_deletable">
-                      <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_markable or item.is_deletable or item.is_attackable"></span>
+                    <div
+                        class="item-actions-list" tal:condition="item.is_editable or item.is_markable or item.is_deletable">
+                      <span
+                          style="margin-left: 1em" tal:condition="item.is_editable or item.is_markable or item.is_deletable or item.is_attackable"></span>
                       <span class="item-actions item-edit" tal:condition="item.is_editable"
                             title="${extras.title.edit_statement}">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
@@ -46,12 +54,19 @@
                         </a>
                       </span>
                       <span class="item-actions item-reference" title="${extras.title.reference}">
-                        <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_markable or item.is_deletable)"></span>
+                        <span
+                            style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_markable or item.is_deletable)"></span>
                         <i class="fa fa-link" aria-hidden="true"></i>
                       </span>
                     </div>
                   </div>
+
                 </span>
+        </div>
+        <div class="discussion-space-list-row__right-side">
+
+        </div>
+
       </li>
     </ul>
     <div tal:condition="items.extras.cropped_list" style="padding-left: 40px;">
