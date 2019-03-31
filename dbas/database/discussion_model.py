@@ -159,7 +159,7 @@ class Issue(DiscussionBase):
             "is_read_only": self.is_read_only,
             "is_private": self.is_private,
             "is_disabled": self.is_disabled,
-            "is_master": self.is_master,
+            "is_featured": self.is_featured
         }
 
 

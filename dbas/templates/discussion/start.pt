@@ -1,125 +1,123 @@
 <!-- overview of every discussion with little activity graph -->
 <!-- this is shown after the index page of D-BAS -->
 <tal:block metal:use-macro="load: ../basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
-  <tal:block metal:fill-slot="content_page">
+    <tal:block metal:fill-slot="content_page">
 
-    <section>
-      <div class="text-center big-header">
-        <h3 class="text-center">
-          <span i18n:translate="overview_of_discussion">Overview of the Discussions</span></h3>
-        <p i18n:translate="page_contains_overview" class="lead text-center">This page contains an over of
-          discussions</p>
-      </div>
-    </section>
+        <section>
+            <div class="text-center big-header">
+                <h3 class="text-center">
+                    <span i18n:translate="overview_of_discussion">Overview of the Discussions</span></h3>
+                <p i18n:translate="page_contains_overview" class="lead text-center">This page contains an over of
+                    discussions</p>
+            </div>
+        </section>
 
-    <div class="wrapper-container" tal:condition="len(issues.featured)>0">
-      <div class="container colored-featured-container">
-        <div class="row">
-          <div class="col-md-offset-1 col-md-10 col-md-offset-1">
-            <p class="lead center" i18n:translate="featured_issue">Top Themen:</p>
-            <table class="table table-striped table-hover">
-              <thead>
-              <tr>
-                <th i18n:translate="title">Titel</th>
-                <th i18n:translate="language">Language</th>
-                <th i18n:translate="statements">Statements</th>
-                <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
-                <th i18n:translate="creation">Creation</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr tal:repeat="issue issues.featured">
-                <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
-                <td>
-                  <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
-                  <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
-                </td>
-                <td>${issue.statements}</td>
-                <td class="issue_activity_chart">
-                  <div id="issue_activity_chart_${issue.uid}"></div>
-                </td>
-                <td>${issue.date}</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="wrapper-container" tal:condition="len(issues.featured)==1">
+            <div class="container colored-featured-container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="">
+                            <h1 class="display-4">${issues.featured[0].title}</h1>
+                            <p class="lead">${issues.featured[0].info}</p>
+                            <p tal:condition="issues.featured[0].active_users==0">Seien Sie de erste Teilnehmende dieser
+                                Diskussion</p>
+                            <p tal:condition="issues.featured[0].active_users==1">In dieser Diskussion hat bereits ein
+                                aktiver Teilnehmer insgesamt ${issues.featured[0].statements} unterschiedliche Aussagen
+                                verfasst.</p>
+                            <p tal:condition="issues.featured[0].active_users>1">In dieser Diskussion haben
+                                bereits ${issues.featured[0].active_users} aktive Teilnehmende
+                                insgesamt ${issues.featured[0].statements} unterschiedliche Aussagen verfasst.</p>
+                            <p class="lead">
+                                <a class="btn btn-primary btn-lg" href="${issues.featured[0].url}" role="button">Hier
+                                    geht es weiter</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div class="wrapper-container">
-      <div class="container colored-container">
-        <div class="row">
-          <div class="col-md-offset-1 col-md-10 col-md-offset-1">
-            <p class="lead center" i18n:translate="current_discussion">Current discussions:</p>
-            <table class="table table-striped table-hover">
-              <thead>
-              <tr>
-                <th i18n:translate="title">Titel</th>
-                <th i18n:translate="language">Language</th>
-                <th i18n:translate="statements">Statements</th>
-                <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
-                <th i18n:translate="creation">Creation</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr tal:repeat="issue issues.writable">
-                <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
-                <td>
-                  <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
-                  <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
-                </td>
-                <td>${issue.statements}</td>
-                <td class="issue_activity_chart">
-                  <div id="issue_activity_chart_${issue.uid}"></div>
-                </td>
-                <td>${issue.date}</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="wrapper-container">
+            <div class="container colored-container">
+                <div class="row">
+                    <div class="col-md-offset-1 col-md-10 col-md-offset-1">
+                        <p class="lead center" i18n:translate="current_discussion">Current discussions:</p>
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th i18n:translate="title">Titel</th>
+                                <th i18n:translate="language">Language</th>
+                                <th i18n:translate="statements">Statements</th>
+                                <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
+                                <th i18n:translate="creation">Creation</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr tal:repeat="issue issues.writable">
+                                <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
+                                <td>
+                                    <img tal:condition="issue.lang.is_de"
+                                            src="${request.static_url('dbas:static/images/flags/de-24.png')}"
+                                            alt="flag_de">
+                                    <img tal:condition="issue.lang.is_en"
+                                            src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}"
+                                            alt="flag_us-gb">
+                                </td>
+                                <td>${issue.statements}</td>
+                                <td class="issue_activity_chart">
+                                    <div id="issue_activity_chart_${issue.uid}"></div>
+                                </td>
+                                <td>${issue.date}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div class="wrapper-container" tal:condition="len(issues.readable)>0">
-      <div class="container colored-container">
-        <div class="row">
-          <div class="col-md-offset-1 col-md-10 col-md-offset-1">
-            <p class="lead center" i18n:translate="closed_discussion">Closed discussions:</p>
-            <table class="table table-striped table-hover">
-              <thead>
-              <tr>
-                <th i18n:translate="title">Titel</th>
-                <th i18n:translate="language">Language</th>
-                <th i18n:translate="statements">Statements</th>
-                <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
-                <th i18n:translate="creation">Creation</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr tal:repeat="issue issues.readable">
-                <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
-                <td>
-                  <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
-                  <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
-                </td>
-                <td>${issue.statements}</td>
-                <td class="issue_activity_chart">
-                  <div id="issue_activity_chart_${issue.uid}"></div>
-                </td>
-                <td>${issue.date}</td>
-              </tr>
-              </tbody>
-            </table>
+        <div class="wrapper-container" tal:condition="len(issues.readable)>0">
+            <div class="container colored-container">
+                <div class="row">
+                    <div class="col-md-offset-1 col-md-10 col-md-offset-1">
+                        <p class="lead center" i18n:translate="closed_discussion">Closed discussions:</p>
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th i18n:translate="title">Titel</th>
+                                <th i18n:translate="language">Language</th>
+                                <th i18n:translate="statements">Statements</th>
+                                <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
+                                <th i18n:translate="creation">Creation</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr tal:repeat="issue issues.readable">
+                                <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
+                                <td>
+                                    <img tal:condition="issue.lang.is_de"
+                                            src="${request.static_url('dbas:static/images/flags/de-24.png')}"
+                                            alt="flag_de">
+                                    <img tal:condition="issue.lang.is_en"
+                                            src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}"
+                                            alt="flag_us-gb">
+                                </td>
+                                <td>${issue.statements}</td>
+                                <td class="issue_activity_chart">
+                                    <div id="issue_activity_chart_${issue.uid}"></div>
+                                </td>
+                                <td>${issue.date}</td>
+                            </tr>
+                            </tbody>
+                        </table>
 
-          </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <span id="hidden-chart-data" class="hidden">${data}</span>
+        <span id="hidden-chart-data" class="hidden">${data}</span>
 
-    <span tal:condition="extras.logged_in" class="icon-badge blue-btn bottom-right" id="add-topic">+</span>
-  </tal:block>
+        <span tal:condition="extras.logged_in" class="icon-badge blue-btn bottom-right" id="add-topic">+</span>
+    </tal:block>
 </tal:block>
