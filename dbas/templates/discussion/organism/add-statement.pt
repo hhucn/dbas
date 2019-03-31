@@ -54,7 +54,7 @@
                      class="form-control" style="width: 100%" required>
             </div>
             <span
-                class="help-block">Bitte gib die geschätzte Kosten zwischen 0 € und ${issues.decidotron_budget.budget / 100}
+                class="help-block">Bitte gib die geschätzte Kosten zwischen 0 € und ${int(issues.decidotron_budget.budget / 100)}
               € an.</span>
           </div>
         </fieldset>
