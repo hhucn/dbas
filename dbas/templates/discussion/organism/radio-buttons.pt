@@ -61,7 +61,9 @@
           </span>
         </div>
         <div class="discussion-space-list-row__right-side">
-
+          <span tal:condition="'cost' in item" class="decidotron-position-cost text-muted">
+            ${"{:.0f}".format(item.cost / 100)} ${issues.decidotron_budget.currency_symbol}
+          </span>
         </div>
       </li>
 
