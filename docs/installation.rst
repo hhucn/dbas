@@ -216,11 +216,11 @@ are checking the syntax of the python and javascript code with::
 To execute tests using a running D-BAS docker container, use one of the following commands::
 
     # run all tests
-    docker exec -it dbas_web_1 nosetests
+    docker-compose exec web nosetests
     # run all tests, verbose mode (prints names of executed tests)
-    docker exec -it dbas_web_1 nosetests -v
+    docker-compose exec web nosetests -v
     # execute only specific tests
-    docker exec -it dbas_web_1 nosetests -v dbas.review.queue.tests.test_lib
+    docker-compose exec web nosetests -v dbas.review.queue.tests.test_lib
 
 NB: Some tests have side effects, rely on the side effects of previous tests, or require a clean environment (if you are
 using docker, do a ``docker-compose down && docker-compose up`` to get a clean environment).
@@ -232,7 +232,7 @@ Debugger
 You can use PyCharm’s remote debugging feature to debug D-BAS running in a docker container or debugging unit tests.
 
 To set up remote debugging, follow these steps:
-1. Install pydev inside your D-BAS docker contaier: ``docker exec dbas_web_1 pip install pydevd``
+1. Install pydev inside your D-BAS docker contaier: ``docker-compose exec web pip install pydevd``
 2. Add ``pydevd`` to your ``requirements.txt``.
 3. In PyCharm, create a “Python Remote Debug” configuration for ``localhost:4444``.
 4. Add the following code snippet in the end of ``dbas/__init__.py``::
