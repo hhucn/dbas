@@ -59,7 +59,7 @@ class QueueAdapter:
             slug = slugify(*subpage_dict.get('issue_titles'))
             issue: Issue = DBDiscussionSession.query(Issue).filter_by(slug=slug).one_or_none()
             if (subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None) \
-                    or self.db_user not in issue.participating_users:
+                    or (self.db_user not in issue.participating_users and issue.is_private):
                 ret_dict = {}
             else:
                 ret_dict = {
