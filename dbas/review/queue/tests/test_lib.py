@@ -12,7 +12,7 @@ class LibTest(TestCaseWithConfig):
             self.assertTrue(db_reason.points != 0)
 
     def test_get_review_count_for_if_not_participating(self):
-        self.assertEqual(get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, self.user_bjoern), 1)
+        self.assertEqual(get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, self.user_bjoern), 2)
         self.assertEqual(get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, self.user_antonia), 1)
 
     def test_get_review_count_for_if_not_participating_and_private(self):
@@ -27,7 +27,7 @@ class LibTest(TestCaseWithConfig):
         self.issue_cat_or_dog.is_private = True
         self.user_bjoern.participates_in.append(self.issue_cat_or_dog)
 
-        self.assertEqual(get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, self.user_bjoern), 1)
+        self.assertEqual(get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, self.user_bjoern), 2)
         self.assertEqual(get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, self.user_antonia), 0)
 
         self.issue_cat_or_dog.is_private = False
@@ -37,7 +37,7 @@ class LibTest(TestCaseWithConfig):
         self.user_bjoern.participates_in.append(self.issue_cat_or_dog)
         self.user_antonia.participates_in.append(self.issue_cat_or_dog)
 
-        self.assertEqual(get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, self.user_bjoern), 1)
+        self.assertEqual(get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, self.user_bjoern), 2)
         self.assertEqual(get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, self.user_antonia), 1)
 
         self.user_bjoern.participates_in.remove(self.issue_cat_or_dog)
