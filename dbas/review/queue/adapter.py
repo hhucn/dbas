@@ -121,10 +121,8 @@ class QueueAdapter:
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
         :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update
-        this!
-        :return:
+            this!
         """
-
         queues = [get_queue_by_key(key) for key in review_queues]
         status = [queue().element_in_queue(self.db_user, argument_uid=kwargs.get('argument_uid'),
                                            statement_uid=kwargs.get('statement_uid'),
@@ -314,5 +312,5 @@ class QueueAdapter:
     @staticmethod
     def __queue_is_empty(queue_information: dict):
         return queue_information is None \
-            or queue_information.get('issue_titles') is None \
-            or len(queue_information.get('issue_titles')) == 0
+               or queue_information.get('issue_titles') is None \
+               or len(queue_information.get('issue_titles')) == 0
