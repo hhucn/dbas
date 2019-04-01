@@ -280,6 +280,7 @@ en_lang = {
     _.emailWasSent: 'E-Mail was sent.',
     _.emailWasNotSent: 'E-Mail was not sent.',
     _.emailUnknown: 'The given mail address is unknown.',
+    _.emailSentGeneric: 'We sent a mail to the given address, if the mail could be found in our system',
     _.emailBodyText: 'This is an automatically generated message by D-BAS {}.\n\nFor contact please write a mail to dbas@cs.uni-duesseldorf.de.',
     _.emailArgumentAddTitle: 'D-BAS Information about an Argument',
     _.emailArgumentAddBody: 'New statements were added to your argument. Have a look at:',
