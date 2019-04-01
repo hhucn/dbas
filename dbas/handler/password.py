@@ -1,7 +1,5 @@
 """
 Class for handling passwords.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import logging
@@ -66,22 +64,19 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
     :param _tn: Translator
     :return: dict with info about mailing
     """
-
     db_user = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
     if not db_user:
-        LOG.debug("Mail unknown")
+        LOG.debug("User could not be found for mail %s", email)
         return {
             'success': False,
-            'message': _tn.get(_.emailUnknown)
+            'message': _tn.get(_.emailSentGeneric)
         }
 
     rnd_pwd = get_rnd_passwd()
     hashed_pwd = get_hashed_password(rnd_pwd)
 
-    # set the hashed one
     db_user.password = hashed_pwd
     DBDiscussionSession.add(db_user)
-    # transaction.commit()
 
     db_language = DBDiscussionSession.query(Language).get(db_user.settings.lang_uid)
 
@@ -89,9 +84,9 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
     body += _tn.get(_.newPwdIs) + rnd_pwd + '\n\n'
     body += _tn.get(_.newPwdInfo)
     subject = _tn.get(_.dbasPwdRequest)
-    success, success_message, message = send_mail(mailer, subject, body, email, db_language.ui_locales)
+    success, _success_message, message = send_mail(mailer, subject, body, email, db_language.ui_locales)
 
     return {
         'success': success,
-        'message': success_message
+        'message': _tn.get(_.emailSentGeneric)
     }
