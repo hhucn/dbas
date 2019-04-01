@@ -16,7 +16,7 @@ from sqlalchemy_utils import ArrowType
 from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReference, \
-    StatementOrigins, PremiseGroup, Premise, Argument
+    StatementOrigins, PremiseGroup, Premise, Argument, ClickedArgument, ClickedStatement
 from dbas.lib import get_profile_picture
 from graph.lib import get_d3_data
 
@@ -124,16 +124,31 @@ class StatementGraph(SQLAlchemyObjectType):
         return self.flat_statements_below()
 
 
+class ClickedArgumentNode(SQLAlchemyObjectType):
+    class Meta:
+        model = ClickedArgument
+
+
+class ClickedStatementNode(SQLAlchemyObjectType):
+    class Meta:
+        model = ClickedStatement
+
+
 class UserGraph(SQLAlchemyObjectType):
     profile_picture = graphene.Field(graphene.String, size=graphene.Int(),
                                      description="The profile picture of the user")
+    clicked_statements = graphene.List(ClickedStatementNode, is_valid=graphene.Boolean(), is_up_vote=graphene.Boolean(),
+                                       statement_uid=graphene.Int())
 
     def resolve_profile_picture(self, info, **kwargs):
         return get_profile_picture(self, **kwargs)
 
+    def resolve_clicked_statements(self: User, info, **kwargs):
+        return resolve_list_query({**kwargs, "author_uid": self.uid}, info, ClickedStatementNode)
+
     class Meta:
         model = User
-        only_fields = ["uid", "public_nickname", "last_action", "registered", "last_login"]
+        only_fields = ["uid", "public_nickname", "last_action", "registered", "last_login", "clicked_statements"]
 
 
 class StatementOriginsGraph(SQLAlchemyObjectType):

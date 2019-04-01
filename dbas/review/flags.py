@@ -122,7 +122,7 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
 
 def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User, tn: Translator) -> dict:
     """
-    Flags a premisegroup for a merge or split event. On split the premisegroup will be divided into indepent groups.
+    Flags a premisegroup for a merge or split event. On split the premisegroup will be divided into independent groups.
     On merge the statements of this group will be one statement.
 
     :param key: either 'split' or 'merge'
