@@ -299,10 +299,11 @@ def get_review_count_for(review_type: Type[AbstractReviewCase], last_reviewer_ty
     db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
                                                                review_type.detector_uid != db_user.uid,
                                                                ~review_type.uid.in_(already_reviewed))
-    # count only those reviews where the user participated in a related issue
-    reviews_with_participation = {r for r in db_reviews.all()
-                                  if db_user in participating_users_in_issues(r.get_issues())}
-    return len(reviews_with_participation)
+    # count only those reviews where the user participated or the issue is public
+    reviews_with_access = {r for r in db_reviews.all()
+                           if any(not i.is_private for i in r.get_issues())
+                           or db_user in participating_users_in_issues(r.get_issues())}
+    return len(reviews_with_access)
 
 
 def participating_users_in_issues(issues: [Issue]) -> {User}:
