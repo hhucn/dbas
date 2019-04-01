@@ -104,15 +104,10 @@ function callbackIfDoneForPasswordRequest(data) {
     success.hide();
     failed.hide();
     info.hide();
-    if (data.success) {
-        $('#' + popupLoginForgotPasswordBody).hide();
-        $('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
-        success.show();
-        $('#' + popupLoginSuccess + '-message').text(data.message);
-    } else {
-        info.show();
-        $('#' + popupLoginInfo + '-message').text(data.message);
-    }
+    $('#' + popupLoginForgotPasswordBody).hide();
+    $('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
+    success.show();
+    $('#' + popupLoginSuccess + '-message').text(data.message);
 }
 
 $(document).ready(function mainDocumentReady() {
