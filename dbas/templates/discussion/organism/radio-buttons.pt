@@ -16,6 +16,9 @@
                    data-placement="auto">${structure:premise.title}</label>
             <label for="${item.id}" tal:condition="not:repeat.premise.end">${extras.tag.aand}</label>
             <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
+            <span tal:condition="'cost' in item" class="decidotron-position-cost">
+              &nbsp;(ca. ${"{:.0f}".format(item.cost / 100)} ${issues.decidotron_budget.currency_symbol})
+            </span>
             <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
               <div
                   class="item-actions-list" tal:condition="item.is_editable or item.is_markable or item.is_deletable">
@@ -61,9 +64,6 @@
           </span>
         </div>
         <div class="discussion-space-list-row__right-side">
-          <span tal:condition="'cost' in item" class="decidotron-position-cost text-muted">
-            ${"{:.0f}".format(item.cost / 100)} ${issues.decidotron_budget.currency_symbol}
-          </span>
         </div>
       </li>
 
