@@ -10,7 +10,7 @@ import random
 from typing import List
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User, StatementToIssue
+from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User, StatementToIssue, PositionCost
 from dbas.handler import attacks
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
@@ -89,18 +89,23 @@ class ItemDictHelper(object):
         for statement in db_statements:
             if statement.uid in uids:  # add seen by if the statement is visible
                 add_seen_statement(statement.uid, db_user)
-            statements_array.append(self.__create_answer_dict(statement.uid,
-                                                              [{
-                                                                  'title': statement.get_text(),
-                                                                  'id': statement.uid
-                                                              }],
-                                                              'start',
-                                                              _um.get_url_for_statement_attitude(statement.uid),
-                                                              is_editable=not ed.is_statement_in_edit_queue(
-                                                                  statement.uid),
-                                                              is_markable=True,
-                                                              is_author=is_author_of_statement(db_user, statement.uid),
-                                                              is_visible=statement.uid in uids))
+
+            position_dict = self.__create_answer_dict(statement.uid,
+                                                      [{
+                                                          'title': statement.get_text(),
+                                                          'id': statement.uid
+                                                      }],
+                                                      'start',
+                                                      _um.get_url_for_statement_attitude(statement.uid),
+                                                      is_editable=not ed.is_statement_in_edit_queue(
+                                                          statement.uid),
+                                                      is_markable=True,
+                                                      is_author=is_author_of_statement(db_user, statement.uid),
+                                                      is_visible=statement.uid in uids)
+            if self.db_issue.decision_process:
+                position_dict['cost'] = DBDiscussionSession.query(PositionCost).get(statement.uid).cost
+
+            statements_array.append(position_dict)
 
         _tn = Translator(self.lang)
 

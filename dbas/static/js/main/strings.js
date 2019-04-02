@@ -309,7 +309,7 @@ var dbas_en = {
     'contentWillBeRevoked': 'You will be disassociated from the content.',
     'couldNotLock': 'Set could not be locked, please try again!',
     'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart ' +
-    'the discussion!',
+        'the discussion!',
     'caution': 'Caution',
     'cancel': 'cancel',
     'correctionsSet': 'Your correction was set.',
@@ -335,22 +335,22 @@ var dbas_en = {
     'date': 'Date',
     'didYouMean': 'Top10 statements, which you probably could mean:',
     'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to ' +
-    'set this version as the current one once again?',
+        'set this version as the current one once again?',
     'doNotHesitateToContact': 'Do not hesitate to <b><span style="cursor: pointer;" id="contact_on_error">contact us ' +
-    '(click here)</span></b>',
+        '(click here)</span></b>',
     'deleteStatisticsTitle': 'Delete Statistics',
     'deleteStatisticsBody': 'Are you sure? This will delete all stored information about clicks respectively votes you ' +
-    'have done.',
+        'have done.',
     'euCookiePopupTitle': 'This website uses cookies.',
     'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll ' +
-    'assume that you are happy to receive all cookies.',
+        'assume that you are happy to receive all cookies.',
     'euCookiePopoupButton1': 'Got it!',
     'euCookiePopoupButton2': 'Learn&nbsp;more',
     'empty_news_input': 'News title or text is empty or too short!',
     'email': 'E-Mail',
     'emailWasSent': 'An E-Mail was sent to the given address.',
     'emailWasNotSent': 'Your message could not be send due to a system error!',
-    'emailUnknown': 'The given e-mail address is unkown.',
+    'emailUnknown': 'The given e-mail address is unknown.',
     'error_code': 'Error code',
     'edit': 'Edit',
     'editTitle': 'Editing the statements.',
@@ -384,7 +384,7 @@ var dbas_en = {
     'languageCouldNotBeSwitched': 'Unfortunately, the language could not be switched',
     'languageSwitchModalTitle': 'Change of Language',
     'languageSwitchModalBody': 'Changing current language does not affect the discussion language, because this ' +
-    'language is mapped to the content of the discussion.',
+        'language is mapped to the content of the discussion.',
     'last_action': 'Last Action',
     'last_login': 'Last Login',
     'legend': 'Legend',
@@ -410,7 +410,7 @@ var dbas_en = {
     'no': 'No',
     'noCorrections': 'No corrections for the given statement.',
     'noCorrectionsSet': 'Correction could not be set, because your user was not fount in the database. Are you ' +
-    'currently logged in?',
+        'currently logged in?',
     'noDecisionDone': 'No decision was done.',
     'notInsertedErrorBecauseEmpty': 'Your idea was not inserted, because your input text is empty.',
     'notInsertedErrorBecauseDuplicate': 'Your idea was not inserted, because your idea is a duplicate.',
@@ -422,7 +422,7 @@ var dbas_en = {
     'noTrackedData': 'No data was tracked.',
     'noDecisionstaken': 'No decision has yet been taken.',
     'noReferencesButYouCanAdd': 'There are no references for this statement, but you can add a new one (Source from ' +
-    'a newspaper etc.):',
+        'a newspaper etc.):',
     'number': 'No',
     'note': 'Note',
     'noEditsInOptimization': 'You have edited nothing!',
@@ -462,7 +462,7 @@ var dbas_en = {
     'requestFailed': 'Request failed, please reload the page.',
     'requestFailedBadToken': 'Your session is invalid, please reload the page.',
     'requestFailedInternalError': 'Request failed due to internal error, please reload this page. If the reload fails ' +
-    'again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
+        'again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
     'repuationChartSum': 'Summarized Reputation',
     'repuationChartDay': 'Reputation per Day',
     'sawThis': 'saw this',
@@ -594,7 +594,7 @@ var dbas_de = {
     'date': 'Datum',
     'didYouMean': 'Top 10 der Aussagen, die Sie eventuell meinten:',
     'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version ' +
-    'dennoch als die aktuellste markieren?',
+        'dennoch als die aktuellste markieren?',
     'deleteTrack': 'Track löschen',
     'deleteAccount': 'Account löschen',
     'deleteHistory': 'History löschen',
@@ -602,12 +602,12 @@ var dbas_de = {
     'deleteMarked': 'Ausgewählte Elemente löschen',
     'discussionsPropertySet': 'Die Eigenschaft der Diskussion wurde geändert.',
     'doNotHesitateToContact': 'Bitte zögern Sie bei Fehlern nicht, <b><span style="cursor: pointer;" ' +
-    'id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
+        'id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
     'deleteStatisticsTitle': 'Statistik löschen',
     'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
     'euCookiePopupTitle': 'Diese Seite nutzt Cookies.',
     'euCookiePopupText': 'Wir benutzen Cookies, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen,' +
-    ' akzeptieren Sie alle Cookies unserer Seite an und sind glücklich damit.',
+        ' akzeptieren Sie alle Cookies unserer Seite an und sind glücklich damit.',
     'euCookiePopoupButton1': 'Alles klar!',
     'euCookiePopoupButton2': 'Mehr&nbsp;Infos',
     'empty_news_input': 'Nachrichten-Titel oder Text ist leer oder zu kurz!',
@@ -724,8 +724,8 @@ var dbas_de = {
     'requestFailed': 'Anfrage fehlgeschlagen, bitte laden Sie die Seite erneut.',
     'requestFailedBadToken': 'Ihre Sitzung ist abgelaufen. Bitte laden Sie die Seite neu.',
     'requestFailedInternalError': 'Anfrage aufgrund eines internen Fehlers fehlgeschlagen. Bitte laden Sie die Seite ' +
-    'neu, sollte der Fehler bestehen bleiben, so <span style="cursor: pointer;" id="contact_on_error">' +
-    'kontaktieren sie uns bitte (hier klicken)</span>',
+        'neu, sollte der Fehler bestehen bleiben, so <span style="cursor: pointer;" id="contact_on_error">' +
+        'kontaktieren sie uns bitte (hier klicken)</span>',
     'repuationChartSum': 'Reputation ingsesamt',
     'repuationChartDay': 'Reputation pro Tag',
     'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
@@ -749,11 +749,11 @@ var dbas_de = {
     'shortenedBy': 'gekürzt mit',
     'switchDiscussion': 'Diskussionsthema ändern',
     'switchDiscussionText': 'Wollen Sie wirklich die aktuelle Diskussion verlassen und zur Diskussion über ' +
-    '<strong>XXX</strong> wechseln?',
+        '<strong>XXX</strong> wechseln?',
     'support': 'Unterstützung',
     'surname': 'Nachname',
-    'sureToDeleteReview': 'Sind Sie sicher, dass Sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann ' +
-    'nicht rückgangig gemacht werden!',
+    'sureToDeleteReview': 'Sind Sie sicher, dass Sie diese Entscheidung rückgängig machen möchten? Dieser Schritt kann ' +
+        'nicht rückgängig gemacht werden!',
     'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
     'text': 'Text',
     'to': 'An',
@@ -798,7 +798,7 @@ var dbas_de = {
     'tourIssueContent': 'Hier sehen Sie das aktuelle Diskussionsthema.',
     'tourStartDiscussionTitle': 'Erste Schritte',
     'tourStartDiscussionContent': 'In diesem Abschnitt sehen Sie links Nachrichten des Systems und rechts später ' +
-    'Ihre eigenen Nachrichten.',
+        'Ihre eigenen Nachrichten.',
     'tourMarkOpinionTitle': 'Meinung markieren',
     'tourMarkOpinionContent': 'Mit dem kleinen Stern neben dem Text können Sie Ihre eigene Meinung markieren.',
     'tourMarkOpinionText': 'Sie interessiert, dass der Park geschlossen werden soll.',

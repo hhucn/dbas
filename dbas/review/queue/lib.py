@@ -24,7 +24,7 @@ def get_all_allowed_reviews_for_user(session, session_keyword, db_user, review_t
     :param review_type: data table of reviews
     :param last_reviewer_type: data table of last reviewers
     :return: all reviews, list of already seen reviews as uids, list of already reviewed reviews as uids, boolean if the
-    user reviews for the first time in this session
+        user reviews for the first time in this session
     """
     # only get arguments, which the user has not seen yet
     LOG.debug("Trying to return all reviews for review_type %s", review_type.uid)
@@ -299,10 +299,11 @@ def get_review_count_for(review_type: Type[AbstractReviewCase], last_reviewer_ty
     db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
                                                                review_type.detector_uid != db_user.uid,
                                                                ~review_type.uid.in_(already_reviewed))
-    # count only those reviews where the user participated in a related issue
-    reviews_with_participation = {r for r in db_reviews.all()
-                                  if db_user in participating_users_in_issues(r.get_issues())}
-    return len(reviews_with_participation)
+    # count only those reviews where the user participated or the issue is public
+    reviews_with_access = {r for r in db_reviews.all()
+                           if any(not i.is_private for i in r.get_issues())
+                           or db_user in participating_users_in_issues(r.get_issues())}
+    return len(reviews_with_access)
 
 
 def participating_users_in_issues(issues: [Issue]) -> {User}:
