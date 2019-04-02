@@ -318,9 +318,9 @@
         <div id="popup-login-body">
           <div class="alert alert-info">
             <p i18n:translate="all_data_is_free">Your submitted data is being licensed under Creative Commons
-              Share Alike (CC BY-SA 4.0) and will be used for scientific purposes. We will never share your
+              Share Alike and will be used for scientific purposes. We will never share your
               password or e-mail address. By registering or logging in, you are accepting these terms.</p>
-            <br>
+            (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>)
           </div>
           <div class="tab-content">
             <div id="login">

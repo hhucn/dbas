@@ -954,9 +954,9 @@ msgstr "Registrierung"
 #: templates/snippet/popups.pt:320
 msgid "all_data_is_free"
 msgstr ""
-"Ihre daten werden unter der Creative Commons Namensnennung-Share Alike 4.0 International Public License und werden für"
-"wissenschaftliche Zwecke verwendet. Wir werden niemals ihr Passwort oder ihre E-Mail Adresse weitergeben. Durch"
-"registrieren oder einloggen akzeptieren Sie diese Bedingungen."
+"Ihre Daten werden unter der Creative Commons Namensnennung-Share Alike 4.0 International Public License erfasst und "
+"werden für wissenschaftliche Zwecke verwendet. Wir werden Ihr Passwort oder Ihre E-Mail Adresse niemals weitergeben. "
+"Durch das Registrieren und Einloggen akzeptieren Sie diese Bedingungen."
 
 
 #. Default: Your Nickname
