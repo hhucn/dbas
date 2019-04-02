@@ -15,11 +15,11 @@
         <div class="wrapper-container" tal:condition="len(issues.featured)==1">
             <div class="container colored-featured-container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-offset-1 col-md-10 col-md-offset-1">
                         <div class="">
-                            <h1 class="display-4">${issues.featured[0].title}</h1>
+                            <h1 class="title">${issues.featured[0].title}</h1>
                             <p class="lead">${issues.featured[0].info}</p>
-                            <p tal:condition="issues.featured[0].active_users==0">Seien Sie de erste Teilnehmende dieser
+                            <p tal:condition="issues.featured[0].active_users==0" i18n:translate="exit_discussion">Seien Sie der erste Teilnehmende dieser
                                 Diskussion</p>
                             <p tal:condition="issues.featured[0].active_users==1">In dieser Diskussion hat bereits ein
                                 aktiver Teilnehmer insgesamt ${issues.featured[0].statements} unterschiedliche Aussagen
@@ -45,7 +45,7 @@
                         <table class="table table-striped table-hover">
                             <thead>
                             <tr>
-                                <th i18n:translate="title">Titel</th>
+                                <th i18n:translate="title" Foo>Titel</th>
                                 <th i18n:translate="language">Language</th>
                                 <th i18n:translate="statements">Statements</th>
                                 <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
