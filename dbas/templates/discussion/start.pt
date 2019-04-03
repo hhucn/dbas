@@ -45,7 +45,7 @@
             <table class="table table-striped table-hover">
               <thead>
               <tr>
-                <th i18n:translate="title" Foo>Titel</th>
+                <th i18n:translate="title">Titel</th>
                 <th i18n:translate="language">Language</th>
                 <th i18n:translate="statements">Statements</th>
                 <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
@@ -96,11 +96,9 @@
                 <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
                 <td>
                   <img tal:condition="issue.lang.is_de"
-                      src="${request.static_url('dbas:static/images/flags/de-24.png')}"
-                      alt="flag_de">
+                      src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
                   <img tal:condition="issue.lang.is_en"
-                      src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}"
-                      alt="flag_us-gb">
+                      src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
                 </td>
                 <td>${issue.statements}</td>
                 <td class="issue_activity_chart">
