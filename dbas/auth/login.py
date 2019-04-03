@@ -123,16 +123,16 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     _tn = Translator(lang)
     success = ''
 
-    firstname = escape_string(data['firstname'])
-    lastname = escape_string(data['lastname'])
-    nickname = escape_string(data['nickname'])
-    email = escape_string(data['email'])
-    gender = escape_string(data['gender'])
-    password = escape_string(data['password'])
-    passwordconfirm = escape_string(data['passwordconfirm'])
+    firstname = escape_string(data.get('firstname', ''))
+    lastname = escape_string(data.get('lastname', ''))
+    nickname = escape_string(data.get('nickname', ''))
+    email = escape_string(data.get('email', ''))
+    gender = escape_string(data.get('gender', ""))
+    password = escape_string(data.get('password', ''))
+    passwordconfirm = escape_string(data.get('passwordconfirm', ''))
     db_new_user = None
 
-    msg = __check_login_params(nickname, email, password, passwordconfirm)
+    msg = __check_login_params(firstname, lastname, nickname, email, password, passwordconfirm)
     if msg:
         return success, _tn.get(msg), db_new_user
 
@@ -164,13 +164,37 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     return success, msg, db_new_user
 
 
-def __check_login_params(nickname, email, password, passwordconfirm) -> Keywords:
+def __check_login_params(firstname, lastname, nickname, email, password, passwordconfirm) -> Keywords:
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
     db_nick2 = get_user_by_case_insensitive_public_nickname(nickname)
     db_mail = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
     is_mail_valid = validate_email(email, check_mx=True)
 
-    # are the password equal?
+    if len(firstname) == 0:
+        LOG.debug("firstname is empty")
+        return _.checkFirstname
+
+    if len(lastname) == 0:
+        LOG.debug("lastename is empty")
+        return _.checkLastname
+
+    if len(nickname) == 0:
+        LOG.debug("username is empty")
+        return _.checkNickname
+
+    if len(email) == 0:
+        LOG.debug("email is empty")
+        return _.checkEmail
+
+    if len(password) == 0:
+        LOG.debug("password is empty")
+        return _.checkPassword
+
+    if len(passwordconfirm) == 0:
+        LOG.debug("password-confirm is empty")
+        return _.checkPasswordConfirm
+
+    # are the passwords equal?
     if not password == passwordconfirm:
         LOG.debug("Passwords are not equal")
         return _.pwdNotEqual

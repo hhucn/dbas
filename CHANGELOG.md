@@ -1,3 +1,7 @@
+### 1.17.1 (2019-04-03)
+- Fix error messages for invalid registration fields [!672](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/672) (Jans erster MR 🎉)
+- Hotfix for double conversion to cents [!698](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/698)
+
 ### 1.17.0 (2019-04-02)
 - Fix for usage of a generated slug, when a slug is already present in the database [!687](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/687)
 - Correctly format messages in mails and the internal messaging system [!688](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/688)

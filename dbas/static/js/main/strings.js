@@ -216,6 +216,7 @@ var textMaxCountMessageError = 'textMaxCountMessageError';
 var timestamp = 'timestamp';
 var typeofVote = 'typeofVote';
 var users = 'users';
+var userPasswordNotMatch = 'userPasswordNotMatch';
 var usersWithSameOpinion = 'usersWithSameOpinion';
 var unpinNavigation = 'unpinNavigation';
 var veryweak = 'veryweak';
@@ -500,6 +501,7 @@ var dbas_en = {
     'textMaxCountMessage': 'characters left',
     'textMaxCountMessageError': 'Put it in a nutshell!', //'Please shorten!',
     'users': 'Users',
+    'userPasswordNotMatch': 'User / Password do not match',
     'usersWithSameOpinion': 'Users with the same decision',
     'unpinNavigation': 'Unpin Navigation',
     'unkownError': 'Unknown error',
@@ -752,13 +754,14 @@ var dbas_de = {
         '<strong>XXX</strong> wechseln?',
     'support': 'Unterstützung',
     'surname': 'Nachname',
-    'sureToDeleteReview': 'Sind Sie sicher, dass Sie diese Entscheidung rückgängig machen möchten? Dieser Schritt kann ' +
-        'nicht rückgängig gemacht werden!',
+    'sureToDeleteReview': 'Sind Sie sicher, dass Sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann ' +
+        'nicht rückgangig gemacht werden!',
     'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
     'text': 'Text',
     'to': 'An',
     'timestamp': 'Zeit',
     'users': 'Benutzer',
+    'userPasswordNotMatch': 'Benutzername und/oder Passwort stimmen nicht überein',
     'usersWithSameOpinion': 'Teilnehmer/innen mit derselben Interesse',
     'unpinNavigation': 'Navigation lösen',
     'unkownError': 'Unbekannter Fehler',

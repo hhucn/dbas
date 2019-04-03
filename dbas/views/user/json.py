@@ -17,7 +17,7 @@ from dbas.helper.query import set_user_language
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import valid_lang_cookie_fallback
-from dbas.validators.core import has_keywords_in_json_path, has_maybe_keywords, validate
+from dbas.validators.core import has_keywords_in_json_path, has_maybe_keywords, validate, spec_keyword_in_json_body
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
 from dbas.validators.user import valid_user
@@ -26,8 +26,14 @@ LOG = logging.getLogger(__name__)
 
 
 @view_config(request_method='POST', route_name='user_login', renderer='json')
-@validate(has_keywords_in_json_path(('user', str), ('password', str), ('keep_login', bool)),
-          has_maybe_keywords(('redirect_url', str, '')))
+@validate(
+    spec_keyword_in_json_body((str, "user", lambda user, expected_type: isinstance(user, expected_type) and user != ""),
+                              (str, "password",
+                               lambda password, expected_type: isinstance(password,
+                                                                          expected_type) and password != ""),
+                              (bool, 'keep_login',
+                               lambda keep_login, expected_type: isinstance(keep_login, expected_type))),
+    has_maybe_keywords(('redirect_url', str, '')))
 def user_login(request):
     """
     Will login the user by his nickname and password
@@ -37,10 +43,10 @@ def user_login(request):
     """
     LOG.debug("Login user with Nickname and Password")
     lang = get_language_from_cookie(request)
-    nickname = request.validated['user']
-    password = request.validated['password']
-    keep_login = request.validated['keep_login']
-    redirect_url = request.validated['redirect_url']
+    nickname = request.validated.get('user')
+    password = request.validated.get('password')
+    keep_login = request.validated.get('keep_login')
+    redirect_url = request.validated.get('redirect_url')
 
     login_data = login_local_user(nickname, password, request.mailer, lang)
 
@@ -98,9 +104,20 @@ def user_delete(request):
 
 @view_config(route_name='user_registration', renderer='json')
 @validate(valid_lang_cookie_fallback,
-          has_keywords_in_json_path(('nickname', str), ('email', str), ('gender', str), ('password', str),
-                                    ('passwordconfirm', str)),
-          has_maybe_keywords(('firstname', str, ''), ('lastname', str, '')))
+          spec_keyword_in_json_body(
+              (str, "firstname",
+               lambda firstname, expected_type: isinstance(firstname, expected_type) and firstname != ""),
+              (str, "lastname",
+               lambda lastname, expected_type: isinstance(lastname, expected_type) and lastname != ""),
+              (str, "nickname",
+               lambda nickname, expected_type: isinstance(nickname, expected_type) and nickname != ""),
+              (str, "email", lambda email, expected_type: isinstance(email, expected_type) and email != ""),
+              (str, "gender", lambda gender, expected_type: isinstance(gender, expected_type) and gender != ""),
+              (str, "password",
+               lambda password, expected_type: isinstance(password, expected_type) and password != ""),
+              (str, "passwordconfirm",
+               lambda passwordconfirm, expected_type: isinstance(passwordconfirm,
+                                                                 expected_type) and passwordconfirm != "")))
 def user_registration(request):
     """
     Registers new user with data given in the ajax request.
