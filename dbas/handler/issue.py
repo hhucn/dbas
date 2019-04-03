@@ -64,7 +64,7 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict:
     :param db_user: User
     :return: Issue-dict()
     """
-    slug = slugify(db_issue.title)
+    slug = db_issue.slug
     title = db_issue.title
     info = db_issue.info
     long_info = db_issue.long_info

@@ -1,3 +1,23 @@
+### 1.17.0 (2019-04-02)
+- Fix for usage of a generated slug, when a slug is already present in the database [!687](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/687)
+- Correctly format messages in mails and the internal messaging system [!688](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/688)
+- Add "clickedStatement" endpoint to graphQL for analytics [!691](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/691)
+- Fix "Forgot Password" functionality and fix typos in translation strings [!692](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/692)
+- Improve documentation on how to use the pycharm debugger with a remote interpreter [!690](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/690)
+- Allow every user to see review queues of public issues, whether they participated in it or not [!694](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/694)
+- Tell the users, that we use their data for scientific purposes. [!695](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/695)
+- Fixes for the fieldexperiment of decidotron [!689](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/689)
+    * Readd the check, that a cost proposal is not less than 0 or greater than the budget. Reject the Statement otherwise.
+    * Change the placeholder text for the costs from 5000 to 2000.
+    * Allow of proposals with costs of 0. 
+    * The "You have to login" button now is clickable and opens the login dialog
+    * The "Vote!" button is now clickable with a middleclick, and if the D-BAS backend is unreachable (e.g. because of a session timeout), **but in both cases the user has to log in manually in Decidotron**.
+    * Fix the HTML and CSS of all bullet lists to make use of proper bootstrap. (Fixes some spacing issues, e.g. the default 40px in front of every `li` in an `ul` which is added by Chrome. Or an unnessaray white area on narrow screens.)
+    * Separate the last login/add entry from the position list in the template. Resulting in a more composable code. (The "Nothing I have a better idea" text is the premise of a statement... wtf)
+    * Show costs at the end of each position line, if this statement has costs.
+    * Show the 'real' currency symbol. (Until now '€' was hardcoded in the UI)
+
+
 ### 1.16.0 (2019-03-26)
 - Add Budget Decision Making system "Decidotron" [!677](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/677)
 - Add Premise <-> Argument relationship to allow skipping of premisegroups [!669](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/669)

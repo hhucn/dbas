@@ -1,87 +1,97 @@
 from pyramid.testing import DummyRequest
 
-from dbas.tests.utils import construct_dummy_request
+from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 from dbas.validators import core
 from dbas.validators.core import validate
 
 
-def test_has_keywords():
-    request = construct_dummy_request()
-    fn = core.has_keywords_in_json_path(('foo', int))
-    response = fn(request)
-    assert type(response) == bool
-    assert response is False
+class TestHasKeywords(TestCaseWithConfig):
+    def test_empty_dummy_request(self):
+        request = construct_dummy_request()
+        fn = core.has_keywords_in_json_path(('foo', int))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertFalse(response)
 
-    request = construct_dummy_request({'foo': 'bar'})
-    fn = core.has_keywords_in_json_path(('foo', int))
-    response = fn(request)
-    assert type(response) == bool
-    assert response is False
+    def test_provided_string_expected_int_should_fail(self):
+        request = construct_dummy_request({'foo': 'bar'})
+        fn = core.has_keywords_in_json_path(('foo', int))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertFalse(response)
 
-    request = construct_dummy_request({'foo': 2})
-    fn = core.has_keywords_in_json_path(('foo', int))
-    response = fn(request)
-    assert type(response) == bool
-    assert response is True
-
-
-def test_has_keywords_in_path():
-    request = construct_dummy_request()
-    fn = core.has_keywords_in_path(('foo', int))
-    response = fn(request)
-    assert type(response) == bool
-    assert response is False
-
-    request = construct_dummy_request(match_dict={'foo': 'bar'})
-    fn = core.has_keywords_in_path(('foo', int))
-    response = fn(request)
-    assert type(response) == bool
-    assert response is False
-
-    request = construct_dummy_request(match_dict={'foo': 2})
-    fn = core.has_keywords_in_path(('foo', int))
-    response = fn(request)
-    assert type(response) == bool
-    assert response is True
+    def test_provided_int_expected_int_should_succeed(self):
+        request = construct_dummy_request({'foo': 2})
+        fn = core.has_keywords_in_json_path(('foo', int))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertTrue(response)
 
 
-def test_has_maybe_keywords():
-    request = construct_dummy_request({'foo': 9000})
-    fn = core.has_maybe_keywords(('foo', int, 2))
-    response = fn(request)
-    assert type(response) == bool
-    assert len(request.validated) == 1
-    assert request.validated.get('foo') == 9000
-    assert response is True
+class TestHasKeywordsInPath(TestCaseWithConfig):
+    def test_empty_dummy_request(self):
+        request = construct_dummy_request()
+        fn = core.has_keywords_in_path(('foo', int))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertFalse(response)
 
-    request = construct_dummy_request()
-    fn = core.has_maybe_keywords(('foo', int, 2))
-    response = fn(request)
-    assert type(response) == bool
-    assert len(request.validated) == 1
-    assert request.validated.get('foo') == 2
-    assert response is True
+    def test_provided_string_expected_int_should_fail(self):
+        request = construct_dummy_request(match_dict={'foo': 'bar'})
+        fn = core.has_keywords_in_path(('foo', int))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertFalse(response)
 
-    request = construct_dummy_request({'foo': 'bar'})
-    fn = core.has_maybe_keywords(('foo', int, 2))
-    response = fn(request)
-    assert type(response) == bool
-    assert len(request.validated) == 0
-    assert response is False
+    def test_provided_string_expected_string_should_succeed(self):
+        request = construct_dummy_request(match_dict={'foo': 2})
+        fn = core.has_keywords_in_path(('foo', int))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertTrue(response)
 
 
-def test_validate():
-    request = DummyRequest()
-    assert not hasattr(request, 'validated')
-    assert not hasattr(request, 'errors')
-    assert not hasattr(request, 'info')
-    inner = validate()
-    func = inner(__dummy_func)
-    func(request)
-    assert hasattr(request, 'validated')
-    assert hasattr(request, 'errors')
-    assert hasattr(request, 'info')
+class TestHasMaybeKeywords(TestCaseWithConfig):
+    def test_provided_int_expected_int_should_succeed(self):
+        request = construct_dummy_request({'foo': 9000})
+        fn = core.has_maybe_keywords(('foo', int, 2))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertEqual(len(request.validated), 1)
+        self.assertEqual(request.validated.get('foo'), 9000)
+        self.assertTrue(response)
+
+    def test_empty_dummy_request(self):
+        request = construct_dummy_request()
+        fn = core.has_maybe_keywords(('foo', int, 2))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertEqual(len(request.validated), 1)
+        self.assertEqual(request.validated.get('foo'), 2)
+        self.assertTrue(response)
+
+    def test_provided_string_expected_int_should_fail(self):
+        request = construct_dummy_request({'foo': 'bar'})
+        fn = core.has_maybe_keywords(('foo', int, 2))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertEqual(len(request.validated), 0)
+        self.assertFalse(response)
 
 
-def __dummy_func(request):
-    return request
+class testValidate(TestCaseWithConfig):
+
+    def test_validate(self):
+        def __dummy_func(request):
+            return request
+
+        request = DummyRequest()
+        self.assertFalse(hasattr(request, 'validated'))
+        self.assertFalse(hasattr(request, 'errors'))
+        self.assertFalse(hasattr(request, 'info'))
+        inner = validate()
+        func = inner(__dummy_func)
+        func(request)
+        self.assertTrue(hasattr(request, 'validated'))
+        self.assertTrue(hasattr(request, 'errors'))
+        self.assertTrue(hasattr(request, 'info'))

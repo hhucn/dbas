@@ -229,6 +229,8 @@ class User(DiscussionBase):
     authored_issues: List[Issue] = relationship('Issue', back_populates='author')
     settings: 'Settings' = relationship('Settings', back_populates='user', uselist=False)
 
+    clicked_statements = relationship('ClickedStatement', back_populates='user')
+
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, oauth_provider='',
                  oauth_provider_id=''):
         """
@@ -501,6 +503,8 @@ class Statement(DiscussionBase):
     arguments: List['Argument'] = relationship('Argument', back_populates='conclusion')
     premises: List['Premise'] = relationship('Premise', back_populates='statement')
     references: List['StatementReference'] = relationship('StatementReference', back_populates='statement')
+
+    clicks = relationship('ClickedStatement')
 
     def __init__(self, is_position, is_disabled=False):
         """
@@ -1033,6 +1037,8 @@ class Argument(DiscussionBase):
                                                  back_populates='attacked_by')
     attacked_by: List['Argument'] = relationship('Argument', remote_side=argument_uid, back_populates='attacks')
 
+    clicks = relationship('ClickedArgument')
+
     # these are only for legacy support. use attacked_by and author instead
     issues: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
     arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
@@ -1182,7 +1188,7 @@ class ClickedArgument(DiscussionBase):
     is_up_vote: bool = Column(Boolean, nullable=False)
     is_valid: bool = Column(Boolean, nullable=False)
 
-    argument: Argument = relationship('Argument')
+    argument: Argument = relationship('Argument', back_populates='clicks')
     user: User = relationship('User')
 
     def __init__(self, argument_uid, author_uid, is_up_vote=True, is_valid=True):
@@ -1242,8 +1248,8 @@ class ClickedStatement(DiscussionBase):
     is_up_vote: bool = Column(Boolean, nullable=False)
     is_valid: bool = Column(Boolean, nullable=False)
 
-    statement: Statement = relationship('Statement')
-    user: User = relationship('User', foreign_keys=[author_uid])
+    statement: Statement = relationship('Statement', back_populates='clicks')
+    user: User = relationship('User', foreign_keys=[author_uid], back_populates='clicked_statements')
 
     def __init__(self, statement_uid, author_uid, is_up_vote=True, is_valid=True):
         """
