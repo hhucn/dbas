@@ -63,6 +63,5 @@
     <script src="${request.static_path('dbas:static/js/d3/graph.js')}"></script>
     <script src="${request.static_path('dbas:static/js/d3/legend.js')}"></script>
     <script src="${request.static_path('dbas:static/js/main/creative.js')}"></script>
-    <script src="${request.static_path('websocket:static/js/websocket.js')}"></script>
   </div>
 </tal:block>
