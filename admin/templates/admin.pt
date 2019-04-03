@@ -253,13 +253,13 @@
         </div>
       </div>
 
-      <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
+      <script type="text/javascript" src="${request.static_path('dbas:static/js/discussion/guihandler.js')}"></script>
       <script type="text/javascript"
-              src="${request.static_url('admin:static/js/admin.min.js')}" tal:condition="not:extras.development_mode"></script>
+              src="${request.static_path('admin:static/js/admin.min.js')}" tal:condition="not:extras.development_mode"></script>
       <script type="text/javascript"
-              src="${request.static_url('admin:static/js/main/ajaxhandler.js')}" tal:condition="extras.development_mode"></script>
+              src="${request.static_path('admin:static/js/main/ajaxhandler.js')}" tal:condition="extras.development_mode"></script>
       <script type="text/javascript"
-              src="${request.static_url('admin:static/js/main/admin.js')}" tal:condition="extras.development_mode"></script>
+              src="${request.static_path('admin:static/js/main/admin.js')}" tal:condition="extras.development_mode"></script>
 
   </tal:block>
 </tal:block>
