@@ -549,7 +549,7 @@
             <div class="row text-center" id="popup-login-registration-oauth-buttons">
               <a tal:condition="extras.login_btns.oauth_google" class="btn btn-block btn-brand btn-google"
                                                                 data-service="google">
-                <img src="${request.static_url('dbas:static/images/icons/btn_google_light_normal.svg')}">
+                <img src="${request.static_path('dbas:static/images/icons/btn_google_light_normal.svg')}">
                 <span>Google</span>
               </a>
               <a tal:condition="extras.login_btns.oauth_facebook" class="btn btn-block btn-brand btn-facebook"
@@ -815,7 +815,7 @@
                     <input tal:condition="extras.lang_is_de" id="de" type="radio" name="lang_topic" checked>
                     <label for="de">
                       <img class="language_selector_img"
-                           src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_ge">
+                           src="${request.static_path('dbas:static/images/flags/de-24.png')}" alt="flag_ge">
                       Deutsch
                     </label>
                   </li>
@@ -824,7 +824,7 @@
                     <input tal:condition="extras.lang_is_en" id="en" type="radio" name="lang_topic" checked>
                     <label for="en">
                       <img class="language_selector_img"
-                           src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
+                           src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
                       English
                     </label>
                   </li>

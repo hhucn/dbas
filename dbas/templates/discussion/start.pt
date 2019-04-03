@@ -31,8 +31,8 @@
               <tr tal:repeat="issue issues.writable">
                 <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
                 <td>
-                  <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
-                  <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
+                  <img tal:condition="issue.lang.is_de" src="${request.static_path('dbas:static/images/flags/de-24.png')}" alt="flag_de">
+                  <img tal:condition="issue.lang.is_en" src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
                 </td>
                 <td>${issue.statements}</td>
                 <td class="issue_activity_chart">
@@ -66,8 +66,8 @@
               <tr tal:repeat="issue issues.readable">
                 <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
                 <td>
-                  <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
-                  <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
+                  <img tal:condition="issue.lang.is_de" src="${request.static_path('dbas:static/images/flags/de-24.png')}" alt="flag_de">
+                  <img tal:condition="issue.lang.is_en" src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
                 </td>
                 <td>${issue.statements}</td>
                 <td class="issue_activity_chart">

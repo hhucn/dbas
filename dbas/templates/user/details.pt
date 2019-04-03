@@ -75,7 +75,7 @@
             </table>
             <img class="pull-right icon-badge" style="width: 50px;" id="send-notification"
                  tal:condition="can_send_notification"
-                 src="${request.static_url('dbas:static/images/icons/mail.png')}"/>
+                 src="${request.static_path('dbas:static/images/icons/mail.png')}"/>
           </div>
         </div>
 

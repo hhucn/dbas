@@ -81,7 +81,7 @@
             </div>
 
             <div class="text-center" style="margin: 3em" tal:condition="not:show_summary">
-              <img class="icon-badge" src="${request.static_url('dbas:static/images/icons/trophy.png')}"/>
+              <img class="icon-badge" src="${request.static_path('dbas:static/images/icons/trophy.png')}"/>
             </div>
 
             <div class="text-center btn-group">
