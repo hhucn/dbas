@@ -47,6 +47,7 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_da
     if db_issue.decision_process:
         if 'decidotron_cost' not in feature_data:
             transaction.abort()
+            LOG.error('Cost missing for an issue with a decision_process')
             return {
                 'status': 'fail',  # best error management
                 'error': 'Cost missing for an issue with a decision_process'
@@ -54,10 +55,13 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_da
         else:
             cost = to_cents(float(feature_data['decidotron_cost']))
 
-            if 0 <= cost <= db_issue.decision_process.budget:
-                add_associated_cost(db_issue, new_statement, to_cents(cost))
+            if 0 <= cost <= db_issue.decision_process.budget and not db_issue.decision_process.position_ended():
+                add_associated_cost(db_issue, new_statement, cost)
             else:
                 transaction.abort()
+                LOG.error(
+                    'Cost has to be 0 <= cost <= {}. (In cents). cost is: '.format(db_issue.decision_process.budget,
+                                                                                   cost))
                 return {
                     'status': 'fail',
                     'error': 'Cost has to be 0 <= cost <= {}. (In cents)'.format(db_issue.decision_process.budget)
