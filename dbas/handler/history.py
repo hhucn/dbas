@@ -288,7 +288,7 @@ def __get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> Lis
 
 
 def get_bubble_from_reaction_step(step: str, db_user: User, lang: str, split_history: list, url: str,
-                                  color_steps: bool = False) -> list:
+                                  color_steps: bool = False) -> Optional[list]:
     """
     Creates bubbles for the reaction-keyword.
 
@@ -319,19 +319,19 @@ def get_bubble_from_reaction_step(step: str, db_user: User, lang: str, split_his
                                              additional_uid, attack)
 
 
-def __create_reaction_history_bubbles(step: str, db_user: User, lang: str, splitted_history: list, url: str,
-                                      color_steps: list, uid: int, additional_uid: int,
+def __create_reaction_history_bubbles(step: str, db_user: User, lang: str, split_history: list, url: str,
+                                      color_steps: bool, uid: int, additional_uid: int,
                                       attack) -> list:
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
-    last_relation = splitted_history[-1].split('/')[2] if len(splitted_history) > 1 else ''
+    last_relation = get_last_relation(split_history)
 
-    user_changed_opinion = len(splitted_history) > 1 and '/undercut/' in splitted_history[-2]
+    user_changed_opinion = len(split_history) > 1 and '/undercut/' in split_history[-2]
     support_counter_argument = False
 
-    if step in splitted_history:
-        index = splitted_history.index(step)
+    if step in split_history:
+        index = split_history.index(step)
         try:
-            support_counter_argument = 'reaction' in splitted_history[index - 1]
+            support_counter_argument = 'reaction' in split_history[index - 1]
         except IndexError:
             support_counter_argument = False
 
@@ -385,6 +385,15 @@ def __create_reaction_history_bubbles(step: str, db_user: User, lang: str, split
                                                content=sys_text, omit_bubble_url=True, db_user=db_user,
                                                lang=lang, other_author=db_tmp)
     return [bubble_user, bubble_syst]
+
+
+def get_last_relation(split_history):
+    if len(split_history) <= 1:
+        return ''
+    split_last_history_item = split_history[-1].split('/')
+    if len(split_last_history_item) <= 2:
+        return ''
+    return split_last_history_item[2]
 
 
 def save_database(db_user: User, slug: str, path: str, history: str = '') -> None:
