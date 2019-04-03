@@ -17,7 +17,6 @@
   <!-- PRODUCTION -->
   <div tal:condition="not:extras.development_mode" tal:omit-tag="">
     <script src="${request.static_path('dbas:static/js/dbas.min.js')}"></script>
-    <script src="${request.static_path('websocket:static/js/websocket.min.js')}"></script>
   </div>
 
   <!-- DEVELOPMENT -->
