@@ -1,4 +1,5 @@
 ### 1.17.1 (2019-04-03)
+- Fix error messages for invalid registration fields [!672](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/672) (Jans erster MR 🎉)
 - Hotfix for double conversion to cents [!698](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/698)
 
 ### 1.17.0 (2019-04-02)
