@@ -65,7 +65,7 @@ class AuthLoginTest(TestCaseWithConfig):
             'mode': '',
         }, mailer=DummyMailer)
         success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
-        self.assertEqual(self._tn.get(_.pwdShort), msg)
+        self.assertEqual(self._tn.get(_.checkFirstname), msg)
         self.assertIsNone(db_new_user)
 
     def test_register_user_nickname_is_taken(self):

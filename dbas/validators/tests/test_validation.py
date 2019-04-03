@@ -7,7 +7,7 @@ Unit tests for our validators
 
 from dbas.database.discussion_model import ReviewDelete
 from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
-from dbas.validators.core import has_keywords_in_json_path
+from dbas.validators.core import has_keywords_in_json_path, spec_keyword_in_json_body
 from dbas.validators.reviews import valid_not_executed_review
 
 
@@ -67,3 +67,40 @@ class TestExecutedReviews(TestCaseWithConfig):
         request = construct_dummy_request({'ruid': 1})
         response = valid_not_executed_review('ruid', ReviewDelete)(request)
         self.assertFalse(response)
+
+
+class TestSpecKeywords(TestCaseWithConfig):
+    def test_empty_dummy_request_should_fail(self):
+        request = construct_dummy_request()
+        fn = spec_keyword_in_json_body((int, 'foo', lambda foo, varType: isinstance(foo, varType)))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertFalse(response)
+
+    def test_provided_string_expected_int_should_fail(self):
+        request = construct_dummy_request({'foo': 'bar'})
+        fn = spec_keyword_in_json_body((int, 'foo', lambda foo, varType: isinstance(foo, varType)))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertFalse(response)
+
+    def test_provided_int_expected_int_should_succed(self):
+        request = construct_dummy_request({'foo': 2})
+        fn = spec_keyword_in_json_body((int, 'foo', lambda foo, varType: isinstance(foo, varType)))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertTrue(response)
+
+    def test_provided_empty_string_should_fail(self):
+        request = construct_dummy_request({'foo': ''})
+        fn = spec_keyword_in_json_body((str, 'foo', lambda foo, varType: isinstance(foo, varType) and foo != ''))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertFalse(response)
+
+    def test_provided_string_should_succed(self):
+        request = construct_dummy_request({'foo': 'bar'})
+        fn = spec_keyword_in_json_body((str, 'foo', lambda foo, varType: isinstance(foo, varType) and foo != ''))
+        response = fn(request)
+        self.assertIsInstance(response, bool)
+        self.assertTrue(response)
