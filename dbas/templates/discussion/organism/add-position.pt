@@ -36,7 +36,7 @@
                  src="${request.static_path('dbas:static/images/icons/minus.png')}"
                  title="${extras.title.rem_statement_row_title}"/>
             <img class="icon-badge icon-add-premise" alt="add"
-                 src="${request.static_url('dbas:static/images/icons/plus.png')}"
+                 src="${request.static_path('dbas:static/images/icons/plus.png')}"
                  title="${extras.title.add_statement_row_title}"/>
           </div>
         </div>
