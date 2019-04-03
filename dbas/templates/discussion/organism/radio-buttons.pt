@@ -6,7 +6,7 @@
       <li class="list-group-item discussions-space-list__position"
            tal:repeat="item [item for item in items.elements if item.url not in ['login', 'add']]"
           style="${item.style}">
-        <div class="discussion-space-list-row__left-side" style="display: flex">
+        <div class="discussion-space-list-row__left-side" style="display: flex; flex-grow: 1">
           <input id="${item.id}" type="radio"
                  name="discussion-button-group"
                  onclick='location.href="${item.url}";'
@@ -63,8 +63,7 @@
             </div>
           </span>
         </div>
-        <div class="discussion-space-list-row__right-side">
-        </div>
+        <div class="discussion-space-list-row__right-side"></div>
       </li>
 
       <li tal:define="add_or_login [item for item in items.elements if item.url in ['login', 'add']]"
