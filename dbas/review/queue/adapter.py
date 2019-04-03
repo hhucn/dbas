@@ -59,7 +59,7 @@ class QueueAdapter:
             slug = slugify(*subpage_dict.get('issue_titles'))
             issue: Issue = DBDiscussionSession.query(Issue).filter_by(slug=slug).one_or_none()
             if (subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None) \
-                    or self.db_user not in issue.participating_users:
+                    or (self.db_user not in issue.participating_users and issue.is_private):
                 ret_dict = {}
             else:
                 ret_dict = {
@@ -121,10 +121,8 @@ class QueueAdapter:
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
         :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update
-        this!
-        :return:
+            this!
         """
-
         queues = [get_queue_by_key(key) for key in review_queues]
         status = [queue().element_in_queue(self.db_user, argument_uid=kwargs.get('argument_uid'),
                                            statement_uid=kwargs.get('statement_uid'),
@@ -313,4 +311,5 @@ class QueueAdapter:
 
     @staticmethod
     def __queue_is_empty(queue_information: dict):
-        return queue_information is None or queue_information.get('issue_titles') is None
+        return queue_information is None or queue_information.get('issue_titles') is None or len(
+            queue_information.get('issue_titles')) == 0

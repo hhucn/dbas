@@ -15,20 +15,11 @@ Input Validator
 .. automodule:: dbas.input_validator
     :members:
 
-
 Lib
 ===
 
 .. automodule:: dbas.lib
     :members:
-
-
-Logger
-======
-
-.. automodule:: dbas.logger
-    :members:
-
 
 Security
 ========
@@ -76,9 +67,6 @@ Handler
     :members:
 
 .. automodule:: dbas.handler.references
-    :members:
-
-.. automodule:: dbas.handler.rss
     :members:
 
 .. automodule:: dbas.handler.settings

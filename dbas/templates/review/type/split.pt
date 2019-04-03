@@ -47,7 +47,7 @@
         <ul tal:condition="subpage.button_set.is_split" style="padding-left: 0.5em">
           <li>
             <span class="text-success" i18n:translate="split_it">Split it</span>
-            <span i18n:translate="marked_statement_to_slit">, if the selected statement is a set of than one statement and the given proposals match to the original content.</span>
+            <span i18n:translate="marked_statement_to_slit">, if the selected statement is a set of more than one statement and the given proposals match to the original content.</span>
           </li>
           <li>
             <span class="text-danger" i18n:translate="reject_it">Reject it</span>
@@ -88,7 +88,7 @@
 
       <div class="well well-sm center"
            style="text-align: justify;">
-        <span i18n:translate="this_statement_should_be_splitted">This statement should be splitted into:</span>
+        <span i18n:translate="this_statement_should_be_splitted">This statement should be split into:</span>
         <ul>
           <li tal:repeat="text subpage.elements.reviewed_element.splitted_text">
             <span class="lead">${text}</span>

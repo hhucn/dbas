@@ -351,7 +351,7 @@ var dbas_en = {
     'email': 'E-Mail',
     'emailWasSent': 'An E-Mail was sent to the given address.',
     'emailWasNotSent': 'Your message could not be send due to a system error!',
-    'emailUnknown': 'The given e-mail address is unkown.',
+    'emailUnknown': 'The given e-mail address is unknown.',
     'error_code': 'Error code',
     'edit': 'Edit',
     'editTitle': 'Editing the statements.',

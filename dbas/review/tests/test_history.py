@@ -23,10 +23,10 @@ class TestReviewHistoryHelper(TestCaseWithConfig):
         ongoing = get_ongoing_reviews('mainpage', self.user_tobi, self.translator)
         self.assertIn('has_access', ongoing)
         self.assertIn('past_decision', ongoing)
-        self.assertFalse(ongoing['has_access'])
+        self.assertTrue(ongoing['has_access'])
 
     def test_get_ongoing_review_for_without_special_access(self):
-        ongoing = get_ongoing_reviews('mainpage', self.user_tobi, self.translator)
+        ongoing = get_ongoing_reviews('mainpage', self.user_anonymous, self.translator)
         self.assertIn('has_access', ongoing)
         self.assertIn('past_decision', ongoing)
         self.assertFalse(ongoing['has_access'])

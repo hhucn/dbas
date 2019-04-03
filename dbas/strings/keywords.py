@@ -272,6 +272,7 @@ class Keywords(Enum):
     emailWasSent = 'emailWasSent'
     emailWasNotSent = 'emailWasNotSent'
     emailUnknown = 'emailUnknown'
+    emailSentGeneric = 'emailSentGeneric'
     emailBodyText = 'emailBodyText'
     emailArgumentAddTitle = 'emailArgumentAddTitle'
     emailArgumentAddBody = 'emailArgumentAddBody'

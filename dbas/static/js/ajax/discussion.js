@@ -38,24 +38,19 @@ AjaxDiscussionHandler.prototype.sendNewPremiseForArgument = function (arg_uid, r
 
 /**
  *
- * @param position
- * @param reason
+ * @param data
  */
-AjaxDiscussionHandler.prototype.sendNewStartArgument = function (position, reason) {
+AjaxDiscussionHandler.prototype.sendNewStartArgument = function (data) {
     'use strict';
-    var url = 'set_new_start_argument';
-    var d = {
-        position: position,
-        reason: reason
-    };
-    var done = function ajaxSendNewStartArgumentDone(data) {
+    const url = 'set_new_start_argument';
+    const done = function ajaxSendNewStartArgumentDone(data) {
         window.location.href = data.url;
     };
-    var fail = function ajaxSendNewStartArgumentFail(data) {
+    const fail = function ajaxSendNewStartArgumentFail(data) {
         $('#' + addStatementErrorContainer).show();
         $('#' + addStatementErrorMsg).text(data.responseJSON.errors[0].description);
     };
-    ajaxSkeleton(url, 'POST', d, done, fail);
+    ajaxSkeleton(url, 'POST', data, done, fail);
 };
 
 /**

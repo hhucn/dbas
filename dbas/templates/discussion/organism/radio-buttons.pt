@@ -2,56 +2,77 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
 
   <div id="discussions-space">
-    <ul id="discussions-space-list">
-      <li tal:repeat="item items.elements" style="${item.style}">
-        <input tal:condition="python: item.url in ['login', 'add']" id="${item.id}" type="radio" name="discussion-button-group" data-url="${item.url}">
-        <input tal:condition="python: item.url not in ['login', 'add']" id="${item.id}" type="radio" name="discussion-button-group"
-                 onclick='location.href="${item.url}";' data-url="${item.url}">
-        <span tal:repeat="premise item.premises" tal:omit-tag="">
-                  <label for="${item.id}" id="${premise.id}" data-toggle="tooltip"
-                         data-placement="auto">${structure:premise.title}</label>
-                  <label for="${item.id}" tal:condition="not:repeat.premise.end">${extras.tag.aand}</label>
-                  <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
-                  <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
-                    <div tal:omit-tag="" tal:condition="item.is_editable or item.is_markable or item.is_deletable">
-                      <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_markable or item.is_deletable or item.is_attackable"></span>
-                      <span class="item-actions item-edit" tal:condition="item.is_editable"
-                            title="${extras.title.edit_statement}">
-                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                      </span>
-                      <span class="item-actions item-disabled" tal:condition="not:item.is_editable"
-                            title="${extras.title.edit_statement_already}">
-                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                      </span>
-                      <div tal:condition="item.is_editable" tal:omit-tag="">
-                        <span id="item-edit-disabled-hidden-wrapper" style="display:none;">
-                          <span class="item-actions item-disabled"
-                                title="${extras.title.edit_statement_already}">
-                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                          </span>
-                        </span>
-                      </div>
-                      <span class="item-actions item-flag" tal:condition="item.is_markable "
-                            title="${extras.title.report_statement}">
-                        <i class="fa fa-flag" aria-hidden="true"></i>
-                      </span>
-                      <span class="item-actions item-trash" tal:condition="item.is_deletable"
-                            title="${extras.title.disassociate_statement}">
-                      <i class="fa fa-trash-o" aria-hidden="true"></i>
-                    </span>
-                      <span class="item-actions item-attack" tal:condition="item.is_attackable"
-                            title="${extras.title.attack_statement}">
-                        <a href="${item.attack_url}">
-                          <i class="fa fa-bomb" aria-hidden="true"></i>
-                        </a>
-                      </span>
-                      <span class="item-actions item-reference" title="${extras.title.reference}">
-                        <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_markable or item.is_deletable)"></span>
-                        <i class="fa fa-link" aria-hidden="true"></i>
-                      </span>
-                    </div>
-                  </div>
+    <ul id="discussions-space-list" class="list-group">
+      <li class="list-group-item discussions-space-list__position"
+           tal:repeat="item [item for item in items.elements if item.url not in ['login', 'add']]"
+          style="${item.style}">
+        <div class="discussion-space-list-row__left-side" style="display: flex">
+          <input id="${item.id}" type="radio"
+                 name="discussion-button-group"
+                 onclick='location.href="${item.url}";'
+                 data-url="${item.url}">
+          <span tal:repeat="premise item.premises" tal:omit-tag="">
+            <label for="${item.id}" id="${premise.id}" data-toggle="tooltip"
+                   data-placement="auto">${structure:premise.title}</label>
+            <label for="${item.id}" tal:condition="not:repeat.premise.end">${extras.tag.aand}</label>
+            <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
+            <span tal:condition="'cost' in item" class="decidotron-position-cost">
+              &nbsp;(ca. ${"{:.0f}".format(item.cost / 100)} ${issues.decidotron_budget.currency_symbol})
+            </span>
+            <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
+              <div
+                  class="item-actions-list" tal:condition="item.is_editable or item.is_markable or item.is_deletable">
+                <span
+                    style="margin-left: 1em" tal:condition="item.is_editable or item.is_markable or item.is_deletable or item.is_attackable"></span>
+                <span class="item-actions item-edit" tal:condition="item.is_editable"
+                      title="${extras.title.edit_statement}">
+                  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                 </span>
+                <span class="item-actions item-disabled" tal:condition="not:item.is_editable"
+                      title="${extras.title.edit_statement_already}">
+                  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </span>
+                <div tal:condition="item.is_editable" tal:omit-tag="">
+                  <span id="item-edit-disabled-hidden-wrapper" style="display:none;">
+                    <span class="item-actions item-disabled"
+                          title="${extras.title.edit_statement_already}">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </span>
+                  </span>
+                </div>
+                <span class="item-actions item-flag" tal:condition="item.is_markable "
+                      title="${extras.title.report_statement}">
+                  <i class="fa fa-flag" aria-hidden="true"></i>
+                </span>
+                <span class="item-actions item-trash" tal:condition="item.is_deletable"
+                      title="${extras.title.disassociate_statement}">
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+              </span>
+                <span class="item-actions item-attack" tal:condition="item.is_attackable"
+                      title="${extras.title.attack_statement}">
+                  <a href="${item.attack_url}">
+                    <i class="fa fa-bomb" aria-hidden="true"></i>
+                  </a>
+                </span>
+                <span class="item-actions item-reference" title="${extras.title.reference}">
+                  <span
+                      style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_markable or item.is_deletable)"></span>
+                  <i class="fa fa-link" aria-hidden="true"></i>
+                </span>
+              </div>
+            </div>
+          </span>
+        </div>
+        <div class="discussion-space-list-row__right-side">
+        </div>
+      </li>
+
+      <li tal:define="add_or_login [item for item in items.elements if item.url in ['login', 'add']]"
+           tal:condition="add_or_login" class="list-group-item discussions-space-list__add_or_login">
+        <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
+          <input id="${item.id}" type="radio" name="discussion-button-group" data-url="${item.url}">
+          <span>${item.premises[0].title}</span>
+        </div>
       </li>
     </ul>
     <div tal:condition="items.extras.cropped_list" style="padding-left: 40px;">

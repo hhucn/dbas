@@ -196,7 +196,7 @@ AjaxReviewHandler.prototype.reviewMergeStatement = function (should_merge, revie
  */
 AjaxReviewHandler.prototype.reviewSplitStatement = function (should_split, review_uid) {
     'use strict';
-    var url = 'review_split_premisegroup';
+    var url = 'review_splitted_premisegroup';
     var data = {
         should_split: should_split,
         review_uid: parseInt(review_uid)

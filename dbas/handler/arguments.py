@@ -199,9 +199,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
         url = _um.get_url_for_new_argument(new_argument_uids)
 
     else:
-        url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type,
-                                                                                    arg_id, _um,
-                                                                                    attack_type == Relations.SUPPORT)
+        url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, _um)
 
     # send notifications and mails
     if len(new_argument_uids) > 0:
@@ -220,42 +218,16 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
     return url, statement_uids, error
 
 
-def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um,
-                                                                          supportive) -> str:
+def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, _um) -> str:
     """
     Return the 'choose' url, when the user entered more than one premise for an argument
 
     :param new_argument_uids: [Argument.uid]
-    :param attack_type: String
-    :param arg_id: Argument.uid
     :param _um: UrlManager
-    :param supportive: Boolean
     :return: String
     """
-    pgroups = []
-    url = ''
-    for uid in new_argument_uids:
-        pgroups.append(DBDiscussionSession.query(Argument).get(uid).premisegroup_uid)
-
-    current_argument = DBDiscussionSession.query(Argument).get(arg_id)
-    # relation to the arguments premise group
-    if attack_type == Relations.UNDERMINE or attack_type == Relations.SUPPORT:
-        db_premise = DBDiscussionSession.query(Premise).filter_by(
-            premisegroup_uid=current_argument.premisegroup_uid).first()  # TODO what happens with |pgroups| > 1?
-        db_statement = DBDiscussionSession.query(Statement).get(db_premise.statement_uid)
-        url = _um.get_url_for_choosing_premisegroup(False, supportive, db_statement.uid, pgroups)
-
-    # relation to the arguments relation
-    elif attack_type == Relations.UNDERCUT:
-        url = _um.get_url_for_choosing_premisegroup(True, supportive, arg_id, pgroups)
-
-    # relation to the arguments conclusion
-    elif attack_type == Relations.REBUT:
-        is_argument = current_argument.conclusion_uid is not None
-        uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
-        url = _um.get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
-
-    return url
+    pgroups = [DBDiscussionSession.query(Argument).get(uid).premisegroup_uid for uid in new_argument_uids]
+    return _um.get_url_for_choosing_premisegroup(pgroups)
 
 
 def get_another_argument_with_same_conclusion(uid, history):

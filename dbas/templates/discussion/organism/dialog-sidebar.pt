@@ -1,6 +1,57 @@
 <!-- sidebar of the discussion -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
   <ul id="dialog-sidebar" class="sidebar center">
+    <li tal:condition="issues.decidotron_budget">
+      <a id="decidotron-button" class="btn btn-primary btn-block decidotron-button vote-started"
+         style="max-width: 400px; margin: auto;"
+         href="${issues.decidotron_budget.host}/preferences/${issues.slug}"
+           tal:condition="extras.logged_in and issues.decidotron_budget.votes_started and not issues.decidotron_budget.votes_ended">
+        <script>
+          // TODO Move this to the correct .js file but they are a mess.
+          // TODO Find a way to detect middle mouse button. (Maybe redirect with a 301 from the backend?)
+
+          $("#decidotron-button").on("click", function (e) {
+            e.preventDefault();
+            const url_base = '${issues.decidotron_budget.host}/preferences/${issues.slug}';
+            $.ajax({
+              url: '/get_temp_key',
+              method: 'GET',
+              dataType: 'json',
+              contentType: 'application/json',
+              headers: {'X-CSRF-Token': $('#' + hiddenCSRFTokenId).val()}
+            })
+                .done(data => {
+                  const url = url_base + '?token=' + data.token;
+                  // window.open(url, '_blank'); // open decidotron in a new tab
+                  window.location = url; // open decidotron in the current tab
+                })
+                .fail(() => {
+                  window.open(url_base, '_blank');
+                });
+          });
+        </script>
+        <i class="fa fa-check"></i>
+        <span i18n:translate="decidotron_vote_button_label">Vote!</span>
+      </a>
+      <button id="decidotron-button"
+              class="btn btn-primary btn-disabled btn-block decidotron-button vote-not-logged-in"
+              data-toggle="modal" data-target="#popup-login"
+           tal:condition="not extras.logged_in and issues.decidotron_budget.votes_started">
+        <i class="fa fa-sign-in"></i>
+        <span i18n:translate="decidotron_login_to_vote_button_label">Login to vote!</span>
+      </button>
+      <button id="decidotron-button" disabled class="btn btn-disabled btn-block decidotron-button vote-not-started"
+           tal:condition="not issues.decidotron_budget.votes_started">
+        <i class="fa fa-check"></i>
+        <span i18n:translate="decidotron_vote_will_start_at_button_label">Voting will be possible from ${issues.decidotron_budget.votes_start.strftime('%d.%m.%Y at %H:%M')}</span>
+      </button>
+      <button id="decidotron-button" class="btn btn-default decidotron-button vote-ended"
+           tal:condition="issues.decidotron_budget.votes_ended"
+              href="${issues.decidotron_budget.host}/preferences/${issues.slug}">
+        <i class="fa fa-list-ol"></i>
+        <span i18n:translate="decidotron_vote_results_button_label">Results</span>
+      </button>
+    </li>
     <li id="restart-link" tal:condition="extras.ongoing_discussion">
       <a id="discussion-restart-btn" class="btn btn-link" href="/discuss/${extras.restart_url}">
         <i class="fa fa-repeat" aria-hidden="true"></i>

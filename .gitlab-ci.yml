@@ -27,7 +27,7 @@ stages:
 # ------------------------------------------------------------------------------
 # Job definitions
 
-build_test_images:
+build_test_image:
   stage: build
   tags:
     - 40c
@@ -37,6 +37,13 @@ build_test_images:
     - docker tag $CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE:experimental
     - docker push $CI_REGISTRY_IMAGE:experimental
     # Build database
+
+build_test_db_image:
+  stage: build
+  tags:
+    - 40c
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
     - docker tag $CI_REGISTRY_IMAGE/db $CI_REGISTRY_IMAGE/db:testing
     - docker push $CI_REGISTRY_IMAGE/db:testing
@@ -76,7 +83,7 @@ sonar:
   image: hhucn/sonar-scanner
   stage: analysis
   script:
-    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.15.0 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
+    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.17.0 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
   only:
     - development
   allow_failure: true
@@ -103,33 +110,62 @@ sast:
     - development
   when: always
 
-build_production_images:
+
+build_production_image:
   stage: build-images
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE .
     - docker push $CI_REGISTRY_IMAGE
-    # Build and deploy database
+  only:
+    - master
+
+build_production_db_image:
+  stage: build-images
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
     - docker push $CI_REGISTRY_IMAGE/db
-    # Build and deploy docs image
+  only:
+    - master
+
+build_production_docs_image:
+  stage: build-images
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/docs -f Dockerfile.docs --pull .
     - docker push $CI_REGISTRY_IMAGE/docs
   only:
     - master
 
-build_dev_images:
+
+
+build_dev_image:
   stage: build-images
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE .
     - docker tag $CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE:development
     - docker push $CI_REGISTRY_IMAGE:development
+  only:
+    - development
+
+build_db_dev_image:
+  stage: build-images
+  script:
     # Build and deploy database
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
     - docker tag $CI_REGISTRY_IMAGE/db $CI_REGISTRY_IMAGE/db:development
     - docker push $CI_REGISTRY_IMAGE/db:development
+  only:
+    - development
+
+build_docs_dev_image:
+  stage: build-images
+  script:
     # Build and deploy docs image
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/docs -f Dockerfile.docs --pull .
     - docker tag $CI_REGISTRY_IMAGE/docs $CI_REGISTRY_IMAGE/docs:development
     - docker push $CI_REGISTRY_IMAGE/docs

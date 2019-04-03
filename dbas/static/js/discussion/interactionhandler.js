@@ -196,15 +196,24 @@ InteractionHandler.prototype.callbackForSetAvailabilityOfDiscussion = function (
  *
  * @param position
  * @param reason
+ * @param feature_data
  */
-InteractionHandler.prototype.sendArgument = function (position, reason) {
-    'use strict';
+InteractionHandler.prototype.sendArgument = function (position, reason, feature_data) {
+    "use strict";
+
+    feature_data = (typeof feature_data !== 'undefined') ? feature_data : {};
+
     if (position.length === 0 || reason.length === 0) {
         $('#' + addStatementErrorContainer).show();
         $('#' + addStatementErrorMsg).text(_t(inputEmpty));
     } else {
         $('#' + addStatementErrorContainer).hide();
-        new AjaxDiscussionHandler().sendNewStartArgument(position, reason);
+        const data = {
+            position: position,
+            reason: reason,
+            feature_data: feature_data
+        };
+        new AjaxDiscussionHandler().sendNewStartArgument(data);
     }
 };
 
@@ -232,13 +241,13 @@ InteractionHandler.prototype.sendStatement = function (t_array, conclusion, supp
             t_array[i] = t_array[i].replace(/\s\s+/g, ' ');
 
             // cutting all 'and ' and 'and'
-            this.__cuttingAnds (t_array, i);
+            this.__cuttingAnds(t_array, i);
 
             // whitespace at the end
-            this.__cuttingWhitespaces (t_array, i);
+            this.__cuttingWhitespaces(t_array, i);
 
             // sorting the statements, whether they include the keyword 'AND'
-            this.__sortStatement (t_array, i, decidedTexts, undecidedTexts);
+            this.__sortStatement(t_array, i, decidedTexts, undecidedTexts);
         }
     }
 
@@ -267,7 +276,7 @@ InteractionHandler.prototype.sendStatement = function (t_array, conclusion, supp
     return true;
 };
 
-InteractionHandler.prototype.__cuttingAnds = function (t_array, i){
+InteractionHandler.prototype.__cuttingAnds = function (t_array, i) {
     'use strict';
     // cutting all 'and ' and 'and'
     while (t_array[i].indexOf((_t_discussion(and) + ' '), t_array[i].length - (_t_discussion(and) + ' ').length) !== -1 ||

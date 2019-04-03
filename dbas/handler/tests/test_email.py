@@ -6,10 +6,9 @@ from pyramid_mailer.mailer import DummyMailer
 
 from dbas.handler.email import send_mail
 from dbas.helper.url import UrlManager
-from dbas.lib import Attitudes, get_global_url, Relations
+from dbas.lib import Attitudes, Relations
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_message
-from dbas.strings.translator import Translator
 
 
 class DummyUser:
@@ -28,14 +27,12 @@ class TestMail(unittest.TestCase):
         url = url.get_url_for_justifying_statement(statement_uid=123, attitude=Attitudes.AGREE)
 
         for language, for_html in list(itertools.product(['de', 'en'], [True, False])):
-            _t = Translator(language)
             subject = "Test Mail"
-            body = get_text_for_message(nickname=DummyUser().firstname, lang=language, url=url,
+            body = get_text_for_message(nickname=DummyUser().firstname, lang=language, path=url,
                                         message_content=_.statementAddedMessageContent, for_html=for_html)
             was_send, was_send_msg, msg = send_mail(mailer=DummyMailer, subject=subject, body=body,
-                                                    recipient=DummyUser(),
+                                                    recipient=DummyUser().email,
                                                     lang=language)
-            body = body + '\n\n---\n' + _t.get(_.emailBodyText).format(get_global_url())
             self.assertTrue(was_send)
             self.assertEqual(msg.body, body)
 
@@ -45,13 +42,11 @@ class TestMail(unittest.TestCase):
                                                    relation=Relations.REBUT,
                                                    confrontation_argument=35)
         for language, for_html in list(itertools.product(['de', 'en'], [True, False])):
-            _t = Translator(language)
             subject = "Test Mail"
-            body = get_text_for_message(nickname=DummyUser().firstname, lang=language, url=url,
+            body = get_text_for_message(nickname=DummyUser().firstname, lang=language, path=url,
                                         message_content=_.argumentAddedMessageContent, for_html=for_html)
             was_send, was_send_msg, msg = send_mail(mailer=DummyMailer, subject=subject, body=body,
-                                                    recipient=DummyUser(),
+                                                    recipient=DummyUser().email,
                                                     lang=language)
-            body = body + '\n\n---\n' + _t.get(_.emailBodyText).format(get_global_url())
             self.assertTrue(was_send)
             self.assertEqual(msg.body, body)

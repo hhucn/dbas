@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-09-15 14:04+0000\n"
+"POT-Creation-Date: 2019-04-01 13:14+0000\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Christian Meter <meter@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -16,201 +16,308 @@ msgstr ""
 "Generated-By: Lingua 3.10\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. Default: Documentation
-#: templates/docs.pt:6
-msgid "docs"
-msgstr "Dokumentation"
+#. Default: Imprint
+#. Default: Impressum
+#: templates/imprint.pt:6 templates/imprint.pt:20
+#: templates/snippet/footer.pt:11
+msgid "imprint"
+msgstr "Impressum"
 
-#. Default: Where do I find it?
-#: templates/docs.pt:7
-msgid "where_do_i_find_it"
-msgstr "Wo kann ich sie finden?"
+#. Default: Our imprint, a list of used software and the latest changelog
+#: templates/imprint.pt:7
+msgid "imprint_list_of_software_and_changelog"
+msgstr "Unser Impressum, die verwendete Software und die letzten Änderungen"
 
-#. Default: Field Experiment 2017
-#: templates/fieldtest.pt:7
-msgid "field_experiment_2017"
-msgstr "Feldstudie 2017"
+#. Default: Angaben gemäß § 5 TMG
+#: templates/imprint.pt:21
+msgid "data_tmg"
+msgstr "Angaben gemäß § 5 TMG"
 
-#. Default: Most important information about our field experiment in May 2017
-#: templates/fieldtest.pt:9
-msgid "most_important_information_about_field_experiment"
+#. Default: Kontakt:
+#. Default: Contact
+#: templates/imprint.pt:22 templates/index.pt:50 templates/snippet/footer.pt:21
+msgid "contact"
+msgstr "Kontakt"
+
+#. Default: Institut für Informatik
+#: templates/imprint.pt:23
+msgid "department_of_cs"
+msgstr "Institut für Informatik"
+
+#. Default: Lehrstuhl für Rechnernetze
+#: templates/imprint.pt:24
+msgid "chair_of_cn"
+msgstr "Lehrstuhl für Rechnernetze"
+
+#. Default: Weiteres im
+#: templates/imprint.pt:31
+msgid "weiteres im"
+msgstr "Weiteres im"
+
+#. Default: Impressum der HHU
+#: templates/imprint.pt:32
+msgid "imprint_hhu"
+msgstr "Impressum der Heinrich-Heine-Universität Düsseldorf"
+
+#. Default: unserer Datenschutzerklärung
+#: templates/imprint.pt:33
+msgid "our_privacy"
+msgstr "unserer Datenschutzerklärung"
+
+#. Default: or checkout the
+#: templates/imprint.pt:34
+msgid "or_checkout_the"
+msgstr "oder weiteres in der"
+
+#. Default: license of D-BAS (MIT)
+#: templates/imprint.pt:36
+msgid "licence_dbas"
+msgstr "Lizenz von (D-BAS)"
+
+#. Default: Copyrights and used Software
+#: templates/imprint.pt:40
+msgid "copyright_and_used_software"
+msgstr "Verwendete Software"
+
+#. Default: Changes
+#: templates/imprint.pt:102
+msgid "changes"
+msgstr "Versionsänderungen"
+
+#. Default: Frequent Questions
+#: templates/faq.pt:6
+msgid "faq"
+msgstr "Häufige Fragen"
+
+#. Default: Simple answers to your most common questions
+#: templates/faq.pt:7
+msgid "simple_answers"
+msgstr "Kurze Antworten auf die häufigsten Fragen"
+
+#. Default: How do we handle your login data?
+#: templates/faq.pt:27
+msgid "faq_question_ldap"
+msgstr "Wie wird meine Uni-Kennung behandelt?"
+
+#. Default: If you are using the LDAP login, we are using the name information
+#. service of the University Düsseldorf. Your password is send from your
+#. computer, to our server (which is placed at the University) and then towards
+#. the service of the ZIM. Each transmission is secured and encrypted.
+#. Additionally we will never save, log or display your password anywhere!
+#: templates/faq.pt:30
+msgid "faq_answer_ldap"
 msgstr ""
-"Hier finden Sie die wichtigesten Informationen rund um unsere Feldstudie um "
-"mai 2017"
+"Wir nutzen das zentrale Namensverzeichnis der Universität Düsseldorf. Ihr "
+"Passwort wird über eine verschlüsselte Verbindung zu unserem Server in der "
+"Universität Düsseldorf übertragen und dort intern zum Dienst des ZIMs "
+"weitergeleitet. Wir werden Ihr Passwort zu keinem Zeitpunkt speichern oder "
+"anzeigen!"
 
-#. Default: When/Where?
-#: templates/fieldtest.pt:21
-msgid "when_where"
-msgstr "Wann/Wo?"
+#. Default: What is the difference between interest and opinion?
+#: templates/faq.pt:34
+msgid "faq_question_interest_opinion"
+msgstr "Was ist der Unterschied zwischen Interessen und Meinungen?"
 
-#. Default: May 2017 at the University of Düsseldorf, Germany.
-#: templates/fieldtest.pt:22
-msgid "may_2017_hhu"
-msgstr "Im Mai 2017 an der Universität Düsseldorf in Deutschland."
-
-#. Default: Setting?
-#: templates/fieldtest.pt:26
-msgid "setting"
-msgstr "Setting?"
-
-#. Default: We invited all computer science students of our university via mail
-#. to talk about the question: How can the studies of computer-science be
-#. improved and the problems caused by the large number of students be solved?
-#: templates/fieldtest.pt:28
-msgid "setting_description"
+#. Default: If you select any answer in D-BAS, you will be interested in this
+#. statement/reaction/... but we will never think, that this is your personal
+#. opinion. Only if you mark an statement or argument as your opinion, we will
+#. know, that you have the same opinion like the given text.
+#: templates/faq.pt:37
+msgid "faq_answer_interest_opinion"
 msgstr ""
-"Wir haben alle Studierenden der Informatik eingeladen um gemeinsam über die "
-"Frage 'Wie können der Informatik-Studiengang verbessert und die Probleme, "
-"die durch die große Anzahl der Studierenden entstanden sind, gelöst werden?' "
-"zu diskutieren."
+"Wenn Sie in D-BAS eine Aussage bzw. Antwort auswählen, interessieren Sie "
+"sich zunächst nur dafür. Erst wenn Sie eine Aussage als Ihre Meinung "
+"markieren, nimmt das System an, dass die Aussage bzw. Antwort Ihrer Meinung "
+"entspricht."
 
-#. Default: Key Facts?
-#: templates/fieldtest.pt:32
-msgid "key_fact"
-msgstr "Fakten?"
+#. Default: Can I mark an statement or argument as my opinion?
+#: templates/faq.pt:41
+msgid "faq_question_mark_opinion"
+msgstr "Wie kann ich eine Aussage als meine Meinung markieren?"
 
-#. Default: Our key facts in short
-#: templates/fieldtest.pt:34
-msgid "key_facts"
-msgstr "Unsere Fakten...kurz und knapp"
-
-#. Default: 318 visitor, 137 returned at least once
-#: templates/fieldtest.pt:36
-msgid "key_fact1"
-msgstr "318 Besucher/innen, 137 davon sind mindestens einmal wiedergekommen"
-
-#. Default: 47 registrations, 35 contributed at least once
-#: templates/fieldtest.pt:37
-msgid "key_fact2"
+#. Default: Yes, you can! Please press the yellow star at the beginning of a
+#. green bubble to mark a statement or an argument as your opinon. For this you
+#. have to be logged in.
+#: templates/faq.pt:44
+msgid "faq_answer_mark_opinion"
 msgstr ""
-"47 Besucher/innen haben sich angemeldet, 35 davon auch Beiträge verfasst"
+"Vor jeder grünen Sprechblase finden Sie einen kleinen Stern. Wenn Sie diesen "
+"klicken, markieren Sie den Text in der Sprechblase als Ihre Meinung."
 
-#. Default: 235 contributed arguments
-#: templates/fieldtest.pt:38
-msgid "key_fact3"
-msgstr "235 verfasste Argumente"
+#. Default: Is there any overview about all given arguments and statements?
+#: templates/faq.pt:48
+msgid "faq_question_graph"
+msgstr "Gibt es eine Übersicht über alle Argumente und Aussagen?"
 
-#. Default: 47 flagged statements
-#: templates/fieldtest.pt:39
-msgid "key_fact4"
-msgstr "47 markiere Aussagen"
-
-#. Default: The discussion can be seen
-#: templates/fieldtest.pt:41
-msgid "discussion_can_be_seen"
-msgstr "Die Diskussion ist"
-
-#. Default: here
-#: templates/fieldtest.pt:43 templates/fieldtest.pt:46
-#: templates/fieldtest.pt:70
-msgid "here"
-msgstr "hier einzusehen"
-
-#. Default: and a translated, english version is available
-#: templates/fieldtest.pt:44
-msgid "and_a_translated"
-msgstr "und eine übersetzte, englische Version ist"
-
-#. Default: Why?
-#: templates/fieldtest.pt:50
-msgid "why"
-msgstr "Wieso?"
-
-#. Default: We were primarily focused on two question
-#: templates/fieldtest.pt:52
-msgid "key_questions"
-msgstr "Wir haben uns auf zwei Kernfragen konzentriert"
-
-#. Default: Does the dialog-based approach works for untrained users in a real-
-#. world setting?
-#: templates/fieldtest.pt:54
-msgid "key_question1"
+#. Default: Yes, we have a graphical representation. Simply open the little
+#. sidebar in the discussion window and click on 'graph view'
+#: templates/faq.pt:51
+msgid "faq_answer_graph"
 msgstr ""
-"Funktioniert der dialogbasierte Ansatz mit ungeübten Nutzen in einem echten "
-"Szenario?"
+"Ja, wir haben eine graphische Darstellung aller Beiträge. Klicken Sie dazu "
+"in der Diskussionsbox auf das Menü-Icon und wählen 'Graphansicht'"
 
-#. Default: Does a decentralized moderation system works for a dialog-based
-#. argumentation system?
-#: templates/fieldtest.pt:57
-msgid "key_question2"
+#. Default: What are these little icons next to the statements?
+#: templates/faq.pt:56
+msgid "faq_question_buttons_next_to_statement"
+msgstr "Was sind das für kleine Symbole neben den Aussagen?"
+
+#. Default: These little icons will appear on each set of statements in the
+#. answer field, if you are logged in.
+#: templates/faq.pt:59
+msgid "faq_answer_buttons_next_to_statement"
+msgstr "Die Symbole tauchen nur auf, wenn Sie angemeldet sind."
+
+#. Default: The pencil allows you to submit proposals for edits.
+#: templates/faq.pt:64
+msgid "faq_answer_pencil_next_to_statement"
 msgstr ""
-"Funktioniert das dezentralisierte Moderatorensystem auch für dialogbasierte "
-"Ansätze?"
+"Der Stift erlaubt es Ihnen, sprachliche Verbesserungen für eine Aussage "
+"einzureichen."
 
-#. Default: Findings?
-#: templates/fieldtest.pt:64
-msgid "findings"
-msgstr "Ergebnisse?"
-
-#. Default: We had many findings from our field experiment. The main results
-#. are summarized in
-#: templates/fieldtest.pt:66
-msgid "findings1"
+#. Default: With the help of the flag you can report statements, if there is
+#. something wrong.
+#: templates/faq.pt:67
+msgid "faq_answer_flag_next_to_statement"
 msgstr ""
-"Es haben sich sehr viele, spannende Eigenschaften gezeigt. Die wichtigsten "
-"haben wir"
+"Mit der Flagge können Sie Aussagen melden, wenn mit diesen etwas nicht "
+"stimmt."
 
-#. Default: this paper
-#: templates/fieldtest.pt:68
-msgid "this_paper"
-msgstr "in diesem Paper zusammengefasst"
-
-#. Default: Next to this, our colleague developed a tool to translate real
-#. world argumentation of D-BAS into abstract argumentation frameworks. This
-#. paper can be read
-#: templates/fieldtest.pt:69
-msgid "findings2"
+#. Default: You made an statement on your own and not happy with it? Let's
+#. unsubscribe yourself as author.
+#: templates/faq.pt:70
+msgid "faq_answer_trash_next_to_statement"
 msgstr ""
-"Zusätzlich hat unser Kollege ein Tool entwickelt und Echtwelt-Argumentation "
-"aus D-BAS in abstrakte Argumentationsframeworks umzuwandeln. Dieses Paper ist"
+"Sie haben eine Aussage gemacht und sind nicht mehr glücklich damit? Mit der "
+"Mülltonne sind Sie ab sofort nicht mehr Autor dieser Aussage."
 
-#. Default: The resulting dump of our PostgreSQL database can be downloaded
-#. from our
-#: templates/fieldtest.pt:72
-msgid "findings3"
-msgstr "Der PostgreSQL-Dump der Datenbank kann von unserem"
-
-#. Default: server
-#: templates/fieldtest.pt:73
-msgid "server"
-msgstr "Server geladen werden"
-
-#. Default: License CC BY-NC-SA
-#: templates/fieldtest.pt:74
-msgid "license_cc_by_nc_sa"
-msgstr "Lizenz CC BY-NC-SA"
-
-#. Default: The archive contains three versions: the originaldataset of the
-#. discussion in German, a dataset which includes some corrections and a
-#. translated one.
-#: templates/fieldtest.pt:75
-msgid "the archive contains"
+#. Default: You are reading an statement, which should be supporting your
+#. conclusion, but it is nonsense? Let's attack this one!
+#: templates/faq.pt:73
+msgid "faq_answer_bomb_next_to_statement"
 msgstr ""
-"Das Archiv beinhaltet drei Version: die originale Diskussion auf deutsch, "
-"eine korrigierte und eine ins englisch übersetze Version."
+"Sie lesen eine Aussage und denken sich: 'Das ist aber nicht richtig!'. Dann "
+"klicken Sie auf die Bombe und greifen die Aussage an!"
 
-#. Default: The translation into an abstract AF can be
-#: templates/fieldtest.pt:76
-msgid "findings4"
-msgstr "Die Übersetzungen in das abstracte AF können"
-
-#. Default: fetched to
-#: templates/fieldtest.pt:77
-msgid "fetched to"
-msgstr "auch geladen werden"
-
-#. Default: Open Source?
-#: templates/fieldtest.pt:83
-msgid "ope-Source"
-msgstr "Open-Source?"
-
-#. Default: Of course! Every used tool is published under the MIT licence and
-#. hosted on GitHub
-#: templates/fieldtest.pt:85
-msgid "of_course_it_is_open_source"
+#. Default: There is this specific website with facts about an statement? With
+#. the link-icon you can add references for a statement / argument.
+#: templates/faq.pt:76
+msgid "faq_answer_link_next_to_statement"
 msgstr ""
-"Natürlich ist es Open-Source! Jedes Tool ist unter der MIT-Lizenz auf Github "
-"veröffentlicht"
+"Sie haben diese eine Webseite im Kopf, die eine Aussage unterstützt? Dann "
+"fügen Sie diese als Referenz zur Aussage hinzu."
+
+#. Default: What do I do if I found a bug or have other questions about D-BAS?
+#: templates/faq.pt:81
+msgid "faq_question_bug"
+msgstr "Sie haben einen Fehler gefunden oder weitere Fragen zu D-BAS?"
+
+#. Default: If you think you've found an issue or have any other questions not
+#. covered above, please email us via
+#: templates/faq.pt:84
+msgid "faq_answer_bug1"
+msgstr ""
+"Wenn Sie irgendwelche Fragen haben, die hier nicht gelistet sind, so nutzen "
+"Sie die Mailadresse "
+
+#. Default: Please keep in mind that our current team is quite small and we'll
+#. do our very best to get back to you ASAP.
+#: templates/faq.pt:86
+msgid "faq_answer_bug2"
+msgstr ""
+"Bitte bedenken Sie, dass wir ein sehr kleines Team sind und wir unser Bestes "
+"versuchen werden, schnellstmöglich zu antworten."
+
+#. Default: News
+#: templates/news.pt:6 templates/snippet/footer.pt:43
+msgid "news"
+msgstr "Neuigkeiten"
+
+#. Default: Latest news of D-BAS
+#: templates/news.pt:9
+msgid "latest_news_of_dbas"
+msgstr "Die aktuellesten Nachrichten rund um D-BAS"
+
+#. Default: Privacy Policy
+#. Default: privacy_policy
+#: templates/privacy.pt:6 templates/snippet/footer.pt:16
+msgid "privacy_policy"
+msgstr "Datenschutzrichtlinien"
+
+#. Default: This is our privacy policy according to the DSVGO
+#: templates/privacy.pt:7
+msgid "privacy_policy_text"
+msgstr "Unsere Datenschutzrichtlinien gemäß der DSVGO"
+
+#. Default: 404 Error
+#: templates/404.pt:5
+msgid "404"
+msgstr "404 Fehler"
+
+#. Default: Something went wrong
+#: templates/404.pt:6
+msgid "something_wrong"
+msgstr "Etwas ging schief."
+
+#. Default: The page
+#: templates/404.pt:18
+msgid "404_text_part1"
+msgstr "Die Seite"
+
+#. Default: could not be found
+#: templates/404.pt:20
+msgid "404_text_part2"
+msgstr "konnte nicht gefunden werden"
+
+#. Default: , because the input parameter seems to be wrong.
+#: templates/404.pt:20
+msgid "wrong_input_params"
+msgstr ", weil die Paramter wahrscheinlich falsch sind"
+
+#. Default: , because the author revoked the content.
+#: templates/404.pt:20
+msgid "author_revoked_content"
+msgstr ", da der Autor den Inhalt zurückgenommen hat."
+
+#. Default: Go home
+#: templates/404.pt:23
+msgid "go-home"
+msgstr "Zur Startseite"
+
+#. Default: or
+#: templates/404.pt:25
+msgid "or"
+msgstr "oder"
+
+#. Default: go back to the discussion
+#: templates/404.pt:26
+msgid "go_back_to_the_discussion"
+msgstr "Zurück zur Diskussion!"
+
+#. Default: JavaScript is not enabled:
+#: templates/basetemplate.pt:17
+msgid "js_disabled1"
+msgstr "JavaScript ist nicht aktiviert:"
+
+#. Default: Please enable JavaScript!
+#: templates/basetemplate.pt:18
+msgid "js_disabled2"
+msgstr "Bitte JavaScript aktivieren!"
+
+#. Default: Your request failed!
+#: templates/basetemplate.pt:24
+msgid "request_failed"
+msgstr "Ihre Anfrage ist fehlgeschlagen!"
+
+#. Default: Please reload the page.
+#: templates/basetemplate.pt:25
+msgid "please_reload"
+msgstr "Bitte laden Sie die Seite erneut."
+
+#. Default: Your request succeded!
+#: templates/basetemplate.pt:32 templates/basetemplate.pt:33
+msgid "request_success"
+msgstr "Anfrage wurde erfolgreich verarbeitet."
 
 #. Default: About
 #: templates/index.pt:35
@@ -231,12 +338,6 @@ msgstr "Service"
 #: templates/index.pt:44
 msgid "github"
 msgstr "Github"
-
-#. Default: Contact
-#. Default: Kontakt:
-#: templates/index.pt:50 templates/imprint.pt:22 templates/snippet/footer.pt:20
-msgid "contact"
-msgstr "Kontakt"
 
 #. Default: The solution for every Large Scale Online-Discussion
 #: templates/index.pt:78
@@ -520,333 +621,1030 @@ msgstr ""
 "Schreiben Sie uns eine E-Mail. Wir werden uns schnellstmöglich bei Ihnen "
 "melden!"
 
-#. Default: Frequent Questions
-#: templates/faq.pt:6
-msgid "faq"
-msgstr "Häufige Fragen"
+#. Default: Field Experiment 2017
+#: templates/fieldtest.pt:7
+msgid "field_experiment_2017"
+msgstr "Feldstudie 2017"
 
-#. Default: Simple answers to your most common questions
-#: templates/faq.pt:7
-msgid "simple_answers"
-msgstr "Kurze Antworten auf die häufigsten Fragen"
-
-#. Default: How do we handle your login data?
-#: templates/faq.pt:27
-msgid "faq_question_ldap"
-msgstr "Wie wird meine Uni-Kennung behandelt?"
-
-#. Default: If you are using the LDAP login, we are using the name information
-#. service of the University Düsseldorf. Your password is send from your
-#. computer, to our server (which is placed at the University) and then towards
-#. the service of the ZIM. Each transmission is secured and encrypted.
-#. Additionally we will never save, log or display your password anywhere!
-#: templates/faq.pt:30
-msgid "faq_answer_ldap"
+#. Default: Most important information about our field experiment in May 2017
+#: templates/fieldtest.pt:9
+msgid "most_important_information_about_field_experiment"
 msgstr ""
-"Wir nutzen das zentrale Namensverzeichnis der Universität Düsseldorf. Ihr "
-"Passwort wird über eine verschlüsselte Verbindung zu unserem Server in der "
-"Universität Düsseldorf übertragen und dort intern zum Dienst des ZIMs "
-"weitergeleitet. Wir werden Ihr Passwort zu keinem Zeitpunkt speichern oder "
-"anzeigen!"
+"Hier finden Sie die wichtigesten Informationen rund um unsere Feldstudie um "
+"mai 2017"
 
-#. Default: What is the difference between interest and opinion?
-#: templates/faq.pt:34
-msgid "faq_question_interest_opinion"
-msgstr "Was ist der Unterschied zwischen Interessen und Meinungen?"
+#. Default: When/Where?
+#: templates/fieldtest.pt:21
+msgid "when_where"
+msgstr "Wann/Wo?"
 
-#. Default: If you select any answer in D-BAS, you will be interested in this
-#. statement/reaction/... but we will never think, that this is your personal
-#. opinion. Only if you mark an statement or argument as your opinion, we will
-#. know, that you have the same opinion like the given text.
-#: templates/faq.pt:37
-msgid "faq_answer_interest_opinion"
+#. Default: May 2017 at the University of Düsseldorf, Germany.
+#: templates/fieldtest.pt:22
+msgid "may_2017_hhu"
+msgstr "Im Mai 2017 an der Universität Düsseldorf in Deutschland."
+
+#. Default: Setting?
+#: templates/fieldtest.pt:26
+msgid "setting"
+msgstr "Setting?"
+
+#. Default: We invited all computer science students of our university via mail
+#. to talk about the question: How can the studies of computer-science be
+#. improved and the problems caused by the large number of students be solved?
+#: templates/fieldtest.pt:28
+msgid "setting_description"
 msgstr ""
-"Wenn Sie in D-BAS eine Aussage bzw. Antwort auswählen, interessieren Sie "
-"sich zunächst nur dafür. Erst wenn Sie eine Aussage als Ihre Meinung "
-"markieren, nimmt das System an, dass die Aussage bzw. Antwort Ihrer Meinung "
-"entspricht."
+"Wir haben alle Studierenden der Informatik eingeladen um gemeinsam über die "
+"Frage 'Wie können der Informatik-Studiengang verbessert und die Probleme, "
+"die durch die große Anzahl der Studierenden entstanden sind, gelöst werden?' "
+"zu diskutieren."
 
-#. Default: Can I mark an statement or argument as my opinion?
-#: templates/faq.pt:41
-msgid "faq_question_mark_opinion"
-msgstr "Wie kann ich eine Aussage als meine Meinung markieren?"
+#. Default: Key Facts?
+#: templates/fieldtest.pt:32
+msgid "key_fact"
+msgstr "Fakten?"
 
-#. Default: Yes, you can! Please press the yellow star at the beginning of a
-#. green bubble to mark a statement or an argument as your opinon. For this you
-#. have to be logged in.
-#: templates/faq.pt:44
-msgid "faq_answer_mark_opinion"
+#. Default: Our key facts in short
+#: templates/fieldtest.pt:34
+msgid "key_facts"
+msgstr "Unsere Fakten...kurz und knapp"
+
+#. Default: 318 visitor, 137 returned at least once
+#: templates/fieldtest.pt:36
+msgid "key_fact1"
+msgstr "318 Besucher/innen, 137 davon sind mindestens einmal wiedergekommen"
+
+#. Default: 47 registrations, 35 contributed at least once
+#: templates/fieldtest.pt:37
+msgid "key_fact2"
 msgstr ""
-"Vor jeder grünen Sprechblase finden Sie einen kleinen Stern. Wenn Sie diesen "
-"klicken, markieren Sie den Text in der Sprechblase als Ihre Meinung."
+"47 Besucher/innen haben sich angemeldet, 35 davon auch Beiträge verfasst"
 
-#. Default: Is there any overview about all given arguments and statements?
-#: templates/faq.pt:48
-msgid "faq_question_graph"
-msgstr "Gibt es eine Übersicht über alle Argumente und Aussagen?"
+#. Default: 235 contributed arguments
+#: templates/fieldtest.pt:38
+msgid "key_fact3"
+msgstr "235 verfasste Argumente"
 
-#. Default: Yes, we have a graphical representation. Simply open the little
-#. sidebar in the discussion window and click on 'graph view'
-#: templates/faq.pt:51
-msgid "faq_answer_graph"
+#. Default: 47 flagged statements
+#: templates/fieldtest.pt:39
+msgid "key_fact4"
+msgstr "47 markiere Aussagen"
+
+#. Default: The discussion can be seen
+#: templates/fieldtest.pt:41
+msgid "discussion_can_be_seen"
+msgstr "Die Diskussion ist"
+
+#. Default: here
+#: templates/fieldtest.pt:43 templates/fieldtest.pt:46
+#: templates/fieldtest.pt:70
+msgid "here"
+msgstr "hier einzusehen"
+
+#. Default: and a translated, english version is available
+#: templates/fieldtest.pt:44
+msgid "and_a_translated"
+msgstr "und eine übersetzte, englische Version ist"
+
+#. Default: Why?
+#: templates/fieldtest.pt:50
+msgid "why"
+msgstr "Wieso?"
+
+#. Default: We were primarily focused on two question
+#: templates/fieldtest.pt:52
+msgid "key_questions"
+msgstr "Wir haben uns auf zwei Kernfragen konzentriert"
+
+#. Default: Does the dialog-based approach works for untrained users in a real-
+#. world setting?
+#: templates/fieldtest.pt:54
+msgid "key_question1"
 msgstr ""
-"Ja, wir haben eine graphische Darstellung aller Beiträge. Klicken Sie dazu "
-"in der Diskussionsbox auf das Menü-Icon und wählen 'Graphansicht'"
+"Funktioniert der dialogbasierte Ansatz mit ungeübten Nutzen in einem echten "
+"Szenario?"
 
-#. Default: What are these little icons next to the statements?
-#: templates/faq.pt:56
-msgid "faq_question_buttons_next_to_statement"
-msgstr "Was sind das für kleine Symbole neben den Aussagen?"
-
-#. Default: These little icons will appear on each set of statements in the
-#. answer field, if you are logged in.
-#: templates/faq.pt:59
-msgid "faq_answer_buttons_next_to_statement"
-msgstr "Die Symbole tauchen nur auf, wenn Sie angemeldet sind."
-
-#. Default: The pencil allows you to submit proposals for edits.
-#: templates/faq.pt:64
-msgid "faq_answer_pencil_next_to_statement"
+#. Default: Does a decentralized moderation system works for a dialog-based
+#. argumentation system?
+#: templates/fieldtest.pt:57
+msgid "key_question2"
 msgstr ""
-"Der Stift erlaubt es Ihnen, sprachliche Verbesserungen für eine Aussage "
-"einzureichen."
+"Funktioniert das dezentralisierte Moderatorensystem auch für dialogbasierte "
+"Ansätze?"
 
-#. Default: With the help of the flag you can report statements, if there is
-#. something wrong.
-#: templates/faq.pt:67
-msgid "faq_answer_flag_next_to_statement"
+#. Default: Findings?
+#: templates/fieldtest.pt:64
+msgid "findings"
+msgstr "Ergebnisse?"
+
+#. Default: We had many findings from our field experiment. The main results
+#. are summarized in
+#: templates/fieldtest.pt:66
+msgid "findings1"
 msgstr ""
-"Mit der Flagge können Sie Aussagen melden, wenn mit diesen etwas nicht "
-"stimmt."
+"Es haben sich sehr viele, spannende Eigenschaften gezeigt. Die wichtigsten "
+"haben wir"
 
-#. Default: You made an statement on your own and not happy with it? Let's
-#. unsubscribe yourself as author.
-#: templates/faq.pt:70
-msgid "faq_answer_trash_next_to_statement"
+#. Default: this paper
+#: templates/fieldtest.pt:68
+msgid "this_paper"
+msgstr "in diesem Paper zusammengefasst"
+
+#. Default: Next to this, our colleague developed a tool to translate real
+#. world argumentation of D-BAS into abstract argumentation frameworks. This
+#. paper can be read
+#: templates/fieldtest.pt:69
+msgid "findings2"
 msgstr ""
-"Sie haben eine Aussage gemacht und sind nicht mehr glücklich damit? Mit der "
-"Mülltonne sind Sie ab sofort nicht mehr Autor dieser Aussage."
+"Zusätzlich hat unser Kollege ein Tool entwickelt und Echtwelt-Argumentation "
+"aus D-BAS in abstrakte Argumentationsframeworks umzuwandeln. Dieses Paper ist"
 
-#. Default: You are reading an statement, which should be supporting your
-#. conclusion, but it is nonsense? Let's attack this one!
-#: templates/faq.pt:73
-msgid "faq_answer_bomb_next_to_statement"
+#. Default: The resulting dump of our PostgreSQL database can be downloaded
+#. from our
+#: templates/fieldtest.pt:72
+msgid "findings3"
+msgstr "Der PostgreSQL-Dump der Datenbank kann von unserem"
+
+#. Default: server
+#: templates/fieldtest.pt:73
+msgid "server"
+msgstr "Server geladen werden"
+
+#. Default: License CC BY-NC-SA
+#: templates/fieldtest.pt:74
+msgid "license_cc_by_nc_sa"
+msgstr "Lizenz CC BY-NC-SA"
+
+#. Default: The archive contains three versions: the originaldataset of the
+#. discussion in German, a dataset which includes some corrections and a
+#. translated one.
+#: templates/fieldtest.pt:75
+msgid "the archive contains"
 msgstr ""
-"Sie lesen eine Aussage und denken sich: 'Das ist aber nicht richtig!'. Dann "
-"klicken Sie auf die Bombe und greifen die Aussage an!"
+"Das Archiv beinhaltet drei Version: die originale Diskussion auf deutsch, "
+"eine korrigierte und eine ins englisch übersetze Version."
 
-#. Default: There is this specific website with facts about an statement? With
-#. the link-icon you can add references for a statement / argument.
-#: templates/faq.pt:76
-msgid "faq_answer_link_next_to_statement"
+#. Default: The translation into an abstract AF can be
+#: templates/fieldtest.pt:76
+msgid "findings4"
+msgstr "Die Übersetzungen in das abstracte AF können"
+
+#. Default: fetched to
+#: templates/fieldtest.pt:77
+msgid "fetched to"
+msgstr "auch geladen werden"
+
+#. Default: Open Source?
+#: templates/fieldtest.pt:83
+msgid "ope-Source"
+msgstr "Open-Source?"
+
+#. Default: Of course! Every used tool is published under the MIT licence and
+#. hosted on GitHub
+#: templates/fieldtest.pt:85
+msgid "of_course_it_is_open_source"
 msgstr ""
-"Sie haben diese eine Webseite im Kopf, die eine Aussage unterstützt? Dann "
-"fügen Sie diese als Referenz zur Aussage hinzu."
+"Natürlich ist es Open-Source! Jedes Tool ist unter der MIT-Lizenz auf Github "
+"veröffentlicht"
 
-#. Default: What do I do if I found a bug or have other questions about D-BAS?
-#: templates/faq.pt:81
-msgid "faq_question_bug"
-msgstr "Sie haben einen Fehler gefunden oder weitere Fragen zu D-BAS?"
+#. Default: Documentation
+#: templates/docs.pt:6
+msgid "docs"
+msgstr "Dokumentation"
 
-#. Default: If you think you've found an issue or have any other questions not
-#. covered above, please email us via
-#: templates/faq.pt:84
-msgid "faq_answer_bug1"
+#. Default: Where do I find it?
+#: templates/docs.pt:7
+msgid "where_do_i_find_it"
+msgstr "Wo kann ich sie finden?"
+
+#. Default: Help
+#: templates/snippet/footer.pt:33
+msgid "Help"
+msgstr "Hilfe"
+
+#. Default: Docs
+#: templates/snippet/footer.pt:38
+msgid "Documentation"
+msgstr "Dokumentation"
+
+#. Default: Github
+#: templates/snippet/footer.pt:48
+msgid "Github"
+msgstr "Github"
+
+#. Default: Field Experiment
+#: templates/snippet/footer.pt:53
+msgid "field_experiment"
+msgstr "Feldstudie"
+
+#. Default: Okay
+#: templates/snippet/popups.pt:57 templates/snippet/popups.pt:86
+#: templates/snippet/popups.pt:120 templates/snippet/popups.pt:1354
+msgid "okay"
+msgstr "Okay"
+
+#. Default: Cancel
+#: templates/snippet/popups.pt:60 templates/snippet/popups.pt:90
+#: templates/snippet/popups.pt:124 templates/snippet/popups.pt:1099
+#: templates/snippet/popups.pt:1167 templates/snippet/popups.pt:1358
+#: templates/review/history.pt:115
+msgid "cancel"
+msgstr "Abbrechen"
+
+#. Default: Do not remind me again
+#: templates/snippet/popups.pt:113
+msgid "do_not_remind_me_again"
+msgstr "Nicht erneut erinnern"
+
+#. Default: Information are missing
+#: templates/snippet/popups.pt:184
+msgid "information_missing"
+msgstr "Uns fehlen Informationen"
+
+#. Default: During the authentication we could not fetch all of the necessary
+#. information. Please add the missing information, so we can add a new account
+#. in D-BAS (Login via other providers won't work).
+#: templates/snippet/popups.pt:187
+msgid "plase_add_missing_infos_we_add_account"
 msgstr ""
-"Wenn Sie irgendwelche Fragen haben, die hier nicht gelistet sind, so nutzen "
-"Sie die Mailadresse "
+"Während der Authentifizerung konnten wir nicht alle nötigen Informationen "
+"bekommen. Bitte geben Sie die restlichen Informationen an, sodass wir einen "
+"Account in D-BAS anlegen (Der Login über die Provider klappt dann leider "
+"nicht mehr)."
 
-#. Default: Please keep in mind that our current team is quite small and we'll
-#. do our very best to get back to you ASAP.
-#: templates/faq.pt:86
-msgid "faq_answer_bug2"
+#. Default: Your First Name
+#: templates/snippet/popups.pt:193 templates/snippet/popups.pt:392
+msgid "first_name"
+msgstr "Vorname"
+
+#. Default: Your Last Name
+#: templates/snippet/popups.pt:203 templates/snippet/popups.pt:402
+msgid "last_name"
+msgstr "Nachname"
+
+#. Default: Your Nickname
+#. Default: Nickname
+#: templates/snippet/popups.pt:212 templates/snippet/popups.pt:411
+#: templates/user/settings.pt:30
+msgid "nickname"
+msgstr "Nickname"
+
+#. Default: Your Gender
+#: templates/snippet/popups.pt:222 templates/snippet/popups.pt:419
+msgid "your_gender"
+msgstr "Ihr Geschlecht"
+
+#. Default: Your Email Address
+#: templates/snippet/popups.pt:242 templates/snippet/popups.pt:439
+msgid "your_email"
+msgstr "Ihre E-Mail"
+
+#. Default: Your Password
+#: templates/snippet/popups.pt:251 templates/snippet/popups.pt:449
+msgid "password"
+msgstr "Passwort"
+
+#. Default: Password (confirm)
+#: templates/snippet/popups.pt:262 templates/snippet/popups.pt:460
+msgid "password-confirm"
+msgstr "Passwort (Bestätigung)"
+
+#. Default: Error:
+#: templates/snippet/popups.pt:276 templates/snippet/popups.pt:500
+#: templates/snippet/popups.pt:518
+msgid "error"
+msgstr "Fehler:"
+
+#. Default: Info:
+#. Default: Info
+#: templates/snippet/popups.pt:284 templates/snippet/popups.pt:507
+#: templates/snippet/popups.pt:531
+#: templates/discussion/organism/dialog-space.pt:8
+msgid "info"
+msgstr "Info:"
+
+#. Default: Register
+#: templates/snippet/popups.pt:291 templates/snippet/popups.pt:538
+msgid "register"
+msgstr "Registierung"
+
+#. Default: Close
+#: templates/snippet/popups.pt:295 templates/snippet/popups.pt:383
+#: templates/snippet/popups.pt:540 templates/snippet/popups.pt:703
+#: templates/snippet/popups.pt:767
+msgid "close"
+msgstr "Schließen"
+
+#. Default: Log In
+#. Default: Login
+#: templates/snippet/popups.pt:314 templates/snippet/popups.pt:380
+#: templates/snippet/navbar.pt:74
+msgid "login"
+msgstr "Login"
+
+#. Default: Sign Up
+#: templates/snippet/popups.pt:315
+msgid "sign_up"
+msgstr "Registrierung"
+
+#. Default: Your submitted data is being licensed under Creative Commons Share
+#. Alike (CC BY-SA 4.0) and will be used for scientific purposes. We will never
+#. share your password or e-mail address. By registrating or logging in, you
+#. are accepting these terms.
+#: templates/snippet/popups.pt:320
+msgid "all_data_is_free"
 msgstr ""
-"Bitte bedenken Sie, dass wir ein sehr kleines Team sind und wir unser Bestes "
-"versuchen werden, schnellstmöglich zu antworten."
+"Ihre Daten werden unter der Creative Commons Namensnennung-Share Alike 4.0 International Public License erfasst und "
+"werden für wissenschaftliche Zwecke verwendet. Wir werden Ihr Passwort oder Ihre E-Mail Adresse niemals weitergeben. "
+"Durch das Registrieren und Einloggen akzeptieren Sie diese Bedingungen."
 
-#. Default: News
-#: templates/news.pt:6 templates/snippet/footer.pt:42
-msgid "news"
-msgstr "Neuigkeiten"
 
-#. Default: Latest news of D-BAS
-#: templates/news.pt:9
-msgid "latest_news_of_dbas"
-msgstr "Die aktuellesten Nachrichten rund um D-BAS"
+#. Default: Your Nickname
+#: templates/snippet/popups.pt:330
+msgid "your_nickname"
+msgstr "Ihr Nickname"
 
-#. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:18
-msgid "js_disabled1"
-msgstr "JavaScript ist nicht aktiviert:"
+#. Default: Your Password
+#: templates/snippet/popups.pt:342
+msgid "your_password"
+msgstr "Ihr Passwort"
 
-#. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:19
-msgid "js_disabled2"
-msgstr "Bitte JavaScript aktivieren!"
+#. Default: Keep me logged in
+#: templates/snippet/popups.pt:356
+msgid "keep_me_logged_in"
+msgstr "Angemeldet bleiben"
 
-#. Default: Your request failed!
-#: templates/basetemplate.pt:25
-msgid "request_failed"
-msgstr "Ihre Anfrage ist fehlgeschlagen!"
+#. Default: Forgot your password?
+#: templates/snippet/popups.pt:359
+msgid "forgot_password"
+msgstr "Passwort vergessen?"
 
-#. Default: Please reload the page.
-#: templates/basetemplate.pt:26
-msgid "please_reload"
-msgstr "Bitte laden Sie die Seite erneut."
+#. Default: Please fill in your e-mail below. A new password will be send this
+#. address. This does not affect other services of the HHU:
+#: templates/snippet/popups.pt:364
+msgid "fill_in_mail_for_password"
+msgstr ""
+"Bitte trage Sie unten Ihre E-Mail-Adresse ein. Ein neues Passwort wird an "
+"diese Adresse gesendet. Dies ist bei der LDAP Kennung der HHU nicht möglich!"
 
-#. Default: Your request succeded!
-#: templates/basetemplate.pt:33 templates/basetemplate.pt:34
-msgid "request_success"
-msgstr "Anfrage wurde erfolgreich verarbeitet."
+#. Default: Password Strength
+#: templates/snippet/popups.pt:471
+msgid "password-strength"
+msgstr "Stärke"
 
-#. Default: Imprint
-#. Default: Impressum
-#: templates/imprint.pt:6 templates/imprint.pt:20
-#: templates/snippet/footer.pt:10
-msgid "imprint"
-msgstr "Impressum"
+#. Default: very weak
+#: templates/snippet/popups.pt:474
+msgid "password_strength"
+msgstr "sehr schwach"
 
-#. Default: Our imprint, a list of used software and the latest changelog
-#: templates/imprint.pt:7
-msgid "imprint_list_of_software_and_changelog"
-msgstr "Unser Impressum, die verwendete Software und die letzten Änderungen"
+#. Default: Solve this captcha
+#: templates/snippet/popups.pt:478
+msgid "captcha"
+msgstr "Bitte lösen Sie das Captcha"
 
-#. Default: Angaben gemäß § 5 TMG
-#: templates/imprint.pt:21
-msgid "data_tmg"
-msgstr "Angaben gemäß § 5 TMG"
+#. Default: Success:
+#. Default: Success
+#: templates/snippet/popups.pt:493 templates/snippet/popups.pt:524
+#: templates/discussion/organism/dialog-space.pt:24
+msgid "success"
+msgstr "Erfolg:"
 
-#. Default: Institut für Informatik
-#: templates/imprint.pt:23
-msgid "department_of_cs"
-msgstr "Institut für Informatik"
+#. Default: Or login via
+#: templates/snippet/popups.pt:547
+msgid "or_login_via"
+msgstr "Oder anmelden über"
 
-#. Default: Lehrstuhl für Rechnernetze
-#: templates/imprint.pt:24
-msgid "chair_of_cn"
-msgstr "Lehrstuhl für Rechnernetze"
+#. Default: Writing a new message
+#: templates/snippet/popups.pt:657 templates/snippet/popups.pt:718
+msgid "writing_message"
+msgstr "Neue Nachricht schreiben"
 
-#. Default: Weiteres im
-#: templates/imprint.pt:31
-msgid "weiteres im"
-msgstr "Weiteres im"
+#. Default: Error:
+#: templates/snippet/popups.pt:679 templates/snippet/popups.pt:752
+msgid "error:"
+msgstr "Fehler:"
 
-#. Default: Impressum der HHU
-#: templates/imprint.pt:32
-msgid "imprint_hhu"
-msgstr "Impressum der Heinrich-Heine-Universität Düsseldorf"
+#. Default: Success:
+#: templates/snippet/popups.pt:685 templates/snippet/popups.pt:758
+msgid "success:"
+msgstr "Erfolg:"
 
-#. Default: unserer Datenschutzerklärung
-#: templates/imprint.pt:33
-msgid "our_privacy"
-msgstr "unserer Datenschutzerklärung"
-
-#. Default: or checkout the
-#: templates/imprint.pt:34
-msgid "or_checkout_the"
-msgstr "oder weiteres in der"
-
-#. Default: license of D-BAS (MIT)
-#: templates/imprint.pt:36
-msgid "licence_dbas"
-msgstr "Lizenz von (D-BAS)"
-
-#. Default: Copyrights and used Software
-#: templates/imprint.pt:40
-msgid "copyright_and_used_software"
-msgstr "Verwendete Software"
-
-#. Default: Changes
-#: templates/imprint.pt:106
-msgid "changes"
-msgstr "Versionsänderungen"
-
-#. Default: Privacy Policy
-#. Default: privacy_policy
-#: templates/privacy.pt:6 templates/snippet/footer.pt:15
-msgid "privacy_policy"
-msgstr "Datenschutzrichtlinien"
-
-#. Default: This is our privacy policy according to the DSVGO
-#: templates/privacy.pt:7
-msgid "privacy_policy_text"
-msgstr "Unsere Datenschutzrichtlinien gemäß der DSVGO"
-
-#. Default: 404 Error
-#: templates/404.pt:5
-msgid "404"
-msgstr "404 Fehler"
-
-#. Default: Something went wrong
-#: templates/404.pt:6
-msgid "something_wrong"
-msgstr "Etwas ging schief."
-
-#. Default: The page
-#: templates/404.pt:18
-msgid "404_text_part1"
-msgstr "Die Seite"
-
-#. Default: could not be found
-#: templates/404.pt:20
-msgid "404_text_part2"
-msgstr "konnte nicht gefunden werden"
-
-#. Default: , because the input parameter seems to be wrong.
-#: templates/404.pt:20
-msgid "wrong_input_params"
-msgstr ", weil die Paramter wahrscheinlich falsch sind"
-
-#. Default: , because the author revoked the content.
-#: templates/404.pt:20
-msgid "author_revoked_content"
-msgstr ", da der Autor den Inhalt zurückgenommen hat."
-
-#. Default: Go home
-#: templates/404.pt:23
-msgid "go-home"
-msgstr "Zur Startseite"
-
-#. Default: or
-#: templates/404.pt:25
-msgid "or"
-msgstr "oder"
-
-#. Default: go back to the discussion
-#: templates/404.pt:26
-msgid "go_back_to_the_discussion"
-msgstr "Zurück zur Diskussion!"
-
-#. Default: Your Reputation
-#: templates/review/reputation.pt:6
-msgid "your_reputation"
-msgstr "Ihr Karma"
-
-#. Default: Based on your user group, you have all rights!
-#: templates/review/reputation.pt:8 templates/review/index.pt:51
-msgid "unlimited_right_based_on_group"
-msgstr "Basierend auf Ihrer Nutzergruppe haben Sie volle Rechte!"
-
-#. Default: Reputation count
-#: templates/review/reputation.pt:9
-msgid "reputation_count"
-msgstr "Reputations-Punktzahl"
+#. Default: Author
+#: templates/snippet/popups.pt:693
+msgid "author"
+msgstr "Autor"
 
 #. Default: Date
-#: templates/review/reputation.pt:25 templates/snippet/popups.pt:694
+#: templates/snippet/popups.pt:695 templates/review/reputation.pt:25
 msgid "date"
 msgstr "Datum"
 
-#. Default: Action
-#: templates/review/reputation.pt:26
-msgid "action"
-msgstr "Aktion"
+#. Default: Send News
+#: templates/snippet/popups.pt:700
+msgid "send_news"
+msgstr "News abschicken"
+
+#. Default: Send Notifcation
+#: templates/snippet/popups.pt:765
+msgid "send_notification"
+msgstr "Nachricht senden"
+
+#. Default: Add Topic
+#. Default: Add a Topic
+#: templates/snippet/popups.pt:781 templates/snippet/navbar.pt:57
+#: templates/snippet/navbar.pt:62
+msgid "add_topic"
+msgstr "Thema hinzufügen"
+
+#. Default: Please enter your title here:
+#: templates/snippet/popups.pt:786
+msgid "please_enter_title"
+msgstr "Ihr Thema:"
+
+#. Default: Please enter a short-description or question here:
+#: templates/snippet/popups.pt:792
+msgid "please_enter_info"
+msgstr "Frage des Themas:"
+
+#. Default: Please enter the full description here:
+#: templates/snippet/popups.pt:800
+msgid "please_enter_long_info"
+msgstr "Alle Informationen zum Thema:"
+
+#. Default: Language of the discussion:
+#: templates/snippet/popups.pt:811
+msgid "please_select_language_for_topic"
+msgstr "Sprache der Diskussion:"
+
+#. Default: Is the topic available for the public?
+#: templates/snippet/popups.pt:837
+msgid "is_topic_available_for_public"
+msgstr "Ist das Thema für jeden verfügbar?"
+
+#. Default: Is the topic read only?
+#: templates/snippet/popups.pt:854
+msgid "is_topic_read_only"
+msgstr "Soll nur gelesen werden können?"
+
+#. Default: Selecting a reason
+#: templates/snippet/popups.pt:895
+msgid "select-reason"
+msgstr "Grund auswählen"
+
+#. Default: The statement under consideration is as follows
+#: templates/snippet/popups.pt:899
+msgid "statement_under_consideration_is"
+msgstr "Die aktuelle Aussage ist"
+
+#. Default: The argument under consideration is as follows
+#: templates/snippet/popups.pt:904 templates/snippet/popups.pt:987
+msgid "argument_under_consideration_is"
+msgstr "Das aktuelle Argument ist"
+
+#. Default: The text needs to be revised.
+#: templates/snippet/popups.pt:918
+msgid "text_need_to_be_revised"
+msgstr "Der Text sollte überarbeitet werden."
+
+#. Default: This statement is off topic or irrelevant.
+#: templates/snippet/popups.pt:927
+msgid "statement_offtopic_or_irrelevant"
+msgstr "Die Aussage ist nicht themenbezogen/Spam."
+
+#. Default: This argument is off topic or irrelevant.
+#: templates/snippet/popups.pt:930
+msgid "argument_offtopic_or_irrelevant"
+msgstr "Das Argument ist nicht themenbezogen/Spam."
+
+#. Default: This statement is harmful or abusive.
+#: templates/snippet/popups.pt:938
+msgid "statement_harmful"
+msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
+
+#. Default: This argument is harmful or abusive.
+#: templates/snippet/popups.pt:940
+msgid "argument_harmful"
+msgstr "Die Argument ist verletzend, schädigend oder missbräuchlich."
+
+#. Default: This statement is a duplicate.
+#: templates/snippet/popups.pt:947
+msgid "statement_duplicate"
+msgstr "Aussage ist ein Duplikat"
+
+#. Default: This statement should be merged.
+#: templates/snippet/popups.pt:954
+msgid "statement_merge"
+msgstr "Die Aussage sollte mit einer weiteren verbunden werden."
+
+#. Default: This statement has more than one message.
+#: templates/snippet/popups.pt:962
+msgid "statement_split"
+msgstr "Die Aussage sollte geteilt werden."
+
+#. Default: Reporting (parts of) an argument
+#: templates/snippet/popups.pt:982
+msgid "reporting_parts_argument"
+msgstr "Melden eines Arguments (oder Teile davon)"
+
+#. Default: Please choose which part of the argument you want to report
+#: templates/snippet/popups.pt:990
+msgid "please_choose_part_to_report"
+msgstr "Bitte wählen Sie einen Teil des Arguments, der gemeldet werden soll"
+
+#. Default: Report
+#: templates/snippet/popups.pt:998
+msgid "report"
+msgstr "Melden"
+
+#. Default: Report the whole argument.
+#: templates/snippet/popups.pt:1005
+msgid "report_whole_argument"
+msgstr "Komplettes Argument melden."
+
+#. Default: Split Statements
+#: templates/snippet/popups.pt:1078 templates/snippet/popups.pt:1114
+msgid "split_statement"
+msgstr "Aussagen trennen"
+
+#. Default: Please enter the split version of the statement; one per input
+#. field.
+#: templates/snippet/popups.pt:1082
+msgid "split_multiple_statements"
+msgstr ""
+"Bitte geben Sie die getrennte Version der Aussage unten ein, nennen Sie "
+"dabei pro Feld nur eine Aussage."
+
+#. Default: Submit
+#: templates/snippet/popups.pt:1096 templates/snippet/popups.pt:1164
+msgid "submit"
+msgstr "Senden"
+
+#. Default: The selected statement is already splitted in several parts, like
+#. the list illustrates below. Do you want to continue with a new split?
+#: templates/snippet/popups.pt:1119
+msgid "split_multiple_statements_of_pgroup"
+msgstr ""
+"Die von Ihnen gewählte Aussage ist an sich schon, wie unten angegeben, "
+"getrennt. Möchten Sie, dass die Aussagen komplett von einander getrennt "
+"werden?"
+
+#. Default: The statement
+#: templates/snippet/popups.pt:1123 templates/snippet/popups.pt:1192
+msgid "the_statement"
+msgstr "Die Aussage"
+
+#. Default: consist out of
+#: templates/snippet/popups.pt:1125 templates/snippet/popups.pt:1195
+msgid "consist_out_of"
+msgstr "besteht aus"
+
+#. Default: Yes
+#: templates/snippet/popups.pt:1129 templates/snippet/popups.pt:1199
+msgid "yes"
+msgstr "Ja"
+
+#. Default: No
+#: templates/snippet/popups.pt:1132 templates/snippet/popups.pt:1202
+msgid "no"
+msgstr "Nein"
+
+#. Default: Merge Statement
+#: templates/snippet/popups.pt:1147 templates/snippet/popups.pt:1183
+msgid "merge_statement"
+msgstr "Aussagen verbinden"
+
+#. Default: Please select the statements, that should be concatenated.
+#: templates/snippet/popups.pt:1150
+msgid "merge_multiple_statements"
+msgstr ""
+"Bitte wählen Sie die Aussagen aus, die mit der angegebenen Aussage mittels "
+"'und' zusammen gehangen werden sollen:"
+
+#. Default: The selected statement already consists out of multiple statement.
+#. Further on the several statements are listed. Do you want to continue with
+#. the merge?
+#: templates/snippet/popups.pt:1188
+msgid "merge_multiple_statements_of_pgroup"
+msgstr ""
+"Die von Ihnen gewählte Aussage besteht aus mehr als einer Aussage. Unten "
+"finden Sie die einzelnen Bestandteile. Möchten Sie dennoch, dass diese zu "
+"einer einzelnen Aussage verbunden wird?"
+
+#. Default: Caution
+#: templates/snippet/popups.pt:1219
+msgid "caution"
+msgstr "Achtung"
+
+#. Default: Do you really want to disassociate yourself from your content? This
+#. step is irreversible! Subsequently you will not be the author of this
+#. statement anymore!
+#: templates/snippet/popups.pt:1223
+msgid "do_you_really_disassociate_step_irreversible"
+msgstr ""
+"Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
+"nicht zurückgenommen werden! Anschließend sind Sie nicht mehr Autor von "
+"diesem Statements."
+
+#. Default: Please choose a step to jump in
+#: templates/snippet/popups.pt:1246
+msgid "choose_a_step_to_jump_in"
+msgstr "Bitte wählen Sie eine Stelle für den Sprung"
+
+#. Default: Below you find a list with all arguments, where your selected text
+#. is used:
+#: templates/snippet/popups.pt:1251
+msgid "below_you_will_find_list_with_jump_arguments"
+msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
+
+#. Default: References
+#: templates/snippet/popups.pt:1269
+msgid "refereces"
+msgstr "Referenzen"
+
+#. Default: Statement is a cite from a website like a newspaper article, which
+#. underpins the opinion. The source is the website as link.
+#: templates/snippet/popups.pt:1275
+msgid "statement_reference_definition"
+msgstr ""
+"Die Aussage ist ein Zitat von einer Nachrichtenseite o.Ä., welche Ihre "
+"Meinung untersützt. Die Quelle ist die Website."
+
+#. Default: Statement
+#: templates/snippet/popups.pt:1280 templates/snippet/popups.pt:1310
+#: templates/review/history.pt:47
+msgid "statement"
+msgstr "Aussage"
+
+#. Default: Source
+#: templates/snippet/popups.pt:1289
+msgid "source"
+msgstr "Quelle"
+
+#. Default: Please choose a statement for your reference!
+#: templates/snippet/popups.pt:1297
+msgid "please_choose_a_reference"
+msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
+
+#. Default: Add reference
+#: templates/snippet/popups.pt:1316
+msgid "add_reference"
+msgstr "Referenzen hinzufügen"
+
+#. Default: Toggle navigation
+#: templates/snippet/navbar.pt:12
+msgid "Toggle Navigation"
+msgstr "Navigation umstellen"
+
+#. Default: Let's go
+#: templates/snippet/navbar.pt:23
+msgid "lets_go"
+msgstr "Los geht's"
+
+#. Default: My Discussions
+#: templates/snippet/navbar.pt:29
+#: templates/discussion/organism/overview-user.pt:6
+msgid "my_discussions"
+msgstr "Meine Diskussionen"
+
+#. Default: Switch Topic
+#: templates/snippet/navbar.pt:36
+msgid "switch_topic"
+msgstr "Thema wechseln"
+
+#. Default: Übersicht
+#: templates/snippet/navbar.pt:54
+msgid "overview"
+msgstr "Übersicht"
+
+#. Default: Review
+#: templates/snippet/navbar.pt:80 templates/review/type/split.pt:6
+#: templates/review/type/duplicate.pt:6 templates/review/type/optimize.pt:6
+#: templates/review/type/delete.pt:6 templates/review/type/merge.pt:6
+#: templates/review/type/edit.pt:7
+msgid "review"
+msgstr "Prüfen"
+
+#. Default: Settings
+#: templates/snippet/navbar.pt:98 templates/user/settings.pt:54
+msgid "settings"
+msgstr "Einstellungen"
+
+#. Default: Notifications
+#: templates/snippet/navbar.pt:106
+msgid "notifications"
+msgstr "Benachrichtigungen"
+
+#. Default: Admin
+#: templates/snippet/navbar.pt:113
+msgid "Admin"
+msgstr "Admin"
+
+#. Default: Logout
+#: templates/snippet/navbar.pt:118
+msgid "logout"
+msgstr "Abmelden"
+
+#. Default: Personal User Page
+#: templates/user/details.pt:6
+msgid "personal_user_page"
+msgstr "Persönliche Seite"
+
+#. Default: This are the details of
+#: templates/user/details.pt:8
+msgid "this_are_the_details_of"
+msgstr "Das sind die Details von"
+
+#. Default: Public Information of
+#: templates/user/details.pt:21
+msgid "public_information_of"
+msgstr "Öffentliche Informationen von"
+
+#. Default: Last Action
+#: templates/user/details.pt:26
+msgid "last_action"
+msgstr "Letze Aktion"
+
+#. Default: Last Login
+#: templates/user/details.pt:30
+msgid "last_login"
+msgstr "Letze Anmeldung"
+
+#. Default: Registered
+#: templates/user/details.pt:34
+msgid "registered"
+msgstr "Registierung"
+
+#. Default: Profile Picture of
+#: templates/user/details.pt:42
+msgid "profile_picture_of"
+msgstr "Profilbild von"
+
+#. Default: Discussion Statistics
+#: templates/user/details.pt:48 templates/user/settings.pt:183
+msgid "discussion_stat"
+msgstr "Diskussionsstatistik"
+
+#. Default: Statements posted
+#: templates/user/details.pt:52 templates/user/settings.pt:190
+#: templates/discussion/exit.pt:34
+msgid "statements_posted"
+msgstr "Aussagen hinzugefügt"
+
+#. Default: Edits done
+#: templates/user/details.pt:56 templates/user/settings.pt:200
+#: templates/discussion/exit.pt:38
+msgid "edits_done"
+msgstr "Aussagen geändert"
+
+#. Default: Reviews proposed
+#: templates/user/details.pt:60
+msgid "reviews_proposed"
+msgstr "Änderungen vorgeschlagen"
+
+#. Default: Votes for Arguments
+#. Default: Votes for Statements
+#: templates/user/details.pt:64 templates/user/settings.pt:243
+#: templates/discussion/exit.pt:61
+msgid "discussion_votes_arguments"
+msgstr "Markierte Argumente"
+
+#. Default: Votes for Statements
+#. Default: Votes for Arguments
+#: templates/user/details.pt:68 templates/user/settings.pt:233
+#: templates/discussion/exit.pt:55
+msgid "discussion_votes_statements"
+msgstr "Markierte Aussagen"
 
 #. Default: Reputation
-#: templates/review/reputation.pt:27 templates/user/settings.pt:253
-#: templates/user/details.pt:72
+#: templates/user/details.pt:72 templates/user/settings.pt:253
+#: templates/review/reputation.pt:27
 msgid "reputation"
 msgstr "Reputation"
+
+#. Default: Notification Board
+#: templates/user/notifications.pt:6
+msgid "notification_board"
+msgstr "Benachrichtigungen"
+
+#. Default: unread notifications and
+#: templates/user/notifications.pt:9
+msgid "unreadNotificationAnd"
+msgstr "ungelesene Benachrichtigungen und"
+
+#. Default: total in the inbox.
+#: templates/user/notifications.pt:11
+msgid "totalInTheInbox"
+msgstr "insgesamt im Eingang."
+
+#. Default: There are
+#: templates/user/notifications.pt:12
+msgid "thereAre"
+msgstr "Es sind"
+
+#. Default: in the outbox.
+#: templates/user/notifications.pt:14
+msgid "inTheOutbox"
+msgstr "im Ausgang."
+
+#. Default: Inbox
+#: templates/user/notifications.pt:29
+msgid "inbox"
+msgstr "Eingang"
+
+#. Default: Outbox
+#: templates/user/notifications.pt:32
+msgid "outbox"
+msgstr "Ausgang"
+
+#. Default: NEW
+#: templates/user/notifications.pt:51
+msgid "new"
+msgstr "NEU"
+
+#. Default: From:
+#: templates/user/notifications.pt:56 templates/user/notifications.pt:65
+msgid "from"
+msgstr "Von:"
+
+#. Default: answer
+#: templates/user/notifications.pt:70 templates/user/notifications.pt:114
+msgid "answer"
+msgstr "antworten"
+
+#. Default: Set everything as read
+#: templates/user/notifications.pt:80
+msgid "set_as_read"
+msgstr "Alle als gelesen markieren"
+
+#. Default: Delete everything
+#: templates/user/notifications.pt:84 templates/user/notifications.pt:124
+msgid "delete_everything"
+msgstr "Alle löschen"
+
+#. Default: To:
+#. Default: to:
+#: templates/user/notifications.pt:100 templates/user/notifications.pt:109
+msgid "to"
+msgstr "An:"
+
+#. Default: Settings
+#: templates/user/settings.pt:6
+msgid "Settings"
+msgstr "Einstellungen"
+
+#. Default: List of several information mapped with your account
+#: templates/user/settings.pt:7
+msgid "list_of_information"
+msgstr "Informationen rund um Ihren Account"
+
+#. Default: Personal Information
+#: templates/user/settings.pt:18
+msgid "personal_information"
+msgstr "Persönliche Informationen"
+
+#. Default: Firstname
+#: templates/user/settings.pt:22
+msgid "firstname"
+msgstr "Vorname"
+
+#. Default: Surname
+#: templates/user/settings.pt:26
+msgid "surname"
+msgstr "Nachname"
+
+#. Default: Public Nickname
+#: templates/user/settings.pt:34
+msgid "public_nickname"
+msgstr "Öffentlicher Nickname"
+
+#. Default: Click here for your public page
+#: templates/user/settings.pt:38
+msgid "click_here_for_public_page"
+msgstr "Öffentliche Seite ansehen"
+
+#. Default: Group
+#: templates/user/settings.pt:47
+msgid "group"
+msgstr "Gruppe"
+
+#. Default: Receive Notifications
+#: templates/user/settings.pt:59
+msgid "receive_notifications"
+msgstr "Benachrichtigungen erhalten"
+
+#. Default: Receive E-Mails
+#: templates/user/settings.pt:72
+msgid "receive_mails"
+msgstr "E-Mails erhalten"
+
+#. Default: Nickname is public
+#: templates/user/settings.pt:85
+msgid "nickname_is_public"
+msgstr "Nickname ist öffentlich"
+
+#. Default: Preferred message language
+#: templates/user/settings.pt:98
+msgid "message_language"
+msgstr "Sprache der Nachrichten"
+
+#. Default: Guided tour on startup
+#: templates/user/settings.pt:140
+msgid "guided_tour_on_start_up"
+msgstr "Einführung auf der Startseite"
+
+#. Default: Delete my Account
+#: templates/user/settings.pt:152
+msgid "delete_my_account"
+msgstr "Löschung meines Benutzers"
+
+#. Default: Delete
+#: templates/user/settings.pt:155
+msgid "delete"
+msgstr "Löschen"
+
+#. Default: Settings could not be set. Please try again later.
+#: templates/user/settings.pt:166
+msgid "settings_not_set"
+msgstr ""
+"Einstellungen konnten nicht gesichert werden. Bitte versuchen Sie es später "
+"erneut."
+
+#. Default: Settings were set successfully.
+#: templates/user/settings.pt:171
+msgid "settings_set"
+msgstr "Einstellungen wurden gesichert."
+
+#. Default: Clicks for Arguments
+#: templates/user/settings.pt:209 templates/discussion/exit.pt:67
+msgid "discussion_clicked_statements"
+msgstr "Geklickte Aussagen"
+
+#. Default: Clicks for Statements
+#: templates/user/settings.pt:219 templates/discussion/exit.pt:73
+msgid "discussion_clicked_arguments"
+msgstr "Geklickte Argumente"
+
+#. Default: Profile Picture
+#: templates/user/settings.pt:272
+msgid "profile_picture"
+msgstr "Profilbild"
+
+#. Default: Change your profile picture on the
+#: templates/user/settings.pt:276
+msgid "change_gravatar"
+msgstr "Änderen Sie Ihren Gravatar auf der"
+
+#. Default: A Gravatar is a globally recognized avatar. You upload it and
+#. create your profile just once, and then when you participate in any
+#. Gravatar-enabled site, your Gravatar image will automatically follow you
+#. there, except your nickname is not public!
+#: templates/user/settings.pt:279
+msgid "what_is_gravatar"
+msgstr ""
+"Ein Gravatar ist ein Globally Recognized Avatar (Global wiedererkennbarer "
+"Avatar). Sie können es einmalig erstellen und hochladen. Dadurch wird dieses "
+"Bild auf jeder Website angezeigt, die Gravat unterstützt. Ihr Bild wird "
+"Ihnen folgen."
+
+#. Default: Statistics could not be deleted.
+#: templates/user/settings.pt:289 templates/user/settings.pt:380
+msgid "statistics_not_deleted"
+msgstr "Statistiken konnten nicht gelöscht werden."
+
+#. Default: Statistics were set successfully deleted.
+#: templates/user/settings.pt:295 templates/user/settings.pt:386
+msgid "statistics_deletet"
+msgstr "Statistiken wurden gelöscht."
+
+#. Default: Change your password in D-BAS
+#: templates/user/settings.pt:304
+msgid "change_dbas_password"
+msgstr "Passwort von D-BAS ändern"
+
+#. Default: This does not affect other services next to D-BAS.
+#: templates/user/settings.pt:306
+msgid "this_does_not_affect_other_services"
+msgstr "Diese Änderung betrifft nur das Passwort in D-BAS."
+
+#. Default: Old password
+#: templates/user/settings.pt:313
+msgid "old_password"
+msgstr "Altes Password"
+
+#. Default: New Password
+#: templates/user/settings.pt:327
+msgid "new_password"
+msgstr "Neues Password"
+
+#. Default: New Password (confirm)
+#: templates/user/settings.pt:339
+msgid "new_password_confirm"
+msgstr "Neues Password (Bestätigung)"
+
+#. Default: Your password was changed
+#: templates/user/settings.pt:365
+msgid "password_changed"
+msgstr "Ihr Passwort wurde geändert"
 
 #. Default: The history of votes
 #: templates/review/history.pt:8
@@ -885,12 +1683,6 @@ msgstr "Auf diese Seite haben Sie keinen Zugriff"
 #: templates/review/history.pt:41
 msgid "no_decision_for_this_queue"
 msgstr "Keine Abstimmungen in dieser Schlange."
-
-#. Default: Statement
-#: templates/review/history.pt:47 templates/snippet/popups.pt:1276
-#: templates/snippet/popups.pt:1306
-msgid "statement"
-msgstr "Aussage"
 
 #. Default: Edit
 #: templates/review/history.pt:48
@@ -948,26 +1740,43 @@ msgstr "Aktion"
 msgid "undo"
 msgstr "Rückgängig machen"
 
-#. Default: Cancel
-#: templates/review/history.pt:115 templates/snippet/popups.pt:60
-#: templates/snippet/popups.pt:90 templates/snippet/popups.pt:124
-#: templates/snippet/popups.pt:1095 templates/snippet/popups.pt:1163
-#: templates/snippet/popups.pt:1354
-msgid "cancel"
-msgstr "Abbrechen"
-
 #. Default: Decentralized Moderation System
-#: templates/review/index.pt:6 templates/review/queue.pt:6
+#: templates/review/queue.pt:6 templates/review/index.pt:6
 msgid "decentralized_moderation_system"
 msgstr "Verteiltes Moderationssystem"
 
 #. Default: The moderation of D-BAS is decentralized, so that you are able to
 #. maintain the content
-#: templates/review/index.pt:9 templates/review/queue.pt:9
+#: templates/review/queue.pt:9 templates/review/index.pt:9
 msgid "moderation_of_dbas_is_decentralized"
 msgstr ""
 "Die Moderation von D-BAS ist verteilt, sodass Sie den Inhalt mitbestimmen "
 "können"
+
+#. Default: No arguments to review in this queue!
+#: templates/review/queue.pt:18
+msgid "no_arguments_to_review"
+msgstr "Keine Argumente zum Begutachten!"
+
+#. Default: Your Reputation
+#: templates/review/reputation.pt:6
+msgid "your_reputation"
+msgstr "Ihr Karma"
+
+#. Default: Based on your user group, you have all rights!
+#: templates/review/reputation.pt:8 templates/review/index.pt:51
+msgid "unlimited_right_based_on_group"
+msgstr "Basierend auf Ihrer Nutzergruppe haben Sie volle Rechte!"
+
+#. Default: Reputation count
+#: templates/review/reputation.pt:9
+msgid "reputation_count"
+msgstr "Reputations-Punktzahl"
+
+#. Default: Action
+#: templates/review/reputation.pt:26
+msgid "action"
+msgstr "Aktion"
 
 #. Default: Queues
 #: templates/review/index.pt:20
@@ -1083,37 +1892,181 @@ msgstr ""
 "Durch Privilegien erhalten Sie Zugriff auf die Schlangen von D-BAS. Erhalten "
 "Sie mehr Privilegien durch mehr Reputation."
 
-#. Default: No arguments to review in this queue!
-#: templates/review/queue.pt:18
-msgid "no_arguments_to_review"
-msgstr "Keine Argumente zum Begutachten!"
+#. Default: Split
+#: templates/review/type/split.pt:7
+msgid "split"
+msgstr "Teilen"
 
-#. Default: Review
-#: templates/review/type/optimize.pt:6 templates/review/type/delete.pt:6
-#: templates/review/type/edit.pt:7 templates/review/type/split.pt:6
-#: templates/review/type/duplicate.pt:6 templates/review/type/merge.pt:6
-#: templates/snippet/navbar.pt:77
-msgid "review"
-msgstr "Prüfen"
+#. Default: (more)
+#: templates/review/type/split.pt:15 templates/review/type/duplicate.pt:15
+#: templates/review/type/optimize.pt:17 templates/review/type/delete.pt:15
+#: templates/review/type/merge.pt:15 templates/review/type/edit.pt:18
+msgid "wrapped_more"
+msgstr "(mehr)"
+
+#. Default: (less)
+#: templates/review/type/split.pt:16 templates/review/type/duplicate.pt:16
+#: templates/review/type/optimize.pt:18 templates/review/type/delete.pt:16
+#: templates/review/type/merge.pt:16 templates/review/type/edit.pt:19
+msgid "wrapped_less"
+msgstr "(weniger)"
+
+#. Default: Change is okay
+#: templates/review/type/split.pt:23 templates/review/type/merge.pt:23
+msgid "change_okay"
+msgstr "Änderung ist okay"
+
+#. Default: Reject it
+#: templates/review/type/split.pt:28 templates/review/type/split.pt:53
+#: templates/review/type/merge.pt:28 templates/review/type/merge.pt:53
+#: templates/review/type/edit.pt:29 templates/review/type/edit.pt:55
+msgid "reject_it"
+msgstr "Ablehnen"
+
+#. Default: Skip it
+#: templates/review/type/split.pt:32 templates/review/type/split.pt:57
+#: templates/review/type/duplicate.pt:35 templates/review/type/duplicate.pt:60
+#: templates/review/type/optimize.pt:35 templates/review/type/optimize.pt:79
+#: templates/review/type/delete.pt:31 templates/review/type/delete.pt:74
+#: templates/review/type/merge.pt:32 templates/review/type/merge.pt:57
+#: templates/review/type/edit.pt:33 templates/review/type/edit.pt:59
+msgid "skip_it"
+msgstr "Überspringen"
+
+#. Default: Information for the different buttons
+#: templates/review/type/split.pt:44 templates/review/type/duplicate.pt:47
+#: templates/review/type/optimize.pt:66 templates/review/type/delete.pt:61
+#: templates/review/type/merge.pt:44 templates/review/type/edit.pt:45
+msgid "information_for_the_different_buttons"
+msgstr "Informationen zu den Knöpfen"
+
+#. Default: Split it
+#: templates/review/type/split.pt:49
+msgid "split_it"
+msgstr "Teile es"
+
+#. Default: , if the selected statement is a set of more than one statement and
+#. the given proposals match to the original content.
+#: templates/review/type/split.pt:50
+msgid "marked_statement_to_slit"
+msgstr ", wenn der angegebene Text aus mehr als einer Aussage besteht."
+
+#. Default: for marked statements, which are unique.
+#: templates/review/type/split.pt:54
+msgid "statement_not_to_split"
+msgstr "für Aussagen, die nicht getrennt werden sollen."
+
+#. Default: if you are not sure and want to go to the next statement.
+#. Default: if you are not sure and want to go to the next argument.
+#: templates/review/type/split.pt:58 templates/review/type/duplicate.pt:61
+#: templates/review/type/optimize.pt:80 templates/review/type/delete.pt:75
+#: templates/review/type/merge.pt:58 templates/review/type/edit.pt:60
+msgid "skip_it_explanation"
+msgstr "wenn Sie unsicher sind und zum Nächsten gehen möchten."
+
+#. Default: In the discussion about
+#: templates/review/type/split.pt:73 templates/review/type/duplicate.pt:74
+#: templates/review/type/optimize.pt:95 templates/review/type/delete.pt:90
+#: templates/review/type/edit.pt:75
+msgid "in_the_discussion_about"
+msgstr "In der Diskussion über"
+
+#. Default: In the discussions about
+#: templates/review/type/split.pt:74 templates/review/type/duplicate.pt:75
+#: templates/review/type/optimize.pt:96 templates/review/type/delete.pt:91
+#: templates/review/type/edit.pt:76
+msgid "in_the_discussions_about"
+msgstr "In den Diskussionen über"
+
+#. Default: following statement was flagged.
+#: templates/review/type/split.pt:78 templates/review/type/duplicate.pt:79
+msgid "following_statement_was_flagged"
+msgstr "wurde folgende Aussage markiert:"
+
+#. Default: This statement should be split into:
+#: templates/review/type/split.pt:91
+msgid "this_statement_should_be_splitted"
+msgstr "Diese Aussage soll geteilt werden zu:"
+
+#. Default: Reported
+#: templates/review/type/split.pt:105 templates/review/type/duplicate.pt:107
+#: templates/review/type/optimize.pt:129 templates/review/type/delete.pt:113
+#: templates/review/type/merge.pt:97 templates/review/type/edit.pt:123
+msgid "reported"
+msgstr "Gemeldet"
+
+#. Default: Reported by
+#: templates/review/type/split.pt:109 templates/review/type/duplicate.pt:111
+#: templates/review/type/optimize.pt:133 templates/review/type/delete.pt:117
+#: templates/review/type/merge.pt:101 templates/review/type/edit.pt:127
+msgid "reported_by"
+msgstr "Von"
+
+#. Default: Viewed
+#: templates/review/type/split.pt:119 templates/review/type/duplicate.pt:121
+#: templates/review/type/optimize.pt:143 templates/review/type/delete.pt:127
+#: templates/review/type/merge.pt:111 templates/review/type/edit.pt:137
+msgid "viewed"
+msgstr "Gesehen von"
+
+#. Default: Relations
+#: templates/review/type/split.pt:123 templates/review/type/duplicate.pt:125
+#: templates/review/type/optimize.pt:147 templates/review/type/delete.pt:131
+#: templates/review/type/merge.pt:115 templates/review/type/edit.pt:141
+msgid "attacks"
+msgstr "Attackiert von"
+
+#. Default: Supports
+#: templates/review/type/split.pt:127 templates/review/type/duplicate.pt:129
+#: templates/review/type/optimize.pt:151 templates/review/type/delete.pt:135
+#: templates/review/type/merge.pt:119 templates/review/type/edit.pt:145
+msgid "supports"
+msgstr "Unterstützt von"
+
+#. Default: Duplicates
+#: templates/review/type/duplicate.pt:7
+msgid "duplicates"
+msgstr "Duplikate"
+
+#. Default: Duplicate
+#: templates/review/type/duplicate.pt:24
+msgid "duplicate"
+msgstr "Duplikat"
+
+#. Default: Unique
+#: templates/review/type/duplicate.pt:30
+msgid "unique"
+msgstr "Einzigartig"
+
+#. Default: It's a duplicate
+#: templates/review/type/duplicate.pt:52
+msgid "its_duplicate"
+msgstr "Es ist ein Dupliat"
+
+#. Default: , if the marked statement is a duplicate.
+#: templates/review/type/duplicate.pt:53
+msgid "marked_statement_is_duplicate"
+msgstr ", wenn die markierte Aussage ein Duplikat ist."
+
+#. Default: It's unique
+#: templates/review/type/duplicate.pt:56
+msgid "its_unique"
+msgstr "Es ist einzigartig"
+
+#. Default: for marked statements, which are unique.
+#: templates/review/type/duplicate.pt:57
+msgid "duplicate_is_unique"
+msgstr ", wenn es kein Duplikat ist."
+
+#. Default: This is the original statement:
+#: templates/review/type/duplicate.pt:91
+msgid "this_is_original_statements"
+msgstr "Dies ist die ursprüngliche Version:"
 
 #. Default: Optimizations
 #: templates/review/type/optimize.pt:7
 msgid "optimizations"
 msgstr "Optimieren"
-
-#. Default: (more)
-#: templates/review/type/optimize.pt:17 templates/review/type/delete.pt:15
-#: templates/review/type/edit.pt:18 templates/review/type/split.pt:15
-#: templates/review/type/duplicate.pt:15 templates/review/type/merge.pt:15
-msgid "wrapped_more"
-msgstr "(mehr)"
-
-#. Default: (less)
-#: templates/review/type/optimize.pt:18 templates/review/type/delete.pt:16
-#: templates/review/type/edit.pt:19 templates/review/type/split.pt:16
-#: templates/review/type/duplicate.pt:16 templates/review/type/merge.pt:16
-msgid "wrapped_less"
-msgstr "(weniger)"
 
 #. Default: Let me correct it
 #: templates/review/type/optimize.pt:25 templates/review/type/optimize.pt:71
@@ -1124,16 +2077,6 @@ msgstr "Verbesserungen angeben"
 #: templates/review/type/optimize.pt:30 templates/review/type/optimize.pt:75
 msgid "its_okay_so"
 msgstr "Das ist okay so"
-
-#. Default: Skip it
-#: templates/review/type/optimize.pt:35 templates/review/type/optimize.pt:79
-#: templates/review/type/delete.pt:31 templates/review/type/delete.pt:74
-#: templates/review/type/edit.pt:33 templates/review/type/edit.pt:59
-#: templates/review/type/split.pt:32 templates/review/type/split.pt:57
-#: templates/review/type/duplicate.pt:35 templates/review/type/duplicate.pt:60
-#: templates/review/type/merge.pt:32 templates/review/type/merge.pt:57
-msgid "skip_it"
-msgstr "Überspringen"
 
 #. Default: Information for the different reasons
 #: templates/review/type/optimize.pt:46 templates/review/type/delete.pt:41
@@ -1170,13 +2113,6 @@ msgstr "Der Text sollte überarbeitet werden"
 msgid "needs_optimization_explanation"
 msgstr "wenn Beiträge rein sprachlich überarbeitet werden sollten"
 
-#. Default: Information for the different buttons
-#: templates/review/type/optimize.pt:66 templates/review/type/delete.pt:61
-#: templates/review/type/edit.pt:45 templates/review/type/split.pt:44
-#: templates/review/type/duplicate.pt:47 templates/review/type/merge.pt:44
-msgid "information_for_the_different_buttons"
-msgstr "Informationen zu den Knöpfen"
-
 #. Default: , if you have an idea for a better formulation with the same
 #. content.
 #: templates/review/type/optimize.pt:72
@@ -1189,28 +2125,6 @@ msgstr ""
 msgid "its_okay_so_explanation"
 msgstr "für Argumente, die so gut verständlich sind."
 
-#. Default: if you are not sure and want to go to the next argument.
-#. Default: if you are not sure and want to go to the next statement.
-#: templates/review/type/optimize.pt:80 templates/review/type/delete.pt:75
-#: templates/review/type/edit.pt:60 templates/review/type/split.pt:58
-#: templates/review/type/duplicate.pt:61 templates/review/type/merge.pt:58
-msgid "skip_it_explanation"
-msgstr "wenn Sie unsicher sind und zum Nächsten gehen möchten."
-
-#. Default: In the discussion about
-#: templates/review/type/optimize.pt:95 templates/review/type/delete.pt:90
-#: templates/review/type/edit.pt:75 templates/review/type/split.pt:73
-#: templates/review/type/duplicate.pt:74
-msgid "in_the_discussion_about"
-msgstr "In der Diskussion über"
-
-#. Default: In the discussions about
-#: templates/review/type/optimize.pt:96 templates/review/type/delete.pt:91
-#: templates/review/type/edit.pt:76 templates/review/type/split.pt:74
-#: templates/review/type/duplicate.pt:75
-msgid "in_the_discussions_about"
-msgstr "In den Diskussionen über"
-
 #. Default: following argument was flagged.
 #: templates/review/type/optimize.pt:100 templates/review/type/delete.pt:95
 msgid "following_argument_was_flagged"
@@ -1220,41 +2134,6 @@ msgstr "wurde folgendes Argument markiert:"
 #: templates/review/type/optimize.pt:114
 msgid "context_where_statement_is_used"
 msgstr "Kontext, indem die Aussage verwendet wird:"
-
-#. Default: Reported
-#: templates/review/type/optimize.pt:129 templates/review/type/delete.pt:113
-#: templates/review/type/edit.pt:123 templates/review/type/split.pt:105
-#: templates/review/type/duplicate.pt:107 templates/review/type/merge.pt:97
-msgid "reported"
-msgstr "Gemeldet"
-
-#. Default: Reported by
-#: templates/review/type/optimize.pt:133 templates/review/type/delete.pt:117
-#: templates/review/type/edit.pt:127 templates/review/type/split.pt:109
-#: templates/review/type/duplicate.pt:111 templates/review/type/merge.pt:101
-msgid "reported_by"
-msgstr "Von"
-
-#. Default: Viewed
-#: templates/review/type/optimize.pt:143 templates/review/type/delete.pt:127
-#: templates/review/type/edit.pt:137 templates/review/type/split.pt:119
-#: templates/review/type/duplicate.pt:121 templates/review/type/merge.pt:111
-msgid "viewed"
-msgstr "Gesehen von"
-
-#. Default: Relations
-#: templates/review/type/optimize.pt:147 templates/review/type/delete.pt:131
-#: templates/review/type/edit.pt:141 templates/review/type/split.pt:123
-#: templates/review/type/duplicate.pt:125 templates/review/type/merge.pt:115
-msgid "attacks"
-msgstr "Attackiert von"
-
-#. Default: Supports
-#: templates/review/type/optimize.pt:151 templates/review/type/delete.pt:135
-#: templates/review/type/edit.pt:145 templates/review/type/split.pt:127
-#: templates/review/type/duplicate.pt:129 templates/review/type/merge.pt:119
-msgid "supports"
-msgstr "Unterstützt von"
 
 #. Default: Request lock
 #: templates/review/type/optimize.pt:171
@@ -1314,17 +2193,36 @@ msgid "delete_it_explanation"
 msgstr ""
 "für Argumente, die basierend auf dem genannten Grund, gelöscht werden sollen."
 
+#. Default: Merge
+#: templates/review/type/merge.pt:7
+msgid "merge"
+msgstr "Zusammenfügen"
+
+#. Default: Merge it
+#: templates/review/type/merge.pt:49
+msgid "merge_it"
+msgstr "Verbinde es"
+
+#. Default: , if the selected statements should be one, single statements and
+#. the given proposal matches to the original contents.
+#: templates/review/type/merge.pt:50
+msgid "marked_statement_to_merge"
+msgstr ", wenn die gegebenen Texte gleich einer Aussage sind."
+
+#. Default: for marked statements, which are unique.
+#: templates/review/type/merge.pt:54
+msgid "statement_not_to_merge"
+msgstr "für Aussagen, die nicht verbunden werden sollen."
+
+#. Default: This statement should be merged to:
+#: templates/review/type/merge.pt:80
+msgid "this_statement_should_be_merged"
+msgstr "Diese Aussagen soll zusammengfügt werden zu:"
+
 #. Default: Edits
 #: templates/review/type/edit.pt:8
 msgid "edits"
 msgstr "Änderung"
-
-#. Default: Reject it
-#: templates/review/type/edit.pt:29 templates/review/type/edit.pt:55
-#: templates/review/type/split.pt:28 templates/review/type/split.pt:53
-#: templates/review/type/merge.pt:28 templates/review/type/merge.pt:53
-msgid "reject_it"
-msgstr "Ablehnen"
 
 #. Default: , if the correction is acceptable and the argument is not
 #. falsified.
@@ -1352,675 +2250,6 @@ msgstr "Dies sind die Änderungen:"
 msgid "this_is_original_version"
 msgstr "Dies ist die ursprüngliche Version"
 
-#. Default: Split
-#: templates/review/type/split.pt:7
-msgid "split"
-msgstr "Teilen"
-
-#. Default: Change is okay
-#: templates/review/type/split.pt:23 templates/review/type/merge.pt:23
-msgid "change_okay"
-msgstr "Änderung ist okay"
-
-#. Default: Split it
-#: templates/review/type/split.pt:49
-msgid "split_it"
-msgstr "Teile es"
-
-#. Default: , if the selected statement is a set of than one statement and the
-#. given proposals match to the original content.
-#: templates/review/type/split.pt:50
-msgid "marked_statement_to_slit"
-msgstr ", wenn der angegebene Text aus mehr als einer Aussage besteht."
-
-#. Default: for marked statements, which are unique.
-#: templates/review/type/split.pt:54
-msgid "statement_not_to_split"
-msgstr "für Aussagen, die nicht getrennt werden sollen."
-
-#. Default: following statement was flagged.
-#: templates/review/type/split.pt:78 templates/review/type/duplicate.pt:79
-msgid "following_statement_was_flagged"
-msgstr "wurde folgende Aussage markiert:"
-
-#. Default: This statement should be splitted into:
-#: templates/review/type/split.pt:91
-msgid "this_statement_should_be_splitted"
-msgstr "Diese Aussage soll geteilt werden zu:"
-
-#. Default: Duplicates
-#: templates/review/type/duplicate.pt:7
-msgid "duplicates"
-msgstr "Duplikate"
-
-#. Default: Duplicate
-#: templates/review/type/duplicate.pt:24
-msgid "duplicate"
-msgstr "Duplikat"
-
-#. Default: Unique
-#: templates/review/type/duplicate.pt:30
-msgid "unique"
-msgstr "Einzigartig"
-
-#. Default: It's a duplicate
-#: templates/review/type/duplicate.pt:52
-msgid "its_duplicate"
-msgstr "Es ist ein Dupliat"
-
-#. Default: , if the marked statement is a duplicate.
-#: templates/review/type/duplicate.pt:53
-msgid "marked_statement_is_duplicate"
-msgstr ", wenn die markierte Aussage ein Duplikat ist."
-
-#. Default: It's unique
-#: templates/review/type/duplicate.pt:56
-msgid "its_unique"
-msgstr "Es ist einzigartig"
-
-#. Default: for marked statements, which are unique.
-#: templates/review/type/duplicate.pt:57
-msgid "duplicate_is_unique"
-msgstr ", wenn es kein Duplikat ist."
-
-#. Default: This is the original statement:
-#: templates/review/type/duplicate.pt:91
-msgid "this_is_original_statements"
-msgstr "Dies ist die ursprüngliche Version:"
-
-#. Default: Merge
-#: templates/review/type/merge.pt:7
-msgid "merge"
-msgstr "Zusammenfügen"
-
-#. Default: Merge it
-#: templates/review/type/merge.pt:49
-msgid "merge_it"
-msgstr "Verbinde es"
-
-#. Default: , if the selected statements should be one, single statements and
-#. the given proposal matches to the original contents.
-#: templates/review/type/merge.pt:50
-msgid "marked_statement_to_merge"
-msgstr ", wenn die gegebenen Texte gleich einer Aussage sind."
-
-#. Default: for marked statements, which are unique.
-#: templates/review/type/merge.pt:54
-msgid "statement_not_to_merge"
-msgstr "für Aussagen, die nicht verbunden werden sollen."
-
-#. Default: This statement should be merged to:
-#: templates/review/type/merge.pt:80
-msgid "this_statement_should_be_merged"
-msgstr "Diese Aussagen soll zusammengfügt werden zu:"
-
-#. Default: Toggle navigation
-#: templates/snippet/navbar.pt:9
-msgid "Toggle Navigation"
-msgstr "Navigation umstellen"
-
-#. Default: Let's go
-#: templates/snippet/navbar.pt:20
-msgid "lets_go"
-msgstr "Los geht's"
-
-#. Default: My Discussions
-#: templates/snippet/navbar.pt:26
-#: templates/discussion/organism/overview-user.pt:6
-msgid "my_discussions"
-msgstr "Meine Diskussionen"
-
-#. Default: Switch Topic
-#: templates/snippet/navbar.pt:33
-msgid "switch_topic"
-msgstr "Thema wechseln"
-
-#. Default: Übersicht
-#: templates/snippet/navbar.pt:51
-msgid "overview"
-msgstr "Übersicht"
-
-#. Default: Add a Topic
-#. Default: Add Topic
-#: templates/snippet/navbar.pt:54 templates/snippet/navbar.pt:59
-#: templates/snippet/popups.pt:780
-msgid "add_topic"
-msgstr "Thema hinzufügen"
-
-#. Default: Login
-#. Default: Log In
-#: templates/snippet/navbar.pt:71 templates/snippet/popups.pt:314
-#: templates/snippet/popups.pt:374
-msgid "login"
-msgstr "Login"
-
-#. Default: Settings
-#: templates/snippet/navbar.pt:95 templates/user/settings.pt:54
-msgid "settings"
-msgstr "Einstellungen"
-
-#. Default: Notifications
-#: templates/snippet/navbar.pt:103
-msgid "notifications"
-msgstr "Benachrichtigungen"
-
-#. Default: Admin
-#: templates/snippet/navbar.pt:110
-msgid "Admin"
-msgstr "Admin"
-
-#. Default: Logout
-#: templates/snippet/navbar.pt:115
-msgid "logout"
-msgstr "Abmelden"
-
-#. Default: Okay
-#: templates/snippet/popups.pt:57 templates/snippet/popups.pt:86
-#: templates/snippet/popups.pt:120 templates/snippet/popups.pt:1350
-msgid "okay"
-msgstr "Okay"
-
-#. Default: Do not remind me again
-#: templates/snippet/popups.pt:113
-msgid "do_not_remind_me_again"
-msgstr "Nicht erneut erinnern"
-
-#. Default: Information are missing
-#: templates/snippet/popups.pt:184
-msgid "information_missing"
-msgstr "Uns fehlen Informationen"
-
-#. Default: During the authentication we could not fetch all of the necessary
-#. information. Please add the missing information, so we can add a new account
-#. in D-BAS (Login via other providers won't work).
-#: templates/snippet/popups.pt:187
-msgid "plase_add_missing_infos_we_add_account"
-msgstr ""
-"Während der Authentifizerung konnten wir nicht alle nötigen Informationen "
-"bekommen. Bitte geben Sie die restlichen Informationen an, sodass wir einen "
-"Account in D-BAS anlegen (Der Login über die Provider klappt dann leider "
-"nicht mehr)."
-
-#. Default: Your First Name
-#: templates/snippet/popups.pt:193 templates/snippet/popups.pt:391
-msgid "first_name"
-msgstr "Vorname"
-
-#. Default: Your Last Name
-#: templates/snippet/popups.pt:203 templates/snippet/popups.pt:401
-msgid "last_name"
-msgstr "Nachname"
-
-#. Default: Your Nickname
-#. Default: Nickname
-#: templates/snippet/popups.pt:212 templates/snippet/popups.pt:410
-#: templates/user/settings.pt:30
-msgid "nickname"
-msgstr "Nickname"
-
-#. Default: Your Gender
-#: templates/snippet/popups.pt:222 templates/snippet/popups.pt:418
-msgid "your_gender"
-msgstr "Ihr Geschlecht"
-
-#. Default: Your Email Address
-#: templates/snippet/popups.pt:242 templates/snippet/popups.pt:438
-msgid "your_email"
-msgstr "Ihre E-Mail"
-
-#. Default: Your Password
-#: templates/snippet/popups.pt:251 templates/snippet/popups.pt:448
-msgid "password"
-msgstr "Passwort"
-
-#. Default: Password (confirm)
-#: templates/snippet/popups.pt:262 templates/snippet/popups.pt:459
-msgid "password-confirm"
-msgstr "Passwort (Bestätigung)"
-
-#. Default: Error:
-#: templates/snippet/popups.pt:276 templates/snippet/popups.pt:499
-#: templates/snippet/popups.pt:517
-msgid "error"
-msgstr "Fehler:"
-
-#. Default: Info:
-#. Default: Info
-#: templates/snippet/popups.pt:284 templates/snippet/popups.pt:506
-#: templates/snippet/popups.pt:530
-#: templates/discussion/organism/dialog-space.pt:8
-msgid "info"
-msgstr "Info:"
-
-#. Default: Register
-#: templates/snippet/popups.pt:291 templates/snippet/popups.pt:537
-msgid "register"
-msgstr "Registierung"
-
-#. Default: Close
-#: templates/snippet/popups.pt:295 templates/snippet/popups.pt:377
-#: templates/snippet/popups.pt:539 templates/snippet/popups.pt:702
-#: templates/snippet/popups.pt:766
-msgid "close"
-msgstr "Schließen"
-
-#. Default: Sign Up
-#: templates/snippet/popups.pt:315
-msgid "sign_up"
-msgstr "Registrierung"
-
-#. Default: Your Nickname
-#: templates/snippet/popups.pt:324
-msgid "your_nickname"
-msgstr "Ihr Nickname"
-
-#. Default: Your Password
-#: templates/snippet/popups.pt:336
-msgid "your_password"
-msgstr "Ihr Passwort"
-
-#. Default: Keep me logged in
-#: templates/snippet/popups.pt:350
-msgid "keep_me_logged_in"
-msgstr "Angemeldet bleiben"
-
-#. Default: Forgot your password?
-#: templates/snippet/popups.pt:353
-msgid "forgot_password"
-msgstr "Passwort vergessen?"
-
-#. Default: Please fill in your e-mail below. A new password will be send this
-#. address. This does not affect other services of the HHU:
-#: templates/snippet/popups.pt:358
-msgid "fill_in_mail_for_password"
-msgstr ""
-"Bitte trage Sie unten Ihre E-Mail-Adresse ein. Ein neues Passwort wird an "
-"diese Adresse gesendet. Dies ist bei der LDAP Kennung der HHU nicht möglich!"
-
-#. Default: We will never display your real name to other users!
-#: templates/snippet/popups.pt:387
-msgid "never_display_real_name"
-msgstr "Wir werden niemals Ihren echten Namen weiteren Benutzern anzeigen!"
-
-#. Default: If you have a valid account at the HHU, you can directly use the
-#. login!
-#: templates/snippet/popups.pt:388
-msgid "have_account_hhu"
-msgstr ""
-"Wenn Sie eine Kennung an der HHU besitzen, können Sie sich direkt anmelden!"
-
-#. Default: Password Strength
-#: templates/snippet/popups.pt:470
-msgid "password-strength"
-msgstr "Stärke"
-
-#. Default: very weak
-#: templates/snippet/popups.pt:473
-msgid "password_strength"
-msgstr "sehr schwach"
-
-#. Default: Solve this captcha
-#: templates/snippet/popups.pt:477
-msgid "captcha"
-msgstr "Bitte lösen Sie das Captcha"
-
-#. Default: Success:
-#. Default: Success
-#: templates/snippet/popups.pt:492 templates/snippet/popups.pt:523
-#: templates/discussion/organism/dialog-space.pt:24
-msgid "success"
-msgstr "Erfolg:"
-
-#. Default: Or login via
-#: templates/snippet/popups.pt:546
-msgid "or_login_via"
-msgstr "Oder anmelden über"
-
-#. Default: Writing a new message
-#: templates/snippet/popups.pt:656 templates/snippet/popups.pt:717
-msgid "writing_message"
-msgstr "Neue Nachricht schreiben"
-
-#. Default: Error:
-#: templates/snippet/popups.pt:678 templates/snippet/popups.pt:751
-msgid "error:"
-msgstr "Fehler:"
-
-#. Default: Success:
-#: templates/snippet/popups.pt:684 templates/snippet/popups.pt:757
-msgid "success:"
-msgstr "Erfolg:"
-
-#. Default: Author
-#: templates/snippet/popups.pt:692
-msgid "author"
-msgstr "Autor"
-
-#. Default: Send News
-#: templates/snippet/popups.pt:699
-msgid "send_news"
-msgstr "News abschicken"
-
-#. Default: Send Notifcation
-#: templates/snippet/popups.pt:764
-msgid "send_notification"
-msgstr "Nachricht senden"
-
-#. Default: Please enter your title here:
-#: templates/snippet/popups.pt:785
-msgid "please_enter_title"
-msgstr "Ihr Thema:"
-
-#. Default: Please enter a short-description or question here:
-#: templates/snippet/popups.pt:791
-msgid "please_enter_info"
-msgstr "Frage des Themas:"
-
-#. Default: Please enter the full description here:
-#: templates/snippet/popups.pt:799
-msgid "please_enter_long_info"
-msgstr "Alle Informationen zum Thema:"
-
-#. Default: Language of the discussion:
-#: templates/snippet/popups.pt:810
-msgid "please_select_language_for_topic"
-msgstr "Sprache der Diskussion:"
-
-#. Default: Is the topic available for the public?
-#: templates/snippet/popups.pt:836
-msgid "is_topic_available_for_public"
-msgstr "Ist das Thema für jeden verfügbar?"
-
-#. Default: Is the topic read only?
-#: templates/snippet/popups.pt:853
-msgid "is_topic_read_only"
-msgstr "Soll nur gelesen werden können?"
-
-#. Default: Selecting a reason
-#: templates/snippet/popups.pt:894
-msgid "select-reason"
-msgstr "Grund auswählen"
-
-#. Default: The statement under consideration is as follows
-#: templates/snippet/popups.pt:898
-msgid "statement_under_consideration_is"
-msgstr "Die aktuelle Aussage ist"
-
-#. Default: The argument under consideration is as follows
-#: templates/snippet/popups.pt:903 templates/snippet/popups.pt:983
-msgid "argument_under_consideration_is"
-msgstr "Das aktuelle Argument ist"
-
-#. Default: The text needs to be revised.
-#: templates/snippet/popups.pt:917
-msgid "text_need_to_be_revised"
-msgstr "Der Text sollte überarbeitet werden."
-
-#. Default: This statement is off topic or irrelevant.
-#: templates/snippet/popups.pt:926
-msgid "statement_offtopic_or_irrelevant"
-msgstr "Die Aussage ist nicht themenbezogen/Spam."
-
-#. Default: This argument is off topic or irrelevant.
-#: templates/snippet/popups.pt:929
-msgid "argument_offtopic_or_irrelevant"
-msgstr "Das Argument ist nicht themenbezogen/Spam."
-
-#. Default: This statement is harmful or abusive.
-#: templates/snippet/popups.pt:936
-msgid "statement_harmful"
-msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
-
-#. Default: This argument is harmful or abusive.
-#: templates/snippet/popups.pt:937
-msgid "argument_harmful"
-msgstr "Die Argument ist verletzend, schädigend oder missbräuchlich."
-
-#. Default: This statement is a duplicate.
-#: templates/snippet/popups.pt:944
-msgid "statement_duplicate"
-msgstr "Aussage ist ein Duplikat"
-
-#. Default: This statement should be merged.
-#: templates/snippet/popups.pt:951
-msgid "statement_merge"
-msgstr "Die Aussage sollte mit einer weiteren verbunden werden."
-
-#. Default: This statement has more than one message.
-#: templates/snippet/popups.pt:958
-msgid "statement_split"
-msgstr "Die Aussage sollte geteilt werden."
-
-#. Default: Reporting (parts of) an argument
-#: templates/snippet/popups.pt:978
-msgid "reporting_parts_argument"
-msgstr "Melden eines Arguments (oder Teile davon)"
-
-#. Default: Please choose which part of the argument you want to report
-#: templates/snippet/popups.pt:986
-msgid "please_choose_part_to_report"
-msgstr "Bitte wählen Sie einen Teil des Arguments, der gemeldet werden soll"
-
-#. Default: Report
-#: templates/snippet/popups.pt:994
-msgid "report"
-msgstr "Melden"
-
-#. Default: Report the whole argument.
-#: templates/snippet/popups.pt:1001
-msgid "report_whole_argument"
-msgstr "Komplettes Argument melden."
-
-#. Default: Split Statements
-#: templates/snippet/popups.pt:1074 templates/snippet/popups.pt:1110
-msgid "split_statement"
-msgstr "Aussagen trennen"
-
-#. Default: Please enter the splitted version of the statement; one per input
-#. field.
-#: templates/snippet/popups.pt:1078
-msgid "split_multiple_statements"
-msgstr ""
-"Bitte geben Sie die getrennte Version der Aussage unten ein, nennen Sie "
-"dabei pro Feld nur eine Aussage."
-
-#. Default: Submit
-#: templates/snippet/popups.pt:1092 templates/snippet/popups.pt:1160
-msgid "submit"
-msgstr "Senden"
-
-#. Default: The selected statement is already splitted in several parts, like
-#. the list illustrates below. Do you want to continue with a new split?
-#: templates/snippet/popups.pt:1115
-msgid "split_multiple_statements_of_pgroup"
-msgstr ""
-"Die von Ihnen gewählte Aussage ist an sich schon, wie unten angegeben, "
-"getrennt. Möchten Sie, dass die Aussagen komplett von einander getrennt "
-"werden?"
-
-#. Default: The statement
-#: templates/snippet/popups.pt:1119 templates/snippet/popups.pt:1188
-msgid "the_statement"
-msgstr "Die Aussage"
-
-#. Default: consist out of
-#: templates/snippet/popups.pt:1121 templates/snippet/popups.pt:1191
-msgid "consist_out_of"
-msgstr "besteht aus"
-
-#. Default: Yes
-#: templates/snippet/popups.pt:1125 templates/snippet/popups.pt:1195
-msgid "yes"
-msgstr "Ja"
-
-#. Default: No
-#: templates/snippet/popups.pt:1128 templates/snippet/popups.pt:1198
-msgid "no"
-msgstr "Nein"
-
-#. Default: Merge Statement
-#: templates/snippet/popups.pt:1143 templates/snippet/popups.pt:1179
-msgid "merge_statement"
-msgstr "Aussagen verbinden"
-
-#. Default: Please select the statements, that should be concatenated.
-#: templates/snippet/popups.pt:1146
-msgid "merge_multiple_statements"
-msgstr ""
-"Bitte wählen Sie die Aussagen aus, die mit der angegebenen Aussage mittels "
-"'und' zusammen gehangen werden sollen:"
-
-#. Default: The selected statement already consists out of multiple statement.
-#. Further on the several statements are listed. Do you want to continue with
-#. the merge?
-#: templates/snippet/popups.pt:1184
-msgid "merge_multiple_statements_of_pgroup"
-msgstr ""
-"Die von Ihnen gewählte Aussage besteht aus mehr als einer Aussage. Unten "
-"finden Sie die einzelnen Bestandteile. Möchten Sie dennoch, dass diese zu "
-"einer einzelnen Aussage verbunden wird?"
-
-#. Default: Caution
-#: templates/snippet/popups.pt:1215
-msgid "caution"
-msgstr "Achtung"
-
-#. Default: Do you really want to disassociate yourself from your content? This
-#. step is irreversible! Subsequently you will not be the author of this
-#. statement anymore!
-#: templates/snippet/popups.pt:1219
-msgid "do_you_really_disassociate_step_irreversible"
-msgstr ""
-"Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
-"nicht zurückgenommen werden! Anschließend sind Sie nicht mehr Autor von "
-"diesem Statements."
-
-#. Default: Please choose a step to jump in
-#: templates/snippet/popups.pt:1242
-msgid "choose_a_step_to_jump_in"
-msgstr "Bitte wählen Sie eine Stelle für den Sprung"
-
-#. Default: Below you find a list with all arguments, where your selected text
-#. is used:
-#: templates/snippet/popups.pt:1247
-msgid "below_you_will_find_list_with_jump_arguments"
-msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
-
-#. Default: References
-#: templates/snippet/popups.pt:1265
-msgid "refereces"
-msgstr "Referenzen"
-
-#. Default: Statement is a cite from a website like a newspaper article, which
-#. underpins the opinion. The source is the website as link.
-#: templates/snippet/popups.pt:1271
-msgid "statement_reference_definition"
-msgstr ""
-"Die Aussage ist ein Zitat von einer Nachrichtenseite o.Ä., welche Ihre "
-"Meinung untersützt. Die Quelle ist die Website."
-
-#. Default: Source
-#: templates/snippet/popups.pt:1285
-msgid "source"
-msgstr "Quelle"
-
-#. Default: Please choose a statement for your reference!
-#: templates/snippet/popups.pt:1293
-msgid "please_choose_a_reference"
-msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
-
-#. Default: Add reference
-#: templates/snippet/popups.pt:1312
-msgid "add_reference"
-msgstr "Referenzen hinzufügen"
-
-#. Default: Help
-#: templates/snippet/footer.pt:32
-msgid "Help"
-msgstr "Hilfe"
-
-#. Default: Docs
-#: templates/snippet/footer.pt:37
-msgid "Documentation"
-msgstr "Dokumentation"
-
-#. Default: Github
-#: templates/snippet/footer.pt:47
-msgid "Github"
-msgstr "Github"
-
-#. Default: Field Experiment
-#: templates/snippet/footer.pt:52
-msgid "field_experiment"
-msgstr "Feldstudie"
-
-#. Default: Overview of the Discussions
-#: templates/discussion/start.pt:9
-msgid "overview_of_discussion"
-msgstr "Übersicht über die Diskussionen"
-
-#. Default: This page contains an over of discussions
-#: templates/discussion/start.pt:10
-msgid "page_contains_overview"
-msgstr "Die Seite enthält eine Übersicht aller Diskussionen:"
-
-#. Default: Current discussions:
-#: templates/discussion/start.pt:19
-msgid "current_discussion"
-msgstr "Aktuelle Diskussionen:"
-
-#. Default: Titel
-#: templates/discussion/start.pt:23 templates/discussion/start.pt:58
-#: templates/discussion/organism/overview-user.pt:18
-#: templates/discussion/organism/overview-other.pt:26
-msgid "title"
-msgstr "Titel"
-
-#. Default: Language
-#: templates/discussion/start.pt:24 templates/discussion/start.pt:59
-#: templates/discussion/organism/overview-user.pt:21
-#: templates/discussion/organism/overview-other.pt:29
-msgid "language"
-msgstr "Sprache"
-
-#. Default: Statements
-#: templates/discussion/start.pt:25 templates/discussion/start.pt:60
-#: templates/discussion/organism/graph-sidebar.pt:23
-#: templates/discussion/organism/overview-user.pt:19
-#: templates/discussion/organism/overview-other.pt:27
-msgid "statements"
-msgstr "Aussagen"
-
-#. Default: Activity (Last 14 days)
-#: templates/discussion/start.pt:26 templates/discussion/start.pt:61
-msgid "activity_last_14_days"
-msgstr "Aktivität in den letzten 14 Tagen"
-
-#. Default: Creation
-#: templates/discussion/start.pt:27 templates/discussion/start.pt:62
-#: templates/discussion/organism/overview-user.pt:22
-#: templates/discussion/organism/overview-other.pt:30
-msgid "creation"
-msgstr "Erstellungsdatum"
-
-#. Default: Closed discussions:
-#: templates/discussion/start.pt:54
-msgid "closed_discussion"
-msgstr "Geschlossene Diskussionen:"
-
-#. Default: Overview of the Discussions
-#: templates/discussion/myoverview.pt:8
-msgid "overview_of_discussion="
-msgstr "Übersicht über die Diskussionen"
-
-#. Default: This page contains an over of discussions you have created as well
-#. as other participants created
-#: templates/discussion/myoverview.pt:9
-msgid "page_contains_overview_all_created"
-msgstr ""
-"Die Seite enthält eine Übersicht aller Diskussionen, die Sie oder andere "
-"erstellt haben"
-
 #. Default: Thank you
 #: templates/discussion/exit.pt:8
 msgid "thank_you"
@@ -2044,18 +2273,6 @@ msgstr "kontaktieren Sie uns bitte"
 msgid "todays_summary"
 msgstr "Heutige Zusammenfassung"
 
-#. Default: Statements posted
-#: templates/discussion/exit.pt:34 templates/user/settings.pt:190
-#: templates/user/details.pt:52
-msgid "statements_posted"
-msgstr "Aussagen hinzugefügt"
-
-#. Default: Edits done
-#: templates/discussion/exit.pt:38 templates/user/settings.pt:200
-#: templates/user/details.pt:56
-msgid "edits_done"
-msgstr "Aussagen geändert"
-
 #. Default: Statements reported
 #: templates/discussion/exit.pt:42
 msgid "statements_reported"
@@ -2066,30 +2283,6 @@ msgstr "Aussagen gemeldet"
 msgid "reputation_colltected"
 msgstr "Gesammelte Reputation"
 
-#. Default: Votes for Arguments
-#. Default: Votes for Statements
-#: templates/discussion/exit.pt:55 templates/user/settings.pt:233
-#: templates/user/details.pt:68
-msgid "discussion_votes_statements"
-msgstr "Markierte Aussagen"
-
-#. Default: Votes for Statements
-#. Default: Votes for Arguments
-#: templates/discussion/exit.pt:61 templates/user/settings.pt:243
-#: templates/user/details.pt:64
-msgid "discussion_votes_arguments"
-msgstr "Markierte Argumente"
-
-#. Default: Clicks for Arguments
-#: templates/discussion/exit.pt:67 templates/user/settings.pt:209
-msgid "discussion_clicked_statements"
-msgstr "Geklickte Aussagen"
-
-#. Default: Clicks for Statements
-#: templates/discussion/exit.pt:73 templates/user/settings.pt:219
-msgid "discussion_clicked_arguments"
-msgstr "Geklickte Argumente"
-
 #. Default: Let's go home!
 #: templates/discussion/exit.pt:90
 msgid "lets_go_home"
@@ -2099,6 +2292,167 @@ msgstr "Zur Startseite"
 #: templates/discussion/exit.pt:94
 msgid "back_to_the_discussion"
 msgstr "Zurück zur Diskussion"
+
+#. Default: Overview of the Discussions
+#: templates/discussion/myoverview.pt:8
+msgid "overview_of_discussion="
+msgstr "Übersicht über die Diskussionen"
+
+#. Default: This page contains an over of discussions you have created as well
+#. as other participants created
+#: templates/discussion/myoverview.pt:9
+msgid "page_contains_overview_all_created"
+msgstr ""
+"Die Seite enthält eine Übersicht aller Diskussionen, die Sie oder andere "
+"erstellt haben"
+
+#. Default: Overview of the Discussions
+#: templates/discussion/start.pt:9
+msgid "overview_of_discussion"
+msgstr "Übersicht über die Diskussionen"
+
+#. Default: This page contains an over of discussions
+#: templates/discussion/start.pt:10
+msgid "page_contains_overview"
+msgstr "Die Seite enthält eine Übersicht aller Diskussionen:"
+
+#. Default: Current discussions:
+#: templates/discussion/start.pt:19
+msgid "current_discussion"
+msgstr "Aktuelle Diskussionen:"
+
+#. Default: Titel
+#: templates/discussion/start.pt:23 templates/discussion/start.pt:58
+#: templates/discussion/organism/overview-other.pt:26
+#: templates/discussion/organism/overview-user.pt:18
+msgid "title"
+msgstr "Titel"
+
+#. Default: Language
+#: templates/discussion/start.pt:24 templates/discussion/start.pt:59
+#: templates/discussion/organism/overview-other.pt:29
+#: templates/discussion/organism/overview-user.pt:21
+msgid "language"
+msgstr "Sprache"
+
+#. Default: Statements
+#: templates/discussion/start.pt:25 templates/discussion/start.pt:60
+#: templates/discussion/organism/overview-other.pt:27
+#: templates/discussion/organism/overview-user.pt:19
+#: templates/discussion/organism/graph-sidebar.pt:23
+msgid "statements"
+msgstr "Aussagen"
+
+#. Default: Activity (Last 14 days)
+#: templates/discussion/start.pt:26 templates/discussion/start.pt:61
+msgid "activity_last_14_days"
+msgstr "Aktivität in den letzten 14 Tagen"
+
+#. Default: Creation
+#: templates/discussion/start.pt:27 templates/discussion/start.pt:62
+#: templates/discussion/organism/overview-other.pt:30
+#: templates/discussion/organism/overview-user.pt:22
+msgid "creation"
+msgstr "Erstellungsdatum"
+
+#. Default: Closed discussions:
+#: templates/discussion/start.pt:54
+msgid "closed_discussion"
+msgstr "Geschlossene Diskussionen:"
+
+#. Default: More Discussions
+#: templates/discussion/organism/overview-other.pt:6
+msgid "more_discussions"
+msgstr "Weitere Diskussionen"
+
+#. Default: This is a summary of discussions other participants have created,
+#. but you are an admin. So you can en- and disable these discussions too:
+#: templates/discussion/organism/overview-other.pt:9
+msgid "summary_discussion_other_users_but_admin"
+msgstr ""
+"Zusammenfassung der Diskussionen von weiteren Benutzer/innen. Da Sie aber "
+"Admin sind, können Sie auch diese sperren oder öffnen:"
+
+#. Default: This is a summary of discussions other participants have created:
+#: templates/discussion/organism/overview-other.pt:15
+msgid "summary_discussion_other_users"
+msgstr "Zusammenfassung der Diskussionen von weiteren Benutzer/innen:"
+
+#. Default: Other users have not created any discussion yet.
+#: templates/discussion/organism/overview-other.pt:19
+msgid "other_users_not_discussion"
+msgstr "Andere Nutzer/innen haben noch keine Diskussionen erstellt."
+
+#. Default: Participants
+#: templates/discussion/organism/overview-other.pt:28
+#: templates/discussion/organism/overview-user.pt:20
+msgid "participants"
+msgstr "Teilnehmende"
+
+#. Default: Enabled
+#: templates/discussion/organism/overview-other.pt:32
+#: templates/discussion/organism/overview-user.pt:23
+msgid "enabled"
+msgstr "Verfügbar"
+
+#. Default: Public
+#: templates/discussion/organism/overview-other.pt:36
+#: templates/discussion/organism/overview-user.pt:27
+msgid "public"
+msgstr "Öffentlich"
+
+#. Default: Writable
+#: templates/discussion/organism/overview-other.pt:41
+msgid "Writable"
+msgstr "Schreibbar"
+
+#. Default: Short Link
+#: templates/discussion/organism/overview-other.pt:45
+#: templates/discussion/organism/overview-user.pt:35
+msgid "short_link"
+msgstr "Kurzlink"
+
+#. Default: Start
+#: templates/discussion/organism/graph-view.pt:9
+msgid "start"
+msgstr "Start"
+
+#. Default: Now
+#: templates/discussion/organism/graph-view.pt:14
+msgid "now"
+msgstr "Jetzt"
+
+#. Default: This is a summary of the discussions you have created:
+#: templates/discussion/organism/overview-user.pt:8
+msgid "summary_your_discussions"
+msgstr "Zusammenfassung Ihrer Diskussionen:"
+
+#. Default: You have not created any discussion yet, but you can use the add
+#. button in the bottom right to create your own discussion.
+#: templates/discussion/organism/overview-user.pt:11
+msgid "you_created_no_discussion"
+msgstr "Zusammenfassung der Diskussionen von weiteren Benutzern/innen:"
+
+#. Default: Writable
+#: templates/discussion/organism/overview-user.pt:31
+msgid "writable"
+msgstr "Schreibbar"
+
+#. Default: In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!
+#: templates/discussion/organism/dialog-space.pt:9
+msgid "discussion_is_read_only"
+msgstr "In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!"
+
+#. Default: It has an estimated cost of
+#: templates/discussion/organism/add-statement.pt:47
+msgid "decidotron_cost_of_position"
+msgstr "Dies hat ungefähre Kosten von"
+
+#. Default: Die Zeit zum hinzufügen von neuen Vorschlägen ist abgelaufen. Du
+#. kannst allerdings noch abstimmen!
+#: templates/discussion/organism/add-statement.pt:68
+msgid "decidotron_positions_ended"
+msgstr "Die Zeit zum hinzufügen von neuen Vorschlägen ist abgelaufen."
 
 #. Default: Complete View
 #: templates/discussion/organism/graph-sidebar.pt:7
@@ -2141,384 +2495,71 @@ msgstr "Meine Unterstützungen"
 msgid "attacks_on_my_statements"
 msgstr "Meine Angriffe"
 
-#. Default: Start
-#: templates/discussion/organism/graph-view.pt:9
-msgid "start"
-msgstr "Start"
+#. Default: Vote!
+#: templates/discussion/organism/dialog-sidebar.pt:17
+msgid "decidotron_vote_button_label"
+msgstr "Stimme ab!"
 
-#. Default: Now
-#: templates/discussion/organism/graph-view.pt:14
-msgid "now"
-msgstr "Jetzt"
+#. Default: Login to vote!
+#: templates/discussion/organism/dialog-sidebar.pt:23
+msgid "decidotron_login_to_vote_button_label"
+msgstr "Einloggen um abzustimmen"
+
+#. Default: Voting will be possible from
+#. ${issues.decidotron_budget.votes_start.strftime('%d.%m.%Y at %H:%M')}
+#: templates/discussion/organism/dialog-sidebar.pt:28
+msgid "decidotron_vote_will_start_at_button_label"
+msgstr ""
+"Abstimmen ist möglich ab dem ${issues.decidotron_budget.votes_start."
+"strftime('%d.%m.%Y um %H:%MUhr')}"
+
+#. Default: Results
+#: templates/discussion/organism/dialog-sidebar.pt:34
+msgid "decidotron_vote_results_button_label"
+msgstr "Ergebnisse"
 
 #. Default: Restart Discussion
-#: templates/discussion/organism/dialog-sidebar.pt:7
+#: templates/discussion/organism/dialog-sidebar.pt:40
 msgid "restart_discussion"
 msgstr "Diskussion neustarten"
 
 #. Default: Share URL
-#: templates/discussion/organism/dialog-sidebar.pt:13
+#: templates/discussion/organism/dialog-sidebar.pt:46
 msgid "share_url"
 msgstr "URL teilen"
 
 #. Default: Opinion Barometer
-#: templates/discussion/organism/dialog-sidebar.pt:19
+#: templates/discussion/organism/dialog-sidebar.pt:52
 msgid "Barometer"
 msgstr "Meinungsbarometer"
 
 #. Default: Graph View
-#: templates/discussion/organism/dialog-sidebar.pt:25
+#: templates/discussion/organism/dialog-sidebar.pt:58
 msgid "graph_view"
 msgstr "Argumentationsgraph"
 
 #. Default: Search for Statements
-#: templates/discussion/organism/dialog-sidebar.pt:31
+#: templates/discussion/organism/dialog-sidebar.pt:64
 msgid "search"
 msgstr "Aussagensuche"
 
 #. Default: Ask a Friend
-#: templates/discussion/organism/dialog-sidebar.pt:37
+#: templates/discussion/organism/dialog-sidebar.pt:70
 msgid "ask_friend"
 msgstr "Frag einen Freund"
 
 #. Default: Leave the Discussion
-#: templates/discussion/organism/dialog-sidebar.pt:43
+#: templates/discussion/organism/dialog-sidebar.pt:76
 msgid "exit_discussion"
 msgstr "Diskussion beenden"
 
-#. Default: This is a summary of the discussions you have created:
-#: templates/discussion/organism/overview-user.pt:8
-msgid "summary_your_discussions"
-msgstr "Zusammenfassung Ihrer Diskussionen:"
+#~ msgid "never_display_real_name"
+#~ msgstr "Wir werden niemals Ihren echten Namen weiteren Benutzern anzeigen!"
 
-#. Default: You had not creaty any discussion yet, but you can use the add
-#. button in the bottom left to create your own discussion.
-#: templates/discussion/organism/overview-user.pt:11
-msgid "you_created_no_discussion"
-msgstr "Zusammenfassung der Diskussionen von weiteren Benutzern/innen:"
-
-#. Default: Participants
-#: templates/discussion/organism/overview-user.pt:20
-#: templates/discussion/organism/overview-other.pt:28
-msgid "participants"
-msgstr "Teilnehmende"
-
-#. Default: Enabled
-#: templates/discussion/organism/overview-user.pt:23
-#: templates/discussion/organism/overview-other.pt:32
-msgid "enabled"
-msgstr "Verfügbar"
-
-#. Default: Public
-#: templates/discussion/organism/overview-user.pt:27
-#: templates/discussion/organism/overview-other.pt:36
-msgid "public"
-msgstr "Öffentlich"
-
-#. Default: Writable
-#: templates/discussion/organism/overview-user.pt:31
-msgid "writable"
-msgstr "Schreibbar"
-
-#. Default: Short Link
-#: templates/discussion/organism/overview-user.pt:35
-#: templates/discussion/organism/overview-other.pt:45
-msgid "short_link"
-msgstr "Kurzlink"
-
-#. Default: In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!
-#: templates/discussion/organism/dialog-space.pt:9
-msgid "discussion_is_read_only"
-msgstr "In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!"
-
-#. Default: More Discussions
-#: templates/discussion/organism/overview-other.pt:6
-msgid "more_discussions"
-msgstr "Weitere Diskussionen"
-
-#. Default: This is a summary of discussions other participants have created,
-#. but you are an admin. So you can en- and disable these discussions too:
-#: templates/discussion/organism/overview-other.pt:9
-msgid "summary_discussion_other_users_but_admin"
-msgstr ""
-"Zusammenfassung der Diskussionen von weiteren Benutzer/innen. Da Sie aber "
-"Admin sind, können Sie auch diese sperren oder öffnen:"
-
-#. Default: This is a summary of discussions other participants have created:
-#: templates/discussion/organism/overview-other.pt:15
-msgid "summary_discussion_other_users"
-msgstr "Zusammenfassung der Diskussionen von weiteren Benutzer/innen:"
-
-#. Default: Other users have not created any discussion yet.
-#: templates/discussion/organism/overview-other.pt:19
-msgid "other_users_not_discussion"
-msgstr "Andere Nutzer/innen haben noch keine Diskussionen erstellt."
-
-#. Default: Writable
-#: templates/discussion/organism/overview-other.pt:41
-msgid "Writable"
-msgstr "Schreibbar"
-
-#. Default: Settings
-#: templates/user/settings.pt:6
-msgid "Settings"
-msgstr "Einstellungen"
-
-#. Default: List of several information mapped with your account
-#: templates/user/settings.pt:7
-msgid "list_of_information"
-msgstr "Informationen rund um Ihren Account"
-
-#. Default: Personal Information
-#: templates/user/settings.pt:18
-msgid "personal_information"
-msgstr "Persönliche Informationen"
-
-#. Default: Firstname
-#: templates/user/settings.pt:22
-msgid "firstname"
-msgstr "Vorname"
-
-#. Default: Surname
-#: templates/user/settings.pt:26
-msgid "surname"
-msgstr "Nachname"
-
-#. Default: Public Nickname
-#: templates/user/settings.pt:34
-msgid "public_nickname"
-msgstr "Öffentlicher Nickname"
-
-#. Default: Click here for your public page
-#: templates/user/settings.pt:38
-msgid "click_here_for_public_page"
-msgstr "Öffentliche Seite ansehen"
-
-#. Default: Group
-#: templates/user/settings.pt:47
-msgid "group"
-msgstr "Gruppe"
-
-#. Default: Receive Notifications
-#: templates/user/settings.pt:59
-msgid "receive_notifications"
-msgstr "Benachrichtigungen erhalten"
-
-#. Default: Receive E-Mails
-#: templates/user/settings.pt:72
-msgid "receive_mails"
-msgstr "E-Mails erhalten"
-
-#. Default: Nickname is public
-#: templates/user/settings.pt:85
-msgid "nickname_is_public"
-msgstr "Nickname ist öffentlich"
-
-#. Default: Preferred message language
-#: templates/user/settings.pt:98
-msgid "message_language"
-msgstr "Sprache der Nachrichten"
-
-#. Default: Guided tour on startup
-#: templates/user/settings.pt:140
-msgid "guided_tour_on_start_up"
-msgstr "Einführung auf der Startseite"
-
-#. Default: Delete my Account
-#: templates/user/settings.pt:152
-msgid "delete_my_account"
-msgstr "Löschung meines Benutzers"
-
-#. Default: Delete
-#: templates/user/settings.pt:155
-msgid "delete"
-msgstr "Löschen"
-
-#. Default: Settings could not be set. Please try again later.
-#: templates/user/settings.pt:166
-msgid "settings_not_set"
-msgstr ""
-"Einstellungen konnten nicht gesichert werden. Bitte versuchen Sie es später "
-"erneut."
-
-#. Default: Settings were set successfully.
-#: templates/user/settings.pt:171
-msgid "settings_set"
-msgstr "Einstellungen wurden gesichert."
-
-#. Default: Discussion Statistics
-#: templates/user/settings.pt:183 templates/user/details.pt:48
-msgid "discussion_stat"
-msgstr "Diskussionsstatistik"
-
-#. Default: Profile Picture
-#: templates/user/settings.pt:272
-msgid "profile_picture"
-msgstr "Profilbild"
-
-#. Default: Change your profile picture on the
-#: templates/user/settings.pt:276
-msgid "change_gravatar"
-msgstr "Änderen Sie Ihren Gravatar auf der"
-
-#. Default: A Gravatar is a globally recognized avatar. You upload it and
-#. create your profile just once, and then when you participate in any
-#. Gravatar-enabled site, your Gravatar image will automatically follow you
-#. there, except your nickname is not public!
-#: templates/user/settings.pt:279
-msgid "what_is_gravatar"
-msgstr ""
-"Ein Gravatar ist ein Globally Recognized Avatar (Global wiedererkennbarer "
-"Avatar). Sie können es einmalig erstellen und hochladen. Dadurch wird dieses "
-"Bild auf jeder Website angezeigt, die Gravat unterstützt. Ihr Bild wird "
-"Ihnen folgen."
-
-#. Default: Statistics could not be deleted.
-#: templates/user/settings.pt:289 templates/user/settings.pt:380
-msgid "statistics_not_deleted"
-msgstr "Statistiken konnten nicht gelöscht werden."
-
-#. Default: Statistics were set successfully deleted.
-#: templates/user/settings.pt:295 templates/user/settings.pt:386
-msgid "statistics_deletet"
-msgstr "Statistiken wurden gelöscht."
-
-#. Default: Change your password in D-BAS
-#: templates/user/settings.pt:304
-msgid "change_dbas_password"
-msgstr "Passwort von D-BAS ändern"
-
-#. Default: This does not affect other services next to D-BAS.
-#: templates/user/settings.pt:306
-msgid "this_does_not_affect_other_services"
-msgstr ""
-"Diese Änderung betrifft nur das Passwort in D-BAS."
-
-#. Default: Old password
-#: templates/user/settings.pt:313
-msgid "old_password"
-msgstr "Altes Password"
-
-#. Default: New Password
-#: templates/user/settings.pt:327
-msgid "new_password"
-msgstr "Neues Password"
-
-#. Default: New Password (confirm)
-#: templates/user/settings.pt:339
-msgid "new_password_confirm"
-msgstr "Neues Password (Bestätigung)"
-
-#. Default: Your password was changed
-#: templates/user/settings.pt:365
-msgid "password_changed"
-msgstr "Ihr Passwort wurde geändert"
-
-#. Default: Notification Board
-#: templates/user/notifications.pt:6
-msgid "notification_board"
-msgstr "Benachrichtigungen"
-
-#. Default: unread notifications and
-#: templates/user/notifications.pt:9
-msgid "unreadNotificationAnd"
-msgstr "ungelesene Benachrichtigungen und"
-
-#. Default: total in the inbox.
-#: templates/user/notifications.pt:11
-msgid "totalInTheInbox"
-msgstr "insgesamt im Eingang."
-
-#. Default: There are
-#: templates/user/notifications.pt:12
-msgid "thereAre"
-msgstr "Es sind"
-
-#. Default: in the outbox.
-#: templates/user/notifications.pt:14
-msgid "inTheOutbox"
-msgstr "im Ausgang."
-
-#. Default: Inbox
-#: templates/user/notifications.pt:29
-msgid "inbox"
-msgstr "Eingang"
-
-#. Default: Outbox
-#: templates/user/notifications.pt:32
-msgid "outbox"
-msgstr "Ausgang"
-
-#. Default: NEW
-#: templates/user/notifications.pt:51
-msgid "new"
-msgstr "NEU"
-
-#. Default: From:
-#: templates/user/notifications.pt:56 templates/user/notifications.pt:65
-msgid "from"
-msgstr "Von:"
-
-#. Default: answer
-#: templates/user/notifications.pt:70 templates/user/notifications.pt:114
-msgid "answer"
-msgstr "antworten"
-
-#. Default: Set everything as read
-#: templates/user/notifications.pt:80
-msgid "set_as_read"
-msgstr "Alle als gelesen markieren"
-
-#. Default: Delete everything
-#: templates/user/notifications.pt:84 templates/user/notifications.pt:124
-msgid "delete_everything"
-msgstr "Alle löschen"
-
-#. Default: To:
-#. Default: to:
-#: templates/user/notifications.pt:100 templates/user/notifications.pt:109
-msgid "to"
-msgstr "An:"
-
-#. Default: Personal User Page
-#: templates/user/details.pt:6
-msgid "personal_user_page"
-msgstr "Persönliche Seite"
-
-#. Default: This are the details of
-#: templates/user/details.pt:8
-msgid "this_are_the_details_of"
-msgstr "Das sind die Details von"
-
-#. Default: Public Information of
-#: templates/user/details.pt:21
-msgid "public_information_of"
-msgstr "Öffentliche Informationen von"
-
-#. Default: Last Action
-#: templates/user/details.pt:26
-msgid "last_action"
-msgstr "Letze Aktion"
-
-#. Default: Last Login
-#: templates/user/details.pt:30
-msgid "last_login"
-msgstr "Letze Anmeldung"
-
-#. Default: Registered
-#: templates/user/details.pt:34
-msgid "registered"
-msgstr "Registierung"
-
-#. Default: Profile Picture of
-#: templates/user/details.pt:42
-msgid "profile_picture_of"
-msgstr "Profilbild von"
-
-#. Default: Reviews proposed
-#: templates/user/details.pt:60
-msgid "reviews_proposed"
-msgstr "Änderungen vorgeschlagen"
+#~ msgid "have_account_hhu"
+#~ msgstr ""
+#~ "Wenn Sie eine Kennung an der HHU besitzen, können Sie sich direkt "
+#~ "anmelden!"
 
 #~ msgid "stay_tuned_rss"
 #~ msgstr ""

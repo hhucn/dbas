@@ -3,10 +3,10 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import datetime
 import logging
 import warnings
 from abc import abstractmethod
+from datetime import datetime
 from typing import List, Set, Optional
 
 import arrow
@@ -53,7 +53,7 @@ def get_now() -> ArrowType:
 
     :return: arrow data type
     """
-    return arrow.get(datetime.datetime.now())
+    return arrow.get(datetime.now())
 
 
 class Issue(DiscussionBase):
@@ -85,6 +85,9 @@ class Issue(DiscussionBase):
 
     positions = relationship('Statement', secondary='statement_to_issue', viewonly=True,
                              secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
+
+    decision_process: Optional['DecisionProcess'] = relationship('DecisionProcess', back_populates='issue',
+                                                                 uselist=False)
 
     def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
                  is_read_only=False):
@@ -223,6 +226,8 @@ class User(DiscussionBase):
     authored_issues: List[Issue] = relationship('Issue', back_populates='author')
     settings: 'Settings' = relationship('Settings', back_populates='user', uselist=False)
 
+    clicked_statements = relationship('ClickedStatement', back_populates='user')
+
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, oauth_provider='',
                  oauth_provider_id=''):
         """
@@ -235,8 +240,6 @@ class User(DiscussionBase):
         :param password: String (hashed)
         :param gender: String
         :param group_uid: int
-        :param token:
-        :param token_timestamp:
         """
         self.firstname = firstname
         self.surname = surname
@@ -497,6 +500,8 @@ class Statement(DiscussionBase):
     arguments: List['Argument'] = relationship('Argument', back_populates='conclusion')
     premises: List['Premise'] = relationship('Premise', back_populates='statement')
     references: List['StatementReference'] = relationship('StatementReference', back_populates='statement')
+
+    clicks = relationship('ClickedStatement')
 
     def __init__(self, is_position, is_disabled=False):
         """
@@ -1029,6 +1034,8 @@ class Argument(DiscussionBase):
                                                  back_populates='attacked_by')
     attacked_by: List['Argument'] = relationship('Argument', remote_side=argument_uid, back_populates='attacks')
 
+    clicks = relationship('ClickedArgument')
+
     # these are only for legacy support. use attacked_by and author instead
     issues: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
     arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
@@ -1178,7 +1185,7 @@ class ClickedArgument(DiscussionBase):
     is_up_vote: bool = Column(Boolean, nullable=False)
     is_valid: bool = Column(Boolean, nullable=False)
 
-    argument: Argument = relationship('Argument')
+    argument: Argument = relationship('Argument', back_populates='clicks')
     user: User = relationship('User')
 
     def __init__(self, argument_uid, author_uid, is_up_vote=True, is_valid=True):
@@ -1238,8 +1245,8 @@ class ClickedStatement(DiscussionBase):
     is_up_vote: bool = Column(Boolean, nullable=False)
     is_valid: bool = Column(Boolean, nullable=False)
 
-    statement: Statement = relationship('Statement')
-    user: User = relationship('User', foreign_keys=[author_uid])
+    statement: Statement = relationship('Statement', back_populates='clicks')
+    user: User = relationship('User', foreign_keys=[author_uid], back_populates='clicked_statements')
 
     def __init__(self, statement_uid, author_uid, is_up_vote=True, is_valid=True):
         """
@@ -1422,6 +1429,11 @@ class AbstractReviewCase(DiscussionBase):
     def update_timestamp(self):
         pass
 
+    @abstractmethod
+    def get_issues(self) -> [Issue]:
+        """Get the issues to which the statements of this review case belong"""
+        pass
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
 
@@ -1493,6 +1505,11 @@ class ReviewDelete(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        if self.argument:
+            return [self.argument.issue]
+        return self.statement.issues
+
 
 class ReviewEdit(AbstractReviewCase):
     """
@@ -1553,6 +1570,11 @@ class ReviewEdit(AbstractReviewCase):
         :return: None
         """
         self.timestamp = get_now()
+
+    def get_issues(self) -> [Issue]:
+        if self.argument:
+            return [self.argument.issue]
+        return self.statement.issues
 
 
 class ReviewEditValue(DiscussionBase):
@@ -1644,6 +1666,11 @@ class ReviewOptimization(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        if self.argument:
+            return [self.argument.issue]
+        return self.statement.issues
+
 
 class ReviewDuplicate(AbstractReviewCase):
     """
@@ -1706,6 +1733,9 @@ class ReviewDuplicate(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        return self.duplicate_statement.issues
+
 
 class ReviewMerge(AbstractReviewCase):
     """
@@ -1763,6 +1793,9 @@ class ReviewMerge(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        return [self.premisegroup.premises[0].issue]
+
 
 class ReviewSplit(AbstractReviewCase):
     """
@@ -1819,6 +1852,9 @@ class ReviewSplit(AbstractReviewCase):
         :return: None
         """
         self.timestamp = get_now()
+
+    def get_issues(self) -> [Issue]:
+        return [self.premisegroup.premises[0].issue]
 
 
 class ReviewSplitValues(DiscussionBase):
@@ -2510,3 +2546,65 @@ class ShortLinks(DiscussionBase):
     def update_short_url(self, short_url):
         self.short_url = short_url
         self.timestamp = get_now()
+
+
+class DecisionProcess(DiscussionBase):
+    __tablename__ = 'decidotron_decision_process'
+    issue_id: int = Column(Integer, ForeignKey(Issue.uid), primary_key=True)
+    budget: int = Column(Integer, nullable=False, doc="Budget for an issue in cents")
+    currency_symbol: str = Column(String, nullable=True)
+    positions_end: datetime = Column(DateTime, nullable=True)
+    votes_start: datetime = Column(DateTime, nullable=True)
+    votes_end: datetime = Column(DateTime, nullable=True)
+    host: str = Column(String, nullable=False, doc="The host of the associated decidotron instance")
+
+    issue = relationship(Issue,
+                         back_populates='decision_process')  # backref=backref('decision_process', cascade="all, delete-orphan"))
+
+    def __init__(self, issue_id: int, budget: int, host: str, currency_symbol="€",
+                 positions_end: datetime = None,
+                 votes_start: datetime = None,
+                 votes_end: datetime = None):
+        if budget <= 0:
+            raise ValueError("The Budget has to be greater than 0!")
+        self.issue_id = issue_id
+        self.budget = budget
+        self.host = host
+        self.currency_symbol = currency_symbol
+        self.positions_end = positions_end
+        self.votes_start = votes_start
+        self.votes_end = votes_end
+
+    def budget_str(self):
+        return "{currency_symbol} {:.2f}".format(self.budget / 100, currency_symbol=self.currency_symbol)
+
+    @staticmethod
+    def by_id(issue_id: int) -> 'DecisionProcess':
+        return DBDiscussionSession.query(DecisionProcess).get(issue_id)
+
+    def position_ended(self):
+        return bool(self.positions_end) and self.positions_end > datetime.now()
+
+    def to_dict(self) -> dict:
+        return {
+            "host": self.host,
+            "budget": self.budget,
+            "currency_symbol": self.currency_symbol,
+            "budget_string": self.budget_str(),
+            "positions_end": self.positions_end,
+            "position_ended": self.position_ended(),
+            "votes_start": self.votes_start,
+            "votes_started": self.votes_start < datetime.now() if bool(self.votes_start) else True,
+            "votes_end": self.votes_end,
+            "votes_ended": self.votes_end < datetime.now() if bool(self.votes_end) else False,
+        }
+
+
+class PositionCost(DiscussionBase):
+    __tablename__ = 'decidotron_position_cost'
+    position_id: int = Column(Integer, ForeignKey(Statement.uid), primary_key=True)
+    cost: int = Column(Integer, nullable=False)
+
+    def __init__(self, position: Statement, cost: int):
+        self.position_id = position.uid
+        self.cost = cost

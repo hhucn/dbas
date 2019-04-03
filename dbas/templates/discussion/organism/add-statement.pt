@@ -2,7 +2,8 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
 
   <div class="container colored-container" id="add-statement-container"
-       style="${extras.add_statement_container_style}">
+       style="${extras.add_statement_container_style}"
+       tal:condition="not(issues.decidotron_budget and issues.decidotron_budget.position_ended)">
     <button tal:condition="extras.close_statement_container" id="close-statement-container" type="button"
                                                              class="close" data-dismiss="modal" aria-label="Close">
       <span aria-hidden="true">&times;</span>
@@ -26,6 +27,7 @@
             <div class="col-lg-9 col-md-7 col-sm-6">
               <input id="add-statement-container-main-input-position"
                      placeholder="${extras.tag.placeholder_position}"
+                     data-key="position"
                      class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
             </div>
           </div>
@@ -34,9 +36,27 @@
             <label for="add-statement-container-main-input-reason" class="col-lg-3 col-md-5 col-sm-6 control-label"
                    style="color: #666; font-size: 17px; margin-top: 0.4em;">${extras.title.because}</label>
             <div class="col-lg-9 col-md-7 col-sm-6">
-              <input id="add-statement-container-main-input-reason" placeholder="${extras.tag.placeholder_reason}"
+              <input id="add-statement-container-main-input-reason" data-key="reason"
+                     placeholder="${extras.tag.placeholder_reason}"
                      class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
             </div>
+          </div>
+          <br>
+          <div class="form-group" tal:condition="issues.decidotron_budget">
+            <label for="add-statement-container-cost" class="col-lg-3 col-md-5 col-sm-6 control-label"
+                   style="color: #666; font-size: 17px; margin-top: 0.4em;" i18n:translate="decidotron_cost_of_position">
+              It has an estimated cost of </label>
+            <div class="input-group col-lg-9 col-md-7 col-sm-6">
+              <span class="input-group-addon">${issues.decidotron_budget.currency_symbol}</span>
+              <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="2000" type="number"
+                     min=0
+                     step=50 max="${issues.decidotron_budget.budget / 100}"
+                     class="form-control" style="width: 100%" required>
+            </div>
+            <span
+                class="help-block">Bitte gib die geschätzte Kosten zwischen 0 ${issues.decidotron_budget.currency_symbol}
+              und ${int(issues.decidotron_budget.budget / 100)}
+                ${issues.decidotron_budget.currency_symbol} an.</span>
           </div>
         </fieldset>
       </div>
@@ -44,6 +64,14 @@
       <input id="send-new-statement" type="button" class="btn btn-primary" data-dismiss="modal"
              data-toggle="tooltip" data-placement="bottom" value="${extras.buttons.save_my_statement}"
              name="${discussion.mode}"/>
+    </div>
+  </div>
+
+  <div class="container colored-container"
+       tal:condition="issues.decidotron_budget and issues.decidotron_budget.position_ended">
+    <div class="col-lg-12 text-center">
+      <p i18n:translate="decidotron_positions_ended">Die Zeit zum hinzufügen von neuen Vorschlägen ist abgelaufen. Du
+        kannst allerdings noch abstimmen!</p>
     </div>
   </div>
 

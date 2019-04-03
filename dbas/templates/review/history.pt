@@ -11,10 +11,10 @@
           <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 0.5em;"></i>
           <span i18n:translate="current_decisions">Current decisions</span>!
         </h3>
-        <p class="lead text-center" tal:condition="history.has_access" i18n:translate="page_contains_list_past_votes">
+        <p class="lead text-center" tal:condition="history.is_history" i18n:translate="page_contains_list_past_votes">
           This page contains lists with an over of past votes for each queue
         </p>
-        <p class="lead text-center" tal:condition="not:history.has_access" i18n:translate="page_contains_list_ongoing_votes">
+        <p class="lead text-center" tal:condition="not:history.is_history" i18n:translate="page_contains_list_ongoing_votes">
           This page contains lists with an over of ongoing votes for each queue
         </p>
       </div>
@@ -27,7 +27,7 @@
           <span tal:condition="history.is_history" i18n:translate="earn_more_reputation_for_queue">You have to earn more reputation for this queue</span>
           <span tal:condition="not:history.is_history" i18n:translate="you_have_no_access">You have no access to this site</span>!
         </h4>
-        <img class="center"
+        <img class="center nopower"
              src="${request.static_url('dbas:static/images/bg/nopower.jpg')}" tal:condition="not:history.has_access" >
 
       </div>

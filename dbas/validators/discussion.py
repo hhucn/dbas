@@ -459,24 +459,24 @@ def valid_premisegroup(request):
         return False
 
 
-def valid_premisegroup_in_path(request):
+def valid_statement_uid(request) -> bool:
     """
-    Sets the premisegroup id from the path into the json_body and executes valid_premisegroup
+    Validates the uid of a statement
 
     :param request:
     :return:
     """
-    pgroup_uid = request.matchdict.get('id', [None])[0]
-    db_pgroup = None
-    if is_integer(pgroup_uid):
-        db_pgroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid)
+    statement_uid = request.json_body.get('uid')
+    db_statement = None
+    if is_integer(statement_uid):
+        db_statement: Statement = DBDiscussionSession.query(Statement).get(statement_uid)
 
-    if db_pgroup:
-        request.validated['pgroup_uid'] = db_pgroup
+    if db_statement:
+        request.validated['statement'] = db_statement
         return True
     else:
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'PGroup uid is missing in path', _tn.get(_.internalError))
+        add_error(request, 'Valid statement uid is missing', _tn.get(_.internalError))
         return False
 
 

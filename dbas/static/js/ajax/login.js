@@ -143,13 +143,13 @@ function AjaxLoginHandler() {
      */
     this.passwordRequest = function () {
         var url = 'user_password_request';
-        var d = {
+        var data = {
             email: $('#password-request-email-input').val(),
             lang: getLanguage()
         };
         var fail = function ajaxPasswordRequestFail(data) {
             setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
         };
-        ajaxSkeleton(url, 'POST', d, callbackIfDoneForPasswordRequest(data), fail);
+        ajaxSkeleton(url, 'POST', data, callbackIfDoneForPasswordRequest, fail);
     };
 }

@@ -92,24 +92,8 @@ class UrlManagerTests(TestCaseWithConfig):
     def test_get_url_for_choosing_premisegroup(self):
         url = self.__make_one(slug='cat-or-dog')
 
-        response_true = url.get_url_for_choosing_premisegroup(is_argument=True,
-                                                              is_supportive=True,
-                                                              statement_or_argument_id=20,
-                                                              pgroup_id_list=[1, 2, 3])
-        # Verify that, if 'as_location_href', 'is_argument', 'is_supportive' are 'True' and length of array
-        # 'pgroup_id_list' is greater than 0, the url '{discussion-url}/{slug}/choose/{is_argument}/{
-        # is_supportive}/{statement_or_argument_id}' and the elements of array 'pgroup_id_list' are put together,
-        # separated with backslash, and are attached in url.
-        self.assertEqual(response_true, '/cat-or-dog/choose/true/true/20/1/2/3')
-
-        response_false = url.get_url_for_choosing_premisegroup(is_argument=False,
-                                                               is_supportive=False,
-                                                               statement_or_argument_id=20,
-                                                               pgroup_id_list='')
-        # Verify that, if 'as_location_href', 'is_argument', 'is_supportive' are 'False' and length of array
-        # 'pgroup_id_list' is equal 0, '{discussion-url}/{slug}/choose/{is_argument}/{is_supportive}/{
-        # statement_or_argument_id}' is returned.
-        self.assertEqual(response_false, '/cat-or-dog/choose/false/false/20')
+        response_true = url.get_url_for_choosing_premisegroup(pgroup_id_list=[1, 2, 3])
+        self.assertEqual(response_true, '/cat-or-dog/choose/1/2/3')
 
     def test_get_url_for_new_argument(self):
         url = self.__make_one(slug='cat-or-dog', history='attitude/4')
