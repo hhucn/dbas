@@ -3,6 +3,7 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import copy
 from datetime import date, timedelta
 from json import JSONDecodeError
 from math import ceil
@@ -307,7 +308,7 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     for index, db_issue in enumerate(db_issues):
         issue_dict = {
             'uid': db_issue.uid,
-            'url': '/' + db_issue.slug,
+            'url': '/discuss/' + db_issue.slug,
             'statements': get_number_of_statements(db_issue.uid),
             'active_users': get_number_of_authors(db_issue.uid),
             'title': db_issue.title,
@@ -324,7 +325,7 @@ def get_issues_overview_on_start(db_user: User) -> dict:
             writable.append(issue_dict)
 
         if db_issue.is_featured:
-            featured_issue_dict = issue_dict
+            featured_issue_dict = copy.deepcopy(issue_dict)
             featured_issue_dict['info'] = db_issue.info
             featured.append(featured_issue_dict)
 
