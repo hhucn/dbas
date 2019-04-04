@@ -71,7 +71,7 @@ def user_logout(request, redirect_to_main=False):
     request.session.invalidate()
     headers = forget(request)
     if redirect_to_main:
-        location = request.application_url + 'discuss?session_expired=true',
+        location = request.application_url + '/discuss?session_expired=true',
     elif (request.application_url + '/discuss') in request.path_url:  # redirect to page, where you need no login
         location = request.path_url
     else:
