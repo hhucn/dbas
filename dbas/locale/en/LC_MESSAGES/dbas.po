@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2019-04-01 13:14+0000\n"
+"POT-Creation-Date: 2019-04-04 09:51+0000\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -16,73 +16,85 @@ msgstr ""
 "Generated-By: Lingua 3.10\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. Default: Imprint
-#. Default: Impressum
-#: templates/imprint.pt:6 templates/imprint.pt:20
-#: templates/snippet/footer.pt:11
-msgid "imprint"
-msgstr "Imprint"
+#. Default: 404 Error
+#: templates/404.pt:5
+msgid "404"
+msgstr "404 Error"
 
-#. Default: Our imprint, a list of used software and the latest changelog
-#: templates/imprint.pt:7
-msgid "imprint_list_of_software_and_changelog"
-msgstr "Our imprint, a list of used software and our latest changes"
+#. Default: Something went wrong
+#: templates/404.pt:6
+msgid "something_wrong"
+msgstr "Something went wrong"
 
-#. Default: Angaben gemäß § 5 TMG
-#: templates/imprint.pt:21
-msgid "data_tmg"
-msgstr "Information according to § 5 TMG "
+#. Default: The page
+#: templates/404.pt:18
+msgid "404_text_part1"
+msgstr "The page"
 
-#. Default: Kontakt:
-#. Default: Contact
-#: templates/imprint.pt:22 templates/index.pt:50 templates/snippet/footer.pt:21
-msgid "contact"
-msgstr "Contact"
+#. Default: could not be found
+#: templates/404.pt:20
+msgid "404_text_part2"
+msgstr "could not be found"
 
-#. Default: Institut für Informatik
-#: templates/imprint.pt:23
-msgid "department_of_cs"
-msgstr "Department of Computer Science"
+#. Default: , because the input parameter seems to be wrong.
+#: templates/404.pt:20
+msgid "wrong_input_params"
+msgstr ", because the input parameter seems to be wrong."
 
-#. Default: Lehrstuhl für Rechnernetze
-#: templates/imprint.pt:24
-msgid "chair_of_cn"
-msgstr "Chair of Computer Networks"
+#. Default: , because the author revoked the content.
+#: templates/404.pt:20
+msgid "author_revoked_content"
+msgstr ", because the author revoked the content."
 
-#. Default: Weiteres im
-#: templates/imprint.pt:31
-msgid "weiteres im"
-msgstr "More on the"
+#. Default: Go home
+#: templates/404.pt:23
+msgid "go-home"
+msgstr "Go home"
 
-#. Default: Impressum der HHU
-#: templates/imprint.pt:32
-msgid "imprint_hhu"
-msgstr "imprint of the Heinrich-Heine-University Düsseldorf"
+#. Default: or
+#: templates/404.pt:25
+msgid "or"
+msgstr "oder"
 
-#. Default: unserer Datenschutzerklärung
-#: templates/imprint.pt:33
-msgid "our_privacy"
-msgstr "Our Privacy Policy"
+#. Default: go back to the discussion
+#: templates/404.pt:26
+msgid "go_back_to_the_discussion"
+msgstr "go back to the discussion!"
 
-#. Default: or checkout the
-#: templates/imprint.pt:34
-msgid "or_checkout_the"
-msgstr "or checkout the"
+#. Default: JavaScript is not enabled:
+#: templates/basetemplate.pt:17
+msgid "js_disabled1"
+msgstr "JavaScript is not enabled:"
 
-#. Default: license of D-BAS (MIT)
-#: templates/imprint.pt:36
-msgid "licence_dbas"
-msgstr "license of D-BAS (MIT)"
+#. Default: Please enable JavaScript!
+#: templates/basetemplate.pt:18
+msgid "js_disabled2"
+msgstr "Please enable JavaScript!"
 
-#. Default: Copyrights and used Software
-#: templates/imprint.pt:40
-msgid "copyright_and_used_software"
-msgstr "Used Software"
+#. Default: Your request failed!
+#: templates/basetemplate.pt:24
+msgid "request_failed"
+msgstr "Your request failed!"
 
-#. Default: Changes
-#: templates/imprint.pt:102
-msgid "changes"
-msgstr "Changelog"
+#. Default: Please reload the page.
+#: templates/basetemplate.pt:25
+msgid "please_reload"
+msgstr "Please reload the page."
+
+#. Default: Your request succeded!
+#: templates/basetemplate.pt:32 templates/basetemplate.pt:33
+msgid "request_success"
+msgstr "Your request succeded!"
+
+#. Default: Documentation
+#: templates/docs.pt:6
+msgid "docs"
+msgstr "Documentation"
+
+#. Default: Where do I find it?
+#: templates/docs.pt:7
+msgid "where_do_i_find_it"
+msgstr "Where do I find it?"
 
 #. Default: Frequent Questions
 #: templates/faq.pt:6
@@ -229,96 +241,257 @@ msgstr ""
 "Please keep in mind that our current team is quite small and we'll do our "
 "very best to get back to you ASAP."
 
-#. Default: News
-#: templates/news.pt:6 templates/snippet/footer.pt:43
-msgid "news"
-msgstr "News"
+#. Default: Field Experiment 2017
+#: templates/fieldtest.pt:7
+msgid "field_experiment_2017"
+msgstr "Field Experiment 2017"
 
-#. Default: Latest news of D-BAS
-#: templates/news.pt:9
-msgid "latest_news_of_dbas"
-msgstr "Latest news of D-BAS"
+#. Default: Most important information about our field experiment in May 2017
+#: templates/fieldtest.pt:9
+msgid "most_important_information_about_field_experiment"
+msgstr "Most important information about our field experiment in May 2017"
 
-#. Default: Privacy Policy
-#. Default: privacy_policy
-#: templates/privacy.pt:6 templates/snippet/footer.pt:16
-msgid "privacy_policy"
-msgstr "Privacy Policy"
+#. Default: When/Where?
+#: templates/fieldtest.pt:21
+msgid "when_where"
+msgstr "When/Where?"
 
-#. Default: This is our privacy policy according to the DSVGO
-#: templates/privacy.pt:7
-msgid "privacy_policy_text"
-msgstr "This is our privacy policy according to the DSVGO"
+#. Default: May 2017 at the University of Düsseldorf, Germany.
+#: templates/fieldtest.pt:22
+msgid "may_2017_hhu"
+msgstr "May 2017 at the University of Düsseldorf, Germany."
 
-#. Default: 404 Error
-#: templates/404.pt:5
-msgid "404"
-msgstr "404 Error"
+#. Default: Setting?
+#: templates/fieldtest.pt:26
+msgid "setting"
+msgstr "Setting?"
 
-#. Default: Something went wrong
-#: templates/404.pt:6
-msgid "something_wrong"
-msgstr "Something went wrong"
+#. Default: We invited all computer science students of our university via mail
+#. to talk about the question: How can the studies of computer-science be
+#. improved and the problems caused by the large number of students be solved?
+#: templates/fieldtest.pt:28
+msgid "setting_description"
+msgstr ""
+"We invited all computer science students of our university via mail to talk "
+"about the question: How can the studies of computer-science be improved and "
+"the problems caused by the large number of students be solved?"
 
-#. Default: The page
-#: templates/404.pt:18
-msgid "404_text_part1"
-msgstr "The page"
+#. Default: Key Facts?
+#: templates/fieldtest.pt:32
+msgid "key_fact"
+msgstr "Key Facts?"
 
-#. Default: could not be found
-#: templates/404.pt:20
-msgid "404_text_part2"
-msgstr "could not be found"
+#. Default: Our key facts in short
+#: templates/fieldtest.pt:34
+msgid "key_facts"
+msgstr "Our key facts in short"
 
-#. Default: , because the input parameter seems to be wrong.
-#: templates/404.pt:20
-msgid "wrong_input_params"
-msgstr ", because the input parameter seems to be wrong."
+#. Default: 318 visitor, 137 returned at least once
+#: templates/fieldtest.pt:36
+msgid "key_fact1"
+msgstr "318 visitor, 137 returned at least once"
 
-#. Default: , because the author revoked the content.
-#: templates/404.pt:20
-msgid "author_revoked_content"
-msgstr ", because the author revoked the content."
+#. Default: 47 registrations, 35 contributed at least once
+#: templates/fieldtest.pt:37
+msgid "key_fact2"
+msgstr "47 registrations, 35 contributed at least once"
 
-#. Default: Go home
-#: templates/404.pt:23
-msgid "go-home"
-msgstr "Go home"
+#. Default: 235 contributed arguments
+#: templates/fieldtest.pt:38
+msgid "key_fact3"
+msgstr "235 contributed arguments"
 
-#. Default: or
-#: templates/404.pt:25
-msgid "or"
-msgstr "oder"
+#. Default: 47 flagged statements
+#: templates/fieldtest.pt:39
+msgid "key_fact4"
+msgstr "47 flagged statements"
 
-#. Default: go back to the discussion
-#: templates/404.pt:26
-msgid "go_back_to_the_discussion"
-msgstr "go back to the discussion!"
+#. Default: The discussion can be seen
+#: templates/fieldtest.pt:41
+msgid "discussion_can_be_seen"
+msgstr "The discussion can be seen"
 
-#. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:17
-msgid "js_disabled1"
-msgstr "JavaScript is not enabled:"
+#. Default: here
+#: templates/fieldtest.pt:43 templates/fieldtest.pt:46
+#: templates/fieldtest.pt:70
+msgid "here"
+msgstr "here"
 
-#. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:18
-msgid "js_disabled2"
-msgstr "Please enable JavaScript!"
+#. Default: and a translated, english version is available
+#: templates/fieldtest.pt:44
+msgid "and_a_translated"
+msgstr "and a translated, english version is available"
 
-#. Default: Your request failed!
-#: templates/basetemplate.pt:24
-msgid "request_failed"
-msgstr "Your request failed!"
+#. Default: Why?
+#: templates/fieldtest.pt:50
+msgid "why"
+msgstr "Why?"
 
-#. Default: Please reload the page.
-#: templates/basetemplate.pt:25
-msgid "please_reload"
-msgstr "Please reload the page."
+#. Default: We were primarily focused on two question
+#: templates/fieldtest.pt:52
+msgid "key_questions"
+msgstr "We were primarily focused on two question"
 
-#. Default: Your request succeded!
-#: templates/basetemplate.pt:32 templates/basetemplate.pt:33
-msgid "request_success"
-msgstr "Your request succeded!"
+#. Default: Does the dialog-based approach works for untrained users in a real-
+#. world setting?
+#: templates/fieldtest.pt:54
+msgid "key_question1"
+msgstr ""
+"Does the dialog-based approach works for untrained users in a real-world "
+"setting?"
+
+#. Default: Does a decentralized moderation system works for a dialog-based
+#. argumentation system?
+#: templates/fieldtest.pt:57
+msgid "key_question2"
+msgstr ""
+"Does a decentralized moderation system works for a dialog-based "
+"argumentation system?"
+
+#. Default: Findings?
+#: templates/fieldtest.pt:64
+msgid "findings"
+msgstr "Findings?"
+
+#. Default: We had many findings from our field experiment. The main results
+#. are summarized in
+#: templates/fieldtest.pt:66
+msgid "findings1"
+msgstr ""
+"We had many findings from our field experiment. The overview results are "
+"summarized in"
+
+#. Default: this paper
+#: templates/fieldtest.pt:68
+msgid "this_paper"
+msgstr "this paper"
+
+#. Default: Next to this, our colleague developed a tool to translate real
+#. world argumentation of D-BAS into abstract argumentation frameworks. This
+#. paper can be read
+#: templates/fieldtest.pt:69
+msgid "findings2"
+msgstr ""
+"Next to this, our colleague developed a tool to translate real world "
+"argumentation of D-BAS into abstract argumentation frameworks. This paper "
+"can be read"
+
+#. Default: The resulting dump of our PostgreSQL database can be downloaded
+#. from our
+#: templates/fieldtest.pt:72
+msgid "findings3"
+msgstr ""
+"The resulting dump of our PostgreSQL database can be downloaded from our"
+
+#. Default: server
+#: templates/fieldtest.pt:73
+msgid "server"
+msgstr "server"
+
+#. Default: License CC BY-NC-SA
+#: templates/fieldtest.pt:74
+msgid "license_cc_by_nc_sa"
+msgstr "License CC BY-NC-SA"
+
+#. Default: The archive contains three versions: the originaldataset of the
+#. discussion in German, a dataset which includes some corrections and a
+#. translated one.
+#: templates/fieldtest.pt:75
+msgid "the archive contains"
+msgstr ""
+"The archive contains three versions: the originaldataset of the discussion "
+"in German, a dataset which includes some corrections and a translated one."
+
+#. Default: The translation into an abstract AF can be
+#: templates/fieldtest.pt:76
+msgid "findings4"
+msgstr "The translation into an abstract AF can be"
+
+#. Default: fetched to
+#: templates/fieldtest.pt:77
+msgid "fetched to"
+msgstr "fetched, too"
+
+#. Default: Open Source?
+#: templates/fieldtest.pt:83
+msgid "ope-Source"
+msgstr "Open Source?"
+
+#. Default: Of course! Every used tool is published under the MIT licence and
+#. hosted on GitHub
+#: templates/fieldtest.pt:85
+msgid "of_course_it_is_open_source"
+msgstr ""
+"Of course! Every used tool is published under the MIT licencese and hosted "
+"on GitHub"
+
+#. Default: Imprint
+#. Default: Impressum
+#: templates/imprint.pt:6 templates/imprint.pt:20
+#: templates/snippet/footer.pt:11
+msgid "imprint"
+msgstr "Imprint"
+
+#. Default: Our imprint, a list of used software and the latest changelog
+#: templates/imprint.pt:7
+msgid "imprint_list_of_software_and_changelog"
+msgstr "Our imprint, a list of used software and our latest changes"
+
+#. Default: Angaben gemäß § 5 TMG
+#: templates/imprint.pt:21
+msgid "data_tmg"
+msgstr "Information according to § 5 TMG "
+
+#. Default: Kontakt:
+#. Default: Contact
+#: templates/imprint.pt:22 templates/index.pt:50 templates/snippet/footer.pt:21
+msgid "contact"
+msgstr "Contact"
+
+#. Default: Institut für Informatik
+#: templates/imprint.pt:23
+msgid "department_of_cs"
+msgstr "Department of Computer Science"
+
+#. Default: Lehrstuhl für Rechnernetze
+#: templates/imprint.pt:24
+msgid "chair_of_cn"
+msgstr "Chair of Computer Networks"
+
+#. Default: Weiteres im
+#: templates/imprint.pt:31
+msgid "weiteres im"
+msgstr "More on the"
+
+#. Default: Impressum der HHU
+#: templates/imprint.pt:32
+msgid "imprint_hhu"
+msgstr "imprint of the Heinrich-Heine-University Düsseldorf"
+
+#. Default: unserer Datenschutzerklärung
+#: templates/imprint.pt:33
+msgid "our_privacy"
+msgstr "Our Privacy Policy"
+
+#. Default: or checkout the
+#: templates/imprint.pt:34
+msgid "or_checkout_the"
+msgstr "or checkout the"
+
+#. Default: license of D-BAS (MIT)
+#: templates/imprint.pt:36
+msgid "licence_dbas"
+msgstr "license of D-BAS (MIT)"
+
+#. Default: Copyrights and used Software
+#: templates/imprint.pt:40
+msgid "copyright_and_used_software"
+msgstr "Used Software"
+
+#. Default: Changes
+#: templates/imprint.pt:102
+msgid "changes"
+msgstr "Changelog"
 
 #. Default: About
 #: templates/index.pt:35
@@ -618,199 +791,1067 @@ msgstr ""
 "Ready to start your next discussion with us? That's great! Send us an email "
 "and we will get back to you as soon as possible!"
 
-#. Default: Field Experiment 2017
-#: templates/fieldtest.pt:7
-msgid "field_experiment_2017"
-msgstr "Field Experiment 2017"
+#. Default: News
+#: templates/news.pt:6 templates/snippet/footer.pt:43
+msgid "news"
+msgstr "News"
 
-#. Default: Most important information about our field experiment in May 2017
-#: templates/fieldtest.pt:9
-msgid "most_important_information_about_field_experiment"
-msgstr "Most important information about our field experiment in May 2017"
+#. Default: Latest news of D-BAS
+#: templates/news.pt:9
+msgid "latest_news_of_dbas"
+msgstr "Latest news of D-BAS"
 
-#. Default: When/Where?
-#: templates/fieldtest.pt:21
-msgid "when_where"
-msgstr "When/Where?"
+#. Default: Privacy Policy
+#. Default: privacy_policy
+#: templates/privacy.pt:6 templates/snippet/footer.pt:16
+msgid "privacy_policy"
+msgstr "Privacy Policy"
 
-#. Default: May 2017 at the University of Düsseldorf, Germany.
-#: templates/fieldtest.pt:22
-msgid "may_2017_hhu"
-msgstr "May 2017 at the University of Düsseldorf, Germany."
+#. Default: This is our privacy policy according to the DSVGO
+#: templates/privacy.pt:7
+msgid "privacy_policy_text"
+msgstr "This is our privacy policy according to the DSVGO"
 
-#. Default: Setting?
-#: templates/fieldtest.pt:26
-msgid "setting"
-msgstr "Setting?"
+#. Default: Thank you
+#: templates/discussion/exit.pt:8
+msgid "thank_you"
+msgstr "Thank you"
 
-#. Default: We invited all computer science students of our university via mail
-#. to talk about the question: How can the studies of computer-science be
-#. improved and the problems caused by the large number of students be solved?
-#: templates/fieldtest.pt:28
-msgid "setting_description"
+#. Default: Your participation in this discussion was saved and will be used
+#. for evaluation later. If you have any questions, please do not hesitate to
+#: templates/discussion/exit.pt:11
+msgid "finish_text"
 msgstr ""
-"We invited all computer science students of our university via mail to talk "
-"about the question: How can the studies of computer-science be improved and "
-"the problems caused by the large number of students be solved?"
+"Your participation in this discussion was saved and will be used for "
+"evaluation later. If you have any questions, please do not hesitat to"
 
-#. Default: Key Facts?
-#: templates/fieldtest.pt:32
-msgid "key_fact"
-msgstr "Key Facts?"
+#. Default: contact us
+#: templates/discussion/exit.pt:13
+msgid "contact_us"
+msgstr "contact us"
 
-#. Default: Our key facts in short
-#: templates/fieldtest.pt:34
-msgid "key_facts"
-msgstr "Our key facts in short"
+#. Default: Today's Summary
+#: templates/discussion/exit.pt:29
+msgid "todays_summary"
+msgstr "Todays Summary"
 
-#. Default: 318 visitor, 137 returned at least once
-#: templates/fieldtest.pt:36
-msgid "key_fact1"
-msgstr "318 visitor, 137 returned at least once"
+#. Default: Statements posted
+#: templates/discussion/exit.pt:34 templates/user/details.pt:52
+#: templates/user/settings.pt:190
+msgid "statements_posted"
+msgstr "Statements posted"
 
-#. Default: 47 registrations, 35 contributed at least once
-#: templates/fieldtest.pt:37
-msgid "key_fact2"
-msgstr "47 registrations, 35 contributed at least once"
+#. Default: Edits done
+#: templates/discussion/exit.pt:38 templates/user/details.pt:56
+#: templates/user/settings.pt:200
+msgid "edits_done"
+msgstr "Edits done"
 
-#. Default: 235 contributed arguments
-#: templates/fieldtest.pt:38
-msgid "key_fact3"
-msgstr "235 contributed arguments"
+#. Default: Statements reported
+#: templates/discussion/exit.pt:42
+msgid "statements_reported"
+msgstr "Statements reported"
 
-#. Default: 47 flagged statements
-#: templates/fieldtest.pt:39
-msgid "key_fact4"
-msgstr "47 flagged statements"
+#. Default: Collected reputation
+#: templates/discussion/exit.pt:46
+msgid "reputation_colltected"
+msgstr "Collected reputation"
 
-#. Default: The discussion can be seen
-#: templates/fieldtest.pt:41
-msgid "discussion_can_be_seen"
-msgstr "The discussion can be seen"
+#. Default: Votes for Arguments
+#. Default: Votes for Statements
+#: templates/discussion/exit.pt:55 templates/user/details.pt:68
+#: templates/user/settings.pt:233
+msgid "discussion_votes_statements"
+msgstr "Marked Arguments"
 
-#. Default: here
-#: templates/fieldtest.pt:43 templates/fieldtest.pt:46
-#: templates/fieldtest.pt:70
-msgid "here"
-msgstr "here"
+#. Default: Votes for Statements
+#. Default: Votes for Arguments
+#: templates/discussion/exit.pt:61 templates/user/details.pt:64
+#: templates/user/settings.pt:243
+msgid "discussion_votes_arguments"
+msgstr "Marked Statements"
 
-#. Default: and a translated, english version is available
-#: templates/fieldtest.pt:44
-msgid "and_a_translated"
-msgstr "and a translated, english version is available"
+#. Default: Clicks for Arguments
+#: templates/discussion/exit.pt:67 templates/user/settings.pt:209
+msgid "discussion_clicked_statements"
+msgstr "Clicked Arguments"
 
-#. Default: Why?
-#: templates/fieldtest.pt:50
-msgid "why"
-msgstr "Why?"
+#. Default: Clicks for Statements
+#: templates/discussion/exit.pt:73 templates/user/settings.pt:219
+msgid "discussion_clicked_arguments"
+msgstr "Clicked Statements"
 
-#. Default: We were primarily focused on two question
-#: templates/fieldtest.pt:52
-msgid "key_questions"
-msgstr "We were primarily focused on two question"
+#. Default: Let's go home!
+#: templates/discussion/exit.pt:90
+msgid "lets_go_home"
+msgstr "Let's go home"
 
-#. Default: Does the dialog-based approach works for untrained users in a real-
-#. world setting?
-#: templates/fieldtest.pt:54
-msgid "key_question1"
+#. Default: Back to the discussion!
+#: templates/discussion/exit.pt:94
+msgid "back_to_the_discussion"
+msgstr "Back to the discussion"
+
+#. Default: Overview of the Discussions
+#: templates/discussion/myoverview.pt:8
+msgid "overview_of_discussion="
+msgstr "Overview of the Discussions"
+
+#. Default: This page contains an over of discussions you have created as well
+#. as other participants created
+#: templates/discussion/myoverview.pt:9
+msgid "page_contains_overview_all_created"
 msgstr ""
-"Does the dialog-based approach works for untrained users in a real-world "
-"setting?"
+"This page contains an overview of discussions you have created as well as "
+"other participants created"
 
-#. Default: Does a decentralized moderation system works for a dialog-based
-#. argumentation system?
-#: templates/fieldtest.pt:57
-msgid "key_question2"
+#. Default: Overview of the Discussions
+#: templates/discussion/start.pt:9
+msgid "overview_of_discussion"
+msgstr "Overview of the Discussions"
+
+#. Default: This page contains an over of discussions
+#: templates/discussion/start.pt:10
+msgid "page_contains_overview"
+msgstr "This page contains an overview of discussions:"
+
+#. Default: You could be the first participant in this discussion!
+#: templates/discussion/start.pt:22
+#, fuzzy
+msgid "first_participant"
+msgstr "You could be the first participant in this discussion!"
+
+#. Default: One participant has already written
+#: templates/discussion/start.pt:25
+#, fuzzy
+msgid "first_participant_start"
+msgstr "One participant has already written"
+
+#. Default: arguments in this discussion!
+#: templates/discussion/start.pt:28
+#, fuzzy
+msgid "first_participant_end"
+msgstr "arguments in this discussion!"
+
+#. Default: At this discussion
+#: templates/discussion/start.pt:31
+#, fuzzy
+msgid "normal_participant_start"
+msgstr "At this discussion"
+
+#. Default: participants with
+#: templates/discussion/start.pt:34
+#, fuzzy
+msgid "normal_participant_middle"
+msgstr "participants with"
+
+#. Default: arguments have already discussed!
+#: templates/discussion/start.pt:37
+#, fuzzy
+msgid "normal_participant_end"
+msgstr "arguments have already discussed!"
+
+#. Default: Want to discuss?
+#: templates/discussion/start.pt:40
+#, fuzzy
+msgid "offer_discussion"
+msgstr "Want to discuss?"
+
+#. Default: Current discussions:
+#: templates/discussion/start.pt:57
+msgid "current_discussion"
+msgstr "Current discussions:"
+
+#. Default: Titel
+#: templates/discussion/start.pt:61 templates/discussion/start.pt:100
+#: templates/discussion/organism/overview-other.pt:26
+#: templates/discussion/organism/overview-user.pt:18
+msgid "title"
+msgstr "Title"
+
+#. Default: Language
+#: templates/discussion/start.pt:62 templates/discussion/start.pt:101
+#: templates/discussion/organism/overview-other.pt:29
+#: templates/discussion/organism/overview-user.pt:21
+msgid "language"
+msgstr "Language"
+
+#. Default: Statements
+#: templates/discussion/start.pt:63 templates/discussion/start.pt:102
+#: templates/discussion/organism/graph-sidebar.pt:23
+#: templates/discussion/organism/overview-other.pt:27
+#: templates/discussion/organism/overview-user.pt:19
+msgid "statements"
+msgstr "Statements"
+
+#. Default: Activity (Last 14 days)
+#: templates/discussion/start.pt:64 templates/discussion/start.pt:103
+msgid "activity_last_14_days"
+msgstr "Activity (Last 30 days)"
+
+#. Default: Creation
+#: templates/discussion/start.pt:65 templates/discussion/start.pt:104
+#: templates/discussion/organism/overview-other.pt:30
+#: templates/discussion/organism/overview-user.pt:22
+msgid "creation"
+msgstr "Creation"
+
+#. Default: Closed discussions:
+#: templates/discussion/start.pt:96
+msgid "closed_discussion"
+msgstr "Closed discussions:"
+
+#. Default: It has an estimated cost of
+#: templates/discussion/organism/add-statement.pt:47
+msgid "decidotron_cost_of_position"
+msgstr "It has an estimated cost of"
+
+#. Default: Die Zeit zum hinzufügen von neuen Vorschlägen ist abgelaufen. Du
+#. kannst allerdings noch abstimmen!
+#: templates/discussion/organism/add-statement.pt:73
+msgid "decidotron_positions_ended"
+msgstr "You can't add positions anymore."
+
+#. Default: Vote!
+#: templates/discussion/organism/dialog-sidebar.pt:34
+msgid "decidotron_vote_button_label"
+msgstr "Vote!"
+
+#. Default: Login to vote!
+#: templates/discussion/organism/dialog-sidebar.pt:41
+msgid "decidotron_login_to_vote_button_label"
+msgstr "Login to vote!"
+
+#. Default: Voting will be possible from
+#. ${issues.decidotron_budget.votes_start.strftime('%d.%m.%Y at %H:%M')}
+#: templates/discussion/organism/dialog-sidebar.pt:46
+msgid "decidotron_vote_will_start_at_button_label"
 msgstr ""
-"Does a decentralized moderation system works for a dialog-based "
-"argumentation system?"
+"Voting will be possible from ${issues.decidotron_budget.votes_start."
+"strftime('%d.%m.%Y at %H:%M')}"
 
-#. Default: Findings?
-#: templates/fieldtest.pt:64
-msgid "findings"
-msgstr "Findings?"
+#. Default: Results
+#: templates/discussion/organism/dialog-sidebar.pt:52
+msgid "decidotron_vote_results_button_label"
+msgstr "Results"
 
-#. Default: We had many findings from our field experiment. The main results
-#. are summarized in
-#: templates/fieldtest.pt:66
-msgid "findings1"
+#. Default: Restart Discussion
+#: templates/discussion/organism/dialog-sidebar.pt:58
+msgid "restart_discussion"
+msgstr "Restart Discussion"
+
+#. Default: Share URL
+#: templates/discussion/organism/dialog-sidebar.pt:64
+msgid "share_url"
+msgstr "Share URL"
+
+#. Default: Opinion Barometer
+#: templates/discussion/organism/dialog-sidebar.pt:70
+msgid "Barometer"
+msgstr "Opinion Barometer"
+
+#. Default: Graph View
+#: templates/discussion/organism/dialog-sidebar.pt:76
+msgid "graph_view"
+msgstr "Graph View"
+
+#. Default: Search for Statements
+#: templates/discussion/organism/dialog-sidebar.pt:82
+msgid "search"
+msgstr "Search for Statements"
+
+#. Default: Ask a Friend
+#: templates/discussion/organism/dialog-sidebar.pt:88
+msgid "ask_friend"
+msgstr "Ask a Friend"
+
+#. Default: Leave the Discussion
+#: templates/discussion/organism/dialog-sidebar.pt:94
+msgid "exit_discussion"
+msgstr "Leave the Discussion"
+
+#. Default: Info
+#. Default: Info:
+#: templates/discussion/organism/dialog-space.pt:8
+#: templates/snippet/popups.pt:284 templates/snippet/popups.pt:507
+#: templates/snippet/popups.pt:531
+msgid "info"
+msgstr "Info:"
+
+#. Default: In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!
+#: templates/discussion/organism/dialog-space.pt:9
+msgid "discussion_is_read_only"
+msgstr "No statements can be set for this discussion!"
+
+#. Default: Success
+#. Default: Success:
+#: templates/discussion/organism/dialog-space.pt:24
+#: templates/snippet/popups.pt:493 templates/snippet/popups.pt:524
+msgid "success"
+msgstr "Success:"
+
+#. Default: Complete View
+#: templates/discussion/organism/graph-sidebar.pt:7
+msgid "complete_view"
+msgstr "Complete View"
+
+#. Default: Default View
+#: templates/discussion/organism/graph-sidebar.pt:11
+msgid "default_view"
+msgstr "Default View"
+
+#. Default: Labels
+#: templates/discussion/organism/graph-sidebar.pt:15
+msgid "labels"
+msgstr "Lables"
+
+#. Default: Positions
+#: templates/discussion/organism/graph-sidebar.pt:19
+msgid "positions"
+msgstr "Positions"
+
+#. Default: My path
+#: templates/discussion/organism/graph-sidebar.pt:27
+#: templates/discussion/organism/graph-sidebar.pt:31
+msgid "my_path"
+msgstr "My path"
+
+#. Default: My statements
+#: templates/discussion/organism/graph-sidebar.pt:35
+msgid "my_statements"
+msgstr "My statements"
+
+#. Default: Supports
+#: templates/discussion/organism/graph-sidebar.pt:40
+msgid "supports_on_my_statements"
+msgstr "My supports"
+
+#. Default: Relations
+#: templates/discussion/organism/graph-sidebar.pt:45
+msgid "attacks_on_my_statements"
+msgstr "My attacks"
+
+#. Default: Start
+#: templates/discussion/organism/graph-view.pt:9
+msgid "start"
+msgstr "Start"
+
+#. Default: Now
+#: templates/discussion/organism/graph-view.pt:14
+msgid "now"
+msgstr "Now"
+
+#. Default: More Discussions
+#: templates/discussion/organism/overview-other.pt:6
+msgid "more_discussions"
+msgstr "More Discussions"
+
+#. Default: This is a summary of discussions other participants have created,
+#. but you are an admin. So you can en- and disable these discussions too:
+#: templates/discussion/organism/overview-other.pt:9
+msgid "summary_discussion_other_users_but_admin"
 msgstr ""
-"We had many findings from our field experiment. The overview results are "
-"summarized in"
+"This is a summary of discussions other participants have created, but you "
+"are an admin. So you can en- and disable these discussions too:"
 
-#. Default: this paper
-#: templates/fieldtest.pt:68
-msgid "this_paper"
-msgstr "this paper"
+#. Default: This is a summary of discussions other participants have created:
+#: templates/discussion/organism/overview-other.pt:15
+msgid "summary_discussion_other_users"
+msgstr "This is a summary of discussions other participants have created:"
 
-#. Default: Next to this, our colleague developed a tool to translate real
-#. world argumentation of D-BAS into abstract argumentation frameworks. This
-#. paper can be read
-#: templates/fieldtest.pt:69
-msgid "findings2"
+#. Default: Other users have not created any discussion yet.
+#: templates/discussion/organism/overview-other.pt:19
+msgid "other_users_not_discussion"
+msgstr "Other users have not created any discussion yet."
+
+#. Default: Participants
+#: templates/discussion/organism/overview-other.pt:28
+#: templates/discussion/organism/overview-user.pt:20
+msgid "participants"
+msgstr "Participants"
+
+#. Default: Enabled
+#: templates/discussion/organism/overview-other.pt:32
+#: templates/discussion/organism/overview-user.pt:23
+msgid "enabled"
+msgstr "Enabled"
+
+#. Default: Public
+#: templates/discussion/organism/overview-other.pt:36
+#: templates/discussion/organism/overview-user.pt:27
+msgid "public"
+msgstr "Public"
+
+#. Default: Writable
+#: templates/discussion/organism/overview-other.pt:41
+msgid "Writable"
+msgstr "Writable"
+
+#. Default: Short Link
+#: templates/discussion/organism/overview-other.pt:45
+#: templates/discussion/organism/overview-user.pt:35
+msgid "short_link"
+msgstr "Short Link"
+
+#. Default: My Discussions
+#: templates/discussion/organism/overview-user.pt:6
+#: templates/snippet/navbar.pt:29
+msgid "my_discussions"
+msgstr "My Discussions"
+
+#. Default: This is a summary of the discussions you have created:
+#: templates/discussion/organism/overview-user.pt:8
+msgid "summary_your_discussions"
+msgstr "This is a summary of the discussions you have created:"
+
+#. Default: You have not created any discussion yet, but you can use the add
+#. button in the bottom right to create your own discussion.
+#: templates/discussion/organism/overview-user.pt:11
+msgid "you_created_no_discussion"
 msgstr ""
-"Next to this, our colleague developed a tool to translate real world "
-"argumentation of D-BAS into abstract argumentation frameworks. This paper "
-"can be read"
+"You have not created any discussions yet, but maybe you can use the add "
+"button in the bottom left to create your own discussion."
 
-#. Default: The resulting dump of our PostgreSQL database can be downloaded
-#. from our
-#: templates/fieldtest.pt:72
-msgid "findings3"
+#. Default: Writable
+#: templates/discussion/organism/overview-user.pt:31
+msgid "writable"
+msgstr "Writable"
+
+#. Default: The history of votes
+#: templates/review/history.pt:8
+msgid "history_of_votes"
+msgstr "The history of votes"
+
+#. Default: Current decisions
+#: templates/review/history.pt:12
+msgid "current_decisions"
+msgstr "Current decisions"
+
+#. Default: This page contains lists with an over of past votes for each queue
+#: templates/review/history.pt:14
+msgid "page_contains_list_past_votes"
+msgstr "This page contains lists with an overview of past votes for each queue"
+
+#. Default: This page contains lists with an over of ongoing votes for each
+#. queue
+#: templates/review/history.pt:17
+msgid "page_contains_list_ongoing_votes"
+msgstr "This page contains lists with an overview of ongoing votes for each"
+
+#. Default: You have to earn more reputation for this queue
+#: templates/review/history.pt:27
+msgid "earn_more_reputation_for_queue"
+msgstr "You have to earn more reputation for this queue"
+
+#. Default: You have no access to this site
+#: templates/review/history.pt:28
+msgid "you_have_no_access"
+msgstr "You have no access to this site"
+
+#. Default: No decisions for this queue.
+#: templates/review/history.pt:41
+msgid "no_decision_for_this_queue"
+msgstr "No decisions for this queue."
+
+#. Default: Statement
+#: templates/review/history.pt:47 templates/snippet/popups.pt:1280
+#: templates/snippet/popups.pt:1310
+msgid "statement"
+msgstr "Statement"
+
+#. Default: Edit
+#: templates/review/history.pt:48
+msgid "edit"
+msgstr "Edit"
+
+#. Default: Reason
+#: templates/review/history.pt:49
+msgid "reason"
+msgstr "Reason"
+
+#. Default: Original
+#: templates/review/history.pt:50 templates/review/history.pt:51
+#: templates/review/type/optimize.pt:186
+msgid "original"
+msgstr "Original"
+
+#. Default: Votes
+#: templates/review/history.pt:52
+msgid "votes"
+msgstr "Votes"
+
+#. Default: Accepted
+#: templates/review/history.pt:53
+msgid "accepted"
+msgstr "Accepted"
+
+#. Default: Voters Pro
+#: templates/review/history.pt:54
+msgid "voters_pro"
+msgstr "Voters Pro"
+
+#. Default: Voters Con
+#: templates/review/history.pt:55
+msgid "voters_con"
+msgstr "Voters Con"
+
+#. Default: Timestamp
+#: templates/review/history.pt:56
+msgid "timestamp"
+msgstr "Timestamp"
+
+#. Default: Reporter
+#: templates/review/history.pt:57
+msgid "reporter"
+msgstr "Reporter"
+
+#. Default: Action
+#: templates/review/history.pt:58
+msgid "actions"
+msgstr "Action"
+
+#. Default: Undo
+#: templates/review/history.pt:110
+msgid "undo"
+msgstr "Undo"
+
+#. Default: Cancel
+#: templates/review/history.pt:115 templates/snippet/popups.pt:60
+#: templates/snippet/popups.pt:90 templates/snippet/popups.pt:124
+#: templates/snippet/popups.pt:1099 templates/snippet/popups.pt:1167
+#: templates/snippet/popups.pt:1358
+msgid "cancel"
+msgstr "Cancel"
+
+#. Default: Decentralized Moderation System
+#: templates/review/index.pt:6 templates/review/queue.pt:6
+msgid "decentralized_moderation_system"
+msgstr "Decentralized Moderation System"
+
+#. Default: The moderation of D-BAS is decentralized, so that you are able to
+#. maintain the content
+#: templates/review/index.pt:9 templates/review/queue.pt:9
+msgid "moderation_of_dbas_is_decentralized"
 msgstr ""
-"The resulting dump of our PostgreSQL database can be downloaded from our"
+"The moderation of D-BAS is decentralized, so that you are able to maintain "
+"the content"
 
-#. Default: server
-#: templates/fieldtest.pt:73
-msgid "server"
-msgstr "server"
+#. Default: Queues
+#: templates/review/index.pt:20
+msgid "queues"
+msgstr "Queues"
 
-#. Default: License CC BY-NC-SA
-#: templates/fieldtest.pt:74
-msgid "license_cc_by_nc_sa"
-msgstr "License CC BY-NC-SA"
+#. Default: How To
+#: templates/review/index.pt:21
+msgid "howto"
+msgstr "How To"
 
-#. Default: The archive contains three versions: the originaldataset of the
-#. discussion in German, a dataset which includes some corrections and a
-#. translated one.
-#: templates/fieldtest.pt:75
-msgid "the archive contains"
+#. Default: Help improve the dialog
+#: templates/review/index.pt:28
+msgid "help_to_improve"
+msgstr "Help improve the dialog"
+
+#. Default: D-BAS is moderated by you. Help your discussion members learn to
+#. argue and raise the quality of argumenty by:
+#: templates/review/index.pt:29
+msgid "dbas_is_moderated_by"
 msgstr ""
-"The archive contains three versions: the originaldataset of the discussion "
-"in German, a dataset which includes some corrections and a translated one."
+"D-BAS is moderated by you. Help your discussion members learn to argue and "
+"raise the quality of arguments by:"
 
-#. Default: The translation into an abstract AF can be
-#: templates/fieldtest.pt:76
-msgid "findings4"
-msgstr "The translation into an abstract AF can be"
+#. Default: Evaluate new statements
+#: templates/review/index.pt:32
+msgid "evaluate_new_statements"
+msgstr "evaluating new statements"
 
-#. Default: fetched to
-#: templates/fieldtest.pt:77
-msgid "fetched to"
-msgstr "fetched, too"
+#. Default: Reviewing suspicious statements
+#: templates/review/index.pt:35
+msgid "reviewing_suspicious_statements"
+msgstr "reviewing suspicious statements"
 
-#. Default: Open Source?
-#: templates/fieldtest.pt:83
-msgid "ope-Source"
-msgstr "Open Source?"
+#. Default: Voting to close or reopen statements
+#: templates/review/index.pt:38
+msgid "voting_to_close"
+msgstr "vote to close or reopen statements"
 
-#. Default: Of course! Every used tool is published under the MIT licence and
-#. hosted on GitHub
-#: templates/fieldtest.pt:85
-msgid "of_course_it_is_open_source"
+#. Default: Choose a task to get started.
+#: templates/review/index.pt:42
+msgid "choose_task"
+msgstr "Choose a task to get started!"
+
+#. Default: Based on your user group, you have all rights!
+#: templates/review/index.pt:51 templates/review/reputation.pt:8
+msgid "unlimited_right_based_on_group"
+msgstr "Based on your user group, you have all rights!"
+
+#. Default: Your current reputation count is
+#: templates/review/index.pt:54
+msgid "current_reputation_os"
+msgstr "Your current reputation count is"
+
+#. Default: Open Tasks
+#: templates/review/index.pt:65
+msgid "open_tasks"
+msgstr "Open Tasks"
+
+#. Default: Topic
+#: templates/review/index.pt:66
+msgid "topic"
+msgstr "Topic"
+
+#. Default: Recent Reviews
+#: templates/review/index.pt:67
+msgid "recent_reviews"
+msgstr "Recent Reviews"
+
+#. Default: None
+#: templates/review/index.pt:99
+msgid "None"
+msgstr "None"
+
+#. Default: What is reputation? How do I earn (and lose) it?
+#: templates/review/index.pt:111
+msgid "what_is_reputation"
+msgstr "What is reputation? How do I earn (and lose) it?"
+
+#. Default: Reputation is a rough measurement of how work you are doing for the
+#. discussion and the community.
+#: templates/review/index.pt:114
+msgid "what_is_reputation_def"
 msgstr ""
-"Of course! Every used tool is published under the MIT licencese and hosted "
-"on GitHub"
+"Reputation is a rough measurement of how work you are doing for the "
+"discussion and the community."
 
-#. Default: Documentation
-#: templates/docs.pt:6
-msgid "docs"
-msgstr "Documentation"
+#. Default: you can earn it by using D-BAS and all of its great functions.
+#: templates/review/index.pt:115
+msgid "what_is_reputation_earn"
+msgstr "You can earn it by using D-BAS and all of its great functions."
 
-#. Default: Where do I find it?
-#: templates/docs.pt:7
-msgid "where_do_i_find_it"
-msgstr "Where do I find it?"
+#. Default: Basic use of D-BAS, does not require any reputation at all.
+#: templates/review/index.pt:116
+msgid "what_is_reputation_use"
+msgstr "Basic use of D-BAS does not require any reputation at all."
+
+#. Default: You gain reputation when:
+#: templates/review/index.pt:119
+msgid "gain_rep_when"
+msgstr "You gain reputation when:"
+
+#. Default: You loose reputation when:
+#: templates/review/index.pt:128
+msgid "lose_rep_when"
+msgstr "You lose reputation when:"
+
+#. Default: Privileges
+#: templates/review/index.pt:140
+msgid "privileges"
+msgstr "Privileges"
+
+#. Default: Privileges control what you can see in the review queues of D-BAS.
+#. Gain more privileges by increasing your reputation.
+#: templates/review/index.pt:141
+msgid "privileges_explanation"
+msgstr ""
+"Privileges control what you can see in the review queues of D-BAS. Gain more "
+"privileges by increasing your reputation."
+
+#. Default: No arguments to review in this queue!
+#: templates/review/queue.pt:18
+msgid "no_arguments_to_review"
+msgstr "No arguments to review in this queue!"
+
+#. Default: Your Reputation
+#: templates/review/reputation.pt:6
+msgid "your_reputation"
+msgstr "Your Reputation"
+
+#. Default: Reputation count
+#: templates/review/reputation.pt:9
+msgid "reputation_count"
+msgstr "Reputation count"
+
+#. Default: Date
+#: templates/review/reputation.pt:25 templates/snippet/popups.pt:695
+msgid "date"
+msgstr "Date"
+
+#. Default: Action
+#: templates/review/reputation.pt:26
+msgid "action"
+msgstr "Action"
+
+#. Default: Reputation
+#: templates/review/reputation.pt:27 templates/user/details.pt:72
+#: templates/user/settings.pt:253
+msgid "reputation"
+msgstr "Reputation"
+
+#. Default: Review
+#: templates/review/type/delete.pt:6 templates/review/type/duplicate.pt:6
+#: templates/review/type/edit.pt:7 templates/review/type/merge.pt:6
+#: templates/review/type/optimize.pt:6 templates/review/type/split.pt:6
+#: templates/snippet/navbar.pt:80
+msgid "review"
+msgstr "Review"
+
+#. Default: Deletes
+#: templates/review/type/delete.pt:7
+msgid "deletes"
+msgstr "Deletes"
+
+#. Default: (more)
+#: templates/review/type/delete.pt:15 templates/review/type/duplicate.pt:15
+#: templates/review/type/edit.pt:18 templates/review/type/merge.pt:15
+#: templates/review/type/optimize.pt:17 templates/review/type/split.pt:15
+msgid "wrapped_more"
+msgstr "(more)"
+
+#. Default: (less)
+#: templates/review/type/delete.pt:16 templates/review/type/duplicate.pt:16
+#: templates/review/type/edit.pt:19 templates/review/type/merge.pt:16
+#: templates/review/type/optimize.pt:18 templates/review/type/split.pt:16
+msgid "wrapped_less"
+msgstr "(less)"
+
+#. Default: Delete it
+#: templates/review/type/delete.pt:23 templates/review/type/delete.pt:70
+msgid "delete_it"
+msgstr "Delete it"
+
+#. Default: It's Okay
+#. Default: It's okay
+#: templates/review/type/delete.pt:27 templates/review/type/delete.pt:66
+#: templates/review/type/edit.pt:25 templates/review/type/edit.pt:51
+msgid "its_okay"
+msgstr "It's Okay"
+
+#. Default: Skip it
+#: templates/review/type/delete.pt:31 templates/review/type/delete.pt:74
+#: templates/review/type/duplicate.pt:35 templates/review/type/duplicate.pt:60
+#: templates/review/type/edit.pt:33 templates/review/type/edit.pt:59
+#: templates/review/type/merge.pt:32 templates/review/type/merge.pt:57
+#: templates/review/type/optimize.pt:35 templates/review/type/optimize.pt:79
+#: templates/review/type/split.pt:32 templates/review/type/split.pt:57
+msgid "skip_it"
+msgstr "Skip it"
+
+#. Default: Information for the different reasons
+#: templates/review/type/delete.pt:41 templates/review/type/optimize.pt:46
+msgid "information_for_the_different_reasons"
+msgstr "Information for the different reasons"
+
+#. Default: Off topic or irrelevant
+#: templates/review/type/delete.pt:44 templates/review/type/optimize.pt:49
+msgid "off_topic_or_irrelevant"
+msgstr "Off topic or irrelevant"
+
+#. Default: text does not belong to the topic under discussion
+#: templates/review/type/delete.pt:45 templates/review/type/optimize.pt:50
+msgid "off_topic_explanation"
+msgstr "text does not belong to the topic under discussion"
+
+#. Default: Inappropriate, harmful or abusive
+#: templates/review/type/delete.pt:48 templates/review/type/optimize.pt:53
+msgid "inappropriate_harmful_abbusive"
+msgstr "Inappropriate, harmful or abbusive"
+
+#. Default: are posts, which are inappropriate, harmful or abbusive
+#: templates/review/type/delete.pt:49 templates/review/type/optimize.pt:54
+msgid "inappropriate_harmful_abbusive_explanation"
+msgstr "are posts, which are inappropriate, harmful or abbusive"
+
+#. Default: Needs optimization
+#: templates/review/type/delete.pt:52 templates/review/type/optimize.pt:57
+msgid "needs_optimization"
+msgstr "Needs optimization"
+
+#. Default: if posts are useful, but need edits in grammar and/or spelling
+#: templates/review/type/delete.pt:53 templates/review/type/optimize.pt:58
+msgid "needs_optimization_explanation"
+msgstr "if posts are useful, but need edits in grammar and/or spelling"
+
+#. Default: Information for the different buttons
+#: templates/review/type/delete.pt:61 templates/review/type/duplicate.pt:47
+#: templates/review/type/edit.pt:45 templates/review/type/merge.pt:44
+#: templates/review/type/optimize.pt:66 templates/review/type/split.pt:44
+msgid "information_for_the_different_buttons"
+msgstr "Information for the different buttons"
+
+#. Default: for arguments, which should not be deleted.
+#: templates/review/type/delete.pt:67
+msgid "its_okay_explanation"
+msgstr "for arguments, which should not be deleted."
+
+#. Default: for arguments, that should be deleted based on the reason above.
+#: templates/review/type/delete.pt:71
+msgid "delete_it_explanation"
+msgstr "for arguments, that should be deleted based on the reason above."
+
+#. Default: if you are not sure and want to go to the next argument.
+#. Default: if you are not sure and want to go to the next statement.
+#: templates/review/type/delete.pt:75 templates/review/type/duplicate.pt:61
+#: templates/review/type/edit.pt:60 templates/review/type/merge.pt:58
+#: templates/review/type/optimize.pt:80 templates/review/type/split.pt:58
+msgid "skip_it_explanation"
+msgstr "if you are not sure and want to go to the next argument."
+
+#. Default: In the discussion about
+#: templates/review/type/delete.pt:90 templates/review/type/duplicate.pt:74
+#: templates/review/type/edit.pt:75 templates/review/type/optimize.pt:95
+#: templates/review/type/split.pt:73
+msgid "in_the_discussion_about"
+msgstr "In the discussion about"
+
+#. Default: In the discussions about
+#: templates/review/type/delete.pt:91 templates/review/type/duplicate.pt:75
+#: templates/review/type/edit.pt:76 templates/review/type/optimize.pt:96
+#: templates/review/type/split.pt:74
+msgid "in_the_discussions_about"
+msgstr "In the discussions about"
+
+#. Default: following argument was flagged.
+#: templates/review/type/delete.pt:95 templates/review/type/optimize.pt:100
+msgid "following_argument_was_flagged"
+msgstr "following argument was flagged:"
+
+#. Default: Reported
+#: templates/review/type/delete.pt:113 templates/review/type/duplicate.pt:107
+#: templates/review/type/edit.pt:123 templates/review/type/merge.pt:97
+#: templates/review/type/optimize.pt:129 templates/review/type/split.pt:105
+msgid "reported"
+msgstr "Reported"
+
+#. Default: Reported by
+#: templates/review/type/delete.pt:117 templates/review/type/duplicate.pt:111
+#: templates/review/type/edit.pt:127 templates/review/type/merge.pt:101
+#: templates/review/type/optimize.pt:133 templates/review/type/split.pt:109
+msgid "reported_by"
+msgstr "Reported by"
+
+#. Default: Viewed
+#: templates/review/type/delete.pt:127 templates/review/type/duplicate.pt:121
+#: templates/review/type/edit.pt:137 templates/review/type/merge.pt:111
+#: templates/review/type/optimize.pt:143 templates/review/type/split.pt:119
+msgid "viewed"
+msgstr "Viewed"
+
+#. Default: Relations
+#: templates/review/type/delete.pt:131 templates/review/type/duplicate.pt:125
+#: templates/review/type/edit.pt:141 templates/review/type/merge.pt:115
+#: templates/review/type/optimize.pt:147 templates/review/type/split.pt:123
+msgid "attacks"
+msgstr "Attacks"
+
+#. Default: Supports
+#: templates/review/type/delete.pt:135 templates/review/type/duplicate.pt:129
+#: templates/review/type/edit.pt:145 templates/review/type/merge.pt:119
+#: templates/review/type/optimize.pt:151 templates/review/type/split.pt:127
+msgid "supports"
+msgstr "Supports"
+
+#. Default: Duplicates
+#: templates/review/type/duplicate.pt:7
+msgid "duplicates"
+msgstr "Duplicates"
+
+#. Default: Duplicate
+#: templates/review/type/duplicate.pt:24
+msgid "duplicate"
+msgstr "Duplicate"
+
+#. Default: Unique
+#: templates/review/type/duplicate.pt:30
+msgid "unique"
+msgstr "Unique"
+
+#. Default: It's a duplicate
+#: templates/review/type/duplicate.pt:52
+msgid "its_duplicate"
+msgstr "It's a duplicate"
+
+#. Default: , if the marked statement is a duplicate.
+#: templates/review/type/duplicate.pt:53
+msgid "marked_statement_is_duplicate"
+msgstr ", if the marked statement is a duplicate."
+
+#. Default: It's unique
+#: templates/review/type/duplicate.pt:56
+msgid "its_unique"
+msgstr "It's unique"
+
+#. Default: for marked statements, which are unique.
+#: templates/review/type/duplicate.pt:57
+msgid "duplicate_is_unique"
+msgstr "for marked statements, which are unique."
+
+#. Default: following statement was flagged.
+#: templates/review/type/duplicate.pt:79 templates/review/type/split.pt:78
+msgid "following_statement_was_flagged"
+msgstr "following statement was flagged:"
+
+#. Default: This is the original statement:
+#: templates/review/type/duplicate.pt:91
+msgid "this_is_original_statements"
+msgstr "This is the original statement:"
+
+#. Default: Edits
+#: templates/review/type/edit.pt:8
+msgid "edits"
+msgstr "Edits"
+
+#. Default: Reject it
+#: templates/review/type/edit.pt:29 templates/review/type/edit.pt:55
+#: templates/review/type/merge.pt:28 templates/review/type/merge.pt:53
+#: templates/review/type/split.pt:28 templates/review/type/split.pt:53
+msgid "reject_it"
+msgstr "Reject it"
+
+#. Default: , if the correction is acceptable and the argument is not
+#. falsified.
+#: templates/review/type/edit.pt:52
+msgid "correction_is_okay"
+msgstr ", if the correction is acceptable and the argument is not"
+
+#. Default: for correction which are inappropriate are wrong.
+#: templates/review/type/edit.pt:56
+msgid "reject_itexplanation"
+msgstr "for correction which are inappropriate are wrong."
+
+#. Default: following argument was corrected.
+#: templates/review/type/edit.pt:80
+msgid "following_argument_was_corrected"
+msgstr "following argument was corrected."
+
+#. Default: These are the edits:
+#: templates/review/type/edit.pt:92
+msgid "these_are_the_edits"
+msgstr "These are the edits:"
+
+#. Default: This is the original version
+#: templates/review/type/edit.pt:104
+msgid "this_is_original_version"
+msgstr "This is the original version"
+
+#. Default: Merge
+#: templates/review/type/merge.pt:7
+msgid "merge"
+msgstr "Merge"
+
+#. Default: Change is okay
+#: templates/review/type/merge.pt:23 templates/review/type/split.pt:23
+msgid "change_okay"
+msgstr "Change is okay"
+
+#. Default: Merge it
+#: templates/review/type/merge.pt:49
+msgid "merge_it"
+msgstr "Merge it"
+
+#. Default: , if the selected statements should be one, single statements and
+#. the given proposal matches to the original contents.
+#: templates/review/type/merge.pt:50
+msgid "marked_statement_to_merge"
+msgstr ""
+", if the selected statements should be one, single statements and the given "
+"proposal matches to the original contents."
+
+#. Default: for marked statements, which are unique.
+#: templates/review/type/merge.pt:54
+msgid "statement_not_to_merge"
+msgstr "for marked statements, which should not be merged."
+
+#. Default: This statement should be merged to:
+#: templates/review/type/merge.pt:80
+msgid "this_statement_should_be_merged"
+msgstr "This statement should be merged to:"
+
+#. Default: Optimizations
+#: templates/review/type/optimize.pt:7
+msgid "optimizations"
+msgstr "Optimizations"
+
+#. Default: Let me correct it
+#: templates/review/type/optimize.pt:25 templates/review/type/optimize.pt:71
+msgid "correct_it"
+msgstr "Let me correct it"
+
+#. Default: It's okay so
+#: templates/review/type/optimize.pt:30 templates/review/type/optimize.pt:75
+msgid "its_okay_so"
+msgstr "It's okay so"
+
+#. Default: , if you have an idea for a better formulation with the same
+#. content.
+#: templates/review/type/optimize.pt:72
+msgid "correct_it_explanation"
+msgstr ", if you have an idea for a better formulation with the same"
+
+#. Default: for arguments, which can be understood as-is.
+#: templates/review/type/optimize.pt:76
+msgid "its_okay_so_explanation"
+msgstr "for arguments, which can be understood as-is."
+
+#. Default: Context, where the statement is used:
+#: templates/review/type/optimize.pt:114
+msgid "context_where_statement_is_used"
+msgstr "Context, where the statement is used:"
+
+#. Default: Request lock
+#: templates/review/type/optimize.pt:171
+msgid "request_lock"
+msgstr "Request lock"
+
+#. Default: This argument is locked for your edit. You have
+#: templates/review/type/optimize.pt:177
+msgid "argument_is_locked"
+msgstr "This argument is locked for your edit. You have"
+
+#. Default: minutes
+#: templates/review/type/optimize.pt:179
+msgid "minutes"
+msgstr "minutes"
+
+#. Default: Please make your edits in grammar and/or spelling here:
+#: templates/review/type/optimize.pt:180
+msgid "please_make_your_edits"
+msgstr "Please make your edits in grammar and/or spelling here:"
+
+#. Default: Your correcture
+#: templates/review/type/optimize.pt:187
+msgid "your correcture"
+msgstr "Your correcture"
+
+#. Default: Send
+#: templates/review/type/optimize.pt:205
+msgid "send"
+msgstr "Send"
+
+#. Default: Split
+#: templates/review/type/split.pt:7
+msgid "split"
+msgstr "Split"
+
+#. Default: Split it
+#: templates/review/type/split.pt:49
+msgid "split_it"
+msgstr "Split it"
+
+#. Default: , if the selected statement is a set of more than one statement and
+#. the given proposals match to the original content.
+#: templates/review/type/split.pt:50
+msgid "marked_statement_to_slit"
+msgstr ""
+", if the selected statement is a set of than one statement and the given "
+"proposals match to the original content."
+
+#. Default: for marked statements, which are unique.
+#: templates/review/type/split.pt:54
+msgid "statement_not_to_split"
+msgstr "for marked statements, which should not be splitted."
+
+#. Default: This statement should be split into:
+#: templates/review/type/split.pt:91
+msgid "this_statement_should_be_splitted"
+msgstr "This statement should be splitted into:"
 
 #. Default: Help
 #: templates/snippet/footer.pt:33
@@ -832,19 +1873,65 @@ msgstr "Github"
 msgid "field_experiment"
 msgstr "Field Experiment"
 
+#. Default: Toggle navigation
+#: templates/snippet/navbar.pt:12
+msgid "Toggle Navigation"
+msgstr "Toggle navigation"
+
+#. Default: Let's go
+#: templates/snippet/navbar.pt:23
+msgid "lets_go"
+msgstr "Let's go"
+
+#. Default: Switch Topic
+#: templates/snippet/navbar.pt:36
+msgid "switch_topic"
+msgstr "Switch Topic"
+
+#. Default: Übersicht
+#: templates/snippet/navbar.pt:54
+msgid "overview"
+msgstr "Overview"
+
+#. Default: Add a Topic
+#. Default: Add Topic
+#: templates/snippet/navbar.pt:57 templates/snippet/navbar.pt:62
+#: templates/snippet/popups.pt:781
+msgid "add_topic"
+msgstr "Add a Topic"
+
+#. Default: Login
+#. Default: Log In
+#: templates/snippet/navbar.pt:74 templates/snippet/popups.pt:314
+#: templates/snippet/popups.pt:380
+msgid "login"
+msgstr "Log In"
+
+#. Default: Settings
+#: templates/snippet/navbar.pt:98 templates/user/settings.pt:54
+msgid "settings"
+msgstr "Settings"
+
+#. Default: Notifications
+#: templates/snippet/navbar.pt:106
+msgid "notifications"
+msgstr "Notifications"
+
+#. Default: Admin
+#: templates/snippet/navbar.pt:113
+msgid "Admin"
+msgstr "Admin"
+
+#. Default: Logout
+#: templates/snippet/navbar.pt:118
+msgid "logout"
+msgstr "Logout"
+
 #. Default: Okay
 #: templates/snippet/popups.pt:57 templates/snippet/popups.pt:86
 #: templates/snippet/popups.pt:120 templates/snippet/popups.pt:1354
 msgid "okay"
 msgstr "Okay"
-
-#. Default: Cancel
-#: templates/snippet/popups.pt:60 templates/snippet/popups.pt:90
-#: templates/snippet/popups.pt:124 templates/snippet/popups.pt:1099
-#: templates/snippet/popups.pt:1167 templates/snippet/popups.pt:1358
-#: templates/review/history.pt:115
-msgid "cancel"
-msgstr "Cancel"
 
 #. Default: Do not remind me again
 #: templates/snippet/popups.pt:113
@@ -909,14 +1996,6 @@ msgstr "Password (confirm)"
 msgid "error"
 msgstr "Error:"
 
-#. Default: Info:
-#. Default: Info
-#: templates/snippet/popups.pt:284 templates/snippet/popups.pt:507
-#: templates/snippet/popups.pt:531
-#: templates/discussion/organism/dialog-space.pt:8
-msgid "info"
-msgstr "Info:"
-
 #. Default: Register
 #: templates/snippet/popups.pt:291 templates/snippet/popups.pt:538
 msgid "register"
@@ -929,22 +2008,15 @@ msgstr "Register"
 msgid "close"
 msgstr "Close"
 
-#. Default: Log In
-#. Default: Login
-#: templates/snippet/popups.pt:314 templates/snippet/popups.pt:380
-#: templates/snippet/navbar.pt:74
-msgid "login"
-msgstr "Log In"
-
 #. Default: Sign Up
 #: templates/snippet/popups.pt:315
 msgid "sign_up"
 msgstr "Sign Up"
 
 #. Default: Your submitted data is being licensed under Creative Commons Share
-#. Alike (CC BY-SA 4.0) and will be used for scientific purposes. We will never
-#. share your password or e-mail address. By registrating or logging in, you
-#. are accepting these terms.
+#. Alike and will be used for scientific purposes. We will never share your
+#. password or e-mail address. By registering or logging in, you are accepting
+#. these terms.
 #: templates/snippet/popups.pt:320
 msgid "all_data_is_free"
 msgstr ""
@@ -992,13 +2064,6 @@ msgstr "very weak"
 msgid "captcha"
 msgstr "Solve this captcha"
 
-#. Default: Success:
-#. Default: Success
-#: templates/snippet/popups.pt:493 templates/snippet/popups.pt:524
-#: templates/discussion/organism/dialog-space.pt:24
-msgid "success"
-msgstr "Success:"
-
 #. Default: Or login via
 #: templates/snippet/popups.pt:547
 msgid "or_login_via"
@@ -1024,11 +2089,6 @@ msgstr "Success:"
 msgid "author"
 msgstr "Author"
 
-#. Default: Date
-#: templates/snippet/popups.pt:695 templates/review/reputation.pt:25
-msgid "date"
-msgstr "Date"
-
 #. Default: Send News
 #: templates/snippet/popups.pt:700
 msgid "send_news"
@@ -1038,13 +2098,6 @@ msgstr "Send News"
 #: templates/snippet/popups.pt:765
 msgid "send_notification"
 msgstr "Send Notifcation"
-
-#. Default: Add Topic
-#. Default: Add a Topic
-#: templates/snippet/popups.pt:781 templates/snippet/navbar.pt:57
-#: templates/snippet/navbar.pt:62
-msgid "add_topic"
-msgstr "Add a Topic"
 
 #. Default: Please enter your title here:
 #: templates/snippet/popups.pt:786
@@ -1257,12 +2310,6 @@ msgstr ""
 "Statement is a cite from a website like a newspaper article, which underpins "
 "the opinion. The source is the website as link."
 
-#. Default: Statement
-#: templates/snippet/popups.pt:1280 templates/snippet/popups.pt:1310
-#: templates/review/history.pt:47
-msgid "statement"
-msgstr "Statement"
-
 #. Default: Source
 #: templates/snippet/popups.pt:1289
 msgid "source"
@@ -1277,60 +2324,6 @@ msgstr "Please choose a statement for your reference!"
 #: templates/snippet/popups.pt:1316
 msgid "add_reference"
 msgstr "Add reference"
-
-#. Default: Toggle navigation
-#: templates/snippet/navbar.pt:12
-msgid "Toggle Navigation"
-msgstr "Toggle navigation"
-
-#. Default: Let's go
-#: templates/snippet/navbar.pt:23
-msgid "lets_go"
-msgstr "Let's go"
-
-#. Default: My Discussions
-#: templates/snippet/navbar.pt:29
-#: templates/discussion/organism/overview-user.pt:6
-msgid "my_discussions"
-msgstr "My Discussions"
-
-#. Default: Switch Topic
-#: templates/snippet/navbar.pt:36
-msgid "switch_topic"
-msgstr "Switch Topic"
-
-#. Default: Übersicht
-#: templates/snippet/navbar.pt:54
-msgid "overview"
-msgstr "Overview"
-
-#. Default: Review
-#: templates/snippet/navbar.pt:80 templates/review/type/split.pt:6
-#: templates/review/type/duplicate.pt:6 templates/review/type/optimize.pt:6
-#: templates/review/type/delete.pt:6 templates/review/type/merge.pt:6
-#: templates/review/type/edit.pt:7
-msgid "review"
-msgstr "Review"
-
-#. Default: Settings
-#: templates/snippet/navbar.pt:98 templates/user/settings.pt:54
-msgid "settings"
-msgstr "Settings"
-
-#. Default: Notifications
-#: templates/snippet/navbar.pt:106
-msgid "notifications"
-msgstr "Notifications"
-
-#. Default: Admin
-#: templates/snippet/navbar.pt:113
-msgid "Admin"
-msgstr "Admin"
-
-#. Default: Logout
-#: templates/snippet/navbar.pt:118
-msgid "logout"
-msgstr "Logout"
 
 #. Default: Personal User Page
 #: templates/user/details.pt:6
@@ -1372,42 +2365,10 @@ msgstr "Profile Picture of"
 msgid "discussion_stat"
 msgstr "Discussion Statistics"
 
-#. Default: Statements posted
-#: templates/user/details.pt:52 templates/user/settings.pt:190
-#: templates/discussion/exit.pt:34
-msgid "statements_posted"
-msgstr "Statements posted"
-
-#. Default: Edits done
-#: templates/user/details.pt:56 templates/user/settings.pt:200
-#: templates/discussion/exit.pt:38
-msgid "edits_done"
-msgstr "Edits done"
-
 #. Default: Reviews proposed
 #: templates/user/details.pt:60
 msgid "reviews_proposed"
 msgstr "Reviews proposed"
-
-#. Default: Votes for Arguments
-#. Default: Votes for Statements
-#: templates/user/details.pt:64 templates/user/settings.pt:243
-#: templates/discussion/exit.pt:61
-msgid "discussion_votes_arguments"
-msgstr "Marked Statements"
-
-#. Default: Votes for Statements
-#. Default: Votes for Arguments
-#: templates/user/details.pt:68 templates/user/settings.pt:233
-#: templates/discussion/exit.pt:55
-msgid "discussion_votes_statements"
-msgstr "Marked Arguments"
-
-#. Default: Reputation
-#: templates/user/details.pt:72 templates/user/settings.pt:253
-#: templates/review/reputation.pt:27
-msgid "reputation"
-msgstr "Reputation"
 
 #. Default: Notification Board
 #: templates/user/notifications.pt:6
@@ -1560,16 +2521,6 @@ msgstr "Settings could not be set. Please try again later."
 msgid "settings_set"
 msgstr "Settings were set successfully."
 
-#. Default: Clicks for Arguments
-#: templates/user/settings.pt:209 templates/discussion/exit.pt:67
-msgid "discussion_clicked_statements"
-msgstr "Clicked Arguments"
-
-#. Default: Clicks for Statements
-#: templates/user/settings.pt:219 templates/discussion/exit.pt:73
-msgid "discussion_clicked_arguments"
-msgstr "Clicked Statements"
-
 #. Default: Profile Picture
 #: templates/user/settings.pt:272
 msgid "profile_picture"
@@ -1631,914 +2582,8 @@ msgstr "New Password (confirm)"
 msgid "password_changed"
 msgstr "Your password was changed"
 
-#. Default: The history of votes
-#: templates/review/history.pt:8
-msgid "history_of_votes"
-msgstr "The history of votes"
-
-#. Default: Current decisions
-#: templates/review/history.pt:12
-msgid "current_decisions"
-msgstr "Current decisions"
-
-#. Default: This page contains lists with an over of past votes for each queue
-#: templates/review/history.pt:14
-msgid "page_contains_list_past_votes"
-msgstr "This page contains lists with an overview of past votes for each queue"
-
-#. Default: This page contains lists with an over of ongoing votes for each
-#. queue
-#: templates/review/history.pt:17
-msgid "page_contains_list_ongoing_votes"
-msgstr "This page contains lists with an overview of ongoing votes for each"
-
-#. Default: You have to earn more reputation for this queue
-#: templates/review/history.pt:27
-msgid "earn_more_reputation_for_queue"
-msgstr "You have to earn more reputation for this queue"
-
-#. Default: You have no access to this site
-#: templates/review/history.pt:28
-msgid "you_have_no_access"
-msgstr "You have no access to this site"
-
-#. Default: No decisions for this queue.
-#: templates/review/history.pt:41
-msgid "no_decision_for_this_queue"
-msgstr "No decisions for this queue."
-
-#. Default: Edit
-#: templates/review/history.pt:48
-msgid "edit"
-msgstr "Edit"
-
-#. Default: Reason
-#: templates/review/history.pt:49
-msgid "reason"
-msgstr "Reason"
-
-#. Default: Original
-#: templates/review/history.pt:50 templates/review/history.pt:51
-#: templates/review/type/optimize.pt:186
-msgid "original"
-msgstr "Original"
-
-#. Default: Votes
-#: templates/review/history.pt:52
-msgid "votes"
-msgstr "Votes"
-
-#. Default: Accepted
-#: templates/review/history.pt:53
-msgid "accepted"
-msgstr "Accepted"
-
-#. Default: Voters Pro
-#: templates/review/history.pt:54
-msgid "voters_pro"
-msgstr "Voters Pro"
-
-#. Default: Voters Con
-#: templates/review/history.pt:55
-msgid "voters_con"
-msgstr "Voters Con"
-
-#. Default: Timestamp
-#: templates/review/history.pt:56
-msgid "timestamp"
-msgstr "Timestamp"
-
-#. Default: Reporter
-#: templates/review/history.pt:57
-msgid "reporter"
-msgstr "Reporter"
-
-#. Default: Action
-#: templates/review/history.pt:58
-msgid "actions"
-msgstr "Action"
-
-#. Default: Undo
-#: templates/review/history.pt:110
-msgid "undo"
-msgstr "Undo"
-
-#. Default: Decentralized Moderation System
-#: templates/review/queue.pt:6 templates/review/index.pt:6
-msgid "decentralized_moderation_system"
-msgstr "Decentralized Moderation System"
-
-#. Default: The moderation of D-BAS is decentralized, so that you are able to
-#. maintain the content
-#: templates/review/queue.pt:9 templates/review/index.pt:9
-msgid "moderation_of_dbas_is_decentralized"
-msgstr ""
-"The moderation of D-BAS is decentralized, so that you are able to maintain "
-"the content"
-
-#. Default: No arguments to review in this queue!
-#: templates/review/queue.pt:18
-msgid "no_arguments_to_review"
-msgstr "No arguments to review in this queue!"
-
-#. Default: Your Reputation
-#: templates/review/reputation.pt:6
-msgid "your_reputation"
-msgstr "Your Reputation"
-
-#. Default: Based on your user group, you have all rights!
-#: templates/review/reputation.pt:8 templates/review/index.pt:51
-msgid "unlimited_right_based_on_group"
-msgstr "Based on your user group, you have all rights!"
-
-#. Default: Reputation count
-#: templates/review/reputation.pt:9
-msgid "reputation_count"
-msgstr "Reputation count"
-
-#. Default: Action
-#: templates/review/reputation.pt:26
-msgid "action"
-msgstr "Action"
-
-#. Default: Queues
-#: templates/review/index.pt:20
-msgid "queues"
-msgstr "Queues"
-
-#. Default: How To
-#: templates/review/index.pt:21
-msgid "howto"
-msgstr "How To"
-
-#. Default: Help improve the dialog
-#: templates/review/index.pt:28
-msgid "help_to_improve"
-msgstr "Help improve the dialog"
-
-#. Default: D-BAS is moderated by you. Help your discussion members learn to
-#. argue and raise the quality of argumenty by:
-#: templates/review/index.pt:29
-msgid "dbas_is_moderated_by"
-msgstr ""
-"D-BAS is moderated by you. Help your discussion members learn to argue and "
-"raise the quality of arguments by:"
-
-#. Default: Evaluate new statements
-#: templates/review/index.pt:32
-msgid "evaluate_new_statements"
-msgstr "evaluating new statements"
-
-#. Default: Reviewing suspicious statements
-#: templates/review/index.pt:35
-msgid "reviewing_suspicious_statements"
-msgstr "reviewing suspicious statements"
-
-#. Default: Voting to close or reopen statements
-#: templates/review/index.pt:38
-msgid "voting_to_close"
-msgstr "vote to close or reopen statements"
-
-#. Default: Choose a task to get started.
-#: templates/review/index.pt:42
-msgid "choose_task"
-msgstr "Choose a task to get started!"
-
-#. Default: Your current reputation count is
-#: templates/review/index.pt:54
-msgid "current_reputation_os"
-msgstr "Your current reputation count is"
-
-#. Default: Open Tasks
-#: templates/review/index.pt:65
-msgid "open_tasks"
-msgstr "Open Tasks"
-
-#. Default: Topic
-#: templates/review/index.pt:66
-msgid "topic"
-msgstr "Topic"
-
-#. Default: Recent Reviews
-#: templates/review/index.pt:67
-msgid "recent_reviews"
-msgstr "Recent Reviews"
-
-#. Default: None
-#: templates/review/index.pt:99
-msgid "None"
-msgstr "None"
-
-#. Default: What is reputation? How do I earn (and lose) it?
-#: templates/review/index.pt:111
-msgid "what_is_reputation"
-msgstr "What is reputation? How do I earn (and lose) it?"
-
-#. Default: Reputation is a rough measurement of how work you are doing for the
-#. discussion and the community.
-#: templates/review/index.pt:114
-msgid "what_is_reputation_def"
-msgstr ""
-"Reputation is a rough measurement of how work you are doing for the "
-"discussion and the community."
-
-#. Default: you can earn it by using D-BAS and all of its great functions.
-#: templates/review/index.pt:115
-msgid "what_is_reputation_earn"
-msgstr "You can earn it by using D-BAS and all of its great functions."
-
-#. Default: Basic use of D-BAS, does not require any reputation at all.
-#: templates/review/index.pt:116
-msgid "what_is_reputation_use"
-msgstr "Basic use of D-BAS does not require any reputation at all."
-
-#. Default: You gain reputation when:
-#: templates/review/index.pt:119
-msgid "gain_rep_when"
-msgstr "You gain reputation when:"
-
-#. Default: You loose reputation when:
-#: templates/review/index.pt:128
-msgid "lose_rep_when"
-msgstr "You lose reputation when:"
-
-#. Default: Privileges
-#: templates/review/index.pt:140
-msgid "privileges"
-msgstr "Privileges"
-
-#. Default: Privileges control what you can see in the review queues of D-BAS.
-#. Gain more privileges by increasing your reputation.
-#: templates/review/index.pt:141
-msgid "privileges_explanation"
-msgstr ""
-"Privileges control what you can see in the review queues of D-BAS. Gain more "
-"privileges by increasing your reputation."
-
-#. Default: Split
-#: templates/review/type/split.pt:7
-msgid "split"
-msgstr "Split"
-
-#. Default: (more)
-#: templates/review/type/split.pt:15 templates/review/type/duplicate.pt:15
-#: templates/review/type/optimize.pt:17 templates/review/type/delete.pt:15
-#: templates/review/type/merge.pt:15 templates/review/type/edit.pt:18
-msgid "wrapped_more"
-msgstr "(more)"
-
-#. Default: (less)
-#: templates/review/type/split.pt:16 templates/review/type/duplicate.pt:16
-#: templates/review/type/optimize.pt:18 templates/review/type/delete.pt:16
-#: templates/review/type/merge.pt:16 templates/review/type/edit.pt:19
-msgid "wrapped_less"
-msgstr "(less)"
-
-#. Default: Change is okay
-#: templates/review/type/split.pt:23 templates/review/type/merge.pt:23
-msgid "change_okay"
-msgstr "Change is okay"
-
-#. Default: Reject it
-#: templates/review/type/split.pt:28 templates/review/type/split.pt:53
-#: templates/review/type/merge.pt:28 templates/review/type/merge.pt:53
-#: templates/review/type/edit.pt:29 templates/review/type/edit.pt:55
-msgid "reject_it"
-msgstr "Reject it"
-
-#. Default: Skip it
-#: templates/review/type/split.pt:32 templates/review/type/split.pt:57
-#: templates/review/type/duplicate.pt:35 templates/review/type/duplicate.pt:60
-#: templates/review/type/optimize.pt:35 templates/review/type/optimize.pt:79
-#: templates/review/type/delete.pt:31 templates/review/type/delete.pt:74
-#: templates/review/type/merge.pt:32 templates/review/type/merge.pt:57
-#: templates/review/type/edit.pt:33 templates/review/type/edit.pt:59
-msgid "skip_it"
-msgstr "Skip it"
-
-#. Default: Information for the different buttons
-#: templates/review/type/split.pt:44 templates/review/type/duplicate.pt:47
-#: templates/review/type/optimize.pt:66 templates/review/type/delete.pt:61
-#: templates/review/type/merge.pt:44 templates/review/type/edit.pt:45
-msgid "information_for_the_different_buttons"
-msgstr "Information for the different buttons"
-
-#. Default: Split it
-#: templates/review/type/split.pt:49
-msgid "split_it"
-msgstr "Split it"
-
-#. Default: , if the selected statement is a set of more than one statement and
-#. the given proposals match to the original content.
-#: templates/review/type/split.pt:50
-msgid "marked_statement_to_slit"
-msgstr ""
-", if the selected statement is a set of than one statement and the given "
-"proposals match to the original content."
-
-#. Default: for marked statements, which are unique.
-#: templates/review/type/split.pt:54
-msgid "statement_not_to_split"
-msgstr "for marked statements, which should not be splitted."
-
-#. Default: if you are not sure and want to go to the next statement.
-#. Default: if you are not sure and want to go to the next argument.
-#: templates/review/type/split.pt:58 templates/review/type/duplicate.pt:61
-#: templates/review/type/optimize.pt:80 templates/review/type/delete.pt:75
-#: templates/review/type/merge.pt:58 templates/review/type/edit.pt:60
-msgid "skip_it_explanation"
-msgstr "if you are not sure and want to go to the next argument."
-
-#. Default: In the discussion about
-#: templates/review/type/split.pt:73 templates/review/type/duplicate.pt:74
-#: templates/review/type/optimize.pt:95 templates/review/type/delete.pt:90
-#: templates/review/type/edit.pt:75
-msgid "in_the_discussion_about"
-msgstr "In the discussion about"
-
-#. Default: In the discussions about
-#: templates/review/type/split.pt:74 templates/review/type/duplicate.pt:75
-#: templates/review/type/optimize.pt:96 templates/review/type/delete.pt:91
-#: templates/review/type/edit.pt:76
-msgid "in_the_discussions_about"
-msgstr "In the discussions about"
-
-#. Default: following statement was flagged.
-#: templates/review/type/split.pt:78 templates/review/type/duplicate.pt:79
-msgid "following_statement_was_flagged"
-msgstr "following statement was flagged:"
-
-#. Default: This statement should be split into:
-#: templates/review/type/split.pt:91
-msgid "this_statement_should_be_splitted"
-msgstr "This statement should be splitted into:"
-
-#. Default: Reported
-#: templates/review/type/split.pt:105 templates/review/type/duplicate.pt:107
-#: templates/review/type/optimize.pt:129 templates/review/type/delete.pt:113
-#: templates/review/type/merge.pt:97 templates/review/type/edit.pt:123
-msgid "reported"
-msgstr "Reported"
-
-#. Default: Reported by
-#: templates/review/type/split.pt:109 templates/review/type/duplicate.pt:111
-#: templates/review/type/optimize.pt:133 templates/review/type/delete.pt:117
-#: templates/review/type/merge.pt:101 templates/review/type/edit.pt:127
-msgid "reported_by"
-msgstr "Reported by"
-
-#. Default: Viewed
-#: templates/review/type/split.pt:119 templates/review/type/duplicate.pt:121
-#: templates/review/type/optimize.pt:143 templates/review/type/delete.pt:127
-#: templates/review/type/merge.pt:111 templates/review/type/edit.pt:137
-msgid "viewed"
-msgstr "Viewed"
-
-#. Default: Relations
-#: templates/review/type/split.pt:123 templates/review/type/duplicate.pt:125
-#: templates/review/type/optimize.pt:147 templates/review/type/delete.pt:131
-#: templates/review/type/merge.pt:115 templates/review/type/edit.pt:141
-msgid "attacks"
-msgstr "Attacks"
-
-#. Default: Supports
-#: templates/review/type/split.pt:127 templates/review/type/duplicate.pt:129
-#: templates/review/type/optimize.pt:151 templates/review/type/delete.pt:135
-#: templates/review/type/merge.pt:119 templates/review/type/edit.pt:145
-msgid "supports"
-msgstr "Supports"
-
-#. Default: Duplicates
-#: templates/review/type/duplicate.pt:7
-msgid "duplicates"
-msgstr "Duplicates"
-
-#. Default: Duplicate
-#: templates/review/type/duplicate.pt:24
-msgid "duplicate"
-msgstr "Duplicate"
-
-#. Default: Unique
-#: templates/review/type/duplicate.pt:30
-msgid "unique"
-msgstr "Unique"
-
-#. Default: It's a duplicate
-#: templates/review/type/duplicate.pt:52
-msgid "its_duplicate"
-msgstr "It's a duplicate"
-
-#. Default: , if the marked statement is a duplicate.
-#: templates/review/type/duplicate.pt:53
-msgid "marked_statement_is_duplicate"
-msgstr ", if the marked statement is a duplicate."
-
-#. Default: It's unique
-#: templates/review/type/duplicate.pt:56
-msgid "its_unique"
-msgstr "It's unique"
-
-#. Default: for marked statements, which are unique.
-#: templates/review/type/duplicate.pt:57
-msgid "duplicate_is_unique"
-msgstr "for marked statements, which are unique."
-
-#. Default: This is the original statement:
-#: templates/review/type/duplicate.pt:91
-msgid "this_is_original_statements"
-msgstr "This is the original statement:"
-
-#. Default: Optimizations
-#: templates/review/type/optimize.pt:7
-msgid "optimizations"
-msgstr "Optimizations"
-
-#. Default: Let me correct it
-#: templates/review/type/optimize.pt:25 templates/review/type/optimize.pt:71
-msgid "correct_it"
-msgstr "Let me correct it"
-
-#. Default: It's okay so
-#: templates/review/type/optimize.pt:30 templates/review/type/optimize.pt:75
-msgid "its_okay_so"
-msgstr "It's okay so"
-
-#. Default: Information for the different reasons
-#: templates/review/type/optimize.pt:46 templates/review/type/delete.pt:41
-msgid "information_for_the_different_reasons"
-msgstr "Information for the different reasons"
-
-#. Default: Off topic or irrelevant
-#: templates/review/type/optimize.pt:49 templates/review/type/delete.pt:44
-msgid "off_topic_or_irrelevant"
-msgstr "Off topic or irrelevant"
-
-#. Default: text does not belong to the topic under discussion
-#: templates/review/type/optimize.pt:50 templates/review/type/delete.pt:45
-msgid "off_topic_explanation"
-msgstr "text does not belong to the topic under discussion"
-
-#. Default: Inappropriate, harmful or abusive
-#: templates/review/type/optimize.pt:53 templates/review/type/delete.pt:48
-msgid "inappropriate_harmful_abbusive"
-msgstr "Inappropriate, harmful or abbusive"
-
-#. Default: are posts, which are inappropriate, harmful or abbusive
-#: templates/review/type/optimize.pt:54 templates/review/type/delete.pt:49
-msgid "inappropriate_harmful_abbusive_explanation"
-msgstr "are posts, which are inappropriate, harmful or abbusive"
-
-#. Default: Needs optimization
-#: templates/review/type/optimize.pt:57 templates/review/type/delete.pt:52
-msgid "needs_optimization"
-msgstr "Needs optimization"
-
-#. Default: if posts are useful, but need edits in grammar and/or spelling
-#: templates/review/type/optimize.pt:58 templates/review/type/delete.pt:53
-msgid "needs_optimization_explanation"
-msgstr "if posts are useful, but need edits in grammar and/or spelling"
-
-#. Default: , if you have an idea for a better formulation with the same
-#. content.
-#: templates/review/type/optimize.pt:72
-msgid "correct_it_explanation"
-msgstr ", if you have an idea for a better formulation with the same"
-
-#. Default: for arguments, which can be understood as-is.
-#: templates/review/type/optimize.pt:76
-msgid "its_okay_so_explanation"
-msgstr "for arguments, which can be understood as-is."
-
-#. Default: following argument was flagged.
-#: templates/review/type/optimize.pt:100 templates/review/type/delete.pt:95
-msgid "following_argument_was_flagged"
-msgstr "following argument was flagged:"
-
-#. Default: Context, where the statement is used:
-#: templates/review/type/optimize.pt:114
-msgid "context_where_statement_is_used"
-msgstr "Context, where the statement is used:"
-
-#. Default: Request lock
-#: templates/review/type/optimize.pt:171
-msgid "request_lock"
-msgstr "Request lock"
-
-#. Default: This argument is locked for your edit. You have
-#: templates/review/type/optimize.pt:177
-msgid "argument_is_locked"
-msgstr "This argument is locked for your edit. You have"
-
-#. Default: minutes
-#: templates/review/type/optimize.pt:179
-msgid "minutes"
-msgstr "minutes"
-
-#. Default: Please make your edits in grammar and/or spelling here:
-#: templates/review/type/optimize.pt:180
-msgid "please_make_your_edits"
-msgstr "Please make your edits in grammar and/or spelling here:"
-
-#. Default: Your correcture
-#: templates/review/type/optimize.pt:187
-msgid "your correcture"
-msgstr "Your correcture"
-
-#. Default: Send
-#: templates/review/type/optimize.pt:205
-msgid "send"
-msgstr "Send"
-
-#. Default: Deletes
-#: templates/review/type/delete.pt:7
-msgid "deletes"
-msgstr "Deletes"
-
-#. Default: Delete it
-#: templates/review/type/delete.pt:23 templates/review/type/delete.pt:70
-msgid "delete_it"
-msgstr "Delete it"
-
-#. Default: It's Okay
-#. Default: It's okay
-#: templates/review/type/delete.pt:27 templates/review/type/delete.pt:66
-#: templates/review/type/edit.pt:25 templates/review/type/edit.pt:51
-msgid "its_okay"
-msgstr "It's Okay"
-
-#. Default: for arguments, which should not be deleted.
-#: templates/review/type/delete.pt:67
-msgid "its_okay_explanation"
-msgstr "for arguments, which should not be deleted."
-
-#. Default: for arguments, that should be deleted based on the reason above.
-#: templates/review/type/delete.pt:71
-msgid "delete_it_explanation"
-msgstr "for arguments, that should be deleted based on the reason above."
-
-#. Default: Merge
-#: templates/review/type/merge.pt:7
-msgid "merge"
-msgstr "Merge"
-
-#. Default: Merge it
-#: templates/review/type/merge.pt:49
-msgid "merge_it"
-msgstr "Merge it"
-
-#. Default: , if the selected statements should be one, single statements and
-#. the given proposal matches to the original contents.
-#: templates/review/type/merge.pt:50
-msgid "marked_statement_to_merge"
-msgstr ""
-", if the selected statements should be one, single statements and the given "
-"proposal matches to the original contents."
-
-#. Default: for marked statements, which are unique.
-#: templates/review/type/merge.pt:54
-msgid "statement_not_to_merge"
-msgstr "for marked statements, which should not be merged."
-
-#. Default: This statement should be merged to:
-#: templates/review/type/merge.pt:80
-msgid "this_statement_should_be_merged"
-msgstr "This statement should be merged to:"
-
-#. Default: Edits
-#: templates/review/type/edit.pt:8
-msgid "edits"
-msgstr "Edits"
-
-#. Default: , if the correction is acceptable and the argument is not
-#. falsified.
-#: templates/review/type/edit.pt:52
-msgid "correction_is_okay"
-msgstr ", if the correction is acceptable and the argument is not"
-
-#. Default: for correction which are inappropriate are wrong.
-#: templates/review/type/edit.pt:56
-msgid "reject_itexplanation"
-msgstr "for correction which are inappropriate are wrong."
-
-#. Default: following argument was corrected.
-#: templates/review/type/edit.pt:80
-msgid "following_argument_was_corrected"
-msgstr "following argument was corrected."
-
-#. Default: These are the edits:
-#: templates/review/type/edit.pt:92
-msgid "these_are_the_edits"
-msgstr "These are the edits:"
-
-#. Default: This is the original version
-#: templates/review/type/edit.pt:104
-msgid "this_is_original_version"
-msgstr "This is the original version"
-
-#. Default: Thank you
-#: templates/discussion/exit.pt:8
-msgid "thank_you"
-msgstr "Thank you"
-
-#. Default: Your participation in this discussion was saved and will be used
-#. for evaluation later. If you have any questions, please do not hesitate to
-#: templates/discussion/exit.pt:11
-msgid "finish_text"
-msgstr ""
-"Your participation in this discussion was saved and will be used for "
-"evaluation later. If you have any questions, please do not hesitat to"
-
-#. Default: contact us
-#: templates/discussion/exit.pt:13
-msgid "contact_us"
-msgstr "contact us"
-
-#. Default: Today's Summary
-#: templates/discussion/exit.pt:29
-msgid "todays_summary"
-msgstr "Todays Summary"
-
-#. Default: Statements reported
-#: templates/discussion/exit.pt:42
-msgid "statements_reported"
-msgstr "Statements reported"
-
-#. Default: Collected reputation
-#: templates/discussion/exit.pt:46
-msgid "reputation_colltected"
-msgstr "Collected reputation"
-
-#. Default: Let's go home!
-#: templates/discussion/exit.pt:90
-msgid "lets_go_home"
-msgstr "Let's go home"
-
-#. Default: Back to the discussion!
-#: templates/discussion/exit.pt:94
-msgid "back_to_the_discussion"
-msgstr "Back to the discussion"
-
-#. Default: Overview of the Discussions
-#: templates/discussion/myoverview.pt:8
-msgid "overview_of_discussion="
-msgstr "Overview of the Discussions"
-
-#. Default: This page contains an over of discussions you have created as well
-#. as other participants created
-#: templates/discussion/myoverview.pt:9
-msgid "page_contains_overview_all_created"
-msgstr ""
-"This page contains an overview of discussions you have created as well as "
-"other participants created"
-
-#. Default: Overview of the Discussions
-#: templates/discussion/start.pt:9
-msgid "overview_of_discussion"
-msgstr "Overview of the Discussions"
-
-#. Default: This page contains an over of discussions
-#: templates/discussion/start.pt:10
-msgid "page_contains_overview"
-msgstr "This page contains an overview of discussions:"
-
-#. Default: Current discussions:
-#: templates/discussion/start.pt:19
-msgid "current_discussion"
-msgstr "Current discussions:"
-
-#. Default: Titel
-#: templates/discussion/start.pt:23 templates/discussion/start.pt:58
-#: templates/discussion/organism/overview-other.pt:26
-#: templates/discussion/organism/overview-user.pt:18
-msgid "title"
-msgstr "Title"
-
-#. Default: Language
-#: templates/discussion/start.pt:24 templates/discussion/start.pt:59
-#: templates/discussion/organism/overview-other.pt:29
-#: templates/discussion/organism/overview-user.pt:21
-msgid "language"
-msgstr "Language"
-
-#. Default: Statements
-#: templates/discussion/start.pt:25 templates/discussion/start.pt:60
-#: templates/discussion/organism/overview-other.pt:27
-#: templates/discussion/organism/overview-user.pt:19
-#: templates/discussion/organism/graph-sidebar.pt:23
-msgid "statements"
-msgstr "Statements"
-
-#. Default: Activity (Last 14 days)
-#: templates/discussion/start.pt:26 templates/discussion/start.pt:61
-msgid "activity_last_14_days"
-msgstr "Activity (Last 30 days)"
-
-#. Default: Creation
-#: templates/discussion/start.pt:27 templates/discussion/start.pt:62
-#: templates/discussion/organism/overview-other.pt:30
-#: templates/discussion/organism/overview-user.pt:22
-msgid "creation"
-msgstr "Creation"
-
-#. Default: Closed discussions:
-#: templates/discussion/start.pt:54
-msgid "closed_discussion"
-msgstr "Closed discussions:"
-
-#. Default: More Discussions
-#: templates/discussion/organism/overview-other.pt:6
-msgid "more_discussions"
-msgstr "More Discussions"
-
-#. Default: This is a summary of discussions other participants have created,
-#. but you are an admin. So you can en- and disable these discussions too:
-#: templates/discussion/organism/overview-other.pt:9
-msgid "summary_discussion_other_users_but_admin"
-msgstr ""
-"This is a summary of discussions other participants have created, but you "
-"are an admin. So you can en- and disable these discussions too:"
-
-#. Default: This is a summary of discussions other participants have created:
-#: templates/discussion/organism/overview-other.pt:15
-msgid "summary_discussion_other_users"
-msgstr "This is a summary of discussions other participants have created:"
-
-#. Default: Other users have not created any discussion yet.
-#: templates/discussion/organism/overview-other.pt:19
-msgid "other_users_not_discussion"
-msgstr "Other users have not created any discussion yet."
-
-#. Default: Participants
-#: templates/discussion/organism/overview-other.pt:28
-#: templates/discussion/organism/overview-user.pt:20
-msgid "participants"
-msgstr "Participants"
-
-#. Default: Enabled
-#: templates/discussion/organism/overview-other.pt:32
-#: templates/discussion/organism/overview-user.pt:23
-msgid "enabled"
-msgstr "Enabled"
-
-#. Default: Public
-#: templates/discussion/organism/overview-other.pt:36
-#: templates/discussion/organism/overview-user.pt:27
-msgid "public"
-msgstr "Public"
-
-#. Default: Writable
-#: templates/discussion/organism/overview-other.pt:41
-msgid "Writable"
-msgstr "Writable"
-
-#. Default: Short Link
-#: templates/discussion/organism/overview-other.pt:45
-#: templates/discussion/organism/overview-user.pt:35
-msgid "short_link"
-msgstr "Short Link"
-
-#. Default: Start
-#: templates/discussion/organism/graph-view.pt:9
-msgid "start"
-msgstr "Start"
-
-#. Default: Now
-#: templates/discussion/organism/graph-view.pt:14
-msgid "now"
-msgstr "Now"
-
-#. Default: This is a summary of the discussions you have created:
-#: templates/discussion/organism/overview-user.pt:8
-msgid "summary_your_discussions"
-msgstr "This is a summary of the discussions you have created:"
-
-#. Default: You have not created any discussion yet, but you can use the add
-#. button in the bottom right to create your own discussion.
-#: templates/discussion/organism/overview-user.pt:11
-msgid "you_created_no_discussion"
-msgstr ""
-"You have not created any discussions yet, but maybe you can use the add "
-"button in the bottom left to create your own discussion."
-
-#. Default: Writable
-#: templates/discussion/organism/overview-user.pt:31
-msgid "writable"
-msgstr "Writable"
-
-#. Default: In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!
-#: templates/discussion/organism/dialog-space.pt:9
-msgid "discussion_is_read_only"
-msgstr "No statements can be set for this discussion!"
-
-#. Default: It has an estimated cost of
-#: templates/discussion/organism/add-statement.pt:47
-msgid "decidotron_cost_of_position"
-msgstr "It has an estimated cost of"
-
-#. Default: Die Zeit zum hinzufügen von neuen Vorschlägen ist abgelaufen. Du
-#. kannst allerdings noch abstimmen!
-#: templates/discussion/organism/add-statement.pt:68
-msgid "decidotron_positions_ended"
-msgstr "You can't add positions anymore."
-
-#. Default: Complete View
-#: templates/discussion/organism/graph-sidebar.pt:7
-msgid "complete_view"
-msgstr "Complete View"
-
-#. Default: Default View
-#: templates/discussion/organism/graph-sidebar.pt:11
-msgid "default_view"
-msgstr "Default View"
-
-#. Default: Labels
-#: templates/discussion/organism/graph-sidebar.pt:15
-msgid "labels"
-msgstr "Lables"
-
-#. Default: Positions
-#: templates/discussion/organism/graph-sidebar.pt:19
-msgid "positions"
-msgstr "Positions"
-
-#. Default: My path
-#: templates/discussion/organism/graph-sidebar.pt:27
-#: templates/discussion/organism/graph-sidebar.pt:31
-msgid "my_path"
-msgstr "My path"
-
-#. Default: My statements
-#: templates/discussion/organism/graph-sidebar.pt:35
-msgid "my_statements"
-msgstr "My statements"
-
-#. Default: Supports
-#: templates/discussion/organism/graph-sidebar.pt:40
-msgid "supports_on_my_statements"
-msgstr "My supports"
-
-#. Default: Relations
-#: templates/discussion/organism/graph-sidebar.pt:45
-msgid "attacks_on_my_statements"
-msgstr "My attacks"
-
-#. Default: Vote!
-#: templates/discussion/organism/dialog-sidebar.pt:17
-msgid "decidotron_vote_button_label"
-msgstr "Vote!"
-
-#. Default: Login to vote!
-#: templates/discussion/organism/dialog-sidebar.pt:23
-msgid "decidotron_login_to_vote_button_label"
-msgstr "Login to vote!"
-
-#. Default: Voting will be possible from
-#. ${issues.decidotron_budget.votes_start.strftime('%d.%m.%Y at %H:%M')}
-#: templates/discussion/organism/dialog-sidebar.pt:28
-msgid "decidotron_vote_will_start_at_button_label"
-msgstr ""
-"Voting will be possible from ${issues.decidotron_budget.votes_start."
-"strftime('%d.%m.%Y at %H:%M')}"
-
-#. Default: Results
-#: templates/discussion/organism/dialog-sidebar.pt:34
-msgid "decidotron_vote_results_button_label"
-msgstr "Results"
-
-#. Default: Restart Discussion
-#: templates/discussion/organism/dialog-sidebar.pt:40
-msgid "restart_discussion"
-msgstr "Restart Discussion"
-
-#. Default: Share URL
-#: templates/discussion/organism/dialog-sidebar.pt:46
-msgid "share_url"
-msgstr "Share URL"
-
-#. Default: Opinion Barometer
-#: templates/discussion/organism/dialog-sidebar.pt:52
-msgid "Barometer"
-msgstr "Opinion Barometer"
-
-#. Default: Graph View
-#: templates/discussion/organism/dialog-sidebar.pt:58
-msgid "graph_view"
-msgstr "Graph View"
-
-#. Default: Search for Statements
-#: templates/discussion/organism/dialog-sidebar.pt:64
-msgid "search"
-msgstr "Search for Statements"
-
-#. Default: Ask a Friend
-#: templates/discussion/organism/dialog-sidebar.pt:70
-msgid "ask_friend"
-msgstr "Ask a Friend"
-
-#. Default: Leave the Discussion
-#: templates/discussion/organism/dialog-sidebar.pt:76
-msgid "exit_discussion"
-msgstr "Leave the Discussion"
+#~ msgid "kokosnuss"
+#~ msgstr "Coconut"
 
 #~ msgid "never_display_real_name"
 #~ msgstr "We will never display your real name to other users!"

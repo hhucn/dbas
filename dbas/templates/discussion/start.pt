@@ -19,14 +19,27 @@
             <div class="">
               <h1 class="title">${issues.featured[0].title}</h1>
               <p class="lead">${issues.featured[0].info}</p>
-              <p tal:condition="issues.featured[0].active_users==0"> Seien Sie der erste Teilnehmende dieser
-                Diskussion</p>
-              <p tal:condition="issues.featured[0].active_users==1">In dieser Diskussion hat bereits ein
-                aktiver Teilnehmer insgesamt ${issues.featured[0].statements} unterschiedliche Aussagen
-                verfasst.</p>
-              <p tal:condition="issues.featured[0].active_users>1">In dieser Diskussion haben
-                bereits ${issues.featured[0].active_users} aktive Teilnehmende
-                insgesamt ${issues.featured[0].statements} unterschiedliche Aussagen verfasst.</p>
+              <p tal:condition="issues.featured[0].active_users==0" i18n:translate="first_participant">
+                You could be the first participant in this discussion!</p>
+
+              <span tal:condition="issues.featured[0].active_users==1" i18n:translate="first_participant_start">
+                One participant has already written </span>
+              <span tal:condition="issues.featured[0].active_users==1">${issues.featured[0].statements}</span>
+              <span tal:condition="issues.featured[0].active_users==1" i18n:translate="first_participant_end">
+                 arguments in this discussion! </span>
+
+              <span tal:condition="issues.featured[0].active_users>1" i18n:translate="normal_participant_start">
+                At this discussion </span>
+              <span tal:condition="issues.featured[0].active_users>1">${issues.featured[0].active_users}</span>
+              <span tal:condition="issues.featured[0].active_users>1" i18n:translate="normal_participant_middle">
+                participants with </span>
+              <span tal:condition="issues.featured[0].active_users>1">${issues.featured[0].statements}</span>
+              <span tal:condition="issues.featured[0].active_users>1" i18n:translate="normal_participant_end">
+                 arguments have already discussed! </span>
+
+              <p i18n:translate="offer_discussion">
+                Want to discuss?
+              </p>
               <p class="lead">
                 <a class="btn btn-primary btn-lg" href="${issues.featured[0].url}" role="button">Hier
                   geht es weiter</a>
