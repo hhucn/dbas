@@ -63,7 +63,7 @@ def check_authentication(request):
     if session_expired:
         request.session.invalidate()
         headers = forget(request)
-        location = request.application_url + 'discuss?session_expired=true'
+        location = request.application_url + '/discuss?session_expired=true'
         raise HTTPFound(
             location=location,
             headers=headers
