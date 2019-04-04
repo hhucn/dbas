@@ -6,14 +6,14 @@
       <li class="list-group-item discussions-space-list__position"
                tal:repeat="item [item for item in items.elements if item.url not in ['login', 'add']]"
           style="${item.style}">
-        <div class="discussion-space-list-row__left-side" style="display: flex; flex-grow: 1">
+        <div class="discussion-space-list-row__left-side premise-input" style="display: flex; flex-grow: 1">
           <input id="${item.id}" type="radio"
                  name="discussion-button-group"
                  onclick='location.href="${item.url}";'
                  data-url="${item.url}">
           <span tal:repeat="premise item.premises" tal:omit-tag="">
             <label for="${item.id}" id="${premise.id}" data-toggle="tooltip"
-                   data-placement="auto">${structure:premise.title}</label>
+                   data-placement="auto" class="premise-title">${structure:premise.title}</label>
             <label for="${item.id}" tal:condition="not:repeat.premise.end">&nbsp;${extras.tag.aand}&nbsp;</label>
             <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
             <span tal:condition="'cost' in item" class="decidotron-position-cost">
