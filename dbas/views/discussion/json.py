@@ -188,7 +188,7 @@ def set_new_start_argument(request):
     prepared_dict_pos = set_position(request.validated['user'], request.validated['issue'],
                                      request.validated['position'], request.validated['feature_data'])
 
-    if prepared_dict_pos['error']:
+    if not prepared_dict_pos['error']:
         LOG.debug("Set premise/reason")
         prepared_dict_pos = set_positions_premise(request.validated['issue'],
                                                   request.validated['user'],

@@ -37,13 +37,13 @@
 
         <span class="icon-badge blue-btn bottom-right add" id="icon-add-news" title="Create">+</span>
 
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/lib.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
-        <script src="${request.static_url('dbas:static/node_modules/datatables/media/js/jquery.dataTables.min.js')}"></script>
-        <script src="${request.static_url('dbas:static/node_modules/datatables-bootstrap/js/dataTables.bootstrap.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('admin:static/js/admin.min.js')}" tal:condition="not:extras.development_mode"></script>
-        <script type="text/javascript" src="${request.static_url('admin:static/js/main/table.js')}" tal:condition="extras.development_mode"></script>
-        <script type="text/javascript" src="${request.static_url('admin:static/js/main/ajaxhandler.js')}" tal:condition="extras.development_mode"></script>
+        <script type="text/javascript" src="${request.static_path('dbas:static/js/discussion/lib.js')}"></script>
+        <script type="text/javascript" src="${request.static_path('dbas:static/js/discussion/guihandler.js')}"></script>
+        <script src="${request.static_path('dbas:static/node_modules/datatables/media/js/jquery.dataTables.min.js')}"></script>
+        <script src="${request.static_path('dbas:static/node_modules/datatables-bootstrap/js/dataTables.bootstrap.js')}"></script>
+        <script type="text/javascript" src="${request.static_path('admin:static/js/admin.min.js')}" tal:condition="not:extras.development_mode"></script>
+        <script type="text/javascript" src="${request.static_path('admin:static/js/main/table.js')}" tal:condition="extras.development_mode"></script>
+        <script type="text/javascript" src="${request.static_path('admin:static/js/main/ajaxhandler.js')}" tal:condition="extras.development_mode"></script>
 
     </tal:block>
 </tal:block>

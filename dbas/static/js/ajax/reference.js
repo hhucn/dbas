@@ -17,7 +17,7 @@ function AjaxReferenceHandler() {
         var d = {
             statement_id: uid,
             ref_source: ref_source,
-            reference: reference,
+            text: reference,
             issue: issue,
         };
         var done = function () {

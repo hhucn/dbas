@@ -3,12 +3,12 @@
          i18n:domain="dbas" metal:define-macro="layout" lang="${extras.ui_locales}">
 <head>
   <div metal:use-macro="load: snippet/header.pt"></div>
-  <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap/dist/css/bootstrap.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/css/creative.css')}" rel="stylesheet">
-  <script src="${request.static_url('dbas:static/node_modules/jquery-migrate/dist/jquery-migrate.js')}"></script>
+  <link type="text/css" href="${request.static_path('dbas:static/node_modules/bootstrap/dist/css/bootstrap.min.css')}" rel="stylesheet">
+  <link type="text/css" href="${request.static_path('dbas:static/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css')}" rel="stylesheet">
+  <link type="text/css" href="${request.static_path('dbas:static/node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.min.css')}" rel="stylesheet">
+  <link type="text/css" href="${request.static_path('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}" rel="stylesheet">
+  <link type="text/css" href="${request.static_path('dbas:static/css/creative.css')}" rel="stylesheet">
+  <script src="${request.static_path('dbas:static/node_modules/jquery-migrate/dist/jquery-migrate.js')}"></script>
 </head>
 
 <body id="page-top" name="top">
@@ -20,7 +20,7 @@
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
     <a class="navbar-brand" href="#page-top">
-      <img class="navbar-img" src="${request.static_url('dbas:static/images/logo/white.svg')}" alt="D-BAS Logo"
+      <img class="navbar-img" src="${request.static_path('dbas:static/images/logo/white.svg')}" alt="D-BAS Logo"
            style="height: 1.0em;margin-right: 0.2em; margin-bottom: 0.2em;">
       <span>D-BAS</span>
     </a>
@@ -51,13 +51,13 @@
         </li>
         <li class="nav-item" tal:condition="extras.lang_is_en">
           <a id="link-trans-de" style="cursor:pointer;">
-            <img class="language_selector_img" src="${request.static_url('dbas:static/images/flags/de-16.png')}"
+            <img class="language_selector_img" src="${request.static_path('dbas:static/images/flags/de-16.png')}"
                  alt="flag_ge" style="padding-top: 0 !important;">
           </a>
         </li>
         <li class="nav-item" tal:condition="extras.lang_is_de">
           <a id="link-trans-en" style="cursor:pointer;">
-            <img class="language_selector_img" src="${request.static_url('dbas:static/images/flags/us-gb-16.png')}"
+            <img class="language_selector_img" src="${request.static_path('dbas:static/images/flags/us-gb-16.png')}"
                  alt="flag_us-gb" style="padding-top: 0 !important;">
           </a>
         </li>
@@ -71,7 +71,7 @@
     <div class="header-content-inner">
       <div id="homeHeading" data-counter="0">
         <h1 style="padding-bottom: 0.5em;">
-          <img src="${request.static_url('dbas:static/images/logo/white.svg')}" alt="D-BAS Logo"
+          <img src="${request.static_path('dbas:static/images/logo/white.svg')}" alt="D-BAS Logo"
                style="height: 1.1em; margin-right: 0.2em;">
           D-BAS
         </h1>
@@ -278,7 +278,7 @@
       <div class="col-lg-3 col-md-6 text-center">
         <div class="link-box">
           <a href="https://www.hhu.de/" title="www.hhu.de" target="_blank">
-            <img class="logo_hhu" alt="logo_hhu" src="${request.static_url('dbas:static/images/logo/hhu.jpg')}"/>
+            <img class="logo_hhu" alt="logo_hhu" src="${request.static_path('dbas:static/images/logo/hhu.jpg')}"/>
           </a>
           <p class="text-muted" i18n:translate="hhu">Heinrich-Heine-University Duesseldorf</p>
         </div>
@@ -286,7 +286,7 @@
       <div class="col-lg-3 col-md-6 text-center">
         <div class="link-box">
           <a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank">
-            <img alt="logo_kolleg_s" src="${request.static_url('dbas:static/images/logo/kolleg_s.jpg')}"/>
+            <img alt="logo_kolleg_s" src="${request.static_path('dbas:static/images/logo/kolleg_s.jpg')}"/>
           </a>
           <p class="text-muted" i18n:translate="graduate_school_online_participation">
             Graduation School on Online Participation</p>
@@ -295,7 +295,7 @@
       <div class="col-lg-3 col-md-6 text-center">
         <div class="link-box">
           <a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank">
-            <img alt="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo/fhoev_s.png')}"/>
+            <img alt="logo_fhoev_s" src="${request.static_path('dbas:static/images/logo/fhoev_s.png')}"/>
           </a>
           <p class="text-muted" i18n:translate="fhoev">
             University of Applied Sciences for Public Administration and management of North Rhine-Westphalia
@@ -305,7 +305,7 @@
       <div class="col-lg-3 col-md-6 text-center">
         <div class="link-box">
           <a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank">
-            <img alt="logo_diid_s" src="${request.static_url('dbas:static/images/logo/diid_s.jpg')}"/>
+            <img alt="logo_diid_s" src="${request.static_path('dbas:static/images/logo/diid_s.jpg')}"/>
           </a>
           <p class="text-muted" i18n:translate="diid">Duesseldorf Institut of Internet and Democracy</p>
         </div>

@@ -57,9 +57,13 @@ def init_budget_discussion(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
-        issue = Issue(title="Was sollen wir mit 20.000€ anfangen?",
-                      info="Wir haben 20.000€ zur Verbesserung der Lehre, wie soll das Geld eingesetzt werden?",
-                      long_info="Zuviel Text",
+        issue = Issue(title="Verteilung von Qualitätsverbesserungsmittel in der Informatik",
+                      info="Es stehen 20.000 Euro zur Verfügung, die wir in der Informatik verteilen können",
+                      slug="verteilung-von-qualitatsverbesserungsmittel-in-der-informatik",
+                      long_info="""
+                      Die Wissenschaftliche Einrichtung der Informatik möchte der Studierendenschaft die Möglichkeit geben über 20.000 Euro sogenannter Qualitätsverbesserungsmittel zu entscheiden. Dazu können hier Vorschläge mit grober Preisabschätzung abgegeben werden, die dann von Ihnen ausdiskutiert werden können.
+
+Diese Diskussion ist Teil einer wissenschaftlichen Studie. Der genaue Ablauf kann unter dieser URL nachgelesen werden: https://decide.dbas.cs.uni-duesseldorf.de""",
                       author_uid=User.by_nickname("Björn").uid,
                       lang_uid=2)
         DBDiscussionSession.add(issue)
