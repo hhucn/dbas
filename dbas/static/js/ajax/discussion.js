@@ -295,7 +295,7 @@ AjaxDiscussionHandler.prototype.fuzzySearch = function (value, callbackId, type,
     ajaxSkeleton(url, 'POST', d, done, fail);
 };
 
-AjaxDiscussionHandler.prototype.__someGuiModification = function(tmpid, bubble_value){
+AjaxDiscussionHandler.prototype.__someGuiModification = function (tmpid, bubble_value) {
     'use strict';
     var bubbleSpace = $('#' + discussionBubbleSpaceId);
     var pencil = ' <i class="fa fa-pencil" aria-hidden="true"></i>';
@@ -329,7 +329,7 @@ AjaxDiscussionHandler.prototype.__someGuiModification = function(tmpid, bubble_v
 AjaxDiscussionHandler.prototype.revokeContent = function (uid, is_argument) {
     'use strict';
     var url = is_argument ? 'revoke_argument_content' : 'revoke_statement_content';
-    var d = {uid: parseInt(uid)};
+    var d = is_argument ? {uid: parseInt(uid)} : {statement_id: parseInt(uid)};
     var done = function ajaxRevokeContentDone(data) {
         if (data.success) {
             setGlobalSuccessHandler('Yeah!', _t_discussion(dataRemoved) + ' ' + _t_discussion(yourAreNotTheAuthorOfThisAnymore));
