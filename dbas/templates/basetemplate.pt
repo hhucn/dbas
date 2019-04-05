@@ -3,8 +3,8 @@
          i18n:domain="dbas" metal:define-macro="layout" lang="${extras.ui_locales}">
 <head>
   <div metal:use-macro="load: snippet/header.pt"></div>
-  <link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.7-paper.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">
+  <link type="text/css" href="${request.static_path('dbas:static/css/bootstrap-3.3.7-paper.min.css')}" rel="stylesheet">
+  <link type="text/css" href="${request.static_path('dbas:static/css/main.css')}" rel="stylesheet">
 </head>
 
 <body>
@@ -53,7 +53,7 @@
 
 <a href="#top" class="back-to-top">
   <img class="center" id="back-to-top-img" alt="back-to-top-img"
-       src="${request.static_url('dbas:static/images/icons/chevron_up.png')}"></a>
+       src="${request.static_path('dbas:static/images/icons/chevron_up.png')}"></a>
 
 <div metal:use-macro="load: snippet/footer.pt"></div>
 

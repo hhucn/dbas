@@ -2,7 +2,8 @@
 Language
 ========
 
-D-BAS was developed for the german and englisch language. During the development we seperated the frontend strings and the backend strings from each other.
+D-BAS was developed for the german and english language. During the development we separated the frontend strings and
+the backend strings from each other.
 
 Frontend
 ========
@@ -10,7 +11,7 @@ Frontend
 JavaScript
 ----------
 
-You can find the strings referenced by JS in `dbas/static/js/main/strings.js`. Thre you will find the keywords as well
+You can find the strings referenced by JS in `dbas/static/js/main/strings.js`. There you will find the keywords as well
 as the dictionary for both languages.
 
 

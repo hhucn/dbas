@@ -1,3 +1,16 @@
+### 1.17.2 (2019-04-04)
+- Fix revoking of statements [!706](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/706)
+- Fix referemces [!705](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/705)
+- Tidy up requirements [!707](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/707)
+- Fix asking for opinion for just added statement [!702](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/702)
+- Fix 500 if session cookie is invalid [!703](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/703)
+- Prevent crash if jump is last item in history in /finish or /reaction [!701](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/701)
+- Serve static files with relative paths [!700](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/700)
+
+### 1.17.1 (2019-04-03)
+- Fix error messages for invalid registration fields [!672](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/672) (Jans erster MR 🎉)
+- Hotfix for double conversion to cents [!698](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/698)
+
 ### 1.17.0 (2019-04-02)
 - Fix for usage of a generated slug, when a slug is already present in the database [!687](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/687)
 - Correctly format messages in mails and the internal messaging system [!688](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/688)

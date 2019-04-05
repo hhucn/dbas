@@ -96,7 +96,7 @@ class Issue(DiscussionBase):
         Initializes a row in current position-table
         """
         self.title = title
-        self.slug = slugify(self.title)
+        self.slug = slug if slug else slugify(title)
         self.info = info
         self.long_info = long_info
         self.author_uid = author_uid

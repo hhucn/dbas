@@ -57,12 +57,12 @@
         <img id="roundhousekick"
              alt=".r"
              style="width: 25px; height: 25px; border: none; opacity: 0;"
-             src="${request.static_url('dbas:static/images/icons/transparent.gif')}">
+             src="${request.static_path('dbas:static/images/icons/transparent.gif')}">
       </li>
       <li id="yomamma-wrapper" style="position: absolute; margin: 0; right: 0;">
         <img id="yomamma" alt=".y"
              style="width: 25px; height: 25px; border: none; opacity: 0;"
-             src="${request.static_url('dbas:static/images/icons/transparent.gif')}">
+             src="${request.static_path('dbas:static/images/icons/transparent.gif')}">
       </li>
     </ul>
   </div>

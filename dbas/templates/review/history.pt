@@ -28,7 +28,7 @@
           <span tal:condition="not:history.is_history" i18n:translate="you_have_no_access">You have no access to this site</span>!
         </h4>
         <img class="center nopower"
-             src="${request.static_url('dbas:static/images/bg/nopower.jpg')}" tal:condition="not:history.has_access" >
+             src="${request.static_path('dbas:static/images/bg/nopower.jpg')}" tal:condition="not:history.has_access" >
 
       </div>
 
