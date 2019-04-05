@@ -161,7 +161,6 @@ var participantSawThisStatement = 'participantSawThisStatement';
 var participantsSawArgumentsToThis = 'participantsSawArgumentsToThis';
 var participantSawArgumentsToThis = 'participantSawArgumentsToThis';
 var pinNavigation = 'pinNavigation';
-var pleaseEditAtLeast = 'pleaseEditAtLeast';
 var pleaseEnterYourTextHere = 'pleaseEnterYourTextHere';
 var pleaseEnterYourTextForSearchHere = 'pleaseEnterYourTextForSearchHere';
 var queueCompleteSeen = 'queueCompleteSeen';
@@ -440,7 +439,6 @@ var dbas_en = {
     'passwordSubmit': 'Change Password',
     'proposalsWereForwarded': 'Your proposals were forwarded!',
     'pinNavigation': 'Pin Navigation',
-    'pleaseEditAtLeast': 'Please edit at least X chars to reduce noise!',
     'pleaseEnterYourTextHere': 'Please enter your text here ...',
     'pleaseEnterYourTextForSearchHere': 'Please enter your text for searching here ...',
     'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again.',
@@ -704,7 +702,6 @@ var dbas_de = {
     'passwordSubmit': 'Passwort ändern',
     'proposalsWereForwarded': 'Ihr Vorschlag wurde eingereicht!',
     'pinNavigation': 'Navigation anheften',
-    'pleaseEditAtLeast': 'Bitte ändern Sie mindestens X Zeichen um unnötige Änderungen zu vermeiden.',
     'pleaseEnterYourTextForSearchHere': 'Bitte geben Sie hier Ihren Suchtext ein ...',
     'pleaseEnterYourTextHere': 'Bitte geben Sie hier Ihren Text ein ...',
     'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',

@@ -19,7 +19,6 @@ PopupHandler.prototype.showEditStatementsPopup = function (statements_uids) {
     $('#' + proposalEditListGroupId).empty();
     $('#' + popupEditStatementErrorDescriptionId).text('');
     $('#' + popupEditStatementSuccessDescriptionId).text('');
-    $('#' + popupEditStatementInfoDescriptionId).text('');
     $('#' + popupEditStatementSubmitButtonId).addClass('disabled').off('click');
 
     // Get logfile
@@ -48,10 +47,6 @@ PopupHandler.prototype.showEditStatementsPopup = function (statements_uids) {
         inputSpace.append(group);
     });
 
-    // GUI for editing statements
-    var _l = function (s1, s2) {
-        return levensthein(s1, s2);
-    };
     inputSpace.find('input').each(function () {
         $(this).keyup(function () {
             var oem = $(this).attr('placeholder');
@@ -59,16 +54,10 @@ PopupHandler.prototype.showEditStatementsPopup = function (statements_uids) {
             var id = $(this).attr('id');
             var statement_uid = parseInt($(this).data('statement-uid'));
 
-            // reduce noise
-            var levensthein = _l(oem, now);
-            var tmp = _t_discussion(pleaseEditAtLeast).replace('X', 5 - levensthein);
-            $('#' + popupEditStatementInfoDescriptionId).text(levensthein < 5 ? tmp : '');
-
             var btn = $('#' + popupEditStatementSubmitButtonId);
             if (now && oem && now.toLowerCase() === oem.toLowerCase()) {
                 btn.addClass('disabled');
                 btn.off('click');
-
             } else {
                 btn.removeClass('disabled');
                 btn.off('click').click(function popupEditStatementSubmitButton() {

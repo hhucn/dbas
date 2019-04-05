@@ -14,7 +14,6 @@
         <div id="popup-edit-statement-body">
           <p id="popup-edit-statement-success-description" class="text-success"></p>
           <p id="popup-edit-statement-error-description" class="text-danger"></p>
-          <p id="popup-edit-statement-info-description" class="text-info"></p>
           <p class="lead">${structure:extras.tag.edit_statement_here}</p>
           <div id="popup-edit-statement-inputs"></div>
           <div class="list-group" id="proposal-edit-list-group"></div>
