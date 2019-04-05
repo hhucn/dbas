@@ -312,7 +312,7 @@
           <br>
           <ul class="nav nav-tabs" style="display: table; margin: 0 auto;">
             <li id="nav-tab-login" class="tab-login active"><a href="#login" i18n:translate="login">Log In</a></li>
-            <li id="nav-tab-signup" class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>
+            <!--<li id="nav-tab-signup" class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>-->
           </ul>
         </div>
         <div id="popup-login-body">
