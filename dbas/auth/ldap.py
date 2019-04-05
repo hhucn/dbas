@@ -1,6 +1,7 @@
-import ldap
 import logging
 import os
+
+import ldap
 
 from dbas.strings.keywords import Keywords as _
 
@@ -16,7 +17,6 @@ def verify_ldap_user_data(nickname, password, _tn):
     :param _tn: Translator
     :return: [firstname, lastname, gender, email] on success else None
     """
-    LOG.debug("main")
     try:
         server = os.environ.get('HHU_LDAP_SERVER', None)
         base = os.environ.get('HHU_LDAP_BASE', None)
@@ -26,7 +26,6 @@ def verify_ldap_user_data(nickname, password, _tn):
         lastname = os.environ.get('HHU_LDAP_ACCOUNT_LAST', None)
         title = os.environ.get('HHU_LDAP_ACCOUNT_TITLE', None)
         email = os.environ.get('HHU_LDAP_ACCOUNT_EMAIL', None)
-        LOG.debug("parsed data")
 
         if any(el is None for el in [server, base, scope, filterf, firstname, lastname, title, email]):
             LOG.debug("Environment Keys are None")
@@ -41,13 +40,24 @@ def verify_ldap_user_data(nickname, password, _tn):
         title = title.replace('\'', '')
         email = email.replace('\'', '')
 
-        LOG.debug("ldap.initialize('%s')", server)
+        LOG.debug("Using LDAP server: '%s')", server)
         ldaps = ldap.initialize(server)
         ldaps.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
-        LOG.debug("ldap.simple_bind_s('%s%s', '***')", nickname, scope)
+        LOG.debug(
+            "search for user {nickname}{scope} with filter {filterf} on {base}".format(nickname=nickname, scope=scope,
+                                                                                       filterf=filterf, base=base))
         ldaps.simple_bind_s(nickname + scope, password)
-        LOG.debug("l.search_s(%s, ldap.SCOPE_SUBTREE, ('%s=%s'))[0][1]", base, filterf, nickname)
-        user = ldaps.search_s(base, ldap.SCOPE_SUBTREE, filterf + '=' + nickname)[0][1]
+        result = ldaps.search_s(base, ldap.SCOPE_SUBTREE, filterf.format(nickname=nickname),
+                                attrlist=[firstname, lastname, title, email])
+
+        if not result:
+            LOG.debug("ldap user {nickname} not allowed by {filterf}".format(nickname=nickname, filterf=filterf))
+            data = {
+                'error': "Leider ist es dir nicht erlaubt, dich einzuloggen. Wenn du meinst, das ist falsch, dann melde dich bei uns!"
+            }  # TODO translate
+            return data
+
+        user = result[0][1]
 
         firstname = user[firstname][0].decode('utf-8')
         lastname = user[lastname][0].decode('utf-8')
