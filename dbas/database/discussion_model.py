@@ -91,7 +91,7 @@ class Issue(DiscussionBase):
                                                                  uselist=False)
 
     def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
-                 is_read_only=False, is_featured=False):
+                 is_read_only=False, is_featured=False, slug: str = None):
         """
         Initializes a row in current position-table
         """
