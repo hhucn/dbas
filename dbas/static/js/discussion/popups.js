@@ -33,13 +33,13 @@ PopupHandler.prototype.showEditStatementsPopup = function (statements_uids) {
         var innerInputGroup = $('<div>').addClass('input-group-addon');
         var groupIcon = $('<i>').addClass('fa').addClass('fa-2x').addClass('fa-pencil-square-o').attr('aria-hidden', '"true"');
         var input = $('<input>')
-        .addClass('form-control')
-        .attr('id', 'popup-edit-statement-input-' + index)
-        .attr('name', 'popup-edit-statement-input-' + index)
-        .attr('type', text)
-        .attr('placeholder', statement)
-        .attr('data-statement-uid', value)
-        .val(statement);
+            .addClass('form-control')
+            .attr('id', 'popup-edit-statement-input-' + index)
+            .attr('name', 'popup-edit-statement-input-' + index)
+            .attr('type', text)
+            .attr('placeholder', statement)
+            .attr('data-statement-uid', value)
+            .val(statement);
 
         innerInputGroup.append(groupIcon);
         outerInputGroup.append(innerInputGroup).append(input);
@@ -309,8 +309,8 @@ PopupHandler.prototype.__prettifyOnHover = function (text) {
     var current = $(this).find('em').text().trim();
     $(this).hover(function () {
         var moddedText = text
-        .replace(new RegExp("(" + (current + '')
-        .replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
+            .replace(new RegExp("(" + (current + '')
+                .replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
         $('#popup-flag-argument-text').html(moddedText);
         $(this).find('em').html("<span class='text-primary'>" + current + "</span>");
     }, function () {
@@ -839,8 +839,8 @@ PopupHandler.prototype.createReferencesPopupBody = function (data) {
         array.forEach(function (dict) {
             text = dict.statement_text;
             var author = $('<a>').attr({'href': dict.author.link, 'target': '_blank'}).addClass('pull-right')
-            .append($('<span>').text(dict.author.name).css('padding-right', '0.5em'))
-            .append($('<img>').addClass('img-circle').attr('src', dict.author.img));
+                .append($('<span>').text(dict.author.name).css('padding-right', '0.5em'))
+                .append($('<img>').addClass('img-circle').attr('src', dict.author.img));
 
             var link = $('<a>').attr({
                 'href': dict.host + dict.path,
