@@ -652,8 +652,8 @@ def add_position_with_premise(request):
 
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
 
-    if new_position['error']:
-        return new_position['error']
+    if new_position['errors']:
+        return new_position['errors']
 
     conclusion_id: int = new_position['statement_uids'][0]
     db_conclusion: Statement = DBDiscussionSession.query(Statement).get(conclusion_id)

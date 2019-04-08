@@ -2557,6 +2557,8 @@ class DecisionProcess(DiscussionBase):
     votes_start: datetime = Column(DateTime, nullable=True)
     votes_end: datetime = Column(DateTime, nullable=True)
     host: str = Column(String, nullable=False, doc="The host of the associated decidotron instance")
+    max_position_cost: int = Column(Integer, nullable=True)
+    min_position_cost: int = Column(Integer, nullable=False, server_default="0")
 
     issue = relationship(Issue,
                          back_populates='decision_process')  # backref=backref('decision_process', cascade="all, delete-orphan"))
@@ -2564,9 +2566,11 @@ class DecisionProcess(DiscussionBase):
     def __init__(self, issue_id: int, budget: int, host: str, currency_symbol="€",
                  positions_end: datetime = None,
                  votes_start: datetime = None,
-                 votes_end: datetime = None):
+                 votes_end: datetime = None,
+                 max_position_cost: int = None,
+                 min_position_cost: int = 0):
         if budget <= 0:
-            raise ValueError("The Budget has to be greater than 0!")
+            raise ValueError("The budget has to be greater than 0!")
         self.issue_id = issue_id
         self.budget = budget
         self.host = host
@@ -2574,6 +2578,8 @@ class DecisionProcess(DiscussionBase):
         self.positions_end = positions_end
         self.votes_start = votes_start
         self.votes_end = votes_end
+        self.max_position_cost = max_position_cost if max_position_cost and max_position_cost < budget else budget
+        self.min_position_cost = min_position_cost if min_position_cost > 0 else 0
 
     def budget_str(self):
         return "{currency_symbol} {:.2f}".format(self.budget / 100, currency_symbol=self.currency_symbol)
@@ -2597,6 +2603,8 @@ class DecisionProcess(DiscussionBase):
             "votes_started": self.votes_start < datetime.now() if bool(self.votes_start) else True,
             "votes_end": self.votes_end,
             "votes_ended": self.votes_end < datetime.now() if bool(self.votes_end) else False,
+            "max_position_cost": self.max_position_cost if self.max_position_cost else self.budget,
+            "min_position_cost": self.min_position_cost,
         }
 
 
