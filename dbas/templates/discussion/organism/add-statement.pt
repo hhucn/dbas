@@ -19,7 +19,7 @@
         <span id="add-statement-error-msg"></span>
       </div>
       <div id="add-statement-container-body">
-        <fieldset>
+        <form>
           <div class="form-group">
             <label for="add-statement-container-main-input-position"
                    class="col-lg-3 col-md-5 col-sm-6 control-label"
@@ -49,16 +49,27 @@
             <div class="input-group col-lg-9 col-md-7 col-sm-6">
               <span class="input-group-addon">${issues.decidotron_budget.currency_symbol}</span>
               <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="2000" type="number"
-                     min=0
+                     min="${issues.decidotron_budget.min_position_cost / 100}"
                      step=50 max="${issues.decidotron_budget.max_position_cost / 100}"
-                     class="form-control" style="width: 100%" required>
+                     class="form-control" style="width: 100%" required
+                     oninput="cost_field = $(this);
+                      parent_form_group = cost_field.closest('div.form-group');
+                         costs = parseFloat(cost_field.val());
+                         min_number = parseFloat(cost_field.attr('min'));
+                         max_number = parseFloat(cost_field.attr('max'));
+                         if (costs < min_number || costs > max_number){
+                         parent_form_group.addClass('has-error');
+                         }
+                         else{
+                         parent_form_group.removeClass('has-error');
+                         }">
             </div>
             <span
                 class="help-block">Bitte gib die geschätzte Kosten zwischen ${int(issues.decidotron_budget.min_position_cost / 100)} ${issues.decidotron_budget.currency_symbol}
               und ${int(issues.decidotron_budget.max_position_cost / 100)}
                 ${issues.decidotron_budget.currency_symbol} an.</span>
           </div>
-        </fieldset>
+        </form>
       </div>
       <div class="list-group" id="proposal-statement-list-group"></div>
       <input id="send-new-statement" type="button" class="btn btn-primary" data-dismiss="modal"
