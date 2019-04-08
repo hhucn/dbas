@@ -2582,7 +2582,7 @@ class DecisionProcess(DiscussionBase):
         self.min_position_cost = min_position_cost if min_position_cost > 0 else 0
 
     def budget_str(self):
-        return "{currency_symbol} {:.2f}".format(self.budget / 100, currency_symbol=self.currency_symbol)
+        return "{currency_symbol} {:.2f}".format(self.budget, currency_symbol=self.currency_symbol)
 
     @staticmethod
     def by_id(issue_id: int) -> 'DecisionProcess':

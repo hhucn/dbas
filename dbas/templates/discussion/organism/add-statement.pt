@@ -49,8 +49,8 @@
             <div class="input-group col-lg-9 col-md-7 col-sm-6">
               <span class="input-group-addon">${issues.decidotron_budget.currency_symbol}</span>
               <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="2000" type="number"
-                     min="${issues.decidotron_budget.min_position_cost / 100}"
-                     step=50 max="${issues.decidotron_budget.max_position_cost / 100}"
+                     min="${issues.decidotron_budget.min_position_cost}"
+                     step=50 max="${issues.decidotron_budget.max_position_cost}"
                      class="form-control" style="width: 100%" required
                      oninput="cost_field = $(this);
                       parent_form_group = cost_field.closest('div.form-group');
@@ -65,8 +65,8 @@
                          }">
             </div>
             <span
-                class="help-block">Bitte gib die geschätzte Kosten zwischen ${int(issues.decidotron_budget.min_position_cost / 100)} ${issues.decidotron_budget.currency_symbol}
-              und ${int(issues.decidotron_budget.max_position_cost / 100)}
+                class="help-block">Bitte gib die geschätzte Kosten zwischen ${int(issues.decidotron_budget.min_position_cost)} ${issues.decidotron_budget.currency_symbol}
+              und ${int(issues.decidotron_budget.max_position_cost)}
                 ${issues.decidotron_budget.currency_symbol} an.</span>
           </div>
         </form>
