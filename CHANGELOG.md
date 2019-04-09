@@ -1,3 +1,10 @@
+### 1.17.3 (2019-04-09)
+- Allow for more specific ldap filters [!710](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/710)
+- Remove hint when suggestion small edit [!709](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/709)
+- Allow for min/max position cost [!711](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/711)
+  - Remove cents from the system
+  - Color invalid cost entries red
+
 ### 1.17.2 (2019-04-04)
 - Fix revoking of statements [!706](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/706)
 - Fix referemces [!705](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/705)
