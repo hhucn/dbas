@@ -47,7 +47,7 @@ function AjaxLoginHandler() {
             } else {
                 $('#' + popupLoginFailed).show();
                 $('#' + popupLoginFailed + '-message').text(_t(userPasswordNotMatch));
-                setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+                setGlobalErrorHandler(_t_discussion(ohsnap), _t(userPasswordNotMatch));
             }
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
@@ -132,7 +132,7 @@ function AjaxLoginHandler() {
             $('#' + popupLoginPasswordInputId).val('');
             $('#' + popupLoginPasswordconfirmInputId).val('');
             if (data === null) {
-                setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+                setGlobalErrorHandler(_t_discussion(ohsnap), error_message);
             }
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
