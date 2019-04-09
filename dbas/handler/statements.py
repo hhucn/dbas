@@ -8,7 +8,7 @@ from sqlalchemy import func
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
-from dbas.decidotron.lib import add_associated_cost, to_cents
+from dbas.decidotron.lib import add_associated_cost
 from dbas.handler import user, notification as nh
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
@@ -45,26 +45,26 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_da
     new_statement: Statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
     if db_issue.decision_process:
+        dp = db_issue.decision_process
         if 'decidotron_cost' not in feature_data:
             transaction.abort()
             LOG.error('Cost missing for an issue with a decision_process')
             return {
                 'status': 'fail',  # best error management
-                'error': 'Cost missing for an issue with a decision_process'
+                'errors': 'Cost missing for an issue with a decision_process'
             }
         else:
-            cost = to_cents(float(feature_data['decidotron_cost']))
+            cost = int(float(feature_data['decidotron_cost']))
 
-            if 0 <= cost <= db_issue.decision_process.budget and not db_issue.decision_process.position_ended():
+            if dp.min_position_cost <= cost <= (dp.max_position_cost or dp.budget) and not dp.position_ended():
                 add_associated_cost(db_issue, new_statement, cost)
             else:
                 transaction.abort()
                 LOG.error(
-                    'Cost has to be 0 <= cost <= {}. (In cents). cost is: '.format(db_issue.decision_process.budget,
-                                                                                   cost))
+                    f'Cost has to be {dp.min_position_cost} <= cost <= {dp.max_position_cost or dp.budget}. cost is: {cost}')
                 return {
                     'status': 'fail',
-                    'error': 'Cost has to be 0 <= cost <= {}. (In cents)'.format(db_issue.decision_process.budget)
+                    'errors': f'Cost has to be {dp.min_position_cost} <= cost <= {dp.max_position_cost or dp.budget}.'
                 }
 
     _um = UrlManager(db_issue.slug)
@@ -81,7 +81,7 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_da
         'status': 'success',
         'url': url,
         'statement_uids': [new_statement.uid],
-        'error': ''
+        'errors': ''
     }
 
 

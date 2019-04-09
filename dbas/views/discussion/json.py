@@ -1,5 +1,7 @@
 import logging
 
+from pyramid.request import Request
+from pyramid.response import Response
 from pyramid.view import view_config
 
 from dbas.database import DBDiscussionSession
@@ -173,7 +175,7 @@ def set_discussion_properties(request):
 @view_config(route_name='set_new_start_argument', renderer='json')
 @validate(valid_user, valid_issue_not_readonly,
           has_keywords_in_json_path(('position', str), ('reason', str), ('feature_data', dict)))
-def set_new_start_argument(request):
+def set_new_start_argument(request: Request):
     """
     Inserts a new argument as starting point into the database
 
@@ -188,7 +190,8 @@ def set_new_start_argument(request):
     prepared_dict_pos = set_position(request.validated['user'], request.validated['issue'],
                                      request.validated['position'], request.validated['feature_data'])
 
-    if not prepared_dict_pos['error']:
+    reponse: Response = request.response
+    if not prepared_dict_pos['errors']:
         LOG.debug("Set premise/reason")
         prepared_dict_pos = set_positions_premise(request.validated['issue'],
                                                   request.validated['user'],
@@ -198,9 +201,13 @@ def set_new_start_argument(request):
                                                   True,
                                                   request.cookies.get('_HISTORY_'),
                                                   request.mailer)
+    else:
+        reponse.status_code = 400
+
     __modifiy_discussion_url(prepared_dict_pos)
 
-    return prepared_dict_pos
+    reponse.json_body = prepared_dict_pos
+    return reponse
 
 
 @view_config(route_name='set_new_start_premise', renderer='json')
