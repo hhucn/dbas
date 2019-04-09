@@ -3,6 +3,7 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import copy
 from datetime import date, timedelta
 from json import JSONDecodeError
 from math import ceil
@@ -14,14 +15,14 @@ from slugify import slugify
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
-    ClickedStatement, StatementToIssue, ClickedArgument
+    ClickedStatement, StatementToIssue, ClickedArgument, Statement, TextVersion
 from dbas.handler import user
 from dbas.handler.arguments import get_all_statements_for_args
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import generate_short_url
 from dbas.helper.url import UrlManager
 from dbas.lib import get_enabled_issues_as_query, nick_of_anonymous_user, get_visible_issues_for_user, \
-    pretty_print_timestamp
+    pretty_print_timestamp, get_enabled_statement_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -125,6 +126,24 @@ def get_number_of_statements(issue_uid: int) -> int:
     :return: Integer
     """
     return DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=issue_uid).count()
+
+
+def get_number_of_authors(issue_uid: int) -> int:
+    """
+    Returns number of active users for the issue
+
+    :param issue_uid: Issue Issue.uid
+    :return: Integer
+    """
+    issues_statements_uids = [el.statement_uid for el in
+                              DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=issue_uid).all()]
+    active_statements_uids = [el.uid for el in
+                              get_enabled_statement_as_query().filter(Statement.uid.in_(issues_statements_uids)).all()]
+
+    active_users = [el.author_uid for el in DBDiscussionSession.query(TextVersion).filter(
+        TextVersion.statement_uid.in_(active_statements_uids))]
+
+    return len(set(active_users))
 
 
 def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict:
@@ -278,6 +297,7 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     date_dict = {}
     readable = []
     writable = []
+    featured = []
 
     # arg.uid to list of used statements fo speed up the __get_dict_for_charts(..)
     arg_stat_mapper = {}
@@ -288,26 +308,34 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     for index, db_issue in enumerate(db_issues):
         issue_dict = {
             'uid': db_issue.uid,
-            'url': '/' + db_issue.slug,
+            'url': '/discuss/' + db_issue.slug,
             'statements': get_number_of_statements(db_issue.uid),
+            'active_users': get_number_of_authors(db_issue.uid),
             'title': db_issue.title,
             'date': db_issue.date.format('DD.MM.YY HH:mm'),
             'lang': {
                 'is_de': db_issue.lang == 'de',
                 'is_en': db_issue.lang == 'en',
-            }
+            },
+            'featured': db_issue.is_featured
         }
         if db_issue.is_read_only:
             readable.append(issue_dict)
         else:
             writable.append(issue_dict)
 
+        if db_issue.is_featured:
+            featured_issue_dict = copy.deepcopy(issue_dict)
+            featured_issue_dict['info'] = db_issue.info
+            featured.append(featured_issue_dict)
+
         # key needs to be a str to be parsed in the frontend as json
         date_dict[str(db_issue.uid)] = __get_dict_for_charts(db_issue, arg_stat_mapper)
     return {
         'issues': {
             'readable': readable,
-            'writable': writable
+            'writable': writable,
+            'featured': featured
         },
         'data': date_dict
     }

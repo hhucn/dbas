@@ -44,6 +44,14 @@ class IssueHandlerTests(TestCaseWithConfig):
         response = ih.get_number_of_statements(1)
         self.assertTrue(response > 0)
 
+    def test_get_number_of_active_participation_users(self):
+        response = ih.get_number_of_authors(8)
+        self.assertTrue(response == 0)
+        response = ih.get_number_of_authors(2)
+        self.assertTrue(response > 0)
+        response = ih.get_number_of_authors(4)
+        self.assertTrue(response > 0)
+
     def test_get_id_of_slug(self):
         queried_issue = ih.get_id_of_slug(self.issue_cat_or_dog.slug)
         self.assertEqual(queried_issue.uid, self.issue_cat_or_dog.uid)
