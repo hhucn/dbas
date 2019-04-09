@@ -4,7 +4,7 @@
   <div id="discussions-space">
     <ul id="discussions-space-list" class="list-group">
       <li class="list-group-item discussions-space-list__position"
-               tal:repeat="item [item for item in items.elements if item.url not in ['login', 'add']]"
+           tal:repeat="item [item for item in items.elements if item.url not in ['login', 'add']]"
           style="${item.style}">
         <div class="discussion-space-list-row__left-side premise-input" style="display: flex; flex-grow: 1">
           <input id="${item.id}" type="radio"
@@ -17,12 +17,13 @@
             <label for="${item.id}" tal:condition="not:repeat.premise.end">&nbsp;${extras.tag.aand}&nbsp;</label>
             <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
             <span tal:condition="'cost' in item" class="decidotron-position-cost">
-              &nbsp;(ca. ${"{:.0f}".format(item.cost / 100)} ${issues.decidotron_budget.currency_symbol})
+              &nbsp;(ca. ${"{:.0f}".format(item.cost)} ${issues.decidotron_budget.currency_symbol})
             </span>
           </span>
           <div tal:omit-tag="" tal:condition="extras.logged_in">
             <div class="item-actions-list" tal:condition="item.is_editable or item.is_markable or item.is_deletable">
-              <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_markable or item.is_deletable or item.is_attackable"></span>
+              <span
+                  style="margin-left: 1em" tal:condition="item.is_editable or item.is_markable or item.is_deletable or item.is_attackable"></span>
               <span class="item-actions item-edit" tal:condition="item.is_editable"
                     title="${extras.title.edit_statement}">
                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
@@ -55,7 +56,7 @@
               </span>
               <span class="item-actions item-reference" title="${extras.title.reference}">
                 <span
-                        style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_markable or item.is_deletable)"></span>
+                    style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_markable or item.is_deletable)"></span>
                 <i class="fa fa-link" aria-hidden="true"></i>
               </span>
             </div>
@@ -65,7 +66,7 @@
       </li>
 
       <li tal:define="add_or_login [item for item in items.elements if item.url in ['login', 'add']]"
-               tal:condition="add_or_login" class="list-group-item discussions-space-list__add_or_login">
+           tal:condition="add_or_login" class="list-group-item discussions-space-list__add_or_login">
         <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
           <input id="${item.id}" type="radio" name="discussion-button-group"
                  data-url="${item.url}"><span>${item.premises[0].title}</span>
