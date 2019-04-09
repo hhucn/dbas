@@ -322,6 +322,13 @@
               password or e-mail address. By registering or logging in, you are accepting these terms.</p>
             (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>)
           </div>
+          <div class="alert alert-info">
+            <p>
+              Für diese Experiment ist der Login nur mit Ihrer Unikennung (z.B. bjebb100) möglich!
+              Nur Studierende der Informatik können sich einloggen. Sollten Sie sich nicht trotzdem nicht einloggen
+              können, melden Sie sich bitte bei uns.
+            </p>
+          </div>
           <div class="tab-content">
             <div id="login">
               <form autocomplete="on">
