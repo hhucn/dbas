@@ -7,7 +7,7 @@ from pyramid.security import forget
 from pyramid.view import view_config
 
 from api import login
-from dbas.auth.login import login_local_user, __refresh_headers_and_url
+from dbas.auth.login import login_local_user, register_user_with_json_data, __refresh_headers_and_url
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
@@ -125,19 +125,17 @@ def user_registration(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    return {'success': str(False), 'error': 'fail', 'info': 'registration is currently not allowed'}
-    #
-    # LOG.debug("Register new user via AJAX. %s", request.json_body)
-    # mailer = request.mailer
-    # lang = request.validated['lang']
-    #
-    # success, info, new_user = register_user_with_json_data(request.validated, lang, mailer)
-    #
-    # return {
-    #     'success': str(success),
-    #     'error': '',
-    #     'info': str(info)
-    # }
+    LOG.debug("Register new user via AJAX. %s", request.json_body)
+    mailer = request.mailer
+    lang = request.validated['lang']
+
+    success, info, new_user = register_user_with_json_data(request.validated, lang, mailer)
+
+    return {
+        'success': str(success),
+        'error': '',
+        'info': str(info)
+    }
 
 
 @view_config(route_name='user_password_request', renderer='json')
