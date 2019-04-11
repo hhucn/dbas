@@ -75,10 +75,6 @@ def start(request):
     LOG.debug("Return configuration for initial discussion overview")
     ui_locales = get_language_from_cookie(request)
     issue_dict = issue_handler.get_issues_overview_on_start(request.validated['user'])
-    for key in issue_dict['issues']:
-        for i in range(len(issue_dict['issues'][key])):
-            issue_dict['issues'][key][i]['url'] = '/discuss' + issue_dict['issues'][key][i]['url']
-
     prep_dict = main_dict(request, Translator(ui_locales).get(_.discussionStart))
 
     prep_dict.update(issue_dict)
