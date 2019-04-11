@@ -4,14 +4,12 @@ Handler for user-accounts
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import arrow
 import logging
 import random
 import uuid
 from datetime import date, timedelta
 from typing import Tuple, List
-
-import arrow
-import transaction
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
@@ -676,7 +674,7 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
 
     _t = Translator(ui_locales)
     # creating a new user with hashed password
-    LOG.debug("Adding user %s", user['nickname'])
+    LOG.debug("Adding user with nickname %s", user['nickname'])
     hashed_password = password_handler.get_hashed_password(user['password'])
     newuser = User(firstname=user['firstname'],
                    surname=user['lastname'],
@@ -688,14 +686,12 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
                    oauth_provider=oauth_provider,
                    oauth_provider_id=oauth_provider_id)
     DBDiscussionSession.add(newuser)
-    transaction.commit()
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     settings = Settings(author_uid=db_user.uid,
                         send_mails=False,
                         send_notifications=True,
                         should_show_public_nickname=True)
     DBDiscussionSession.add(settings)
-    transaction.commit()
 
     # sanity check, whether the user exists
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()

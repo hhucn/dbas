@@ -5,11 +5,10 @@ Login Handler for D-BAS
 """
 
 import logging
-
-import transaction
 from pyramid.security import remember
 from pyramid_mailer import Mailer
 from sqlalchemy import func
+from typing import Tuple, List
 from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
@@ -221,7 +220,7 @@ def __check_login_params(firstname, lastname, nickname, email, password, passwor
     return None
 
 
-def __refresh_headers_and_url(request, db_user, keep_login, url):
+def __refresh_headers_and_url(request, db_user: User, keep_login: bool, url: str) -> Tuple[List[Tuple[str, str]], str]:
     """
     Refreshed headers for the request. Returns a sequence of header tuples (e.g. ``[('Set-Cookie', 'foo=abc')]``)
     on this request's response.
@@ -241,7 +240,6 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     LOG.debug("Update login timestamp")
     db_user.update_last_login()
     db_user.update_last_action()
-    transaction.commit()
 
     ending = ['/?session_expired=true', '/?session_expired=false']
     for e in ending:
