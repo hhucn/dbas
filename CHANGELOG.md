@@ -1,3 +1,8 @@
+### 1.17.4 (2019-04-11)
+- Add a hero issue view. To promote a single issue. [!693](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/693)
+- Return correct error messages in login fail-state [!715](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/715)
+- Do not allow registration for the time of the experiment [!713](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/713)
+
 ### 1.17.3 (2019-04-09)
 - Allow for more specific ldap filters [!710](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/710)
 - Remove hint when suggestion small edit [!709](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/709)
