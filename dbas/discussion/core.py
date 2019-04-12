@@ -112,7 +112,6 @@ def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, hi
     :param db_issue:
     :param db_user:
     :param db_argument:
-    :param attitude:
     :param history:
     :param path:
     :return:
@@ -241,7 +240,8 @@ def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: str, path
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    created_argument: Argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == pgroup_ids[0]).one()
+    created_argument: Argument = DBDiscussionSession.query(Argument).filter(
+        Argument.premisegroup_uid == pgroup_ids[0]).one()
     is_supportive = created_argument.is_supportive
     conclusion_is_argument = created_argument.attacks is not None
     if conclusion_is_argument:
@@ -252,7 +252,8 @@ def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: str, path
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
     discussion_dict = _ddh.get_dict_for_choosing(conclusion.uid, conclusion_is_argument, is_supportive)
-    item_dict = _idh.get_array_for_choosing(conclusion.uid, pgroup_ids, conclusion_is_argument, is_supportive, db_user.nickname)
+    item_dict = _idh.get_array_for_choosing(conclusion.uid, pgroup_ids, conclusion_is_argument, is_supportive,
+                                            db_user.nickname)
 
     return {
         'issues': issue_dict,

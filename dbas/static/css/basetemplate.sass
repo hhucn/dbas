@@ -8,7 +8,7 @@ html, body
   padding: 0
 
 body
-  color: #000
+  color: #444444
   background: #EBEBEB
   line-height: 1.5
 
@@ -23,12 +23,14 @@ em
   display: none
   height: 30px
   width: 30px
+
   img
     height: 30px
 
 body.loading
   .ajaxloader
     display: inline-block
+
     img
       margin: auto
       height: 30px
@@ -36,6 +38,7 @@ body.loading
   .shrink
     .ajaxloader
       display: inline-block
+
       img
         margin-top: -1em
 
@@ -55,10 +58,11 @@ body.loading
     color: grey
     /* adjust as needed
     margin-right: 1em
+
   &.collapsed:after
     /* symbol for "collapsed" panels
     content: "\e080"
-    /* adjust as needed, taken from bootstrap.css
+/* adjust as needed, taken from bootstrap.css
 
 .center
   margin-left: auto
@@ -76,11 +80,11 @@ body.loading
 .row
   padding-left: 15px
   padding-right: 15px
-  /*
-   *display: -webkit-box;
-   *display: -webkit-flex;
-   *display: -ms-flexbox;
-   *display:         flex;
+/*
+ *display: -webkit-box;
+ *display: -webkit-flex;
+ *display: -ms-flexbox;
+ *display:         flex;
 
 \:-moz-placeholder
   /* Mozilla Firefox 4 to 18
@@ -104,10 +108,11 @@ body.loading
   padding: 0
   display: none
   opacity: 0.6
-  filter: alpha(opacity = 60)
+  filter: alpha(opacity=60)
+
   &:hover
     opacity: 1.0
-    filter: alpha(opacity = 100)
+    filter: alpha(opacity=100)
 
 .list
   text-align: left
@@ -178,14 +183,17 @@ body.loading
   text-align: center
   margin-bottom: 15px
   color: #000
+
   ul
     padding: 0
     margin: 0
+
     li
       list-style: none
       display: inline
       margin: 0 1em
       text-align: center
+
       a:hover
         text-decoration: underline
         color: #006ab3
@@ -230,6 +238,7 @@ body.loading
   list-style-type: none
   cursor: pointer
   padding-left: 0
+
   li:hover
     color: #2196f3
 
@@ -237,14 +246,16 @@ body.loading
   width: 100%
 
 #popup-login-registration-oauth-buttons a
-  display: inline-block!important
+  display: inline-block !important
   margin: 0 0.5em
 
 #insert_statements_options
   > li
     margin-bottom: 0
+
   li > span
     margin-left: 0
+
   label
     width: 100%
 
@@ -281,6 +292,7 @@ body.loading
 
 #display-control-container > div
   text-align: center
+
   img
     cursor: pointer
 
@@ -313,3 +325,7 @@ body.loading
     margin-top: 20px
   #news-navigation
     margin-bottom: 35px
+
+.alert-secondary
+  background-color: #F3F3F3
+  color: #444444
