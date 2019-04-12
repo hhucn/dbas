@@ -1,3 +1,9 @@
+### 1.18.0 (2019-04-12)
+Stable release for the next field experiment.
+- UI and spelling improvements [!720](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/720)
+- Remove unnecessary transaction.commit() calls (database improvements) [!719](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/719)
+- Extend README in cases of troubleshooting during installation [!718](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/718)
+
 ### 1.17.4 (2019-04-11)
 - Add a hero issue view. To promote a single issue. [!693](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/693)
 - Return correct error messages in login fail-state [!715](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/715)
