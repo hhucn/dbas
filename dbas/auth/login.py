@@ -5,11 +5,11 @@ Login Handler for D-BAS
 """
 
 import logging
-
 import transaction
 from pyramid.security import remember
 from pyramid_mailer import Mailer
 from sqlalchemy import func
+from typing import Tuple, List
 from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
@@ -221,18 +221,21 @@ def __check_login_params(firstname, lastname, nickname, email, password, passwor
     return None
 
 
-def __refresh_headers_and_url(request, db_user, keep_login, url):
+def __refresh_headers_and_url(request, db_user_nickname: str, keep_login: bool, url: str) \
+        -> Tuple[List[Tuple[str, str]], str]:
     """
     Refreshed headers for the request. Returns a sequence of header tuples (e.g. ``[('Set-Cookie', 'foo=abc')]``)
     on this request's response.
 
     :param request: webservers request
-    :param db_user: User
+    :param db_user_nickname: Nickname of user
     :param keep_login: Boolean
     :param url: String
     :return: Headers, String
     """
     LOG.debug("Login successful / keep_login: %s", keep_login)
+    # This query needs to happen, as the session supplying db_user as before is closed in a caller of this function.
+    db_user = DBDiscussionSession().query(User).filter_by(nickname=db_user_nickname).first()
     db_settings = db_user.settings
     db_settings.should_hold_the_login(keep_login)
     LOG.debug("Remembering headers for %s", db_user.nickname)
