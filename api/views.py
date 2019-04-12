@@ -215,10 +215,10 @@ def discussion_init(request):
     :param request: Request
     :return:
     """
-    db_issue = request.validated['issue']
+    db_issue: Issue = request.validated['issue']
     intro = get_translation(_.initialPositionInterest, db_issue.lang)
 
-    bubbles = [
+    bubbles: List[DataBubble] = [
         create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', content=intro, omit_bubble_url=True,
                                  lang=db_issue.lang)
     ]

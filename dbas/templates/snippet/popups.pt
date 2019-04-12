@@ -315,16 +315,16 @@
           </ul>
         </div>
         <div id="popup-login-body">
-          <div class="alert alert-info">
+          <div class="alert alert-secondary">
             <p i18n:translate="all_data_is_free">Your submitted data is being licensed under Creative Commons
-              Share Alike and will be used for scientific purposes. We will never share your
+              Share Alike (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>)
+              and will be used for scientific purposes. We will never share your
               password or e-mail address. By registering or logging in, you are accepting these terms.</p>
-            (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>)
           </div>
-          <div class="alert alert-info">
+          <div class="alert alert-secondary">
             <p>
-              Für diese Experiment ist der Login nur mit Ihrer Unikennung (z.B. bjebb100) möglich!
-              Nur Studierende der Informatik können sich einloggen. Sollten Sie sich nicht trotzdem nicht einloggen
+              Für das aktuelle Experiment ist der Login nur mit Ihrer Unikennung (z.B. hehei001) möglich.
+              Nur Studierende der Informatik können sich einloggen. Sollten Sie sich trotzdem nicht einloggen
               können, melden Sie sich bitte bei uns.
             </p>
           </div>

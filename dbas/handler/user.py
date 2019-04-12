@@ -4,14 +4,13 @@ Handler for user-accounts
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import arrow
 import logging
 import random
+import transaction
 import uuid
 from datetime import date, timedelta
 from typing import Tuple, List
-
-import arrow
-import transaction
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession

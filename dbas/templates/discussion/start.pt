@@ -13,7 +13,7 @@
     </section>
 
     <div class="wrapper-container" tal:condition="len(issues.featured)==1">
-      <div class="container colored-featured-container">
+      <div class="container colored-container colored-featured-container">
         <div class="row">
           <div class="col-md-offset-1 col-md-10 col-md-offset-1">
             <div class="">
@@ -49,11 +49,11 @@
                 <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
                 <td>
                   <img tal:condition="issue.lang.is_de"
-                      src="${request.static_url('dbas:static/images/flags/de-24.png')}"
-                      alt="flag_de">
+                          src="${request.static_url('dbas:static/images/flags/de-24.png')}"
+                          alt="flag_de">
                   <img tal:condition="issue.lang.is_en"
-                      src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}"
-                      alt="flag_us-gb">
+                          src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}"
+                          alt="flag_us-gb">
                 </td>
                 <td>${issue.statements}</td>
                 <td class="issue_activity_chart">
@@ -88,9 +88,9 @@
                 <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
                 <td>
                   <img tal:condition="issue.lang.is_de"
-                      src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
+                          src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
                   <img tal:condition="issue.lang.is_en"
-                      src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
+                          src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
                 </td>
                 <td>${issue.statements}</td>
                 <td class="issue_activity_chart">
