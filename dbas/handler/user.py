@@ -695,7 +695,7 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
                         should_show_public_nickname=True)
     DBDiscussionSession.add(settings)
     transaction.commit()
-    
+
     # sanity check, whether the user exists
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     if db_user:
