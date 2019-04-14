@@ -1,3 +1,9 @@
+### 1.18.1 (2019-04-14)
+Fixes fot the field experiment
+- Fix german translation for the future voting button 350f386e
+- Show 'result' button no matter if the user is logged in. 17a41eef
+- Fix for when more than one issue might be featured. 51b41067
+
 ### 1.18.0 (2019-04-12)
 Stable release for the next field experiment.
 - UI and spelling improvements [!720](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/720)

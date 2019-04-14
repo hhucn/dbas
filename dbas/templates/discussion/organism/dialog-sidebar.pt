@@ -36,21 +36,21 @@
       <button id="decidotron-button"
               class="btn btn-primary btn-disabled btn-block decidotron-button vote-not-logged-in"
               data-toggle="modal" data-target="#popup-login"
-           tal:condition="not extras.logged_in and issues.decidotron_budget.votes_started">
+           tal:condition="not extras.logged_in and issues.decidotron_budget.votes_started and not issues.decidotron_budget.votes_ended">
         <i class="fa fa-sign-in"></i>
         <span i18n:translate="decidotron_login_to_vote_button_label">Login to vote!</span>
       </button>
       <button id="decidotron-button" disabled class="btn btn-disabled btn-block decidotron-button vote-not-started"
            tal:condition="not issues.decidotron_budget.votes_started">
         <i class="fa fa-check"></i>
-        <span i18n:translate="decidotron_vote_will_start_at_button_label">Voting will be possible from ${issues.decidotron_budget.votes_start.strftime('%d.%m.%Y at %H:%M')}</span>
+        <span i18n:translate="decidotron_vote_will_start_at_button_label">Voting will be possible from </span>${issues.decidotron_budget.votes_start.strftime('%d.%m.%Y  %H:%M')}
       </button>
-      <button id="decidotron-button" class="btn btn-default decidotron-button vote-ended"
-           tal:condition="issues.decidotron_budget.votes_ended"
-              href="${issues.decidotron_budget.host}/preferences/${issues.slug}">
+      <a id="decidotron-button" class="btn btn-default btn-block decidotron-button vote-ended"
+           tal:condition="issues.jdecidotron_budget.votes_ended"
+         href="${issues.decidotron_budget.host}/preferences/${issues.slug}/result">
         <i class="fa fa-list-ol"></i>
         <span i18n:translate="decidotron_vote_results_button_label">Results</span>
-      </button>
+      </a>
     </li>
     <li id="restart-link" tal:condition="extras.ongoing_discussion">
       <a id="discussion-restart-btn" class="btn btn-link" href="/discuss/${extras.restart_url}">
