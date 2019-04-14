@@ -43,7 +43,7 @@
       <button id="decidotron-button" disabled class="btn btn-disabled btn-block decidotron-button vote-not-started"
            tal:condition="not issues.decidotron_budget.votes_started">
         <i class="fa fa-check"></i>
-        <span i18n:translate="decidotron_vote_will_start_at_button_label">Voting will be possible from ${issues.decidotron_budget.votes_start.strftime('%d.%m.%Y at %H:%M')}</span>
+        <span i18n:translate="decidotron_vote_will_start_at_button_label">Voting will be possible from </span>${issues.decidotron_budget.votes_start.strftime('%d.%m.%Y  %H:%M')}
       </button>
       <button id="decidotron-button" class="btn btn-default decidotron-button vote-ended"
            tal:condition="issues.decidotron_budget.votes_ended"
