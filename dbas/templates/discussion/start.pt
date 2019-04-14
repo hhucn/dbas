@@ -12,13 +12,13 @@
       </div>
     </section>
 
-    <div class="wrapper-container" tal:condition="len(issues.featured)==1">
+    <div class="wrapper-container" tal:condition="issues.featured">
       <div class="container colored-container colored-featured-container">
         <div class="row">
           <div class="col-md-offset-1 col-md-10 col-md-offset-1">
             <div class="">
               <h1 class="title">${issues.featured[0].title}</h1>
-              <p class="lead">${issues.featured[0].info}.</p>
+              <p class="lead">${issues.featured[0].info}</p>
               <p>
                 <a class="btn btn-primary btn-lg" href="${issues.featured[0].url}"
                    role="button" i18n:translate="get_started">Get Started</a>
