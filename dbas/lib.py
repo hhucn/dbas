@@ -544,7 +544,7 @@ def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_h
     if lang == 'de':
         ret_value = __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro,
                                                    anonymous_style, rearrange_intro, db_argument, attack_type, sb_none,
-                                                   marked_element, lang, premises_text, conclusion_text,
+                                                   marked_element, premises_text, conclusion_text,
                                                    is_users_opinion,
                                                    support_counter_argument)
     else:
@@ -600,35 +600,33 @@ def __get_tags_for_building_single_user_argument(with_html_tag, premises, conclu
     }
 
 
-def __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro, anonymous_style,
-                                   rearrange_intro, db_argument, attack_type, sb_none, marked_element, lang,
-                                   premises, conclusion, is_users_opinion, support_counter_argument):
+def __build_single_argument_for_de(_t: Translator, sb: str, se: str, you_have_the_opinion_that: str,
+                                   start_with_intro: bool, anonymous_style: bool, rearrange_intro: bool,
+                                   db_argument: Argument, attack_type: str, sb_none: str, marked_element, premises: str,
+                                   conclusion: str, is_users_opinion: bool, support_counter_argument) -> str:
     if start_with_intro and not anonymous_style:
         intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
         if rearrange_intro:
             intro = _t.get(_.itTrueIsThat) if db_argument.is_supportive else _t.get(_.itFalseIsThat)
 
-        ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
+        text = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
 
     elif is_users_opinion and not anonymous_style:
-        ret_value = sb_none
+        text = sb_none
         if support_counter_argument:
-            ret_value += _t.get(_.youAgreeWithThecounterargument)
+            text += _t.get(_.youAgreeWithThecounterargument)
         elif marked_element:
-            ret_value += you_have_the_opinion_that
+            text += you_have_the_opinion_that
         else:
-            ret_value += _t.get(_.youArgue)
-        ret_value += se + ' '
-
+            text += _t.get(_.youArgue)
+        text += se + ' '
     else:
         tmp = _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous)
-        ret_value = sb_none + sb + tmp + se + ' '
-    ret_value += ' {}{}{} '.format(sb, _t.get(_.itIsNotRight), se) if not db_argument.is_supportive else ''
-    ret_value += conclusion
-    ret_value += ', ' if lang == 'de' else ' '
-    ret_value += sb_none + _t.get(_.because).lower() + se + ' ' + premises
-    return ret_value
+        text = sb_none + sb + tmp + se + ' '
 
+    text += f' {sb}{_t.get(_.itIsNotRight)}{se} ' if not db_argument.is_supportive else ''
+    text += f'{conclusion}, {sb_none}{_t.get(_.because).lower()}{se} {premises}'
+    return text
 
 
 def __build_single_argument_for_en(_t: Translator, sb: str, se: str, you_have_the_opinion_that: str, marked_element,
