@@ -168,7 +168,7 @@ class ItemDictHelper(object):
                                             Attitudes.DONT_KNOW.value, url_d)
             statements_array.append(d_d)
 
-        return {'elements': statements_array, 'extras': {'cropped_list': False}
+        return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     def get_array_for_justify_statement(self, db_statement: Statement, db_user: User, is_supportive: bool, history):
         """
