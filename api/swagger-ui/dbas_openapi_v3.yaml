@@ -650,6 +650,17 @@ paths:
                             $ref: '#/components/schemas/dataauthor'
                           issue:
                             $ref: '#/components/schemas/issue'
+                    raw:
+                      type: object
+                      properties:
+                        conclusions:
+                          type: array
+                          items:
+                            type: string
+                        premises:
+                          type: array
+                          items:
+                            type: string
                     statement:
                       type: object
                       properties:
