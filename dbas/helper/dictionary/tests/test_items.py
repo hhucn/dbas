@@ -2,7 +2,8 @@ import unittest
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.helper.dictionary.items import shuffle_list_by_user
+from dbas.helper.dictionary.items import shuffle_list_by_user, ItemDictHelper
+from dbas.tests.utils import TestCaseWithConfig
 
 
 class TestShuffleList(unittest.TestCase):
@@ -24,3 +25,17 @@ class TestShuffleList(unittest.TestCase):
         list1 = shuffle_list_by_user(self.db_user, list0)
 
         self.assertNotEqual(list0, list1)
+
+
+class TestPrepareItemDictForAttitude(TestCaseWithConfig):
+    def test_statement_with_children(self):
+        idh = ItemDictHelper("de", self.issue_cat_or_dog)
+        result_dict = idh.prepare_item_dict_for_attitude(4)
+        assert len(result_dict["elements"]) == 3
+
+    def test_statement_without_children(self):
+        idh = ItemDictHelper("de", self.issue_cat_or_dog)
+        result_dict = idh.prepare_item_dict_for_attitude(20)
+        assert len(result_dict["elements"]) == 2
+        for v in result_dict["elements"]:
+            assert "justify/0/" not in v["url"]

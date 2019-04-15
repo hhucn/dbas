@@ -130,7 +130,7 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 
-    def prepare_item_dict_for_attitude(self, statement_uid):
+    def prepare_item_dict_for_attitude(self, statement_uid: int) -> dict:
         """
         Prepares the dict with all items for the second step in discussion, where the user chooses her attitude.
 
@@ -147,24 +147,26 @@ class ItemDictHelper(object):
 
         db_arguments = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == statement_uid,
                                                                   Argument.is_supportive == True).all()
-        uid = random.choice(db_arguments).uid if len(db_arguments) > 0 else 0
 
         title_t = _tn.get(_.iAgreeWithInColor) + '.'
         title_f = _tn.get(_.iDisagreeWithInColor) + '.'
         title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'
         url_t = _um.get_url_for_justifying_statement(statement_uid, Attitudes.AGREE.value)
         url_f = _um.get_url_for_justifying_statement(statement_uid, Attitudes.DISAGREE.value)
-        url_d = _um.get_url_for_justifying_statement(uid, Attitudes.DONT_KNOW.value)
         d_t = self.__create_answer_dict(Attitudes.AGREE.value, [{'title': title_t, 'id': Attitudes.AGREE.value}],
                                         Attitudes.AGREE.value, url_t)
         d_f = self.__create_answer_dict(Attitudes.DISAGREE.value, [{'title': title_f, 'id': Attitudes.DISAGREE.value}],
                                         Attitudes.DISAGREE.value, url_f)
-        d_d = self.__create_answer_dict(Attitudes.DONT_KNOW.value,
-                                        [{'title': title_d, 'id': Attitudes.DONT_KNOW.value}],
-                                        Attitudes.DONT_KNOW.value, url_d)
         statements_array.append(d_t)
         statements_array.append(d_f)
-        statements_array.append(d_d)
+
+        if len(db_arguments) > 0:
+            target_argument_uid = random.choice(db_arguments).uid
+            url_d = _um.get_url_for_justifying_statement(target_argument_uid, Attitudes.DONT_KNOW.value)
+            d_d = self.__create_answer_dict(Attitudes.DONT_KNOW.value,
+                                            [{'title': title_d, 'id': Attitudes.DONT_KNOW.value}],
+                                            Attitudes.DONT_KNOW.value, url_d)
+            statements_array.append(d_d)
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
@@ -187,7 +189,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(slug, history=self.path)
 
-        for argument in db_arguments:
+        for argument in db_arguments:  ## todo NOTE url ist das entscheidene attribut
             sarray = self.__get_statement_array_for_justify_statement(db_user, history, argument, uids, _tn, _um)
 
             statements_array.append(sarray)
