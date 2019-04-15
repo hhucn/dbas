@@ -414,7 +414,7 @@ def __get_chained_arguments(argument: Argument) -> List[Argument]:
 
 def __build_argument_for_jump(arg_array: List[Argument], with_html_tag: bool) -> str:
     """
-    Build tet for an argument, if we jump to this argument
+    Build text for an argument, if we jump to this argument
 
     :param arg_array: [Argument]
     :param with_html_tag: This parameter is ignored in the next steps, which is why we should rewrite this function.
@@ -438,7 +438,7 @@ def __build_argument_for_jump(arg_array: List[Argument], with_html_tag: bool) ->
     return ret_value.replace('  ', ' ')
 
 
-def __build_val_for_jump(db_argument, tag_premise, tag_conclusion, tag_end, _t):
+def __build_val_for_jump(db_argument: Argument, tag_premise, tag_conclusion, tag_end, _t) -> str:
     premises = db_argument.get_premisegroup_text()
     if premises[-1] != '.':
         premises += '.'
@@ -630,12 +630,14 @@ def __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_
     return ret_value
 
 
-def __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element, conclusion, premises, db_arg):
+
+def __build_single_argument_for_en(_t: Translator, sb: str, se: str, you_have_the_opinion_that: str, marked_element,
+                                   conclusion: str, premises: str, argument: Argument):
     tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
-    ret_value = (you_have_the_opinion_that + ' ' if marked_element else '') + conclusion + ' '
-    ret_value += _t.get(_.because).lower() if db_arg.is_supportive else tmp
-    ret_value += ' ' + premises
-    return ret_value
+    text = (you_have_the_opinion_that + ' ' if marked_element else '') + conclusion + ' '
+    text += _t.get(_.because).lower() if argument.is_supportive else tmp
+    text += ' ' + premises
+    return text
 
 
 def __build_nested_argument(arg_array: List[Argument], first_arg_by_user, user_changed_opinion, with_html_tag,
