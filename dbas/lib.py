@@ -380,7 +380,7 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
             author_uid=db_user.uid).first()
         premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None
 
-    arguments = __get_chained_arguments(db_argument)
+    arguments = __get_chain_of_attacking_arguments(db_argument)
 
     if attack_type == 'jump':
         return __build_argument_for_jump(arguments, with_html_tag)
@@ -398,7 +398,7 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
                                        _t)
 
 
-def __get_chained_arguments(argument: Argument) -> List[Argument]:
+def __get_chain_of_attacking_arguments(argument: Argument) -> List[Argument]:
     """
     Traverse through all arguments which might be connected to our starting argument and collect them all.
 
@@ -406,8 +406,8 @@ def __get_chained_arguments(argument: Argument) -> List[Argument]:
     :return:
     """
     arguments = [argument]
-    while argument.argument_uid:
-        argument: Argument = DBDiscussionSession.query(Argument).get(argument.argument_uid)
+    while argument.attacks:
+        argument: Argument = argument.attacks
         arguments.append(argument)
     return arguments
 
