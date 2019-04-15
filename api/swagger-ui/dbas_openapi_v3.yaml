@@ -3,9 +3,9 @@ servers:
   - url: 'http://localhost:4284/api'
   - url: 'https://dbas.cs.uni-duesseldorf.de/api'
 info:
-  version: "1.18.1"
+  version: "1.19.0"
   title: D-BAS
-  
+
 paths:
   /login:
     post:
@@ -22,7 +22,7 @@ paths:
             schema:
               type: object
               properties:
-                nickname: 
+                nickname:
                   type: string
                 password:
                   type: string
@@ -38,7 +38,7 @@ paths:
                     type: string
                   token:
                     type: string
-                    
+
   /logout:
     post:
       summary: Logout the current user
@@ -61,9 +61,9 @@ paths:
                     type: string
                   token:
                     type: string
-      security: 
+      security:
         - token: []
-  
+
   /users:
     get:
       summary: List users
@@ -104,9 +104,9 @@ paths:
                     type: integer
         400:
           description: An error like 'Nickname taken'
-      security: 
+      security:
         - token: []
-  
+
   /users/{id}:
     get:
       summary: single user
@@ -128,12 +128,12 @@ paths:
                 $ref: '#/components/schemas/user'
         404:
           description: This user-id does not exist.
-  
+
   /issues:
     get:
       summary: List all issues.
       description: Contains links to the next step.
-      tags: 
+      tags:
         - discussion
       responses:
         200:
@@ -147,7 +147,7 @@ paths:
 
   /issues/{slug}:
     parameters:
-        - $ref: '#/components/parameters/slug-param'
+      - $ref: '#/components/parameters/slug-param'
     get:
       summary: Returns a single Issue
       tags:
@@ -186,7 +186,7 @@ paths:
                 $ref: '#/components/schemas/issue'
         401:
           description: Unauthorized
-      security: 
+      security:
         - token: []
 
   /{slug}:
@@ -194,7 +194,7 @@ paths:
       summary: List positions.
       description:
         Lists all available positions for a specific issue.
-      tags: 
+      tags:
         - discussion
       parameters:
         - $ref: '#/components/parameters/slug-param'
@@ -235,16 +235,16 @@ paths:
                   $ref: '#/components/schemas/origin'
       responses:
         303:
-          description: Redirects to one of the other routes to procede. 
-      security: 
+          description: Redirects to one of the other routes to procede.
+      security:
         - token: []
-        
-    
+
+
 
   /{slug}/positions:
     post:
       summary: Add position.
-      tags: 
+      tags:
         - add
       parameters:
         - $ref: '#/components/parameters/slug-param'
@@ -266,13 +266,13 @@ paths:
                   $ref: '#/components/schemas/origin'
       responses:
         303:
-          description: Redirects to one of the other routes to procede. 
-      security: 
+          description: Redirects to one of the other routes to procede.
+      security:
         - token: []
-          
+
   /{slug}/attitude/{position}:
     get:
-      tags: 
+      tags:
         - discussion
       summary: agree, disagree, don't know fields
       description: Returns links to the next step in the discussion, depending on the user's attitude.
@@ -304,10 +304,10 @@ paths:
                         $ref: '#/components/schemas/item'
                   bubbles:
                     $ref: '#/components/schemas/bubbles'
-  
+
   /{slug}/justify/{argument-id}/{attitude}/{relation}:
     get:
-      tags: 
+      tags:
         - discussion
       parameters:
         - $ref: '#/components/parameters/slug-param'
@@ -336,7 +336,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/items-and-bubbles'
     post:
-      tags: 
+      tags:
         - add
       summary: Add premise to an argument.
       parameters:
@@ -367,12 +367,12 @@ paths:
       responses:
         303:
           description: Redirects to one of the other routes to procede.
-      security: 
+      security:
         - token: []
-                
+
   /{slug}/justify/{statement-id}/{attitude}:
     get:
-      tags: 
+      tags:
         - discussion
       parameters:
         - $ref: '#/components/parameters/slug-param'
@@ -395,7 +395,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/justifying-response'
     post:
-      tags: 
+      tags:
         - add
       summary: Add premise to a conclusion.
       parameters:
@@ -431,16 +431,16 @@ paths:
       responses:
         303:
           description: Redirects to one of the other routes to procede.
-      security: 
+      security:
         - token: []
-          
-      
+
+
   /{slug}/reaction/{arg-user}/{relation}/{arg-sys}:
     get:
       summary: Reaction-options for an argument in a discussion.
       description: Returns links to the next step in the discussion, depending on the user's attitude towards the argument of the system.
         Also contains speech bubbles.
-      tags: 
+      tags:
         - discussion
       parameters:
         - $ref: '#/components/parameters/slug-param'
@@ -507,11 +507,11 @@ paths:
                         $ref: '#/components/schemas/reaction-item'
                       rebut:
                         $ref: '#/components/schemas/reaction-item'
-  
+
   /{slug}/finish/{argument-id}:
     get:
       summary: Bubbles for the end of a discussion.
-      tags: 
+      tags:
         - discussion
       parameters:
         - $ref: '#/components/parameters/slug-param'
@@ -531,10 +531,10 @@ paths:
                 properties:
                   bubbles:
                     $ref: '#/components/schemas/bubbles'
-                    
+
   /{slug}/jump/{argument-id}:
     get:
-      tags: 
+      tags:
         - discussion
       parameters:
         - $ref: '#/components/parameters/slug-param'
@@ -550,11 +550,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/items-and-bubbles'
-                    
+
   /search:
     get:
       summary: Search statements in D-BAS
-      tags: 
+      tags:
         - search
       parameters:
         - name: q
@@ -571,12 +571,12 @@ paths:
                 type: object
                 properties:
                   results:
-                    $ref: '#/components/schemas/search-results'  
-  
+                    $ref: '#/components/schemas/search-results'
+
   /references:
     get:
       summary: Query references by host and path
-      tags: 
+      tags:
         - references
       parameters:
         - name: host
@@ -598,7 +598,7 @@ paths:
                 type: object
                 properties:
                   references:
-                    $ref: '#/components/schemas/reference'  
+                    $ref: '#/components/schemas/reference'
 
   /reference/usages/{reference-id}:
     get:
@@ -650,6 +650,17 @@ paths:
                             $ref: '#/components/schemas/dataauthor'
                           issue:
                             $ref: '#/components/schemas/issue'
+                    raw:
+                      type: object
+                      properties:
+                        conclusions:
+                          type: array
+                          items:
+                            type: string
+                        premises:
+                          type: array
+                          items:
+                            type: string
                     statement:
                       type: object
                       properties:
@@ -744,7 +755,7 @@ components:
     mode:
       type: string
       enum: [undermine, rebut, undercut, support]
-        
+
     item:
       type: object
       properties:
@@ -759,7 +770,7 @@ components:
         url:
           type: string
           example: '/path/to/next/step'
-    
+
     reaction-item:
       allOf:
         - $ref: '#/components/schemas/item'
@@ -768,7 +779,7 @@ components:
             attack-url:
               type: string
               example: '/cat-or-dog/justify/13/t'
-    
+
     items-and-bubbles:
       type: object
       properties:
@@ -778,18 +789,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/item'
-            
+
     error-message:
       type: object
       properties:
-        status: 
+        status:
           type: string
           example: error
         errors:
           type: array
           items:
             $ref: '#/components/schemas/error'
-          
+
     error:
       type: object
       properties:
@@ -799,7 +810,7 @@ components:
           type: string
         description:
           type: string
-          
+
     oauth_user:
       type: object
       properties:
@@ -827,7 +838,7 @@ components:
         id:
           type: integer
           example: 12345678247354
-          
+
     user:
       type: object
       properties:
@@ -835,7 +846,7 @@ components:
           type: string
         id:
           type: integer
-          
+
     dataauthor:
       type: object
       properties:
@@ -856,7 +867,7 @@ components:
           type: string
         info:
           type: string
-        
+
     html:
       type: string
       example: 'I am text with <strong>html</strong>'
@@ -870,7 +881,7 @@ components:
       type: string
       example: cat-or-dog
       pattern: '/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/'
-    
+
     justifying-response:
       type: object
       properties:
@@ -884,7 +895,7 @@ components:
           $ref: '#/components/schemas/origin'
       required:
         - reason
-    
+
     origin:
       type: object
       properties:
@@ -896,9 +907,9 @@ components:
           type: string
         version:
           type: integer
-    
-##########################################      
-      
+
+      ##########################################
+
   parameters:
     slug-param:
       name: slug
@@ -907,7 +918,7 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/slug'
-        
+
     arg-user:
       name: arg-user
       description: The argument the user has to defend.
@@ -915,7 +926,7 @@ components:
       required: true
       schema:
         type: integer
-        
+
     arg-sys:
       name: arg-sys
       description: The attacking argument of the system.
@@ -923,7 +934,7 @@ components:
       required: true
       schema:
         type: integer
-        
+
     authentication-token:
       name: X-Authentication
       in: header
@@ -939,7 +950,7 @@ components:
                 type: string
               token:
                 type: string
-            
+
   securitySchemes:
     token:
       type: http
