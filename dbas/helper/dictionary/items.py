@@ -168,7 +168,7 @@ class ItemDictHelper(object):
                                             Attitudes.DONT_KNOW.value, url_d)
             statements_array.append(d_d)
 
-        return {'elements': statements_array, 'extras': {'cropped_list': False}}
+        return {'elements': statements_array, 'extras': {'cropped_list': False}
 
     def get_array_for_justify_statement(self, db_statement: Statement, db_user: User, is_supportive: bool, history):
         """
@@ -189,7 +189,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(slug, history=self.path)
 
-        for argument in db_arguments:  ## todo NOTE url ist das entscheidene attribut
+        for argument in db_arguments:
             sarray = self.__get_statement_array_for_justify_statement(db_user, history, argument, uids, _tn, _um)
 
             statements_array.append(sarray)
