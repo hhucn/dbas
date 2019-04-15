@@ -380,7 +380,7 @@ def __add_statement2issue(statement_uid: int, issue_uid: int) -> StatementToIssu
 
 def __is_conclusion_in_premisegroups(premisegroups: list, db_conclusion: Statement) -> bool:
     for premisegroup in premisegroups:
-        if any([db_conclusion.get_textversion().content.lower() in pg.lower() for pg in premisegroup]):
+        if any([db_conclusion.get_textversion().content.lower() == pg.lower() for pg in premisegroup]):
             return True
     return False
 
