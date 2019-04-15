@@ -337,10 +337,12 @@ def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager
     return results
 
 
-def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
-                              user_changed_opinion=False, rearrange_intro=False, colored_position=False,
-                              attack_type=None, minimize_on_undercut=False, is_users_opinion=True,
-                              anonymous_style=False, support_counter_argument=False):
+def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: bool = False,
+                              start_with_intro: bool = False, first_arg_by_user: bool = False,
+                              user_changed_opinion: bool = False, rearrange_intro: bool = False,
+                              colored_position: bool = False, attack_type: str = None,
+                              minimize_on_undercut: bool = False, is_users_opinion: bool = True,
+                              anonymous_style: bool = False, support_counter_argument: bool = False) -> str:
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
@@ -360,7 +362,7 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     :return: String
     """
     LOG.debug("Constructing text for argument with uid %s", uid)
-    db_argument = DBDiscussionSession.query(Argument).get(uid)
+    db_argument: Argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return None
 
@@ -368,39 +370,49 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     _t = Translator(lang)
     premisegroup_by_user = False
     author_uid = None
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    db_user: User = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
 
     if db_user:
         author_uid = db_user.uid
-        pgroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisegroup_uid)
-        marked_argument = DBDiscussionSession.query(MarkedArgument).filter_by(
+        pgroup: PremiseGroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisegroup_uid)
+        marked_argument: MarkedArgument = DBDiscussionSession.query(MarkedArgument).filter_by(
             argument_uid=uid,
             author_uid=db_user.uid).first()
         premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None
 
-    # getting all argument id
-    arg_array = [db_argument]
-    while db_argument.argument_uid:
-        db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
-        arg_array.append(db_argument)
+    arguments = __get_chained_arguments(db_argument)
 
     if attack_type == 'jump':
-        return __build_argument_for_jump(arg_array, with_html_tag)
+        return __build_argument_for_jump(arguments, with_html_tag)
 
-    if len(arg_array) == 1:
+    if len(arguments) == 1:
         # build one argument only
-        return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
+        return __build_single_argument(arguments[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
                                        start_with_intro, is_users_opinion, anonymous_style, support_counter_argument,
                                        author_uid)
 
     else:
         # get all pgroups and at last, the conclusion
-        return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag,
+        return __build_nested_argument(arguments, first_arg_by_user, user_changed_opinion, with_html_tag,
                                        start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user,
                                        _t)
 
 
-def __build_argument_for_jump(arg_array: List[Argument], with_html_tag):
+def __get_chained_arguments(argument: Argument) -> List[Argument]:
+    """
+    Traverse through all arguments which might be connected to our starting argument and collect them all.
+
+    :param argument:
+    :return:
+    """
+    arguments = [argument]
+    while argument.argument_uid:
+        argument: Argument = DBDiscussionSession.query(Argument).get(argument.argument_uid)
+        arguments.append(argument)
+    return arguments
+
+
+def __build_argument_for_jump(arg_array: List[Argument], with_html_tag: bool) -> str:
     """
     Build tet for an argument, if we jump to this argument
 
