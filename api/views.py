@@ -10,7 +10,7 @@ from typing import List
 
 from cornice import Service
 from cornice.resource import resource, view
-from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest
+from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
 
@@ -40,7 +40,6 @@ from dbas.views import jump, emit_participation
 from .login import validate_credentials, valid_token, valid_token_optional, valid_api_token, check_jwt, encode_payload
 from .references import (get_all_references_by_reference_text,
                          store_reference)
-from .templates import error
 
 LOG = logging.getLogger(__name__)
 
@@ -453,11 +452,11 @@ def get_reference_usages(request: Request):
     :rtype: list
     """
     ref_uid = request.validated["ref_uid"]
-    LOG.debug("Retrieving reference usages for ref_uid {}".format(ref_uid))
+    LOG.debug(f"Retrieving reference usages for ref_uid {ref_uid}")
     db_ref: StatementReference = DBDiscussionSession.query(StatementReference).get(ref_uid)
     if db_ref:
         return get_all_references_by_reference_text(db_ref.text)
-    return error("Reference could not be found")
+    return HTTPNotFound("Reference could not be found")
 
 
 # =============================================================================
