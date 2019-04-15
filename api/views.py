@@ -10,7 +10,7 @@ from typing import List
 
 from cornice import Service
 from cornice.resource import resource, view
-from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized
+from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
 
@@ -660,6 +660,10 @@ def add_position_with_premise(request):
 
     pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
                                request.mailer)
+
+    if pd['error']:
+        LOG.debug(f"Errors occurred in prepared_dictionary: {pd['error']}")
+        return HTTPBadRequest(pd["error"])
 
     statement_uids: List[int] = flatten(pd['statement_uids'])
     LOG.info("Created %d statements: %s", len(statement_uids), statement_uids)
