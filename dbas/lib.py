@@ -542,16 +542,16 @@ def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_h
     you_have_the_opinion_that = _t.get(_.youHaveTheOpinionThat).format('').strip()
 
     if lang == 'de':
-        ret_value = __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro,
-                                                   anonymous_style, rearrange_intro, db_argument, attack_type, sb_none,
-                                                   marked_element, premises_text, conclusion_text,
-                                                   is_users_opinion,
-                                                   support_counter_argument)
+        text = __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro,
+                                              anonymous_style, rearrange_intro, db_argument, attack_type, sb_none,
+                                              marked_element, premises_text, conclusion_text,
+                                              is_users_opinion,
+                                              support_counter_argument)
     else:
-        ret_value = __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element,
-                                                   conclusion_text,
-                                                   premises_text, db_argument)
-    return ret_value.replace('  ', ' ')
+        text = __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element,
+                                              conclusion_text,
+                                              premises_text, db_argument)
+    return text.replace('  ', ' ')
 
 
 def __get_tags_for_building_single_argument(with_html_tag, attack_type, colored_position, premises, conclusion):
