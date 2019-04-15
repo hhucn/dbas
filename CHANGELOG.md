@@ -1,3 +1,11 @@
+### 1.19.0 (2019-04-15)
+- Add DTO class for References on Steroids [!725](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/725)
+- Refactor String Builder [!726](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/726)
+- Return raw strings for reference usages via API [!726](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/726)
+- Fix string comparison when adding new positions [!724](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/724)
+- Do not construct url with argument uid 0 if there is no connected argument [!727](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/727)
+- Hotfix for typing error [!723](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/723)
+
 ### 1.18.1 (2019-04-14)
 Fixes fot the field experiment
 - Fix german translation for the future voting button 350f386e
