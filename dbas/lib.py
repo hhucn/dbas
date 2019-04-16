@@ -275,7 +275,7 @@ def __get_arguments_of_conclusion(statement_uid, include_disabled):
     return db_arguments.all() if db_arguments else []
 
 
-def get_all_arguments_with_text_by_statement_id(statement_uid) -> List[dict]:
+def get_all_arguments_with_text_by_statement_id(statement_uid: int) -> List[dict]:
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
@@ -289,7 +289,11 @@ def get_all_arguments_with_text_by_statement_id(statement_uid) -> List[dict]:
     arguments: List[Argument] = get_all_arguments_by_statement(statement_uid)
     if arguments:
         return [{'uid': arg.uid,
-                 'text': get_text_for_argument_uid(arg.uid),
+                 'texts': {
+                     'display': get_text_for_argument_uid(arg.uid),
+                     'conclusion': arg.get_conclusion_text(),
+                     'premise': arg.get_premisegroup_text(),
+                 },
                  'author': arg.author,
                  'issue': arg.issue} for arg in arguments]
     return []
