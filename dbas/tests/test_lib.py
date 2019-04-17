@@ -385,7 +385,7 @@ class TestGetTextForArgumentByUid(TestCaseWithConfig):
         self.assertEqual(lib.get_text_for_argument_uid(49, user_changed_opinion=True), s49)
 
 
-class TestVisibilityOfDisabledEntites(TestCaseWithConfig):
+class TestVisibilityOfDisabledEntities(TestCaseWithConfig):
     def test_get_enabled_statement_as_query(self):
         query_len = get_enabled_statement_as_query().count()
         res_len = DBDiscussionSession.query(Statement).filter_by(is_disabled=False).count()
