@@ -93,16 +93,6 @@ class LibTests(TestCaseWithConfig):
                                                      start_with_intro=False,
                                                      rearrange_intro=True), '')
 
-    def test_resolve_issue_uid_to_slug(self):
-        # id for issue
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=1), 'town-has-to-cut-spending')
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=5), 'unterstutzung-der-sekretariate')
-
-        # id for no issue
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=0), None)
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=22222222), None)
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=-4), None)
-
     def test_get_all_attacking_arg_uids_from_history(self):
         none_history = None
         correct_history = "/attitude/60-/justify/60/agree-/reaction/52/rebut/53"
@@ -258,10 +248,9 @@ class TestGetTextForEntities(TestCaseWithConfig):
             49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
         res = lib.get_all_arguments_with_text_by_statement_id(38)
-        self.assertEqual(3, len(res))
+        self.assertEqual(len(res), 3)
         for r in res:
             self.assertIn(r['uid'], results)
-            self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id(self):
         um = UrlManager(slug='slug')
@@ -271,13 +260,11 @@ class TestGetTextForEntities(TestCaseWithConfig):
             48: 'Someone argued that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. Other participants said that schools need the swimming pools for their sports lessons.',
             49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
-
         db_statement = DBDiscussionSession.query(Statement).get(38)
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um)
-        self.assertEqual(3, len(res))
+        res = lib.get_all_arguments_with_text_and_url_by_statement(db_statement, um)
+        self.assertEqual(len(res), 3)
         for r in res:
             self.assertIn(r['uid'], results)
-            self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id_with_color(self):
         um = UrlManager(slug='slug')
@@ -289,7 +276,7 @@ class TestGetTextForEntities(TestCaseWithConfig):
         }
 
         db_statement = DBDiscussionSession.query(Statement).get(38)
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True)
+        res = lib.get_all_arguments_with_text_and_url_by_statement(db_statement, um, color_statement=True)
         self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)
@@ -305,8 +292,8 @@ class TestGetTextForEntities(TestCaseWithConfig):
         }
 
         db_statement = DBDiscussionSession.query(Statement).get(38)
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True,
-                                                                      is_jump=True)
+        res = lib.get_all_arguments_with_text_and_url_by_statement(db_statement, um, color_statement=True,
+                                                                   is_jump=True)
         self.assertEqual(len(res), 3)
         for r in res:
             self.assertIn(r['uid'], results)

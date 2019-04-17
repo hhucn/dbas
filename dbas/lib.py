@@ -302,8 +302,8 @@ def get_all_arguments_with_text_by_statement_id(statement_uid: int) -> List[dict
     return []
 
 
-def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager, color_statement=False,
-                                                        is_jump=False):
+def get_all_arguments_with_text_and_url_by_statement(db_statement: Statement, urlmanager, color_statement=False,
+                                                     is_jump=False):
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
@@ -795,19 +795,6 @@ def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=Fa
                                          is_users_opinion=is_users_opinion)
     else:
         return argument.get_conclusion_text()
-
-
-def resolve_issue_uid_to_slug(uid):
-    """
-    Given the issue uid query database and return the correct slug of the issue.
-
-    :param uid: issue_uid
-    :type uid: int
-    :return: Slug of issue
-    :rtype: str
-    """
-    issue = DBDiscussionSession.query(Issue).get(uid)
-    return issue.slug if issue else None
 
 
 def get_all_attacking_arg_uids_from_history(history):
