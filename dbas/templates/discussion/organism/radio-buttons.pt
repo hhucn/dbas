@@ -11,15 +11,17 @@
                  name="discussion-button-group"
                  onclick='location.href="${item.url}";'
                  data-url="${item.url}">
-          <span tal:repeat="premise item.premises" tal:omit-tag="">
-            <label for="${item.id}" id="${premise.id}" data-toggle="tooltip"
-                   data-placement="auto" class="premise-title">${structure:premise.title}</label>
-            <label for="${item.id}" tal:condition="not:repeat.premise.end">&nbsp;${extras.tag.aand}&nbsp;</label>
-            <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
+          <label for="${item.id}" style="cursor: pointer">
+            <div tal:repeat="premise item.premises" tal:omit-tag="">
+              <span id="${premise.id}" data-toggle="tooltip"
+                    data-placement="auto" class="premise-title">${structure:premise.title}</span>
+              <span tal:condition="not:repeat.premise.end">&nbsp;${extras.tag.aand}&nbsp;</span>
+            </div>
+            <span tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</span>
             <span tal:condition="'cost' in item" class="decidotron-position-cost">
               &nbsp;(ca. ${"{:.0f}".format(item.cost)} ${issues.decidotron_budget.currency_symbol})
             </span>
-          </span>
+          </label>
           <div tal:omit-tag="" tal:condition="extras.logged_in">
             <div class="item-actions-list" tal:condition="item.is_editable or item.is_markable or item.is_deletable">
               <span
@@ -68,8 +70,10 @@
       <li tal:define="add_or_login [item for item in items.elements if item.url in ['login', 'add']]"
            tal:condition="add_or_login" class="list-group-item discussions-space-list__add_or_login">
         <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
-          <input id="${item.id}" type="radio" name="discussion-button-group"
-                 data-url="${item.url}"><span>${item.premises[0].title}</span>
+          <input id="${item.id}" type="radio" name="discussion-button-group" data-url="${item.url}">
+          <label for="${item.id}">
+              ${item.premises[0].title}
+          </label>
         </div>
       </li>
     </ul>
