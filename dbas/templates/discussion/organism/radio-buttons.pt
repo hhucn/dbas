@@ -71,7 +71,7 @@
            tal:condition="add_or_login" class="list-group-item discussions-space-list__add_or_login">
         <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
           <input id="${item.id}" type="radio" name="discussion-button-group" data-url="${item.url}">
-          <label for="${item.id}">
+          <label for="${item.id}" style="cursor: pointer">
               ${item.premises[0].title}
           </label>
         </div>
