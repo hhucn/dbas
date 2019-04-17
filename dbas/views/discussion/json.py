@@ -7,7 +7,7 @@ from pyramid.view import view_config
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement
 from dbas.handler import history as history_handler, user, issue as issue_handler
-from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
+from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement
 from dbas.handler.issue import set_discussions_properties
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.statements import set_position, set_positions_premise, set_correction_of_statement, \
@@ -369,7 +369,7 @@ def get_arguments_by_statement_id(request):
     LOG.debug("Return all arguments which use the given statement. %s", request.json_body)
     db_statement = request.validated['statement']
     db_issue = request.validated['issue']
-    argument_list = get_arguments_by_statement_uid(db_statement, db_issue)
+    argument_list = get_arguments_by_statement(db_statement, db_issue)
     for el in argument_list.get('arguments', []):
         el['url'] = '/discuss' + el['url']
     return argument_list
