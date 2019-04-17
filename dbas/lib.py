@@ -288,14 +288,17 @@ def get_all_arguments_with_text_by_statement_id(statement_uid: int) -> List[dict
     LOG.debug("Retrieving arguments for statement uid: %s", statement_uid)
     arguments: List[Argument] = get_all_arguments_by_statement(statement_uid)
     if arguments:
-        return [{'uid': arg.uid,
-                 'texts': {
-                     'display': get_text_for_argument_uid(arg.uid),
-                     'conclusion': arg.get_conclusion_text(),
-                     'premise': arg.get_premisegroup_text(),
-                 },
-                 'author': arg.author,
-                 'issue': arg.issue} for arg in arguments]
+        return [{
+            'uid': arg.uid,
+            'texts': {
+                'display': get_text_for_argument_uid(arg.uid),
+                'conclusion': arg.get_conclusion_text(),
+                'premise': arg.get_premisegroup_text(),
+                'attacks': arg.get_attacked_argument_text(),
+            },
+            'author': arg.author,
+            'issue': arg.issue}
+            for arg in arguments]
     return []
 
 
