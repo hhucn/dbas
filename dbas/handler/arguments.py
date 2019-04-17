@@ -12,8 +12,8 @@ from dbas.handler import user, notification as nh
 from dbas.handler.statements import insert_new_premises_for_argument
 from dbas.helper.url import UrlManager
 from dbas.input_validator import get_relation_between_arguments
-from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, get_profile_picture, Relations, \
-    get_text_for_argument_uid, resolve_issue_uid_to_slug
+from dbas.lib import get_all_arguments_with_text_and_url_by_statement, get_profile_picture, Relations, \
+    get_text_for_argument_uid
 from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
     ReputationReasons
 from dbas.strings.keywords import Keywords as _
@@ -120,18 +120,17 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
     return return_dict
 
 
-def get_arguments_by_statement_uid(db_statement: Statement, db_issue: Issue) -> dict:
+def get_arguments_by_statement(statement: Statement, issue: Issue) -> dict:
     """
-    Collects every argument which uses the given statement
+    Collects every argument which uses the given statement.
 
-    :param db_statement: Statement
-    :param db_issue: issue
+    :param statement: Statement which is used for query
+    :param issue: Extract information for url manager from issue
     :rtype: dict
     :return: prepared collection with several arguments
     """
-    slug = resolve_issue_uid_to_slug(db_issue.uid)
-    _um = UrlManager(slug)
-    return {'arguments': get_all_arguments_with_text_and_url_by_statement_id(db_statement, _um, True, is_jump=True)}
+    _um = UrlManager(issue.slug)
+    return {'arguments': get_all_arguments_with_text_and_url_by_statement(statement, _um, True, is_jump=True)}
 
 
 def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_infos: dict, db_issue: Issue, db_user: User,

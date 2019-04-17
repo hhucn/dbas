@@ -2490,9 +2490,7 @@ msgstr "Login to vote!"
 #. Default: Voting will be possible from
 #: templates/discussion/organism/dialog-sidebar.pt:46
 msgid "decidotron_vote_will_start_at_button_label"
-msgstr ""
-"Voting will be possible from ${issues.decidotron_budget.votes_start."
-"strftime('%d.%m.%Y at %H:%M')}"
+msgstr "Voting will be possible from "
 
 #. Default: Results
 #: templates/discussion/organism/dialog-sidebar.pt:52

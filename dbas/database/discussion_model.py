@@ -7,7 +7,7 @@ import logging
 import warnings
 from abc import abstractmethod
 from datetime import datetime
-from typing import List, Set, Optional
+from typing import List, Set, Optional, Dict
 
 import arrow
 import bcrypt
@@ -1129,6 +1129,15 @@ class Argument(DiscussionBase):
     def get_premisegroup_text(self) -> str:
         db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisegroup_uid)
         return db_premisegroup.get_text()
+
+    def get_attacked_argument_text(self) -> Dict[str, str]:
+        attacked_argument: 'Argument' = self.attacks
+        if attacked_argument:
+            return {
+                'conclusion': attacked_argument.get_conclusion_text(),
+                'premise': attacked_argument.get_premisegroup_text(),
+            }
+        return {}
 
     def to_dict(self):
         """
