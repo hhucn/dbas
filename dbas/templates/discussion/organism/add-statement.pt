@@ -8,6 +8,56 @@
                                                              class="close" data-dismiss="modal" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
+
+
+    <div id="proposal-explanation-modal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Regeln für Vorschläge</h4>
+          </div>
+          <div class="modal-body">
+            <div>
+              <h5 id="Ein-Vorschlag-muss">Ein Vorschlag muss:</h5>
+              <ul>
+                <li>unter den 20.000 € bleiben</li>
+                <li>mindestens 100 € kosten</li>
+                <li>der Verbesserung der Lehrsituation dienen</li>
+                <li>von der Informatik umsetzbar sein
+              </ul>
+              <p>Also bitte keine Vorschläge einbringen, welche die Infrastruktur der Universität betreffen,
+                beispielsweise:</p>
+              <ul>
+                <li>Bauliche Maßnahmen</li>
+                <li>Verbesserung des W-LANs</li>
+                <li>Mehr Steckdosen</li>
+              </ul>
+              <p>Diese Vorschläge liegen nicht im Ermessensbereich der Informatik, sondern beim ZIM oder dem Dezernat 6
+                (Gebäudemanagement).</p>
+            </div>
+            <div>
+              <h5 id="Beispiel-Vorschläge">Beispiele für Vorschläge:</h5>
+              <ul>
+                <li>Neue Veranstaltungen einführen
+                  <ul>
+                    <li>Zertifizierungsangebote</li>
+                    <li>extern organisierter Hackathon</li>
+                    <li>Kurse</li>
+                  </ul>
+                </li>
+                <li>Modernisierung des Computerlabors im EG</li>
+                <li>digitale Tafeln in den Seminarräumen (5.000 €)</li>
+                <li>ein Wasserspender im Eingangsbereich (5.000 €)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <br>
     <div class="col-lg-12 text-center">
       <!--<p class="lead">${structure:discussion.add_premise_text}</p>-->
@@ -17,6 +67,11 @@
         </button>
         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
         <span id="add-statement-error-msg"></span>
+      </div>
+      <div style="margin-bottom: 1rem">
+        <button class="btn btn-primary" data-target="#proposal-explanation-modal" data-toggle="modal"
+                type="button">Was muss ein Vorschlag beachten?
+        </button>
       </div>
       <div id="add-statement-container-body">
         <form>
