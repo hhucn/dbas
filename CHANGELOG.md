@@ -1,3 +1,9 @@
+### 1.19.1 (2019-04-17)
+- Remove ugly edges in buttons [!730](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/730)
+- Move text-generation from arguments to a texts-dictionary [!729](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/729)
+- Add text on how porposals should be made 07b3efe3
+- General refactoring
+
 ### 1.19.0 (2019-04-15)
 - Add DTO class for References on Steroids [!725](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/725)
 - Refactor String Builder [!726](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/726)
