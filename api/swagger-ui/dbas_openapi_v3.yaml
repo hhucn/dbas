@@ -644,23 +644,30 @@ paths:
                         properties:
                           uid:
                             type: integer
-                          text:
-                            $ref: '#/components/schemas/text'
+                          texts:
+                            type: object
+                            properties:
+                              display:
+                                type: string
+                                example: "We should get a cat, because cats are fluffy"
+                              conclusion:
+                                type: string
+                                example: "We should get a cat"
+                              premise:
+                                type: string
+                                example: "they are fluffy"
+                              attacks:
+                                type: object
+                                properties:
+                                  conclusion:
+                                    type: string
+                                    example: "Only filled if target is an undercut. Contains the conclusion of this target."
+                                  premise:
+                                    type: string
                           author:
                             $ref: '#/components/schemas/dataauthor'
                           issue:
                             $ref: '#/components/schemas/issue'
-                    raw:
-                      type: object
-                      properties:
-                        conclusions:
-                          type: array
-                          items:
-                            type: string
-                        premises:
-                          type: array
-                          items:
-                            type: string
                     statement:
                       type: object
                       properties:
