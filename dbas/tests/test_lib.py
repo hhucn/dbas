@@ -230,14 +230,6 @@ class TestDiscussionLanguage(TestCaseWithConfig):
 
 
 class TestGetTextForEntities(TestCaseWithConfig):
-    def test_get_text_for_premise(self):
-        self.assertIsNone(lib.get_text_for_premise(0))
-        self.assertEqual(lib.get_text_for_premise(12), 'cats are fluffy')
-        self.assertNotIn('data-argumentation-type', lib.get_text_for_premise(12, False))
-        self.assertEqual(lib.get_text_for_premise(52),
-                         'das Unfallrisiko steigt, da die Autos kaum Geräusche verursachen')
-        self.assertIn('data-argumentation-type', lib.get_text_for_premise(12, True))
-
     def test_get_all_arguments_with_text_by_statement_id(self):
         res = lib.get_all_arguments_with_text_by_statement_id(0)
         self.assertEqual(res, [])

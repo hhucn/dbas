@@ -766,21 +766,6 @@ def get_text_for_statement_uid(uid: int, colored_position=False) -> Optional[str
     return sb + content + se
 
 
-def get_text_for_premise(uid: int, colored_position: bool = False) -> Optional[str]:
-    """
-    Returns text of premise with given uid
-
-    :param uid: Statement.uid
-    :param colored_position: Boolean
-    :return: String
-    """
-    db_premise = DBDiscussionSession.query(Premise).get(uid)
-    if db_premise:
-        return db_premise.get_text(html=colored_position)
-    else:
-        return None
-
-
 def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=False, is_users_opinion=True):
     """
     Check the arguments conclusion whether it is an statement or an argument and returns the text
