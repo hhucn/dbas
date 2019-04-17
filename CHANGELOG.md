@@ -2,6 +2,7 @@
 - Remove ugly edges in buttons [!730](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/730)
 - Move text-generation from arguments to a texts-dictionary [!729](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/729)
 - Add text on how porposals should be made 07b3efe3
+- Make "I want to add my own idea" radio entry clickable again and add pointer cursor. 52acbe4d 1e3f55f4
 - General refactoring
 
 ### 1.19.0 (2019-04-15)
