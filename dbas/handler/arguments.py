@@ -120,12 +120,12 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
     return return_dict
 
 
-def get_arguments_by_statement_uid(statement: Statement, issue: Issue) -> dict:
+def get_arguments_by_statement(statement: Statement, issue: Issue) -> dict:
     """
-    Collects every argument which uses the given statement
+    Collects every argument which uses the given statement.
 
-    :param statement: Statement
-    :param issue: issue
+    :param statement: Statement which is used for query
+    :param issue: Extract information for url manager from issue
     :rtype: dict
     :return: prepared collection with several arguments
     """
