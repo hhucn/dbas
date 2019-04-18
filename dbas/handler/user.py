@@ -135,30 +135,26 @@ foodlist = ['Acorn Squash', 'Adobo', 'Aioli', 'Alfredo Sauce', 'Almond Paste', '
             'Won Ton Skins', 'Worcestershire Sauce', 'Yogurt', 'Zinfandel Wine']
 
 
-def update_last_action(db_user: User) -> bool:
+def should_log_out(timeout: int, user: User) -> bool:
     """
-    Updates the last action field of the user-row in database. Returns boolean if the users session
-    is older than one hour or True, when she wants to keep the login
-
-    :param db_user: User in refactored fns, else nickname
+    Returns a boolean stating that the user should be logged out when its True, and False otherwise.
+    :param timeout: A timeout in seconds.
+    :param user: The User that should be checked for a possible log-out
     :return: Boolean
     """
-    if not db_user or db_user.nickname == nick_of_anonymous_user:
+    if not user or user.nickname == nick_of_anonymous_user:
         return False
 
-    timeout_in_sec = 60 * 60 * 24 * 7
-
     # check difference of
-    diff_action = get_now() - db_user.last_action
-    diff_login = get_now() - db_user.last_login
+    diff_action: timedelta = get_now() - user.last_action
+    diff_login: timedelta = get_now() - user.last_login
     diff_action = diff_action.seconds + diff_action.days * 24 * 60 * 60
     diff_login = diff_login.seconds + diff_login.days * 24 * 60 * 60
 
     diff = diff_action if diff_action < diff_login else diff_login
-    should_log_out = diff > timeout_in_sec and not db_user.settings.keep_logged_in
-    db_user.update_last_action()
+    log_out = diff > timeout and not user.settings.keep_logged_in
 
-    return should_log_out
+    return log_out
 
 
 def refresh_public_nickname(user):
