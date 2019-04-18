@@ -5,7 +5,7 @@ from dbas.validators.core import validate
 
 class TestHasKeywords(TestCaseWithConfig):
     def test_empty_dummy_request(self):
-        request = construct_dummy_request()
+        request = construct_dummy_request(json_body={})
         fn = core.has_keywords_in_json_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
@@ -28,7 +28,7 @@ class TestHasKeywords(TestCaseWithConfig):
 
 class TestHasKeywordsInPath(TestCaseWithConfig):
     def test_empty_dummy_request(self):
-        request = construct_dummy_request()
+        request = construct_dummy_request(json_body={})
         fn = core.has_keywords_in_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
@@ -60,7 +60,7 @@ class TestHasMaybeKeywords(TestCaseWithConfig):
         self.assertTrue(response)
 
     def test_empty_dummy_request(self):
-        request = construct_dummy_request()
+        request = construct_dummy_request(json_body={})
         fn = core.has_maybe_keywords(('foo', int, 2))
         response = fn(request)
         self.assertIsInstance(response, bool)
