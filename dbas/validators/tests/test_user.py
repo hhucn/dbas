@@ -1,5 +1,4 @@
 from cornice import Errors
-from pyramid import testing
 
 import dbas.validators.user as user
 from dbas.database import DBDiscussionSession
@@ -32,7 +31,7 @@ class Usertest(TestCaseWithConfig):
         for id in ['', 'hello', 'anonymous']:
             self.config.testing_securitypolicy(userid=id, permissive=True)
             for el in ['', 'a', '0', '1', 1]:
-                request = testing.DummyRequest(json_body={'uid': el})
+                request = construct_dummy_request(json_body={'uid': el})
                 request.validated = {}
                 setattr(request, 'errors', Errors())
                 response = user.valid_user_as_author_of_argument(request)

@@ -143,7 +143,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'statement_id': 'a'})
+        request = construct_dummy_request(matchdict={'statement_id': 'a'})
         response = discussion.valid_statement(location='path')(request)
         self.assertFalse(response, 'uid a is not parsable')
         self.assertIsInstance(response, bool)
@@ -153,7 +153,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'statement_id': 2})
+        request = construct_dummy_request(matchdict={'statement_id': 2})
         response = discussion.valid_statement(location='path')(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -180,7 +180,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response, 'uid a is not parsable')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'argument_id': 'a'})
+        request = construct_dummy_request(matchdict={'argument_id': 'a'})
         response = discussion.valid_argument(location='json_body')(request)
         self.assertFalse(response, 'uid a is not parsable')
         self.assertIsInstance(response, bool)
@@ -190,7 +190,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'argument_id': 2})
+        request = construct_dummy_request(matchdict={'argument_id': 2})
         response = discussion.valid_argument(location='path')(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -302,27 +302,27 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'pgroup_ids': 'a', 'slug': self.issue_cat_or_dog.slug})
+        request = construct_dummy_request(matchdict={'pgroup_ids': 'a', 'slug': self.issue_cat_or_dog.slug})
         response = discussion.valid_list_of_premisegroups_in_path(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'pgroup_ids': ['a'], 'slug': self.issue_cat_or_dog.slug})
+        request = construct_dummy_request(matchdict={'pgroup_ids': ['a'], 'slug': self.issue_cat_or_dog.slug})
         response = discussion.valid_list_of_premisegroups_in_path(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'pgroup_ids': [], 'slug': self.issue_cat_or_dog.slug})
+        request = construct_dummy_request(matchdict={'pgroup_ids': [], 'slug': self.issue_cat_or_dog.slug})
         response = discussion.valid_list_of_premisegroups_in_path(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'pgroup_ids': [2], 'slug': self.issue_cat_or_dog.slug})
+        request = construct_dummy_request(matchdict={'pgroup_ids': [2], 'slug': self.issue_cat_or_dog.slug})
         response = discussion.valid_list_of_premisegroups_in_path(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'pgroup_ids': [2, 4], 'slug': self.issue_cat_or_dog.slug})
+        request = construct_dummy_request(matchdict={'pgroup_ids': [2, 4], 'slug': self.issue_cat_or_dog.slug})
         response = discussion.valid_list_of_premisegroups_in_path(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -372,29 +372,29 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
     def test_valid_attitude(self):
-        request = construct_dummy_request(match_dict={})
+        request = construct_dummy_request(matchdict={})
         response = discussion.valid_attitude(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'foo': 'bar'})
+        request = construct_dummy_request(matchdict={'foo': 'bar'})
         response = discussion.valid_attitude(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'attitude': 'bar'})
+        request = construct_dummy_request(matchdict={'attitude': 'bar'})
         response = discussion.valid_attitude(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
         attitudes = [attitude.value for attitude in Attitudes if attitude is not Attitudes.DONT_KNOW]
         for attitude in attitudes:
-            request = construct_dummy_request(match_dict={'attitude': attitude})
+            request = construct_dummy_request(matchdict={'attitude': attitude})
             response = discussion.valid_attitude(request)
             self.assertTrue(response)
             self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'attitude': Attitudes.DONT_KNOW.value})
+        request = construct_dummy_request(matchdict={'attitude': Attitudes.DONT_KNOW.value})
         response = discussion.valid_attitude(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
@@ -405,14 +405,14 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response, 'Relation is missing')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'relation': 'foo'})
+        request = construct_dummy_request(matchdict={'relation': 'foo'})
         response = discussion.valid_relation(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
         relations = [relation.value for relation in Relations if relation != Relations.SUPPORT]
         for relation in relations:
-            request = construct_dummy_request(match_dict={'relation': relation})
+            request = construct_dummy_request(matchdict={'relation': relation})
             response = discussion.valid_relation(request)
             self.assertTrue(response)
             self.assertIsInstance(response, bool)
@@ -420,7 +420,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
 
 class TestValidIssueBySlug(TestCaseWithConfig):
     def test_slug_must_be_valid(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': ''
         })
         response = discussion.valid_issue_by_slug(request)
@@ -428,7 +428,7 @@ class TestValidIssueBySlug(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
         self.assertNotIn('issue', request.validated)
 
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 1
         })
         response = discussion.valid_issue_by_slug(request)
@@ -436,7 +436,7 @@ class TestValidIssueBySlug(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
         self.assertNotIn('issue', request.validated)
 
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': None
         })
         response = discussion.valid_issue_by_slug(request)
@@ -445,7 +445,7 @@ class TestValidIssueBySlug(TestCaseWithConfig):
         self.assertNotIn('issue', request.validated)
 
     def test_valid_slug_is_true(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug
         })
         response = discussion.valid_issue_by_slug(request)
@@ -454,7 +454,7 @@ class TestValidIssueBySlug(TestCaseWithConfig):
         self.assertIn('issue', request.validated)
 
     def test_disabled_slug_is_false(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_disabled.slug
         })
         response = discussion.valid_issue_by_slug(request)
@@ -466,7 +466,7 @@ class TestValidIssueBySlug(TestCaseWithConfig):
 
 class TestValidPosition(TestCaseWithConfig):
     def test_missing_slug(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': ''
         })
         response = discussion.valid_position(request)
@@ -475,7 +475,7 @@ class TestValidPosition(TestCaseWithConfig):
         self.assertNotIn('issue', request.validated)
 
     def test_missing_position(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'position_id': None
         })
@@ -486,7 +486,7 @@ class TestValidPosition(TestCaseWithConfig):
         self.assertNotIn('position', request.validated)
 
     def test_provided_statement_which_is_no_position(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'position_id': self.statement_cat_or_dog.uid
         })
@@ -497,7 +497,7 @@ class TestValidPosition(TestCaseWithConfig):
         self.assertNotIn('position', request.validated)
 
     def test_position_does_not_belong_to_issue(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'position_id': self.position_town.uid
         })
@@ -508,7 +508,7 @@ class TestValidPosition(TestCaseWithConfig):
         self.assertNotIn('position', request.validated)
 
     def test_position_and_issue_are_correct_should_return_true(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'position_id': self.position_cat_or_dog.uid
         })
@@ -529,7 +529,7 @@ class TestValidReasonAndPositionNotEqual(TestCaseWithConfig):
 
     def test_different_position_and_reason_is_valid(self):
         request: IRequest = construct_dummy_request(
-            match_dict={
+            matchdict={
                 'slug': self.issue_cat_or_dog.slug
             },
             json_body={
@@ -541,7 +541,7 @@ class TestValidReasonAndPositionNotEqual(TestCaseWithConfig):
 
 class TestValidReactionArguments(TestCaseWithConfig):
     def test_valid_request_should_pass(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 4,
             'relation': Relations.REBUT.value,
@@ -554,7 +554,7 @@ class TestValidReactionArguments(TestCaseWithConfig):
         self.assertIn('arg_sys', request.validated)
 
     def test_invalid_arg_id_user_should_fail(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': -1,
             'relation': Relations.REBUT.value,
@@ -565,7 +565,7 @@ class TestValidReactionArguments(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
     def test_missing_issue_should_fail(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': '',
             'arg_id_user': 4,
             'relation': Relations.REBUT.value,
@@ -576,7 +576,7 @@ class TestValidReactionArguments(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
     def test_invalid_arg_id_sys_should_fail(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 4,
             'relation': Relations.REBUT.value,
@@ -589,7 +589,7 @@ class TestValidReactionArguments(TestCaseWithConfig):
 
 class TestValidSupportReaction(TestCaseWithConfig):
     def test_valid_request_should_pass(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 2,
             'arg_id_sys': 11
@@ -601,7 +601,7 @@ class TestValidSupportReaction(TestCaseWithConfig):
         self.assertIn('arg_sys', request.validated)
 
     def test_invalid_arg_id_user_should_fail(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': -2,
             'arg_id_sys': 11
@@ -611,7 +611,7 @@ class TestValidSupportReaction(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
     def test_missing_issue_should_fail(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': '',
             'arg_id_user': 2,
             'arg_id_sys': 11
@@ -621,7 +621,7 @@ class TestValidSupportReaction(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
     def test_invalid_arg_id_sys_should_fail(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 2,
             'arg_id_sys': -11
@@ -631,7 +631,7 @@ class TestValidSupportReaction(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
     def test_invalid_relation_should_fail(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
             'arg_id_user': 2,
             'arg_id_sys': 3

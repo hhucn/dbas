@@ -1,5 +1,3 @@
-from pyramid.testing import DummyRequest
-
 from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 from dbas.validators import core
 from dbas.validators.core import validate
@@ -37,14 +35,14 @@ class TestHasKeywordsInPath(TestCaseWithConfig):
         self.assertFalse(response)
 
     def test_provided_string_expected_int_should_fail(self):
-        request = construct_dummy_request(match_dict={'foo': 'bar'})
+        request = construct_dummy_request(matchdict={'foo': 'bar'})
         fn = core.has_keywords_in_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
         self.assertFalse(response)
 
     def test_provided_string_expected_string_should_succeed(self):
-        request = construct_dummy_request(match_dict={'foo': 2})
+        request = construct_dummy_request(matchdict={'foo': 2})
         fn = core.has_keywords_in_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
@@ -79,13 +77,13 @@ class TestHasMaybeKeywords(TestCaseWithConfig):
         self.assertFalse(response)
 
 
-class testValidate(TestCaseWithConfig):
+class TestValidate(TestCaseWithConfig):
 
     def test_validate(self):
         def __dummy_func(request):
             return request
 
-        request = DummyRequest()
+        request = construct_dummy_request()
         self.assertFalse(hasattr(request, 'validated'))
         self.assertFalse(hasattr(request, 'errors'))
         self.assertFalse(hasattr(request, 'info'))

@@ -1,5 +1,4 @@
 import transaction
-from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import History, StatementToIssue
@@ -14,7 +13,7 @@ from dbas.views import get_infos_about_argument, get_arguments_by_statement_id, 
 class TestGetLogfileForSomeStatements(TestCaseWithConfig):
     def get_logfile_for_statements1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={
+        request = construct_dummy_request(params={
             'uids': [1, 2, 3],
             'issue': 1
         }, matchdict={})
@@ -25,7 +24,7 @@ class TestGetLogfileForSomeStatements(TestCaseWithConfig):
 
     def get_logfile_for_statements2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={
+        request = construct_dummy_request(params={
             'uids': [1, 2, 300],
             'issue': 1
         }, matchdict={})
@@ -36,7 +35,7 @@ class TestGetLogfileForSomeStatements(TestCaseWithConfig):
 
     def get_logfile_for_statements_failure(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={
+        request = construct_dummy_request(params={
             'uid': [1, 2],
             'issue': 1
         }, matchdict={})
@@ -67,7 +66,7 @@ class TestGetArgumentsByStatementId(TestCaseWithConfig):
     def test_get_arguments_by_statement_uid(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'issue': issue_uid}, match_dict={'statement_id': 3})
+        request = construct_dummy_request({'issue': issue_uid}, matchdict={'statement_id': 3})
         response = get_arguments_by_statement_id(request)
         self.assertIsNotNone(response)
         self.assertIn('arguments', response)
@@ -79,21 +78,21 @@ class TestGetArgumentsByStatementId(TestCaseWithConfig):
     def test_get_arguments_by_statement_uid_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'issue': issue_uid}, match_dict={'statement_id': 1})
+        request = construct_dummy_request({'issue': issue_uid}, matchdict={'statement_id': 1})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 410)
 
     def test_get_arguments_by_statement_uid_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'issue': issue_uid + 1}, match_dict={'statement_id': 3})
+        request = construct_dummy_request({'issue': issue_uid + 1}, matchdict={'statement_id': 3})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 400)
 
     def test_get_arguments_by_statement_uid_failure3(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'issue': issue_uid}, match_dict={'statement_id': 'a'})
+        request = construct_dummy_request({'issue': issue_uid}, matchdict={'statement_id': 'a'})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 400)
 

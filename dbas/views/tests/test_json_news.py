@@ -4,6 +4,7 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import News, User
+from dbas.tests.utils import construct_dummy_request
 
 
 class AjaxNewsTest(unittest.TestCase):
@@ -16,7 +17,7 @@ class AjaxNewsTest(unittest.TestCase):
 
     def test_get_news_view(self):
         from dbas.views import get_news as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = construct_dummy_request(params={}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response) > 0)
@@ -38,7 +39,7 @@ class AjaxNewsTest(unittest.TestCase):
     def test_send_news(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import send_news as ajax
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'title': 'some new title',
             'text': 'some new text'
         })
@@ -49,7 +50,7 @@ class AjaxNewsTest(unittest.TestCase):
 
     def test_send_news_failure(self):
         from dbas.views import send_news as ajax
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'title': 'some new title',
             'text': 'some new text'
         })

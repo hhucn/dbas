@@ -81,7 +81,7 @@ class TestReviewValidators(TestCaseWithConfig):
 
     def test_valid_review_queue_name(self):
         for queue in all_queues:
-            request = construct_dummy_request(match_dict={'queue': queue})
+            request = construct_dummy_request(matchdict={'queue': queue})
             response = valid_review_queue_name(request)
             self.assertTrue(response)
 

@@ -1,5 +1,4 @@
 import transaction
-from pyramid import testing
 
 from admin.views import main_table, main_admin
 from dbas.database import DBDiscussionSession
@@ -15,7 +14,7 @@ class AdminViewTest(TestCaseWithConfig):
         transaction.commit()
 
     def test_main_admin_no_author(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = main_admin(request)
         self.assertIn('title', response)
         self.assertIn('project', response)
@@ -25,7 +24,7 @@ class AdminViewTest(TestCaseWithConfig):
     def test_main_admin(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         self.__update_user('Tobias')
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = main_admin(request)
         self.assertIn('title', response)
         self.assertIn('project', response)
@@ -33,19 +32,19 @@ class AdminViewTest(TestCaseWithConfig):
         self.assertIn('dashboard', response)
 
     def test_main_table_no_author(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = main_table(request)
         self.assertEqual(400, response.status_code)
 
     def test_main_table_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = construct_dummy_request(match_dict={'table': 'fu'})
+        request = construct_dummy_request(matchdict={'table': 'fu'})
         response = main_table(request)
         self.assertEqual(400, response.status_code)
 
     def test_main_table(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = construct_dummy_request(match_dict={'table': 'User'})
+        request = construct_dummy_request(matchdict={'table': 'User'})
         response = main_table(request)
         self.assertIn('title', response)
         self.assertIn('project', response)
