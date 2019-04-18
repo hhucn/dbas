@@ -3,15 +3,15 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from math import ceil
+
+import arrow
 import copy
 from datetime import date, timedelta
 from json import JSONDecodeError
-from math import ceil
-from typing import Optional, List
-
-import arrow
 from pyramid.request import Request
 from slugify import slugify
+from typing import Optional, List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
@@ -42,7 +42,7 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     :rtype: dict
     :return: Collection with information about the new issue
     """
-    user.update_last_action(db_user)
+    db_user.update_last_action()
 
     DBDiscussionSession.add(Issue(title=title,
                                   info=info,
@@ -269,7 +269,7 @@ def get_issues_overview_for(db_user: User, app_url: str) -> dict:
             'other': []
         }
 
-    user.update_last_action(db_user)
+    db_user.update_last_action()
     if db_user.is_admin():
         db_issues_other_users = DBDiscussionSession.query(Issue).filter(Issue.author_uid != db_user.uid).all()
     else:

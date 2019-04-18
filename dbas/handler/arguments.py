@@ -1,14 +1,13 @@
 import logging
 import random
+import transaction
 from os import environ
 from typing import List, Tuple, Optional
-
-import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Argument, Premise, MarkedArgument, ClickedArgument, \
     sql_timestamp_pretty_print, ClickedStatement, Statement
-from dbas.handler import user, notification as nh
+from dbas.handler import notification as nh
 from dbas.handler.statements import insert_new_premises_for_argument
 from dbas.helper.url import UrlManager
 from dbas.input_validator import get_relation_between_arguments
@@ -48,7 +47,7 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
     }
     url, statement_uids, error = __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue,
                                                                                         db_user, mailer)
-    user.update_last_action(db_user)
+    db_user.update_last_action()
 
     prepared_dict = {
         'error': error,

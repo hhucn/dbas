@@ -263,7 +263,7 @@ def get_box_for(db_user, lang, main_page, is_inbox):
     return message_array[::-1]
 
 
-def read_notifications(uids_list, db_user) -> dict:
+def read_notifications(uids_list, db_user: User) -> dict:
     """
     Simply marks a notification as read
 
@@ -272,7 +272,7 @@ def read_notifications(uids_list, db_user) -> dict:
     :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
-    user_handler.update_last_action(db_user)
+    db_user.update_last_action()
 
     for uid in uids_list:
         DBDiscussionSession.query(Message).filter(Message.uid == uid,
@@ -285,7 +285,7 @@ def read_notifications(uids_list, db_user) -> dict:
     return prepared_dict
 
 
-def delete_notifications(uids_list, db_user, ui_locales, application_url) -> dict:
+def delete_notifications(uids_list, db_user: User, ui_locales, application_url) -> dict:
     """
     Simply deletes a specific notification
 
@@ -295,7 +295,7 @@ def delete_notifications(uids_list, db_user, ui_locales, application_url) -> dic
     :param application_url: Url of the App
     :return: Dictionary with info and/or error
     """
-    user_handler.update_last_action(db_user)
+    db_user.update_last_action()
     _tn = Translator(ui_locales)
 
     for uid in uids_list:
