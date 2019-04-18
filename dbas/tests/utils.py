@@ -71,27 +71,20 @@ def _settings_dict_for_tests() -> Dict[str, Any]:
     return settings_dict
 
 
-def construct_dummy_request(json_body: dict = None, match_dict: dict = None, validated: dict = None,
-                            params: dict = None, session: Dict = None) -> DummyRequest:
+def construct_dummy_request(validated=None, **kwargs) -> DummyRequest:
     """
-    Creates a Dummy-Request. Optionally takes a json_body etc, which can directly be injected into the request.
+    Creates a Dummy-Request prepared with everything needed to run D-BAS tests.
+    Optionally takes the same parameters as DummyRequest, which are directly passed to the DummyRequest.
 
-    :param json_body: dict
-    :param match_dict: dict
-    :param validated: dict
-    :param params: dict
-    :param session: The session that shall be used by the dummy request.
     :return: DummyRequest
-    :rtype: DummyRequest
     """
-    json_body = json_body if json_body else {}
-    match_dict = match_dict if match_dict else {}
-    validated = validated if validated else {}
-    params = params if params else {}
+    # environ, headers, cookies, params and path can be None. See
+    # https://docs.pylonsproject.org/projects/pyramid/en/latest/_modules/pyramid/testing.html#DummyRequest for details.
+    # Only pass parameters that are explicitly given.
+    validated = validated if validated is not None else {}
 
-    dummy_request = DummyRequest(json_body=json_body, matchdict=match_dict, validated=validated, params=params,
-                                 errors=Errors(), session=session,
-                                 mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, decorated={'extras': {}})
+    dummy_request = DummyRequest(errors=Errors(), mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, validated=validated,
+                                 decorated={'extras': {}}, **kwargs)
 
     if dummy_request.registry.settings:
         dummy_request.registry.settings.update(_settings_dict_for_tests())
