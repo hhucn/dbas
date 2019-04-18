@@ -11,7 +11,7 @@ from datetime import date, timedelta
 from json import JSONDecodeError
 from pyramid.request import Request
 from slugify import slugify
-from typing import Optional, List
+from typing import Optional, List, Collection, Dict
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
@@ -253,7 +253,7 @@ def get_title_for_slug(slug) -> Optional[str]:
     return None
 
 
-def get_issues_overview_for(db_user: User, app_url: str) -> dict:
+def get_issues_overview_for(db_user: User, app_url: str) -> Dict[str, Collection]:
     """
     Returns dictionary with keywords 'user' and 'others', which got lists with dicts with infos
     IMPORTANT: URL's are generated for the frontend!
