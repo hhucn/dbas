@@ -1,3 +1,5 @@
+from pyramid.testing import DummyRequest
+
 from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 from dbas.validators import core
 from dbas.validators.core import validate
@@ -83,13 +85,14 @@ class TestValidate(TestCaseWithConfig):
         def __dummy_func(request):
             return request
 
-        request = construct_dummy_request()
-        self.assertEqual(request.validated, {})
+        # We do not use our custom dummy request constructor, since we WANT a plain request with nothing set.
+        request = DummyRequest()
+        self.assertFalse(hasattr(request, 'validated'))
         self.assertFalse(hasattr(request, 'errors'))
         self.assertFalse(hasattr(request, 'info'))
         inner = validate()
         func = inner(__dummy_func)
         func(request)
-        self.assertTrue(len(request.validated) > 0)
+        self.assertTrue(hasattr(request, 'validated'))
         self.assertTrue(hasattr(request, 'errors'))
         self.assertTrue(hasattr(request, 'info'))
