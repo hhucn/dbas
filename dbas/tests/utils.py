@@ -10,6 +10,7 @@ from cornice import Errors
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid_mailer.mailer import DummyMailer
+from typing import Dict, Any
 
 from dbas import get_key_pair
 from dbas.database import DBDiscussionSession, get_dbas_db_configuration
@@ -19,10 +20,9 @@ from dbas.helper.test import add_settings_to_appconfig
 
 class TestCaseWithDatabase(unittest.TestCase):
     def setUp(self):
-        self.config = testing.setUp()
+        self.config = testing.setUp(settings=settings_dict_for_tests())
         self.config.include('pyramid_chameleon')
         settings = add_settings_to_appconfig()
-        settings.update(get_key_pair())
         DBDiscussionSession.remove()
         DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
@@ -60,6 +60,17 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         super().tearDown()
 
 
+def settings_dict_for_tests() -> Dict[str, Any]:
+    """
+    Builds a dictionary with settings that are needed for the tests to function directly.
+    Do not build the settings elsewhere. Use this method instead.
+    :return: A dictionary of settings, that can be used in test requests.
+    """
+    settings_dict = {'beaker.session.timeout': 3600}
+    settings_dict.update(get_key_pair())
+    return settings_dict
+
+
 def construct_dummy_request(json_body: dict = None, match_dict: dict = None, validated: dict = None,
                             params: dict = None) -> DummyRequest:
     """
@@ -82,8 +93,8 @@ def construct_dummy_request(json_body: dict = None, match_dict: dict = None, val
                              mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, decorated={'extras': {}})
 
     if d_request.registry.settings:
-        d_request.registry.settings.update(get_key_pair())
+        d_request.registry.settings.update(settings_dict_for_tests())
     else:
-        d_request.registry.settings = get_key_pair()
+        d_request.registry.settings = settings_dict_for_tests()
 
     return d_request
