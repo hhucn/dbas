@@ -72,7 +72,7 @@ def settings_dict_for_tests() -> Dict[str, Any]:
 
 
 def construct_dummy_request(json_body: dict = None, match_dict: dict = None, validated: dict = None,
-                            params: dict = None) -> DummyRequest:
+                            params: dict = None, session: Dict = None) -> DummyRequest:
     """
     Creates a Dummy-Request. Optionally takes a json_body etc, which can directly be injected into the request.
 
@@ -80,6 +80,7 @@ def construct_dummy_request(json_body: dict = None, match_dict: dict = None, val
     :param match_dict: dict
     :param validated: dict
     :param params: dict
+    :param session: The session that shall be used by the dummy request.
     :return: DummyRequest
     :rtype: DummyRequest
     """
@@ -88,13 +89,13 @@ def construct_dummy_request(json_body: dict = None, match_dict: dict = None, val
     validated = validated if validated else {}
     params = params if params else {}
 
-    d_request = DummyRequest(json_body=json_body, matchdict=match_dict, validated=validated, params=params,
-                             errors=Errors(),
-                             mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, decorated={'extras': {}})
+    dummy_request = DummyRequest(json_body=json_body, matchdict=match_dict, validated=validated, params=params,
+                                 errors=Errors(), session=session,
+                                 mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, decorated={'extras': {}})
 
-    if d_request.registry.settings:
-        d_request.registry.settings.update(settings_dict_for_tests())
+    if dummy_request.registry.settings:
+        dummy_request.registry.settings.update(settings_dict_for_tests())
     else:
-        d_request.registry.settings = settings_dict_for_tests()
+        dummy_request.registry.settings = settings_dict_for_tests()
 
-    return d_request
+    return dummy_request
