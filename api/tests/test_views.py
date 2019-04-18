@@ -55,7 +55,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
     header = 'X-Authentication'
 
     def test_valid_login_attempt(self):
-        request = construct_dummy_request({
+        request = construct_dummy_request(json_body={
             'nickname': 'Walter',
             'password': 'iamatestuser2016'
         })
@@ -77,7 +77,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
     def test_login_wrong_password(self, password: str):
         pwd = password.replace('\x00', '')
         pwd = pwd.replace('iamatestuser2016', r'¯\_(ツ)_/¯')
-        request = construct_dummy_request({
+        request = construct_dummy_request(json_body={
             'nickname': 'Walter',
             'password': pwd
         })
@@ -87,7 +87,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_login_wrong_user(self):
-        request = construct_dummy_request({
+        request = construct_dummy_request(json_body={
             'nickname': r'¯\_(ツ)_/¯',
             'password': 'thankgoditsfriday'
         })
@@ -97,7 +97,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_login_empty_user_is_not_allowed_to_login(self):
-        request = construct_dummy_request({
+        request = construct_dummy_request(json_body={
             'nickname': '',
             'password': 'thankgoditsfriday'
         })

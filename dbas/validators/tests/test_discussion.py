@@ -13,7 +13,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'issue': self.issue_cat_or_dog.uid})
+        request = construct_dummy_request(json_body={'issue': self.issue_cat_or_dog.uid})
         response = discussion.valid_issue_by_id(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -50,7 +50,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'issue': self.issue_disabled.uid})
+        request = construct_dummy_request(json_body={'issue': self.issue_disabled.uid})
         response = discussion.valid_any_issue_by_id(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -74,30 +74,30 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'title': self.issue_cat_or_dog.title,
-                                           'info': 'some info',
-                                           'long_info': 'some longer info'})
+        request = construct_dummy_request(json_body={'title': self.issue_cat_or_dog.title,
+                                                     'info': 'some info',
+                                                     'long_info': 'some longer info'})
         response = discussion.valid_new_issue(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'title': 'some title',
-                                           'info': self.issue_cat_or_dog.info,
-                                           'long_info': 'some longer info'})
+        request = construct_dummy_request(json_body={'title': 'some title',
+                                                     'info': self.issue_cat_or_dog.info,
+                                                     'long_info': 'some longer info'})
         response = discussion.valid_new_issue(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'title': 'some title',
-                                           'info': 'some info',
-                                           'long_info': self.issue_cat_or_dog.long_info})
+        request = construct_dummy_request(json_body={'title': 'some title',
+                                                     'info': 'some info',
+                                                     'long_info': self.issue_cat_or_dog.long_info})
         response = discussion.valid_new_issue(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'title': 'some title',
-                                           'info': 'some info',
-                                           'long_info': 'some longer info'})
+        request = construct_dummy_request(json_body={'title': 'some title',
+                                                     'info': 'some info',
+                                                     'long_info': 'some longer info'})
         response = discussion.valid_new_issue(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -108,20 +108,20 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'conclusion_id': '2',
-                                           'issue': 2})
+        request = construct_dummy_request(json_body={'conclusion_id': '2',
+                                                     'issue': 2})
         response = discussion.valid_conclusion(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'conclusion_id': 2,
-                                           'issue': 1})
+        request = construct_dummy_request(json_body={'conclusion_id': 2,
+                                                     'issue': 1})
         response = discussion.valid_conclusion(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'conclusion_id': 2,
-                                           'issue': 2})
+        request = construct_dummy_request(json_body={'conclusion_id': 2,
+                                                     'issue': 2})
         response = discussion.valid_conclusion(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -132,12 +132,12 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'statement_id': 1})
+        request = construct_dummy_request(json_body={'statement_id': 1})
         response = discussion.valid_statement(location='json_body')(request)
         self.assertFalse(response, 'uid 1 is disabled and should not be returned')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'statement_id': 'a'})
+        request = construct_dummy_request(json_body={'statement_id': 'a'})
         response = discussion.valid_statement(location='json_body')(request)
         self.assertFalse(response, 'uid a is not parsable')
         self.assertIsInstance(response, bool)
@@ -148,7 +148,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response, 'uid a is not parsable')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'statement_id': 2})
+        request = construct_dummy_request(json_body={'statement_id': 2})
         response = discussion.valid_statement(location='json_body')(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -170,12 +170,12 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'argument_id': 1})
+        request = construct_dummy_request(json_body={'argument_id': 1})
         response = discussion.valid_argument(location='json_body')(request)
         self.assertFalse(response, 'uid 1 should be disabled')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'argument_id': 'a'})
+        request = construct_dummy_request(json_body={'argument_id': 'a'})
         response = discussion.valid_argument(location='json_body')(request)
         self.assertFalse(response, 'uid a is not parsable')
         self.assertIsInstance(response, bool)
@@ -185,7 +185,7 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response, 'uid a is not parsable')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'argument_id': 2})
+        request = construct_dummy_request(json_body={'argument_id': 2})
         response = discussion.valid_argument(location='json_body')(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -202,20 +202,20 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'statement': 'shrt'})
+        request = construct_dummy_request(json_body={'statement': 'shrt'})
         inner = discussion.valid_text_length_of('statement')
         response = inner(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'statement': 'loooooooong'})
+        request = construct_dummy_request(json_body={'statement': 'loooooooong'})
         inner = discussion.valid_text_length_of('statement')
         response = inner(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
         assert_in('statement', request.validated)
 
-        request = construct_dummy_request({'blorgh': 'more loooooooong'})
+        request = construct_dummy_request(json_body={'blorgh': 'more loooooooong'})
         inner = discussion.valid_text_length_of('blorgh')
         response = inner(request)
         self.assertTrue(response)
@@ -229,12 +229,12 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
         for uid in ['a', 0, 1000]:
-            request = construct_dummy_request({'uid': uid})
+            request = construct_dummy_request(json_body={'uid': uid})
             response = discussion.valid_premisegroup(request)
             self.assertFalse(response)
             self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 2})
+        request = construct_dummy_request(json_body={'uid': 2})
         response = discussion.valid_premisegroup(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -245,22 +245,22 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 200})
+        request = construct_dummy_request(json_body={'uid': 200})
         response = discussion.valid_statement_uid(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': "79a"})
+        request = construct_dummy_request(json_body={'uid': "79a"})
         response = discussion.valid_statement_uid(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': "79"})
+        request = construct_dummy_request(json_body={'uid': "79"})
         response = discussion.valid_statement_uid(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 79})
+        request = construct_dummy_request(json_body={'uid': 79})
         response = discussion.valid_statement_uid(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -271,27 +271,28 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'premisegroups': []})
+        request = construct_dummy_request(json_body={'premisegroups': []})
         response = discussion.valid_premisegroups(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'premisegroups': [{}]})
+        request = construct_dummy_request(json_body={'premisegroups': [{}]})
         response = discussion.valid_premisegroups(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'premisegroups': [['random text', 'more text here'], ['shrt']]})
+        request = construct_dummy_request(json_body={'premisegroups': [['random text', 'more text here'], ['shrt']]})
         response = discussion.valid_premisegroups(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'premisegroups': [['random text', 'more text here'], [42]]})
+        request = construct_dummy_request(json_body={'premisegroups': [['random text', 'more text here'], [42]]})
         response = discussion.valid_premisegroups(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'premisegroups': [['random text', 'more text here'], ['not so short here']]})
+        request = construct_dummy_request(
+            json_body={'premisegroups': [['random text', 'more text here'], ['not so short here']]})
         response = discussion.valid_premisegroups(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -333,19 +334,19 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'is_argument': True})
+        request = construct_dummy_request(json_body={'is_argument': True})
         response = discussion.valid_statement_or_argument(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'is_argument': True,
-                                           'uid': 1000})
+        request = construct_dummy_request(json_body={'is_argument': True,
+                                                     'uid': 1000})
         response = discussion.valid_statement_or_argument(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'is_argument': True,
-                                           'uid': 2})
+        request = construct_dummy_request(json_body={'is_argument': True,
+                                                     'uid': 2})
         response = discussion.valid_statement_or_argument(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -356,17 +357,17 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'text_values': 'just a string'})
+        request = construct_dummy_request(json_body={'text_values': 'just a string'})
         response = discussion.valid_text_values(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'text_values': ['sm', 'all', 'str']})
+        request = construct_dummy_request(json_body={'text_values': ['sm', 'all', 'str']})
         response = discussion.valid_text_values(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'text_values': ['long string 1', 'another one']})
+        request = construct_dummy_request(json_body={'text_values': ['long string 1', 'another one']})
         response = discussion.valid_text_values(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)

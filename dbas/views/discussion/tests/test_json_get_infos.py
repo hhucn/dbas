@@ -47,7 +47,7 @@ class TestGetLogfileForSomeStatements(TestCaseWithConfig):
 class TestGetShortenedUrl(TestCaseWithConfig):
     def test_get_shortened_url(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = construct_dummy_request({'url': 'https://dbas.cs.uni-duesseldorf.de'})
+        request = construct_dummy_request(json_body={'url': 'https://dbas.cs.uni-duesseldorf.de'})
         response = get_shortened_url(request)
         self.assertIsNotNone(response)
         if Translator('en').get(_.serviceNotAvailable) == response['service_text']:
@@ -66,7 +66,7 @@ class TestGetArgumentsByStatementId(TestCaseWithConfig):
     def test_get_arguments_by_statement_uid(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'issue': issue_uid}, matchdict={'statement_id': 3})
+        request = construct_dummy_request(json_body={'issue': issue_uid}, matchdict={'statement_id': 3})
         response = get_arguments_by_statement_id(request)
         self.assertIsNotNone(response)
         self.assertIn('arguments', response)
@@ -78,21 +78,21 @@ class TestGetArgumentsByStatementId(TestCaseWithConfig):
     def test_get_arguments_by_statement_uid_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'issue': issue_uid}, matchdict={'statement_id': 1})
+        request = construct_dummy_request(json_body={'issue': issue_uid}, matchdict={'statement_id': 1})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 410)
 
     def test_get_arguments_by_statement_uid_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'issue': issue_uid + 1}, matchdict={'statement_id': 3})
+        request = construct_dummy_request(json_body={'issue': issue_uid + 1}, matchdict={'statement_id': 3})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 400)
 
     def test_get_arguments_by_statement_uid_failure3(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         issue_uid = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first().issue_uid
-        request = construct_dummy_request({'issue': issue_uid}, matchdict={'statement_id': 'a'})
+        request = construct_dummy_request(json_body={'issue': issue_uid}, matchdict={'statement_id': 'a'})
         response = get_arguments_by_statement_id(request)
         self.assertEqual(response.status_code, 400)
 
@@ -100,7 +100,7 @@ class TestGetArgumentsByStatementId(TestCaseWithConfig):
 class TestGetInfosAboutArgument(TestCaseWithConfig):
     def test_valid_request_should_be_successful(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = construct_dummy_request({'argument_id': 7, 'lang': 'en', 'issue': 2})
+        request = construct_dummy_request(json_body={'argument_id': 7, 'lang': 'en', 'issue': 2})
         response = get_infos_about_argument(request)
         self.assertIn('supporter', response)
         self.assertIn('gravatars', response)
@@ -112,14 +112,14 @@ class TestGetInfosAboutArgument(TestCaseWithConfig):
 
     def test_get_infos_about_argument_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = construct_dummy_request({'argument_id': -1, 'lang': 'en', 'issue': 2})
+        request = construct_dummy_request(json_body={'argument_id': -1, 'lang': 'en', 'issue': 2})
         response = get_infos_about_argument(request)
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
 
     def test_get_infos_about_argument_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = construct_dummy_request({'not-argument-ids': 1, 'lang': 'en', 'issue': 2})
+        request = construct_dummy_request(json_body={'not-argument-ids': 1, 'lang': 'en', 'issue': 2})
         response = get_infos_about_argument(request)
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
@@ -135,7 +135,7 @@ class TestGetUserInformation(TestCaseWithConfig):
     def test_get_public_user_data(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # more tests for get_public_user_data are in test_handler_opinion
-        request = construct_dummy_request({'user_id': 2})
+        request = construct_dummy_request(json_body={'user_id': 2})
         response = get_public_user_data(request)
         self.assertIsNotNone(response)
 

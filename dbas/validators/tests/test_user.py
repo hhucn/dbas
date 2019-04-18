@@ -114,12 +114,12 @@ class TestValidUserAsAuthorOfStatement(TestCaseWithConfig):
 
     def test_valid_user_and_statement_gives_statement(self):
         self.config.testing_securitypolicy(userid='Christian', permissive=True)
-        request = construct_dummy_request({'statement_id': 36})
+        request = construct_dummy_request(json_body={'statement_id': 36})
         response = user.valid_user_as_author_of_statement(request)
         self.__assertValidResponse(request.validated, response)
 
     def test_user_is_not_author_of_statement(self):
         self.config.testing_securitypolicy(userid='Christian', permissive=True)
-        request = construct_dummy_request({'statement_id': 2})
+        request = construct_dummy_request(json_body={'statement_id': 2})
         response = user.valid_user_as_author_of_statement(request)
         self.__assertInvalidResponse(request.validated, response)

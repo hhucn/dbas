@@ -10,6 +10,30 @@ from dbas.tests.utils import TestCaseWithConfig
 
 
 class UserHandlerTests(TestCaseWithConfig):
+    def test_should_log_out(self):
+        old_timestamp = arrow.get(2016, 5, 5)
+        self.user_tobi.last_action = old_timestamp
+        self.user_tobi.last_login = old_timestamp
+        DBDiscussionSession.add(self.user_tobi)
+        settings = self.user_tobi.settings
+        settings.should_hold_the_login(False)
+        DBDiscussionSession.add(settings)
+        transaction.commit()
+
+        self.assertTrue(user.should_log_out(3600, self.user_tobi))
+
+    def test_should_log_out_with_keep_login_flag(self):
+        old_timestamp = arrow.get(2016, 5, 5)
+        self.user_tobi.last_action = old_timestamp
+        self.user_tobi.last_login = old_timestamp
+        DBDiscussionSession.add(self.user_tobi)
+        settings = self.user_tobi.settings
+        settings.should_hold_the_login(True)
+        DBDiscussionSession.add(settings)
+        transaction.commit()
+
+        self.assertFalse(user.should_log_out(3600, self.user_tobi))
+
     def test_refresh_public_nickname(self):
         old_nickname = self.user_tobi.public_nickname
         new_nickname = user.refresh_public_nickname(self.user_tobi)

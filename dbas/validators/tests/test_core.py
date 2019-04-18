@@ -12,14 +12,14 @@ class TestHasKeywords(TestCaseWithConfig):
         self.assertFalse(response)
 
     def test_provided_string_expected_int_should_fail(self):
-        request = construct_dummy_request({'foo': 'bar'})
+        request = construct_dummy_request(json_body={'foo': 'bar'})
         fn = core.has_keywords_in_json_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
         self.assertFalse(response)
 
     def test_provided_int_expected_int_should_succeed(self):
-        request = construct_dummy_request({'foo': 2})
+        request = construct_dummy_request(json_body={'foo': 2})
         fn = core.has_keywords_in_json_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
@@ -51,7 +51,7 @@ class TestHasKeywordsInPath(TestCaseWithConfig):
 
 class TestHasMaybeKeywords(TestCaseWithConfig):
     def test_provided_int_expected_int_should_succeed(self):
-        request = construct_dummy_request({'foo': 9000})
+        request = construct_dummy_request(json_body={'foo': 9000})
         fn = core.has_maybe_keywords(('foo', int, 2))
         response = fn(request)
         self.assertIsInstance(response, bool)
@@ -69,7 +69,7 @@ class TestHasMaybeKeywords(TestCaseWithConfig):
         self.assertTrue(response)
 
     def test_provided_string_expected_int_should_fail(self):
-        request = construct_dummy_request({'foo': 'bar'})
+        request = construct_dummy_request(json_body={'foo': 'bar'})
         fn = core.has_maybe_keywords(('foo', int, 2))
         response = fn(request)
         self.assertIsInstance(response, bool)
