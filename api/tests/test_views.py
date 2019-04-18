@@ -39,6 +39,7 @@ def create_request_with_token_header(json_body=None, match_dict=None, nickname="
 
     token = user_tokens[nickname]
 
+    match_dict = match_dict if match_dict is not None else {}
     request: IRequest = construct_dummy_request(json_body=json_body, matchdict=match_dict)
     request.headers['Authorization'] = "Bearer " + token
     return request
@@ -46,6 +47,7 @@ def create_request_with_token_header(json_body=None, match_dict=None, nickname="
 
 def create_request_with_api_token_header(json_body=None, match_dict=None, nickname='Walter'):
     token = generate_application_token("TEST_API_TOKEN_FOR_" + nickname)
+    match_dict = match_dict if match_dict is not None else {}
     request: IRequest = construct_dummy_request(json_body=json_body, matchdict=match_dict)
     request.headers['X-Authentication'] = json.dumps({'nickname': nickname, 'token': token})
     return request
