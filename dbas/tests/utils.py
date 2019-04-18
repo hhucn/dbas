@@ -71,7 +71,7 @@ def _settings_dict_for_tests() -> Dict[str, Any]:
     return settings_dict
 
 
-def construct_dummy_request(validated=None, **kwargs) -> DummyRequest:
+def construct_dummy_request(validated=None, json_body=None, **kwargs) -> DummyRequest:
     """
     Creates a Dummy-Request prepared with everything needed to run D-BAS tests.
     Optionally takes the same parameters as DummyRequest, which are directly passed to the DummyRequest.
@@ -82,9 +82,10 @@ def construct_dummy_request(validated=None, **kwargs) -> DummyRequest:
     # https://docs.pylonsproject.org/projects/pyramid/en/latest/_modules/pyramid/testing.html#DummyRequest for details.
     # Only pass parameters that are explicitly given.
     validated = validated if validated is not None else {}
+    json_body = json_body if json_body is not None else {}
 
     dummy_request = DummyRequest(errors=Errors(), mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, validated=validated,
-                                 decorated={'extras': {}}, **kwargs)
+                                 decorated={'extras': {}}, json_body=json_body, **kwargs)
 
     if dummy_request.registry.settings:
         dummy_request.registry.settings.update(_settings_dict_for_tests())
