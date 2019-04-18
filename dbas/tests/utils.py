@@ -71,7 +71,7 @@ def _settings_dict_for_tests() -> Dict[str, Any]:
     return settings_dict
 
 
-def construct_dummy_request(validated=None, json_body=None, **kwargs) -> DummyRequest:
+def construct_dummy_request(validated: Dict = None, json_body: Dict = None, **kwargs) -> DummyRequest:
     """
     Creates a Dummy-Request prepared with everything needed to run D-BAS tests.
     Optionally takes the same parameters as DummyRequest, which are directly passed to the DummyRequest.

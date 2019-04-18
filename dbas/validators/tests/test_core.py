@@ -84,12 +84,12 @@ class TestValidate(TestCaseWithConfig):
             return request
 
         request = construct_dummy_request()
-        self.assertFalse(hasattr(request, 'validated'))
+        self.assertEqual(request.validated, {})
         self.assertFalse(hasattr(request, 'errors'))
         self.assertFalse(hasattr(request, 'info'))
         inner = validate()
         func = inner(__dummy_func)
         func(request)
-        self.assertTrue(hasattr(request, 'validated'))
+        self.assertTrue(len(request.validated) > 0)
         self.assertTrue(hasattr(request, 'errors'))
         self.assertTrue(hasattr(request, 'info'))
