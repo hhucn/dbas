@@ -20,7 +20,7 @@ from dbas.helper.test import add_settings_to_appconfig
 
 class TestCaseWithDatabase(unittest.TestCase):
     def setUp(self):
-        self.config = testing.setUp(settings=settings_dict_for_tests())
+        self.config = testing.setUp(settings=_settings_dict_for_tests())
         self.config.include('pyramid_chameleon')
         settings = add_settings_to_appconfig()
         DBDiscussionSession.remove()
@@ -60,7 +60,7 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         super().tearDown()
 
 
-def settings_dict_for_tests() -> Dict[str, Any]:
+def _settings_dict_for_tests() -> Dict[str, Any]:
     """
     Builds a dictionary with settings that are needed for the tests to function directly.
     Do not build the settings elsewhere. Use this method instead.
@@ -94,8 +94,8 @@ def construct_dummy_request(json_body: dict = None, match_dict: dict = None, val
                                  mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, decorated={'extras': {}})
 
     if dummy_request.registry.settings:
-        dummy_request.registry.settings.update(settings_dict_for_tests())
+        dummy_request.registry.settings.update(_settings_dict_for_tests())
     else:
-        dummy_request.registry.settings = settings_dict_for_tests()
+        dummy_request.registry.settings = _settings_dict_for_tests()
 
     return dummy_request
