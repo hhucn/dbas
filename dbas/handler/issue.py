@@ -42,7 +42,6 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     :rtype: dict
     :return: Collection with information about the new issue
     """
-    db_user.update_last_action()
 
     DBDiscussionSession.add(Issue(title=title,
                                   info=info,
@@ -269,7 +268,6 @@ def get_issues_overview_for(db_user: User, app_url: str) -> Dict[str, Collection
             'other': []
         }
 
-    db_user.update_last_action()
     if db_user.is_admin():
         db_issues_other_users = DBDiscussionSession.query(Issue).filter(Issue.author_uid != db_user.uid).all()
     else:

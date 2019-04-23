@@ -39,8 +39,6 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_da
     """
     LOG.debug("%s", statement_text)
 
-    db_user.update_last_action()
-
     new_statement: Statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
     if db_issue.decision_process:
@@ -99,7 +97,6 @@ def set_positions_premise(db_issue: Issue, db_user: User, db_conclusion: Stateme
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and an url or an error
     """
-    db_user.update_last_action()
 
     prepared_dict = __process_input_of_start_premises(premisegroups, db_conclusion, supportive, db_issue, db_user)
     if prepared_dict['error']:
@@ -141,7 +138,6 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     :rtype: dict
     :return: Dictionary with info and/or error
     """
-    db_user.update_last_action()
 
     review_count = len(elements)
     added_reviews = [EditQueue().add_edit_reviews(db_user, el['uid'], el['text']) for el in elements]

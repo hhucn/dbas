@@ -272,7 +272,6 @@ def read_notifications(uids_list, db_user: User) -> dict:
     :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
-    db_user.update_last_action()
 
     for uid in uids_list:
         DBDiscussionSession.query(Message).filter(Message.uid == uid,
@@ -295,7 +294,6 @@ def delete_notifications(uids_list, db_user: User, ui_locales, application_url) 
     :param application_url: Url of the App
     :return: Dictionary with info and/or error
     """
-    db_user.update_last_action()
     _tn = Translator(ui_locales)
 
     for uid in uids_list:

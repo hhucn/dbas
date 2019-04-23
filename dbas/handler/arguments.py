@@ -47,7 +47,6 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
     }
     url, statement_uids, error = __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue,
                                                                                         db_user, mailer)
-    db_user.update_last_action()
 
     prepared_dict = {
         'error': error,

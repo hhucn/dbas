@@ -243,7 +243,6 @@ def __refresh_headers_and_url(request, db_user_nickname: str, keep_login: bool, 
 
     LOG.debug("Update login timestamp")
     db_user.update_last_login()
-    db_user.update_last_action()
     transaction.commit()
 
     ending = ['/?session_expired=true', '/?session_expired=false']
