@@ -40,7 +40,7 @@ class AjaxTest(unittest.TestCase):
         })
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertNotEqual(len(response['error']), 0)
 
     def test_user_login(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
@@ -54,33 +54,33 @@ class AjaxTest(unittest.TestCase):
             'url': ''
         })
         response = ajax(request)
-        self.assertTrue(type(response) is HTTPFound)
+        self.assertIsInstance(response, HTTPFound)
 
     def test_user_logout(self):
         from dbas.views import user_logout as ajax
         request = construct_dummy_request(params={})
         response = ajax(request)
-        self.assertTrue(type(response) is HTTPFound)
+        self.assertIsInstance(response, HTTPFound)
 
     def test_user_password_request_failure_wrong_email(self):
         request = construct_dummy_request(json_body={'email': 'penguinswillrule@theworld.com'})
         response = user_password_request(request)
         self.assertIsNotNone(response)
         self.assertFalse(response['success'])
-        self.assertTrue(len(response['message']) != 0)
+        self.assertNotEqual(len(response['message']), 0)
 
     def test_user_password_request_failure_wrong_key(self):
         request = construct_dummy_request(json_body={'emai': 'krauthoff@cs.uni-duesseldorf.de'})
         response = user_password_request(request)
         self.assertIsNotNone(response)
-        self.assertTrue(400 == response.status_code)
+        self.assertEqual(response.status_code, 400)
 
     def test_user_password_request(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         request = construct_dummy_request(json_body={'email': 'krauthoff@cs.uni-duesseldorf.de'})
         response = user_password_request(request)
         self.assertIsNotNone(response)
-        self.assertTrue(db_user.password != get_hashed_password('tobias'))
+        self.assertNotEqual(db_user.password, get_hashed_password('tobias'))
         db_user.password = get_hashed_password('tobias')
         transaction.commit()
 
@@ -88,7 +88,7 @@ class AjaxTest(unittest.TestCase):
         from dbas.views import set_user_lang as ajax
         request = construct_dummy_request(json_body={'lang': 'en'})
         response = ajax(request)
-        self.assertTrue(400 == response.status_code)
+        self.assertEqual(response.status_code, 400)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = construct_dummy_request(json_body={'lang': 'en'})
@@ -120,7 +120,7 @@ class AjaxTest(unittest.TestCase):
         from dbas.views import set_user_settings as ajax
         request = construct_dummy_request(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(400 == response.status_code)
+        self.assertEqual(response.status_code, 400)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = construct_dummy_request(json_body={'service': 'mail', 'settings_value': False})
@@ -138,7 +138,7 @@ class AjaxTest(unittest.TestCase):
         from dbas.views import set_user_settings as ajax
         request = construct_dummy_request(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(400 == response.status_code)
+        self.assertEqual(response.status_code, 400)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = construct_dummy_request(json_body={'service': 'notification', 'settings_value': True})
@@ -156,7 +156,7 @@ class AjaxTest(unittest.TestCase):
         from dbas.views import set_user_settings as ajax
         request = construct_dummy_request(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(400 == response.status_code)
+        self.assertEqual(response.status_code, 400)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = construct_dummy_request(json_body={'service': 'public_nick', 'settings_value': False})
@@ -174,7 +174,7 @@ class AjaxTest(unittest.TestCase):
         from dbas.views import set_user_settings as ajax
         request = construct_dummy_request(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(400 == response.status_code)
+        self.assertEqual(response.status_code, 400)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = construct_dummy_request(json_body={'service': 'oha', 'settings_value': False})

@@ -1,16 +1,14 @@
 """
 Namespace to re-use commonly used components for testing.
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 import unittest
+from typing import Dict, Any
 
 import transaction
 from cornice import Errors
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid_mailer.mailer import DummyMailer
-from typing import Dict, Any
 
 from dbas import get_key_pair
 from dbas.database import DBDiscussionSession, get_dbas_db_configuration
@@ -64,6 +62,7 @@ def _settings_dict_for_tests() -> Dict[str, Any]:
     """
     Builds a dictionary with settings that are needed for the tests to function directly.
     Do not build the settings elsewhere. Use this method instead.
+
     :return: A dictionary of settings, that can be used in test requests.
     """
     settings_dict = {'beaker.session.timeout': 3600}
