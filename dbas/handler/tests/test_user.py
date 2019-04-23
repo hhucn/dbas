@@ -38,8 +38,8 @@ class UserHandlerTests(TestCaseWithConfig):
         old_nickname = self.user_tobi.public_nickname
         new_nickname = user.refresh_public_nickname(self.user_tobi)
         self.assertNotEqual(old_nickname, new_nickname)
-        self.assertIn(new_nickname.split(' ')[0], user.moodlist)
-        self.assertIn(' '.join(new_nickname.split(' ')[1:]), user.animallist + user.thingslist + user.foodlist)
+        self.assertIn(new_nickname.split(' ')[0], user.MOODS)
+        self.assertIn(' '.join(new_nickname.split(' ')[1:]), user.ANIMALS + user.THINGS + user.FOODS)
 
     def test_is_in_group(self):
         self.assertFalse(user.is_in_group('', 'bla'))
