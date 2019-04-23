@@ -9,14 +9,15 @@ import logging
 import random
 import transaction
 import uuid
+from arrow.arrow import Arrow
 from datetime import date, timedelta
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, ClickedStatement, ClickedArgument, TextVersion, Settings, \
     ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print, MarkedArgument, \
-    MarkedStatement, ReviewDuplicate, Language, StatementReference, SeenStatement, SeenArgument, PremiseGroup, \
+    MarkedStatement, ReviewDuplicate, StatementReference, SeenStatement, SeenArgument, PremiseGroup, \
     Premise, History, Message, ReviewEditValue, ReviewMerge, ReviewSplit, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerEdit, LastReviewerOptimization, \
     LastReviewerSplit, LastReviewerMerge, ReputationHistory, ReviewCanceled, RevokedContent, RevokedContentHistory, \
@@ -29,7 +30,7 @@ from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
 from dbas.lib import pretty_print_timestamp, get_text_for_argument_uid, \
     get_profile_picture, nick_of_anonymous_user
 from dbas.review.reputation import get_reputation_of
-from dbas.strings.keywords import Keywords as _
+from dbas.strings.keywords import Keywords
 from dbas.strings.lib import start_with_capital
 from dbas.strings.translator import Translator
 
@@ -192,84 +193,127 @@ def is_admin(user: User) -> bool:
     return user.group.name == 'admins'
 
 
-def get_public_data(user_id: int, lang: str):
+def _labels_for_historical_data(days: int, lang: str) -> List[str]:
     """
-    Fetch some public information about the user with given nickname
+    Return a list of dates that can be used as labels for public data points regarding a user.
+    :param days: Labels for last x days.
+    :param lang: The language of the labels.
+    :return: A list containing the labels for every of the last `days`.
+    """
+    labels = []
+    for days_diff in range(days, -1, -1):
+        date_begin = date.today() - timedelta(days=days_diff)
+        timestamp = pretty_print_timestamp(date_begin, lang)
+        labels.append(timestamp)
+    return labels
 
-    :param user_id: User.uid
-    :param lang:
-    :return: dict()
+
+def _time_range_list(days: int) -> List[Tuple[Arrow, Arrow]]:
     """
-    LOG.debug("User: %s", user_id)
+    Return a list of Tuples containing begin and end dates needed to query the database.
+    :param days: Number of days back, where the range is starting.
+    :return: Returns a List of Arrow Tuples.
+    """
+    time_range = []
+    for days_diff in range(days, -1, -1):
+        date_begin = date.today() - timedelta(days=days_diff)
+        date_end = date.today() - timedelta(days=days_diff - 1)
+        begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+        end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+        time_range.append((begin, end))
+
+    return time_range
+
+
+def _historical_user_data_for_decisions(user: User, days: int) -> List:
+    """
+    Return public data regarding the clicked Statements for a certain user
+    :param days: The number of days ending with today for which the data shall be procured.
+    :param user: The user for which the data shall be procured.
+    :param lang: Language of the labels.
+    :return: A Tuple containing the labels and the data points.
+    """
+    data = []
+    for begin, end in _time_range_list(days):
+        db_clicks_statements = DBDiscussionSession.query(ClickedStatement).filter(
+            ClickedStatement.author_uid == user.uid,
+            ClickedStatement.timestamp >= begin,
+            ClickedStatement.timestamp < end).all()
+        db_clicks_arguments = DBDiscussionSession.query(ClickedArgument).filter(
+            ClickedArgument.author_uid == user.uid,
+            ClickedArgument.timestamp >= begin,
+            ClickedArgument.timestamp < end).all()
+        clicks = len(db_clicks_statements) + len(db_clicks_arguments)
+        data.append(clicks)
+
+    return data
+
+
+def _historical_user_data_for_statements_edits(user: User, days: int, lang: str) -> Tuple[List, List]:
+    """
+    Return the public historical data regarding statements and edits of a certain user.
+    :param user: The user for which the data shall be procured.
+    :param days: The number of days the data should date back.
+    :param lang: The language in which the data shall be presented.
+    :return: A tuple with two lists containing the data regarding statements and edits.
+    """
+    statement_data = []
+    edit_data = []
+    for begin, end in _time_range_list(days):
+        get_tv_dict = get_textversions(user, lang, begin, end)
+        statement_data.append(len(get_tv_dict.get('statements', [])))
+        edit_data.append(len(get_tv_dict.get('edits', [])))
+
+    return statement_data, edit_data
+
+
+def get_public_data(user_id: int, lang: str) -> Dict[str, List]:
+    """
+    Fetch public information about the user with given id
+
+    :param user_id: Id of the user for which public information shall be fetched
+    :param lang: Language of information
+    :return: A dictionary representing the information. All values are Lists.
+    """
     return_dict = dict()
     db_user = DBDiscussionSession.query(User).get(user_id)
+    LOG.debug("Fetching public information for user: %s", db_user.nickname)
 
     if db_user is None and user_id != 1:
         return return_dict
 
     _tn = Translator(lang)
 
-    # data for last 7 and 30 days
-    labels_decision_7 = []
-    labels_decision_30 = []
-    labels_edit_30 = []
-    labels_statement_30 = []
-
-    data_decision_7 = []
-    data_decision_30 = []
-    data_edit_30 = []
-    data_statement_30 = []
-
-    return_dict['label1'] = _tn.get(_.decisionIndex7)
-    return_dict['label2'] = _tn.get(_.decisionIndex30)
-    return_dict['label3'] = _tn.get(_.statementIndex)
-    return_dict['label4'] = _tn.get(_.editIndex)
+    return_dict['label1'] = _tn.get(Keywords.decisionIndex7)
+    return_dict['label2'] = _tn.get(Keywords.decisionIndex30)
+    return_dict['label3'] = _tn.get(Keywords.statementIndex)
+    return_dict['label4'] = _tn.get(Keywords.editIndex)
 
     if user_id == 1:
-        return __special_public_data(return_dict, lang)
+        return _special_public_data(return_dict, lang)
 
-    for days_diff in range(30, -1, -1):
-        date_begin = date.today() - timedelta(days=days_diff)
-        date_end = date.today() - timedelta(days=days_diff - 1)
-        begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
-        end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+    labels_decision_30 = labels_statement_30 = labels_edit_30 = _labels_for_historical_data(30, lang)
+    data_statement_30, data_edit_30 = _historical_user_data_for_statements_edits(db_user, 30, lang)
 
-        ts = pretty_print_timestamp(date_begin, lang)
-        labels_decision_30.append(ts)
-        labels_statement_30.append(ts)
-        labels_edit_30.append(ts)
-
-        db_clicks_statements = DBDiscussionSession.query(ClickedStatement).filter(
-            ClickedStatement.author_uid == db_user.uid,
-            ClickedStatement.timestamp >= begin,
-            ClickedStatement.timestamp < end).all()
-        db_clicks_arguments = DBDiscussionSession.query(ClickedArgument).filter(
-            ClickedArgument.author_uid == db_user.uid,
-            ClickedArgument.timestamp >= begin,
-            ClickedArgument.timestamp < end).all()
-        clicks = len(db_clicks_statements) + len(db_clicks_arguments)
-        data_decision_30.append(clicks)
-        if days_diff < 6:
-            labels_decision_7.append(ts)
-            data_decision_7.append(clicks)
-
-        get_tv_dict = get_textversions(db_user, lang, begin, end)
-        data_statement_30.append(len(get_tv_dict.get('statements', [])))
-        data_edit_30.append(len(get_tv_dict.get('edits', [])))
-
-    return_dict['labels1'] = labels_decision_7
+    return_dict['labels1'] = _labels_for_historical_data(7, lang)
     return_dict['labels2'] = labels_decision_30
     return_dict['labels3'] = labels_statement_30
     return_dict['labels4'] = labels_edit_30
-    return_dict['data1'] = data_decision_7
-    return_dict['data2'] = data_decision_30
+    return_dict['data1'] = _historical_user_data_for_decisions(db_user, 7)
+    return_dict['data2'] = _historical_user_data_for_decisions(db_user, 30)
     return_dict['data3'] = data_statement_30
     return_dict['data4'] = data_edit_30
 
     return return_dict
 
 
-def __special_public_data(rdict, lang):
+def _special_public_data(rdict: Dict, lang: str) -> Dict[str, List]:
+    """
+    Return mock public data for anonymous User.
+    :param rdict: The dictionary which shall be filled.
+    :param lang: The language in which the dictionary is provided.
+    :return: Mock public statistics in a dictionary.
+    """
     rdict['labels1'] = [pretty_print_timestamp(date.today() - timedelta(days=dd), lang) for dd in range(7, -1, -1)]
     rdict['labels2'] = [pretty_print_timestamp(date.today() - timedelta(days=dd), lang) for dd in range(30, -1, -1)]
     rdict['labels3'] = rdict['labels2']
@@ -610,33 +654,33 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     # is the old password given?
     if not old_pw:
         LOG.debug("Old pwd is empty")
-        message = _t.get(_.oldPwdEmpty)  # 'The old password field is empty.'
+        message = _t.get(Keywords.oldPwdEmpty)  # 'The old password field is empty.'
     # is the new password given?
     elif not new_pw:
         LOG.debug("New pwd is empty")
-        message = _t.get(_.newPwdEmtpy)  # 'The new password field is empty.'
+        message = _t.get(Keywords.newPwdEmtpy)  # 'The new password field is empty.'
     # is the confirmation password given?
     elif not confirm_pw:
         LOG.debug("Confirm pwd is empty")
-        message = _t.get(_.confPwdEmpty)  # 'The password confirmation field is empty.'
+        message = _t.get(Keywords.confPwdEmpty)  # 'The password confirmation field is empty.'
     # is new password equals the confirmation?
     elif not new_pw == confirm_pw:
         LOG.debug("New pwds not equal")
-        message = _t.get(_.newPwdNotEqual)  # 'The new passwords are not equal'
+        message = _t.get(Keywords.newPwdNotEqual)  # 'The new passwords are not equal'
     # is new old password equals the new one?
     elif old_pw == new_pw:
         LOG.debug("Pwds are the same")
-        message = _t.get(_.pwdsSame)  # 'The new and old password are the same'
+        message = _t.get(Keywords.pwdsSame)  # 'The new and old password are the same'
     else:
         # is the old password valid?
         if not user.validate_password(old_pw):
             LOG.debug("Old password is wrong")
-            message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
+            message = _t.get(Keywords.oldPwdWrong)  # 'Your old password is wrong.'
         else:
             user.change_password(new_pw)
 
             LOG.debug("Password was changed")
-            message = _t.get(_.pwdChanged)  # 'Your password was changed'
+            message = _t.get(Keywords.pwdChanged)  # 'Your password was changed'
             success = True
 
     return message, success
@@ -682,11 +726,11 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     if db_user:
         LOG.debug("New data was added with uid %s", db_user.uid)
-        success = _t.get(_.accountWasAdded).format(user['nickname'])
+        success = _t.get(Keywords.accountWasAdded).format(user['nickname'])
 
     else:
         LOG.debug("New data was not added")
-        info = _t.get(_.accoutErrorTryLateOrContant)
+        info = _t.get(Keywords.accoutErrorTryLateOrContant)
 
     return success, info, db_user
 
@@ -711,13 +755,13 @@ def set_new_user(mailer, user_data, password, _tn):
     # does the group exists?
     if not db_group:
         LOG.debug("Internal error occured")
-        return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
+        return {'success': False, 'error': _tn.get(Keywords.errorTryLateOrContant), 'user': None}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
         LOG.debug("User already exists")
-        return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
+        return {'success': False, 'error': _tn.get(Keywords.nickIsTaken), 'user': None}
 
     user = {
         'firstname': firstname,
@@ -732,8 +776,8 @@ def set_new_user(mailer, user_data, password, _tn):
 
     if db_new_user:
         # sending an email and message
-        subject = _tn.get(_.accountRegistration)
-        body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
+        subject = _tn.get(Keywords.accountRegistration)
+        body = _tn.get(Keywords.accountWasRegistered).format(firstname, lastname, email)
         send_mail(mailer, subject, body, email, _tn.get_lang())
         send_welcome_notification(db_new_user.uid, _tn)
 
@@ -743,7 +787,7 @@ def set_new_user(mailer, user_data, password, _tn):
     LOG.debug("New user not found in db")
     return {
         'success': False,
-        'error': _tn.get(_.errorTryLateOrContant),
+        'error': _tn.get(Keywords.errorTryLateOrContant),
         'user': None
     }
 
@@ -769,7 +813,7 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
     # does the group exists?
     if not db_group:
         LOG.debug("Internal error occurred")
-        return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
+        return {'success': False, 'error': _tn.get(Keywords.errorTryLateOrContant), 'user': None}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter(User.oauth_provider == str(provider),
@@ -783,7 +827,7 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
         LOG.debug("User already exists")
-        return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
+        return {'success': False, 'error': _tn.get(Keywords.nickIsTaken), 'user': None}
 
     user = {
         'firstname': firstname,
@@ -804,7 +848,7 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
 
     return {
         'success': False,
-        'error': _tn.get(_.errorTryLateOrContant),
+        'error': _tn.get(Keywords.errorTryLateOrContant),
         'user': None
     }
 
