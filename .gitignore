@@ -71,7 +71,6 @@ production.env
 development.env
 
 # Stuff
-clean.sh
 restorePostgres.sh
 graphviz*
 
