@@ -190,7 +190,7 @@ def is_in_group(nickname: str, group_name: str) -> bool:
     :return: A boolean that is True when user with specified nickname is in the specified group and False else.
     """
     db_user: User = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    LOG.debug("Checking whether %s is in Group %s", db_user.nickname, group_name)
+    LOG.debug("Checking whether %s is in Group %s", nickname, group_name)
     return db_user and db_user.group.name == group_name
 
 
