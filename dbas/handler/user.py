@@ -181,17 +181,17 @@ def refresh_public_nickname(user: User) -> str:
     return nick
 
 
-def is_in_group(nickname, groupname):
+def is_in_group(nickname: str, group_name: str) -> bool:
     """
-    Returns boolean if the user is in the group
+    Returns whether the stated user is in the specified group.
 
-    :param nickname: User.nickname
-    :param groupname: Group.name
-    :return: Boolean
+    :param nickname: The nickname of the user that shall be checked.
+    :param group_name: The group where membership is supposed to be checked for.
+    :return: A boolean that is True when user with specified nickname is in the specified group and False else.
     """
-    db_user: User = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    LOG.debug("Entering is_in_group")
-    return db_user and db_user.group.name == groupname
+    db_user: User = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    LOG.debug("Checking whether %s is in Group %s", db_user.nickname, group_name)
+    return db_user and db_user.group.name == group_name
 
 
 def is_admin(nickname):
