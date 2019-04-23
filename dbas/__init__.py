@@ -57,6 +57,7 @@ def main(global_config, **settings):
                           session_factory=session_factory)
     config.add_translation_dirs('dbas:locale',
                                 'admin:locale')  # add this before the locale negotiator
+    config.set_locale_negotiator(my_locale_negotiator)
     config.set_default_csrf_options(require_csrf=True)
 
     # Include apps
@@ -234,3 +235,10 @@ def get_key_pair():
             }
         else:
             raise EnvironmentError(f"Can't read key files at {key_path} and {pubkey_path}")
+
+
+def my_locale_negotiator(request):
+    locale_name = request.cookies.get('_LOCALE_')
+    if locale_name is None:
+        return 'en'
+    return locale_name
