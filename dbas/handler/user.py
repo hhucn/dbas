@@ -157,22 +157,22 @@ def should_log_out(timeout: int, user: User) -> bool:
     return log_out
 
 
-def refresh_public_nickname(user):
+def refresh_public_nickname(user: User):
     """
     Creates and sets a random public nick for the given user
 
-    :param user: User
+    :param user: The user whose nickname shall be refreshed.
     :return: the new nickname as string
     """
-    biglist = animallist + thingslist + foodlist
+    name_parts = animallist + thingslist + foodlist
 
     first = moodlist[random.randint(0, len(moodlist) - 1)]
-    second = biglist[random.randint(0, len(biglist) - 1)]
+    second = name_parts[random.randint(0, len(name_parts) - 1)]
     nick = first + ' ' + second
 
     while DBDiscussionSession.query(User).filter_by(public_nickname=nick).first():
         first = moodlist[random.randint(0, len(moodlist) - 1)]
-        second = biglist[random.randint(0, len(biglist) - 1)]
+        second = name_parts[random.randint(0, len(name_parts) - 1)]
         nick = first + ' ' + second
 
     LOG.debug("User %s -> %s", user.public_nickname, nick)
