@@ -41,12 +41,6 @@ class UserHandlerTests(TestCaseWithConfig):
         self.assertIn(new_nickname.split(' ')[0], user.MOODS)
         self.assertIn(' '.join(new_nickname.split(' ')[1:]), user.ANIMALS + user.THINGS + user.FOODS)
 
-    def test_is_in_group(self):
-        self.assertFalse(user.is_in_group('', 'bla'))
-        self.assertFalse(user.is_in_group(self.user_tobi.nickname, 'bla'))
-        self.assertFalse(user.is_in_group('', 'admin'))
-        self.assertTrue(user.is_in_group(self.user_tobi.nickname, 'admins'))
-
     def test_is_admin(self):
         self.assertFalse(user.is_admin('Pascal'))
         self.assertTrue(user.is_admin('Tobias'))
