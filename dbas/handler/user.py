@@ -277,10 +277,12 @@ def get_public_data(user_id: int, lang: str) -> Dict[str, List]:
     """
     return_dict = dict()
     db_user = DBDiscussionSession.query(User).get(user_id)
-    LOG.debug("Fetching public information for user: %s", db_user.nickname)
 
     if db_user is None and user_id != 1:
+        LOG.debug("Could not fetch public information. User is unknown.")
         return return_dict
+
+    LOG.debug("Fetching public information for user: %s", db_user.nickname)
 
     _tn = Translator(lang)
 
