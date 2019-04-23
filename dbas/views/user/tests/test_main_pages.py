@@ -18,7 +18,7 @@ class MainNotificationsViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = notifications(request)
         verify_dictionary_of_view(response)
 
@@ -29,7 +29,7 @@ class MainSettingsViewTestsNotLoggedIn(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         self.assertEqual(400, settings(request).status_code)
 
 
@@ -40,7 +40,7 @@ class MainSettingsViewTestsLoggedIn(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = settings(request)
         verify_dictionary_of_view(response)
 
@@ -57,7 +57,7 @@ class MainSettingsViewTestsPassword(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
     def test_page_failure(self):
-        request = testing.DummyRequest(params={
+        request = construct_dummy_request(params={
             'form.passwordchange.submitted': '',
             'passwordold': 'tobia',
             'password': 'tobias',
@@ -76,7 +76,7 @@ class MainSettingsViewTestsPassword(unittest.TestCase):
         db_user.password = get_hashed_password('tobias')
         transaction.commit()
 
-        request = testing.DummyRequest(params={
+        request = construct_dummy_request(params={
             'form.passwordchange.submitted': '',
             'passwordold': 'tobias',
             'password': 'tobiass',
@@ -109,7 +109,7 @@ class MainUserView(unittest.TestCase):
     def test_page(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
-        request = construct_dummy_request(match_dict={'uid': db_user.uid})
+        request = construct_dummy_request(matchdict={'uid': db_user.uid})
         response = user(request)
         verify_dictionary_of_view(response)
         self.assertIn('user', response)
@@ -120,7 +120,7 @@ class MainUserView(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
-        request = construct_dummy_request(match_dict={'uid': db_user.uid})
+        request = construct_dummy_request(matchdict={'uid': db_user.uid})
         response = user(request)
         verify_dictionary_of_view(response)
         self.assertIn('user', response)
@@ -131,7 +131,7 @@ class MainUserView(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Christian').first()
 
-        request = construct_dummy_request(match_dict={'uid': db_user.uid})
+        request = construct_dummy_request(matchdict={'uid': db_user.uid})
         response = user(request)
         verify_dictionary_of_view(response)
         self.assertIn('user', response)
@@ -141,7 +141,7 @@ class MainUserView(unittest.TestCase):
     def test_page_error1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = construct_dummy_request(match_dict={'uid': 0})
+        request = construct_dummy_request(matchdict={'uid': 0})
         try:
             user(request)
         except HTTPNotFound:
@@ -150,7 +150,7 @@ class MainUserView(unittest.TestCase):
     def test_page_error2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = construct_dummy_request(match_dict={'uid': 1000})
+        request = construct_dummy_request(matchdict={'uid': 1000})
         try:
             user(request)
         except HTTPNotFound:
@@ -159,7 +159,7 @@ class MainUserView(unittest.TestCase):
     def test_page_error3(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = construct_dummy_request(match_dict={'uid1': 3})
+        request = construct_dummy_request(matchdict={'uid1': 3})
         try:
             user(request)
         except HTTPNotFound:
@@ -168,7 +168,7 @@ class MainUserView(unittest.TestCase):
     def test_page_error4(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = construct_dummy_request(match_dict={'uid': 'a'})
+        request = construct_dummy_request(matchdict={'uid': 'a'})
         try:
             user(request)
         except HTTPNotFound:

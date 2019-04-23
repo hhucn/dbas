@@ -13,7 +13,7 @@ class DiscussionJumpViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'argument_id': 12,
         })
@@ -21,7 +21,7 @@ class DiscussionJumpViewTests(unittest.TestCase):
         verify_dictionary_of_view(response)
 
     def test_page_on_failure(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'argument_id': 35,
         })

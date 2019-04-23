@@ -5,6 +5,7 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Message
+from dbas.tests.utils import construct_dummy_request
 
 
 class AjaxNotificationTest(unittest.TestCase):
@@ -50,7 +51,7 @@ class AjaxNotificationTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_unread1 = DBDiscussionSession.query(Message).filter_by(read=False).count()
         from dbas.views import set_notifications_read as ajax
-        request = testing.DummyRequest(json_body={'ids': [self.new_inbox_uid]})
+        request = construct_dummy_request(json_body={'ids': [self.new_inbox_uid]})
         response = ajax(request)
         db_unread2 = DBDiscussionSession.query(Message).filter_by(read=False).count()
         self.assertIsNotNone(response)
@@ -63,7 +64,7 @@ class AjaxNotificationTest(unittest.TestCase):
         from dbas.views import set_notifications_delete as ajax
         db_message1 = DBDiscussionSession.query(Message).filter_by(to_author_uid=self.test_author_uid).count()
         db_message1 += DBDiscussionSession.query(Message).filter_by(from_author_uid=self.test_author_uid).count()
-        request = testing.DummyRequest(json_body={'ids': [self.new_inbox_uid]})
+        request = construct_dummy_request(json_body={'ids': [self.new_inbox_uid]})
         response = ajax(request)
         transaction.commit()
         db_message2 = DBDiscussionSession.query(Message).filter_by(to_author_uid=self.test_author_uid).count()
@@ -77,7 +78,7 @@ class AjaxNotificationTest(unittest.TestCase):
         from dbas.views import send_some_notification as ajax
         db_len1 = DBDiscussionSession.query(Message).filter(Message.topic == 'Some text for a message',
                                                             Message.content == 'Some text for a message').count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'recipient': 'Christian',
             'title': 'Some text for a message',
             'text': 'Some text for a message',
@@ -93,14 +94,14 @@ class AjaxNotificationTest(unittest.TestCase):
 
     def test_notification_read_failure1(self):
         from dbas.views import set_notifications_read as ajax
-        request = testing.DummyRequest(json_body={})
+        request = construct_dummy_request(json_body={})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
 
     def test_notification_delete_failure(self):
         from dbas.views import set_notifications_delete as ajax
-        request = testing.DummyRequest(json_body={})
+        request = construct_dummy_request(json_body={})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -108,14 +109,14 @@ class AjaxNotificationTest(unittest.TestCase):
     def test_notification_read_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import send_some_notification as ajax
-        request = testing.DummyRequest(json_body={'id': 2})
+        request = construct_dummy_request(json_body={'id': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
 
     def test_send_notification_failure1(self):
         from dbas.views import send_some_notification as ajax
-        request = testing.DummyRequest(json_body={})
+        request = construct_dummy_request(json_body={})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -123,7 +124,7 @@ class AjaxNotificationTest(unittest.TestCase):
     def test_send_notification_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import send_some_notification as ajax
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'recipient': 'Tobias',
             'title': 'Some new text for a message',
             'text': 'Some new text for a message',

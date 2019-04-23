@@ -6,12 +6,6 @@ from dbas.tests.utils import TestCaseWithConfig
 
 class UserManagementTest(TestCaseWithConfig):
 
-    def test_update_last_action(self):
-        last_action_old = self.user_tobi.last_action
-        user.update_last_action(self.user_tobi)
-        last_action_new = self.user_tobi.last_action
-        self.assertNotEqual(last_action_old, last_action_new)
-
     def test_refresh_public_nickname(self):
         old_public_nickname = self.user_tobi.public_nickname
         new_public_nickname = user.refresh_public_nickname(self.user_tobi)

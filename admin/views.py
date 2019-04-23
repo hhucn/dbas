@@ -4,18 +4,15 @@ Introducing an admin interface to enable easy database management.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
-
 from cornice import Service
 from pyramid.httpexceptions import exception_response
 
 import admin.lib as lib
-from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.validators.core import has_keywords_in_json_path, validate
 from dbas.validators.database import valid_table_name
 from dbas.validators.user import valid_user_as_admin, valid_user_optional
-from dbas.views import user_logout
 from dbas.views.helper import project_name
 
 LOG = logging.getLogger(__name__)
@@ -94,10 +91,6 @@ def main_admin(request):
     LOG.debug("def")
     db_user = request.validated['user']
 
-    should_log_out = user.update_last_action(request.validated['user'])
-    if should_log_out:
-        return user_logout(request, True)
-
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
@@ -127,10 +120,7 @@ def main_table(request):
     :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    LOG.debug("def")
-    should_log_out = user.update_last_action(request.validated['user'])
-    if should_log_out:
-        return user_logout(request, True)
+    LOG.debug("Entering the main_table method from the admin interface.")
 
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
