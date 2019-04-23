@@ -246,5 +246,5 @@ def locale_negotiator(request):
     if locale_name is None:
         locale_name = getattr(request, '_LOCALE_', None)
         if locale_name is None:
-            return request.registry.session.get('_LOCALE_')
+            return request.registry.settings['pyramid.default_locale_name']
     return locale_name
