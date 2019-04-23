@@ -50,6 +50,8 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         self.user_tobi: User = DBDiscussionSession.query(User).get(2)
         self.user_christian: User = DBDiscussionSession.query(User).get(3)
         self.user_bjoern: User = DBDiscussionSession.query(User).get(4)
+        self.user_pascal: User = DBDiscussionSession.query(User).get(7)
+        self.user_torben: User = DBDiscussionSession.query(User).get(9)
         self.user_antonia: User = DBDiscussionSession.query(User).get(28)
         self.statement_reference: StatementReference = DBDiscussionSession.query(StatementReference).get(2)
 

@@ -42,8 +42,8 @@ class UserHandlerTests(TestCaseWithConfig):
         self.assertIn(' '.join(new_nickname.split(' ')[1:]), user.ANIMALS + user.THINGS + user.FOODS)
 
     def test_is_admin(self):
-        self.assertFalse(user.is_admin('Pascal'))
-        self.assertTrue(user.is_admin('Tobias'))
+        self.assertFalse(user.is_admin(self.user_pascal))
+        self.assertTrue(user.is_admin(self.user_tobi))
 
     def test_get_public_data(self):
         prep_dict = user.get_public_data(1000, 'en')

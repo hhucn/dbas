@@ -181,16 +181,15 @@ def refresh_public_nickname(user: User) -> str:
     return nick
 
 
-def is_admin(nickname):
+def is_admin(user: User) -> bool:
     """
-    Check, if the given uid has admin rights or is admin
+    Check, if the given user has admin rights or is admin
 
-    :param nickname: current user name
-    :return: true, if user is admin, false otherwise
+    :param user: The user that is supposed to be an admin
+    :return: True, if user is admin, False otherwise
     """
-    db_user: User = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    LOG.debug("Entering is_admin")
-    return db_user and db_user.group.name == 'admins'
+    LOG.debug("Check whether %s is an admin", user.nickname)
+    return user.group.name == 'admins'
 
 
 def get_public_data(user_id: int, lang: str):

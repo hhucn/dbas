@@ -386,7 +386,7 @@ def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty,
     :param translator:
     :return:
     """
-    if db_issue.author_uid != db_user.uid and not user.is_admin(db_user.nickname):
+    if db_issue.author_uid != db_user.uid and not user.is_admin(db_user):
         return {'error': translator.get(_.noRights)}
 
     if iproperty == 'enable':
