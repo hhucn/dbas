@@ -59,7 +59,7 @@ def check_authentication(request: Request):
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-    timeout = request.registry.settings.get('beaker.session.timeout', 3600)
+    timeout = int(request.registry.settings.get('beaker.session.timeout', 3600))
     if should_log_out(timeout, db_user):
         request.session.invalidate()
         headers = forget(request)
