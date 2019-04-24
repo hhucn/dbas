@@ -14,6 +14,7 @@ import time
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
+from pyramid.request import Request
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 from sqlalchemy import engine_from_config
@@ -57,7 +58,7 @@ def main(global_config, **settings):
                           session_factory=session_factory)
     config.add_translation_dirs('dbas:locale',
                                 'admin:locale')  # add this before the locale negotiator
-    config.set_locale_negotiator(locale_negotiator)
+    config.set_locale_negotiator(_locale_negotiator)
     config.set_default_csrf_options(require_csrf=True)
 
     # Include apps
@@ -237,10 +238,10 @@ def get_key_pair():
             raise EnvironmentError(f"Can't read key files at {key_path} and {pubkey_path}")
 
 
-def locale_negotiator(request):
-    """"
-    Returns current language set in cookie or request for i18n translation in templates.
-    Otherwise returns default language
+def _locale_negotiator(request: Request):
+    """
+    Returns current language from cookie or request for i18n translation in templates.
+    Otherwise returns default language.
     """
     locale_name = request.cookies.get('_LOCALE_')
     if locale_name is None:
