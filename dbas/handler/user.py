@@ -3,7 +3,6 @@ Handler for user-accounts
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-
 import arrow
 import logging
 import random
@@ -11,7 +10,7 @@ import transaction
 import uuid
 from arrow.arrow import Arrow
 from datetime import date, timedelta
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Union, Collection
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
@@ -485,32 +484,51 @@ def get_textversions(user: User, lang: str, timestamp_after: Arrow = None, times
     }
 
 
-def get_marked_elements_of(db_user: User, is_argument: bool, lang: str):
+def get_marked_arguments(user: User, lang: str) -> List[Dict]:
     """
-    Get all marked arguments/statements of the user
+    Get all marked arguments of the user.
 
-    :param db_user: User
-    :param is_argument: Boolean
-    :param lang: uid_locales
-    :return: [{},...]
+    :param user: The user whose marked arguments you want to query.
+    :param lang: The language in which the answer shall be returned.
+    :return: A list of dictionaries representing arguments
+    """
+    marked_arguments = DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=user.uid).all()
+    return _get_marked_elements(marked_arguments, lang)
+
+
+def get_marked_statements(user: User, lang: str) -> List[Dict]:
+    """
+    Get all marked statements of the user.
+
+    :param user: The user whose marked statements you want to query.
+    :param lang: The language in which the answer shall be returned.
+    :return: A list of dictionaries representing arguments
+    """
+    marked_statements = DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=user.uid).all()
+    return _get_marked_elements(marked_statements, lang)
+
+
+def _get_marked_elements(marked_object: Collection[Union[MarkedArgument, MarkedStatement]], lang: str) -> List[Dict]:
+    """
+    Get all marked arguments/statements of the user.
+
+    :param user: The user whose marked arguments / statements you want to query.
+    :param marked_object: The MarkedArgument or MarkedStatement collection on which the query is performed.
+    :param lang: The language in which the answer shall be returned.
+    :return: A list of dictionaries representing arguments / statements of user.
     """
     return_array = []
 
-    if is_argument:
-        db_votes = DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=db_user.uid).all()
-    else:
-        db_votes = DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=db_user.uid).all()
-
-    for vote in db_votes:
+    for mark in marked_object:
         vote_dict = dict()
-        vote_dict['uid'] = str(vote.uid)
-        vote_dict['timestamp'] = sql_timestamp_pretty_print(vote.timestamp, lang)
-        if is_argument:
-            vote_dict['argument_uid'] = str(vote.argument_uid)
-            vote_dict['content'] = get_text_for_argument_uid(vote.argument_uid, lang)
+        vote_dict['uid'] = str(mark.uid)
+        vote_dict['timestamp'] = sql_timestamp_pretty_print(mark.timestamp, lang)
+        if type(mark) == MarkedArgument:
+            vote_dict['argument_uid'] = str(mark.argument_uid)
+            vote_dict['content'] = get_text_for_argument_uid(mark.argument_uid, lang)
         else:
-            vote_dict['statement_uid'] = str(vote.statement_uid)
-            statement = DBDiscussionSession.query(Statement).get(vote.statement_uid)
+            vote_dict['statement_uid'] = str(mark.statement_uid)
+            statement = DBDiscussionSession.query(Statement).get(mark.statement_uid)
             vote_dict['content'] = statement.get_text()
         return_array.append(vote_dict)
 

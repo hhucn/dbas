@@ -130,9 +130,11 @@ class UserHandlerTests(TestCaseWithConfig):
         self.assertGreaterEqual(0, len(d.get('edits', [])))
 
     def test_get_marked_elements_of(self):
-        prep_dict = user.get_marked_elements_of(self.user_tobi, False, 'en')
+        prep_dict = user.get_marked_statements(self.user_tobi, 'en')
         self.assertEqual(0, len(prep_dict))
         self.assertNotIn('uid', prep_dict)
+        marked_arguments = user.get_marked_arguments(self.user_tobi, 'en')
+        self.assertEqual(0, len(marked_arguments))
 
     def test_get_clicked_elements_of(self):
         prep_array = user.get_clicked_elements_of(self.user_tobi, True, 'en')
