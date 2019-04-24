@@ -332,7 +332,7 @@ def _special_public_data(rdict: Dict, lang: str) -> Dict[str, List]:
     return rdict
 
 
-def number_of_reviews(user, only_today):
+def number_of_reviews(user: User, only_today: bool) -> int:
     """
     Returns the number of reviews made by the user.
 
@@ -342,7 +342,7 @@ def number_of_reviews(user, only_today):
     """
     since = arrow.utcnow() if only_today else arrow.get(0)
     since_timestamp = since.format('YYYY-MM-DD')
-    
+
     num_edits = DBDiscussionSession.query(ReviewEdit).filter(
         ReviewEdit.detector_uid == user.uid,
         ReviewEdit.timestamp >= since_timestamp).count()
@@ -359,46 +359,41 @@ def number_of_reviews(user, only_today):
     return num_edits + num_deletes + num_optimizations + num_duplicates
 
 
-def __get_count_of_statements(user, only_edits, limit_on_today=False):
+def _get_count_of_statements(user: User, only_today: bool = False) -> Tuple[int, int]:
     """
-    Returns the count of statements of the user
+    Returns the number of statements and edits a user made.
 
-    :param user: User
-    :param only_edits: Boolean
-    :param limit_on_today: Boolean
-    :return: Int
+    :param user: The user which should be queried.
+    :param only_today: Indicates, whether only the data of the current day shall be counted.
+    :return: A Tuple containing the number of edits and statements.
     """
-    if not user:
-        return 0
-
     edit_count = 0
     statement_count = 0
-    db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid)
+    texts = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid)
 
-    if limit_on_today:
-        today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
-        db_textversions = db_textversions.filter(TextVersion.timestamp >= today)
-    db_textversions = db_textversions.all()
+    if only_today:
+        today = arrow.utcnow().format('YYYY-MM-DD')
+        texts = texts.filter(TextVersion.timestamp >= today)
+    texts = texts.all()
 
-    for tv in db_textversions:
-        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tv.statement_uid).first()
-        if db_root_version.uid < tv.uid:
+    for text in texts:
+        original_text = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=text.statement_uid).first()
+        if original_text.uid < text.uid:
             edit_count += 1
         else:
             statement_count += 1
 
-    if only_edits:
-        return edit_count
-    else:
-        return statement_count
+    return edit_count, statement_count
 
 
 def get_statement_count_of(db_user: User, only_today: bool = False) -> int:
-    return __get_count_of_statements(db_user, False, only_today)
+    _, statement_count = _get_count_of_statements(db_user, only_today)
+    return statement_count
 
 
 def get_edit_count_of(db_user: User, only_today: bool = False) -> int:
-    return __get_count_of_statements(db_user, True, only_today)
+    edit_count, _ = _get_count_of_statements(db_user, only_today)
+    return edit_count
 
 
 def get_mark_count_of(db_user: User, limit_on_today: bool = False):
