@@ -432,26 +432,26 @@ def get_mark_count_of(user: User, only_today: bool = False) -> Tuple[int, int]:
     return marked_arguments.count(), marked_statements.count()
 
 
-def get_click_count_of(db_user: User, limit_on_today: bool = False) -> Tuple[int, int]:
+def get_click_count_of(user: User, only_today: bool = False) -> Tuple[int, int]:
     """
-    Returns the count of clicks of the user
+    Returns the count of clicked arguments and clicked statements the user made.
 
-    :param db_user: User
-    :param limit_on_today: Boolean
-    :return: Int, Int
+    :param user: The user whose clicks are counted.
+    :param only_today: True if only the clicks of the current day shall be counted.
+    :return: A Tuple containing the number of clicked arguments and clicked statements.
     """
-    if not db_user:
+    if not user:
         return 0, 0
 
-    db_arg = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == db_user.uid)
-    db_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == db_user.uid)
+    clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user.uid)
+    clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
 
-    if limit_on_today:
-        today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
-        db_arg = db_arg.filter(ClickedArgument.timestamp >= today)
-        db_stat = db_stat.filter(ClickedStatement.timestamp >= today)
+    if only_today:
+        today = arrow.utcnow().format('YYYY-MM-DD')
+        clicked_arguments = clicked_arguments.filter(ClickedArgument.timestamp >= today)
+        clicked_statements = clicked_statements.filter(ClickedStatement.timestamp >= today)
 
-    return db_arg.count(), db_stat.count()
+    return clicked_arguments.count(), clicked_statements.count()
 
 
 def get_textversions(db_user: User, lang: str, timestamp_after=None, timestamp_before=None):
