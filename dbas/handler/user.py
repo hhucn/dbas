@@ -513,7 +513,6 @@ def _get_marked_elements(marked_objects: Collection[Union[MarkedArgument, Marked
     """
     Get all marked arguments/statements of the user.
 
-    :param user: The user whose marked arguments / statements you want to query.
     :param marked_objects: The MarkedArgument or MarkedStatement collection on which the query is performed.
     :param lang: The language in which the answer shall be returned.
     :return: A list of dictionaries representing arguments / statements of user.
@@ -590,48 +589,48 @@ def _get_clicked_elements(clicked_objects: Collection[Union[ClickedArgument, Cli
     return return_array
 
 
-def get_information_of(db_user: User, lang):
+def get_information_of(user: User, lang: str) -> Dict[str, Any]:
     """
-    Returns public information of the given user
+    Returns public information of the given user.
 
-    :param db_user: User
-    :param lang: ui_locales
-    :return: dict()
+    :param user: User whose information is queried.
+    :param lang: Language-string representing language of the answer.
+    :return: A dictionary containing the public information.
     """
-    if db_user.nickname == nick_of_anonymous_user:
-        return __get_special_infos(lang)
-    db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
+    if user.nickname == nick_of_anonymous_user:
+        return _get_special_infos(lang)
+    db_group = user.group
     ret_dict = dict()
-    ret_dict['public_nick'] = db_user.global_nickname
-    ret_dict['last_action'] = sql_timestamp_pretty_print(db_user.last_action, lang)
-    ret_dict['last_login'] = sql_timestamp_pretty_print(db_user.last_login, lang)
-    ret_dict['registered'] = sql_timestamp_pretty_print(db_user.registered, lang)
+    ret_dict['public_nick'] = user.global_nickname
+    ret_dict['last_action'] = sql_timestamp_pretty_print(user.last_action, lang)
+    ret_dict['last_login'] = sql_timestamp_pretty_print(user.last_login, lang)
+    ret_dict['registered'] = sql_timestamp_pretty_print(user.registered, lang)
     ret_dict['group'] = start_with_capital(db_group.name)
 
-    ret_dict['is_male'] = db_user.gender == 'm'
-    ret_dict['is_female'] = db_user.gender == 'f'
-    ret_dict['is_neutral'] = db_user.gender != 'm' and db_user.gender != 'f'
+    ret_dict['is_male'] = user.gender == 'm'
+    ret_dict['is_female'] = user.gender == 'f'
+    ret_dict['is_neutral'] = user.gender != 'm' and user.gender != 'f'
 
-    arg_votes, stat_votes = get_mark_count_of(db_user, False)
-    db_reviews_duplicate = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=db_user.uid).all()
-    db_reviews_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=db_user.uid).all()
-    db_reviews_delete = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=db_user.uid).all()
-    db_reviews_optimization = DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=db_user.uid).all()
+    arg_votes, stat_votes = get_mark_count_of(user, False)
+    db_reviews_duplicate = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=user.uid).all()
+    db_reviews_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=user.uid).all()
+    db_reviews_delete = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=user.uid).all()
+    db_reviews_optimization = DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=user.uid).all()
     db_reviews = db_reviews_duplicate + db_reviews_edit + db_reviews_delete + db_reviews_optimization
 
-    get_tv_dict = get_textversions(db_user, lang)
+    get_tv_dict = get_textversions(user, lang)
     ret_dict['statements_posted'] = len(get_tv_dict.get('statements', []))
     ret_dict['edits_done'] = len(get_tv_dict.get('edits', []))
     ret_dict['reviews_proposed'] = len(db_reviews)
     ret_dict['discussion_arg_votes'] = arg_votes
     ret_dict['discussion_stat_votes'] = stat_votes
-    ret_dict['avatar_url'] = get_profile_picture(db_user, 120)
-    ret_dict['discussion_stat_rep'], trash = get_reputation_of(db_user)
+    ret_dict['avatar_url'] = get_profile_picture(user, 120)
+    ret_dict['discussion_stat_rep'], _ = get_reputation_of(user)
 
     return ret_dict
 
 
-def __get_special_infos(lang):
+def _get_special_infos(lang: str) -> Dict[str, Any]:
     return {
         'public_nick': 'Son Goku',
         'last_action': sql_timestamp_pretty_print(get_now(), lang),
