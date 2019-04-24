@@ -824,22 +824,18 @@ def set_new_user(mailer: Mailer, user_data: Dict[str, Any], password: str, _tn: 
     }
 
 
-def set_new_oauth_user(user_data, uid, provider, _tn):
+def set_new_oauth_user(user_data: Dict[str, Any], oauth_id: str, provider: str, _tn: Translator) -> Dict[str, Any]:
     """
-    Create a new user
+    Create a new user for an oauth provider.
 
-    :param user_data: dict with firstname, lastname, nickname, email, gender
-    :param uid:
-    :param provider:
-    :param _tn:
-    :return:
+    :param user_data: Dictionary containing user information.
+    :param oauth_id: The user id at his oauth-provider.
+    :param provider: The oauth provider.
+    :param _tn: A Translator object.
+    :return: A dictionary containing whether the operation was a success, an optional error message and the newly
+        created user if the transaction was successful.
     """
-    firstname = user_data.get('firstname')
-    lastname = user_data.get('lastname')
-    nickname = user_data.get('nickname')
-    email = user_data.get('email')
-    gender = user_data.get('gender')
-    # getting the authors group
+    temporary_user = dict(user_data)
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
 
     # does the group exists?
@@ -849,34 +845,29 @@ def set_new_oauth_user(user_data, uid, provider, _tn):
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter(User.oauth_provider == str(provider),
-                                                     User.oauth_provider_id == str(uid)).first()
+                                                     User.oauth_provider_id == str(oauth_id)).first()
     # login of oauth user
     if db_user:
         LOG.debug("User already exists. They will login")
         return {'success': True, 'error': '', 'user': db_user}
 
     # sanity check
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=temporary_user['nickname']).first()
     if db_user:
         LOG.debug("User already exists")
         return {'success': False, 'error': _tn.get(Keywords.nickIsTaken), 'user': None}
 
-    user = {
-        'firstname': firstname,
-        'lastname': lastname,
-        'email': email,
-        'nickname': nickname,
-        'password': str(uuid.uuid4().hex),
-        'gender': gender,
-        'db_group_uid': db_group.uid
-    }
-    success, info, db_new_user = __create_new_user(user, _tn.get_lang(), oauth_provider=provider, oauth_provider_id=uid)
+    temporary_user['password'] = str(uuid.uuid4().hex)
+    temporary_user['db_group_uid'] = db_group.uid
+
+    success, info, db_new_user = __create_new_user(temporary_user, _tn.get_lang(), oauth_provider=provider,
+                                                   oauth_provider_id=oauth_id)
 
     if db_new_user:
         LOG.debug("Set new user in db")
         return {'success': success, 'error': '', 'user': db_new_user}
 
-    LOG.debug("New user nor found in db")
+    LOG.debug("New user not found in db")
 
     return {
         'success': False,
