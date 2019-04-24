@@ -387,11 +387,25 @@ def _get_count_of_statements(user: User, only_today: bool = False) -> Tuple[int,
 
 
 def get_statement_count_of(db_user: User, only_today: bool = False) -> int:
+    """
+    Returns the number of statements a user made.
+
+    :param db_user: The user which should be queried.
+    :param only_today: Indicates, whether only the data of the current day shall be counted.
+    :return: The number of statements.
+    """
     _, statement_count = _get_count_of_statements(db_user, only_today)
     return statement_count
 
 
 def get_edit_count_of(db_user: User, only_today: bool = False) -> int:
+    """
+    Returns the number of edits a user made.
+
+    :param db_user: The user which should be queried.
+    :param only_today: Indicates, whether only the data of the current day shall be counted.
+    :return: The number of edits.
+    """
     edit_count, _ = _get_count_of_statements(db_user, only_today)
     return edit_count
 
