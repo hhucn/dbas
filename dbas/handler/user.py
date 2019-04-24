@@ -139,6 +139,7 @@ FOODS = ['Acorn Squash', 'Adobo', 'Aioli', 'Alfredo Sauce', 'Almond Paste', 'Ama
 def should_log_out(timeout: int, user: User) -> bool:
     """
     Returns a boolean stating that the user should be logged out when its True, and False otherwise.
+
     :param timeout: A timeout in seconds.
     :param user: The User that should be checked for a possible log-out
     :return: Boolean
@@ -196,6 +197,7 @@ def is_admin(user: User) -> bool:
 def _labels_for_historical_data(days: int, lang: str) -> List[str]:
     """
     Return a list of dates that can be used as labels for public data points regarding a user.
+
     :param days: Labels for last x days.
     :param lang: The language of the labels.
     :return: A list containing the labels for every of the last `days`.
@@ -211,6 +213,7 @@ def _labels_for_historical_data(days: int, lang: str) -> List[str]:
 def _time_range_list(days: int) -> List[Tuple[Arrow, Arrow]]:
     """
     Return a list of Tuples containing begin and end dates needed to query the database.
+
     :param days: Number of days back, where the range is starting.
     :return: Returns a List of Arrow Tuples.
     """
@@ -228,9 +231,9 @@ def _time_range_list(days: int) -> List[Tuple[Arrow, Arrow]]:
 def _historical_user_data_for_decisions(user: User, days: int) -> List:
     """
     Return public data regarding the clicked Statements for a certain user
+
     :param days: The number of days ending with today for which the data shall be procured.
     :param user: The user for which the data shall be procured.
-    :param lang: Language of the labels.
     :return: A Tuple containing the labels and the data points.
     """
     data = []
@@ -252,6 +255,7 @@ def _historical_user_data_for_decisions(user: User, days: int) -> List:
 def _historical_user_data_for_statements_edits(user: User, days: int, lang: str) -> Tuple[List, List]:
     """
     Return the public historical data regarding statements and edits of a certain user.
+
     :param user: The user for which the data shall be procured.
     :param days: The number of days the data should date back.
     :param lang: The language in which the data shall be presented.
@@ -312,6 +316,7 @@ def get_public_data(user_id: int, lang: str) -> Dict[str, List]:
 def _special_public_data(rdict: Dict, lang: str) -> Dict[str, List]:
     """
     Return mock public data for anonymous User.
+
     :param rdict: The dictionary which shall be filled.
     :param lang: The language in which the dictionary is provided.
     :return: Mock public statistics in a dictionary.
@@ -327,32 +332,31 @@ def _special_public_data(rdict: Dict, lang: str) -> Dict[str, List]:
     return rdict
 
 
-def get_reviews_of(user, only_today):
+def number_of_reviews(user, only_today):
     """
-    Returns the sum of all reviews of the given user
+    Returns the number of reviews made by the user.
 
-    :param user: User
-    :param only_today: Boolean
-    :return: Int
+    :param user: The user whose reviews should be counted.
+    :param only_today: True if only the reviews of the current date shall be counted.
+    :return: Number of reviews.
     """
-    db_edits = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=user.uid)
-    db_deletes = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=user.uid)
-    db_optimizations = DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=user.uid)
-    db_duplicates = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=user.uid)
+    since = arrow.utcnow() if only_today else arrow.get(0)
+    since_timestamp = since.format('YYYY-MM-DD')
+    
+    num_edits = DBDiscussionSession.query(ReviewEdit).filter(
+        ReviewEdit.detector_uid == user.uid,
+        ReviewEdit.timestamp >= since_timestamp).count()
+    num_deletes = DBDiscussionSession.query(ReviewDelete).filter(
+        ReviewDelete.detector_uid == user.uid,
+        ReviewDelete.timestamp >= since_timestamp).count()
+    num_optimizations = DBDiscussionSession.query(ReviewOptimization).filter(
+        ReviewOptimization.detector_uid == user.uid,
+        ReviewOptimization.timestamp >= since_timestamp).count()
+    num_duplicates = DBDiscussionSession.query(ReviewDuplicate).filter(
+        ReviewDuplicate.detector_uid == user.uid,
+        ReviewOptimization.timestamp >= since_timestamp).count()
 
-    if only_today:
-        today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
-        db_edits = db_edits.filter(ReviewEdit.timestamp >= today)
-        db_deletes = db_deletes.filter(ReviewDelete.timestamp >= today)
-        db_optimizations = db_optimizations.filter(ReviewOptimization.timestamp >= today)
-        db_duplicates = DBDiscussionSession.query(ReviewDuplicate).filter(ReviewOptimization.timestamp >= today)
-
-    db_edits = db_edits.all()
-    db_deletes = db_deletes.all()
-    db_optimizations = db_optimizations.all()
-    db_duplicates = db_duplicates.all()
-
-    return len(db_edits) + len(db_deletes) + len(db_optimizations) + len(db_duplicates)
+    return num_edits + num_deletes + num_optimizations + num_duplicates
 
 
 def __get_count_of_statements(user, only_edits, limit_on_today=False):
@@ -631,7 +635,7 @@ def get_summary_of_today(db_user: User) -> dict:
         'discussion_stat_votes': stat_votes,
         'discussion_arg_clicks': arg_clicks,
         'discussion_stat_clicks': stat_clicks,
-        'statements_reported': get_reviews_of(db_user, True),
+        'statements_reported': number_of_reviews(db_user, True),
         'reputation_collected': reputation
     }
     return ret_dict

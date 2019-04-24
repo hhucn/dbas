@@ -51,15 +51,15 @@ class UserHandlerTests(TestCaseWithConfig):
 
     def test_get_reviews_of(self):
         engelbert = DBDiscussionSession.query(User).filter_by(nickname='Engelbert').first()
-        self.assertGreaterEqual(user.get_reviews_of(engelbert, True), 0)
-        self.assertGreaterEqual(user.get_reviews_of(engelbert, False), 0)
+        self.assertGreaterEqual(user.number_of_reviews(engelbert, True), 0)
+        self.assertGreaterEqual(user.number_of_reviews(engelbert, False), 0)
         rv = ReviewEdit(self.user_tobi.uid, 1, 1)
         yesterday = date.today() - timedelta(1)
         rv.timestamp = arrow.get(yesterday.strftime('%Y-%m-%d'))
         DBDiscussionSession.add(rv)
         transaction.commit()
-        self.assertGreaterEqual(user.get_reviews_of(self.user_tobi, True), 0)
-        self.assertGreaterEqual(user.get_reviews_of(self.user_tobi, False), 0)
+        self.assertGreaterEqual(user.number_of_reviews(self.user_tobi, True), 0)
+        self.assertGreaterEqual(user.number_of_reviews(self.user_tobi, False), 0)
 
     def def_get_statement_count_of(self):
         engelbert = DBDiscussionSession.query(User).filter_by(nickname='Engelbert').first()
