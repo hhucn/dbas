@@ -12,8 +12,8 @@ class UserManagementTest(TestCaseWithConfig):
         self.assertNotEqual(old_public_nickname, new_public_nickname)
 
     def test_is_user_admin(self):
-        self.assertTrue(user.is_admin(self.user_tobi))
-        self.assertFalse(user.is_admin(self.user_torben))
+        self.assertTrue(self.user_tobi.is_admin())
+        self.assertFalse(self.user_torben.is_admin())
 
     def test_is_user_author(self):
         self.assertTrue(self.user_tobi.is_admin() or self.user_tobi.is_author())

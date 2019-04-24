@@ -11,7 +11,7 @@ import transaction
 import uuid
 from arrow.arrow import Arrow
 from datetime import date, timedelta
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Any
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
@@ -181,17 +181,6 @@ def refresh_public_nickname(user: User) -> str:
     user.set_public_nickname(nick)
 
     return nick
-
-
-def is_admin(user: User) -> bool:
-    """
-    Check, if the given user has admin rights or is admin
-
-    :param user: The user that is supposed to be an admin
-    :return: True, if user is admin, False otherwise
-    """
-    LOG.debug("Check whether %s is an admin", user.nickname)
-    return user.group.name == 'admins'
 
 
 def _labels_for_historical_data(days: int, lang: str) -> List[str]:
@@ -444,7 +433,7 @@ def get_click_count_of(user: User, only_today: bool = False) -> Tuple[int, int]:
         return 0, 0
 
     clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user.uid)
-    clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
+    clicked_statements = user.clicked_statements
 
     if only_today:
         today = arrow.utcnow().format('YYYY-MM-DD')
@@ -454,9 +443,10 @@ def get_click_count_of(user: User, only_today: bool = False) -> Tuple[int, int]:
     return clicked_arguments.count(), clicked_statements.count()
 
 
-def get_textversions(db_user: User, lang: str, timestamp_after=None, timestamp_before=None):
+def get_textversions(db_user: User, lang: str, timestamp_after: Arrow = None, timestamp_before: Arrow = None) -> \
+        Dict[str, Any]:
     """
-    Returns all textversions, were the user was author
+    Returns all textversions, were the user is the author.
 
     :param db_user: User
     :param lang: ui_locales

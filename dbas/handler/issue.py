@@ -16,7 +16,6 @@ from typing import Optional, List, Collection, Dict
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
     ClickedStatement, StatementToIssue, ClickedArgument, Statement, TextVersion
-from dbas.handler import user
 from dbas.handler.arguments import get_all_statements_for_args
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import generate_short_url
@@ -386,7 +385,7 @@ def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty,
     :param translator:
     :return:
     """
-    if db_issue.author_uid != db_user.uid and not user.is_admin(db_user):
+    if db_issue.author_uid != db_user.uid and not db_user.is_admin():
         return {'error': translator.get(_.noRights)}
 
     if iproperty == 'enable':
