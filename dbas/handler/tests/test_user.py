@@ -167,23 +167,23 @@ class UserHandlerTests(TestCaseWithConfig):
         old_pw = 'iamatestuser2016'
         new_pw = 'iamatestuser2017'
 
-        msg, success = user.change_password_with_checks(pascal, old_pw, old_pw, old_pw, 'en')
+        msg, success = user.change_password(pascal, old_pw, old_pw, old_pw, 'en')
         self.assertFalse(success)
 
-        msg, success = user.change_password_with_checks(pascal, old_pw, old_pw, new_pw, 'en')
+        msg, success = user.change_password(pascal, old_pw, old_pw, new_pw, 'en')
         self.assertFalse(success)
 
-        msg, success = user.change_password_with_checks(pascal, old_pw, new_pw, old_pw, 'en')
+        msg, success = user.change_password(pascal, old_pw, new_pw, old_pw, 'en')
         self.assertFalse(success)
 
-        msg, success = user.change_password_with_checks(pascal, new_pw, new_pw, old_pw, 'en')
+        msg, success = user.change_password(pascal, new_pw, new_pw, old_pw, 'en')
         self.assertFalse(success)
 
-        msg, success = user.change_password_with_checks(pascal, new_pw, old_pw, old_pw, 'en')
+        msg, success = user.change_password(pascal, new_pw, old_pw, old_pw, 'en')
         self.assertFalse(success)
 
-        msg, success = user.change_password_with_checks(pascal, old_pw, new_pw, new_pw, 'en')
+        msg, success = user.change_password(pascal, old_pw, new_pw, new_pw, 'en')
         self.assertTrue(success)
 
-        msg, success = user.change_password_with_checks(pascal, new_pw, old_pw, old_pw, 'en')
+        msg, success = user.change_password(pascal, new_pw, old_pw, old_pw, 'en')
         self.assertTrue(success)
