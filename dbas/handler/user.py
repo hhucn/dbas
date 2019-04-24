@@ -6,7 +6,6 @@ Handler for user-accounts
 import arrow
 import logging
 import random
-import transaction
 import uuid
 from arrow.arrow import Arrow
 from datetime import date, timedelta
@@ -733,53 +732,48 @@ def change_password_with_checks(user: User, current_password: str, new_pw: str, 
     return message, success
 
 
-def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id=''):
+def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider: str = '',
+                      oauth_provider_id: str = '') -> Tuple[str, str, User]:
     """
-    Insert a new user row
+    Create a new user.
 
-    :param user: dict with every information for a user needed
-    :param ui_locales: Language.ui_locales
-    :param oauth_provider: String
-    :param oauth_provider_id: String
-    :return: String, String, User
+    :param user_info: A dictionary containing information about the desired user.
+    :param ui_locales: Language which shall be used for messaging.
+    :param oauth_provider: If applicable: Which oauth-provider is referring the user.
+    :param oauth_provider_id: If applicable: The ID of the oauth-provider.
+    :return: Returns a tuple containing a success message, a information message and the freshly created user.
     """
     success = ''
     info = ''
 
     _t = Translator(ui_locales)
-    # creating a new user with hashed password
-    LOG.debug("Adding user %s", user['nickname'])
-    hashed_password = password_handler.get_hashed_password(user['password'])
-    newuser = User(firstname=user['firstname'],
-                   surname=user['lastname'],
-                   email=user['email'],
-                   nickname=user['nickname'],
-                   password=hashed_password,
-                   gender=user['gender'],
-                   group_uid=user['db_group_uid'],
-                   oauth_provider=oauth_provider,
-                   oauth_provider_id=oauth_provider_id)
-    DBDiscussionSession.add(newuser)
-    transaction.commit()
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
-    settings = Settings(author_uid=db_user.uid,
+    # creating a new user_info with hashed password
+    LOG.debug("Adding user_info for %s", user_info['nickname'])
+    hashed_password = password_handler.get_hashed_password(user_info['password'])
+    new_user = User(firstname=user_info['firstname'],
+                    surname=user_info['lastname'],
+                    email=user_info['email'],
+                    nickname=user_info['nickname'],
+                    password=hashed_password,
+                    gender=user_info['gender'],
+                    group_uid=user_info['db_group_uid'],
+                    oauth_provider=oauth_provider,
+                    oauth_provider_id=oauth_provider_id)
+    DBDiscussionSession.add(new_user)
+    settings = Settings(author_uid=new_user.uid,
                         send_mails=False,
                         send_notifications=True,
                         should_show_public_nickname=True)
     DBDiscussionSession.add(settings)
-    transaction.commit()
 
-    # sanity check, whether the user exists
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
-    if db_user:
-        LOG.debug("New data was added with uid %s", db_user.uid)
-        success = _t.get(Keywords.accountWasAdded).format(user['nickname'])
-
+    if new_user:
+        LOG.debug("New data was added with uid %s", new_user.uid)
+        success = _t.get(Keywords.accountWasAdded).format(user_info['nickname'])
     else:
         LOG.debug("New data was not added")
         info = _t.get(Keywords.accoutErrorTryLateOrContant)
 
-    return success, info, db_user
+    return success, info, new_user
 
 
 def set_new_user(mailer, user_data, password, _tn):
