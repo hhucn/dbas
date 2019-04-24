@@ -9,6 +9,7 @@ import random
 import uuid
 from arrow.arrow import Arrow
 from datetime import date, timedelta
+from pyramid_mailer import Mailer
 from typing import Tuple, List, Dict, Union, Collection, Any
 
 import dbas.handler.password as password_handler
@@ -775,50 +776,41 @@ def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider
     return success, info, new_user
 
 
-def set_new_user(mailer, user_data, password, _tn):
+def set_new_user(mailer: Mailer, user_data: Dict[str, Any], password: str, _tn: Translator) -> Dict[str, Any]:
     """
+    Public interface for creating a new user.
 
-    :param mailer:
-    :param user_data: dict with firstname, lastname, nickname, email, gender
-    :param password:
-    :param _tn:
-    :return:
+    :param mailer: The mailer used to send Emails to the new user.
+    :param user_data: Dictionary containing user information.
+    :param password: The desired password to be set. (un-hashed)
+    :param _tn: The translator object to be used for messaging.
+    :return: A dictionary containing whether the operation was a success, an optional error message and the newly
+        created user if the transaction was successful.
     """
-    # getting the authors group
-    firstname = user_data.get('firstname')
-    lastname = user_data.get('lastname')
-    nickname = user_data.get('nickname')
-    email = user_data.get('email')
-    gender = user_data.get('gender')
+    # copy the dict to not change the mutable structure
+    temporary_user = dict(user_data)
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
 
     # does the group exists?
     if not db_group:
-        LOG.debug("Internal error occured")
+        LOG.debug("Internal error occurred")
         return {'success': False, 'error': _tn.get(Keywords.errorTryLateOrContant), 'user': None}
 
-    # sanity check
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if db_user:
+    if DBDiscussionSession.query(User).filter_by(nickname=temporary_user['nickname']).exists():
         LOG.debug("User already exists")
         return {'success': False, 'error': _tn.get(Keywords.nickIsTaken), 'user': None}
 
-    user = {
-        'firstname': firstname,
-        'lastname': lastname,
-        'email': email,
-        'nickname': nickname,
-        'password': password,
-        'gender': gender,
-        'db_group_uid': db_group.uid
-    }
-    success, info, db_new_user = __create_new_user(user, _tn.get_lang())
+    temporary_user['password'] = password
+    temporary_user['db_group_uid'] = db_group.uid
+
+    success, info, db_new_user = __create_new_user(temporary_user, _tn.get_lang())
 
     if db_new_user:
         # sending an email and message
         subject = _tn.get(Keywords.accountRegistration)
-        body = _tn.get(Keywords.accountWasRegistered).format(firstname, lastname, email)
-        send_mail(mailer, subject, body, email, _tn.get_lang())
+        body = _tn.get(Keywords.accountWasRegistered).format(temporary_user['firstname'], temporary_user['lastname'],
+                                                             temporary_user['email'])
+        send_mail(mailer, subject, body, temporary_user['email'], _tn.get_lang())
         send_welcome_notification(db_new_user.uid, _tn)
 
         LOG.debug("Set new user in db")
