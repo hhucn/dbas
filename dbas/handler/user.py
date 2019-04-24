@@ -10,7 +10,7 @@ import transaction
 import uuid
 from arrow.arrow import Arrow
 from datetime import date, timedelta
-from typing import Tuple, List, Dict, Union, Collection
+from typing import Tuple, List, Dict, Union, Collection, Any
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
@@ -484,7 +484,7 @@ def get_textversions(user: User, lang: str, timestamp_after: Arrow = None, times
     }
 
 
-def get_marked_arguments(user: User, lang: str) -> List[Dict]:
+def get_marked_arguments(user: User, lang: str) -> List[Dict[str, Any]]:
     """
     Get all marked arguments of the user.
 
@@ -496,7 +496,7 @@ def get_marked_arguments(user: User, lang: str) -> List[Dict]:
     return _get_marked_elements(marked_arguments, lang)
 
 
-def get_marked_statements(user: User, lang: str) -> List[Dict]:
+def get_marked_statements(user: User, lang: str) -> List[Dict[str, Any]]:
     """
     Get all marked statements of the user.
 
@@ -508,18 +508,19 @@ def get_marked_statements(user: User, lang: str) -> List[Dict]:
     return _get_marked_elements(marked_statements, lang)
 
 
-def _get_marked_elements(marked_object: Collection[Union[MarkedArgument, MarkedStatement]], lang: str) -> List[Dict]:
+def _get_marked_elements(marked_objects: Collection[Union[MarkedArgument, MarkedStatement]], lang: str) -> \
+        List[Dict[str, Any]]:
     """
     Get all marked arguments/statements of the user.
 
     :param user: The user whose marked arguments / statements you want to query.
-    :param marked_object: The MarkedArgument or MarkedStatement collection on which the query is performed.
+    :param marked_objects: The MarkedArgument or MarkedStatement collection on which the query is performed.
     :param lang: The language in which the answer shall be returned.
     :return: A list of dictionaries representing arguments / statements of user.
     """
     return_array = []
 
-    for mark in marked_object:
+    for mark in marked_objects:
         vote_dict = dict()
         vote_dict['uid'] = str(mark.uid)
         vote_dict['timestamp'] = sql_timestamp_pretty_print(mark.timestamp, lang)
@@ -535,27 +536,49 @@ def _get_marked_elements(marked_object: Collection[Union[MarkedArgument, MarkedS
     return return_array
 
 
-def get_clicked_elements_of(db_user: User, is_argument: bool, lang: str) -> list:
+def get_clicked_statements(user: User, lang: str) -> List[Dict[str, Any]]:
+    """
+    Return all statements that the user clicked.
+
+    :param user: The user for which the clicked statements shall be acquired.
+    :param lang: Language that the answer shall be delivered in.
+    :return: A list of dictionaries representing the clicked statements.
+    """
+    clicked_statements = DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user.uid).all()
+    return _get_clicked_elements(clicked_statements, lang)
+
+
+def get_clicked_argument(user: User, lang: str) -> List[Dict[str, Any]]:
+    """
+    Return all arguments that the user clicked.
+
+    :param user: The user for which the clicked arguments shall be acquired.
+    :param lang: Language that the answer shall be delivered in.
+    :return: A list of dictionaries representing the clicked arguments.
+    """
+    clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user.uid).all()
+    return _get_clicked_elements(clicked_arguments, lang)
+
+
+def _get_clicked_elements(clicked_objects: Collection[Union[ClickedArgument, ClickedStatement]],
+                          lang: str) -> List[Dict[str, Any]]:
     """
     Returns array with all clicked elements by the user. Each element is a dict with information like the uid,
-    timestamp, up_Vote, validity, the clicked uid and content of the clicked element.
+    timestamp, up_vote, validity, the clicked uid and content of the clicked element.
 
-    :param db_user: User
-    :param is_argument: Boolean
-    :param lang: ui_locales
-    :return: [{},...]
+    :param clicked_objects: The objects that shall be transformed.
+    :param lang: Language that the answer shall be delivered in.
+    :return: A list of dictionaries representing the filtered elements.
     """
     return_array = []
-    db_type = ClickedArgument if is_argument else ClickedStatement
-    db_clicks = DBDiscussionSession.query(db_type).filter_by(author_uid=db_user.uid).all()
 
-    for click in db_clicks:
+    for click in clicked_objects:
         click_dict = dict()
         click_dict['uid'] = click.uid
         click_dict['timestamp'] = sql_timestamp_pretty_print(click.timestamp, lang)
         click_dict['is_up_vote'] = click.is_up_vote
         click_dict['is_valid'] = click.is_valid
-        if is_argument:
+        if type(click) == ClickedArgument:
             click_dict['argument_uid'] = click.argument_uid
             click_dict['content'] = get_text_for_argument_uid(click.argument_uid, lang)
         else:
