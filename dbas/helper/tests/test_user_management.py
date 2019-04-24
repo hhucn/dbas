@@ -22,15 +22,18 @@ class UserManagementTest(TestCaseWithConfig):
     def change_password(self):
         _t = Translator('en')
 
-        msg1, success1 = user.change_password(self.user_tobi, None, 'tobiass', 'tobias', 'en')  # not old pw
-        msg2, success2 = user.change_password(self.user_tobi, 'tobias', None, 'tobias', 'en')  # not new pw
-        msg3, success3 = user.change_password(self.user_tobi, 'tobias', 'tobiass', None, 'en')  # not confirm_pw
-        msg4, success4 = user.change_password(self.user_tobi, 'tobias', 'tobias1', 'tobias2',
-                                              'en')  # not new == confirm
-        msg5, success5 = user.change_password(self.user_tobi, 'tobias', 'tobias', 'tobias', 'en')  # old == new
-        msg6, success6 = user.change_password(self.user_tobi, 'tobiaS', 'tobiass', 'tobias', 'en')  # old wrong
-        msg7, success7 = user.change_password(self.user_tobi, 'tobias', '123456', '123456', 'en')
-        msg8, success8 = user.change_password(self.user_tobi, '123456', 'tobias', 'tobias', 'en')
+        msg1, success1 = user.change_password_with_checks(self.user_tobi, None, 'tobiass', 'tobias', 'en')  # not old pw
+        msg2, success2 = user.change_password_with_checks(self.user_tobi, 'tobias', None, 'tobias', 'en')  # not new pw
+        msg3, success3 = user.change_password_with_checks(self.user_tobi, 'tobias', 'tobiass', None,
+                                                          'en')  # not confirm_pw
+        msg4, success4 = user.change_password_with_checks(self.user_tobi, 'tobias', 'tobias1', 'tobias2',
+                                                          'en')  # not new == confirm
+        msg5, success5 = user.change_password_with_checks(self.user_tobi, 'tobias', 'tobias', 'tobias',
+                                                          'en')  # old == new
+        msg6, success6 = user.change_password_with_checks(self.user_tobi, 'tobiaS', 'tobiass', 'tobias',
+                                                          'en')  # old wrong
+        msg7, success7 = user.change_password_with_checks(self.user_tobi, 'tobias', '123456', '123456', 'en')
+        msg8, success8 = user.change_password_with_checks(self.user_tobi, '123456', 'tobias', 'tobias', 'en')
 
         self.assertFalse(success1)
         self.assertFalse(success2)

@@ -650,54 +650,56 @@ def _get_special_infos(lang: str) -> Dict[str, Any]:
     }
 
 
-def get_summary_of_today(db_user: User) -> dict:
+def get_summary_of_today(user: User) -> Dict[str, Any]:
     """
-    Returns summary of today's actions
+    Returns summary of today's actions.
 
-    :param db_user: Contains parameters for the user concerned
-    :return: dict()
+    :param user: The user concerned.
+    :return: A dictionary containing the users actions today.
     """
-    if not db_user:
+    if not user:
         return {}
 
-    arg_votes, stat_votes = get_mark_count_of(db_user, True)
-    arg_clicks, stat_clicks = get_click_count_of(db_user, True)
-    reputation, tmp = get_reputation_of(db_user, True)
-    timestamp = arrow.utcnow().to('Europe/Berlin')
+    arg_votes, stat_votes = get_mark_count_of(user, True)
+    arg_clicks, stat_clicks = get_click_count_of(user, True)
+    reputation, _ = get_reputation_of(user, True)
+    timestamp = arrow.utcnow()
     timestamp.format('DD.MM.')
 
     ret_dict = {
-        'firstname': db_user.firstname,
-        'statements_posted': get_statement_count_of(db_user, True),
-        'edits_done': get_edit_count_of(db_user, True),
+        'firstname': user.firstname,
+        'statements_posted': get_statement_count_of(user, True),
+        'edits_done': get_edit_count_of(user, True),
         'discussion_arg_votes': arg_votes,
         'discussion_stat_votes': stat_votes,
         'discussion_arg_clicks': arg_clicks,
         'discussion_stat_clicks': stat_clicks,
-        'statements_reported': number_of_reviews(db_user, True),
+        'statements_reported': number_of_reviews(user, True),
         'reputation_collected': reputation
     }
     return ret_dict
 
 
-def change_password(user, old_pw, new_pw, confirm_pw, lang):
+def change_password_with_checks(user: User, current_password: str, new_pw: str, confirm_pw: str, lang: str) -> \
+        Tuple[str, bool]:
     """
-    Change password of given user
+    Change password of given user only if several checks pass.
 
-    :param user: current database user
-    :param old_pw: old received password
-    :param new_pw: new received password
-    :param confirm_pw: confirmation of the password
-    :param lang: current language
-    :return: an message and boolean for error and success
+    :param user: User whose password is supposed to be changed.
+    :param current_password: The current password according to the user.
+    :param new_pw: The desired new password.
+    :param confirm_pw: Repeat of current password for confirmation.
+    :param lang: Language for error and success messages.
+    :return: A message-string with the result of the process for the user and a boolean which indicates whether the
+        changing of the password was successful.
     """
-    LOG.debug("Entering change_password")
+    LOG.debug("Entering change_password_with_checks")
     _t = Translator(lang)
 
     success = False
 
     # is the old password given?
-    if not old_pw:
+    if not current_password:
         LOG.debug("Old pwd is empty")
         message = _t.get(Keywords.oldPwdEmpty)  # 'The old password field is empty.'
     # is the new password given?
@@ -713,12 +715,12 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
         LOG.debug("New pwds not equal")
         message = _t.get(Keywords.newPwdNotEqual)  # 'The new passwords are not equal'
     # is new old password equals the new one?
-    elif old_pw == new_pw:
+    elif current_password == new_pw:
         LOG.debug("Pwds are the same")
         message = _t.get(Keywords.pwdsSame)  # 'The new and old password are the same'
     else:
         # is the old password valid?
-        if not user.validate_password(old_pw):
+        if not user.validate_password(current_password):
             LOG.debug("Old password is wrong")
             message = _t.get(Keywords.oldPwdWrong)  # 'Your old password is wrong.'
         else:

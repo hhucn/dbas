@@ -1,12 +1,11 @@
 import logging
-
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.handler.language import get_language_from_cookie
-from dbas.handler.user import get_information_of, change_password
+from dbas.handler.user import get_information_of, change_password_with_checks
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import is_integer
@@ -81,7 +80,7 @@ def settings(request):
         new_pw = escape_string(request.params['password'])
         confirm_pw = escape_string(request.params['passwordconfirm'])
 
-        message, success = change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
+        message, success = change_password_with_checks(db_user, old_pw, new_pw, confirm_pw, ui_locales)
         error = not success
 
     settings_dict = DictionaryHelper(ui_locales).prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error,
