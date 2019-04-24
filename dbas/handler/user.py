@@ -410,26 +410,26 @@ def get_edit_count_of(db_user: User, only_today: bool = False) -> int:
     return edit_count
 
 
-def get_mark_count_of(db_user: User, limit_on_today: bool = False):
+def get_mark_count_of(user: User, only_today: bool = False) -> Tuple[int, int]:
     """
-    Returns the count of marked ones of the user
+    Returns the count of marked arguments and statements of the specific user.
 
-    :param db_user: User
-    :param limit_on_today: Boolean
-    :return: Int, Int
+    :param user: The user whose arguments are counted.
+    :param only_today: True if only the marked arguments of the current day shall be counted.
+    :return: A tuple containing the count of marked arguments and marked statements.
     """
-    if not db_user:
+    if not user:
         return 0, 0
 
-    db_arg = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.author_uid == db_user.uid)
-    db_stat = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.author_uid == db_user.uid)
+    marked_arguments = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.author_uid == user.uid)
+    marked_statements = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.author_uid == user.uid)
 
-    if limit_on_today:
-        today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
-        db_arg = db_arg.filter(MarkedArgument.timestamp >= today)
-        db_stat = db_stat.filter(MarkedStatement.timestamp >= today)
+    if only_today:
+        today = arrow.utcnow().format('YYYY-MM-DD')
+        marked_arguments = marked_arguments.filter(MarkedArgument.timestamp >= today)
+        marked_statements = marked_statements.filter(MarkedStatement.timestamp >= today)
 
-    return db_arg.count(), db_stat.count()
+    return marked_arguments.count(), marked_statements.count()
 
 
 def get_click_count_of(db_user: User, limit_on_today: bool = False) -> Tuple[int, int]:
