@@ -758,6 +758,7 @@ def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider
                     oauth_provider=oauth_provider,
                     oauth_provider_id=oauth_provider_id)
     DBDiscussionSession.add(new_user)
+    DBDiscussionSession.flush()
     settings = Settings(author_uid=new_user.uid,
                         send_mails=False,
                         send_notifications=True,
