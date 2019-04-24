@@ -11,7 +11,7 @@ import transaction
 import uuid
 from arrow.arrow import Arrow
 from datetime import date, timedelta
-from typing import Tuple, List, Dict, Any
+from typing import Tuple, List, Dict
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
@@ -433,7 +433,7 @@ def get_click_count_of(user: User, only_today: bool = False) -> Tuple[int, int]:
         return 0, 0
 
     clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user.uid)
-    clicked_statements = user.clicked_statements
+    clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
 
     if only_today:
         today = arrow.utcnow().format('YYYY-MM-DD')
@@ -443,45 +443,45 @@ def get_click_count_of(user: User, only_today: bool = False) -> Tuple[int, int]:
     return clicked_arguments.count(), clicked_statements.count()
 
 
-def get_textversions(db_user: User, lang: str, timestamp_after: Arrow = None, timestamp_before: Arrow = None) -> \
-        Dict[str, Any]:
+def get_textversions(user: User, lang: str, timestamp_after: Arrow = None, timestamp_before: Arrow = None) -> \
+        Dict[str, List[Dict[str, str]]]:
     """
     Returns all textversions, were the user is the author.
 
-    :param db_user: User
-    :param lang: ui_locales
-    :param timestamp_after: Arrow or None
-    :param timestamp_before: Arrow or None
-    :return: [{},...], [{},...]
+    :param user: The user who is author of desired textversion objects.
+    :param lang: The language in which the results shall be delivered.
+    :param timestamp_after: Set a date if results should only include objects created after the date.
+    :param timestamp_before: Set a date if results should only include objects created before the date.
+    :return: Return a dict with all statements and edits that use a textversion where the user is author.
     """
-    statement_array = []
-    edit_array = []
+    statements = []
+    edits = []
 
     if not timestamp_after:
         timestamp_after = arrow.get('1970-01-01').format('YYYY-MM-DD')
     if not timestamp_before:
         timestamp_before = arrow.utcnow().replace(days=+1).format('YYYY-MM-DD')
 
-    db_edits = DBDiscussionSession.query(TextVersion).filter(TextVersion.author_uid == db_user.uid,
-                                                             TextVersion.timestamp >= timestamp_after,
-                                                             TextVersion.timestamp < timestamp_before).all()
+    textversions = DBDiscussionSession.query(TextVersion).filter(TextVersion.author_uid == user.uid,
+                                                                 TextVersion.timestamp >= timestamp_after,
+                                                                 TextVersion.timestamp < timestamp_before).all()
 
-    for edit in db_edits:
+    for textversion in textversions:
         db_root_version = DBDiscussionSession.query(TextVersion).filter_by(
-            statement_uid=edit.statement_uid).first()
+            statement_uid=textversion.statement_uid).first()
         edit_dict = dict()
-        edit_dict['uid'] = str(edit.uid)
-        edit_dict['statement_uid'] = str(edit.statement_uid)
-        edit_dict['content'] = str(edit.content)
-        edit_dict['timestamp'] = sql_timestamp_pretty_print(edit.timestamp, lang)
-        if db_root_version.uid == edit.uid:
-            statement_array.append(edit_dict)
+        edit_dict['uid'] = str(textversion.uid)
+        edit_dict['statement_uid'] = str(textversion.statement_uid)
+        edit_dict['content'] = str(textversion.content)
+        edit_dict['timestamp'] = sql_timestamp_pretty_print(textversion.timestamp, lang)
+        if db_root_version.uid == textversion.uid:
+            statements.append(edit_dict)
         else:
-            edit_array.append(edit_dict)
+            edits.append(edit_dict)
 
     return {
-        'statements': statement_array,
-        'edits': edit_array
+        'statements': statements,
+        'edits': edits
     }
 
 

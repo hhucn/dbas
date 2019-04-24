@@ -3,19 +3,18 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import arrow
+import bcrypt
 import logging
 import warnings
 from abc import abstractmethod
 from datetime import datetime
-from typing import List, Set, Optional, Dict
-
-import arrow
-import bcrypt
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
+from typing import List, Set, Optional, Dict
 
 from dbas.database import DBDiscussionSession, DiscussionBase
 from dbas.strings.keywords import Keywords as _
@@ -229,7 +228,7 @@ class User(DiscussionBase):
     authored_issues: List[Issue] = relationship('Issue', back_populates='author')
     settings: 'Settings' = relationship('Settings', back_populates='user', uselist=False)
 
-    clicked_statements = relationship('ClickedStatement', back_populates='user')
+    clicked_statements: List['ClickedStatement'] = relationship('ClickedStatement', back_populates='user')
 
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, oauth_provider='',
                  oauth_provider_id=''):
