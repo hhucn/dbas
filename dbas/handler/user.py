@@ -876,8 +876,8 @@ def set_new_oauth_user(user_data: Dict[str, Any], oauth_id: str, provider: str, 
     }
 
 
-def get_users_with_same_opinion(uids: list, app_url: str, path: str, db_user: User, is_argument: bool,
-                                is_attitude: bool, is_reaction: bool, is_position: bool, db_lang: Language) -> dict:
+def get_users_with_same_opinion(uids: List[int], app_url: str, path: str, db_user: User, is_argument: bool,
+                                is_attitude: bool, is_reaction: bool, is_position: bool, db_lang: Language) -> Dict:
     """
     Based on current discussion step information about other users will be given
 
@@ -885,12 +885,11 @@ def get_users_with_same_opinion(uids: list, app_url: str, path: str, db_user: Us
     :param app_url: url of the application
     :param path: current path of the user
     :param db_user: User
-    :param is_argument: boolean, if the request is for an argument
-    :param is_attitude: boolean, if the request is during the attitude step
-    :param is_reaction: boolean, if the request is during the attitude step
-    :param is_position: boolean, if the request is for a position
+    :param is_argument: boolean, whether the request is for an argument
+    :param is_attitude: boolean, whether the request is during the attitude step
+    :param is_reaction: boolean, whether the request is during the attitude step
+    :param is_position: boolean, whether the request is for a position
     :param db_lang: Language
-    :rtype: dict
     :return: prepared collection with information about other users with the same opinion or an error
     """
     prepared_dict = dict()
@@ -910,12 +909,12 @@ def get_users_with_same_opinion(uids: list, app_url: str, path: str, db_user: Us
     return prepared_dict
 
 
-def delete(db_user: User):
+def delete(db_user: User) -> None:
     """
-    Delete data connected with the user
+    Delete the user and all data connected to them.
 
-    :param db_user:
-    :return:
+    :param db_user: The user which gets deleted.
+    :return: Returns nothing, this function is one big side-effect.
     """
     anonym_uid = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first().uid
 
@@ -977,8 +976,9 @@ def delete(db_user: User):
 
 def get_list_of_admins() -> List[User]:
     """
-    Returns a list of users which a member of the admin group. If this list is empty, D-BAS is misconfigured.
-    :return:
+    Returns a list of users which are members of the admin group. If this list is empty, D-BAS is configured wrongly.
+
+    :return: A List of Users. Every user belongs to the 'admin' group.
     """
     db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
     db_admins = DBDiscussionSession.query(User).filter_by(group_uid=db_admin_group.uid).all()
