@@ -137,7 +137,7 @@ class UserHandlerTests(TestCaseWithConfig):
         self.assertEqual(0, len(marked_arguments))
 
     def test_get_clicked_elements_of(self):
-        prep_array = user.get_clicked_argument(self.user_tobi, 'en')
+        prep_array = user.get_clicked_arguments(self.user_tobi, 'en')
         self.assertLessEqual(0, len(prep_array))
         prep_array = user.get_clicked_statements(self.user_tobi, 'en')
         self.assertLessEqual(0, len(prep_array))

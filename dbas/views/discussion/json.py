@@ -107,7 +107,7 @@ def get_all_argument_clicks(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_clicked_argument(db_user, ui_locales)
+    return user.get_clicked_arguments(db_user, ui_locales)
 
 
 @view_config(route_name='get_all_statement_clicks', renderer='json')

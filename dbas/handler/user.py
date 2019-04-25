@@ -10,7 +10,7 @@ import uuid
 from arrow.arrow import Arrow
 from datetime import date, timedelta
 from pyramid_mailer import Mailer
-from typing import Tuple, List, Dict, Union, Collection, Any
+from typing import Tuple, List, Dict, Union, Any
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
@@ -20,7 +20,7 @@ from dbas.database.discussion_model import User, Group, ClickedStatement, Clicke
     Premise, History, Message, ReviewEditValue, ReviewMerge, ReviewSplit, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerEdit, LastReviewerOptimization, \
     LastReviewerSplit, LastReviewerMerge, ReputationHistory, ReviewCanceled, RevokedContent, RevokedContentHistory, \
-    Issue, Argument, Statement, Language
+    Issue, Argument, Language
 from dbas.handler.email import send_mail
 from dbas.handler.notification import send_welcome_notification
 from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
@@ -493,7 +493,7 @@ def get_marked_arguments(user: User, lang: str) -> List[Dict[str, Any]]:
     :return: A list of dictionaries representing arguments
     """
     marked_arguments = DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=user.uid).all()
-    return _get_marked_elements(marked_arguments, lang)
+    return [_marked_element_to_dict(marked_argument, lang) for marked_argument in marked_arguments]
 
 
 def get_marked_statements(user: User, lang: str) -> List[Dict[str, Any]]:
@@ -505,34 +505,22 @@ def get_marked_statements(user: User, lang: str) -> List[Dict[str, Any]]:
     :return: A list of dictionaries representing arguments
     """
     marked_statements = DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=user.uid).all()
-    return _get_marked_elements(marked_statements, lang)
+    return [_marked_element_to_dict(marked_statement, lang) for marked_statement in marked_statements]
 
 
-def _get_marked_elements(marked_objects: Collection[Union[MarkedArgument, MarkedStatement]], lang: str) -> \
-        List[Dict[str, Any]]:
+def _marked_element_to_dict(marked_object: Union[MarkedArgument, MarkedStatement], lang: str) -> Dict[str, Any]:
     """
-    Get all marked arguments/statements of the user.
+    Transform a given MarkedArgument or MarkedStatement object into a dictionary representation.
 
-    :param marked_objects: The MarkedArgument or MarkedStatement collection on which the query is performed.
+    :param marked_object: The MarkedArgument or MarkedStatement which shall be transformed.
     :param lang: The language in which the answer shall be returned.
-    :return: A list of dictionaries representing arguments / statements of user.
+    :return: A dictionary representing a MarkedArgument / MarkedStatement.
     """
-    return_array = []
-
-    for mark in marked_objects:
-        vote_dict = dict()
-        vote_dict['uid'] = str(mark.uid)
-        vote_dict['timestamp'] = sql_timestamp_pretty_print(mark.timestamp, lang)
-        if type(mark) == MarkedArgument:
-            vote_dict['argument_uid'] = str(mark.argument_uid)
-            vote_dict['content'] = get_text_for_argument_uid(mark.argument_uid, lang)
-        else:
-            vote_dict['statement_uid'] = str(mark.statement_uid)
-            statement = DBDiscussionSession.query(Statement).get(mark.statement_uid)
-            vote_dict['content'] = statement.get_text()
-        return_array.append(vote_dict)
-
-    return return_array
+    dict_representation = marked_object.to_dict()
+    if type(marked_object) is MarkedArgument:
+        return dict_representation.update({'content': get_text_for_argument_uid(marked_object.argument_uid, lang)})
+    else:
+        return dict_representation.update({'content': marked_object.statement.get_text()})
 
 
 def get_clicked_statements(user: User, lang: str) -> List[Dict[str, Any]]:
@@ -543,11 +531,10 @@ def get_clicked_statements(user: User, lang: str) -> List[Dict[str, Any]]:
     :param lang: Language that the answer shall be delivered in.
     :return: A list of dictionaries representing the clicked statements.
     """
-    clicked_statements = DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user.uid).all()
-    return _get_clicked_elements(clicked_statements, lang)
+    return [clicked_statement.to_dict(lang) for clicked_statement in user.clicked_statements]
 
 
-def get_clicked_argument(user: User, lang: str) -> List[Dict[str, Any]]:
+def get_clicked_arguments(user: User, lang: str) -> List[Dict[str, Any]]:
     """
     Return all arguments that the user clicked.
 
@@ -555,38 +542,24 @@ def get_clicked_argument(user: User, lang: str) -> List[Dict[str, Any]]:
     :param lang: Language that the answer shall be delivered in.
     :return: A list of dictionaries representing the clicked arguments.
     """
-    clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user.uid).all()
-    return _get_clicked_elements(clicked_arguments, lang)
+    return [_clicked_argument_to_dict(clicked_argument, lang) for clicked_argument in user.clicked_arguments]
 
 
-def _get_clicked_elements(clicked_objects: Collection[Union[ClickedArgument, ClickedStatement]],
-                          lang: str) -> List[Dict[str, Any]]:
+def _clicked_argument_to_dict(clicked_argument: ClickedArgument, lang: str) -> Dict[str, Any]:
     """
-    Returns array with all clicked elements by the user. Each element is a dict with information like the uid,
-    timestamp, up_vote, validity, the clicked uid and content of the clicked element.
+    Transforms a single ClickedArgument object into a dictionary representation of itself.
 
-    :param clicked_objects: The objects that shall be transformed.
+    :param clicked_argument: The object that shall be transformed.
     :param lang: Language that the answer shall be delivered in.
-    :return: A list of dictionaries representing the filtered elements.
+    :return: A dictionary representing `clicked_argument`.
     """
-    return_array = []
 
-    for click in clicked_objects:
-        click_dict = dict()
-        click_dict['uid'] = click.uid
-        click_dict['timestamp'] = sql_timestamp_pretty_print(click.timestamp, lang)
-        click_dict['is_up_vote'] = click.is_up_vote
-        click_dict['is_valid'] = click.is_valid
-        if type(click) == ClickedArgument:
-            click_dict['argument_uid'] = click.argument_uid
-            click_dict['content'] = get_text_for_argument_uid(click.argument_uid, lang)
-        else:
-            click_dict['statement_uid'] = click.statement_uid
-            statement = DBDiscussionSession.query(Statement).get(click.statement_uid)
-            click_dict['content'] = statement.get_text()
-        return_array.append(click_dict)
-
-    return return_array
+    return {'uid': clicked_argument.uid,
+            'timestamp': sql_timestamp_pretty_print(clicked_argument.timestamp, lang),
+            'is_up_vote': clicked_argument.is_up_vote,
+            'is_valid': clicked_argument.is_valid,
+            'argument_uid': clicked_argument.argument_uid,
+            'content': get_text_for_argument_uid(clicked_argument.argument_uid, lang)}
 
 
 def get_information_of(user: User, lang: str) -> Dict[str, Any]:
