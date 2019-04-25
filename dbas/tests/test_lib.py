@@ -405,23 +405,20 @@ class TestVisibilityOfDisabledEntities(TestCaseWithConfig):
     def test_private_issue_is_not_visible_to_not_participant(self):
         self.issue_cat_or_dog.set_disabled(True)
 
-        issue_uids = [issue.uid for issue in self.user_christian.accessible_issues]
-        self.assertNotIn(self.issue_cat_or_dog.uid, issue_uids,
+        self.assertNotIn(self.issue_cat_or_dog, self.user_christian.accessible_issues,
                          f"Issue {self.issue_cat_or_dog.uid} is private and should not be visible to a user who is not participating in it!")
 
     def test_private_issue_is_visible_to_participant(self):
         self.issue_cat_or_dog.set_disabled(True)
         self.user_christian.participates_in.append(self.issue_cat_or_dog)
 
-        issue_uids = [issue.uid for issue in self.user_christian.accessible_issues]
-        self.assertIn(self.issue_cat_or_dog.uid, issue_uids,
+        self.assertIn(self.issue_cat_or_dog, self.user_christian.accessible_issues,
                       f"Issue {self.issue_cat_or_dog.uid} is private but the user is a participant and should see the issue!")
 
     def test_private_issue_is_not_visible_to_anonymous(self):
         self.issue_cat_or_dog.set_disabled(True)
 
-        issue_uids = [issue.uid for issue in self.user_anonymous.accessible_issues]
-        self.assertNotIn(self.issue_cat_or_dog.uid, issue_uids,
+        self.assertNotIn(self.issue_cat_or_dog, self.user_anonymous.accessible_issues,
                          f"Issue {self.issue_cat_or_dog.uid} is private and should not be visible to the anonymous user!")
 
     def test_is_argument_disabled_due_to_disabled_statements(self):

@@ -107,6 +107,9 @@ class Issue(DiscussionBase):
         self.date = get_now()
         self.is_featured = is_featured
 
+    def __repr__(self):
+        return f"<Issue {self.uid}: {self.slug}>"
+
     @hybrid_property
     def lang(self):
         """
