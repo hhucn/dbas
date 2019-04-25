@@ -324,7 +324,7 @@ class User(DiscussionBase):
         }
 
     def is_anonymous(self):
-        return self.uid == 0
+        return self.uid == 1
 
     def is_admin(self):
         """
@@ -371,6 +371,17 @@ class User(DiscussionBase):
         :return: True, if the user is member of the authors group
         """
         return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
+
+    @hybrid_property
+    def accessible_issues(self) -> List['Issue']:
+        db_issues = set(DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                                Issue.is_private == False).all())
+
+        return list(db_issues.union(self.participates_in)) if not self.is_anonymous() else db_issues
+
+    @accessible_issues.setter
+    def accessible_issues(self, issue: Issue) -> None:
+        self.participates_in.append(issue)
 
     def __json__(self, _request=None):
         return {

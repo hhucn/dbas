@@ -7,7 +7,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, Issue, Premise
 from dbas.helper.url import UrlManager
 from dbas.lib import get_enabled_issues_as_query, get_enabled_statement_as_query, get_enabled_arguments_as_query, \
-    get_enabled_premises_as_query, get_visible_issues_for_user
+    get_enabled_premises_as_query
 from dbas.tests.utils import TestCaseWithConfig
 
 
@@ -399,13 +399,13 @@ class TestVisibilityOfDisabledEntities(TestCaseWithConfig):
         self.assertEqual(res_len, query_len)
 
     def test_get_visible_issues_for_user_as_query(self):
-        issue_uids = [issue.uid for issue in get_visible_issues_for_user(self.user_christian)]
+        issue_uids = [issue.uid for issue in self.user_christian.accessible_issues]
         self.assertSetEqual(set(issue_uids), {2, 3, 4, 5, 7, 8})
 
     def test_private_issue_is_not_visible_to_not_participant(self):
         self.issue_cat_or_dog.set_disabled(True)
 
-        issue_uids = [issue.uid for issue in get_visible_issues_for_user(self.user_christian)]
+        issue_uids = [issue.uid for issue in self.user_christian.accessible_issues]
         self.assertNotIn(self.issue_cat_or_dog.uid, issue_uids,
                          f"Issue {self.issue_cat_or_dog.uid} is private and should not be visible to a user who is not participating in it!")
 
@@ -413,14 +413,14 @@ class TestVisibilityOfDisabledEntities(TestCaseWithConfig):
         self.issue_cat_or_dog.set_disabled(True)
         self.user_christian.participates_in.append(self.issue_cat_or_dog)
 
-        issue_uids = [issue.uid for issue in get_visible_issues_for_user(self.user_christian)]
+        issue_uids = [issue.uid for issue in self.user_christian.accessible_issues]
         self.assertIn(self.issue_cat_or_dog.uid, issue_uids,
                       f"Issue {self.issue_cat_or_dog.uid} is private but the user is a participant and should see the issue!")
 
     def test_private_issue_is_not_visible_to_anonymous(self):
         self.issue_cat_or_dog.set_disabled(True)
 
-        issue_uids = [issue.uid for issue in get_visible_issues_for_user(self.user_anonymous)]
+        issue_uids = [issue.uid for issue in self.user_anonymous.accessible_issues]
         self.assertNotIn(self.issue_cat_or_dog.uid, issue_uids,
                          f"Issue {self.issue_cat_or_dog.uid} is private and should not be visible to the anonymous user!")
 

@@ -3,15 +3,15 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from math import ceil
-
-import arrow
 import copy
 from datetime import date, timedelta
 from json import JSONDecodeError
+from math import ceil
+from typing import Optional, List, Collection, Dict
+
+import arrow
 from pyramid.request import Request
 from slugify import slugify
-from typing import Optional, List, Collection, Dict
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
@@ -21,8 +21,8 @@ from dbas.handler.arguments import get_all_statements_for_args
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import generate_short_url
 from dbas.helper.url import UrlManager
-from dbas.lib import get_enabled_issues_as_query, nick_of_anonymous_user, get_visible_issues_for_user, \
-    pretty_print_timestamp, get_enabled_statement_as_query
+from dbas.lib import get_enabled_issues_as_query, nick_of_anonymous_user, pretty_print_timestamp, \
+    get_enabled_statement_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -79,7 +79,7 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict:
     time = db_issue.date.format('HH:mm')
 
     all_array = [get_issue_dict_for(issue, db_issue.uid, lang) for issue in
-                 get_visible_issues_for_user(db_user) if issue.uid != db_issue.uid]
+                 db_user.accessible_issues if issue.uid != db_issue.uid]
 
     _t = Translator(lang)
     tooltip = _t.get(_.discussionInfoTooltipSg) if stat_count == 1 else _t.get(_.discussionInfoTooltipPl)
@@ -271,7 +271,7 @@ def get_issues_overview_for(db_user: User, app_url: str) -> Dict[str, Collection
     if db_user.is_admin():
         db_issues_other_users = DBDiscussionSession.query(Issue).filter(Issue.author_uid != db_user.uid).all()
     else:
-        db_issues_other_users = [issue for issue in get_visible_issues_for_user(db_user) if
+        db_issues_other_users = [issue for issue in db_user.accessible_issues if
                                  issue.author_uid != db_user.uid]
 
     db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).order_by(
@@ -290,7 +290,7 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     :param db_user: User
     :return:
     """
-    db_issues: List[Issue] = get_visible_issues_for_user(db_user)
+    db_issues: List[Issue] = db_user.accessible_issues
     db_issues.sort(key=lambda issue: issue.uid)
     date_dict = {}
     readable = []

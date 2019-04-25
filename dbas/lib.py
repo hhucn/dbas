@@ -297,7 +297,8 @@ def get_all_arguments_with_text_by_statement_id(statement_uid: int) -> List[dict
                 'attacks': arg.get_attacked_argument_text(),
             },
             'author': arg.author,
-            'issue': arg.issue}
+            'issue': arg.issue
+        }
             for arg in arguments]
     return []
 
@@ -1252,16 +1253,3 @@ def get_enabled_issues_as_query():
     :return: Query
     """
     return DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
-
-
-def get_visible_issues_for_user(user: User) -> List[Issue]:
-    """
-    Returns query with all issues, which are visible for the user
-
-    :param user:
-    :return: Query
-    """
-    db_issues = set(DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
-                                                            Issue.is_private == False).all())
-
-    return list(db_issues)
