@@ -1261,8 +1261,7 @@ def get_visible_issues_for_user(user: User) -> List[Issue]:
     :param user:
     :return: Query
     """
-
     db_issues = set(DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
                                                             Issue.is_private == False).all())
 
-    return list(db_issues.union(user.participates_in))
+    return list(db_issues)
