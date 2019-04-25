@@ -377,10 +377,10 @@ class User(DiscussionBase):
 
     @hybrid_property
     def accessible_issues(self) -> List['Issue']:
-        db_issues = set(DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
-                                                                Issue.is_private == False).all())
+        db_issues = DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                            Issue.is_private == False).all()
 
-        return list(db_issues.union(self.participates_in)) if not self.is_anonymous() else db_issues
+        return list(set(db_issues).union(self.participates_in)) if not self.is_anonymous() else db_issues
 
     @accessible_issues.setter
     def accessible_issues(self, issue: Issue) -> None:
