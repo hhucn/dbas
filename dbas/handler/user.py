@@ -572,13 +572,12 @@ def get_information_of(user: User, lang: str) -> Dict[str, Any]:
     """
     if user.nickname == nick_of_anonymous_user:
         return _get_special_infos(lang)
-    db_group = user.group
     ret_dict = dict()
     ret_dict['public_nick'] = user.global_nickname
     ret_dict['last_action'] = sql_timestamp_pretty_print(user.last_action, lang)
     ret_dict['last_login'] = sql_timestamp_pretty_print(user.last_login, lang)
     ret_dict['registered'] = sql_timestamp_pretty_print(user.registered, lang)
-    ret_dict['group'] = start_with_capital(db_group.name)
+    ret_dict['group'] = start_with_capital(user.group.name)
 
     ret_dict['is_male'] = user.gender == 'm'
     ret_dict['is_female'] = user.gender == 'f'
