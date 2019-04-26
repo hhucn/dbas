@@ -11,19 +11,9 @@ class UserManagementTest(TestCaseWithConfig):
         new_public_nickname = user.refresh_public_nickname(self.user_tobi)
         self.assertNotEqual(old_public_nickname, new_public_nickname)
 
-    def test_is_user_in_group(self):
-        self.assertTrue(user.is_in_group('Tobias', 'admins'))
-        self.assertFalse(user.is_in_group('Torben', 'admins'))
-
-        self.assertFalse(user.is_in_group('Tobias', 'authors'))
-        self.assertFalse(user.is_in_group('Torben', 'authors'))
-
-        self.assertFalse(user.is_in_group('Tobias', 'users'))
-        self.assertTrue(user.is_in_group('Torben', 'users'))
-
     def test_is_user_admin(self):
-        self.assertTrue(user.is_admin('Tobias'))
-        self.assertFalse(user.is_admin('Torben'))
+        self.assertTrue(self.user_tobi.is_admin())
+        self.assertFalse(self.user_torben.is_admin())
 
     def test_is_user_author(self):
         self.assertTrue(self.user_tobi.is_admin() or self.user_tobi.is_author())

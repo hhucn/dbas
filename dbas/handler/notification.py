@@ -10,7 +10,6 @@ import dbas.handler.email as email_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Language, Argument, \
     sql_timestamp_pretty_print
-from dbas.handler import user as user_handler
 from dbas.lib import escape_string, get_profile_picture
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_message
@@ -83,9 +82,6 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
         send_request_for_info_popup_to_socketio(db_last_editor.nickname, _t_editor.get(_.statementAdded), url,
                                                 increase_counter=True)
 
-    # find admin, because generic mails are being sent by the admin
-    db_admin = user_handler.get_list_of_admins()[0]
-
     # get topic and content for messages to both authors
     topic1 = _t_root.get(_.statementAdded)
     content1 = get_text_for_message(db_root_author.firstname, root_lang, url, _.statementAddedMessageContent, True)
@@ -94,13 +90,13 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
     content2 = get_text_for_message(db_last_editor.firstname, editor_lang, url, _.statementAddedMessageContent, True)
 
     if db_root_author != db_user:
-        DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
+        DBDiscussionSession.add(Message(from_author_uid=1,
                                         to_author_uid=db_root_author.uid,
                                         topic=topic1,
                                         content=content1,
                                         is_inbox=True))
     if db_root_author != db_last_editor and db_user != db_last_editor:
-        DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
+        DBDiscussionSession.add(Message(from_author_uid=1,
                                         to_author_uid=db_last_editor.uid,
                                         topic=topic2,
                                         content=content2,
@@ -138,13 +134,11 @@ def send_add_argument_notification(url, attacked_argument_uid, user, mailer):
     if db_author_settings.should_send_mails:
         email_helper.send_mail_due_to_added_text(user_lang, url, db_author, mailer)
 
-    # find admin
-    db_admin = user_handler.get_list_of_admins()[0]
-
     topic = _t_user.get(_.argumentAdded)
     content = get_text_for_message(db_author.firstname, user_lang, url, _.argumentAddedMessageContent, True)
 
-    DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
+    # Send with System User.
+    DBDiscussionSession.add(Message(from_author_uid=1,
                                     to_author_uid=db_author.uid,
                                     topic=topic,
                                     content=content,
@@ -162,8 +156,7 @@ def send_welcome_notification(user, translator):
     """
     topic = translator.get(_.welcome)
     content = translator.get(_.welcomeMessage)
-    db_user = user_handler.get_list_of_admins()[0]
-    notification = Message(from_author_uid=db_user.uid, to_author_uid=user, topic=topic, content=content, is_inbox=True)
+    notification = Message(from_author_uid=1, to_author_uid=user, topic=topic, content=content, is_inbox=True)
     DBDiscussionSession.add(notification)
     DBDiscussionSession.flush()
     transaction.commit()

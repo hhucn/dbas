@@ -38,18 +38,8 @@ class UserHandlerTests(TestCaseWithConfig):
         old_nickname = self.user_tobi.public_nickname
         new_nickname = user.refresh_public_nickname(self.user_tobi)
         self.assertNotEqual(old_nickname, new_nickname)
-        self.assertIn(new_nickname.split(' ')[0], user.moodlist)
-        self.assertIn(' '.join(new_nickname.split(' ')[1:]), user.animallist + user.thingslist + user.foodlist)
-
-    def test_is_in_group(self):
-        self.assertFalse(user.is_in_group('', 'bla'))
-        self.assertFalse(user.is_in_group(self.user_tobi.nickname, 'bla'))
-        self.assertFalse(user.is_in_group('', 'admin'))
-        self.assertTrue(user.is_in_group(self.user_tobi.nickname, 'admins'))
-
-    def test_is_admin(self):
-        self.assertFalse(user.is_admin('Pascal'))
-        self.assertTrue(user.is_admin('Tobias'))
+        self.assertIn(new_nickname.split(' ')[0], user.MOODS)
+        self.assertIn(' '.join(new_nickname.split(' ')[1:]), user.ANIMALS + user.THINGS + user.FOODS)
 
     def test_get_public_data(self):
         prep_dict = user.get_public_data(1000, 'en')
@@ -57,15 +47,15 @@ class UserHandlerTests(TestCaseWithConfig):
 
     def test_get_reviews_of(self):
         engelbert = DBDiscussionSession.query(User).filter_by(nickname='Engelbert').first()
-        self.assertGreaterEqual(user.get_reviews_of(engelbert, True), 0)
-        self.assertGreaterEqual(user.get_reviews_of(engelbert, False), 0)
+        self.assertGreaterEqual(user.number_of_reviews(engelbert, True), 0)
+        self.assertGreaterEqual(user.number_of_reviews(engelbert, False), 0)
         rv = ReviewEdit(self.user_tobi.uid, 1, 1)
         yesterday = date.today() - timedelta(1)
         rv.timestamp = arrow.get(yesterday.strftime('%Y-%m-%d'))
         DBDiscussionSession.add(rv)
         transaction.commit()
-        self.assertGreaterEqual(user.get_reviews_of(self.user_tobi, True), 0)
-        self.assertGreaterEqual(user.get_reviews_of(self.user_tobi, False), 0)
+        self.assertGreaterEqual(user.number_of_reviews(self.user_tobi, True), 0)
+        self.assertGreaterEqual(user.number_of_reviews(self.user_tobi, False), 0)
 
     def def_get_statement_count_of(self):
         engelbert = DBDiscussionSession.query(User).filter_by(nickname='Engelbert').first()
@@ -140,14 +130,16 @@ class UserHandlerTests(TestCaseWithConfig):
         self.assertGreaterEqual(0, len(d.get('edits', [])))
 
     def test_get_marked_elements_of(self):
-        prep_dict = user.get_marked_elements_of(self.user_tobi, False, 'en')
+        prep_dict = user.get_marked_statements(self.user_tobi, 'en')
         self.assertEqual(0, len(prep_dict))
         self.assertNotIn('uid', prep_dict)
+        marked_arguments = user.get_marked_arguments(self.user_tobi, 'en')
+        self.assertEqual(0, len(marked_arguments))
 
     def test_get_clicked_elements_of(self):
-        prep_array = user.get_clicked_elements_of(self.user_tobi, True, 'en')
+        prep_array = user.get_clicked_arguments(self.user_tobi, 'en')
         self.assertLessEqual(0, len(prep_array))
-        prep_array = user.get_clicked_elements_of(self.user_tobi, False, 'en')
+        prep_array = user.get_clicked_statements(self.user_tobi, 'en')
         self.assertLessEqual(0, len(prep_array))
 
     def test_get_information_of(self):

@@ -3,19 +3,18 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import arrow
+import bcrypt
 import logging
 import warnings
 from abc import abstractmethod
 from datetime import datetime
-from typing import List, Set, Optional, Dict
-
-import arrow
-import bcrypt
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
+from typing import List, Set, Optional, Dict, Any
 
 from dbas.database import DBDiscussionSession, DiscussionBase
 from dbas.strings.keywords import Keywords as _
@@ -229,7 +228,8 @@ class User(DiscussionBase):
     authored_issues: List[Issue] = relationship('Issue', back_populates='author')
     settings: 'Settings' = relationship('Settings', back_populates='user', uselist=False)
 
-    clicked_statements = relationship('ClickedStatement', back_populates='user')
+    clicked_statements: List['ClickedStatement'] = relationship('ClickedStatement', back_populates='user')
+    clicked_arguments: List['ClickedArgument'] = relationship('ClickedArgument', back_populates='user')
 
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, oauth_provider='',
                  oauth_provider_id=''):
@@ -1301,6 +1301,20 @@ class ClickedStatement(DiscussionBase):
         :return: None
         """
         self.timestamp = get_now()
+
+    def to_dict(self, lang: str) -> Dict[str, Any]:
+        """
+        Returns a dictionary-based representaiton of the ClickedStatement object.
+
+        :param lang: A string representing the language used by the timestamp.
+        :return: A dictionary representation of the object.
+        """
+        return {'uid': self.uid,
+                'timestamp': sql_timestamp_pretty_print(self.timestamp, lang),
+                'is_up_vote': self.is_up_vote,
+                'is_valid': self.is_valid,
+                'statement_uid': self.statement_uid,
+                'content': self.statement.get_text()}
 
 
 class MarkedArgument(DiscussionBase):
