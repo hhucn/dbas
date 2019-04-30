@@ -77,7 +77,7 @@ class Helper:
         :param browser:
         :return:
         """
-        browser.visit(main_page + 'user_logout')
+        browser.visit('user/logout')
         return browser
 
     @staticmethod

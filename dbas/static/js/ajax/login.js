@@ -91,7 +91,7 @@ function AjaxLoginHandler() {
      *
      */
     this.logout = function () {
-        redirectAfterAjax(mainpage + 'user_logout');
+        redirectAfterAjax('user/logout');
     };
     /**
      *
