@@ -103,7 +103,7 @@ def main(global_config, **settings):
     config.add_route('oauth_start', "/oauth")
     config.add_route('oauth', '/oauth/{service:(facebook|google|twitter|github)}')
     config.add_route('user_logout', 'user/logout')
-    config.add_route('user_delete', '{url:.*}user_delete')
+    config.add_route('user_delete', 'user/delete')
     config.add_route('set_new_start_argument', '{url:.*}set_new_start_argument')
     config.add_route('set_new_start_premise', '{url:.*}set_new_start_premise')
     config.add_route('set_new_premises_for_argument', '/{url:.*}set_new_premises_for_argument')
