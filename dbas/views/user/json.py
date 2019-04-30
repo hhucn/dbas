@@ -58,7 +58,7 @@ def user_login(request):
     return {'error': Translator(lang).get(_.userPasswordNotMatch)}
 
 
-@view_config(route_name='user_logout', renderer='json')
+@view_config(request_method='POST', route_name='user_logout', renderer='json')
 def user_logout(request, redirect_to_main=False):
     """
     Will logout the user

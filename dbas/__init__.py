@@ -7,10 +7,10 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 .. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-import os
-import re
 import time
 
+import os
+import re
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -102,7 +102,7 @@ def main(global_config, **settings):
     config.add_route('user_login', '{url:.*}user_login')
     config.add_route('oauth_start', "/oauth")
     config.add_route('oauth', '/oauth/{service:(facebook|google|twitter|github)}')
-    config.add_route('user_logout', '{url:.*}user_logout')
+    config.add_route('user_logout', 'user/logout')
     config.add_route('user_delete', '{url:.*}user_delete')
     config.add_route('set_new_start_argument', '{url:.*}set_new_start_argument')
     config.add_route('set_new_start_premise', '{url:.*}set_new_start_premise')
