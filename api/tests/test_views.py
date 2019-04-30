@@ -107,26 +107,6 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
-    def test_logout_valid_user(self):
-        request = create_request_with_token_header()
-        response = apiviews.user_logout(request)
-        self.assertEqual(len(request.errors), 0)
-        self.assertEqual('ok', response['status'])
-
-    def test_logout_invalid_user(self):
-        nickname = 'Walter'
-        request = construct_dummy_request()
-        request.headers[self.header] = json.dumps({'nickname': nickname, 'token': 'notavalidtoken'})
-        response = apiviews.user_logout(request)
-        self.assertGreater(len(request.errors), 0)
-        self.assertIsInstance(response, httpexceptions.HTTPError)
-
-    def test_logout_missing_header(self):
-        request = construct_dummy_request()
-        response = apiviews.user_logout(request)
-        self.assertGreater(len(request.errors), 0)
-        self.assertIsInstance(response, httpexceptions.HTTPError)
-
 
 class TestSystemRoutes(unittest.TestCase):
     def test_server_available(self):

@@ -6,13 +6,12 @@ return JSON objects which can then be used in external websites.
 .. note:: Methods **must not** have the same name as their assigned Service.
 """
 import logging
-from typing import List
-
 from cornice import Service
 from cornice.resource import resource, view
 from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
+from typing import List
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
@@ -479,27 +478,6 @@ def user_login(request):
         'nickname': user.public_nickname,
         'uid': user.uid,
         'token': request.validated['token']
-    }
-
-
-@logout.post(require_csrf=False)
-@validate(valid_token)
-def user_logout(request):
-    """
-    If user is logged in, log him out.
-
-    Just invalidates the session.. so doesn't do anything. Just forget your token.
-
-    :param request:
-    :return:
-    """
-    nickname = request.validated['user'].nickname
-    LOG.debug('User logged out: {}'.format(nickname))
-    request.session.invalidate()
-
-    return {
-        'status': 'ok',
-        'message': 'Successfully logged out'
     }
 
 
