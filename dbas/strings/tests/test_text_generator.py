@@ -242,7 +242,7 @@ class TestTextGenerator(TestCaseWithConfig):
 
         res = tg.get_text_for_support(arg, argument_text, 'Tobias', _t)
         self.assertEqual(res,
-                         '<span>This is a good point and other participants are interested in your conclusion too. They say, that</span> some argument text<br><br>What do you think about that')
+                         '<span>This is a good point and other participants are interested in your conclusion too. They say, that</span> some argument text<br><br>What do you think about that?')
 
     def test_get_name_link_of_arguments_author(self):
         db_arg = DBDiscussionSession.query(Argument).get(2)
@@ -315,7 +315,7 @@ class TestTextGenerator(TestCaseWithConfig):
                 text += '<span data-argumentation-type="argument">some premise text</span><span data-attitude="con"> <span data-argumentation-type="argument">does not hold</span></span>, because <span data-argumentation-type="attack">some confrontation text</span>'
             else:
                 text += 'some premise text<span data-attitude="con"> does not hold</span>, because some confrontation text'
-            text += '.<br><br>What do you think about that'
+            text += '.<br><br>What do you think about that?'
 
             sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
                                                              'another conclusion', supportive, attack,
@@ -341,7 +341,7 @@ class TestTextGenerator(TestCaseWithConfig):
                 text += 'counter-argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span>. They think that <span data-argumentation-type="attack">some confrontation text</span>.'
             elif color_html and supportive:
                 text += 'argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span>. They think that <span data-argumentation-type="attack">some confrontation text</span>.'
-            text += '<br><br>What do you think about that'
+            text += '<br><br>What do you think about that?'
 
             sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
                                                              'another conclusion', supportive, attack,
@@ -392,7 +392,7 @@ class TestTextGenerator(TestCaseWithConfig):
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, True, True)
                 text = '<span class="triangle-content-text"><span>Other participants claim to have a stronger statement to <span data-argumentation-type="argument">reject</span></span> <span data-argumentation-type="argument">some conclusion text</span>. They say: <span data-argumentation-type="attack">some confrontation text</span>.'
 
-            text += '<br><br>What do you think about that'
+            text += '<br><br>What do you think about that?'
 
             sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
                                                              'another conclusion', supportive, attack,
