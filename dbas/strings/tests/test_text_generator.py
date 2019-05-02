@@ -134,8 +134,8 @@ class TestTextGenerator(TestCaseWithConfig):
                                                              is_dont_know)
         self.assertEqual(len(res), 6)
         results.update({
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct, but it is not supported by the <span data-argumentation-type="argument">reason</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="argument">some conclusion text</span> is wrong and I would like to argue against it.'
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct, but it is not supported by the <span data-argumentation-type="argument">reason</span>',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="argument">some conclusion text</span> is wrong and I would like to argue against it'
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
@@ -150,7 +150,7 @@ class TestTextGenerator(TestCaseWithConfig):
             'undermine_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is wrong and I would like to argue against it',
             'support_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it convinced me',
             'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">my argument</span>',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">my argument</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>.'
+            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">my argument</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>'
         }
         self.assertEqual(len(res), 4)
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
@@ -168,10 +168,10 @@ class TestTextGenerator(TestCaseWithConfig):
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         results.update({
-            'undermine_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is wrong and I would like to argue against it.',
-            'support_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it convinced me.',
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it is not supported by the <span data-argumentation-type="argument">reason</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="argument">her opinion</span> is wrong and I would like to argue against it.'
+            'undermine_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is wrong and I would like to argue against it',
+            'support_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it convinced me',
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it is not supported by the <span data-argumentation-type="argument">reason</span>',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="argument">her opinion</span> is wrong and I would like to argue against it'
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
@@ -195,8 +195,8 @@ class TestTextGenerator(TestCaseWithConfig):
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         results.update({
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">my argument</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">my argument</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>.'
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">my argument</span>',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">my argument</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>'
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
@@ -204,8 +204,8 @@ class TestTextGenerator(TestCaseWithConfig):
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         results.update({
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">her point of view</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">her point of view</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>.',
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">her point of view</span>',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">her point of view</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>',
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
