@@ -178,7 +178,6 @@ de_lang = {
     _.butWhich: 'aber welches',
     _.butThisDoesNotRejectArgument: 'Jedoch widerspricht das nicht dem Argument, dass {}',
     _.butThisDoesNotRejectStatement: 'Jedoch widerspricht das nicht der Aussage, dass {}',
-<<<<<<< HEAD
     _.clickHereForRegistration: 'Klicken <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> für die Anmeldung oder eine Registrierung',
     _.clickForMore: 'Bitte hier klicken',
     _.confirmation: 'Bestätigung',
@@ -186,15 +185,6 @@ de_lang = {
     _.contact: 'Kontakt',
     _.confirmTranslation: 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren',
     _.correctionsSet: 'Ihre Korrektur wurde gesetzt',
-=======
-    _.clickHereForRegistration: 'Klick <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> für die Anmeldung oder eine Registrierung!',
-    _.clickForMore: 'Klicke hier für weitere Informationen',
-    _.confirmation: 'Bestätigung',
-    _.contactSubmit: 'Nachricht senden',
-    _.contact: 'Kontakt',
-    _.confirmTranslation: 'Wenn Sie die Sprache ändern, beginnen Sie wieder vorne in der Diskussion.',
-    _.correctionsSet: 'Ihre Korrektur wurde gesetzt.',
->>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
     _.countOfArguments: 'Anzahl der Argumente',
     _.countOfPosts: 'Anzahl der Beiträge',
     _.checkFirstname: 'Ihre Eingabe ist leer. Bitte überprüfen Sie Ihren Vornamen',
@@ -289,22 +279,14 @@ de_lang = {
     _.empty_notification_input: 'Nachrichten-Titel oder Text ist leer oder zu kurz',
     _.email: 'E-Mail',
     _.emailWasSent: 'E-Mail wurde gesendet.',
-<<<<<<< HEAD
     _.emailWasNotSent: 'E-Mail wurde nicht gesendet',
     _.emailUnknown: 'Die Adresse ist nicht gültig',
     _.emailBodyText: 'Dies ist eine automatisch generierte E-Mail von D-BAS {}.\nBei Rückfragen können Sie gerne eine E-Mail an dbas@cs.uni-duesseldorf.de verfassen.\nDieses System ist Teil einer Doktorarbeit',
-=======
-    _.emailWasNotSent: 'E-Mail wurde nicht gesendet.',
-    _.emailUnknown: 'Die Adresse ist nicht gültig.',
-    _.emailSentGeneric: 'Falls die Mailadresse gefunden werden konnte, schicken wir Ihnen eine Mail mit Instruktionen zu',
-    _.emailBodyText: 'Dies ist eine automatisch generierte E-Mail von D-BAS {}.\n\nBei Rückfragen können Sie gerne eine E-Mail an dbas@cs.uni-duesseldorf.de verfassen.',
->>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
-    _.emailArgumentAddTitle: 'D-BAS Infos zum Argument',
+   _.emailArgumentAddTitle: 'D-BAS Infos zum Argument',
     _.emailArgumentAddBody: 'Zu Ihrem Argument wurden weitere Informationen hinzugefügt. Schauen Sie doch mal rein:',
     _.edit: 'Bearbeiten',
     _.error_code: 'Fehler-Code',
     _.editTitle: 'Aussage bearbeiten',
-<<<<<<< HEAD
     _.editAlreadyTitle: 'Diese Aussage wurde schon bearbeiten und wird nun durch die Community begutachtet',
     _.exampleName: 'Beispiel: Tobias Krauthoff',
     _.exampleMail: 'Beispiel: krauthoff@cs.uni-duesseldorf.de',
@@ -316,20 +298,7 @@ de_lang = {
     _.examplePassword: 'Beispiel: ********',
     _.exampleFirstname: 'Beispiel: Tobias',
     _.exampleLastname: 'Beispiel: Krauthoff',
-=======
-    _.editAlreadyTitle: 'Diese Aussage wurde schon bearbeiten und nun durch Community begutachtet.',
-    _.exampleName: 'Heinrich Heine',
-    _.exampleMail: 'heinrich.heine@hhu.de',
-    _.examplePhone: '+49 (0)211 81-123456',
-    _.exampleMessage: 'Sehr gute Arbeit!',
-    _.exampleMessageBug: 'Auf der Seite https://dbas.cs.uni-duesseldorf.de/discuss/a/b verhält sich D-BAS komisch, weil ...',
-    _.exampleNickname: 'Democrator',
-    _.exampleNicknameLdap: 'hehei001',
-    _.examplePassword: '********',
-    _.exampleFirstname: 'Heinrich',
-    _.exampleLastname: 'Heine',
->>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
-    _.exampleStatement: 'Bitte fügen Sie hier Ihr Zitat (von der Webseite) ein',
+   _.exampleStatement: 'Bitte fügen Sie hier Ihr Zitat (von der Webseite) ein',
     _.exampleSource: 'Bitte fügen Sie hier Ihre Quelle (URL der Webseite) ein',
     _.exampleSearchDuplicate: 'Hier können Sie suchen',
     _.examplePosition: 'wir etwas unternehmen sollten',
@@ -643,16 +612,10 @@ de_lang = {
     _.reaction_text_rebut: 'Ich halte {} für richtig und sie stützt auch {}, aber ich möchte {} trotzdem verteidigen',
     _.reaction_text_rebut_for_dont_know: 'Ich halte {} für falsch und möchte widersprechen',
 
-<<<<<<< HEAD
     _.questionTitle: 'Erhalten Sie mehr Informationen über die Aussage',
     _.saveMyStatement: 'Aussage speichern',
     _.selectStatement: 'Bitte Wählen Sie eine Aussage',
-=======
-    _.questionTitle: 'Erhalten Sie mehr Informationen über die Aussage!',
-    _.saveMyStatement: 'Aussage speichern!',
-    _.selectStatement: 'Bitte wählen Sie eine Aussage!',
->>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
-    _.selectMultipleStatementsWhichFlag: 'Sie haben eine Verknüpfung von mehreren Aussagen gewählt. Welche möchten Sie melden?',
+   _.selectMultipleStatementsWhichFlag: 'Sie haben eine Verknüpfung von mehreren Aussagen gewählt. Welche möchten Sie melden?',
     _.showAllUsers: 'Zeig\' alle Benutzer',
     _.showAllArguments: 'Zeig\' alle Argumente',
     _.showAllArgumentsTitle: 'Zeigt alle Argumente',
@@ -696,20 +659,12 @@ de_lang = {
     _.statementIsDuplicate: 'Aussage ist ein Duplikat',
     _.statementsShowAll: 'Alle Antworten anzeigen',
     _.statementsHideAll: 'Antworten ausblenden',
-<<<<<<< HEAD
     _.statement_offtopic_or_irrelevant_description: 'Die Beudeutung der Aussage ist nicht themenbezogen oder Spam',
     _.statement_duplicate_description: 'Diese Aussage ist schon leicht verändert im System vorhanden',
     _.statement_merge_description: 'Diese Aussage hängt von einer weiteren Aussage ab und diese sollten verbunden werden',
     _.statement_split_description: 'Diese Aussage besteht aus mehr als einer Aussage und daher sollten diese getrennt werden',
     _.statement_optimization_description: 'Diese Aussage ist richtig, benötigt aber eine Korrektur bezüglich Rechtschreibung/Grammatik',
-=======
-    _.statement_offtopic_or_irrelevant_description: 'Die Bedeutung der Aussage ist nicht themenbezogen oder Spam.',
-    _.statement_duplicate_description: 'Diese Aussage ist schon leicht verändert im System vorhanden.',
-    _.statement_merge_description: 'Diese Aussage hängt von einer weiteren Aussage ab und diese sollten verbunden werden.',
-    _.statement_split_description: 'Diese Aussage besteht aus mehr als einer Aussage und daher sollten diese getrennt werden.',
-    _.statement_optimization_description: 'Diese Aussage ist korrekt, bedarf aber einer sprachlichen Überarbeitung.',
->>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
-    _.argumentAdded: 'Argument wurde hinzugefügt',
+   _.argumentAdded: 'Argument wurde hinzugefügt',
     _.positionAdded: 'Position wurde hinzugefügt',
     _.statementAddedMessageContent: 'Hey {},\n\njemand hat eine Meinung zu Ihrer Aussage hinzugefügt',
     _.argumentAddedMessageContent: 'Hey {},\n\njemand hat ein Argument zu Ihrer Aussage hinzugefügt',
