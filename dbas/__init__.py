@@ -7,13 +7,14 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 .. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-import os
-import re
 import time
 
+import os
+import re
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
+from pyramid.request import Request
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 from sqlalchemy import engine_from_config
@@ -57,6 +58,7 @@ def main(global_config, **settings):
                           session_factory=session_factory)
     config.add_translation_dirs('dbas:locale',
                                 'admin:locale')  # add this before the locale negotiator
+    config.set_locale_negotiator(_locale_negotiator)
     config.set_default_csrf_options(require_csrf=True)
 
     # Include apps
@@ -100,8 +102,8 @@ def main(global_config, **settings):
     config.add_route('user_login', '{url:.*}user_login')
     config.add_route('oauth_start', "/oauth")
     config.add_route('oauth', '/oauth/{service:(facebook|google|twitter|github)}')
-    config.add_route('user_logout', '{url:.*}user_logout')
-    config.add_route('user_delete', '{url:.*}user_delete')
+    config.add_route('user_logout', 'user/logout')
+    config.add_route('user_delete', 'user/delete')
     config.add_route('set_new_start_argument', '{url:.*}set_new_start_argument')
     config.add_route('set_new_start_premise', '{url:.*}set_new_start_premise')
     config.add_route('set_new_premises_for_argument', '/{url:.*}set_new_premises_for_argument')
@@ -118,6 +120,7 @@ def main(global_config, **settings):
     config.add_route('get_infos_about_argument', '/{url:.*}get_infos_about_argument')
     config.add_route('get_user_with_same_opinion', '/{url:.*}get_user_with_same_opinion')
     config.add_route('get_public_user_data', '/{url:.*}get_public_user_data')
+    config.add_route('get_temp_key', "get_temp_key")
     config.add_route('get_user_history', 'get_user_history')
     config.add_route('get_all_edits', 'get_all_edits')
     config.add_route('get_all_posted_statements', 'get_all_posted_statements')
@@ -162,7 +165,7 @@ def main(global_config, **settings):
     config.add_route('discussion_justify_statement', r'/discuss/{slug}/justify/{statement_id:\d+}/{attitude}')
     config.add_route('discussion_justify_argument', r'/discuss/{slug}/justify/{argument_id:\d+}/{attitude}/{relation}')
     config.add_route('discussion_attitude', r'/discuss/{slug}/attitude/{statement_id:\d+}')
-    config.add_route('discussion_choose', r'/discuss/{slug}/choose/{is_argument}/{is_supportive}/{id:\d+}*pgroup_ids')
+    config.add_route('discussion_choose', r'/discuss/{slug}/choose*pgroup_ids')
     config.add_route('discussion_jump', r'/discuss/{slug}/jump/{argument_id:\d+}')
     config.add_route('discussion_finish', r'/discuss/{slug}/finish/{argument_id:\d+}')
     config.add_route('discussion_exit', '/discuss/exit')
@@ -233,3 +236,16 @@ def get_key_pair():
             }
         else:
             raise EnvironmentError(f"Can't read key files at {key_path} and {pubkey_path}")
+
+
+def _locale_negotiator(request: Request):
+    """
+    Returns current language from cookie or request for i18n translation in templates.
+    Otherwise returns default language.
+    """
+    locale_name = request.cookies.get('_LOCALE_')
+    if locale_name is None:
+        locale_name = getattr(request, '_LOCALE_', None)
+        if locale_name is None:
+            return request.registry.settings['pyramid.default_locale_name']
+    return locale_name

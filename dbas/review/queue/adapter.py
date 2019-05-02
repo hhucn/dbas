@@ -51,22 +51,22 @@ class QueueAdapter:
         :param queue_name: current name of the given queue
         :return: dict()
         """
-        button_set = {f'is_{key}': False for key in review_queues}
-        button_set[f'is_{queue_name}'] = True
+        button_set: dict = {f'is_{key}': key == queue_name for key in review_queues}
         subpage_dict = self.queue.get_queue_information(self.db_user, session, self.application_url, self.translator)
-        if subpage_dict is None or subpage_dict.get('issue_titles') is None:
-            return self.__wrap_subpage_dict(session, button_set)
-        slug = slugify(*subpage_dict.get('issue_titles'))
-        issue: Issue = DBDiscussionSession.query(Issue).filter_by(slug=slug).one_or_none()
-        ret_dict = {
-            'page_name': queue_name,
-            'reviewed_element': subpage_dict,
-            'session': subpage_dict['session']
-        }
-        if (subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None) \
-                or self.db_user not in issue.participating_users:
-            return self.__wrap_subpage_dict({}, button_set)
-
+        if self.__queue_is_empty(subpage_dict):
+            ret_dict = {}
+        else:
+            slug = slugify(*subpage_dict.get('issue_titles'))
+            issue: Issue = DBDiscussionSession.query(Issue).filter_by(slug=slug).one_or_none()
+            if (subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None) \
+                    or (self.db_user not in issue.participating_users and issue.is_private):
+                ret_dict = {}
+            else:
+                ret_dict = {
+                    'page_name': queue_name,
+                    'reviewed_element': subpage_dict,
+                    'session': subpage_dict['session']
+                }
         return self.__wrap_subpage_dict(ret_dict, button_set)
 
     def add_vote(self, db_review: AbstractReviewCase, is_okay: bool):
@@ -121,10 +121,8 @@ class QueueAdapter:
         Check if the element described by kwargs is in any queue. Return a FlaggedBy object or none
 
         :param kwargs: "magic" -> atm keywords like argument_uid, statement_uid and premisegroup_uid. Please update
-        this!
-        :return:
+            this!
         """
-
         queues = [get_queue_by_key(key) for key in review_queues]
         status = [queue().element_in_queue(self.db_user, argument_uid=kwargs.get('argument_uid'),
                                            statement_uid=kwargs.get('statement_uid'),
@@ -291,7 +289,7 @@ class QueueAdapter:
         return users_array
 
     @staticmethod
-    def __wrap_subpage_dict(ret_dict, button_set):
+    def __wrap_subpage_dict(ret_dict: dict, button_set):
         """
         Set up dict()
 
@@ -306,7 +304,12 @@ class QueueAdapter:
 
         return {
             'elements': ret_dict,
-            'no_arguments_to_review': len(ret_dict) == 0,
+            'no_arguments_to_review': not bool(ret_dict),
             'button_set': button_set,
-            'session': session
+            'session': session,
         }
+
+    @staticmethod
+    def __queue_is_empty(queue_information: dict):
+        return queue_information is None or queue_information.get('issue_titles') is None or len(
+            queue_information.get('issue_titles')) == 0

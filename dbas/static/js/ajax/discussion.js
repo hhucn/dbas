@@ -38,24 +38,19 @@ AjaxDiscussionHandler.prototype.sendNewPremiseForArgument = function (arg_uid, r
 
 /**
  *
- * @param position
- * @param reason
+ * @param data
  */
-AjaxDiscussionHandler.prototype.sendNewStartArgument = function (position, reason) {
+AjaxDiscussionHandler.prototype.sendNewStartArgument = function (data) {
     'use strict';
-    var url = 'set_new_start_argument';
-    var d = {
-        position: position,
-        reason: reason
-    };
-    var done = function ajaxSendNewStartArgumentDone(data) {
+    const url = 'set_new_start_argument';
+    const done = function ajaxSendNewStartArgumentDone(data) {
         window.location.href = data.url;
     };
-    var fail = function ajaxSendNewStartArgumentFail(data) {
+    const fail = function ajaxSendNewStartArgumentFail(data) {
         $('#' + addStatementErrorContainer).show();
         $('#' + addStatementErrorMsg).text(data.responseJSON.errors[0].description);
     };
-    ajaxSkeleton(url, 'POST', d, done, fail);
+    ajaxSkeleton(url, 'POST', data, done, fail);
 };
 
 /**
@@ -300,7 +295,7 @@ AjaxDiscussionHandler.prototype.fuzzySearch = function (value, callbackId, type,
     ajaxSkeleton(url, 'POST', d, done, fail);
 };
 
-AjaxDiscussionHandler.prototype.__someGuiModification = function(tmpid, bubble_value){
+AjaxDiscussionHandler.prototype.__someGuiModification = function (tmpid, bubble_value) {
     'use strict';
     var bubbleSpace = $('#' + discussionBubbleSpaceId);
     var pencil = ' <i class="fa fa-pencil" aria-hidden="true"></i>';
@@ -334,7 +329,7 @@ AjaxDiscussionHandler.prototype.__someGuiModification = function(tmpid, bubble_v
 AjaxDiscussionHandler.prototype.revokeContent = function (uid, is_argument) {
     'use strict';
     var url = is_argument ? 'revoke_argument_content' : 'revoke_statement_content';
-    var d = {uid: parseInt(uid)};
+    var d = is_argument ? {uid: parseInt(uid)} : {statement_id: parseInt(uid)};
     var done = function ajaxRevokeContentDone(data) {
         if (data.success) {
             setGlobalSuccessHandler('Yeah!', _t_discussion(dataRemoved) + ' ' + _t_discussion(yourAreNotTheAuthorOfThisAnymore));

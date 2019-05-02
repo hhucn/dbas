@@ -16,12 +16,12 @@ class NotificationsTest(TestCaseWithConfig):
         for k, v in [('wrong_key', 'loooooooong striiiing'),
                      (key, 1234567890),
                      (key, 'shrt')]:
-            request = construct_dummy_request({k: v})
+            request = construct_dummy_request(json_body={k: v})
             response = func(request)
             self.assertFalse(response)
             self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({key: 'this is just right'})
+        request = construct_dummy_request(json_body={key: 'this is just right'})
         response = func(request)
         assert_true(response)
         self.assertIsInstance(response, bool)
@@ -42,12 +42,12 @@ class NotificationsTest(TestCaseWithConfig):
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         for recipient in ['no_one', 'admin', nick_of_anonymous_user, 'Tobias']:
-            request = construct_dummy_request({'recipient': recipient})
+            request = construct_dummy_request(json_body={'recipient': recipient})
             response = valid_notification_recipient(request)
             self.assertFalse(response)
             self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'recipient': 'Bob'})
+        request = construct_dummy_request(json_body={'recipient': 'Bob'})
         response = valid_notification_recipient(request)
         assert_true(response)
         self.assertIsInstance(response, bool)

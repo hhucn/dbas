@@ -1,3 +1,94 @@
+### 1.19.2 (2019-04-22)
+- Fix missing login button, if there is no choice for the user and she is not logged in c064d6d7
+
+### 1.19.1 (2019-04-17)
+- Remove ugly edges in buttons [!730](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/730)
+- Move text-generation from arguments to a texts-dictionary [!729](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/729)
+- Add text on how porposals should be made 07b3efe3
+- Make "I want to add my own idea" radio entry clickable again and add pointer cursor. 52acbe4d 1e3f55f4
+- General refactoring
+
+### 1.19.0 (2019-04-15)
+- Add DTO class for References on Steroids [!725](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/725)
+- Refactor String Builder [!726](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/726)
+- Return raw strings for reference usages via API [!726](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/726)
+- Fix string comparison when adding new positions [!724](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/724)
+- Do not construct url with argument uid 0 if there is no connected argument [!727](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/727)
+- Hotfix for typing error [!723](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/723)
+
+### 1.18.1 (2019-04-14)
+Fixes fot the field experiment
+- Fix german translation for the future voting button 350f386e
+- Show 'result' button no matter if the user is logged in. 17a41eef
+- Fix for when more than one issue might be featured. 51b41067
+
+### 1.18.0 (2019-04-12)
+Stable release for the next field experiment.
+- UI and spelling improvements [!720](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/720)
+- Remove unnecessary transaction.commit() calls (database improvements) [!719](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/719)
+- Extend README in cases of troubleshooting during installation [!718](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/718)
+
+### 1.17.4 (2019-04-11)
+- Add a hero issue view. To promote a single issue. [!693](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/693)
+- Return correct error messages in login fail-state [!715](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/715)
+- Do not allow registration for the time of the experiment [!713](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/713)
+
+### 1.17.3 (2019-04-09)
+- Allow for more specific ldap filters [!710](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/710)
+- Remove hint when suggestion small edit [!709](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/709)
+- Allow for min/max position cost [!711](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/711)
+  - Remove cents from the system
+  - Color invalid cost entries red
+
+### 1.17.2 (2019-04-04)
+- Fix revoking of statements [!706](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/706)
+- Fix referemces [!705](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/705)
+- Tidy up requirements [!707](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/707)
+- Fix asking for opinion for just added statement [!702](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/702)
+- Fix 500 if session cookie is invalid [!703](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/703)
+- Prevent crash if jump is last item in history in /finish or /reaction [!701](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/701)
+- Serve static files with relative paths [!700](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/700)
+
+### 1.17.1 (2019-04-03)
+- Fix error messages for invalid registration fields [!672](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/672) (Jans erster MR 🎉)
+- Hotfix for double conversion to cents [!698](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/698)
+
+### 1.17.0 (2019-04-02)
+- Fix for usage of a generated slug, when a slug is already present in the database [!687](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/687)
+- Correctly format messages in mails and the internal messaging system [!688](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/688)
+- Add "clickedStatement" endpoint to graphQL for analytics [!691](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/691)
+- Fix "Forgot Password" functionality and fix typos in translation strings [!692](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/692)
+- Improve documentation on how to use the pycharm debugger with a remote interpreter [!690](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/690)
+- Allow every user to see review queues of public issues, whether they participated in it or not [!694](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/694)
+- Tell the users, that we use their data for scientific purposes. [!695](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/695)
+- Fixes for the fieldexperiment of decidotron [!689](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/689)
+    * Readd the check, that a cost proposal is not less than 0 or greater than the budget. Reject the Statement otherwise.
+    * Change the placeholder text for the costs from 5000 to 2000.
+    * Allow of proposals with costs of 0. 
+    * The "You have to login" button now is clickable and opens the login dialog
+    * The "Vote!" button is now clickable with a middleclick, and if the D-BAS backend is unreachable (e.g. because of a session timeout), **but in both cases the user has to log in manually in Decidotron**.
+    * Fix the HTML and CSS of all bullet lists to make use of proper bootstrap. (Fixes some spacing issues, e.g. the default 40px in front of every `li` in an `ul` which is added by Chrome. Or an unnessaray white area on narrow screens.)
+    * Separate the last login/add entry from the position list in the template. Resulting in a more composable code. (The "Nothing I have a better idea" text is the premise of a statement... wtf)
+    * Show costs at the end of each position line, if this statement has costs.
+    * Show the 'real' currency symbol. (Until now '€' was hardcoded in the UI)
+
+
+### 1.16.0 (2019-03-26)
+- Add Budget Decision Making system "Decidotron" [!677](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/677)
+- Add Premise <-> Argument relationship to allow skipping of premisegroups [!669](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/669)
+- Add clean favicons [!682](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/682)
+- Make `/review/ongoing` working again [!673](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/673)
+- Make split review queue work and allow reviews from jump interface [!676](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/676)
+- Make number of review items match number of allowed reviews [!679](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/679)
+- Make `/review/<queue>` not crash if queue is empty [!666](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/666)
+- Fix edit queue item with only one textversion crashing queue view [!667](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/667)
+- Fix "you have no power"-page [!678](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/678)
+- Fix broken answer in choose route [!675](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/675)
+- Fix/rebut crash when no author is present [!680](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/680)
+- Remove string "QueueAdapter" from German translations [!674](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/674)
+- Prevent crash when a statement has no active textversion [!671](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/671)
+
+
 ### 1.15.0 (2019-02-19)
 - Add a static OpenAPI definition view [!662](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/662)
 - Fix path detection in opinion barometer [!664](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/664)

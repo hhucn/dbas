@@ -10,7 +10,7 @@ import random
 from typing import List
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User, StatementToIssue
+from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User, StatementToIssue, PositionCost
 from dbas.handler import attacks
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
@@ -89,18 +89,23 @@ class ItemDictHelper(object):
         for statement in db_statements:
             if statement.uid in uids:  # add seen by if the statement is visible
                 add_seen_statement(statement.uid, db_user)
-            statements_array.append(self.__create_answer_dict(statement.uid,
-                                                              [{
-                                                                  'title': statement.get_text(),
-                                                                  'id': statement.uid
-                                                              }],
-                                                              'start',
-                                                              _um.get_url_for_statement_attitude(statement.uid),
-                                                              is_editable=not ed.is_statement_in_edit_queue(
-                                                                  statement.uid),
-                                                              is_markable=True,
-                                                              is_author=is_author_of_statement(db_user, statement.uid),
-                                                              is_visible=statement.uid in uids))
+
+            position_dict = self.__create_answer_dict(statement.uid,
+                                                      [{
+                                                          'title': statement.get_text(),
+                                                          'id': statement.uid
+                                                      }],
+                                                      'start',
+                                                      _um.get_url_for_statement_attitude(statement.uid),
+                                                      is_editable=not ed.is_statement_in_edit_queue(
+                                                          statement.uid),
+                                                      is_markable=True,
+                                                      is_author=is_author_of_statement(db_user, statement.uid),
+                                                      is_visible=statement.uid in uids)
+            if self.db_issue.decision_process:
+                position_dict['cost'] = DBDiscussionSession.query(PositionCost).get(statement.uid).cost
+
+            statements_array.append(position_dict)
 
         _tn = Translator(self.lang)
 
@@ -125,7 +130,7 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 
-    def prepare_item_dict_for_attitude(self, statement_uid):
+    def prepare_item_dict_for_attitude(self, statement_uid: int) -> dict:
         """
         Prepares the dict with all items for the second step in discussion, where the user chooses her attitude.
 
@@ -142,24 +147,26 @@ class ItemDictHelper(object):
 
         db_arguments = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == statement_uid,
                                                                   Argument.is_supportive == True).all()
-        uid = random.choice(db_arguments).uid if len(db_arguments) > 0 else 0
 
         title_t = _tn.get(_.iAgreeWithInColor) + '.'
         title_f = _tn.get(_.iDisagreeWithInColor) + '.'
         title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'
         url_t = _um.get_url_for_justifying_statement(statement_uid, Attitudes.AGREE.value)
         url_f = _um.get_url_for_justifying_statement(statement_uid, Attitudes.DISAGREE.value)
-        url_d = _um.get_url_for_justifying_statement(uid, Attitudes.DONT_KNOW.value)
         d_t = self.__create_answer_dict(Attitudes.AGREE.value, [{'title': title_t, 'id': Attitudes.AGREE.value}],
                                         Attitudes.AGREE.value, url_t)
         d_f = self.__create_answer_dict(Attitudes.DISAGREE.value, [{'title': title_f, 'id': Attitudes.DISAGREE.value}],
                                         Attitudes.DISAGREE.value, url_f)
-        d_d = self.__create_answer_dict(Attitudes.DONT_KNOW.value,
-                                        [{'title': title_d, 'id': Attitudes.DONT_KNOW.value}],
-                                        Attitudes.DONT_KNOW.value, url_d)
         statements_array.append(d_t)
         statements_array.append(d_f)
-        statements_array.append(d_d)
+
+        if len(db_arguments) > 0:
+            target_argument_uid = random.choice(db_arguments).uid
+            url_d = _um.get_url_for_justifying_statement(target_argument_uid, Attitudes.DONT_KNOW.value)
+            d_d = self.__create_answer_dict(Attitudes.DONT_KNOW.value,
+                                            [{'title': title_d, 'id': Attitudes.DONT_KNOW.value}],
+                                            Attitudes.DONT_KNOW.value, url_d)
+            statements_array.append(d_d)
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
@@ -481,13 +488,7 @@ class ItemDictHelper(object):
         if len(db_premises) == 1:
             url = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, is_not_supportive)
         else:
-            uids = [db_argument.premisegroup_uid]
-            if db_argument.conclusion_uid is not None:
-                url = _um.get_url_for_choosing_premisegroup(False, db_argument.is_supportive,
-                                                            db_argument.conclusion_uid, uids)
-            else:
-                url = _um.get_url_for_choosing_premisegroup(True, db_argument.is_supportive, db_argument.argument_uid,
-                                                            uids)
+            url = _um.get_url_for_choosing_premisegroup([db_argument.premisegroup_uid])
         return url
 
     def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack, gender):

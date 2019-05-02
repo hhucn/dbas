@@ -3,22 +3,24 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import datetime
-import warnings
-from abc import abstractmethod
-from typing import List, Set, Optional
-
 import arrow
 import bcrypt
+import logging
+import warnings
+from abc import abstractmethod
+from datetime import datetime
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
+from typing import List, Set, Optional, Dict, Any
 
 from dbas.database import DBDiscussionSession, DiscussionBase
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+LOG = logging.getLogger(__name__)
 
 
 def sql_timestamp_pretty_print(ts, lang: str = 'en', humanize: bool = True, with_exact_time: bool = False):
@@ -50,7 +52,7 @@ def get_now() -> ArrowType:
 
     :return: arrow data type
     """
-    return arrow.get(datetime.datetime.now())
+    return arrow.get(datetime.now())
 
 
 class Issue(DiscussionBase):
@@ -70,6 +72,7 @@ class Issue(DiscussionBase):
     is_disabled: bool = Column(Boolean, nullable=False)
     is_private: bool = Column(Boolean, nullable=False, server_default="False")
     is_read_only: bool = Column(Boolean, nullable=False, server_default="False")
+    is_featured: bool = Column(Boolean, nullable=False, server_default="False")
 
     users: 'User' = relationship('User', foreign_keys=[author_uid])  # deprecated
     author: 'User' = relationship('User', foreign_keys=[author_uid], back_populates='authored_issues')
@@ -83,13 +86,16 @@ class Issue(DiscussionBase):
     positions = relationship('Statement', secondary='statement_to_issue', viewonly=True,
                              secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
 
+    decision_process: Optional['DecisionProcess'] = relationship('DecisionProcess', back_populates='issue',
+                                                                 uselist=False)
+
     def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
-                 is_read_only=False):
+                 is_read_only=False, is_featured=False, slug: str = None):
         """
         Initializes a row in current position-table
         """
         self.title = title
-        self.slug = slugify(self.title)
+        self.slug = slug if slug else slugify(title)
         self.info = info
         self.long_info = long_info
         self.author_uid = author_uid
@@ -98,6 +104,10 @@ class Issue(DiscussionBase):
         self.is_private = is_private
         self.is_read_only = is_read_only
         self.date = get_now()
+        self.is_featured = is_featured
+
+    def __repr__(self):
+        return f"<Issue {self.uid}: {self.slug}>"
 
     @hybrid_property
     def lang(self):
@@ -150,7 +160,8 @@ class Issue(DiscussionBase):
             "date": self.date.format(),
             "is_read_only": self.is_read_only,
             "is_private": self.is_private,
-            "is_disabled": self.is_disabled
+            "is_disabled": self.is_disabled,
+            "is_featured": self.is_featured
         }
 
 
@@ -220,6 +231,9 @@ class User(DiscussionBase):
     authored_issues: List[Issue] = relationship('Issue', back_populates='author')
     settings: 'Settings' = relationship('Settings', back_populates='user', uselist=False)
 
+    clicked_statements: List['ClickedStatement'] = relationship('ClickedStatement', back_populates='user')
+    clicked_arguments: List['ClickedArgument'] = relationship('ClickedArgument', back_populates='user')
+
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, oauth_provider='',
                  oauth_provider_id=''):
         """
@@ -232,8 +246,6 @@ class User(DiscussionBase):
         :param password: String (hashed)
         :param gender: String
         :param group_uid: int
-        :param token:
-        :param token_timestamp:
         """
         self.firstname = firstname
         self.surname = surname
@@ -315,7 +327,7 @@ class User(DiscussionBase):
         }
 
     def is_anonymous(self):
-        return self.uid == 0
+        return self.uid == 1
 
     def is_admin(self):
         """
@@ -362,6 +374,17 @@ class User(DiscussionBase):
         :return: True, if the user is member of the authors group
         """
         return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
+
+    @hybrid_property
+    def accessible_issues(self) -> List['Issue']:
+        db_issues = DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                            Issue.is_private == False).all()
+
+        return list(set(db_issues).union(self.participates_in)) if not self.is_anonymous() else db_issues
+
+    @accessible_issues.setter
+    def accessible_issues(self, issue: Issue) -> None:
+        self.participates_in.append(issue)
 
     def __json__(self, _request=None):
         return {
@@ -495,6 +518,8 @@ class Statement(DiscussionBase):
     premises: List['Premise'] = relationship('Premise', back_populates='statement')
     references: List['StatementReference'] = relationship('StatementReference', back_populates='statement')
 
+    clicks = relationship('ClickedStatement')
+
     def __init__(self, is_position, is_disabled=False):
         """
         Inits a row in current statement table
@@ -558,18 +583,22 @@ class Statement(DiscussionBase):
         return DBDiscussionSession.query(Issue).get(db_statement2issues.issue_uid).lang
 
     @hybrid_property
-    def textversion_uid(self):
+    def textversion_uid(self) -> Optional[int]:
         """
-        The id of the latest textversion
+        The id of the latest textversion, or None if there is no enabled textversion
 
         :return:
         """
 
-        return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid, is_disabled=False).order_by(
-            TextVersion.timestamp.desc()).first().uid
+        textversion: TextVersion = DBDiscussionSession.query(TextVersion).filter_by(
+            statement_uid=self.uid, is_disabled=False).order_by(TextVersion.timestamp.desc()).first()
+        if textversion:
+            return textversion.uid
+        LOG.warning(f"Statement {self.uid} has no active textversion.")
+        return None
 
     @hybrid_property
-    def textversions(self):
+    def textversions(self) -> Optional["TextVersion"]:
         return self.get_textversion()
 
     @hybrid_property
@@ -577,22 +606,27 @@ class Statement(DiscussionBase):
         warnings.warn("Use 'issues' instead.", DeprecationWarning)
         return DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=self.uid).first().issue_uid
 
-    def get_textversion(self):
+    def get_textversion(self) -> Optional["TextVersion"]:
         """
-        Returns the latest textversion for this statement.
+        Returns the latest textversion for this statement or None if there is no active textversion.
 
         :return: TextVersion object
         """
-        return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
+        if self.textversion_uid:
+            return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
+        return None
 
-    def get_text(self, html: bool = False) -> str:
+    def get_text(self, html: bool = False) -> Optional[str]:
         """
         Gets the current text from the statement, without trailing punctuation.
 
         :param html: If True, returns a html span for coloring.
-        :return:
+        :return: None if there is no active textversion
         """
-        text = self.get_textversion().content
+        textversion = self.get_textversion()
+        if not textversion:
+            return None
+        text = textversion.content
         while text.endswith(('.', '?', '!')):
             text = text[:-1]
 
@@ -872,6 +906,10 @@ class Premise(DiscussionBase):
 
     premisegroup: 'PremiseGroup' = relationship('PremiseGroup', foreign_keys=[premisegroup_uid],
                                                 back_populates='premises')
+    argument: 'Argument' = relationship('Argument', foreign_keys=[premisegroup_uid],
+                                        primaryjoin='Argument.premisegroup_uid == Premise.premisegroup_uid',
+                                        back_populates='premises')
+
     statement: Statement = relationship(Statement, foreign_keys=[statement_uid], back_populates='premises')
     author: User = relationship(User, foreign_keys=[author_uid])
     issue: Issue = relationship(Issue, foreign_keys=[issue_uid])
@@ -1000,6 +1038,9 @@ class Argument(DiscussionBase):
     is_disabled: bool = Column(Boolean, nullable=False)
 
     premisegroup: PremiseGroup = relationship(PremiseGroup, foreign_keys=[premisegroup_uid], back_populates='arguments')
+    premises: List[Premise] = relationship(Premise, foreign_keys=[Premise.premisegroup_uid],
+                                           primaryjoin='Argument.premisegroup_uid == Premise.premisegroup_uid',
+                                           back_populates='argument')
     conclusion: Optional[Statement] = relationship('Statement', foreign_keys=[conclusion_uid],
                                                    back_populates='arguments')
 
@@ -1009,6 +1050,8 @@ class Argument(DiscussionBase):
     attacks: Optional['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid,
                                                  back_populates='attacked_by')
     attacked_by: List['Argument'] = relationship('Argument', remote_side=argument_uid, back_populates='attacks')
+
+    clicks = relationship('ClickedArgument')
 
     # these are only for legacy support. use attacked_by and author instead
     issues: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
@@ -1101,6 +1144,15 @@ class Argument(DiscussionBase):
         db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisegroup_uid)
         return db_premisegroup.get_text()
 
+    def get_attacked_argument_text(self) -> Dict[str, str]:
+        attacked_argument: 'Argument' = self.attacks
+        if attacked_argument:
+            return {
+                'conclusion': attacked_argument.get_conclusion_text(),
+                'premise': attacked_argument.get_premisegroup_text(),
+            }
+        return {}
+
     def to_dict(self):
         """
         Returns the row as dictionary.
@@ -1159,7 +1211,7 @@ class ClickedArgument(DiscussionBase):
     is_up_vote: bool = Column(Boolean, nullable=False)
     is_valid: bool = Column(Boolean, nullable=False)
 
-    argument: Argument = relationship('Argument')
+    argument: Argument = relationship('Argument', back_populates='clicks')
     user: User = relationship('User')
 
     def __init__(self, argument_uid, author_uid, is_up_vote=True, is_valid=True):
@@ -1219,8 +1271,8 @@ class ClickedStatement(DiscussionBase):
     is_up_vote: bool = Column(Boolean, nullable=False)
     is_valid: bool = Column(Boolean, nullable=False)
 
-    statement: Statement = relationship('Statement')
-    user: User = relationship('User', foreign_keys=[author_uid])
+    statement: Statement = relationship('Statement', back_populates='clicks')
+    user: User = relationship('User', foreign_keys=[author_uid], back_populates='clicked_statements')
 
     def __init__(self, statement_uid, author_uid, is_up_vote=True, is_valid=True):
         """
@@ -1263,6 +1315,20 @@ class ClickedStatement(DiscussionBase):
         :return: None
         """
         self.timestamp = get_now()
+
+    def to_dict(self, lang: str) -> Dict[str, Any]:
+        """
+        Returns a dictionary-based representaiton of the ClickedStatement object.
+
+        :param lang: A string representing the language used by the timestamp.
+        :return: A dictionary representation of the object.
+        """
+        return {'uid': self.uid,
+                'timestamp': sql_timestamp_pretty_print(self.timestamp, lang),
+                'is_up_vote': self.is_up_vote,
+                'is_valid': self.is_valid,
+                'statement_uid': self.statement_uid,
+                'content': self.statement.get_text()}
 
 
 class MarkedArgument(DiscussionBase):
@@ -1403,6 +1469,11 @@ class AbstractReviewCase(DiscussionBase):
     def update_timestamp(self):
         pass
 
+    @abstractmethod
+    def get_issues(self) -> [Issue]:
+        """Get the issues to which the statements of this review case belong"""
+        pass
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
 
@@ -1474,6 +1545,11 @@ class ReviewDelete(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        if self.argument:
+            return [self.argument.issue]
+        return self.statement.issues
+
 
 class ReviewEdit(AbstractReviewCase):
     """
@@ -1534,6 +1610,11 @@ class ReviewEdit(AbstractReviewCase):
         :return: None
         """
         self.timestamp = get_now()
+
+    def get_issues(self) -> [Issue]:
+        if self.argument:
+            return [self.argument.issue]
+        return self.statement.issues
 
 
 class ReviewEditValue(DiscussionBase):
@@ -1625,6 +1706,11 @@ class ReviewOptimization(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        if self.argument:
+            return [self.argument.issue]
+        return self.statement.issues
+
 
 class ReviewDuplicate(AbstractReviewCase):
     """
@@ -1687,6 +1773,9 @@ class ReviewDuplicate(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        return self.duplicate_statement.issues
+
 
 class ReviewMerge(AbstractReviewCase):
     """
@@ -1744,6 +1833,9 @@ class ReviewMerge(AbstractReviewCase):
         """
         self.timestamp = get_now()
 
+    def get_issues(self) -> [Issue]:
+        return [self.premisegroup.premises[0].issue]
+
 
 class ReviewSplit(AbstractReviewCase):
     """
@@ -1800,6 +1892,9 @@ class ReviewSplit(AbstractReviewCase):
         :return: None
         """
         self.timestamp = get_now()
+
+    def get_issues(self) -> [Issue]:
+        return [self.premisegroup.premises[0].issue]
 
 
 class ReviewSplitValues(DiscussionBase):
@@ -2491,3 +2586,73 @@ class ShortLinks(DiscussionBase):
     def update_short_url(self, short_url):
         self.short_url = short_url
         self.timestamp = get_now()
+
+
+class DecisionProcess(DiscussionBase):
+    __tablename__ = 'decidotron_decision_process'
+    issue_id: int = Column(Integer, ForeignKey(Issue.uid), primary_key=True)
+    budget: int = Column(Integer, nullable=False, doc="Budget for an issue in cents")
+    currency_symbol: str = Column(String, nullable=True)
+    positions_end: datetime = Column(DateTime, nullable=True)
+    votes_start: datetime = Column(DateTime, nullable=True)
+    votes_end: datetime = Column(DateTime, nullable=True)
+    host: str = Column(String, nullable=False, doc="The host of the associated decidotron instance")
+    max_position_cost: int = Column(Integer, nullable=True)
+    min_position_cost: int = Column(Integer, nullable=False, server_default="0")
+
+    issue = relationship(Issue,
+                         back_populates='decision_process')  # backref=backref('decision_process', cascade="all, delete-orphan"))
+
+    def __init__(self, issue_id: int, budget: int, host: str, currency_symbol="€",
+                 positions_end: datetime = None,
+                 votes_start: datetime = None,
+                 votes_end: datetime = None,
+                 max_position_cost: int = None,
+                 min_position_cost: int = 0):
+        if budget <= 0:
+            raise ValueError("The budget has to be greater than 0!")
+        self.issue_id = issue_id
+        self.budget = budget
+        self.host = host
+        self.currency_symbol = currency_symbol
+        self.positions_end = positions_end
+        self.votes_start = votes_start
+        self.votes_end = votes_end
+        self.max_position_cost = max_position_cost if max_position_cost and max_position_cost < budget else budget
+        self.min_position_cost = min_position_cost if min_position_cost > 0 else 0
+
+    def budget_str(self):
+        return "{currency_symbol} {:.2f}".format(self.budget, currency_symbol=self.currency_symbol)
+
+    @staticmethod
+    def by_id(issue_id: int) -> 'DecisionProcess':
+        return DBDiscussionSession.query(DecisionProcess).get(issue_id)
+
+    def position_ended(self):
+        return bool(self.positions_end) and self.positions_end > datetime.now()
+
+    def to_dict(self) -> dict:
+        return {
+            "host": self.host,
+            "budget": self.budget,
+            "currency_symbol": self.currency_symbol,
+            "budget_string": self.budget_str(),
+            "positions_end": self.positions_end,
+            "position_ended": self.position_ended(),
+            "votes_start": self.votes_start,
+            "votes_started": self.votes_start < datetime.now() if bool(self.votes_start) else True,
+            "votes_end": self.votes_end,
+            "votes_ended": self.votes_end < datetime.now() if bool(self.votes_end) else False,
+            "max_position_cost": self.max_position_cost if self.max_position_cost else self.budget,
+            "min_position_cost": self.min_position_cost,
+        }
+
+
+class PositionCost(DiscussionBase):
+    __tablename__ = 'decidotron_position_cost'
+    position_id: int = Column(Integer, ForeignKey(Statement.uid), primary_key=True)
+    cost: int = Column(Integer, nullable=False)
+
+    def __init__(self, position: Statement, cost: int):
+        self.position_id = position.uid
+        self.cost = cost

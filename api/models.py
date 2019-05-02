@@ -3,7 +3,7 @@ from typing import List
 
 from dbas.database.discussion_model import StatementReference, Issue, Statement, TextVersion
 from dbas.helper.url import url_to_statement
-from dbas.lib import unhtmlify
+from dbas.lib import unhtmlify, get_all_arguments_with_text_by_statement_id
 
 
 class JSONBase:
@@ -70,6 +70,22 @@ class DataReference(JSONBase):
         issue: Issue = statement_reference.issue
         statement: Statement = statement_reference.statement
         self.url: str = url_to_statement(issue, statement)
+
+
+class DataReferenceWithStatement:
+    def __init__(self, reference: StatementReference):
+        self.reference = reference
+        self.arguments = get_all_arguments_with_text_by_statement_id(reference.statement_uid)
+        self.statement_url = url_to_statement(reference.issue, reference.statement)
+
+    def __json__(self, _request=None):
+        return {
+            "reference": self.reference,
+            "arguments": self.arguments,
+            "statement": {"uid": self.reference.statement_uid,
+                          "url": self.statement_url,
+                          "text": self.reference.statement.get_textversion().content}
+        }
 
 
 class DataIssue(JSONBase):

@@ -5,8 +5,9 @@ Provides helping function for flagging arguments.
 """
 
 import logging
-import transaction
 from typing import Union, Optional
+
+import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
@@ -87,7 +88,7 @@ def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReason
 def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_values: list, db_user: User,
                                       tn: Translator) -> dict:
     """
-    Flags a statement for a merge or split event. On split, the statement of the pgroup will be splitted into the
+    Flags a statement for a merge or split event. On split, the statement of the pgroup will be split into the
     given text_values. On merge the statements of the pgroup will be connected by an and.
 
     :param key: either 'split' or 'merge'
@@ -110,9 +111,9 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
             info = tn.get(_.alreadyFlaggedByOthers)
         return {'success': '', 'info': info}
 
-    if key is key_merge:
+    if key == key_merge:
         __add_merge_review(pgroup.uid, db_user.uid, text_values)
-    elif key is key_split:
+    elif key == key_split:
         __add_split_review(pgroup.uid, db_user.uid, text_values)
 
     success = tn.get(_.thxForFlagText)
@@ -121,7 +122,7 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
 
 def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User, tn: Translator) -> dict:
     """
-    Flags a premisegroup for a merge or split event. On split the premisegroup will be divided into indepent groups.
+    Flags a premisegroup for a merge or split event. On split the premisegroup will be divided into independent groups.
     On merge the statements of this group will be one statement.
 
     :param key: either 'split' or 'merge'

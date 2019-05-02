@@ -57,9 +57,9 @@
             <td>${issue.count_of_statements}</td>
             <td>${issue.participants}</td>
             <td>
-              <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flags/de-24.png')}"
+              <img tal:condition="issue.lang.is_de" src="${request.static_path('dbas:static/images/flags/de-24.png')}"
                                                     alt="flag_de">
-              <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}"
+              <img tal:condition="issue.lang.is_en" src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}"
                                                     alt="flag_us-gb">
             </td>
             <td>${issue.date}</td>

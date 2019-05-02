@@ -154,7 +154,7 @@ Main.prototype.__setClickFunctionsListElements = function (guiHandler, popupHand
     'use strict';
     var list = $('#' + discussionSpaceListId);
     list.find('.item-flag').click(function () {
-        var uid = $(this).parent().find('input').attr('id').replace('item_', '');
+        var uid = $(this).parents('.premise-input').find('.premise-title').attr('id').replace('item_', '');
         var text = [];
         var txt;
         $.each($(this).parent().find('label'), function () {
@@ -169,20 +169,20 @@ Main.prototype.__setClickFunctionsListElements = function (guiHandler, popupHand
 
     list.find('.item-edit').click(function () {
         var uids = [];
-        $(this).parent().find('label:nth-child(even)').each(function () {
+        $(this).closest('.premise-input').find('.premise-title').each(function () {
             uids.push($(this).attr('id'));
         });
         popupHandler.showEditStatementsPopup(uids);
     });
 
     list.find('.item-trash').click(function () {
-        var uid = $(this).parent().find('label').attr('id');
+        var uid = $(this).closest('.premise-input').find('.premise-title').attr('id');
         popupHandler.showDeleteContentPopup(uid, false);
     });
 
     list.find('.item-reference').click(function () {
         var uids = [];
-        $(this).parent().find('label:nth-child(even)').each(function () {
+        $(this).closest('.premise-input').find('.premise-title').each(function () {
             uids.push(parseInt($(this).attr('id')));
         });
         new AjaxReferenceHandler().getReferences(uids, false);
@@ -260,7 +260,7 @@ Main.prototype.__setClickFunctionsTriangleElements = function (guiHandler, popup
 
 };
 
-Main.prototype.__setTriangleHoverFunc = function(trianglel){
+Main.prototype.__setTriangleHoverFunc = function (trianglel) {
     'use strict';
     trianglel.find('.triangle-content a').hover(function () {
         trianglel.find('.triangle-content-text').each(function () {
@@ -576,15 +576,21 @@ Main.prototype.setInputExtraOptions = function (guiHandler, interactionHandler) 
     'use strict';
     var textArray = [], splits, conclusion, supportive, arg, relation;
     splits = window.location.href.split('?')[0].split('/');
-    var push = function(_this) {
+    var push = function (_this) {
         if ($(_this).val().length > 0) {
             textArray.push($(_this).val());
         }
     };
     var sendStartStatement = function () {
+        var data = $("#add-statement-container-body :input").toArray()
+            .map(input => [input.dataset.key, input.value])
+            .reduce((accumulator, currentValue) => {
+                accumulator[currentValue[0]] = currentValue[1];
+                return accumulator;
+            }, {});
         var position = $('#' + addStatementContainerMainInputPosId).val();
         var reason = $('#' + addStatementContainerMainInputResId).val();
-        interactionHandler.sendArgument(position, reason);
+        interactionHandler.sendArgument(position, reason, data);
     };
     var sendStartPremise = function () {
         conclusion = splits[splits.length - 2];
@@ -644,7 +650,7 @@ Main.prototype.__setInputExtraFuncs = function (guiHandler, sendStartStatement, 
     if (children.length > 0) {
         id = children.eq(0).attr('id');
         id = id.replace('item_', '');
-        _this.__setContainerSidebarForOneLiner(children, id, ids);
+        _this.__setContainerSidebarForOneLiner(children, id, ['start_statement', 'start_premise', 'justify_premise']);
     }
 
     // options for the extra buttons, where the user can add input!
@@ -668,7 +674,7 @@ Main.prototype.__setInputExtraFuncs = function (guiHandler, sendStartStatement, 
     return true;
 };
 
-Main.prototype.__setContainerSidebarForOneLiner = function(children, id, ids){
+Main.prototype.__setContainerSidebarForOneLiner = function (children, id, ids) {
     'use strict';
     // if we have just one list element AND the list element has a special function AND we are logged in
     if (children.length === 1 && $.inArray(id, ids) !== -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) === -1) {

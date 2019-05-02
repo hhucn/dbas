@@ -1,8 +1,6 @@
-from pyramid import testing
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import TextVersion, Statement, StatementToIssue
-from dbas.tests.utils import TestCaseWithConfig
+from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 
 
 class AjaxTest(TestCaseWithConfig):
@@ -12,17 +10,17 @@ class AjaxTest(TestCaseWithConfig):
         from admin.views import main_add as ajax3
         ajax = [ajax1, ajax2, ajax3]
         for a in ajax:
-            request = testing.DummyRequest(json_body={}, validated={})
+            request = construct_dummy_request(json_body={}, validated={})
             self.assertEqual(400, a(request).status_code)
 
     def test_main_update(self):
         from admin.views import main_update as ajax
 
-        request = testing.DummyRequest(json_body={}, validated={})
+        request = construct_dummy_request(json_body={}, validated={})
         self.assertEqual(400, ajax(request).status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'table': 'TextVersion',
             'uids': [44],
             'keys': ['author_uid'],
@@ -34,14 +32,14 @@ class AjaxTest(TestCaseWithConfig):
 
     def test_main_delete_error(self):
         from admin.views import main_delete as ajax
-        request = testing.DummyRequest(json_body={}, validated={})
+        request = construct_dummy_request(json_body={}, validated={})
         self.assertEqual(400, ajax(request).status_code)
 
     def test_main_delete(self):
         from admin.views import main_delete as ajax
         db_s1 = DBDiscussionSession.query(Statement).all()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'table': 'statement',
             'uids': [db_s1[-1].uid]
         }, validated={})
@@ -52,16 +50,16 @@ class AjaxTest(TestCaseWithConfig):
         from admin.views import main_add as ajax_add
         from admin.views import main_delete as ajax_del
 
-        request = testing.DummyRequest(json_body={}, validated={})
+        request = construct_dummy_request(json_body={}, validated={})
         self.assertEqual(400, ajax_add(request).status_code)
-        request = testing.DummyRequest(json_body={}, validated={})
+        request = construct_dummy_request(json_body={}, validated={})
         self.assertEqual(400, ajax_del(request).status_code)
 
     def test_main_add_and_delete(self):
         from admin.views import main_add as ajax_add
         from admin.views import main_delete as ajax_del
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request_add = testing.DummyRequest(json_body={
+        request_add = construct_dummy_request(json_body={
             'table': 'Statement',
             'new_data': {
                 'is_position': False,
@@ -71,7 +69,7 @@ class AjaxTest(TestCaseWithConfig):
 
         self.assertTrue(ajax_add(request_add))
 
-        request_del = testing.DummyRequest(json_body={
+        request_del = construct_dummy_request(json_body={
             'table': '',
             'uids': DBDiscussionSession.query(Statement).order_by(Statement.uid.desc()).first().uid
         }, validated={})

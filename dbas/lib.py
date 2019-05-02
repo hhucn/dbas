@@ -275,7 +275,7 @@ def __get_arguments_of_conclusion(statement_uid, include_disabled):
     return db_arguments.all() if db_arguments else []
 
 
-def get_all_arguments_with_text_by_statement_id(statement_uid) -> List[dict]:
+def get_all_arguments_with_text_by_statement_id(statement_uid: int) -> List[dict]:
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
@@ -288,15 +288,23 @@ def get_all_arguments_with_text_by_statement_id(statement_uid) -> List[dict]:
     LOG.debug("Retrieving arguments for statement uid: %s", statement_uid)
     arguments: List[Argument] = get_all_arguments_by_statement(statement_uid)
     if arguments:
-        return [{'uid': arg.uid,
-                 'text': get_text_for_argument_uid(arg.uid),
-                 'author': arg.author,
-                 'issue': arg.issue} for arg in arguments]
+        return [{
+            'uid': arg.uid,
+            'texts': {
+                'display': get_text_for_argument_uid(arg.uid),
+                'conclusion': arg.get_conclusion_text(),
+                'premise': arg.get_premisegroup_text(),
+                'attacks': arg.get_attacked_argument_text(),
+            },
+            'author': arg.author,
+            'issue': arg.issue
+        }
+            for arg in arguments]
     return []
 
 
-def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager, color_statement=False,
-                                                        is_jump=False):
+def get_all_arguments_with_text_and_url_by_statement(db_statement: Statement, urlmanager, color_statement=False,
+                                                     is_jump=False):
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
@@ -337,10 +345,12 @@ def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager
     return results
 
 
-def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
-                              user_changed_opinion=False, rearrange_intro=False, colored_position=False,
-                              attack_type=None, minimize_on_undercut=False, is_users_opinion=True,
-                              anonymous_style=False, support_counter_argument=False):
+def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: bool = False,
+                              start_with_intro: bool = False, first_arg_by_user: bool = False,
+                              user_changed_opinion: bool = False, rearrange_intro: bool = False,
+                              colored_position: bool = False, attack_type: str = None,
+                              minimize_on_undercut: bool = False, is_users_opinion: bool = True,
+                              anonymous_style: bool = False, support_counter_argument: bool = False) -> str:
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
@@ -359,8 +369,8 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     :param is_users_opinion: Boolean
     :return: String
     """
-    LOG.debug("main %s", uid)
-    db_argument = DBDiscussionSession.query(Argument).get(uid)
+    LOG.debug("Constructing text for argument with uid %s", uid)
+    db_argument: Argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return None
 
@@ -368,41 +378,51 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     _t = Translator(lang)
     premisegroup_by_user = False
     author_uid = None
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    db_user: User = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
 
     if db_user:
         author_uid = db_user.uid
-        pgroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisegroup_uid)
-        marked_argument = DBDiscussionSession.query(MarkedArgument).filter_by(
+        pgroup: PremiseGroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisegroup_uid)
+        marked_argument: MarkedArgument = DBDiscussionSession.query(MarkedArgument).filter_by(
             argument_uid=uid,
             author_uid=db_user.uid).first()
         premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None
 
-    # getting all argument id
-    arg_array = [db_argument]
-    while db_argument.argument_uid:
-        db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
-        arg_array.append(db_argument)
+    arguments = __get_chain_of_attacking_arguments(db_argument)
 
     if attack_type == 'jump':
-        return __build_argument_for_jump(arg_array, with_html_tag)
+        return __build_argument_for_jump(arguments, with_html_tag)
 
-    if len(arg_array) == 1:
+    if len(arguments) == 1:
         # build one argument only
-        return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
+        return __build_single_argument(arguments[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
                                        start_with_intro, is_users_opinion, anonymous_style, support_counter_argument,
                                        author_uid)
 
     else:
         # get all pgroups and at last, the conclusion
-        return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag,
+        return __build_nested_argument(arguments, first_arg_by_user, user_changed_opinion, with_html_tag,
                                        start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user,
                                        _t)
 
 
-def __build_argument_for_jump(arg_array: List[Argument], with_html_tag):
+def __get_chain_of_attacking_arguments(argument: Argument) -> List[Argument]:
     """
-    Build tet for an argument, if we jump to this argument
+    Traverse through all arguments which might be connected to our starting argument and collect them all.
+
+    :param argument:
+    :return:
+    """
+    arguments = [argument]
+    while argument.attacks:
+        argument: Argument = argument.attacks
+        arguments.append(argument)
+    return arguments
+
+
+def __build_argument_for_jump(arg_array: List[Argument], with_html_tag: bool) -> str:
+    """
+    Build text for an argument, if we jump to this argument
 
     :param arg_array: [Argument]
     :param with_html_tag: This parameter is ignored in the next steps, which is why we should rewrite this function.
@@ -426,7 +446,7 @@ def __build_argument_for_jump(arg_array: List[Argument], with_html_tag):
     return ret_value.replace('  ', ' ')
 
 
-def __build_val_for_jump(db_argument, tag_premise, tag_conclusion, tag_end, _t):
+def __build_val_for_jump(db_argument: Argument, tag_premise, tag_conclusion, tag_end, _t) -> str:
     premises = db_argument.get_premisegroup_text()
     if premises[-1] != '.':
         premises += '.'
@@ -530,16 +550,16 @@ def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_h
     you_have_the_opinion_that = _t.get(_.youHaveTheOpinionThat).format('').strip()
 
     if lang == 'de':
-        ret_value = __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro,
-                                                   anonymous_style, rearrange_intro, db_argument, attack_type, sb_none,
-                                                   marked_element, lang, premises_text, conclusion_text,
-                                                   is_users_opinion,
-                                                   support_counter_argument)
+        text = __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro,
+                                              anonymous_style, rearrange_intro, db_argument, attack_type, sb_none,
+                                              marked_element, premises_text, conclusion_text,
+                                              is_users_opinion,
+                                              support_counter_argument)
     else:
-        ret_value = __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element,
-                                                   conclusion_text,
-                                                   premises_text, db_argument)
-    return ret_value.replace('  ', ' ')
+        text = __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element,
+                                              conclusion_text,
+                                              premises_text, db_argument)
+    return text.replace('  ', ' ')
 
 
 def __get_tags_for_building_single_argument(with_html_tag, attack_type, colored_position, premises, conclusion):
@@ -588,42 +608,42 @@ def __get_tags_for_building_single_user_argument(with_html_tag, premises, conclu
     }
 
 
-def __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro, anonymous_style,
-                                   rearrange_intro, db_argument, attack_type, sb_none, marked_element, lang,
-                                   premises, conclusion, is_users_opinion, support_counter_argument):
+def __build_single_argument_for_de(_t: Translator, sb: str, se: str, you_have_the_opinion_that: str,
+                                   start_with_intro: bool, anonymous_style: bool, rearrange_intro: bool,
+                                   db_argument: Argument, attack_type: str, sb_none: str, marked_element, premises: str,
+                                   conclusion: str, is_users_opinion: bool, support_counter_argument) -> str:
     if start_with_intro and not anonymous_style:
         intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
         if rearrange_intro:
             intro = _t.get(_.itTrueIsThat) if db_argument.is_supportive else _t.get(_.itFalseIsThat)
 
-        ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
+        text = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
 
     elif is_users_opinion and not anonymous_style:
-        ret_value = sb_none
+        text = sb_none
         if support_counter_argument:
-            ret_value += _t.get(_.youAgreeWithThecounterargument)
+            text += _t.get(_.youAgreeWithThecounterargument)
         elif marked_element:
-            ret_value += you_have_the_opinion_that
+            text += you_have_the_opinion_that
         else:
-            ret_value += _t.get(_.youArgue)
-        ret_value += se + ' '
-
+            text += _t.get(_.youArgue)
+        text += se + ' '
     else:
         tmp = _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous)
-        ret_value = sb_none + sb + tmp + se + ' '
-    ret_value += ' {}{}{} '.format(sb, _t.get(_.itIsNotRight), se) if not db_argument.is_supportive else ''
-    ret_value += conclusion
-    ret_value += ', ' if lang == 'de' else ' '
-    ret_value += sb_none + _t.get(_.because).lower() + se + ' ' + premises
-    return ret_value
+        text = sb_none + sb + tmp + se + ' '
+
+    text += f' {sb}{_t.get(_.itIsNotRight)}{se} ' if not db_argument.is_supportive else ''
+    text += f'{conclusion}, {sb_none}{_t.get(_.because).lower()}{se} {premises}'
+    return text
 
 
-def __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element, conclusion, premises, db_arg):
+def __build_single_argument_for_en(_t: Translator, sb: str, se: str, you_have_the_opinion_that: str, marked_element,
+                                   conclusion: str, premises: str, argument: Argument):
     tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
-    ret_value = (you_have_the_opinion_that + ' ' if marked_element else '') + conclusion + ' '
-    ret_value += _t.get(_.because).lower() if db_arg.is_supportive else tmp
-    ret_value += ' ' + premises
-    return ret_value
+    text = (you_have_the_opinion_that + ' ' if marked_element else '') + conclusion + ' '
+    text += _t.get(_.because).lower() if argument.is_supportive else tmp
+    text += ' ' + premises
+    return text
 
 
 def __build_nested_argument(arg_array: List[Argument], first_arg_by_user, user_changed_opinion, with_html_tag,
@@ -747,21 +767,6 @@ def get_text_for_statement_uid(uid: int, colored_position=False) -> Optional[str
     return sb + content + se
 
 
-def get_text_for_premise(uid: int, colored_position: bool = False) -> Optional[str]:
-    """
-    Returns text of premise with given uid
-
-    :param uid: Statement.uid
-    :param colored_position: Boolean
-    :return: String
-    """
-    db_premise = DBDiscussionSession.query(Premise).get(uid)
-    if db_premise:
-        return db_premise.get_text(html=colored_position)
-    else:
-        return None
-
-
 def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=False, is_users_opinion=True):
     """
     Check the arguments conclusion whether it is an statement or an argument and returns the text
@@ -776,19 +781,6 @@ def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=Fa
                                          is_users_opinion=is_users_opinion)
     else:
         return argument.get_conclusion_text()
-
-
-def resolve_issue_uid_to_slug(uid):
-    """
-    Given the issue uid query database and return the correct slug of the issue.
-
-    :param uid: issue_uid
-    :type uid: int
-    :return: Slug of issue
-    :rtype: str
-    """
-    issue = DBDiscussionSession.query(Issue).get(uid)
-    return issue.slug if issue else None
 
 
 def get_all_attacking_arg_uids_from_history(history):
@@ -1261,17 +1253,3 @@ def get_enabled_issues_as_query():
     :return: Query
     """
     return DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
-
-
-def get_visible_issues_for_user(user: User) -> List[Issue]:
-    """
-    Returns query with all issues, which are visible for the user
-
-    :param user:
-    :return: Query
-    """
-
-    db_issues = set(DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
-                                                            Issue.is_private == False).all())
-
-    return list(db_issues.union(user.participates_in))

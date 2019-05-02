@@ -18,7 +18,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         # check count of seen by statements
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
 
-        request = construct_dummy_request(match_dict={'slug': 'cat-or-dog'})
+        request = construct_dummy_request(matchdict={'slug': 'cat-or-dog'})
         response = init(request)
         verify_dictionary_of_view(response)
 
@@ -33,7 +33,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
 
-        request = construct_dummy_request(match_dict={'slug': 'cat-or-dog'})
+        request = construct_dummy_request(matchdict={'slug': 'cat-or-dog'})
         response = init(request)
         verify_dictionary_of_view(response)
 
@@ -50,7 +50,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
 
-        request = construct_dummy_request(match_dict={'slug': 'cat-or-dog'})
+        request = construct_dummy_request(matchdict={'slug': 'cat-or-dog'})
         response = init(request)
         verify_dictionary_of_view(response)
 
@@ -69,7 +69,7 @@ class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = discussion_overview(request)
         verify_dictionary_of_view(response)
 
@@ -86,7 +86,7 @@ class MainMyDiscussionViewTestsLoggedIn(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = discussion_overview(request)
         verify_dictionary_of_view(response)
 

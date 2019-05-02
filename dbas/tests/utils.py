@@ -1,9 +1,8 @@
 """
 Namespace to re-use commonly used components for testing.
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 import unittest
+from typing import Dict, Any
 
 import transaction
 from cornice import Errors
@@ -19,10 +18,9 @@ from dbas.helper.test import add_settings_to_appconfig
 
 class TestCaseWithDatabase(unittest.TestCase):
     def setUp(self):
-        self.config = testing.setUp()
+        self.config = testing.setUp(settings=_settings_dict_for_tests())
         self.config.include('pyramid_chameleon')
         settings = add_settings_to_appconfig()
-        settings.update(get_key_pair())
         DBDiscussionSession.remove()
         DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
@@ -50,6 +48,9 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         self.user_tobi: User = DBDiscussionSession.query(User).get(2)
         self.user_christian: User = DBDiscussionSession.query(User).get(3)
         self.user_bjoern: User = DBDiscussionSession.query(User).get(4)
+        self.user_pascal: User = DBDiscussionSession.query(User).get(7)
+        self.user_torben: User = DBDiscussionSession.query(User).get(9)
+        self.user_antonia: User = DBDiscussionSession.query(User).get(28)
         self.statement_reference: StatementReference = DBDiscussionSession.query(StatementReference).get(2)
 
         DBDiscussionSession.query(Argument).get(1).set_disabled(True)
@@ -59,30 +60,37 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         super().tearDown()
 
 
-def construct_dummy_request(json_body: dict = None, match_dict: dict = None, validated: dict = None,
-                            params: dict = None) -> DummyRequest:
+def _settings_dict_for_tests() -> Dict[str, Any]:
     """
-    Creates a Dummy-Request. Optionally takes a json_body etc, which can directly be injected into the request.
+    Builds a dictionary with settings that are needed for the tests to function directly.
+    Do not build the settings elsewhere. Use this method instead.
 
-    :param json_body: dict
-    :param match_dict: dict
-    :param validated: dict
-    :param params: dict
+    :return: A dictionary of settings, that can be used in test requests.
+    """
+    settings_dict = {'beaker.session.timeout': 3600}
+    settings_dict.update(get_key_pair())
+    return settings_dict
+
+
+def construct_dummy_request(validated: Dict = None, json_body: Dict = None, **kwargs) -> DummyRequest:
+    """
+    Creates a Dummy-Request prepared with everything needed to run D-BAS tests.
+    Optionally takes the same parameters as DummyRequest, which are directly passed to the DummyRequest.
+
     :return: DummyRequest
-    :rtype: DummyRequest
     """
-    json_body = json_body if json_body else {}
-    match_dict = match_dict if match_dict else {}
-    validated = validated if validated else {}
-    params = params if params else {}
+    # environ, headers, cookies, params and path can be None. See
+    # https://docs.pylonsproject.org/projects/pyramid/en/latest/_modules/pyramid/testing.html#DummyRequest for details.
+    # Only pass parameters that are explicitly given.
+    validated = validated if validated is not None else {}
+    json_body = json_body if json_body is not None else {}
 
-    d_request = DummyRequest(json_body=json_body, matchdict=match_dict, validated=validated, params=params,
-                             errors=Errors(),
-                             mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, decorated={'extras': {}})
+    dummy_request = DummyRequest(errors=Errors(), mailer=DummyMailer, cookies={'_LOCALE_': 'en'}, validated=validated,
+                                 decorated={'extras': {}}, json_body=json_body, **kwargs)
 
-    if d_request.registry.settings:
-        d_request.registry.settings.update(get_key_pair())
+    if dummy_request.registry.settings:
+        dummy_request.registry.settings.update(_settings_dict_for_tests())
     else:
-        d_request.registry.settings = get_key_pair()
+        dummy_request.registry.settings = _settings_dict_for_tests()
 
-    return d_request
+    return dummy_request

@@ -13,7 +13,7 @@ class DiscussionAttitudeViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'statement_id': 2,
         })

@@ -153,12 +153,9 @@ def set_references(request):
     return set_reference(text, source, db_user, db_statement, db_issue.uid)
 
 
-# ########################################
-# ADDTIONAL AJAX STUFF # ADDITION THINGS #
-# ########################################
+# -----------------------------------------------------------------------------
+# ADDITIONAL AJAX STUFF # ADDITION THINGS #
 
-
-# ajax - for language switch
 @view_config(route_name='switch_language', renderer='json')
 @validate(valid_language)
 def switch_language(request):

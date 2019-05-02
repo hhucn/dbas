@@ -161,7 +161,6 @@ var participantSawThisStatement = 'participantSawThisStatement';
 var participantsSawArgumentsToThis = 'participantsSawArgumentsToThis';
 var participantSawArgumentsToThis = 'participantSawArgumentsToThis';
 var pinNavigation = 'pinNavigation';
-var pleaseEditAtLeast = 'pleaseEditAtLeast';
 var pleaseEnterYourTextHere = 'pleaseEnterYourTextHere';
 var pleaseEnterYourTextForSearchHere = 'pleaseEnterYourTextForSearchHere';
 var queueCompleteSeen = 'queueCompleteSeen';
@@ -216,6 +215,7 @@ var textMaxCountMessageError = 'textMaxCountMessageError';
 var timestamp = 'timestamp';
 var typeofVote = 'typeofVote';
 var users = 'users';
+var userPasswordNotMatch = 'userPasswordNotMatch';
 var usersWithSameOpinion = 'usersWithSameOpinion';
 var unpinNavigation = 'unpinNavigation';
 var veryweak = 'veryweak';
@@ -334,7 +334,11 @@ var dbas_en = {
     'dataAdded': 'Data was successfully added.',
     'date': 'Date',
     'didYouMean': 'Top10 statements, which you probably could mean:',
+<<<<<<< HEAD
     'duplicateDialog': 'This text version is deprecated, because it was already edited to this version.\nDo you want to ' +
+=======
+    'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to ' +
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
         'set this version as the current one once again?',
     'doNotHesitateToContact': 'Do not hesitate to <b><span style="cursor: pointer;" id="contact_on_error">contact us ' +
         '(click here)</span></b>',
@@ -344,13 +348,22 @@ var dbas_en = {
     'euCookiePopupTitle': 'This website uses cookies.',
     'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll ' +
         'assume that you are happy to receive all cookies.',
+<<<<<<< HEAD
     'euCookiePopoupButton1': 'Continue',
+=======
+    'euCookiePopoupButton1': 'Got it!',
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
     'euCookiePopoupButton2': 'Learn&nbsp;more',
     'empty_news_input': 'News title or text is empty or too short',
     'email': 'E-Mail',
     'emailWasSent': 'An E-Mail was sent to the given address.',
+<<<<<<< HEAD
     'emailWasNotSent': 'Your message could not be send due to a system error',
     'emailUnknown': 'The given e-mail address is unknown',
+=======
+    'emailWasNotSent': 'Your message could not be send due to a system error!',
+    'emailUnknown': 'The given e-mail address is unknown.',
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
     'error_code': 'Error code',
     'edit': 'Edit',
     'editTitle': 'Editing the statements.',
@@ -431,15 +444,25 @@ var dbas_en = {
     'option': 'Options',
     'ohsnap': 'Oh snap',
     'okay': 'Okay',
+<<<<<<< HEAD
     'otherParticipantsDontHaveOpinionForThis': 'Other participants do not have any opinion for this statement',
     'participantsSawThisStatement': 'participants saw this statement',
     'participantSawThisStatement': 'participant saw this statement',
     'participantsSawArgumentsToThis': 'participants saw an argument for this opinion',
+=======
+    'otherParticipantsDontHaveOpinionForThis': 'Other participants do not have any opinion for this statement.',
+    'participantsSawThisStatement': 'participants saw this statement.',
+    'participantSawThisStatement': 'participant saw this statement.',
+    'participantsSawArgumentsToThis': 'participants saw an argument for this opinion.',
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
     'participantSawArgumentsToThis': 'participant saw an argument for this opinion.',
     'passwordSubmit': 'Change Password',
     'proposalsWereForwarded': 'Your proposals were forwarded',
     'pinNavigation': 'Pin Navigation',
+<<<<<<< HEAD
     'pleaseEditAtLeast': 'Please edit at least X chars to reduce noise',
+=======
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
     'pleaseEnterYourTextHere': 'Please enter your text here ...',
     'pleaseEnterYourTextForSearchHere': 'Please enter your text for searching here ...',
     'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again',
@@ -500,6 +523,7 @@ var dbas_en = {
     'textMaxCountMessage': 'characters left',
     'textMaxCountMessageError': 'Keep it short',
     'users': 'Users',
+    'userPasswordNotMatch': 'User / Password do not match',
     'usersWithSameOpinion': 'Users with the same decision',
     'unpinNavigation': 'Unpin Navigation',
     'unkownError': 'Unknown error',
@@ -593,7 +617,11 @@ var dbas_de = {
     'dataAdded': 'Daten wurden erfolgreich hinzugefügt',
     'date': 'Datum',
     'didYouMean': 'Top 10 der Aussagen, die Sie eventuell meinten:',
+<<<<<<< HEAD
     'duplicateDialog': 'Diese Textversion ist veraltet, da sie schon editiert wurde.\nMöchten Sie diese Version ' +
+=======
+    'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version ' +
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
         'dennoch als die aktuellste markieren?',
     'deleteTrack': 'Track löschen',
     'deleteAccount': 'Account löschen',
@@ -607,8 +635,13 @@ var dbas_de = {
     'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt',
     'euCookiePopupTitle': 'Diese Seite nutzt Cookies',
     'euCookiePopupText': 'Wir benutzen Cookies, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen,' +
+<<<<<<< HEAD
         ' akzeptieren Sie alle Cookies unserer Seite',
     'euCookiePopoupButton1': 'Alles klar',
+=======
+        ' akzeptieren Sie alle Cookies unserer Seite an und sind glücklich damit.',
+    'euCookiePopoupButton1': 'Alles klar!',
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
     'euCookiePopoupButton2': 'Mehr&nbsp;Infos',
     'empty_news_input': 'Nachrichten-Titel oder Text ist leer oder zu kurz',
     'email': 'E-Mail',
@@ -702,7 +735,10 @@ var dbas_de = {
     'passwordSubmit': 'Passwort ändern',
     'proposalsWereForwarded': 'Ihr Vorschlag wurde eingereicht',
     'pinNavigation': 'Navigation anheften',
+<<<<<<< HEAD
     'pleaseEditAtLeast': 'Bitte ändern Sie mindestens X Zeichen um unnötige Änderungen zu vermeiden',
+=======
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
     'pleaseEnterYourTextForSearchHere': 'Bitte geben Sie hier Ihren Suchtext ein ...',
     'pleaseEnterYourTextHere': 'Bitte geben Sie hier Ihren Text ein ...',
     'queueCompleteSeen': 'Leider haben wir Ihnen schon alles gezeigt. Fangen wir also nochmal von vorne an',
@@ -726,7 +762,11 @@ var dbas_de = {
     'requestFailedInternalError': 'Anfrage aufgrund eines internen Fehlers fehlgeschlagen. Bitte laden Sie die Seite ' +
         'neu, sollte der Fehler bestehen bleiben, so <span style="cursor: pointer;" id="contact_on_error">' +
         'kontaktieren sie uns bitte (hier klicken)</span>',
+<<<<<<< HEAD
     'repuationChartSum': 'Reputation insgesamt',
+=======
+    'repuationChartSum': 'Reputation ingsesamt',
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
     'repuationChartDay': 'Reputation pro Tag',
     'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
     'sawThis': 'sahen dies',
@@ -749,16 +789,25 @@ var dbas_de = {
     'shortenedBy': 'gekürzt mit',
     'switchDiscussion': 'Diskussionsthema ändern',
     'switchDiscussionText': 'Wollen Sie wirklich die aktuelle Diskussion verlassen und zur Diskussion über ' +
+<<<<<<< HEAD
         '<strong>XXX</strong> wechseln',
     'support': 'Unterstützung',
     'surname': 'Nachname',
     'sureToDeleteReview': 'Sind Sie sicher, dass Sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann ' +
         'nicht rückgängig gemacht werden',
+=======
+        '<strong>XXX</strong> wechseln?',
+    'support': 'Unterstützung',
+    'surname': 'Nachname',
+    'sureToDeleteReview': 'Sind Sie sicher, dass Sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann ' +
+        'nicht rückgangig gemacht werden!',
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
     'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
     'text': 'Text',
     'to': 'An',
     'timestamp': 'Zeit',
     'users': 'Benutzer',
+    'userPasswordNotMatch': 'Benutzername und/oder Passwort stimmen nicht überein',
     'usersWithSameOpinion': 'Teilnehmer/innen mit derselben Interesse',
     'unpinNavigation': 'Navigation lösen',
     'unkownError': 'Unbekannter Fehler',
@@ -798,7 +847,11 @@ var dbas_de = {
     'tourIssueContent': 'Hier sehen Sie das aktuelle Diskussionsthema',
     'tourStartDiscussionTitle': 'Erste Schritte',
     'tourStartDiscussionContent': 'In diesem Abschnitt sehen Sie links Nachrichten des Systems und rechts später ' +
+<<<<<<< HEAD
         'Ihre eigenen Nachrichten',
+=======
+        'Ihre eigenen Nachrichten.',
+>>>>>>> 9a737f90ee18c10e7aafc5e2cf90ac833c0e66f9
     'tourMarkOpinionTitle': 'Meinung markieren',
     'tourMarkOpinionContent': 'Mit dem kleinen Stern neben dem Text können Sie Ihre eigene Meinung markieren',
     'tourMarkOpinionText': 'Sie interessiert, dass der Park geschlossen werden soll',

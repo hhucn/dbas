@@ -85,23 +85,14 @@ class UrlManager(object):
         url = '{}/reaction/{}/{}/{}'.format(self.slug, argument_uid, relation, confrontation_argument)
         return self.__return_discussion_url(url)
 
-    def get_url_for_choosing_premisegroup(self, is_argument, is_supportive, statement_or_argument_id,
-                                          pgroup_id_list):
+    def get_url_for_choosing_premisegroup(self, pgroup_id_list: [int]) -> str:
         """
         Returns url for choosing between various pgroups
 
-        :param is_argument: Boolean
-        :param is_supportive: Boolean
-        :param statement_or_argument_id: Statement.uid or Argument.uid
         :param pgroup_id_list: [int]
         :return: discuss/{slug}/choose/{p1}/{p2}/...
         """
-        is_arg = 'true' if is_argument else 'false'
-        is_sup = 'true' if is_supportive else 'false'
-        pgroups = ''
-        if len(pgroup_id_list) > 0:
-            pgroups = '/' + '/'.join(str(x) for x in pgroup_id_list)
-        url = '{}/choose/{}/{}/{}{}'.format(self.slug, is_arg, is_sup, statement_or_argument_id, pgroups)
+        url = '{}/choose/{}'.format(self.slug, '/'.join(str(x) for x in pgroup_id_list))
         return self.__return_discussion_url(url)
 
     def get_url_for_jump(self, argument_uid):

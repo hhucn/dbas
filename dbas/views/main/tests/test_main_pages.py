@@ -3,6 +3,7 @@ import unittest
 from pyramid import testing
 
 from dbas.helper.test import verify_dictionary_of_view
+from dbas.tests.utils import construct_dummy_request
 from dbas.views.main.rendered import imprint, news, privacy, experiment, index, faq, docs, health
 
 
@@ -12,7 +13,7 @@ class MainImprintViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = imprint(request)
         verify_dictionary_of_view(response)
 
@@ -23,7 +24,7 @@ class MainFieldexperimentViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = experiment(request)
         verify_dictionary_of_view(response)
 
@@ -34,7 +35,7 @@ class MainNewsViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = news(request)
         verify_dictionary_of_view(response)
 
@@ -45,7 +46,7 @@ class MainPrivacyViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = privacy(request)
         verify_dictionary_of_view(response)
 
@@ -56,7 +57,7 @@ class MainPageViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = index(request)
         verify_dictionary_of_view(response)
 
@@ -67,7 +68,7 @@ class MainFaqViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = faq(request)
         verify_dictionary_of_view(response)
 
@@ -78,7 +79,7 @@ class MainDocsViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = docs(request)
         verify_dictionary_of_view(response)
 
@@ -89,6 +90,6 @@ class MainHealthViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = health(request)
         self.assertEqual(200, response.status_code)

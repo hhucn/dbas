@@ -75,7 +75,7 @@
                   </td>
                   <td>
                     <div tal:condition="not:task.is_allowed" class="forbidden">
-                      <i class="${task.icon}" aria-hidden="true">&nbsp;${task.task_name}</i>
+                      <i class="${task.icon}" aria-hidden="true"></i><span>${task.task_name}</span>
                     </div>
                     <div tal:condition="not:task.is_allowed" style="line-height: normal;">
                       <small>${task.is_not_allowed_text}</small>
@@ -85,7 +85,8 @@
                         <a tal:case="False" href="${task.url}">
                           <i class="${task.icon}" aria-hidden="true"></i><span>${task.task_name}</span>
                         </a>
-                        <span tal:case="True"><i class="${task.icon}" aria-hidden="true"></i><span>${task.task_name}</span></span>
+                        <span tal:case="True"><i class="${task.icon}"
+                                                 aria-hidden="true"></i><span>${task.task_name}</span></span>
                       </div>
                     </div>
                     <div tal:condition="task.is_allowed" style="line-height: normal;">

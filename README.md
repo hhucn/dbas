@@ -62,6 +62,7 @@ We thank all contributors to this project! In order of appearance:
 
 * Alexander Schneider
 * Marc Feger
+* Markus Brenneis
 
 ### Former Contributors
 

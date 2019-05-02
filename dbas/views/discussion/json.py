@@ -1,11 +1,12 @@
 import logging
-
+from pyramid.request import Request
+from pyramid.response import Response
 from pyramid.view import view_config
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement
 from dbas.handler import history as history_handler, user, issue as issue_handler
-from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
+from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement
 from dbas.handler.issue import set_discussions_properties
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.statements import set_position, set_positions_premise, set_correction_of_statement, \
@@ -78,7 +79,7 @@ def get_all_marked_arguments(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_marked_elements_of(db_user, True, ui_locales)
+    return user.get_marked_arguments(db_user, ui_locales)
 
 
 @view_config(route_name='get_all_marked_statements', renderer='json')
@@ -92,7 +93,7 @@ def get_all_marked_statements(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_marked_elements_of(db_user, False, ui_locales)
+    return user.get_marked_statements(db_user, ui_locales)
 
 
 @view_config(route_name='get_all_argument_clicks', renderer='json')
@@ -106,7 +107,7 @@ def get_all_argument_clicks(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_clicked_elements_of(db_user, True, ui_locales)
+    return user.get_clicked_arguments(db_user, ui_locales)
 
 
 @view_config(route_name='get_all_statement_clicks', renderer='json')
@@ -120,7 +121,7 @@ def get_all_statement_clicks(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_clicked_elements_of(db_user, False, ui_locales)
+    return user.get_clicked_statements(db_user, ui_locales)
 
 
 @view_config(route_name='delete_user_history', renderer='json')
@@ -171,8 +172,9 @@ def set_discussion_properties(request):
 
 
 @view_config(route_name='set_new_start_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, has_keywords_in_json_path(('position', str), ('reason', str)))
-def set_new_start_argument(request):
+@validate(valid_user, valid_issue_not_readonly,
+          has_keywords_in_json_path(('position', str), ('reason', str), ('feature_data', dict)))
+def set_new_start_argument(request: Request):
     """
     Inserts a new argument as starting point into the database
 
@@ -185,9 +187,10 @@ def set_new_start_argument(request):
     # set the new position
     LOG.debug("Set conclusion/position")
     prepared_dict_pos = set_position(request.validated['user'], request.validated['issue'],
-                                     request.validated['position'])
+                                     request.validated['position'], request.validated['feature_data'])
 
-    if len(prepared_dict_pos['error']) == 0:
+    reponse: Response = request.response
+    if not prepared_dict_pos['errors']:
         LOG.debug("Set premise/reason")
         prepared_dict_pos = set_positions_premise(request.validated['issue'],
                                                   request.validated['user'],
@@ -197,9 +200,13 @@ def set_new_start_argument(request):
                                                   True,
                                                   request.cookies.get('_HISTORY_'),
                                                   request.mailer)
+    else:
+        reponse.status_code = 400
+
     __modifiy_discussion_url(prepared_dict_pos)
 
-    return prepared_dict_pos
+    reponse.json_body = prepared_dict_pos
+    return reponse
 
 
 @view_config(route_name='set_new_start_premise', renderer='json')
@@ -361,7 +368,7 @@ def get_arguments_by_statement_id(request):
     LOG.debug("Return all arguments which use the given statement. %s", request.json_body)
     db_statement = request.validated['statement']
     db_issue = request.validated['issue']
-    argument_list = get_arguments_by_statement_uid(db_statement, db_issue)
+    argument_list = get_arguments_by_statement(db_statement, db_issue)
     for el in argument_list.get('arguments', []):
         el['url'] = '/discuss' + el['url']
     return argument_list

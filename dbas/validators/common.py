@@ -1,14 +1,14 @@
 """
 General validators with no need for a specific namespace.
 """
-
 from pyramid.httpexceptions import HTTPFound
+from pyramid.request import Request
 from pyramid.security import forget
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Language, User
 from dbas.handler.language import get_language_from_cookie
-from dbas.handler.user import update_last_action
+from dbas.handler.user import should_log_out
 from dbas.lib import escape_string
 from dbas.strings.fuzzy_modes import FuzzyMode
 from dbas.strings.keywords import Keywords as _
@@ -51,19 +51,19 @@ def valid_lang_cookie_fallback(request):
     request.validated['lang'] = lang
 
 
-def check_authentication(request):
+def check_authentication(request: Request):
     """
-    Checks whether the user is authenticated and if user gets logged out.
+    Checks whether the user is authenticated and if user should be logged out.
 
     :param request:
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-    session_expired = update_last_action(db_user)
-    if session_expired:
+    timeout = int(request.registry.settings.get('beaker.session.timeout', 3600))
+    if should_log_out(timeout, db_user):
         request.session.invalidate()
         headers = forget(request)
-        location = request.application_url + 'discuss?session_expired=true',
+        location = request.application_url + '/discuss?session_expired=true'
         raise HTTPFound(
             location=location,
             headers=headers

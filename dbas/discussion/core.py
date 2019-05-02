@@ -1,6 +1,7 @@
 import logging
 
 import dbas.handler.issue as issue_helper
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Statement
 from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
@@ -111,7 +112,6 @@ def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, hi
     :param db_issue:
     :param db_user:
     :param db_argument:
-    :param attitude:
     :param history:
     :param path:
     :return:
@@ -224,17 +224,14 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     }
 
 
-def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: bool, pgroups: dict, history: str,
-           path: str) -> dict:
+def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: str, path: str) -> dict:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
     containing several feedback options regarding this argument.
 
     :param db_issue:
     :param db_user:
-    :param is_argument:
-    :param is_supportive:
-    :param pgroups:
+    :param pgroup_ids:
     :param history:
     :param path:
     :return:
@@ -243,13 +240,20 @@ def choose(db_issue: Issue, db_user: User, is_argument: bool, is_supportive: boo
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    pgroup = pgroups.get('pgroup_uid')
-    pgroup_ids = pgroups.get('pgroup_uids')
+    created_argument: Argument = DBDiscussionSession.query(Argument).filter(
+        Argument.premisegroup_uid == pgroup_ids[0]).one()
+    is_supportive = created_argument.is_supportive
+    conclusion_is_argument = created_argument.attacks is not None
+    if conclusion_is_argument:
+        conclusion = created_argument.attacks
+    else:
+        conclusion = created_argument.conclusion
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
-    discussion_dict = _ddh.get_dict_for_choosing(pgroup.uid, is_argument, is_supportive)
-    item_dict = _idh.get_array_for_choosing(pgroup.uid, pgroup_ids, is_argument, is_supportive, db_user.nickname)
+    discussion_dict = _ddh.get_dict_for_choosing(conclusion.uid, conclusion_is_argument, is_supportive)
+    item_dict = _idh.get_array_for_choosing(conclusion.uid, pgroup_ids, conclusion_is_argument, is_supportive,
+                                            db_user.nickname)
 
     return {
         'issues': issue_dict,

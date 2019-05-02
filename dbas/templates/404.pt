@@ -13,7 +13,7 @@
         <div class="row">
           <div class="col-md-8 center colored-container" style="float: none; height: 230px;">
             <img style="height: 200px;" align="right"
-                 src="${request.static_url('dbas:static/images/bg/404_monster.png')}"/>
+                 src="${request.static_path('dbas:static/images/bg/404_monster.png')}"/>
             <p class="lead" style="margin-top: 3em">
               <span i18n:translate="404_text_part1">The page</span>&quot;
               <strong>${page_notfound_viewname}</strong>&quot;

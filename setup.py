@@ -13,27 +13,7 @@ with open(os.path.join(here, 'README.md')) as f:
 with open(os.path.join(here, 'CHANGELOG.md')) as f:
     CHANGES = f.read()
 
-requires = [
-    'pyramid_chameleon',
-    'pyramid',
-    'pyramid_tm',
-    'pyramid_mailer',
-    'pyramid_redis_sessions',
-    'pyramid_beaker',
-    'waitress',
-    'SQLAlchemy',
-    'transaction',
-    'zope.sqlalchemy',
-    'docutils',
-    'WebTest',
-    'validate_email',
-    'splinter',
-    'lingua',
-    'requests',
-    'pyshorteners',
-    'python-slugify',
-    'db-psycopg2',
-]
+requires = []
 
 setup(name='dbas',
       version=version,
@@ -67,5 +47,6 @@ setup(name='dbas',
       init_dummy_votes = dbas.database.initializedb:init_dummy_votes
       promote_to_admin = dbas.console_scripts:promote_user
       demote_to_user = dbas.console_scripts:demote_user
+      setup_decidotron = dbas.database.initializedb:init_budget_discussion
       """,
       )

@@ -12,6 +12,23 @@
       </div>
     </section>
 
+    <div class="wrapper-container" tal:condition="issues.featured">
+      <div class="container colored-container colored-featured-container">
+        <div class="row">
+          <div class="col-md-offset-1 col-md-10 col-md-offset-1">
+            <div class="">
+              <h1 class="title">${issues.featured[0].title}</h1>
+              <p class="lead">${issues.featured[0].info}</p>
+              <p>
+                <a class="btn btn-primary btn-lg" href="${issues.featured[0].url}"
+                   role="button" i18n:translate="get_started">Get Started</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="wrapper-container">
       <div class="container colored-container">
         <div class="row">
@@ -23,7 +40,6 @@
                 <th i18n:translate="title">Titel</th>
                 <th i18n:translate="language">Language</th>
                 <th i18n:translate="statements">Statements</th>
-                <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
                 <th i18n:translate="creation">Creation</th>
               </tr>
               </thead>
@@ -31,13 +47,14 @@
               <tr tal:repeat="issue issues.writable">
                 <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
                 <td>
-                  <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
-                  <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
+                  <img tal:condition="issue.lang.is_de"
+                      src="${request.static_url('dbas:static/images/flags/de-24.png')}"
+                      alt="flag_de">
+                  <img tal:condition="issue.lang.is_en"
+                      src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}"
+                      alt="flag_us-gb">
                 </td>
                 <td>${issue.statements}</td>
-                <td class="issue_activity_chart">
-                  <div id="issue_activity_chart_${issue.uid}"></div>
-                </td>
                 <td>${issue.date}</td>
               </tr>
               </tbody>
@@ -58,7 +75,6 @@
                 <th i18n:translate="title">Titel</th>
                 <th i18n:translate="language">Language</th>
                 <th i18n:translate="statements">Statements</th>
-                <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
                 <th i18n:translate="creation">Creation</th>
               </tr>
               </thead>
@@ -66,13 +82,12 @@
               <tr tal:repeat="issue issues.readable">
                 <td class="start_issue_link"><a href="${issue.url}">${issue.title}</a></td>
                 <td>
-                  <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
-                  <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
+                  <img tal:condition="issue.lang.is_de"
+                      src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_de">
+                  <img tal:condition="issue.lang.is_en"
+                      src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
                 </td>
                 <td>${issue.statements}</td>
-                <td class="issue_activity_chart">
-                  <div id="issue_activity_chart_${issue.uid}"></div>
-                </td>
                 <td>${issue.date}</td>
               </tr>
               </tbody>

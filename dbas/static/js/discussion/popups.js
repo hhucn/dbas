@@ -19,7 +19,6 @@ PopupHandler.prototype.showEditStatementsPopup = function (statements_uids) {
     $('#' + proposalEditListGroupId).empty();
     $('#' + popupEditStatementErrorDescriptionId).text('');
     $('#' + popupEditStatementSuccessDescriptionId).text('');
-    $('#' + popupEditStatementInfoDescriptionId).text('');
     $('#' + popupEditStatementSubmitButtonId).addClass('disabled').off('click');
 
     // Get logfile
@@ -34,13 +33,13 @@ PopupHandler.prototype.showEditStatementsPopup = function (statements_uids) {
         var innerInputGroup = $('<div>').addClass('input-group-addon');
         var groupIcon = $('<i>').addClass('fa').addClass('fa-2x').addClass('fa-pencil-square-o').attr('aria-hidden', '"true"');
         var input = $('<input>')
-        .addClass('form-control')
-        .attr('id', 'popup-edit-statement-input-' + index)
-        .attr('name', 'popup-edit-statement-input-' + index)
-        .attr('type', text)
-        .attr('placeholder', statement)
-        .attr('data-statement-uid', value)
-        .val(statement);
+            .addClass('form-control')
+            .attr('id', 'popup-edit-statement-input-' + index)
+            .attr('name', 'popup-edit-statement-input-' + index)
+            .attr('type', text)
+            .attr('placeholder', statement)
+            .attr('data-statement-uid', value)
+            .val(statement);
 
         innerInputGroup.append(groupIcon);
         outerInputGroup.append(innerInputGroup).append(input);
@@ -48,10 +47,6 @@ PopupHandler.prototype.showEditStatementsPopup = function (statements_uids) {
         inputSpace.append(group);
     });
 
-    // GUI for editing statements
-    var _l = function (s1, s2) {
-        return levensthein(s1, s2);
-    };
     inputSpace.find('input').each(function () {
         $(this).keyup(function () {
             var oem = $(this).attr('placeholder');
@@ -59,16 +54,10 @@ PopupHandler.prototype.showEditStatementsPopup = function (statements_uids) {
             var id = $(this).attr('id');
             var statement_uid = parseInt($(this).data('statement-uid'));
 
-            // reduce noise
-            var levensthein = _l(oem, now);
-            var tmp = _t_discussion(pleaseEditAtLeast).replace('X', 5 - levensthein);
-            $('#' + popupEditStatementInfoDescriptionId).text(levensthein < 5 ? tmp : '');
-
             var btn = $('#' + popupEditStatementSubmitButtonId);
             if (now && oem && now.toLowerCase() === oem.toLowerCase()) {
                 btn.addClass('disabled');
                 btn.off('click');
-
             } else {
                 btn.removeClass('disabled');
                 btn.off('click').click(function popupEditStatementSubmitButton() {
@@ -320,8 +309,8 @@ PopupHandler.prototype.__prettifyOnHover = function (text) {
     var current = $(this).find('em').text().trim();
     $(this).hover(function () {
         var moddedText = text
-        .replace(new RegExp("(" + (current + '')
-        .replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
+            .replace(new RegExp("(" + (current + '')
+                .replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
         $('#popup-flag-argument-text').html(moddedText);
         $(this).find('em').html("<span class='text-primary'>" + current + "</span>");
     }, function () {
@@ -529,7 +518,7 @@ PopupHandler.prototype.__buildMergeSplitPopup = function (key, uid) {
             values.push($(this).val());
         });
         new AjaxReviewHandler().splitOrMerge(uid, key, values);
-    }).prop('disabled', true);
+    }).prop('disabled', key === "merge");
 
     // hover and on-click-function for the add key
     $('#popup-' + key + '-statement-add').hover(function () {
@@ -850,8 +839,8 @@ PopupHandler.prototype.createReferencesPopupBody = function (data) {
         array.forEach(function (dict) {
             text = dict.statement_text;
             var author = $('<a>').attr({'href': dict.author.link, 'target': '_blank'}).addClass('pull-right')
-            .append($('<span>').text(dict.author.name).css('padding-right', '0.5em'))
-            .append($('<img>').addClass('img-circle').attr('src', dict.author.img));
+                .append($('<span>').text(dict.author.name).css('padding-right', '0.5em'))
+                .append($('<img>').addClass('img-circle').attr('src', dict.author.img));
 
             var link = $('<a>').attr({
                 'href': dict.host + dict.path,

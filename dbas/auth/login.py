@@ -5,11 +5,11 @@ Login Handler for D-BAS
 """
 
 import logging
-
 import transaction
 from pyramid.security import remember
 from pyramid_mailer import Mailer
 from sqlalchemy import func
+from typing import Tuple, List
 from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
@@ -123,16 +123,16 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     _tn = Translator(lang)
     success = ''
 
-    firstname = escape_string(data['firstname'])
-    lastname = escape_string(data['lastname'])
-    nickname = escape_string(data['nickname'])
-    email = escape_string(data['email'])
-    gender = escape_string(data['gender'])
-    password = escape_string(data['password'])
-    passwordconfirm = escape_string(data['passwordconfirm'])
+    firstname = escape_string(data.get('firstname', ''))
+    lastname = escape_string(data.get('lastname', ''))
+    nickname = escape_string(data.get('nickname', ''))
+    email = escape_string(data.get('email', ''))
+    gender = escape_string(data.get('gender', ""))
+    password = escape_string(data.get('password', ''))
+    passwordconfirm = escape_string(data.get('passwordconfirm', ''))
     db_new_user = None
 
-    msg = __check_login_params(nickname, email, password, passwordconfirm)
+    msg = __check_login_params(firstname, lastname, nickname, email, password, passwordconfirm)
     if msg:
         return success, _tn.get(msg), db_new_user
 
@@ -164,13 +164,37 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     return success, msg, db_new_user
 
 
-def __check_login_params(nickname, email, password, passwordconfirm) -> Keywords:
+def __check_login_params(firstname, lastname, nickname, email, password, passwordconfirm) -> Keywords:
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
     db_nick2 = get_user_by_case_insensitive_public_nickname(nickname)
     db_mail = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
     is_mail_valid = validate_email(email, check_mx=True)
 
-    # are the password equal?
+    if len(firstname) == 0:
+        LOG.debug("firstname is empty")
+        return _.checkFirstname
+
+    if len(lastname) == 0:
+        LOG.debug("lastename is empty")
+        return _.checkLastname
+
+    if len(nickname) == 0:
+        LOG.debug("username is empty")
+        return _.checkNickname
+
+    if len(email) == 0:
+        LOG.debug("email is empty")
+        return _.checkEmail
+
+    if len(password) == 0:
+        LOG.debug("password is empty")
+        return _.checkPassword
+
+    if len(passwordconfirm) == 0:
+        LOG.debug("password-confirm is empty")
+        return _.checkPasswordConfirm
+
+    # are the passwords equal?
     if not password == passwordconfirm:
         LOG.debug("Passwords are not equal")
         return _.pwdNotEqual
@@ -197,18 +221,21 @@ def __check_login_params(nickname, email, password, passwordconfirm) -> Keywords
     return None
 
 
-def __refresh_headers_and_url(request, db_user, keep_login, url):
+def __refresh_headers_and_url(request, db_user_nickname: str, keep_login: bool, url: str) \
+        -> Tuple[List[Tuple[str, str]], str]:
     """
     Refreshed headers for the request. Returns a sequence of header tuples (e.g. ``[('Set-Cookie', 'foo=abc')]``)
     on this request's response.
 
     :param request: webservers request
-    :param db_user: User
+    :param db_user_nickname: Nickname of user
     :param keep_login: Boolean
     :param url: String
     :return: Headers, String
     """
     LOG.debug("Login successful / keep_login: %s", keep_login)
+    # This query needs to happen, as the session supplying db_user as before is closed in a caller of this function.
+    db_user = DBDiscussionSession().query(User).filter_by(nickname=db_user_nickname).first()
     db_settings = db_user.settings
     db_settings.should_hold_the_login(keep_login)
     LOG.debug("Remembering headers for %s", db_user.nickname)
@@ -216,7 +243,6 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
 
     LOG.debug("Update login timestamp")
     db_user.update_last_login()
-    db_user.update_last_action()
     transaction.commit()
 
     ending = ['/?session_expired=true', '/?session_expired=false']

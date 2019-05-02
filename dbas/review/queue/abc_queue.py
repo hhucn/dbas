@@ -1,8 +1,9 @@
 # Source interface for the review queues
 
 from abc import ABCMeta, abstractmethod
+from typing import Tuple, Optional
+
 from requests import Session
-from typing import Tuple
 
 from dbas.database.discussion_model import User, AbstractReviewCase
 from dbas.strings.translator import Translator
@@ -107,7 +108,7 @@ class QueueABC(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_history_table_row(self, db_review: AbstractReviewCase, entry, **kwargs):
+    def get_history_table_row(self, db_review: AbstractReviewCase, entry, **kwargs) -> Optional[dict]:
         """
 
         :param db_review:

@@ -4,7 +4,7 @@ from pyramid import testing
 
 import dbas.review.queue.lib
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ReviewOptimization, User
+from dbas.database.discussion_model import ReviewOptimization, User, Issue
 from dbas.review import FlaggedBy
 from dbas.review.queue.adapter import QueueAdapter
 from dbas.review.queue.optimization import OptimizationQueue
@@ -32,10 +32,13 @@ class AdapterTest(unittest.TestCase):
             self.assertTrue('last_reviews' in q)
 
     def test_get_complete_review_count(self):
-        u1 = DBDiscussionSession.query(User).get(1)
-        u2 = DBDiscussionSession.query(User).get(2)
+        u1: User = DBDiscussionSession.query(User).get(1)
+        u2: User = DBDiscussionSession.query(User).get(2)
+        issue_cat_or_dog: Issue = DBDiscussionSession.query(Issue).get(2)
+        u2.participates_in.append(issue_cat_or_dog)
         self.assertEqual(0, dbas.review.queue.lib.get_complete_review_count(u1))
         self.assertLess(0, dbas.review.queue.lib.get_complete_review_count(u2))
+        u2.participates_in.remove(issue_cat_or_dog)
 
     def test_lock_optimization_review(self):
         _tn = Translator('en')

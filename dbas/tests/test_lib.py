@@ -7,7 +7,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, Issue, Premise
 from dbas.helper.url import UrlManager
 from dbas.lib import get_enabled_issues_as_query, get_enabled_statement_as_query, get_enabled_arguments_as_query, \
-    get_enabled_premises_as_query, get_visible_issues_for_user
+    get_enabled_premises_as_query
 from dbas.tests.utils import TestCaseWithConfig
 
 
@@ -92,16 +92,6 @@ class LibTests(TestCaseWithConfig):
         self.assertEqual(lib.get_text_for_conclusion(argument=argument3,
                                                      start_with_intro=False,
                                                      rearrange_intro=True), '')
-
-    def test_resolve_issue_uid_to_slug(self):
-        # id for issue
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=1), 'town-has-to-cut-spending')
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=5), 'unterstutzung-der-sekretariate')
-
-        # id for no issue
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=0), None)
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=22222222), None)
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=-4), None)
 
     def test_get_all_attacking_arg_uids_from_history(self):
         none_history = None
@@ -240,14 +230,6 @@ class TestDiscussionLanguage(TestCaseWithConfig):
 
 
 class TestGetTextForEntities(TestCaseWithConfig):
-    def test_get_text_for_premise(self):
-        self.assertIsNone(lib.get_text_for_premise(0))
-        self.assertEqual(lib.get_text_for_premise(12), 'cats are fluffy')
-        self.assertNotIn('data-argumentation-type', lib.get_text_for_premise(12, False))
-        self.assertEqual(lib.get_text_for_premise(52),
-                         'das Unfallrisiko steigt, da die Autos kaum Geräusche verursachen')
-        self.assertIn('data-argumentation-type', lib.get_text_for_premise(12, True))
-
     def test_get_all_arguments_with_text_by_statement_id(self):
         res = lib.get_all_arguments_with_text_by_statement_id(0)
         self.assertEqual(res, [])
@@ -258,10 +240,9 @@ class TestGetTextForEntities(TestCaseWithConfig):
             49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
         res = lib.get_all_arguments_with_text_by_statement_id(38)
-        self.assertEqual(3, len(res))
+        self.assertEqual(len(res), 3)
         for r in res:
             self.assertIn(r['uid'], results)
-            self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id(self):
         um = UrlManager(slug='slug')
@@ -271,13 +252,11 @@ class TestGetTextForEntities(TestCaseWithConfig):
             48: 'Someone argued that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. Other participants said that schools need the swimming pools for their sports lessons.',
             49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
-
         db_statement = DBDiscussionSession.query(Statement).get(38)
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um)
-        self.assertEqual(3, len(res))
+        res = lib.get_all_arguments_with_text_and_url_by_statement(db_statement, um)
+        self.assertEqual(len(res), 3)
         for r in res:
             self.assertIn(r['uid'], results)
-            self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id_with_color(self):
         um = UrlManager(slug='slug')
@@ -289,7 +268,7 @@ class TestGetTextForEntities(TestCaseWithConfig):
         }
 
         db_statement = DBDiscussionSession.query(Statement).get(38)
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True)
+        res = lib.get_all_arguments_with_text_and_url_by_statement(db_statement, um, color_statement=True)
         self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)
@@ -305,8 +284,8 @@ class TestGetTextForEntities(TestCaseWithConfig):
         }
 
         db_statement = DBDiscussionSession.query(Statement).get(38)
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True,
-                                                                      is_jump=True)
+        res = lib.get_all_arguments_with_text_and_url_by_statement(db_statement, um, color_statement=True,
+                                                                   is_jump=True)
         self.assertEqual(len(res), 3)
         for r in res:
             self.assertIn(r['uid'], results)
@@ -398,7 +377,7 @@ class TestGetTextForArgumentByUid(TestCaseWithConfig):
         self.assertEqual(lib.get_text_for_argument_uid(49, user_changed_opinion=True), s49)
 
 
-class TestVisibilityOfDisabledEntites(TestCaseWithConfig):
+class TestVisibilityOfDisabledEntities(TestCaseWithConfig):
     def test_get_enabled_statement_as_query(self):
         query_len = get_enabled_statement_as_query().count()
         res_len = DBDiscussionSession.query(Statement).filter_by(is_disabled=False).count()
@@ -420,8 +399,27 @@ class TestVisibilityOfDisabledEntites(TestCaseWithConfig):
         self.assertEqual(res_len, query_len)
 
     def test_get_visible_issues_for_user_as_query(self):
-        issue_uids = [issue.uid for issue in get_visible_issues_for_user(self.user_christian)]
-        self.assertCountEqual(issue_uids, [2, 3, 4, 5, 7, 8])
+        issue_uids = [issue.uid for issue in self.user_christian.accessible_issues]
+        self.assertSetEqual(set(issue_uids), {2, 3, 4, 5, 7, 8})
+
+    def test_private_issue_is_not_visible_to_not_participant(self):
+        self.issue_cat_or_dog.set_disabled(True)
+
+        self.assertNotIn(self.issue_cat_or_dog, self.user_christian.accessible_issues,
+                         f"Issue {self.issue_cat_or_dog.uid} is private and should not be visible to a user who is not participating in it!")
+
+    def test_private_issue_is_visible_to_participant(self):
+        self.issue_cat_or_dog.set_disabled(True)
+        self.user_christian.participates_in.append(self.issue_cat_or_dog)
+
+        self.assertIn(self.issue_cat_or_dog, self.user_christian.accessible_issues,
+                      f"Issue {self.issue_cat_or_dog.uid} is private but the user is a participant and should see the issue!")
+
+    def test_private_issue_is_not_visible_to_anonymous(self):
+        self.issue_cat_or_dog.set_disabled(True)
+
+        self.assertNotIn(self.issue_cat_or_dog, self.user_anonymous.accessible_issues,
+                         f"Issue {self.issue_cat_or_dog.uid} is private and should not be visible to the anonymous user!")
 
     def test_is_argument_disabled_due_to_disabled_statements(self):
         arg1 = DBDiscussionSession.query(Argument).get(1)

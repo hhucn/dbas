@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
-from uuid import uuid4
-
-from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
 from pyramid_mailer.mailer import DummyMailer
+from uuid import uuid4
 
 from dbas.auth.login import login_local_user, register_user_with_json_data
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.tests.utils import TestCaseWithConfig
+from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 from dbas.views import user_login
 
 
@@ -32,12 +30,12 @@ class AuthLoginTest(TestCaseWithConfig):
         password = 'iamatestuser2016'
         keep_login = True
 
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'user': nickname,
             'password': password,
             'keep_login': keep_login,
             'redirect_url': 'http://some.url'
-        }, mailer=DummyMailer)
+        })
 
         _tn = Translator('en')
         response = user_login(request)
@@ -54,7 +52,7 @@ class AuthLoginTest(TestCaseWithConfig):
         self.assertNotIn('user', response)
 
     def test_login_register_with_json_data(self):
-        request = testing.DummyRequest(validated={
+        request = construct_dummy_request(validated={
             'firstname': '',
             'lastname': '',
             'nickname': '',
@@ -63,13 +61,13 @@ class AuthLoginTest(TestCaseWithConfig):
             'password': '',
             'passwordconfirm': '',
             'mode': '',
-        }, mailer=DummyMailer)
+        })
         success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
-        self.assertEqual(self._tn.get(_.pwdShort), msg)
+        self.assertEqual(self._tn.get(_.checkFirstname), msg)
         self.assertIsNone(db_new_user)
 
     def test_register_user_nickname_is_taken(self):
-        request = testing.DummyRequest(validated={
+        request = construct_dummy_request(validated={
             'firstname': self.uustring(),
             'lastname': self.uustring(),
             'nickname': 'Tobias',
@@ -78,13 +76,13 @@ class AuthLoginTest(TestCaseWithConfig):
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
             'mode': 'manually',
-        }, mailer=DummyMailer)
+        })
         success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
         self.assertEqual(self._tn.get(_.nickIsTaken), msg)
         self.assertIsNone(db_new_user)
 
     def test_register_user_mail_is_taken(self):
-        request = testing.DummyRequest(validated={
+        request = construct_dummy_request(validated={
             'firstname': self.uustring(),
             'lastname': self.uustring(),
             'nickname': self.uustring(),
@@ -93,14 +91,14 @@ class AuthLoginTest(TestCaseWithConfig):
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
             'mode': 'manually',
-        }, mailer=DummyMailer)
+        })
         success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
 
         self.assertEqual(self._tn.get(_.mailIsTaken), msg)
         self.assertIsNone(db_new_user)
 
     def test_register_user_mail_invalid(self):
-        request = testing.DummyRequest(validated={
+        request = construct_dummy_request(validated={
             'firstname': self.uustring(),
             'lastname': self.uustring(),
             'nickname': self.uustring(),
@@ -109,13 +107,13 @@ class AuthLoginTest(TestCaseWithConfig):
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
             'mode': 'manually',
-        }, mailer=DummyMailer)
+        })
         success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
         self.assertEqual(self._tn.get(_.mailNotValid), msg)
         self.assertIsNone(db_new_user)
 
     def test_register_user_passwords_not_equal(self):
-        request = testing.DummyRequest(validated={
+        request = construct_dummy_request(validated={
             'firstname': 'Bob',
             'lastname': 'Builder',
             'nickname': 'Builder',
@@ -124,7 +122,7 @@ class AuthLoginTest(TestCaseWithConfig):
             'password': self.uustring(),
             'passwordconfirm': self.uustring(),
             'mode': 'manually',
-        }, mailer=DummyMailer)
+        })
         success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
         self.assertEqual(self._tn.get(_.pwdNotEqual), msg)
         self.assertIsNone(db_new_user)

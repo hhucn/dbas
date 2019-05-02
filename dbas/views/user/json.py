@@ -1,11 +1,13 @@
-import logging
 from time import sleep
 
+import logging
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
 from pyramid.view import view_config
+from typing import Dict
 
-from dbas.auth.login import login_local_user, register_user_with_json_data, __refresh_headers_and_url
+from api import login
+from dbas.auth.login import login_local_user, __refresh_headers_and_url
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
@@ -15,7 +17,7 @@ from dbas.helper.query import set_user_language
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import valid_lang_cookie_fallback
-from dbas.validators.core import has_keywords_in_json_path, has_maybe_keywords, validate
+from dbas.validators.core import has_keywords_in_json_path, has_maybe_keywords, validate, spec_keyword_in_json_body
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
 from dbas.validators.user import valid_user
@@ -24,8 +26,14 @@ LOG = logging.getLogger(__name__)
 
 
 @view_config(request_method='POST', route_name='user_login', renderer='json')
-@validate(has_keywords_in_json_path(('user', str), ('password', str), ('keep_login', bool)),
-          has_maybe_keywords(('redirect_url', str, '')))
+@validate(
+    spec_keyword_in_json_body((str, "user", lambda user, expected_type: isinstance(user, expected_type) and user != ""),
+                              (str, "password",
+                               lambda password, expected_type: isinstance(password,
+                                                                          expected_type) and password != ""),
+                              (bool, 'keep_login',
+                               lambda keep_login, expected_type: isinstance(keep_login, expected_type))),
+    has_maybe_keywords(('redirect_url', str, '')))
 def user_login(request):
     """
     Will login the user by his nickname and password
@@ -35,22 +43,22 @@ def user_login(request):
     """
     LOG.debug("Login user with Nickname and Password")
     lang = get_language_from_cookie(request)
-    nickname = request.validated['user']
-    password = request.validated['password']
-    keep_login = request.validated['keep_login']
-    redirect_url = request.validated['redirect_url']
+    nickname = request.validated.get('user')
+    password = request.validated.get('password')
+    keep_login = request.validated.get('keep_login')
+    redirect_url = request.validated.get('redirect_url')
 
     login_data = login_local_user(nickname, password, request.mailer, lang)
 
     if not login_data.get('error'):
-        headers, url = __refresh_headers_and_url(request, login_data['user'], keep_login, redirect_url)
+        headers, url = __refresh_headers_and_url(request, nickname, keep_login, redirect_url)
         sleep(0.5)
         return HTTPFound(location=url, headers=headers)
 
     return {'error': Translator(lang).get(_.userPasswordNotMatch)}
 
 
-@view_config(route_name='user_logout', renderer='json')
+@view_config(request_method='POST', route_name='user_logout', renderer='json')
 def user_logout(request, redirect_to_main=False):
     """
     Will logout the user
@@ -63,7 +71,7 @@ def user_logout(request, redirect_to_main=False):
     request.session.invalidate()
     headers = forget(request)
     if redirect_to_main:
-        location = request.application_url + 'discuss?session_expired=true',
+        location = request.application_url + '/discuss?session_expired=true',
     elif (request.application_url + '/discuss') in request.path_url:  # redirect to page, where you need no login
         location = request.path_url
     else:
@@ -75,7 +83,7 @@ def user_logout(request, redirect_to_main=False):
     )
 
 
-@view_config(route_name='user_delete', renderer='json')
+@view_config(request_method='POST', route_name='user_delete', renderer='json')
 @validate(valid_user)
 def user_delete(request):
     """
@@ -96,9 +104,20 @@ def user_delete(request):
 
 @view_config(route_name='user_registration', renderer='json')
 @validate(valid_lang_cookie_fallback,
-          has_keywords_in_json_path(('nickname', str), ('email', str), ('gender', str), ('password', str),
-                                    ('passwordconfirm', str)),
-          has_maybe_keywords(('firstname', str, ''), ('lastname', str, '')))
+          spec_keyword_in_json_body(
+              (str, "firstname",
+               lambda firstname, expected_type: isinstance(firstname, expected_type) and firstname != ""),
+              (str, "lastname",
+               lambda lastname, expected_type: isinstance(lastname, expected_type) and lastname != ""),
+              (str, "nickname",
+               lambda nickname, expected_type: isinstance(nickname, expected_type) and nickname != ""),
+              (str, "email", lambda email, expected_type: isinstance(email, expected_type) and email != ""),
+              (str, "gender", lambda gender, expected_type: isinstance(gender, expected_type) and gender != ""),
+              (str, "password",
+               lambda password, expected_type: isinstance(password, expected_type) and password != ""),
+              (str, "passwordconfirm",
+               lambda passwordconfirm, expected_type: isinstance(passwordconfirm,
+                                                                 expected_type) and passwordconfirm != "")))
 def user_registration(request):
     """
     Registers new user with data given in the ajax request.
@@ -106,17 +125,19 @@ def user_registration(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    LOG.debug("Register new user via AJAX. %s", request.json_body)
-    mailer = request.mailer
-    lang = request.validated['lang']
-
-    success, info, new_user = register_user_with_json_data(request.validated, lang, mailer)
-
-    return {
-        'success': str(success),
-        'error': '',
-        'info': str(info)
-    }
+    return {'success': str(False), 'error': 'fail', 'info': 'registration is currently not allowed'}
+    #
+    # LOG.debug("Register new user via AJAX. %s", request.json_body)
+    # mailer = request.mailer
+    # lang = request.validated['lang']
+    #
+    # success, info, new_user = register_user_with_json_data(request.validated, lang, mailer)
+    #
+    # return {
+    #     'success': str(success),
+    #     'error': '',
+    #     'info': str(info)
+    # }
 
 
 @view_config(route_name='user_password_request', renderer='json')
@@ -226,3 +247,15 @@ def get_public_user_data(request):
     """
     LOG.debug("Return public user data. %s", request.json_body)
     return user.get_public_data(request.validated['user_id'], get_language_from_cookie(request))
+
+
+@view_config(route_name='get_temp_key', renderer='json')
+@validate(valid_user)
+def get_temp_key(request) -> Dict[str, str]:
+    """
+    Returns dictionary with a temporary token for the user.
+
+    :param request: request of the web server
+    :return: {'token': 'abacd.afadfgag.sagag'}
+    """
+    return {'token': login.get_tmp_token_for_external_service(request, request.validated['user'], 10)}

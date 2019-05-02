@@ -1,14 +1,14 @@
 import logging
-from os import environ
-from typing import List, Tuple, Dict, Any, Optional
-
 import transaction
+from os import environ
 from sqlalchemy import func
+from typing import List, Tuple, Dict, Any, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
-from dbas.handler import user, notification as nh
+from dbas.decidotron.lib import add_associated_cost
+from dbas.handler import notification as nh
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
     set_new_rebut
@@ -26,21 +26,43 @@ from websocket.lib import send_request_for_info_popup_to_socketio
 LOG = logging.getLogger(__name__)
 
 
-def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
+def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_data: dict = {}) -> dict:
     """
     Set new position for current discussion and returns collection with the next url for the discussion.
 
     :param statement_text: The text of the new position statement.
     :param db_issue: The issue which gets the new position
     :param db_user: The user who sets the new position.
+    :param feature_data: More data which is used by additional features
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
     LOG.debug("%s", statement_text)
 
-    user.update_last_action(db_user)
-
     new_statement: Statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
+
+    if db_issue.decision_process:
+        dp = db_issue.decision_process
+        if 'decidotron_cost' not in feature_data:
+            transaction.abort()
+            LOG.error('Cost missing for an issue with a decision_process')
+            return {
+                'status': 'fail',  # best error management
+                'errors': 'Cost missing for an issue with a decision_process'
+            }
+        else:
+            cost = int(float(feature_data['decidotron_cost']))
+
+            if dp.min_position_cost <= cost <= (dp.max_position_cost or dp.budget) and not dp.position_ended():
+                add_associated_cost(db_issue, new_statement, cost)
+            else:
+                transaction.abort()
+                LOG.error(
+                    f'Cost has to be {dp.min_position_cost} <= cost <= {dp.max_position_cost or dp.budget}. cost is: {cost}')
+                return {
+                    'status': 'fail',
+                    'errors': f'Cost has to be {dp.min_position_cost} <= cost <= {dp.max_position_cost or dp.budget}.'
+                }
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
@@ -56,7 +78,7 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
         'status': 'success',
         'url': url,
         'statement_uids': [new_statement.uid],
-        'error': ''
+        'errors': ''
     }
 
 
@@ -75,7 +97,6 @@ def set_positions_premise(db_issue: Issue, db_user: User, db_conclusion: Stateme
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and an url or an error
     """
-    user.update_last_action(db_user)
 
     prepared_dict = __process_input_of_start_premises(premisegroups, db_conclusion, supportive, db_issue, db_user)
     if prepared_dict['error']:
@@ -117,7 +138,6 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     :rtype: dict
     :return: Dictionary with info and/or error
     """
-    db_user.update_last_action()
 
     review_count = len(elements)
     added_reviews = [EditQueue().add_edit_reviews(db_user, el['uid'], el['text']) for el in elements]
@@ -250,7 +270,6 @@ def insert_as_statement(text: str, db_user: User, db_issue: Issue, is_start=Fals
     # add marked statement
     DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
     DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
-    DBDiscussionSession.flush()
 
     return new_statement
 
@@ -322,7 +341,6 @@ def __add_statement(is_position: bool) -> Statement:
     db_statement = Statement(is_position=is_position)
     DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
-    transaction.commit()
     return db_statement
 
 
@@ -338,7 +356,6 @@ def __add_textversion(text: str, user_uid: int, statement_uid: int) -> TextVersi
     db_textversion = TextVersion(content=text, author=user_uid, statement_uid=statement_uid)
     DBDiscussionSession.add(db_textversion)
     DBDiscussionSession.flush()
-    transaction.commit()
     return db_textversion
 
 
@@ -358,7 +375,7 @@ def __add_statement2issue(statement_uid: int, issue_uid: int) -> StatementToIssu
 
 def __is_conclusion_in_premisegroups(premisegroups: list, db_conclusion: Statement) -> bool:
     for premisegroup in premisegroups:
-        if any([db_conclusion.get_textversion().content.lower() in pg.lower() for pg in premisegroup]):
+        if any([db_conclusion.get_textversion().content.lower() == pg.lower() for pg in premisegroup]):
             return True
     return False
 
@@ -426,7 +443,7 @@ def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, s
 
     else:
         pgroups = [DBDiscussionSession.query(Argument).get(arg_uid).premisegroup_uid for arg_uid in new_argument_uids]
-        url = _um.get_url_for_choosing_premisegroup(False, supportive, db_conclusion.uid, pgroups)
+        url = _um.get_url_for_choosing_premisegroup(pgroups)
 
     # send notifications and mails
     email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid,

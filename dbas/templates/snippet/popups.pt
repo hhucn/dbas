@@ -14,7 +14,6 @@
         <div id="popup-edit-statement-body">
           <p id="popup-edit-statement-success-description" class="text-success"></p>
           <p id="popup-edit-statement-error-description" class="text-danger"></p>
-          <p id="popup-edit-statement-info-description" class="text-info"></p>
           <p class="lead">${structure:extras.tag.edit_statement_here}</p>
           <div id="popup-edit-statement-inputs"></div>
           <div class="list-group" id="proposal-edit-list-group"></div>
@@ -307,15 +306,28 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" id="popup-login-close" class="close" data-dismiss="modal" aria-label="Close"><span
-                  aria-hidden="true">&times;</span>
+              aria-hidden="true">&times;</span>
           </button>
           <br>
           <ul class="nav nav-tabs" style="display: table; margin: 0 auto;">
             <li id="nav-tab-login" class="tab-login active"><a href="#login" i18n:translate="login">Log In</a></li>
-            <li id="nav-tab-signup" class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>
+            <!--<li id="nav-tab-signup" class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>-->
           </ul>
         </div>
         <div id="popup-login-body">
+          <div class="alert alert-secondary">
+            <p i18n:translate="all_data_is_free">Your submitted data is being licensed under Creative Commons
+              Share Alike (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>)
+              and will be used for scientific purposes. We will never share your
+              password or e-mail address. By registering or logging in, you are accepting these terms.</p>
+          </div>
+          <div class="alert alert-secondary">
+            <p>
+              Sie können sich momentan nur mit Ihrer Unikennung (z.B. hehei001) einloggen.
+              Nur Studierende der Informatik können sich einloggen. Sollten Sie sich trotzdem nicht einloggen
+              können, melden Sie sich bitte bei uns.
+            </p>
+          </div>
           <div class="tab-content">
             <div id="login">
               <form autocomplete="on">
@@ -382,11 +394,6 @@
             <div id="signup">
 
               <div id="popup-login-registration-field">
-                <div class="alert alert-dismissible alert-info">
-                  <button type="button" class="close" data-dismiss="alert">&times;</button>
-                  <span i18n:translate="never_display_real_name">We will never display your real name to other users!</span><br>
-                  <span i18n:translate="have_account_hhu">If you have a valid account at the HHU, you can directly use the login!</span>
-                </div>
                 <div class="form-group">
                   <label class="col-md-3 control-label" for="userfirstname-input" i18n:translate="first_name">
                     Your First Name</label>
@@ -548,7 +555,7 @@
             <div class="row text-center" id="popup-login-registration-oauth-buttons">
               <a tal:condition="extras.login_btns.oauth_google" class="btn btn-block btn-brand btn-google"
                                                                 data-service="google">
-                <img src="${request.static_url('dbas:static/images/icons/btn_google_light_normal.svg')}">
+                <img src="${request.static_path('dbas:static/images/icons/btn_google_light_normal.svg')}">
                 <span>Google</span>
               </a>
               <a tal:condition="extras.login_btns.oauth_facebook" class="btn btn-block btn-brand btn-facebook"
@@ -586,7 +593,7 @@
         </div>
         <div id="popup-set-premisegroups-body" class="lead">
           <span>${extras.tag.set_premisegroups_intro1}</span><strong><span
-                id="popup-set-premisegroups-body-intro-statements"></span></strong><span>${extras.tag.set_premisegroups_intro2}</span>
+            id="popup-set-premisegroups-body-intro-statements"></span></strong><span>${extras.tag.set_premisegroups_intro2}</span>
           <br>
           <br>
           <div id="insert_statements_page_" style="display: none;">
@@ -595,7 +602,7 @@
                 <label class="bs-callout bs-callout-primary">
                   <input type="radio" name="insert_statements" id="insert_more_arguments">
                   <span>${extras.tag.i_actually_have}</span>&#160;<span
-                        id="insert_statements_count"></span>&#160;<span>${extras.tag.seperated}</span>&#160;<span>${extras.tag.arguments}
+                    id="insert_statements_count"></span>&#160;<span>${extras.tag.seperated}</span>&#160;<span>${extras.tag.arguments}
                   :</span>
                   <span id="insert_statements_list_more_arguments" style="font-weight: 300;"></span>
                 </label>
@@ -636,7 +643,7 @@
             <span id="popup-set-premisegroups-warning-text" class="text-warning"
                   style="padding-right: 1em;">${extras.tag.premisegroup_popup_warning}</span>
             <button type="button" class="btn btn-success pull-right" id="popup-set-premisegroups-send-button">
-                    ${extras.buttons.save_my_statement}
+                ${extras.buttons.save_my_statement}
             </button>
           </div>
         </div>
@@ -814,7 +821,7 @@
                     <input tal:condition="extras.lang_is_de" id="de" type="radio" name="lang_topic" checked>
                     <label for="de">
                       <img class="language_selector_img"
-                           src="${request.static_url('dbas:static/images/flags/de-24.png')}" alt="flag_ge">
+                           src="${request.static_path('dbas:static/images/flags/de-24.png')}" alt="flag_ge">
                       Deutsch
                     </label>
                   </li>
@@ -823,7 +830,7 @@
                     <input tal:condition="extras.lang_is_en" id="en" type="radio" name="lang_topic" checked>
                     <label for="en">
                       <img class="language_selector_img"
-                           src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
+                           src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
                       English
                     </label>
                   </li>
@@ -933,8 +940,10 @@
               <br>
               <input type="radio" id="bad" value="harmful" name="flag-statement" style="margin-bottom: 1em;">
               <label for="bad" style="margin-bottom: 1em;">
-                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
-                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
+                <span
+                    class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
+                <span
+                    class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
                 <i class="fa fa-question-circle-o" aria-hidden="true"
                    style="padding-left: 0.5em" title="${extras.tag.argument_statement_harmful_description}"></i>
               </label>
@@ -955,7 +964,8 @@
               <br>
               <input type="radio" id="split" value="split" name="flag-statement" style="margin-bottom: 1em;">
               <label for="split" style="margin-bottom: 1em;">
-                <span class="statement_text" i18n:translate="statement_split">This statement has more than one message.</span>
+                <span
+                    class="statement_text" i18n:translate="statement_split">This statement has more than one message.</span>
                 <i class="fa fa-question-circle-o" aria-hidden="true"
                    style="padding-left: 0.5em" title="${extras.tag.statement_split_description}"></i>
               </label>
@@ -1076,7 +1086,7 @@
         </div>
         <div class="modal-body">
           <p class="lead" i18n:translate="split_multiple_statements">
-            Please enter the splitted version of the statement; one per input field.
+            Please enter the split version of the statement; one per input field.
           </p>
           <p class="well well-sm" id="popup-split-statement-text"></p>
           <div id="popup-split-statement-body"></div>
@@ -1304,7 +1314,7 @@
           <div id="popup-references-cite-dropdown" class="btn-group open" style="display: block;">
             <a href="#" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
               <span i18n:translate="statement" id="popup-references-cite-dropdown-title">Statement</span><span
-                    class="caret"></span>
+                class="caret"></span>
             </a>
             <ul class="dropdown-menu" id="popup-references-cite-dropdown-list"></ul>
           </div>

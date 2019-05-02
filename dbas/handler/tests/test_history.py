@@ -1,6 +1,9 @@
+import unittest
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import History, Issue
 from dbas.handler import history
+from dbas.handler.history import split, get_last_relation
 from dbas.tests.utils import TestCaseWithConfig
 
 
@@ -50,3 +53,21 @@ class HistoryHandlerTests(TestCaseWithConfig):
 
     def test_delete_history_in_database(self):
         self.assertTrue(history.delete_in_database(self.user_tobi))
+
+
+class GetLastRelationTest(unittest.TestCase):
+    def test_histry_empty(self):
+        split_history = split('/')
+        last_relation = get_last_relation(split_history)
+        self.assertEqual(last_relation, '')
+
+    def test_agree_at_end(self):
+        split_history = split('/attitude/2-/justify/2/agree-/jump/11-/reaction/11/undermine/23-/justify/14/agree')
+        last_relation = get_last_relation(split_history)
+        self.assertEqual(last_relation, 'agree')
+
+    def test_jump_at_end(self):
+        split_history = split(
+            '/attitude/2-/justify/2/agree-/jump/11-/reaction/11/undermine/23-/justify/14/agree-/jump/24')
+        last_relation = get_last_relation(split_history)
+        self.assertEqual(last_relation, '')

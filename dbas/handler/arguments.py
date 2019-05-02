@@ -1,19 +1,18 @@
 import logging
 import random
+import transaction
 from os import environ
 from typing import List, Tuple, Optional
-
-import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Argument, Premise, MarkedArgument, ClickedArgument, \
     sql_timestamp_pretty_print, ClickedStatement, Statement
-from dbas.handler import user, notification as nh
+from dbas.handler import notification as nh
 from dbas.handler.statements import insert_new_premises_for_argument
 from dbas.helper.url import UrlManager
 from dbas.input_validator import get_relation_between_arguments
-from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, get_profile_picture, Relations, \
-    get_text_for_argument_uid, resolve_issue_uid_to_slug
+from dbas.lib import get_all_arguments_with_text_and_url_by_statement, get_profile_picture, Relations, \
+    get_text_for_argument_uid
 from dbas.review.reputation import add_reputation_for, has_access_to_review_system, get_reason_by_action, \
     ReputationReasons
 from dbas.strings.keywords import Keywords as _
@@ -48,7 +47,6 @@ def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument
     }
     url, statement_uids, error = __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue,
                                                                                         db_user, mailer)
-    user.update_last_action(db_user)
 
     prepared_dict = {
         'error': error,
@@ -120,18 +118,17 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
     return return_dict
 
 
-def get_arguments_by_statement_uid(db_statement: Statement, db_issue: Issue) -> dict:
+def get_arguments_by_statement(statement: Statement, issue: Issue) -> dict:
     """
-    Collects every argument which uses the given statement
+    Collects every argument which uses the given statement.
 
-    :param db_statement: Statement
-    :param db_issue: issue
+    :param statement: Statement which is used for query
+    :param issue: Extract information for url manager from issue
     :rtype: dict
     :return: prepared collection with several arguments
     """
-    slug = resolve_issue_uid_to_slug(db_issue.uid)
-    _um = UrlManager(slug)
-    return {'arguments': get_all_arguments_with_text_and_url_by_statement_id(db_statement, _um, True, is_jump=True)}
+    _um = UrlManager(issue.slug)
+    return {'arguments': get_all_arguments_with_text_and_url_by_statement(statement, _um, True, is_jump=True)}
 
 
 def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_infos: dict, db_issue: Issue, db_user: User,
@@ -199,9 +196,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
         url = _um.get_url_for_new_argument(new_argument_uids)
 
     else:
-        url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type,
-                                                                                    arg_id, _um,
-                                                                                    attack_type == Relations.SUPPORT)
+        url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, _um)
 
     # send notifications and mails
     if len(new_argument_uids) > 0:
@@ -220,42 +215,16 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
     return url, statement_uids, error
 
 
-def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um,
-                                                                          supportive) -> str:
+def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, _um) -> str:
     """
     Return the 'choose' url, when the user entered more than one premise for an argument
 
     :param new_argument_uids: [Argument.uid]
-    :param attack_type: String
-    :param arg_id: Argument.uid
     :param _um: UrlManager
-    :param supportive: Boolean
     :return: String
     """
-    pgroups = []
-    url = ''
-    for uid in new_argument_uids:
-        pgroups.append(DBDiscussionSession.query(Argument).get(uid).premisegroup_uid)
-
-    current_argument = DBDiscussionSession.query(Argument).get(arg_id)
-    # relation to the arguments premise group
-    if attack_type == Relations.UNDERMINE or attack_type == Relations.SUPPORT:
-        db_premise = DBDiscussionSession.query(Premise).filter_by(
-            premisegroup_uid=current_argument.premisegroup_uid).first()  # TODO what happens with |pgroups| > 1?
-        db_statement = DBDiscussionSession.query(Statement).get(db_premise.statement_uid)
-        url = _um.get_url_for_choosing_premisegroup(False, supportive, db_statement.uid, pgroups)
-
-    # relation to the arguments relation
-    elif attack_type == Relations.UNDERCUT:
-        url = _um.get_url_for_choosing_premisegroup(True, supportive, arg_id, pgroups)
-
-    # relation to the arguments conclusion
-    elif attack_type == Relations.REBUT:
-        is_argument = current_argument.conclusion_uid is not None
-        uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
-        url = _um.get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
-
-    return url
+    pgroups = [DBDiscussionSession.query(Argument).get(uid).premisegroup_uid for uid in new_argument_uids]
+    return _um.get_url_for_choosing_premisegroup(pgroups)
 
 
 def get_another_argument_with_same_conclusion(uid, history):

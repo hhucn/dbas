@@ -45,7 +45,9 @@ function AjaxLoginHandler() {
             } else if (xhr.status === 302) {
                 location.href = xhr.getResponseHeader('Location');
             } else {
-                setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+                $('#' + popupLoginFailed).show();
+                $('#' + popupLoginFailed + '-message').text(_t(userPasswordNotMatch));
+                setGlobalErrorHandler(_t_discussion(ohsnap), _t(userPasswordNotMatch));
             }
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
@@ -89,12 +91,12 @@ function AjaxLoginHandler() {
      *
      */
     this.logout = function () {
-        redirectAfterAjax(mainpage + 'user_logout');
+        redirectAfterAjax('user/logout');
     };
     /**
      *
      */
-    this.registration = function () {
+    this.registration = function (error_message) {
         $('#' + popupLoginRegistrationFailed).hide();
         var gender = 'n';
         if ($('#' + popupLoginInlineRadioGenderM).is(':checked')) {
@@ -125,10 +127,13 @@ function AjaxLoginHandler() {
             $('#' + popupLoginPasswordconfirmInputId).val('');
         };
         var fail = function ajaxRegistrationFail(data) {
-            $('#' + popupLoginRegistrationFailed).show();
+            $('#' + popupLoginRegistrationInfo).show();
+            $('#' + popupLoginRegistrationInfo + '-message').text(error_message);
             $('#' + popupLoginPasswordInputId).val('');
             $('#' + popupLoginPasswordconfirmInputId).val('');
-            setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+            if (data === null) {
+                setGlobalErrorHandler(_t_discussion(ohsnap), error_message);
+            }
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
@@ -138,13 +143,13 @@ function AjaxLoginHandler() {
      */
     this.passwordRequest = function () {
         var url = 'user_password_request';
-        var d = {
+        var data = {
             email: $('#password-request-email-input').val(),
             lang: getLanguage()
         };
         var fail = function ajaxPasswordRequestFail(data) {
             setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
         };
-        ajaxSkeleton(url, 'POST', d, callbackIfDoneForPasswordRequest(data), fail);
+        ajaxSkeleton(url, 'POST', data, callbackIfDoneForPasswordRequest, fail);
     };
 }

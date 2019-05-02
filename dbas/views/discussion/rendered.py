@@ -18,10 +18,9 @@ from dbas.lib import nick_of_anonymous_user
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
-from dbas.validators.core import validate, has_keywords_in_path
+from dbas.validators.core import validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_statement, valid_attitude, valid_argument, \
-    valid_relation, valid_reaction_arguments, valid_support, valid_premisegroup_in_path, \
-    valid_list_of_premisegroups_in_path
+    valid_relation, valid_reaction_arguments, valid_support, valid_list_of_premisegroups_in_path
 from dbas.validators.user import valid_user_optional
 from dbas.views.helper import main_dict, modify_discussion_url, modify_discussion_bubbles, prepare_request_dict, \
     append_extras_dict, append_extras_dict_during_justification_statement, \
@@ -48,7 +47,7 @@ def discussion_overview(request):
     """
 
     :param request: current request of the server
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    :return: dictionary with title and project name as well as a value whether the user is logged in
     """
     LOG.debug("Return a discussion overview dictionary")
     ui_locales = get_language_from_cookie(request)
@@ -76,10 +75,6 @@ def start(request):
     LOG.debug("Return configuration for initial discussion overview")
     ui_locales = get_language_from_cookie(request)
     issue_dict = issue_handler.get_issues_overview_on_start(request.validated['user'])
-    for key in issue_dict['issues']:
-        for i in range(len(issue_dict['issues'][key])):
-            issue_dict['issues'][key][i]['url'] = '/discuss' + issue_dict['issues'][key][i]['url']
-
     prep_dict = main_dict(request, Translator(ui_locales).get(_.discussionStart))
 
     prep_dict.update(issue_dict)
@@ -362,16 +357,18 @@ def dexit(request):
 
 
 @view_config(route_name='discussion_choose', renderer='../../templates/discussion/main.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional, valid_issue_by_slug, valid_premisegroup_in_path,
-          valid_list_of_premisegroups_in_path, has_keywords_in_path(('is_argument', bool), ('is_supportive', bool)))
+@validate(check_authentication, valid_user_optional, valid_issue_by_slug, valid_list_of_premisegroups_in_path)
 def choose(request):
     """
     View configuration for discussion step, where the user has to choose between given statements.
 
+    This step is shown when the user has given multiple reasons at the same time for/against a statement. The
+    corresponding premisegroup ids are given in the url.
+
     :param request: request of the web server
     :return: dictionary
     """
-    # '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
+    # '/discuss/{slug}/choose/*pgroup_ids'
     LOG.debug("Choose a statement. %s", request.matchdict)
     emit_participation(request)
 
@@ -380,14 +377,9 @@ def choose(request):
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
 
-    pgroups = {
-        'pgroup_uid': request.validated['pgroup_uid'],
-        'pgroup_uids': request.validated['pgroup_uids'],
-    }
     prepared_discussion = discussion.choose(db_issue, db_user,
-                                            request.validated['is_argument'],
-                                            request.validated['is_supportive'],
-                                            pgroups, history, request.path)
+                                            request.validated['pgroup_uids'],
+                                            history, request.path)
 
     rdict = prepare_request_dict(request)
 
@@ -422,6 +414,6 @@ def jump(request):
         modify_discussion_url(prepared_discussion)
 
     modify_discussion_bubbles(prepared_discussion, request.registry)
-    append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
+    append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
 
     return prepared_discussion

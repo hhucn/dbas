@@ -57,6 +57,7 @@ docker/db/data/
 postgres_db/
 
 # Deployment
+*.map
 dbas/static/css/main.css
 dbas/static/css/main.css.map
 dbas/static/css/creative.css
@@ -70,7 +71,6 @@ production.env
 development.env
 
 # Stuff
-clean.sh
 restorePostgres.sh
 graphviz*
 

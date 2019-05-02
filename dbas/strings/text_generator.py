@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from typing import Optional
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement
+from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement, \
+    Argument
 from dbas.lib import get_author_data, Relations, get_global_url
 from dbas.strings.lib import start_with_capital, start_with_small
 from .keywords import Keywords as _
@@ -440,7 +442,7 @@ def get_text_for_confrontation(lang, nickname, premise, conclusion, sys_conclusi
         return '', ''
 
     _t = Translator(lang)
-    question = '{}.<br><br>{}?{}'.format(start_tag, _t.get(_.whatDoYouThinkAboutThat), end_tag)
+    question = '.<br><br>{}?'.format(_t.get(_.whatDoYouThinkAboutThat))
     sys_text = confrontation_text + question
     return sys_text, gender
 
@@ -487,56 +489,45 @@ def get_text_for_edit_text_message(lang, nickname, orginal, edit, url, for_html=
         return _t.get(_.editTextMessage).format(nickname, orginal, edit, url)
 
 
-def get_text_for_message(nickname, lang, url, message_content, for_html=True):
+def get_text_for_message(nickname, lang, path, message_content, for_html=True) -> str:
     """
-    This method creates a email message used in a email.
+    This method creates a message used for example in mails or messages.
 
     :param nickname: The nickname of the addressed user
     :param lang: The language to be used in the email
-    :param url: The url for the user where he can find the changes
+    :param path: The url for the user where he can find the changes
     :param message_content: The key variable which will be translated into a message
     :param for_html: A boolean to determine if the Message should contain a clickable link
     :return: A Message addressed to a user which can contain a clickable or non-clickable link
     """
-
-    return __get_text_for_add_something(nickname, lang, url, message_content, for_html)
-
-
-def __get_text_for_add_something(nickname, lang, url, keyword, for_html=True):
-    nl = '<br>' if for_html else '\n'
     _t = Translator(lang)
-    intro = _t.get(keyword).format(nickname)
+    intro = _t.get(message_content).format(nickname)
     clickForMore = start_with_capital(_t.get(_.clickForMore))
-    if for_html:
-        url = f'{get_global_url()}/discuss{url}'
-        url = f'<a href="{url}">{clickForMore}</a>'
-    else:
-        url = get_global_url() + '/discuss' + url
-    return f'{intro}{nl}{clickForMore}: {url}'
+    dbas_url = get_global_url()
+    message_appendix_auto_generated = _t.get(_.emailBodyText).format(dbas_url)
+    abs_path = f'{dbas_url}/discuss{path}'
+
+    link = f'<a href="{abs_path}">{clickForMore}</a>' if for_html else abs_path
+    msg = f'{intro}\n\n{link}\n\n---\n\n{message_appendix_auto_generated}'
+
+    return msg.replace("\n", "<br>") if for_html else msg
 
 
-def __get_confrontation_text_for_undermine(nickname, premise, lang, system_argument, my_start_argument,
-                                           my_end_tag, confrontation):
+def __get_confrontation_text_for_undermine(nickname: str, premise: str, lang: str, system_argument: Argument,
+                                           my_argument_start_tag: str, my_end_tag: str, confrontation: str):
     """
     Returns the system bubble text for an undermine
 
     :param nickname: User.nickname
-    :param premise: String
+    :param premise
     :param lang: Language
-    :param system_argument: String
-    :param my_start_argument: String
-    :param my_end_tag: String
-    :param confrontation: String
+    :param system_argument
+    :param my_argument_start_tag
+    :param my_end_tag
+    :param confrontation
     :return:
     """
     _t = Translator(lang)
-
-    move_end_tag = False
-    if tag_type not in premise:
-        premise = start_tag + premise + end_tag
-    if tag_type not in confrontation:
-        confrontation = start_tag + confrontation + end_tag
-        move_end_tag = True
 
     data = get_name_link_of_arguments_author(system_argument, nickname)
     if data['is_valid']:
@@ -550,13 +541,8 @@ def __get_confrontation_text_for_undermine(nickname, premise, lang, system_argum
         pro_con_tag = start_pro
         hold_it = _t.get(_.hold)
 
-    outro = my_end_tag if move_end_tag else ''
-
-    confrontation_text = '{}{} {}{}{} {}{}{}{}{}{}, {}{} {}{}'.format(intro, end_tag, premise, pro_con_tag, start_tag,
-                                                                      my_start_argument, hold_it, my_end_tag, end_tag,
-                                                                      my_end_tag, start_tag,
-                                                                      _t.get(_.because).lower(), end_tag,
-                                                                      confrontation, outro)
+    because = _t.get(_.because).lower()
+    confrontation_text = f'{intro}{end_tag} {premise}{pro_con_tag} {my_argument_start_tag}{hold_it}{my_end_tag}{end_tag}, {because} {confrontation}'
 
     return confrontation_text, data['gender'] if data['is_valid'] else ''
 
@@ -601,8 +587,7 @@ def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, c
 
     bind = bind.format(start_con, end_tag, start_argument, end_tag)
 
-    confrontation_text = f'{intro} {premise}. {bind}{end_tag} {conclusion}{start_tag}. '
-    confrontation_text += f'{gender_think}{end_tag} {confrontation}'
+    confrontation_text = f'{intro} {premise}. {bind}{end_tag} {conclusion}. {gender_think} {confrontation}'
 
     return confrontation_text, data['gender'] if data['is_valid'] else ''
 
@@ -702,8 +687,7 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
     tmp = '{}{}{}'.format(tmp_start_tag, _t.get(accept if system_argument.is_supportive else reject), tmp_end_tag)
     bind = bind.format(tmp)
 
-    confrontation_text = '{}{} {}. {}{}{}{} {}'.format(intro, bind, conclusion, start_tag, say, point, end_tag,
-                                                       confrontation)
+    confrontation_text = f'{intro}{bind} {conclusion}. {say}{point} {confrontation}'
 
     return confrontation_text
 
@@ -751,7 +735,7 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
         if infos['is_okay']:
             bind = __translation_based_on_gender(_t, _.heSays, _.sheSays, infos['gender'])
 
-    confrontation_text = f'{intro} {conclusion}. {start_tag}{bind}:{end_tag} {confrontation}'
+    confrontation_text = f'{intro} {conclusion}. {bind}: {confrontation}'
     return confrontation_text
 
 
@@ -762,7 +746,7 @@ def __translation_based_on_gender(_t, keyword_m, keyword_f, gender):
         return _t.get(keyword_f)
 
 
-def get_name_link_of_arguments_author(argument, nickname, with_link=True):
+def get_name_link_of_arguments_author(argument: Argument, nickname: Optional[str], with_link: bool = True):
     """
     Will return author of the argument, if the first supporting user
 
@@ -793,7 +777,7 @@ def get_name_link_of_arguments_author(argument, nickname, with_link=True):
         else:
             return {
                 'user': None,
-                'text': '',
+                'link': '',
                 'gender': 'n',
                 'is_valid': False
             }
