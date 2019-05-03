@@ -1,0 +1,36 @@
+digraph finite_state_machine {
+	rankdir=LR;
+	size="25"
+	node [shape = doublecircle]; begin;
+	node [shape = doubleoctagon]; finish;
+	node [shape = point]; any_state, step_back;
+	node [shape = circle];
+	begin -> start [ label = "" ];
+	begin -> jump [ label = "" ];
+	start -> init [ label = "choose issue" ];
+	init -> finish [ label = "enter position"];
+	init -> attitude [ label = "select position" ];
+	attitude -> dont_know [ label = "show argument" ];
+	attitude -> justify_statement [ label = "agree" ];
+	attitude -> justify_statement [ label = "disagree" ];
+	dont_know -> justify_statement [ label = "undermine" ];
+	dont_know -> justify_argument [ label = "undercut" ];
+	dont_know -> reaction [ label = "attack premise" ];
+	dont_know -> reaction [ label = "I'm convinced" ];
+	justify_argument -> reaction [ label = "select reason" ];
+	justify_argument -> reaction [ label = "enter own reason" ];
+	justify_statement -> reaction [ label = "select reason" ];
+	justify_statement -> reaction [ label = "enter own reason" ];
+	reaction -> justify_argument [ label = "undermine"];
+	reaction -> reaction [ label = "I'm convinced"];
+	reaction -> justify_argument [ label = "undercut" ];
+	reaction -> justify_statement [ label = "defend my argument" ];
+	reaction -> reaction [ label = "show another argument" ];
+	reaction -> step_back [ label = "continue with last non reaction step" ];
+	jump -> reaction [ label = "accept" ];
+	jump -> justify_argument [ label = "undercut" ];
+	jump -> justify_statement [label = "attack conclusion" ];
+	jump -> justify_argument [ label = "attack premise" ];
+	jump -> justify_statement [ label = "accept and support argument"];
+	any_state -> finish [ label = "no applicable option available"];
+}
