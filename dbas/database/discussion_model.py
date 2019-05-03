@@ -3,18 +3,20 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import arrow
-import bcrypt
 import logging
 import warnings
-from abc import abstractmethod
+from abc import abstractmethod, ABC, ABCMeta
 from datetime import datetime
+from typing import List, Set, Optional, Dict, Any
+
+import arrow
+import bcrypt
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
-from typing import List, Set, Optional, Dict, Any
 
 from dbas.database import DBDiscussionSession, DiscussionBase
 from dbas.strings.keywords import Keywords as _
@@ -2629,7 +2631,7 @@ class DecisionProcess(DiscussionBase):
         return DBDiscussionSession.query(DecisionProcess).get(issue_id)
 
     def position_ended(self):
-        return bool(self.positions_end) and self.positions_end > datetime.now()
+        return bool(self.positions_end) and self.positions_end < datetime.now()
 
     def to_dict(self) -> dict:
         return {
