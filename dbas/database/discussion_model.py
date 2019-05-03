@@ -505,7 +505,39 @@ class Settings(DiscussionBase):
         self.keep_logged_in = keep_logged_in
 
 
-class Statement(DiscussionBase):
+class GraphNode(ABC):
+
+    @abstractmethod
+    def to_d3_dict(self) -> Dict[str, str]:
+        """Returns the representation for d3 of this node"""
+        pass
+
+    @abstractmethod
+    def get_sub_nodes(self) -> Set['GraphNode']:
+        """Returns a set of all GraphNodes which are one level deeper"""
+        pass
+
+    @property
+    @abstractmethod
+    def is_disabled(self) -> bool:
+        pass
+
+    def get_sub_tree(self, level=0) -> Set['GraphNode']:
+        """Returns a flat set of all reachable nodes in the graph below the current node."""
+        nodes = self.get_sub_nodes()
+
+        for node in nodes:
+            if not node.is_disabled:
+                nodes = nodes.union(node.get_sub_tree(level=level + 1))
+        return nodes
+        # return nodes.union(*[node.get_sub_tree(level=level + 1) for node in nodes if node.is_disabled])
+
+
+class GraphNodeMeta(DeclarativeMeta, ABCMeta):
+    pass
+
+
+class Statement(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     """
     Statement-table with several columns.
     Each statement has link to its text
@@ -531,6 +563,9 @@ class Statement(DiscussionBase):
         """
         self.is_position = is_position
         self.is_disabled = is_disabled
+
+    def __repr__(self):
+        return f"<Statement: {self.uid} \"{self.get_text()}\">"
 
     def set_disabled(self, is_disabled):
         """
@@ -666,6 +701,19 @@ class Statement(DiscussionBase):
         for argument in statement.arguments:
             result_set = result_set.union(Statement.__step_down_argument(argument))
         return result_set
+
+    def to_d3_dict(self):
+        return {
+            'id': 'statement_' + str(self.uid),
+            'label': self.get_text(),
+            'type': 'position' if self.is_position else 'statement',
+            'timestamp': self.get_first_timestamp().timestamp,
+            'edge_source': None,
+            'edge_target': None
+        }
+
+    def get_sub_nodes(self):
+        return set([argument for argument in self.arguments if not argument.is_disabled])
 
 
 class StatementReference(DiscussionBase):
@@ -1022,7 +1070,7 @@ class PremiseGroup(DiscussionBase):
         return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
 
 
-class Argument(DiscussionBase):
+class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     """
     Argument-table with several columns.
     Each argument has justifying statement(s) (premises) and the the statement-to-be-justified (argument or statement).
@@ -1035,7 +1083,7 @@ class Argument(DiscussionBase):
     argument_uid: int = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
     is_supportive: bool = Column(Boolean, nullable=False)
     author_uid: int = Column(Integer, ForeignKey('users.uid'))
-    timestamp = Column(ArrowType, default=get_now())
+    timestamp: ArrowType = Column(ArrowType, default=get_now())
     issue_uid: int = Column(Integer, ForeignKey('issues.uid'))
     is_disabled: bool = Column(Boolean, nullable=False)
 
@@ -1084,6 +1132,9 @@ class Argument(DiscussionBase):
         self.issue_uid = issue
         self.is_disabled = is_disabled
         self.timestamp = get_now()
+
+    def __repr__(self):
+        return f"<Argument: {self.uid} {'support' if self.is_supportive else 'attack'}>"
 
     def set_conclusions_argument(self, argument):
         """
@@ -1172,6 +1223,24 @@ class Argument(DiscussionBase):
             'issue_uid': self.issue_uid,
             'is_disabled': self.is_disabled,
         }
+
+    def to_d3_dict(self):
+        return {
+            'id': 'argument_' + str(self.uid),
+            'label': '',
+            'type': '',
+            'edge_source': ['statement_' + str(premise.statement_uid) for premise in self.premises if
+                            not premise.is_disabled],
+            'edge_target': 'statement_' + str(
+                self.conclusion_uid) if self.conclusion_uid else 'argument_' + str(self.argument_uid),
+            'timestamp': self.timestamp.timestamp
+        }
+
+    def get_sub_nodes(self) -> Set[GraphNode]:
+        nodes: Set[GraphNode] = set(
+            [premise.statement for premise in self.premises if not premise.is_disabled])
+
+        return nodes.union(set(self.attacked_by))
 
 
 class History(DiscussionBase):
@@ -1325,12 +1394,14 @@ class ClickedStatement(DiscussionBase):
         :param lang: A string representing the language used by the timestamp.
         :return: A dictionary representation of the object.
         """
-        return {'uid': self.uid,
-                'timestamp': sql_timestamp_pretty_print(self.timestamp, lang),
-                'is_up_vote': self.is_up_vote,
-                'is_valid': self.is_valid,
-                'statement_uid': self.statement_uid,
-                'content': self.statement.get_text()}
+        return {
+            'uid': self.uid,
+            'timestamp': sql_timestamp_pretty_print(self.timestamp, lang),
+            'is_up_vote': self.is_up_vote,
+            'is_valid': self.is_valid,
+            'statement_uid': self.statement_uid,
+            'content': self.statement.get_text()
+        }
 
 
 class MarkedArgument(DiscussionBase):
