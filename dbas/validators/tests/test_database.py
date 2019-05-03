@@ -10,13 +10,13 @@ class TestValidDatabase(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'table': 'Stateme'})
+        request = construct_dummy_request(json_body={'table': 'Stateme'})
         response = valid_table_name(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
         for t in ['statement', 'StAtement']:
-            request = construct_dummy_request({'table': t})
+            request = construct_dummy_request(json_body={'table': t})
             response = valid_table_name(request)
             self.assertTrue(response)
             self.assertIsInstance(response, bool)
@@ -37,12 +37,12 @@ class TestValidDatabase(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'k': 0})
+        request = construct_dummy_request(json_body={'k': 0})
         response = valid_database_model('k', Statement)(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'k': 1})
+        request = construct_dummy_request(json_body={'k': 1})
         response = valid_database_model('k', Statement)(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)

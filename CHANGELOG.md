@@ -1,3 +1,13 @@
+### 1.20.0 (2019-05-03)
+- Hotfix unsecure user_logout and user_delete paths [!739](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/739)
+- Resolve "Comment formatting error in base template" [!738](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/738)
+- Issues are visible although they should not [!737](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/737)
+- Remove the activity graph from the start page [!736](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/736)
+- Refactor update last action method / Rework testing system [!732](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/732)
+- Resolve "Language switcher does not work" [!733](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/733)
+- Refactor dbas/handler/user.py [!735](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/735)
+- Rework graph generation [!743](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/743)
+
 ### 1.19.2 (2019-04-22)
 - Fix missing login button, if there is no choice for the user and she is not logged in c064d6d7
 

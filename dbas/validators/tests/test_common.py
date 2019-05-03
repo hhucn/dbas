@@ -17,18 +17,18 @@ class ValidLanguageTest(TestCaseWithConfig):
         if lang == 'en' or lang == 'de':
             return
 
-        request = construct_dummy_request({'lang': lang})
+        request = construct_dummy_request(json_body={'lang': lang})
         self.assertFalse(valid_language(request))
         self.assertNotIn('lang', request.validated)
 
     def test_valid_german_language(self):
-        request = construct_dummy_request({'lang': 'de'})
+        request = construct_dummy_request(json_body={'lang': 'de'})
         self.assertTrue(valid_language(request))
         self.assertIn('lang', request.validated)
         self.assertEqual('de', request.validated['lang'].ui_locales)
 
     def test_valid_english_language(self):
-        request = construct_dummy_request({'lang': 'en'})
+        request = construct_dummy_request(json_body={'lang': 'en'})
         self.assertTrue(valid_language(request))
         self.assertIn('lang', request.validated)
         self.assertEqual('en', request.validated['lang'].ui_locales)
@@ -38,45 +38,45 @@ class ValidLangCookieFallbackTest(TestCaseWithConfig):
     @given(lang=st.text())
     def test_valid_lang_cookie_fallback(self, lang: str):
         lang = lang.replace('\x00', '')
-        request = construct_dummy_request({'lang': lang})
+        request = construct_dummy_request(json_body={'lang': lang})
         valid_lang_cookie_fallback(request)
         self.assertIn('lang', request.validated)
 
 
 class CheckAuthenticationTest(TestCaseWithConfig):
     def test_check_authentication_not_logged_in(self):
-        request = construct_dummy_request({'lang': 'en'})
+        request = construct_dummy_request(json_body={'lang': 'en'})
         self.assertIsNone(check_authentication(request))
 
     def test_check_authentication_logged_in(self):
         self.config.testing_securitypolicy(userid='Alwin', permissive=True)
-        request = construct_dummy_request({'lang': 'en'})
+        request = construct_dummy_request(json_body={'lang': 'en'})
         with self.assertRaises(HTTPFound):
             check_authentication(request)
 
 
 class TestFuzzySearch(TestCaseWithConfig):
     def test_none_type_is_false(self):
-        request = construct_dummy_request({'type': None})
+        request = construct_dummy_request(json_body={'type': None})
         response = valid_fuzzy_search_mode(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
     def test_empty_type_is_false(self):
-        request = construct_dummy_request({'type': ''})
+        request = construct_dummy_request(json_body={'type': ''})
         response = valid_fuzzy_search_mode(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
     def test_invalid_mode_number_is_false(self):
-        request = construct_dummy_request({'type': -1})
+        request = construct_dummy_request(json_body={'type': -1})
         response = valid_fuzzy_search_mode(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
     def test_valid_modes_returns_true(self):
         for mode in list(FuzzyMode):
-            request = construct_dummy_request({'type': mode})
+            request = construct_dummy_request(json_body={'type': mode})
             response = valid_fuzzy_search_mode(request)
             self.assertTrue(response)
             self.assertIsInstance(response, bool)

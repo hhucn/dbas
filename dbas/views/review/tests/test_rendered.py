@@ -17,7 +17,7 @@ class MainReviewViewTestsNotLoggedIn(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = index(request)
         self.assertEqual(response.status_code, 400)
 
@@ -28,13 +28,13 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page_not_logged_in(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = index(request)
         self.assertEqual(response.status_code, 400)
 
     def test_page(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = index(request)
         verify_dictionary_of_view(response)
 
@@ -52,14 +52,14 @@ class ReviewReputationViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page_not_logged_in(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = reputation(request)
         self.assertEqual(response.status_code, 400)
 
     def test_page_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = reputation(request)
         verify_dictionary_of_view(response)
         self.assertIn('reputation', response)
@@ -88,19 +88,19 @@ class ReviewContentViewTests(unittest.TestCase):
 
     def test_queue_pages_not_logged_in(self):
         for key in review_queues:
-            request = construct_dummy_request(match_dict={'queue': key})
+            request = construct_dummy_request(matchdict={'queue': key})
             response = queue_details(request)
             self.assertEqual(400, response.status_code)
 
     def test_queue_pages_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = construct_dummy_request(match_dict={'queue': 'foobaar'})
+        request = construct_dummy_request(matchdict={'queue': 'foobaar'})
         response = queue_details(request)
         self.assertEqual(400, response.status_code)
 
         for key in review_queues:
-            request = construct_dummy_request(match_dict={'queue': key})
+            request = construct_dummy_request(matchdict={'queue': key})
             response = queue_details(request)
             self.assertEqual(dict, type(response))
             verify_dictionary_of_view(response)
@@ -113,14 +113,14 @@ class ReviewOngoingViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page_not_logged_in(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = ongoing(request)
         self.assertEqual(response.status_code, 400)
 
     def test_page_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = ongoing(request)
         verify_dictionary_of_view(response)
 
@@ -134,14 +134,14 @@ class ReviewHistoryViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
 
     def test_page(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = history(request)
         self.assertEqual(response.status_code, 400)
 
     def test_page_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = history(request)
         verify_dictionary_of_view(response)
 

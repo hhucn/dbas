@@ -5,14 +5,15 @@ D-BAS database Model
 """
 import logging
 import warnings
-from abc import abstractmethod
+from abc import abstractmethod, ABC, ABCMeta
 from datetime import datetime
-from typing import List, Set, Optional, Dict
+from typing import List, Set, Optional, Dict, Any
 
 import arrow
 import bcrypt
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
@@ -106,6 +107,9 @@ class Issue(DiscussionBase):
         self.is_read_only = is_read_only
         self.date = get_now()
         self.is_featured = is_featured
+
+    def __repr__(self):
+        return f"<Issue {self.uid}: {self.slug}>"
 
     @hybrid_property
     def lang(self):
@@ -229,7 +233,8 @@ class User(DiscussionBase):
     authored_issues: List[Issue] = relationship('Issue', back_populates='author')
     settings: 'Settings' = relationship('Settings', back_populates='user', uselist=False)
 
-    clicked_statements = relationship('ClickedStatement', back_populates='user')
+    clicked_statements: List['ClickedStatement'] = relationship('ClickedStatement', back_populates='user')
+    clicked_arguments: List['ClickedArgument'] = relationship('ClickedArgument', back_populates='user')
 
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, oauth_provider='',
                  oauth_provider_id=''):
@@ -324,7 +329,7 @@ class User(DiscussionBase):
         }
 
     def is_anonymous(self):
-        return self.uid == 0
+        return self.uid == 1
 
     def is_admin(self):
         """
@@ -371,6 +376,17 @@ class User(DiscussionBase):
         :return: True, if the user is member of the authors group
         """
         return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
+
+    @hybrid_property
+    def accessible_issues(self) -> List['Issue']:
+        db_issues = DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                            Issue.is_private == False).all()
+
+        return list(set(db_issues).union(self.participates_in)) if not self.is_anonymous() else db_issues
+
+    @accessible_issues.setter
+    def accessible_issues(self, issue: Issue) -> None:
+        self.participates_in.append(issue)
 
     def __json__(self, _request=None):
         return {
@@ -489,7 +505,39 @@ class Settings(DiscussionBase):
         self.keep_logged_in = keep_logged_in
 
 
-class Statement(DiscussionBase):
+class GraphNode(ABC):
+
+    @abstractmethod
+    def to_d3_dict(self) -> Dict[str, str]:
+        """Returns the representation for d3 of this node"""
+        pass
+
+    @abstractmethod
+    def get_sub_nodes(self) -> Set['GraphNode']:
+        """Returns a set of all GraphNodes which are one level deeper"""
+        pass
+
+    @property
+    @abstractmethod
+    def is_disabled(self) -> bool:
+        pass
+
+    def get_sub_tree(self, level=0) -> Set['GraphNode']:
+        """Returns a flat set of all reachable nodes in the graph below the current node."""
+        nodes = self.get_sub_nodes()
+
+        for node in nodes:
+            if not node.is_disabled:
+                nodes = nodes.union(node.get_sub_tree(level=level + 1))
+        return nodes
+        # return nodes.union(*[node.get_sub_tree(level=level + 1) for node in nodes if node.is_disabled])
+
+
+class GraphNodeMeta(DeclarativeMeta, ABCMeta):
+    pass
+
+
+class Statement(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     """
     Statement-table with several columns.
     Each statement has link to its text
@@ -515,6 +563,9 @@ class Statement(DiscussionBase):
         """
         self.is_position = is_position
         self.is_disabled = is_disabled
+
+    def __repr__(self):
+        return f"<Statement: {self.uid} \"{self.get_text()}\">"
 
     def set_disabled(self, is_disabled):
         """
@@ -650,6 +701,19 @@ class Statement(DiscussionBase):
         for argument in statement.arguments:
             result_set = result_set.union(Statement.__step_down_argument(argument))
         return result_set
+
+    def to_d3_dict(self):
+        return {
+            'id': 'statement_' + str(self.uid),
+            'label': self.get_text(),
+            'type': 'position' if self.is_position else 'statement',
+            'timestamp': self.get_first_timestamp().timestamp,
+            'edge_source': None,
+            'edge_target': None
+        }
+
+    def get_sub_nodes(self):
+        return set([argument for argument in self.arguments if not argument.is_disabled])
 
 
 class StatementReference(DiscussionBase):
@@ -1006,7 +1070,7 @@ class PremiseGroup(DiscussionBase):
         return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
 
 
-class Argument(DiscussionBase):
+class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     """
     Argument-table with several columns.
     Each argument has justifying statement(s) (premises) and the the statement-to-be-justified (argument or statement).
@@ -1019,7 +1083,7 @@ class Argument(DiscussionBase):
     argument_uid: int = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
     is_supportive: bool = Column(Boolean, nullable=False)
     author_uid: int = Column(Integer, ForeignKey('users.uid'))
-    timestamp = Column(ArrowType, default=get_now())
+    timestamp: ArrowType = Column(ArrowType, default=get_now())
     issue_uid: int = Column(Integer, ForeignKey('issues.uid'))
     is_disabled: bool = Column(Boolean, nullable=False)
 
@@ -1068,6 +1132,9 @@ class Argument(DiscussionBase):
         self.issue_uid = issue
         self.is_disabled = is_disabled
         self.timestamp = get_now()
+
+    def __repr__(self):
+        return f"<Argument: {self.uid} {'support' if self.is_supportive else 'attack'}>"
 
     def set_conclusions_argument(self, argument):
         """
@@ -1156,6 +1223,24 @@ class Argument(DiscussionBase):
             'issue_uid': self.issue_uid,
             'is_disabled': self.is_disabled,
         }
+
+    def to_d3_dict(self):
+        return {
+            'id': 'argument_' + str(self.uid),
+            'label': '',
+            'type': '',
+            'edge_source': ['statement_' + str(premise.statement_uid) for premise in self.premises if
+                            not premise.is_disabled],
+            'edge_target': 'statement_' + str(
+                self.conclusion_uid) if self.conclusion_uid else 'argument_' + str(self.argument_uid),
+            'timestamp': self.timestamp.timestamp
+        }
+
+    def get_sub_nodes(self) -> Set[GraphNode]:
+        nodes: Set[GraphNode] = set(
+            [premise.statement for premise in self.premises if not premise.is_disabled])
+
+        return nodes.union(set(self.attacked_by))
 
 
 class History(DiscussionBase):
@@ -1301,6 +1386,22 @@ class ClickedStatement(DiscussionBase):
         :return: None
         """
         self.timestamp = get_now()
+
+    def to_dict(self, lang: str) -> Dict[str, Any]:
+        """
+        Returns a dictionary-based representaiton of the ClickedStatement object.
+
+        :param lang: A string representing the language used by the timestamp.
+        :return: A dictionary representation of the object.
+        """
+        return {
+            'uid': self.uid,
+            'timestamp': sql_timestamp_pretty_print(self.timestamp, lang),
+            'is_up_vote': self.is_up_vote,
+            'is_valid': self.is_valid,
+            'statement_uid': self.statement_uid,
+            'content': self.statement.get_text()
+        }
 
 
 class MarkedArgument(DiscussionBase):
@@ -2601,7 +2702,7 @@ class DecisionProcess(DiscussionBase):
         return DBDiscussionSession.query(DecisionProcess).get(issue_id)
 
     def position_ended(self):
-        return bool(self.positions_end) and self.positions_end > datetime.now()
+        return bool(self.positions_end) and self.positions_end < datetime.now()
 
     def to_dict(self) -> dict:
         return {

@@ -3,14 +3,25 @@
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 import logging
-from typing import List
+from typing import List, Dict, Set
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
-    SeenStatement, StatementToIssue
-from dbas.lib import get_profile_picture, get_enabled_statement_as_query, get_enabled_arguments_as_query
+    SeenStatement, StatementToIssue, GraphNode
+from dbas.lib import get_profile_picture
 
 LOG = logging.getLogger(__name__)
+
+
+def get_graph_nodes(issue: Issue) -> Set[GraphNode]:
+    """
+
+    :return: A set of GraphNodes which are reachable from from the issue.
+    """
+
+    positions: Set[Statement] = set([position for position in issue.positions if not position.is_disabled])
+
+    return positions.union(*[position.get_sub_tree() for position in positions])
 
 
 def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
@@ -22,52 +33,101 @@ def get_d3_data(db_issue: Issue, all_statements=None, all_arguments=None):
     :param all_arguments:
     :return: dictionary
     """
-    a = [a.uid for a in all_statements] if all_statements is not None else 'all'
-    b = [b.uid for b in all_arguments] if all_arguments is not None else 'all'
-    LOG.debug("Return D3 data. Statements: %s, arguments: %s", a, b)
-    edge_type = 'arrow'
-    nodes_array = []
-    edges_array = []
-    extras_dict = {}
+    return get_d3_graph(db_issue), False
 
-    LOG.debug("Titel: %s", db_issue.title)
 
-    db_textversions: List[TextVersion] = DBDiscussionSession.query(TextVersion).all()
-    if all_statements is None:
-        issues_statements_uids = [el.statement_uid for el in
-                                  DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
-        all_statements = get_enabled_statement_as_query().filter(Statement.uid.in_(issues_statements_uids)).all()
+def _d3_edges_from_argument(argument: Argument) -> List[Dict[str, str]]:
+    """
+    Generates a list of d3 representations of the edges which are connected to an argument.
 
-    if all_arguments is None:
-        all_arguments = get_enabled_arguments_as_query().filter_by(issue_uid=db_issue.uid).all()
 
-    # issue
-    node_dict = __get_node_dict(uid='issue',
-                                label=db_issue.info,
-                                node_type='issue',
-                                timestamp=db_issue.date.timestamp)
+    :param argument: The argument, which edges will be considered.
+    :return: A list of edges for d3, which are coming in and are going out from an argument.
+    """
+    if argument.conclusion_uid:
+        out_edge = {
+            'id': f'edge_{argument.uid}_c{argument.conclusion_uid}',
+            'edge_type': 'arrow',
+            'color': 'green' if argument.is_supportive else 'red',
+            'target': f'statement_{argument.conclusion_uid}',
+            'source': f'argument_{argument.uid}'
+        }
+    else:
+        out_edge = {
+            'id': f'edge_{argument.uid}_a{argument.argument_uid}',
+            'edge_type': 'arrow',
+            'color': 'green' if argument.is_supportive else 'red',
+            'target': f'argument_{argument.argument_uid}',
+            'source': f'argument_{argument.uid}'
+        }
 
-    nodes_array.append(node_dict)
-    all_node_ids = ['issue']
+    def premise_edge(argument: Argument, premise: Premise) -> Dict[str, str]:
+        """
+        Generates the representation of a premise edge.
 
-    # for each statement a node will be added
-    all_ids, nodes, edges, extras = __prepare_statements_for_d3_data(all_statements, db_textversions, edge_type)
-    all_node_ids += all_ids
-    nodes_array += nodes
-    edges_array += edges
-    extras_dict.update(extras)
+        :param argument: The targeted argument node.
+        :param premise: The single premise which is used by the argument.
+        :return:
+        """
+        return {
+            'id': f'edge_{argument.uid}_{premise.statement_uid}',
+            'edge_type': '',
+            'color': 'green' if argument.is_supportive else 'red',
+            'target': f'argument_{argument.uid}',
+            'source': f'statement_{premise.statement_uid}'
+        }
 
-    # for each argument edges will be added as well as the premises
-    all_ids, nodes, edges, extras = __prepare_arguments_for_d3_data(all_arguments, edge_type)
-    all_node_ids += all_ids
-    nodes_array += nodes
-    edges_array += edges
-    extras_dict.update(extras)
+    in_edges = [premise_edge(argument, premise) for premise in argument.premises]
 
-    error = __sanity_check_of_d3_data(all_node_ids, edges_array)
+    in_edges.append(out_edge)
+    return in_edges
 
-    d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
-    return d3_dict, error
+
+def _position_edge(position: Statement):
+    """
+    Generates the d3 representation of an edge between a position and the issue.
+    :param position:
+    :return:
+    """
+    return {
+        'id': f'edge_{position.uid}_issue',
+        'label': position.get_text(),
+        'type': 'position',
+        'timestamp': position.get_first_timestamp().timestamp,
+        'edge_type': 'arrow',
+        'color': 'grey',
+        'target': 'issue',
+        'source': f'statement_{position.uid}'
+    }
+
+
+def get_d3_graph(db_issue: Issue) -> Dict:
+    """
+    Returns the graph structure for an issue for the frontend.
+
+    :param db_issue: The issue from were to start the Graph
+    :return: A dict with 'nodes', 'edges' and 'extras', where 'nodes' is a list of nodes (argument and statements) in the graph.
+    'edges' are edges between the nodes and extra a dictionary in the form of node-id -> node (the same nodes like in 'nodes'
+    """
+    d3_data = {'nodes': [], 'edges': [], 'extras': {}}
+
+    nodes = get_graph_nodes(db_issue)
+
+    d3_data['nodes'] = [node.to_d3_dict() for node in nodes]
+
+    # add center node for issue
+    d3_data['nodes'].append({'id': 'issue', 'label': db_issue.title, 'type': 'issue', 'timestamp': str(db_issue.date)})
+
+    d3_data['edges'] = sum([_d3_edges_from_argument(node) for node in nodes if isinstance(node, Argument)],
+                           [])  # because sum = many pluses... and pluses concat lists...
+
+    # add edges between positions and issue
+    d3_data['edges'].extend([_position_edge(position) for position in db_issue.positions if not position.is_disabled])
+
+    d3_data['extras'] = {d3_node['id']: d3_node for d3_node in
+                         [node.to_d3_dict() for node in nodes if isinstance(node, Statement)]}
+
+    return d3_data
 
 
 def get_opinion_data(db_issue: Issue) -> dict:
@@ -173,11 +233,10 @@ def __get_statements_of_path_step(step):
     return statements if len(statements) > 0 else None
 
 
-def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
+def __prepare_statements_for_d3_data(db_statements: List[Statement], edge_type):
     """
 
     :param db_statements:
-    :param db_textversions:
     :param edge_type:
     :return:
     """
@@ -186,10 +245,8 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
     nodes = []
     edges = []
     extras = {}
-    tv_map = {tv.uid: tv for tv in db_textversions}
     for statement in db_statements:
-        text = tv_map[statement.textversion_uid]
-        text = text.content if text else 'None'
+        text = statement.get_text()
         node_dict = __get_node_dict(uid='statement_' + str(statement.uid),
                                     label=text,
                                     node_type='position' if statement.is_position else 'statement',
@@ -362,8 +419,8 @@ def __get_node_dict(uid, label, node_type='', author=None, editor=None, edge_sou
         'id': uid,
         'label': label,
         'type': node_type,
-        'author': author,
-        'editor': editor,
+        # 'author': author,
+        # 'editor': editor,
         # for virtual nodes
         'edge_source': edge_source,
         'edge_target': edge_target,

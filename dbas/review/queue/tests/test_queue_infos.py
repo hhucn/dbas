@@ -5,7 +5,7 @@ from dbas.review.queue import review_queues
 from dbas.review.queue.abc_queue import subclass_by_name
 from dbas.review.queue.adapter import QueueAdapter
 from dbas.strings.translator import Translator
-from dbas.tests.utils import TestCaseWithConfig
+from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 
 
 class QueueInfosTest(TestCaseWithConfig):
@@ -17,7 +17,7 @@ class QueueInfosTest(TestCaseWithConfig):
         self.issue: Issue = self.issue_cat_or_dog
 
     def test_get_subpage_empty_session(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         self.config.testing_securitypolicy(userid=self.user_bjoern.uid, permissive=True)
         self.user_bjoern.participates_in.append(self.issue_cat_or_dog)
         queue = subclass_by_name(review_queues[0])
@@ -29,7 +29,7 @@ class QueueInfosTest(TestCaseWithConfig):
         self.assertTrue(f'is_{review_queues[0]}' in subpage_dict['button_set'].keys())
 
     def test_get_all_subpages(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         self.config.testing_securitypolicy(userid=self.db_user.uid, permissive=True)
         self.db_user.participates_in.append(self.issue)
         for key in review_queues:

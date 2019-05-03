@@ -40,7 +40,6 @@
                 <th i18n:translate="title">Titel</th>
                 <th i18n:translate="language">Language</th>
                 <th i18n:translate="statements">Statements</th>
-                <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
                 <th i18n:translate="creation">Creation</th>
               </tr>
               </thead>
@@ -56,9 +55,6 @@
                       alt="flag_us-gb">
                 </td>
                 <td>${issue.statements}</td>
-                <td class="issue_activity_chart">
-                  <div id="issue_activity_chart_${issue.uid}"></div>
-                </td>
                 <td>${issue.date}</td>
               </tr>
               </tbody>
@@ -79,7 +75,6 @@
                 <th i18n:translate="title">Titel</th>
                 <th i18n:translate="language">Language</th>
                 <th i18n:translate="statements">Statements</th>
-                <th i18n:translate="activity_last_14_days">Activity (Last 14 days)</th>
                 <th i18n:translate="creation">Creation</th>
               </tr>
               </thead>
@@ -93,9 +88,6 @@
                       src="${request.static_url('dbas:static/images/flags/us-gb-24.png')}" alt="flag_us-gb">
                 </td>
                 <td>${issue.statements}</td>
-                <td class="issue_activity_chart">
-                  <div id="issue_activity_chart_${issue.uid}"></div>
-                </td>
                 <td>${issue.date}</td>
               </tr>
               </tbody>

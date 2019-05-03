@@ -7,21 +7,21 @@ from dbas.validators.core import validate
 
 class TestHasKeywords(TestCaseWithConfig):
     def test_empty_dummy_request(self):
-        request = construct_dummy_request()
+        request = construct_dummy_request(json_body={})
         fn = core.has_keywords_in_json_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
         self.assertFalse(response)
 
     def test_provided_string_expected_int_should_fail(self):
-        request = construct_dummy_request({'foo': 'bar'})
+        request = construct_dummy_request(json_body={'foo': 'bar'})
         fn = core.has_keywords_in_json_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
         self.assertFalse(response)
 
     def test_provided_int_expected_int_should_succeed(self):
-        request = construct_dummy_request({'foo': 2})
+        request = construct_dummy_request(json_body={'foo': 2})
         fn = core.has_keywords_in_json_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
@@ -30,21 +30,21 @@ class TestHasKeywords(TestCaseWithConfig):
 
 class TestHasKeywordsInPath(TestCaseWithConfig):
     def test_empty_dummy_request(self):
-        request = construct_dummy_request()
+        request = construct_dummy_request(json_body={})
         fn = core.has_keywords_in_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
         self.assertFalse(response)
 
     def test_provided_string_expected_int_should_fail(self):
-        request = construct_dummy_request(match_dict={'foo': 'bar'})
+        request = construct_dummy_request(matchdict={'foo': 'bar'})
         fn = core.has_keywords_in_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
         self.assertFalse(response)
 
     def test_provided_string_expected_string_should_succeed(self):
-        request = construct_dummy_request(match_dict={'foo': 2})
+        request = construct_dummy_request(matchdict={'foo': 2})
         fn = core.has_keywords_in_path(('foo', int))
         response = fn(request)
         self.assertIsInstance(response, bool)
@@ -53,7 +53,7 @@ class TestHasKeywordsInPath(TestCaseWithConfig):
 
 class TestHasMaybeKeywords(TestCaseWithConfig):
     def test_provided_int_expected_int_should_succeed(self):
-        request = construct_dummy_request({'foo': 9000})
+        request = construct_dummy_request(json_body={'foo': 9000})
         fn = core.has_maybe_keywords(('foo', int, 2))
         response = fn(request)
         self.assertIsInstance(response, bool)
@@ -62,7 +62,7 @@ class TestHasMaybeKeywords(TestCaseWithConfig):
         self.assertTrue(response)
 
     def test_empty_dummy_request(self):
-        request = construct_dummy_request()
+        request = construct_dummy_request(json_body={})
         fn = core.has_maybe_keywords(('foo', int, 2))
         response = fn(request)
         self.assertIsInstance(response, bool)
@@ -71,7 +71,7 @@ class TestHasMaybeKeywords(TestCaseWithConfig):
         self.assertTrue(response)
 
     def test_provided_string_expected_int_should_fail(self):
-        request = construct_dummy_request({'foo': 'bar'})
+        request = construct_dummy_request(json_body={'foo': 'bar'})
         fn = core.has_maybe_keywords(('foo', int, 2))
         response = fn(request)
         self.assertIsInstance(response, bool)
@@ -79,12 +79,13 @@ class TestHasMaybeKeywords(TestCaseWithConfig):
         self.assertFalse(response)
 
 
-class testValidate(TestCaseWithConfig):
+class TestValidate(TestCaseWithConfig):
 
     def test_validate(self):
         def __dummy_func(request):
             return request
 
+        # We do not use our custom dummy request constructor, since we WANT a plain request with nothing set.
         request = DummyRequest()
         self.assertFalse(hasattr(request, 'validated'))
         self.assertFalse(hasattr(request, 'errors'))

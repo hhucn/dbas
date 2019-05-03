@@ -110,10 +110,10 @@ class TestTextGenerator(TestCaseWithConfig):
                                                              is_dont_know)
 
         results = {
-            'undermine_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is wrong and I would like to argue against it.',
-            'support_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct and it convinced me.',
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct, but it does not support <span data-argumentation-type="argument">some conclusion text</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct and it supports <span data-argumentation-type="argument">some conclusion text</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>.'
+            'undermine_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is wrong and I would like to argue against it',
+            'support_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct and it convinced me',
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct, but it does not support <span data-argumentation-type="argument">some conclusion text</span>',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct and it supports <span data-argumentation-type="argument">some conclusion text</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>'
         }
 
         self.assertEqual(len(res), 4)
@@ -134,8 +134,8 @@ class TestTextGenerator(TestCaseWithConfig):
                                                              is_dont_know)
         self.assertEqual(len(res), 6)
         results.update({
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct, but it is not supported by the <span data-argumentation-type="argument">reason</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="argument">some conclusion text</span> is wrong and I would like to argue against it.'
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct, but it is not supported by the <span data-argumentation-type="argument">reason</span>',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="argument">some conclusion text</span> is wrong and I would like to argue against it'
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
@@ -147,10 +147,10 @@ class TestTextGenerator(TestCaseWithConfig):
 
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         results = {
-            'undermine_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is wrong and I would like to argue against it.',
-            'support_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it convinced me.',
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">my argument</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">my argument</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>.'
+            'undermine_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is wrong and I would like to argue against it',
+            'support_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it convinced me',
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">my argument</span>',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">my argument</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>'
         }
         self.assertEqual(len(res), 4)
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
@@ -168,10 +168,10 @@ class TestTextGenerator(TestCaseWithConfig):
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         results.update({
-            'undermine_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is wrong and I would like to argue against it.',
-            'support_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it convinced me.',
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it is not supported by the <span data-argumentation-type="argument">reason</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="argument">her opinion</span> is wrong and I would like to argue against it.'
+            'undermine_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is wrong and I would like to argue against it',
+            'support_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it convinced me',
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it is not supported by the <span data-argumentation-type="argument">reason</span>',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="argument">her opinion</span> is wrong and I would like to argue against it'
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
@@ -195,8 +195,8 @@ class TestTextGenerator(TestCaseWithConfig):
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         results.update({
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">my argument</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">my argument</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>.'
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">my argument</span>',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">my argument</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>'
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
@@ -204,8 +204,8 @@ class TestTextGenerator(TestCaseWithConfig):
         res = tg.get_relation_text_dict_with_substitution('en', with_no_opinion_text, is_dont_know, attack_type, gender)
         self.assertEqual(len(res), 6)
         results.update({
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">her point of view</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">her point of view</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>.',
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct, but it does not support <span data-argumentation-type="argument">her point of view</span>',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">her statement</span> is correct and it supports <span data-argumentation-type="argument">her point of view</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>',
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
@@ -217,23 +217,23 @@ class TestTextGenerator(TestCaseWithConfig):
         res = tg.get_jump_to_argument_text_list('en')
         self.assertEqual(len(res), 5)
         self.assertEqual(res[0],
-                         'Right, I support the <span data-argumentation-type="argument">assertion</span> and accept the <span data-argumentation-type="attack">reason</span>.')
+                         'Right, I support the <span data-argumentation-type="argument">assertion</span> and accept the <span data-argumentation-type="attack">reason</span>')
         self.assertEqual(res[1],
-                         'Right, I support the <span data-argumentation-type="argument">assertion</span>, but I want to add my own <span data-argumentation-type="attack">reason</span>.')
+                         'Right, I support the <span data-argumentation-type="argument">assertion</span>, but I want to add my own <span data-argumentation-type="attack">reason</span>')
         self.assertEqual(res[2],
-                         'Right, I support the <span data-argumentation-type="argument">assertion</span>, but the <span data-argumentation-type="attack">reason</span> does not support it.')
-        self.assertEqual(res[3], 'Wrong, the <span data-argumentation-type="argument">assertion</span> is false.')
-        self.assertEqual(res[4], 'Wrong, the <span data-argumentation-type="attack">reason</span> does not hold.')
+                         'Right, I support the <span data-argumentation-type="argument">assertion</span>, but the <span data-argumentation-type="attack">reason</span> does not support it')
+        self.assertEqual(res[3], 'Wrong, the <span data-argumentation-type="argument">assertion</span> is false')
+        self.assertEqual(res[4], 'Wrong, the <span data-argumentation-type="attack">reason</span> does not hold')
 
     def test_get_support_to_argument_text_list(self):
         res = tg.get_support_to_argument_text_list('en')
         self.assertEqual(len(res), 4)
         print(res)
-        self.assertEqual(res[0], 'I accept the <span data-argumentation-type="attack">reason</span>.')
-        self.assertEqual(res[1], 'The <span data-argumentation-type="attack">reason</span> does not hold.')
+        self.assertEqual(res[0], 'I accept the <span data-argumentation-type="attack">reason</span>')
+        self.assertEqual(res[1], 'The <span data-argumentation-type="attack">reason</span> does not hold')
         self.assertEqual(res[2],
-                         'The <span data-argumentation-type="attack">reason</span> does not support the <span data-argumentation-type="argument">assertion</span>.')
-        self.assertEqual(res[3], 'I want to add a new <span data-argumentation-type="attack">reason</span>.')
+                         'The <span data-argumentation-type="attack">reason</span> does not support the <span data-argumentation-type="argument">assertion</span>')
+        self.assertEqual(res[3], 'I want to add a new <span data-argumentation-type="attack">reason</span>')
 
     def test_get_text_for_support(self):
         arg = DBDiscussionSession.query(Argument).get(2)
@@ -242,7 +242,7 @@ class TestTextGenerator(TestCaseWithConfig):
 
         res = tg.get_text_for_support(arg, argument_text, 'Tobias', _t)
         self.assertEqual(res,
-                         '<span>This is a good point and other participants are interested in your conclusion too. They say, that</span> some argument text.<br><br>What do you think about that?')
+                         '<span>This is a good point and other participants are interested in your conclusion too. They say, that</span> some argument text<br><br>What do you think about that?')
 
     def test_get_name_link_of_arguments_author(self):
         db_arg = DBDiscussionSession.query(Argument).get(2)

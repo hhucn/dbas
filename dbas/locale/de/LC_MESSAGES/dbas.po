@@ -2449,7 +2449,7 @@ msgstr "Dies hat ungefähre Kosten von"
 #. kannst allerdings noch abstimmen!
 #: templates/discussion/organism/add-statement.pt:84
 msgid "decidotron_positions_ended"
-msgstr "Die Zeit zum hinzufügen von neuen Vorschlägen ist abgelaufen."
+msgstr "Die Zeit zum Hinzufügen von neuen Vorschlägen ist abgelaufen."
 
 #. Default: Complete View
 #: templates/discussion/organism/graph-sidebar.pt:7
