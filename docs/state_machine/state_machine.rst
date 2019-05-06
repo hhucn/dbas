@@ -166,4 +166,9 @@ shown in the new state are not possible to show. (Either because the user would 
 against themselves, or because there are no fitting statements / arguments or because
 the user was already confronted with them)
 
+choose
+------
+Every time when a premise belonging to a premisegroup is concerned, one should optimally
+have the user choose which premise from the premisegroup shall be handled before continuing
+normally with the flow.
 
