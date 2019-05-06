@@ -2,18 +2,19 @@
 D-BAS State Machine
 ===================
 
-The following image shows D-BAS as a state machine. Every transition needs paremeters
+The following image shows D-BAS as a state machine. Every transition needs parameters
 that are either derived from the current state or taken from the discussions database.
 The explanation below the state machine documents how those look.
 
-.. image:: src/graph.png
+.. image:: src/state_graph.png
+   :target: ../_images/state_graph.png
 
 
 States and Transitions
 ======================
-The described transitions are only available, when the corresponding action is internally possible.
-For example: When there are no counter-arguments in the database, a transition depending on showing a counter-argument
-will not be available.
+The described transitions are only available, when the corresponding action is internally possible. For example: When
+there are no counter-arguments in the database, a transition depending on showing a counter-argument will not be
+available.
 
 start
 -----
