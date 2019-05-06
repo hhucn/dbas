@@ -35,9 +35,9 @@ def spec_keyword_in_json_body(*keywords: Tuple[type, str, Callable[[any], bool]]
 def has_keywords_in_json_path(*keywords: Tuple[str, type]):
     """
     Verify that specified keywords exist in the request.json_body.
-                                                                   |
-    :param keywords: tuple of keys an  |
-    :return:                                                  v
+
+    :param keywords: tuple of the field's name and its expected type.
+    :return:
     """
     validator_keywords = [[ktype, keyword, lambda v, k: isinstance(v, k)] for [keyword, ktype] in keywords]
     return spec_keyword_in_json_body(*validator_keywords)
