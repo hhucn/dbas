@@ -768,7 +768,7 @@ def set_new_user(mailer: Mailer, user_data: Dict[str, Any], password: str, _tn: 
         LOG.debug("Internal error occurred")
         return {'success': False, 'error': _tn.get(Keywords.errorTryLateOrContant), 'user': None}
 
-    if DBDiscussionSession.query(User).filter_by(nickname=temporary_user['nickname']).exists():
+    if DBDiscussionSession.query(User).filter(User.nickname == temporary_user['nickname']).first():
         LOG.debug("User already exists")
         return {'success': False, 'error': _tn.get(Keywords.nickIsTaken), 'user': None}
 

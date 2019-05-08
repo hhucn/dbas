@@ -1,3 +1,6 @@
+### 1.20.1 (2019-05-08)
+- Hotfix to allow new LDAP users
+
 ### 1.20.0 (2019-05-03)
 - Hotfix unsecure user_logout and user_delete paths [!739](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/739)
 - Resolve "Comment formatting error in base template" [!738](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/738)
