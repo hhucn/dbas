@@ -15,7 +15,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        self.default_request = construct_dummy_request(match_dict={
+        self.default_request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
             'relation': Relations.UNDERMINE.value,
@@ -115,7 +115,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
                          'No rep on second visit')
 
     def test_invalid_slug_returns_error(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-doggy_dog',
             'arg_id_user': 2,
             'relation': Relations.UNDERMINE.value,
@@ -125,7 +125,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_user_argument_does_not_belong_to_issue_returns_error(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 45,
             'relation': Relations.UNDERMINE.value,
@@ -135,7 +135,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_sys_argument_does_not_belong_to_issue_returns_error(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
             'relation': Relations.UNDERMINE.value,
@@ -145,7 +145,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_page_failure_mode(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'arg_id_user': 2,
             'relation': 'invalid-relation',

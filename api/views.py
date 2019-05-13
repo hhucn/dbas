@@ -6,13 +6,12 @@ return JSON objects which can then be used in external websites.
 .. note:: Methods **must not** have the same name as their assigned Service.
 """
 import logging
-from typing import List
-
 from cornice import Service
 from cornice.resource import resource, view
-from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized
+from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
+from typing import List
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
@@ -40,7 +39,6 @@ from dbas.views import jump, emit_participation
 from .login import validate_credentials, valid_token, valid_token_optional, valid_api_token, check_jwt, encode_payload
 from .references import (get_all_references_by_reference_text,
                          store_reference)
-from .templates import error
 
 LOG = logging.getLogger(__name__)
 
@@ -215,10 +213,10 @@ def discussion_init(request):
     :param request: Request
     :return:
     """
-    db_issue = request.validated['issue']
+    db_issue: Issue = request.validated['issue']
     intro = get_translation(_.initialPositionInterest, db_issue.lang)
 
-    bubbles = [
+    bubbles: List[DataBubble] = [
         create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', content=intro, omit_bubble_url=True,
                                  lang=db_issue.lang)
     ]
@@ -453,11 +451,11 @@ def get_reference_usages(request: Request):
     :rtype: list
     """
     ref_uid = request.validated["ref_uid"]
-    LOG.debug("Retrieving reference usages for ref_uid {}".format(ref_uid))
+    LOG.debug(f"Retrieving reference usages for ref_uid {ref_uid}")
     db_ref: StatementReference = DBDiscussionSession.query(StatementReference).get(ref_uid)
     if db_ref:
         return get_all_references_by_reference_text(db_ref.text)
-    return error("Reference could not be found")
+    return HTTPNotFound("Reference could not be found")
 
 
 # =============================================================================
@@ -480,27 +478,6 @@ def user_login(request):
         'nickname': user.public_nickname,
         'uid': user.uid,
         'token': request.validated['token']
-    }
-
-
-@logout.post(require_csrf=False)
-@validate(valid_token)
-def user_logout(request):
-    """
-    If user is logged in, log him out.
-
-    Just invalidates the session.. so doesn't do anything. Just forget your token.
-
-    :param request:
-    :return:
-    """
-    nickname = request.validated['user'].nickname
-    LOG.debug('User logged out: {}'.format(nickname))
-    request.session.invalidate()
-
-    return {
-        'status': 'ok',
-        'message': 'Successfully logged out'
     }
 
 
@@ -660,6 +637,10 @@ def add_position_with_premise(request):
 
     pd = set_positions_premise(db_issue, db_user, db_conclusion, [[request.validated['reason-text']]], True, history,
                                request.mailer)
+
+    if pd['error']:
+        LOG.debug(f"Errors occurred in prepared_dictionary: {pd['error']}")
+        return HTTPBadRequest(pd["error"])
 
     statement_uids: List[int] = flatten(pd['statement_uids'])
     LOG.info("Created %d statements: %s", len(statement_uids), statement_uids)

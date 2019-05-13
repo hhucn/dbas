@@ -1,3 +1,51 @@
+### 1.20.1 (2019-05-08)
+- Hotfix to allow new LDAP users
+
+### 1.20.0 (2019-05-03)
+- Hotfix unsecure user_logout and user_delete paths [!739](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/739)
+- Resolve "Comment formatting error in base template" [!738](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/738)
+- Issues are visible although they should not [!737](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/737)
+- Remove the activity graph from the start page [!736](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/736)
+- Refactor update last action method / Rework testing system [!732](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/732)
+- Resolve "Language switcher does not work" [!733](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/733)
+- Refactor dbas/handler/user.py [!735](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/735)
+- Rework graph generation [!743](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/743)
+
+### 1.19.2 (2019-04-22)
+- Fix missing login button, if there is no choice for the user and she is not logged in c064d6d7
+
+### 1.19.1 (2019-04-17)
+- Remove ugly edges in buttons [!730](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/730)
+- Move text-generation from arguments to a texts-dictionary [!729](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/729)
+- Add text on how porposals should be made 07b3efe3
+- Make "I want to add my own idea" radio entry clickable again and add pointer cursor. 52acbe4d 1e3f55f4
+- General refactoring
+
+### 1.19.0 (2019-04-15)
+- Add DTO class for References on Steroids [!725](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/725)
+- Refactor String Builder [!726](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/726)
+- Return raw strings for reference usages via API [!726](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/726)
+- Fix string comparison when adding new positions [!724](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/724)
+- Do not construct url with argument uid 0 if there is no connected argument [!727](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/727)
+- Hotfix for typing error [!723](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/723)
+
+### 1.18.1 (2019-04-14)
+Fixes fot the field experiment
+- Fix german translation for the future voting button 350f386e
+- Show 'result' button no matter if the user is logged in. 17a41eef
+- Fix for when more than one issue might be featured. 51b41067
+
+### 1.18.0 (2019-04-12)
+Stable release for the next field experiment.
+- UI and spelling improvements [!720](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/720)
+- Remove unnecessary transaction.commit() calls (database improvements) [!719](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/719)
+- Extend README in cases of troubleshooting during installation [!718](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/718)
+
+### 1.17.4 (2019-04-11)
+- Add a hero issue view. To promote a single issue. [!693](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/693)
+- Return correct error messages in login fail-state [!715](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/715)
+- Do not allow registration for the time of the experiment [!713](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/713)
+
 ### 1.17.3 (2019-04-09)
 - Allow for more specific ldap filters [!710](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/710)
 - Remove hint when suggestion small edit [!709](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/709)

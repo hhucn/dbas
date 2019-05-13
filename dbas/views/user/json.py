@@ -1,10 +1,10 @@
-import logging
 from time import sleep
-from typing import Dict
 
+import logging
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
 from pyramid.view import view_config
+from typing import Dict
 
 from api import login
 from dbas.auth.login import login_local_user, register_user_with_json_data, __refresh_headers_and_url
@@ -51,14 +51,14 @@ def user_login(request):
     login_data = login_local_user(nickname, password, request.mailer, lang)
 
     if not login_data.get('error'):
-        headers, url = __refresh_headers_and_url(request, login_data['user'], keep_login, redirect_url)
+        headers, url = __refresh_headers_and_url(request, nickname, keep_login, redirect_url)
         sleep(0.5)
         return HTTPFound(location=url, headers=headers)
 
     return {'error': Translator(lang).get(_.userPasswordNotMatch)}
 
 
-@view_config(route_name='user_logout', renderer='json')
+@view_config(request_method='POST', route_name='user_logout', renderer='json')
 def user_logout(request, redirect_to_main=False):
     """
     Will logout the user
@@ -83,7 +83,7 @@ def user_logout(request, redirect_to_main=False):
     )
 
 
-@view_config(route_name='user_delete', renderer='json')
+@view_config(request_method='POST', route_name='user_delete', renderer='json')
 @validate(valid_user)
 def user_delete(request):
     """

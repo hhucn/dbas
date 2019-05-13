@@ -17,7 +17,7 @@ class DiscussionFinishViewTests(unittest.TestCase):
 
     def test_page(self):
         argument_uid = 10
-        request = construct_dummy_request(match_dict={'argument_id': argument_uid, 'slug': 'cat-or-dog'})
+        request = construct_dummy_request(matchdict={'argument_id': argument_uid, 'slug': 'cat-or-dog'})
         request.registry.notify = mock.Mock()
         response = finish(request)
         verify_dictionary_of_view(response)

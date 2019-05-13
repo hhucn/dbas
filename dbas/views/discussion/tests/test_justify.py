@@ -40,7 +40,7 @@ class TestJustifyStatement(unittest.TestCase):
 
     def test_justify_statement_page(self):
         vote_dict = get_meta_clicks()
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'statement_id': 2,
             'attitude': Attitudes.AGREE.value,
@@ -55,7 +55,7 @@ class TestJustifyStatement(unittest.TestCase):
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
         len_db_vote1 = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.is_valid == True,
                                                                           ClickedStatement.is_up_vote == True).count()
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'statement_id': 2,
             'attitude': Attitudes.AGREE.value,
@@ -79,7 +79,7 @@ class TestJustifyStatement(unittest.TestCase):
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
         len_db_vote1 = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.is_valid == True,
                                                                           ClickedStatement.is_up_vote == False).count()
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'statement_id': 2,
             'attitude': Attitudes.DISAGREE.value,
@@ -100,7 +100,7 @@ class TestJustifyStatement(unittest.TestCase):
         clear_clicks_of('Tobias')
 
     def test_wrong_attitude(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'statement_id': 2,
             'attitude': 'not-a-valid-attitude',
@@ -109,7 +109,7 @@ class TestJustifyStatement(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_wrong_slug(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'kitty-or-doggy-is-a-wrong-slug',
             'statement_id': 2,
             'attitude': Attitudes.AGREE.value,
@@ -118,7 +118,7 @@ class TestJustifyStatement(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_stmt_or_arg_id_does_not_belong_to_issue(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'statement_id': 40,
             'attitude': Attitudes.AGREE.value,
@@ -135,7 +135,7 @@ class TestJustifyArgument(unittest.TestCase):
         clear_clicks_of('Björn')
 
     def __call_function_and_count_seen_clicked_arguments(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'argument_id': 15,
             'attitude': Attitudes.DISAGREE.value,
@@ -154,7 +154,7 @@ class TestJustifyArgument(unittest.TestCase):
     def test_justify_argument_page_no_rep(self):
         vote_dict = get_meta_clicks()
         len_db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'argument_id': 4,
             'attitude': Attitudes.AGREE.value,
@@ -211,7 +211,7 @@ class TestJustifyArgument(unittest.TestCase):
         clear_clicks_of(db_user.nickname)
 
     def test_wrong_relation(self):
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'argument_id': 4,
             'attitude': Attitudes.AGREE.value,
@@ -224,7 +224,7 @@ class TestJustifyArgument(unittest.TestCase):
         DBDiscussionSession.query(Argument).get(1).set_disabled(True)
         transaction.commit()
 
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'argument_id': 1,
             'attitude': Attitudes.AGREE.value,
@@ -241,7 +241,7 @@ class TestDontKnowArgument(unittest.TestCase):
 
     def test_dont_know_page(self):
         vote_dict = get_meta_clicks()
-        request = construct_dummy_request(match_dict={
+        request = construct_dummy_request(matchdict={
             'slug': 'cat-or-dog',
             'argument_id': 2,
             'attitude': Attitudes.DONT_KNOW.value,

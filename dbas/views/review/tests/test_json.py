@@ -12,7 +12,7 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
 from dbas.lib import get_text_for_argument_uid, nick_of_anonymous_user
 from dbas.review import ReviewDeleteReasons
 from dbas.review.queue import key_delete, key_duplicate, key_merge, key_split
-from dbas.tests.utils import TestCaseWithConfig
+from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 from dbas.views import review_delete_argument, revoke_statement_content, flag_argument_or_statement, \
     split_or_merge_statement, split_or_merge_premisegroup, review_edit_argument, review_splitted_premisegroup, \
     review_duplicate_statement, review_optimization_argument, undo_review, cancel_review, review_lock, \
@@ -41,7 +41,7 @@ class AjaxReviewTest(unittest.TestCase):
         DBDiscussionSession.query(ReviewOptimization).filter_by(statement_uid=2).delete()
         transaction.commit()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 20,
             'reason': ReviewDeleteReasons.offtopic.value,
             'is_argument': False,
@@ -53,7 +53,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_flag_argument_or_statement_twice(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 20,
             'reason': ReviewDeleteReasons.offtopic.value,
             'is_argument': False,
@@ -67,14 +67,14 @@ class AjaxReviewTest(unittest.TestCase):
         transaction.commit()
 
     def test_flag_argument_or_statement_error_user(self):
-        request = testing.DummyRequest(json_body={})
+        request = construct_dummy_request(json_body={})
         response = flag_argument_or_statement(request)
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
 
     def test_flag_argument_or_statement_error_reason(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 20,
             'reason': 'some_fake_reason',
             'is_argument': False,
@@ -85,7 +85,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_flag_argument_or_statement_error_uid(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 'a',
             'reason': ReviewDeleteReasons.offtopic.value,
             'is_argument': False,
@@ -97,7 +97,7 @@ class AjaxReviewTest(unittest.TestCase):
     def __exec_request_and_check_reviewes(self, db_review, ajax, keyword, boolean, nickname, reviewer_type):
         self.config.testing_securitypolicy(userid=nickname, permissive=True)
         db_reviews1 = DBDiscussionSession.query(reviewer_type).filter_by(review_uid=db_review.uid).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             keyword: boolean,
             'review_uid': db_review.uid
         })
@@ -138,7 +138,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_review_delete_argument_uid_error(self):
         self.config.testing_securitypolicy(userid='Pascal', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'should_delete': True,
             'review_uid': 'a'
         })
@@ -182,7 +182,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_reviews1 = DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).count()
         db_edits1 = DBDiscussionSession.query(ReviewEdit).count()
         db_values1 = DBDiscussionSession.query(ReviewEditValue).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'should_optimized': True,
             'review_uid': db_review.uid,
             'new_data': [{
@@ -206,7 +206,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_optimization_argument_author_error(self):
         db_review = DBDiscussionSession.query(ReviewOptimization).first()
         self.config.testing_securitypolicy(userid='', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'is_edit_okay': True,
             'review_uid': db_review.uid
         })
@@ -216,7 +216,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_review_optimization_argument_uid_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'is_edit_okay': True,
             'review_uid': 'a'
         })
@@ -230,7 +230,7 @@ class AjaxReviewTest(unittest.TestCase):
         for user in user_ids:
             self.config.testing_securitypolicy(userid=user, permissive=True)
             db_reviews1 = DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).count()
-            request = testing.DummyRequest(json_body={
+            request = construct_dummy_request(json_body={
                 'is_edit_okay': True,
                 'review_uid': db_review.uid
             })
@@ -244,7 +244,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Hermann', permissive=True)
         db_reviews1 = DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).count()
         db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'is_edit_okay': True,
             'review_uid': db_review.uid
         })
@@ -259,7 +259,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         self.config.testing_securitypolicy(userid='Torben', permissive=True)
         db_reviews1 = DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'should_optimized': False,
             'review_uid': db_review.uid
         })
@@ -273,7 +273,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_edit_argument_author_error(self):
         db_review = DBDiscussionSession.query(ReviewEdit).first()
         self.config.testing_securitypolicy(userid='', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'should_optimized': True,
             'review_uid': db_review.uid,
             'new_data': 'new data for some statement'
@@ -285,7 +285,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_edit_argument_uid_error(self):
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'should_optimized': True,
             'review_uid': 'a',
             'new_data': 'new data for some statement'
@@ -296,7 +296,7 @@ class AjaxReviewTest(unittest.TestCase):
     def __exec_request_and_check_duplicates(self, db_review, ajax, boolean, nickname):
         self.config.testing_securitypolicy(userid=nickname, permissive=True)
         db_reviews1 = DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'is_duplicate': boolean,
             'review_uid': db_review.uid
         })
@@ -324,7 +324,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         self.config.testing_securitypolicy(userid='Friedrich', permissive=True)
         db_reviews1 = DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'should_optimized': False,
             'review_uid': db_review.uid
         })
@@ -338,7 +338,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_duplicate_statement_author_error(self):
         db_review = DBDiscussionSession.query(ReviewDuplicate).first()
         self.config.testing_securitypolicy(userid='', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'is_duplicate': True,
             'review_uid': db_review.uid,
         })
@@ -348,7 +348,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_review_duplicate_uid_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'is_duplicate': True,
             'review_uid': 'a'
         })
@@ -358,7 +358,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_undo_review(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_canceled1 = DBDiscussionSession.query(ReviewCanceled).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_delete,
             'uid': 5
         })
@@ -369,7 +369,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_undo_review_author_error(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         db_canceled1 = DBDiscussionSession.query(ReviewCanceled).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_delete,
             'uid': 5
         })
@@ -381,7 +381,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_cancel_review(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_canceled1 = DBDiscussionSession.query(ReviewCanceled).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_delete,
             'uid': 4
         })
@@ -393,7 +393,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_cancel_review_author_error(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         db_canceled1 = DBDiscussionSession.query(ReviewCanceled).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_delete,
             'uid': 4
         })
@@ -405,7 +405,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_cancel_review_queue_error(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         db_canceled1 = DBDiscussionSession.query(ReviewCanceled).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': 'some_queue',
             'uid': 4
         })
@@ -417,7 +417,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_lock(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_review = DBDiscussionSession.query(ReviewOptimization).first()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review.uid,
             'lock': True
         })
@@ -430,7 +430,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_lock_twice(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_review = DBDiscussionSession.query(ReviewOptimization).first()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review.uid,
             'lock': True
         })
@@ -443,7 +443,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_lock_author_error(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         db_review = DBDiscussionSession.query(ReviewOptimization).first()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review.uid,
             'lock': True
         })
@@ -453,7 +453,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_review_lock_id_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': 100,
             'lock': 'true'
         })
@@ -463,7 +463,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_unlock(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_review = DBDiscussionSession.query(ReviewOptimization).first()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review.uid,
             'lock': False
         })
@@ -476,7 +476,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_revoke_content_author_error2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_content1 = DBDiscussionSession.query(RevokedContentHistory).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'statement_id': 3,
         })
         response = revoke_statement_content(request)
@@ -492,7 +492,7 @@ class AjaxReviewTest(unittest.TestCase):
         argument_uid = get_all_arguments_by_statement(uid)[0].uid
 
         db_review1 = DBDiscussionSession.query(ReviewDuplicate).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': uid,  # 'cats are very independent
             'reason': 'duplicate',
             'extra_uid': 1,  # Cats are fucking stupid and bloody fuzzy critters!,
@@ -514,7 +514,7 @@ class AjaxReviewTest(unittest.TestCase):
         for name in ['Marga', 'Emmi', 'Rupert']:
             self.config.testing_securitypolicy(userid=name, permissive=True)
             db_review1 = DBDiscussionSession.query(LastReviewerDuplicate).count()
-            request = testing.DummyRequest(json_body={
+            request = construct_dummy_request(json_body={
                 'is_duplicate': True,
                 'review_uid': db_review.uid
             })
@@ -536,7 +536,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # revoke the decision
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': db_review.uid,
             'queue': key_duplicate,
         })
@@ -549,7 +549,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_or_merge_statement_key_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uidd': 1,
             'key': 'it crashes',
             'text_values': []
@@ -558,7 +558,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_statement_pgroup_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 0,
             'key': 'split',
             'text_values': ['']
@@ -567,7 +567,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_statement_textvalue_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 2,
             'key': 'split',
             'text_values': ['']
@@ -576,7 +576,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_statement_user_error(self):
         self.config.testing_securitypolicy(userid='nobody', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 1,
             'key': 'split',
             'text_values': []
@@ -585,7 +585,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 20,
             'key': 'split',
             'text_values': ['it is based on the cats race', 'not every cat is capricious']
@@ -609,7 +609,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_merge_statement_pgroup_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 0,
             'key': 'merge',
             'text_values': ['']
@@ -619,7 +619,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_merge_statement_textvalue_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 2,
             'key': 'merge',
             'text_values': ['']
@@ -628,7 +628,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_merge_statement_user_error(self):
         self.config.testing_securitypolicy(userid='nobody', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 1,
             'key': 'merge',
             'text_values': []
@@ -637,7 +637,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_merge_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 24,
             'key': 'merge',
             'text_values': ['it is based on the cats race', 'not every cat is capricious']
@@ -661,7 +661,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_premisegroup_key_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'pgroup_uidd': 1,
             'key': 'split',
         })
@@ -669,7 +669,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_premisegroup_pgroup_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'pgroup_uid': 0,
             'key': 'split',
         })
@@ -677,7 +677,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_premisegroup_user_error(self):
         self.config.testing_securitypolicy(userid='some_user', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'pgroup_uid': 0,
             'key': 'split',
         })
@@ -685,7 +685,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_split_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 21,
             'key': 'split',
         })
@@ -709,7 +709,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_merge_premisegroup_pgroup_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 0,
             'key': 'merge',
         })
@@ -717,7 +717,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_merge_premisegroup_user_error(self):
         self.config.testing_securitypolicy(userid='some_user', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 0,
             'key': 'merge',
         })
@@ -725,7 +725,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_merge_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 21,
             'key': 'merge',
         })
@@ -747,7 +747,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_review_splitted_premisegroup_uid_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': 0,
             'should_split': True,
         })
@@ -756,7 +756,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_review_splitted_premisegroup_user_error(self):
         self.config.testing_securitypolicy(userid='some_child', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': 1,
             'should_split': True,
         })
@@ -766,7 +766,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_splitted_premisegroup(self, statement_uid: int = 25, pgroup_uid: int = 21, resetdb: bool = True):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': statement_uid,
             'key': 'split',
             'text_values': ['it is based on the cats race', 'not every cat is capricious']
@@ -778,7 +778,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_arguments_with_pgroup = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=pgroup_uid).all()
 
         # vote 1:0
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review_split.uid,
             'should_split': True
         })
@@ -792,7 +792,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # vote 2:0
         self.config.testing_securitypolicy(userid='Christian', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review_split.uid,
             'should_split': True,
         })
@@ -806,7 +806,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # vote 2:1
         self.config.testing_securitypolicy(userid='Bob', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review_split.uid,
             'should_split': False,
         })
@@ -820,7 +820,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # vote 3:1
         self.config.testing_securitypolicy(userid='Pascal', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review_split.uid,
             'should_split': True,
         })
@@ -834,7 +834,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # vote 4:1
         self.config.testing_securitypolicy(userid='Kurt', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review_split.uid,
             'should_split': True,
         })
@@ -880,7 +880,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_merged_premisegroup(self, statement_uid=31, pgroup_uid=27, resetdb=True):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': statement_uid,
             'key': 'merge',
             'text_values': ['cats are small and fluffy']
@@ -889,7 +889,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_review_merge = DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=pgroup_uid).first()
 
         # vote 1:0
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review_merge.uid,
             'should_merge': True
         })
@@ -903,7 +903,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # vote 2:0
         self.config.testing_securitypolicy(userid='Christian', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review_merge.uid,
             'should_merge': True,
         })
@@ -917,7 +917,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # vote 2:1
         self.config.testing_securitypolicy(userid='Bob', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review_merge.uid,
             'should_merge': False,
         })
@@ -931,7 +931,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # vote 3:1
         self.config.testing_securitypolicy(userid='Pascal', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review_merge.uid,
             'should_merge': True,
         })
@@ -945,7 +945,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # vote 4:1
         self.config.testing_securitypolicy(userid='Kurt', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'review_uid': db_review_merge.uid,
             'should_merge': True,
         })
@@ -993,7 +993,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_cancel_review_splitted_merged_premisegroup_errors(self):
         self.config.testing_securitypolicy(userid='someone', permissive=True)
         # user error
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_split,
             'uid': 1
         })
@@ -1003,7 +1003,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
         # uid error
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_split,
             'uid': 'a'
         })
@@ -1011,7 +1011,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
         # queue error
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': 'asd',
             'uid': 1
         })
@@ -1019,7 +1019,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
         # no review error
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_split,
             'uid': 1000
         })
@@ -1029,7 +1029,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_cancel_review_split_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 41,
             'key': key_split,
             'text_values': ['cats are small and fluffy', 'split it up, dude']
@@ -1041,7 +1041,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(len1 + 1, len2)
         db_review = DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=33).first()
 
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_merge,
             'uid': db_review.uid,
         })
@@ -1054,7 +1054,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_cancel_review_merged_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # add something for a review
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'uid': 19,
             'key': key_merge,
             'text_values': ['cats are small and fluffy']
@@ -1066,7 +1066,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(len1 + 1, len2)
         db_review = DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=15).first()
 
-        request2 = testing.DummyRequest(json_body={
+        request2 = construct_dummy_request(json_body={
             'queue': key_merge,
             'uid': db_review.uid,
         })
@@ -1079,7 +1079,7 @@ class AjaxReviewTest(unittest.TestCase):
     def test_undo_merge_split_review_errors(self):
         # uid
         self.config.testing_securitypolicy(userid='peter', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_merge,
             'uid': 'a',
         })
@@ -1087,7 +1087,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
         # no admin
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_merge,
             'uid': 2,
         })
@@ -1096,7 +1096,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # queue
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': 'HAHA',
             'uid': 2,
         })
@@ -1104,7 +1104,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
         # no uid
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_merge,
             'uid': 5,
         })
@@ -1133,7 +1133,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_review = DBDiscussionSession.query(ReviewSplit).filter_by(premisegroup_uid=uid).first()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_split,
             'uid': db_review.uid
         })
@@ -1178,7 +1178,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_review = DBDiscussionSession.query(ReviewMerge).filter_by(premisegroup_uid=uid).first()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'queue': key_merge,
             'uid': db_review.uid
         })
@@ -1205,7 +1205,7 @@ class TestRevokeStatementContent(TestCaseWithConfig):
     def test_revoke_content(self):
         self.config.testing_securitypolicy(userid=nick_of_anonymous_user, permissive=True)
         db_content1 = DBDiscussionSession.query(RevokedContentHistory).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'statement_id': 2,
         })
         self.assertTrue(revoke_statement_content(request))
@@ -1215,7 +1215,7 @@ class TestRevokeStatementContent(TestCaseWithConfig):
     def test_revoke_content_uid_error1(self):
         self.config.testing_securitypolicy(userid=nick_of_anonymous_user, permissive=True)
         db_content1 = DBDiscussionSession.query(RevokedContentHistory).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'statement_id': 'a',
         })
         response = revoke_statement_content(request)
@@ -1226,7 +1226,7 @@ class TestRevokeStatementContent(TestCaseWithConfig):
     def test_revoke_content_statement_id_error2(self):
         self.config.testing_securitypolicy(userid=nick_of_anonymous_user, permissive=True)
         db_content1 = DBDiscussionSession.query(RevokedContentHistory).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'statement_id': 150,
         })
         response = revoke_statement_content(request)
@@ -1237,7 +1237,7 @@ class TestRevokeStatementContent(TestCaseWithConfig):
     def test_revoke_content_author_error1(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         db_content1 = DBDiscussionSession.query(RevokedContentHistory).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'statement_id': 3,
         })
         response = revoke_statement_content(request)

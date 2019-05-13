@@ -1,5 +1,4 @@
 import logging
-
 from pyramid.request import Request
 from pyramid.response import Response
 from pyramid.view import view_config
@@ -7,7 +6,7 @@ from pyramid.view import view_config
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement
 from dbas.handler import history as history_handler, user, issue as issue_handler
-from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
+from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement
 from dbas.handler.issue import set_discussions_properties
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.statements import set_position, set_positions_premise, set_correction_of_statement, \
@@ -80,7 +79,7 @@ def get_all_marked_arguments(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_marked_elements_of(db_user, True, ui_locales)
+    return user.get_marked_arguments(db_user, ui_locales)
 
 
 @view_config(route_name='get_all_marked_statements', renderer='json')
@@ -94,7 +93,7 @@ def get_all_marked_statements(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_marked_elements_of(db_user, False, ui_locales)
+    return user.get_marked_statements(db_user, ui_locales)
 
 
 @view_config(route_name='get_all_argument_clicks', renderer='json')
@@ -108,7 +107,7 @@ def get_all_argument_clicks(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_clicked_elements_of(db_user, True, ui_locales)
+    return user.get_clicked_arguments(db_user, ui_locales)
 
 
 @view_config(route_name='get_all_statement_clicks', renderer='json')
@@ -122,7 +121,7 @@ def get_all_statement_clicks(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_clicked_elements_of(db_user, False, ui_locales)
+    return user.get_clicked_statements(db_user, ui_locales)
 
 
 @view_config(route_name='delete_user_history', renderer='json')
@@ -369,7 +368,7 @@ def get_arguments_by_statement_id(request):
     LOG.debug("Return all arguments which use the given statement. %s", request.json_body)
     db_statement = request.validated['statement']
     db_issue = request.validated['issue']
-    argument_list = get_arguments_by_statement_uid(db_statement, db_issue)
+    argument_list = get_arguments_by_statement(db_statement, db_issue)
     for el in argument_list.get('arguments', []):
         el['url'] = '/discuss' + el['url']
     return argument_list

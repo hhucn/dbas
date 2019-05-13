@@ -306,7 +306,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" id="popup-login-close" class="close" data-dismiss="modal" aria-label="Close"><span
-                  aria-hidden="true">&times;</span>
+              aria-hidden="true">&times;</span>
           </button>
           <br>
           <ul class="nav nav-tabs" style="display: table; margin: 0 auto;">
@@ -315,11 +315,11 @@
           </ul>
         </div>
         <div id="popup-login-body">
-          <div class="alert alert-info">
+          <div class="alert alert-secondary">
             <p i18n:translate="all_data_is_free">Your submitted data is being licensed under Creative Commons
-              Share Alike and will be used for scientific purposes. We will never share your
+              Share Alike (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>)
+              and will be used for scientific purposes. We will never share your
               password or e-mail address. By registering or logging in, you are accepting these terms.</p>
-            (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>)
           </div>
           <div class="tab-content">
             <div id="login">
@@ -586,7 +586,7 @@
         </div>
         <div id="popup-set-premisegroups-body" class="lead">
           <span>${extras.tag.set_premisegroups_intro1}</span><strong><span
-                id="popup-set-premisegroups-body-intro-statements"></span></strong><span>${extras.tag.set_premisegroups_intro2}</span>
+            id="popup-set-premisegroups-body-intro-statements"></span></strong><span>${extras.tag.set_premisegroups_intro2}</span>
           <br>
           <br>
           <div id="insert_statements_page_" style="display: none;">
@@ -595,7 +595,7 @@
                 <label class="bs-callout bs-callout-primary">
                   <input type="radio" name="insert_statements" id="insert_more_arguments">
                   <span>${extras.tag.i_actually_have}</span>&#160;<span
-                        id="insert_statements_count"></span>&#160;<span>${extras.tag.seperated}</span>&#160;<span>${extras.tag.arguments}
+                    id="insert_statements_count"></span>&#160;<span>${extras.tag.seperated}</span>&#160;<span>${extras.tag.arguments}
                   :</span>
                   <span id="insert_statements_list_more_arguments" style="font-weight: 300;"></span>
                 </label>
@@ -636,7 +636,7 @@
             <span id="popup-set-premisegroups-warning-text" class="text-warning"
                   style="padding-right: 1em;">${extras.tag.premisegroup_popup_warning}</span>
             <button type="button" class="btn btn-success pull-right" id="popup-set-premisegroups-send-button">
-                    ${extras.buttons.save_my_statement}
+                ${extras.buttons.save_my_statement}
             </button>
           </div>
         </div>
@@ -934,9 +934,9 @@
               <input type="radio" id="bad" value="harmful" name="flag-statement" style="margin-bottom: 1em;">
               <label for="bad" style="margin-bottom: 1em;">
                 <span
-                        class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
+                    class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
                 <span
-                        class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
+                    class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
                 <i class="fa fa-question-circle-o" aria-hidden="true"
                    style="padding-left: 0.5em" title="${extras.tag.argument_statement_harmful_description}"></i>
               </label>
@@ -958,7 +958,7 @@
               <input type="radio" id="split" value="split" name="flag-statement" style="margin-bottom: 1em;">
               <label for="split" style="margin-bottom: 1em;">
                 <span
-                        class="statement_text" i18n:translate="statement_split">This statement has more than one message.</span>
+                    class="statement_text" i18n:translate="statement_split">This statement has more than one message.</span>
                 <i class="fa fa-question-circle-o" aria-hidden="true"
                    style="padding-left: 0.5em" title="${extras.tag.statement_split_description}"></i>
               </label>
@@ -1307,7 +1307,7 @@
           <div id="popup-references-cite-dropdown" class="btn-group open" style="display: block;">
             <a href="#" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
               <span i18n:translate="statement" id="popup-references-cite-dropdown-title">Statement</span><span
-                    class="caret"></span>
+                class="caret"></span>
             </a>
             <ul class="dropdown-menu" id="popup-references-cite-dropdown-list"></ul>
           </div>

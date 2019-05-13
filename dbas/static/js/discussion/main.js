@@ -650,7 +650,7 @@ Main.prototype.__setInputExtraFuncs = function (guiHandler, sendStartStatement, 
     if (children.length > 0) {
         id = children.eq(0).attr('id');
         id = id.replace('item_', '');
-        _this.__setContainerSidebarForOneLiner(children, id, ids);
+        _this.__setContainerSidebarForOneLiner(children, id, ['start_statement', 'start_premise', 'justify_premise']);
     }
 
     // options for the extra buttons, where the user can add input!

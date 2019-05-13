@@ -5,10 +5,10 @@ from typing import List
 
 import transaction
 
+from api.models import DataReferenceWithStatement
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReference, User, Issue, TextVersion, Statement
-from dbas.helper.url import url_to_statement
-from dbas.lib import get_all_arguments_with_text_by_statement_id, escape_string
+from dbas.database.discussion_model import StatementReference, User, Issue, Statement
+from dbas.lib import escape_string
 from .lib import logger
 
 log = logger()
@@ -41,7 +41,7 @@ def store_reference(reference: str, host: str, path: str, user: User, statement:
 # Getting references from database
 # =============================================================================
 
-def get_all_references_by_reference_text(ref_text=None):
+def get_all_references_by_reference_text(ref_text: str) -> List[DataReferenceWithStatement]:
     """
     Query database for all occurrences of a given reference text. Prepare list with information about
     used issue, author and a url to the statement.
@@ -49,18 +49,6 @@ def get_all_references_by_reference_text(ref_text=None):
     :param ref_text: Reference text
     :return: list of used references
     """
-    if ref_text:
-        refs = list()
-        matched: List[StatementReference] = DBDiscussionSession.query(StatementReference).filter(
-            StatementReference.text == ref_text).all()
-        for reference in matched:
-            textversion: TextVersion = reference.statement.get_textversion()
-            statement_url = url_to_statement(reference.issue, reference.statement)
-            refs.append({
-                "reference": reference,
-                "arguments": get_all_arguments_with_text_by_statement_id(reference.statement_uid),
-                "statement": {"uid": reference.statement_uid,
-                              "url": statement_url,
-                              "text": textversion.content}
-            })
-        return refs
+    matched: List[StatementReference] = DBDiscussionSession.query(StatementReference).filter(
+        StatementReference.text == ref_text).all()
+    return [DataReferenceWithStatement(reference) for reference in matched]

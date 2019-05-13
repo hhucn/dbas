@@ -8,11 +8,11 @@ class ViewTest(TestCaseWithConfig):
         ret_dict = get_d3_complete_dump(request)
         self.assertEqual(400, ret_dict.status_code)
 
-        request = construct_dummy_request({'issue': 0})
+        request = construct_dummy_request(json_body={'issue': 0})
         ret_dict = get_d3_complete_dump(request)
         self.assertEqual(400, ret_dict.status_code)
 
-        request = construct_dummy_request({'issue': 4})
+        request = construct_dummy_request(json_body={'issue': 4})
         ret_dict = get_d3_complete_dump(request)
         self.assertEqual(0, len(ret_dict.get('error', '')))
 
@@ -21,18 +21,18 @@ class ViewTest(TestCaseWithConfig):
         ret_dict = get_d3_partial_dump(request)
         self.assertEqual(400, ret_dict.status_code)
 
-        request = construct_dummy_request({'issue': 2, 'uid': 2})
+        request = construct_dummy_request(json_body={'issue': 2, 'uid': 2})
         ret_dict = get_d3_partial_dump(request)
         self.assertEqual(400, ret_dict.status_code)
 
-        request = construct_dummy_request({'issue': 2, 'uid': 2, 'is_argument': False})
+        request = construct_dummy_request(json_body={'issue': 2, 'uid': 2, 'is_argument': False})
         ret_dict = get_d3_partial_dump(request)
         self.assertEqual(400, ret_dict.status_code)
 
-        request = construct_dummy_request({'issue': 2, 'uid': 2, 'is_argument': False, 'path': ''})
+        request = construct_dummy_request(json_body={'issue': 2, 'uid': 2, 'is_argument': False, 'path': ''})
         ret_dict = get_d3_partial_dump(request)
         self.assertEqual('', ret_dict.get('error', 'X'))
 
-        request = construct_dummy_request({'issue': 2, 'uid': 12, 'is_argument': True, 'path': ''})
+        request = construct_dummy_request(json_body={'issue': 2, 'uid': 12, 'is_argument': True, 'path': ''})
         ret_dict = get_d3_partial_dump(request)
         self.assertEqual('', ret_dict.get('error', 'X'))

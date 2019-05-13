@@ -1,5 +1,7 @@
-from pyramid.events import subscriber
+from pyramid.events import subscriber, NewResponse
 
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
 from dbas.events import ParticipatedInDiscussion, UserArgumentAgreement
 from dbas.handler.voting import add_click_for_argument
 
@@ -12,3 +14,10 @@ def user_participated(event: ParticipatedInDiscussion):
 @subscriber(UserArgumentAgreement)
 def user_agrees_with_argument(event: UserArgumentAgreement):
     add_click_for_argument(event.argument, event.user)
+
+
+@subscriber(NewResponse)
+def update_last_action(event: NewResponse):
+    user = DBDiscussionSession.query(User).filter_by(nickname=event.request.authenticated_userid).first()
+    if user is not None:
+        user.update_last_action()

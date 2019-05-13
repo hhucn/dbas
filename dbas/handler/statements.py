@@ -1,15 +1,14 @@
 import logging
-from os import environ
-from typing import List, Tuple, Dict, Any, Optional
-
 import transaction
+from os import environ
 from sqlalchemy import func
+from typing import List, Tuple, Dict, Any, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
 from dbas.decidotron.lib import add_associated_cost
-from dbas.handler import user, notification as nh
+from dbas.handler import notification as nh
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
     set_new_rebut
@@ -39,8 +38,6 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_da
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
     LOG.debug("%s", statement_text)
-
-    user.update_last_action(db_user)
 
     new_statement: Statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
@@ -100,7 +97,6 @@ def set_positions_premise(db_issue: Issue, db_user: User, db_conclusion: Stateme
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and an url or an error
     """
-    user.update_last_action(db_user)
 
     prepared_dict = __process_input_of_start_premises(premisegroups, db_conclusion, supportive, db_issue, db_user)
     if prepared_dict['error']:
@@ -142,7 +138,6 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     :rtype: dict
     :return: Dictionary with info and/or error
     """
-    db_user.update_last_action()
 
     review_count = len(elements)
     added_reviews = [EditQueue().add_edit_reviews(db_user, el['uid'], el['text']) for el in elements]
@@ -380,7 +375,7 @@ def __add_statement2issue(statement_uid: int, issue_uid: int) -> StatementToIssu
 
 def __is_conclusion_in_premisegroups(premisegroups: list, db_conclusion: Statement) -> bool:
     for premisegroup in premisegroups:
-        if any([db_conclusion.get_textversion().content.lower() in pg.lower() for pg in premisegroup]):
+        if any([db_conclusion.get_textversion().content.lower() == pg.lower() for pg in premisegroup]):
             return True
     return False
 

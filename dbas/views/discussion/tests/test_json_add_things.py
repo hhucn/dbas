@@ -1,10 +1,9 @@
-import json
 import unittest
 
+import json
 import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPError
-from pyramid_mailer.mailer import DummyMailer
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup, \
@@ -56,12 +55,12 @@ class AjaxAddThingsTest(unittest.TestCase):
                                                             Argument.is_disabled == False).first()
         db_arg_len1 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_conclusion.uid).count()
         len_db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'premisegroups': [['this is my first premisegroup']],
             'conclusion_id': db_conclusion.uid,
             'issue': db_arg.issue_uid,
             'supportive': True
-        }, mailer=DummyMailer)
+        })
         response = view(request)
         transaction.commit()
         db_arg_len2 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_conclusion.uid).count()
@@ -84,14 +83,14 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_new_start_premise_failure1(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
-        request = testing.DummyRequest(json_body={'issue': 2}, mailer=DummyMailer)
+        request = construct_dummy_request(json_body={'issue': 2})
         response = set_new_start_premise(request)
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
 
     def test_set_new_start_premise_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={'issue': 2}, mailer=DummyMailer)
+        request = construct_dummy_request(json_body={'issue': 2})
         response = set_new_start_premise(request)
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
@@ -100,12 +99,12 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_arg1 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
         db_pgroups1 = DBDiscussionSession.query(PremiseGroup).count()
-        request = testing.DummyRequest(json_body={
+        request = construct_dummy_request(json_body={
             'premisegroups': [['some new reason for an argument']],
             'argument_id': 2,
             'attack_type': Relations.SUPPORT.value,
             'issue': 2
-        }, mailer=DummyMailer)
+        })
         response = set_new_premises_for_argument(request)
         db_arg2 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
         db_pgroups2 = DBDiscussionSession.query(PremiseGroup).count()
@@ -118,7 +117,7 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_premises_for_argument_failure(self):
         # author error
         self.config.testing_securitypolicy(userid='', permissive=True)
-        request = testing.DummyRequest(json_body={'issue': 2})
+        request = construct_dummy_request(json_body={'issue': 2})
         response = set_new_premises_for_argument(request)
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
@@ -128,7 +127,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         db_review1 = DBDiscussionSession.query(ReviewEdit).count()
         db_value1 = DBDiscussionSession.query(ReviewEditValue).count()
         elements = [{'text': 'some new text for a correction', 'uid': 19}]
-        request = construct_dummy_request(match_dict={'slug': 'cat-or-dog'}, params={}, json_body={
+        request = construct_dummy_request(matchdict={'slug': 'cat-or-dog'}, params={}, json_body={
             'elements': elements
         })
         response = set_correction_of_some_statements(request)
@@ -146,7 +145,7 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_correction_of_statement_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
-        request = construct_dummy_request(match_dict={'slug': 'cat-or-dog'}, params={}, json_body={
+        request = construct_dummy_request(matchdict={'slug': 'cat-or-dog'}, params={}, json_body={
             'elements': [{}]
         }, )
         response = set_correction_of_some_statements(request)
@@ -155,7 +154,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.assertGreater(len(json.loads(response.body.decode('utf-8'))['errors']), 0)
 
     def __get_dummy_request_for_new_issue(self):
-        return testing.DummyRequest(json_body={
+        return construct_dummy_request(json_body={
             'info': 'Some new info',
             'title': 'Some new title',
             'long_info': 'Some new long info',
@@ -220,13 +219,13 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_seen_statements(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={'uids': [40, 41]})
+        request = construct_dummy_request(json_body={'uids': [40, 41]})
         response = set_statements_as_seen(request)
 
         self.assertIsNotNone(response)
 
     def test_set_seen_statements_failure1(self):
-        request = testing.DummyRequest(json_body={})
+        request = construct_dummy_request(json_body={})
         response = set_statements_as_seen(request)
 
         self.assertIsNotNone(response)

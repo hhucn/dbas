@@ -4,6 +4,7 @@ import logging
 from pyramid.httpexceptions import HTTPFound
 from pyramid.request import Request
 from pyramid.view import view_config
+from typing import Dict, Any
 
 from dbas.auth.login import __refresh_headers_and_url
 from dbas.auth.oauth import facebook
@@ -34,18 +35,18 @@ def oauth_endpoint(request: Request):
     data, next_url = PROVIDER[service].continue_flow(request)
     oauth_user = set_oauth_user(data, service, ui_local)["user"]
 
-    headers, url = __refresh_headers_and_url(request, oauth_user, False, next_url)
+    headers, url = __refresh_headers_and_url(request, oauth_user.nickname, False, next_url)
     sleep(0.5)
     return HTTPFound(location=url, headers=headers)
 
 
-def set_oauth_user(user_data, service, ui_locales):
+def set_oauth_user(user_data, service, ui_locales) -> Dict[str, Any]:
     """
 
     :param user_data:
     :param service:
     :param ui_locales:
-    :return:
+    :return: A Dictionary with a status an error and an user object
     """
     _tn = Translator(ui_locales)
 

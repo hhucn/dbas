@@ -48,6 +48,19 @@ If your container stucks during the first start up, please install D-BAS manuall
 
 Afterwards everything should be fine.
 
+HTTP vs. HTTPS
+--------------
+There are several places where one has to change variables if HTTP or HTTPS is to be used
+consistently throughout.
+
+- Set the `DBAS_PROTOCOL` environment variable to HTTP/HTTPS.
+- Set the `URL` environment variable to a **full** URI of D-BAS'. Meaning: http://example.com instead of example.com
+- When deploying D-BAS either the `development.ini` or `production.ini` is loaded by the webserver delivering D-BAS. In the file loaded you should explicitly set the needed protocol like so::
+
+    [server:main]
+    <...>
+    url_scheme = http
+
 
 Environment Variables
 =====================
