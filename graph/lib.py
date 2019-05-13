@@ -1,7 +1,6 @@
-# Common library for Graph Component
-#
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
+"""
+Common library for Graph Component.
+"""
 import logging
 from typing import List, Dict, Set
 
@@ -107,7 +106,7 @@ def get_d3_graph(db_issue: Issue) -> Dict:
 
     :param db_issue: The issue from were to start the Graph
     :return: A dict with 'nodes', 'edges' and 'extras', where 'nodes' is a list of nodes (argument and statements) in the graph.
-    'edges' are edges between the nodes and extra a dictionary in the form of node-id -> node (the same nodes like in 'nodes'
+       'edges' are edges between the nodes and extra a dictionary in the form of node-id -> node (the same nodes like in 'nodes'
     """
     d3_data = {'nodes': [], 'edges': [], 'extras': {}}
 
