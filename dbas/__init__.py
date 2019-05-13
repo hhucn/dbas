@@ -7,10 +7,10 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 .. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-import time
-
 import os
 import re
+import time
+
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -37,7 +37,8 @@ def main(global_config, **settings):
     settings.update(get_db_environs(key="session.url", db_name="beaker"))
 
     # authentication and authorization
-    authn_policy = AuthTktAuthenticationPolicy(settings["authn.secret"], callback=groupfinder, hashalg='sha512')
+    authn_policy = AuthTktAuthenticationPolicy(settings["authn.secret"], callback=groupfinder, hashalg='sha512',
+                                               wild_domain=False)
     authz_policy = ACLAuthorizationPolicy()
 
     # load database
