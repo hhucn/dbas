@@ -151,33 +151,6 @@ function setScrollTrigger() {
 }
 
 /**
- *
- */
-function setEasterEggs() {
-    'use strict';
-
-    $('#roundhousekick').click(function () {
-        new AjaxMainHandler().roundhouseKick();
-    });
-    $('#logo_dbas, #logo_dbas_s, #homeHeading').click(function () {
-        if (!$(this)) {
-            return;
-        }
-        var homeHeading = $('#homeHeading');
-        var counter = parseInt(homeHeading.data('counter'));
-        counter += 1;
-        if (counter === 5) {
-            $('body').find('span,p,h1,h2,h3,h4,h5,a').each(function () {
-                if ($(this).text().trim().length) {
-                    $(this).text(dolanTranslate(dolanDictionary, $(this).text()));
-                }
-            });
-        }
-        homeHeading.data('counter', counter);
-    });
-}
-
-/**
  * Fill captcha in registration-form
  */
 function fillCaptcha() {
@@ -388,7 +361,6 @@ $(document).ready(function () {
 
     addCookieConsent();
     setAnalyticsOptOutLink(lang);
-    setEasterEggs();
     setGravatarFallback();
     setScrollTrigger();
     setTimeout(function () {
