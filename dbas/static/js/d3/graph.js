@@ -5,6 +5,11 @@
 function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     'use strict';
     var isPartialGraphMode = is_partial_graph_mode;
+    /**
+     * isVisible.content: whether all graph labels are shown (implies isVisible.statements and isVisible.positions)
+     * isVisible.statements: whether statement labels are shown
+     * isVisible.positions: whether position labels are shown
+     */
     var isVisible;
     var colors;
     var rescaleGraph;
@@ -1413,14 +1418,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param mouseover
      */
     function determineShowOrHideTooltip(d, mouseover) {
-        var isPosition = testNodePosition(d);
-        if (!isVisible.position && !isVisible.content) {
-            showHideTooltip(d, mouseover);
-        }
-        else if (!isPosition && isVisible.position) {
-            showHideTooltip(d, mouseover);
-        }
-        else if (isPosition && isVisible.content) {
+        const isPosition = testNodePosition(d);
+        if ((!isVisible.position && isPosition) || (!isVisible.statements && !isPosition)) {
             showHideTooltip(d, mouseover);
         }
     }

@@ -1,8 +1,3 @@
-.. D-BAS documentation master file, created by
-    sphinx-quickstart on Fri Jan 29 10:10:00 2016.
-    You can adapt this file completely to your liking, but it should at least
-    contain the root `toctree` directive.
-
 .. _index:
 
 ======================================
@@ -36,6 +31,15 @@ API
     :glob:
 
     api/index
+
+
+Core Logic
+==========
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
+    state_machine/index
 
 
 Server
