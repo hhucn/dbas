@@ -618,65 +618,63 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    reference:
+                type: object
+                properties:
+                  reference:
+                    type: object
+                    properties:
+                      uid:
+                        type: integer
+                      title:
+                        type: string
+                      host:
+                        type: string
+                      path:
+                        type: string
+                      statement-uid:
+                        type: integer
+                      author:
+                        $ref: '#/components/schemas/dataauthor'
+                  arguments:
+                    type: array
+                    items:
                       type: object
                       properties:
                         uid:
                           type: integer
-                        title:
-                          type: string
-                        host:
-                          type: string
-                        path:
-                          type: string
-                        statement-uid:
-                          type: integer
+                        texts:
+                          type: object
+                          properties:
+                            display:
+                              type: string
+                              example: "We should get a cat, because cats are fluffy"
+                            conclusion:
+                              type: string
+                              example: "We should get a cat"
+                            premise:
+                              type: string
+                              example: "they are fluffy"
+                            attacks:
+                              type: object
+                              properties:
+                                conclusion:
+                                  type: string
+                                  example: "Only filled if target is an undercut. Contains the conclusion of this target."
+                                premise:
+                                  type: string
                         author:
                           $ref: '#/components/schemas/dataauthor'
-                    arguments:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          uid:
-                            type: integer
-                          texts:
-                            type: object
-                            properties:
-                              display:
-                                type: string
-                                example: "We should get a cat, because cats are fluffy"
-                              conclusion:
-                                type: string
-                                example: "We should get a cat"
-                              premise:
-                                type: string
-                                example: "they are fluffy"
-                              attacks:
-                                type: object
-                                properties:
-                                  conclusion:
-                                    type: string
-                                    example: "Only filled if target is an undercut. Contains the conclusion of this target."
-                                  premise:
-                                    type: string
-                          author:
-                            $ref: '#/components/schemas/dataauthor'
-                          issue:
-                            $ref: '#/components/schemas/issue'
-                    statement:
-                      type: object
-                      properties:
-                        uid:
-                          type: integer
-                        text:
-                          $ref: '#/components/schemas/text'
-                        url:
-                          $ref: '#/components/schemas/url'
+                        issue:
+                          $ref: '#/components/schemas/issue'
+                  statement:
+                    type: object
+                    properties:
+                      uid:
+                        type: integer
+                      text:
+                        $ref: '#/components/schemas/text'
+                      url:
+                        $ref: '#/components/schemas/url'
 
 
 components:
