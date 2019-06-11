@@ -1,142 +1,142 @@
 <div i18n:domain="dbas" metal:define-macro="layout">
-  <nav id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right">
-          <img src="${request.static_path('dbas:static/images/logo/black.svg')}" alt="D-BAS Logo"><span>D-BAS</span>
-        </a>
-        <div class="navbar-brand ajaxloader">
-          <img class="center rotating" src="${request.static_path('dbas:static/images/icons/ajax-icon.png')}" alt="loading">
-        </div>
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
-          <span class="sr-only" i18n:translate="Toggle Navigation">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
+  <nav id="custom-bootstrap-menu" class="navbar navbar-expand-md navbar-default bg-light fixed-top">
+    <a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right">
+      <img src="${request.static_path('dbas:static/images/logo/black.svg')}" alt="D-BAS Logo">
+      <span>D-BAS</span>
+    </a>
+    <div class="navbar-brand ajaxloader">
+      <img class="center rotating" src="${request.static_path('dbas:static/images/icons/ajax-icon.png')}"
+           alt="loading">
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="sr-only" i18n:translate="Toggle Navigation">Toggle navigation</span>
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      <div class="collapse navbar-collapse navbar-menubuilder">
-        <ul id="navbar-right" class="nav navbar-nav navbar-right">
-          <li id="content-link" tal:condition="not:extras.ongoing_discussion">
-            <a href="/discuss" data-toggle="tooltip" data-placement="left">
-              <i class="fa fa-play" aria-hidden="true"></i><span i18n:translate="lets_go">Let's go</span>
-            </a>
-          </li>
+    <div id="navbarNav" class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-auto">
+        <li id="content-link" class="nav-item" tal:condition="not:extras.ongoing_discussion">
+          <a class="nav-link" href="/discuss" data-toggle="tooltip" data-placement="left">
+            <i class="fa fa-play" aria-hidden="true"></i><span i18n:translate="lets_go">Let's go</span>
+          </a>
+        </li>
 
-          <li id="my-discussions-link" tal:condition="extras.logged_in">
-            <a href="/mydiscussions" data-toggle="tooltip" data-placement="left">
-              <i class="fa fa-address-card-o" aria-hidden="true"></i><span i18n:translate="my_discussions">My Discussions</span>
-            </a>
-          </li>
+        <li id="my-discussions-link" class="nav-item" tal:condition="extras.logged_in">
+          <a class="nav-link" href="/mydiscussions" data-toggle="tooltip" data-placement="left">
+            <i class="fa fa-address-card-o"
+               aria-hidden="true"></i><span i18n:translate="my_discussions">My Discussions</span>
+          </a>
+        </li>
 
-          <li tal:condition="extras.ongoing_discussion" style="cursor: pointer;">
-            <a class="dropdown-toggle" data-toggle="dropdown" id="issue-dropdown" aria-haspopup="true"
-               aria-expanded="true" id="${issues.uid}">
-              <i class="fa fa-files-o" aria-hidden="true"></i><span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span
-                    class="caret"></span>
-            </a>
-            <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
-              <li tal:repeat="issue issues.all" class="${issue.enabled}">
-                <a href="${issue.url}" data-value="${issue.title}">
-                  <div class="row" style="padding: 0;">
-                    <div class="col-md-10" style="white-space: pre-wrap;">${structure:issue.title}</div>
-                    <div class="col-md-2">
-                      <span class="badge" data-toggle="tooltip"
+        <li class="nav-item dropdown" tal:condition="extras.ongoing_discussion" style="cursor: pointer;">
+          <a class="dropdown-toggle nav-link" data-toggle="dropdown" id="issue-dropdown" aria-haspopup="true"
+             aria-expanded="true" id="${issues.uid}">
+            <i class="fa fa-files-o" aria-hidden="true"></i><span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span
+              class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
+            <li tal:repeat="issue issues.all" class="${issue.enabled}">
+              <a class="dropdown-item" href="${issue.url}" data-value="${issue.title}">
+                <div class="row" style="padding: 0;">
+                  <div class="col-md-10" style="white-space: pre-wrap;">${structure:issue.title}</div>
+                  <div class="col-md-2">
+                      <span class="badge badge-secondary" data-toggle="tooltip"
                             data-placement="bottom" title="${extras.buttons.count_of_posts}">${issue.stat_count}
                       </span>
-                    </div>
                   </div>
-                </a>
-              </li>
-              <li class="divider"></li>
-              <li>
-                <a href="/discuss" i18n:translate="overview">Übersicht</a>
-              </li>
-              <li tal:condition="extras.is_admin or extras.is_author">
-                <a id="add-topic" href="#" i18n:translate="add_topic">Add a Topic</a>
-              </li>
-              <li tal:condition="not:(extras.is_admin or extras.is_author)">
-                <div class="row" style="color: gray; cursor: not-allowed"
-                       title="${extras.title.add_issue_info}">
-                  <span class="disabled" i18n:translate="add_topic" style="padding-left: 20px">Add a Topic</span>
-                  <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"
-                       title="${extras.title.add_issue_info}"></i>
                 </div>
-              </li>
-            </ul>
+              </a>
+            </li>
+            <div class="dropdown-divider"></div>
+            <li>
+              <a class="dropdown-item" href="/discuss" i18n:translate="overview">Übersicht</a>
+            </li>
+            <li tal:condition="extras.is_admin or extras.is_author">
+              <a class="dropdown-item" id="add-topic" href="#" i18n:translate="add_topic">Add a Topic</a>
+            </li>
+            <li tal:condition="not:(extras.is_admin or extras.is_author)">
+              <div class="row" style="color: gray; cursor: not-allowed"
+                   title="${extras.title.add_issue_info}">
+                <span class="disabled" i18n:translate="add_topic" style="padding-left: 20px">Add a Topic</span>
+                <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"
+                   title="${extras.title.add_issue_info}"></i>
+              </div>
+            </li>
+          </ul>
 
-          </li>
+        </li>
 
-          <li id="login-link" tal:condition="not:extras.logged_in">
-            <a id="link_popup_login" class="cursor-pointer" data-toggle="modal" data-target="#popup-login"
-               data-placement="left">
-              <i class="fa fa-sign-in" aria-hidden="true"></i><span i18n:translate="login">Login</span>
-            </a>
-          </li>
+        <li id="login-link" class="nav-item" tal:condition="not:extras.logged_in">
+          <a id="link_popup_login" class="nav-link cursor-pointer" data-toggle="modal"
+             data-target="#popup-login"
+             data-placement="left">
+            <i class="fa fa-sign-in" aria-hidden="true"></i><span i18n:translate="login">Login</span>
+          </a>
+        </li>
 
-          <li id="review-link" tal:condition="extras.logged_in" data-broke-limit="${discussion.broke_limit}">
-            <a href="/review" data-toggle="tooltip" data-placement="left">
-              <i class="fa fa-pencil" aria-hidden="true"></i><span i18n:translate="review">Review</span>
-              <span tal:condition="extras.review_count > 0"
-                      class="label label-primary label-as-badge">${extras.review_count}</span>
-            </a>
-          </li>
+        <li id="review-link" class="nav-item" tal:condition="extras.logged_in"
+            data-broke-limit="${discussion.broke_limit}">
+          <a class="nav-link" href="/review" data-toggle="tooltip" data-placement="left">
+            <i class="fa fa-pencil" aria-hidden="true"></i><span i18n:translate="review">Review</span>
+            <span tal:condition="extras.review_count > 0"
+                class="badge badge-primary">${extras.review_count}</span>
+          </a>
+        </li>
 
-          <li tal:condition="extras.logged_in" class="dropdown" data-toggle="tooltip" data-placement="left">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown" aria-haspopup="true"
-               aria-expanded="true">
-              <img src="${extras.users_avatar}" class="img-circle" alt="gravatar" style="max-width: 25px;">
-              <span id="header_nickname" data-public-nickname="${extras.public_nickname}">${extras.nickname}</span>
-              <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread"
-                    class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
-              <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="user-menu-dropdown">
-              <li>
-                <a href="/settings" data-toggle="tooltip" data-placement="right">
-                  <i class="fa fa-cogs" aria-hidden="true"></i><span i18n:translate="settings">Settings</span>
-                </a>
-              </li>
-              <li>
-                <a href="/notifications" data-toggle="tooltip" data-placement="right">
-                  <i class="fa fa-envelope" aria-hidden="true" tal:condition="extras.notifications.has_unread"></i>
-                  <i class="fa fa-envelope-o"
-                     aria-hidden="true" tal:condition="not:extras.notifications.has_unread"></i>
-                  <span i18n:translate="notifications">Notifications</span><span
-                        id="menu_badge_count_notifications" tal:condition="extras.notifications.has_unread"
-                        class="badge" style="margin-left: 1em">${extras.notifications.new_count}</span>
-                </a>
-              </li>
-              <li tal:condition="extras.is_admin">
-                <a href="/admin/" data-toggle="tooltip" data-placement="right">
-                  <i class="fa fa-sliders" aria-hidden="true"></i><span i18n:translate="Admin">Admin</span>
-                </a>
-              </li>
-              <li>
-                <a id="logout-link" data-toggle="tooltip" data-placement="right">
-                  <i class="fa fa-sign-out" aria-hidden="true"></i><span i18n:translate="logout">Logout</span>
-                </a>
-              </li>
-            </ul>
-          </li>
+        <li tal:condition="extras.logged_in" class="nav-item dropdown" data-toggle="tooltip" data-placement="left">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown"
+             aria-haspopup="true"
+             aria-expanded="true">
+            <img src="${extras.users_avatar}" class="img-circle" alt="gravatar" style="max-width: 25px;">
+            <span id="header_nickname" data-public-nickname="${extras.public_nickname}">${extras.nickname}</span>
+            <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread"
+                  class="badge badge-primary">${extras.notifications.new_count}</span>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="user-menu-dropdown">
+            <li class="dropdown-item">
+              <a href="/settings" data-toggle="tooltip" data-placement="right">
+                <i class="fa fa-cogs" aria-hidden="true"></i><span i18n:translate="settings">Settings</span>
+              </a>
+            </li>
+            <li class="dropdown-item">
+              <a href="/notifications" data-toggle="tooltip" data-placement="right">
+                <i class="fa fa-envelope" aria-hidden="true" tal:condition="extras.notifications.has_unread"></i>
+                <i class="fa fa-envelope-o"
+                   aria-hidden="true" tal:condition="not:extras.notifications.has_unread"></i>
+                <span i18n:translate="notifications">Notifications</span><span
+                  id="menu_badge_count_notifications" tal:condition="extras.notifications.has_unread"
+                  class="badge" style="margin-left: 1em">${extras.notifications.new_count}</span>
+              </a>
+            </li>
+            <li class="dropdown-item" tal:condition="extras.is_admin">
+              <a href="/admin/" data-toggle="tooltip" data-placement="right">
+                <i class="fa fa-sliders" aria-hidden="true"></i><span i18n:translate="Admin">Admin</span>
+              </a>
+            </li>
+            <li class="dropdown-item">
+              <a id="logout-link" data-toggle="tooltip" data-placement="right">
+                <i class="fa fa-sign-out" aria-hidden="true"></i><span i18n:translate="logout">Logout</span>
+              </a>
+            </li>
+          </ul>
+        </li>
 
-          <li id="header-language-selector" tal:condition="extras.lang_is_en">
-            <a id="link-trans-de" style="cursor:pointer">
-              <img class="language_selector_img" src="${request.static_path('dbas:static/images/flags/de-24.png')}"
-                   alt="flag_ge">
-            </a>
-          </li>
-          <li id="header-language-selector" tal:condition="extras.lang_is_de">
-            <a id="link-trans-en" style="cursor:pointer">
-              <img class="language_selector_img" src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}"
-                   alt="flag_us-gb">
-            </a>
-          </li>
+        <li id="header-language-selector" class="nav-item" tal:condition="extras.lang_is_en">
+          <a class="nav-link" id="link-trans-de" style="cursor:pointer">
+            <img class="language_selector_img" src="${request.static_path('dbas:static/images/flags/de-24.png')}"
+                 alt="flag_ge">
+          </a>
+        </li>
+        <li id="header-language-selector" class="nav-item" tal:condition="extras.lang_is_de">
+          <a class="nav-link" id="link-trans-en" style="cursor:pointer">
+            <img class="language_selector_img" src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}"
+                 alt="flag_us-gb">
+          </a>
+        </li>
 
-        </ul>
-      </div>
+      </ul>
     </div>
   </nav>
-
 </div>

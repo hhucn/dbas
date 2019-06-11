@@ -7,21 +7,23 @@
            tal:repeat="item [item for item in items.elements if item.url not in ['login', 'add']]"
           style="${item.style}">
         <div class="discussion-space-list-row__left-side premise-input" style="display: flex; flex-grow: 1">
-          <input id="${item.id}" type="radio"
-                 name="discussion-button-group"
-                 onclick='location.href="${item.url}";'
-                 data-url="${item.url}">
-          <label for="${item.id}" style="cursor: pointer">
-            <div tal:repeat="premise item.premises" tal:omit-tag="">
+          <div class="form-check form-check-inline">
+            <input id="${item.id}" type="radio"
+                   name="discussion-button-group"
+                   onclick='location.href="${item.url}";'
+                   data-url="${item.url}">
+            <label class="form-check-label" for="${item.id}" style="cursor: pointer">
+              <div tal:repeat="premise item.premises" tal:omit-tag="">
               <span id="${premise.id}" data-toggle="tooltip"
                     data-placement="auto" class="premise-title">${structure:premise.title}</span>
-              <span tal:condition="not:repeat.premise.end">&nbsp;${extras.tag.aand}&nbsp;</span>
-            </div>
-            <span tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</span>
-            <span tal:condition="'cost' in item" class="decidotron-position-cost">
+                <span tal:condition="not:repeat.premise.end">&nbsp;${extras.tag.aand}&nbsp;</span>
+              </div>
+              <span tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</span>
+              <span tal:condition="'cost' in item" class="decidotron-position-cost">
               &nbsp;(ca. ${"{:.0f}".format(item.cost)} ${issues.decidotron_budget.currency_symbol})
             </span>
-          </label>
+            </label>
+          </div>
           <div tal:omit-tag="" tal:condition="extras.logged_in">
             <div class="item-actions-list" tal:condition="item.is_editable or item.is_markable or item.is_deletable">
               <span

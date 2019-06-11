@@ -175,8 +175,8 @@ function prepareLoginRegistrationPopup() {
     // switching tabs
     $('.tab-login a').on('click', function (e) {
         e.preventDefault();
-        $(this).parent().addClass('active');
-        $(this).parent().siblings().removeClass('active');
+        $(this).parent().siblings().children().removeClass('active');
+        $(this).addClass('active');
         var target = $(this).attr('href');
         $('.tab-content > div').not(target).hide();
         $(target).fadeIn(600);

@@ -300,19 +300,22 @@
   </div>
 
   <!-- LOGIN POPUP -->
-  <div class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin"
+  <div class="modal" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin"
        aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <ul class="nav nav-tabs">
+            <li id="nav-tab-login" class="nav-item tab-login">
+              <a class="nav-link active" href="#login" i18n:translate="login">Log In</a>
+            </li>
+            <li id="nav-tab-signup" class="nav-item tab-login">
+              <a class="nav-link" href="#signup" i18n:translate="sign_up">Sign Up</a>
+            </li>
+          </ul>
           <button type="button" id="popup-login-close" class="close" data-dismiss="modal" aria-label="Close"><span
               aria-hidden="true">&times;</span>
           </button>
-          <br>
-          <ul class="nav nav-tabs" style="display: table; margin: 0 auto;">
-            <li id="nav-tab-login" class="tab-login active"><a href="#login" i18n:translate="login">Log In</a></li>
-            <li id="nav-tab-signup" class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>
-          </ul>
         </div>
         <div id="popup-login-body">
           <div class="alert alert-secondary">
@@ -325,35 +328,34 @@
             <div id="login">
               <form autocomplete="on">
                 <div class="form-group">
-                  <div class="col-md-12">
-                    <label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">
-                      Your Nickname
-                    </label>
-                    <div class="col-md-9 input-group">
-                      <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                      <input id="login-user" type="text" class="form-control"
-                             placeholder="${extras.tag.placeholder_nickname}" autocomplete="on">
-                    </div>
+                  <label for="login-user" i18n:translate="your_nickname">
+                    Your Nickname
+                  </label>
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                      <i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                    <input id="login-user" type="text" class="form-control"
+                           placeholder="${extras.tag.placeholder_nickname}" autocomplete="on">
                   </div>
                 </div>
                 <div class="form-group">
-                  <div class="col-md-12">
-                    <label class="col-md-3 control-label" for="login-pw" i18n:translate="your_password">
-                      Your Password
-                    </label>
-                    <div class="col-md-9 input-group">
-                      <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-                      <input id="login-pw" type="password" class="form-control"
-                             placeholder="${extras.tag.placeholder_password}" autocomplete="on">
-                    </div>
+                  <label for="login-pw" i18n:translate="your_password">
+                    Your Password
+                  </label>
+                  <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
+                    <input id="login-pw" type="password" class="form-control"
+                           placeholder="${extras.tag.placeholder_password}" autocomplete="on">
                   </div>
                 </div>
               </form>
-              <div style="padding-left: 15px;">
-                <label>
-                  <input id="keep-login-box" type="checkbox" style="float:left;">
-                  <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
-                </label>
+              <div class="row justify-content-between" style="padding-left: 15px;">
+                <div class="form-check form-check-inline">
+                  <input id="keep-login-box" class="form-check-input" type="checkbox" style="float:left;">
+                  <label for="keep-login-box" class="form-check-label">
+                    <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
+                  </label>
+                </div>
                 <a id="popup-login-forgot-password-text"
                    class="cursor-pointer pull-right" i18n:translate="forgot_password">
                   Forgot your password?
