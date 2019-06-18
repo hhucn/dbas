@@ -4,7 +4,7 @@
       <img src="${request.static_path('dbas:static/images/logo/black.svg')}" alt="D-BAS Logo">
       <span>D-BAS</span>
     </a>
-    <a class="navbar-brand d-flex align-items-center ajaxloader">
+    <a class="navbar-brand ajaxloader">
       <img class="center rotating" src="${request.static_path('dbas:static/images/logo/black.svg')}"
            alt="loading">
     </a>
