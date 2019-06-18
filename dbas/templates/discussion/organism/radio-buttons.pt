@@ -9,6 +9,7 @@
         <div class="discussion-space-list-row__left-side premise-input" style="display: flex; flex-grow: 1">
           <div class="form-check">
             <input id="${item.id}" type="radio"
+                   class="form-check-input"
                    name="discussion-button-group"
                    onclick='location.href="${item.url}";'
                    data-url="${item.url}">
@@ -72,10 +73,13 @@
       <li tal:define="add_or_login [item for item in items.elements if item.url in ['login', 'add']]"
            tal:condition="add_or_login" class="list-group-item discussions-space-list__add_or_login">
         <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
-          <input id="${item.id}" type="radio" name="discussion-button-group" data-url="${item.url}">
-          <label for="${item.id}" style="cursor: pointer">
-              ${item.premises[0].title}
-          </label>
+          <div class="form-check">
+            <input id="${item.id}" class="form-check-input" type="radio" name="discussion-button-group"
+                   data-url="${item.url}">
+            <label for="${item.id}" class="form-check-label" style="cursor: pointer">
+                ${item.premises[0].title}
+            </label>
+          </div>
         </div>
       </li>
     </ul>
