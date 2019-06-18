@@ -1,13 +1,13 @@
 <div i18n:domain="dbas" metal:define-macro="layout">
   <nav id="custom-bootstrap-menu" class="navbar navbar-expand-md navbar-default bg-light fixed-top">
-    <a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right">
+    <a class="navbar-brand d-flex align-items-center" href="/" data-toggle="tooltip" data-placement="right">
       <img src="${request.static_path('dbas:static/images/logo/black.svg')}" alt="D-BAS Logo">
       <span>D-BAS</span>
     </a>
-    <div class="navbar-brand ajaxloader">
-      <img class="center rotating" src="${request.static_path('dbas:static/images/icons/ajax-icon.png')}"
+    <a class="navbar-brand d-flex align-items-center ajaxloader">
+      <img class="center rotating" src="${request.static_path('dbas:static/images/logo/black.svg')}"
            alt="loading">
-    </div>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="sr-only" i18n:translate="Toggle Navigation">Toggle navigation</span>

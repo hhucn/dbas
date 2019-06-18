@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-         i18n:domain="dbas" metal:define-macro="layout" lang="${extras.ui_locales}">
+     i18n:domain="dbas" metal:define-macro="layout" lang="${extras.ui_locales}">
 <head>
   <div metal:use-macro="load: snippet/header.pt"></div>
-  <link type="text/css" href="${request.static_path('dbas:static/node_modules/bootstrap/dist/css/bootstrap.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_path('dbas:static/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_path('dbas:static/node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_path('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}" rel="stylesheet">
+  <link type="text/css" href="${request.static_path('dbas:static/node_modules/bootstrap/dist/css/bootstrap.min.css')}"
+        rel="stylesheet">
+  <link type="text/css"
+        href="${request.static_path('dbas:static/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css')}"
+        rel="stylesheet">
+  <link type="text/css"
+        href="${request.static_path('dbas:static/node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.min.css')}"
+        rel="stylesheet">
+  <link type="text/css" href="${request.static_path('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}"
+        rel="stylesheet">
   <link type="text/css" href="${request.static_path('dbas:static/css/creative.css')}" rel="stylesheet">
   <script src="${request.static_path('dbas:static/node_modules/jquery-migrate/dist/jquery-migrate.js')}"></script>
 </head>
@@ -19,7 +25,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="#page-top">
+    <a class="navbar-brand d-flex align-items-center" href="#page-top">
       <img class="navbar-img" src="${request.static_path('dbas:static/images/logo/white.svg')}" alt="D-BAS Logo"
            style="height: 1.0em;margin-right: 0.2em; margin-bottom: 0.2em;">
       <span>D-BAS</span>
@@ -127,15 +133,23 @@
         </h2>
         <hr class="primary">
         <p class="lead" i18n:translate="requirements_text">
-          We are aware of the fact, that D-BAS is not suitable for every online discussion, of course! But we give our best to deliver a software which can
+          We are aware of the fact, that D-BAS is not suitable for every online discussion, of course! But we give our
+          best to deliver a software which can
           support rational online argumentations! You should give D-BAS a try if:
         </p>
         <ul class="mr-auto col-lg-7 ml-auto text-center lead">
-          <li class="pull-left"><span i18n:translate="discussion_is_controversy">your discussion is very controversy</span>;</li>
-          <li class="pull-left"><span i18n:translate="participants_willing_debate">your participants are willing to debate</span>;</li>
-          <li class="pull-left"><span i18n:translate="participants_come_back">some participants will come back</span>;</li>
-          <li class="pull-left"><span i18n:translate="need_support_the_discussion">you need to support the discussion</span> <span i18n:translate="and"></span></li>
-          <li class="pull-left"><span i18n:translate="want_structured_result">you want a structured result of given arguments</span>.</li>
+          <li class="pull-left">
+            <span i18n:translate="discussion_is_controversy">your discussion is very controversy</span>;
+          </li>
+          <li class="pull-left"><span i18n:translate="participants_willing_debate">your participants are willing to debate</span>;
+          </li>
+          <li class="pull-left"><span i18n:translate="participants_come_back">some participants will come back</span>;
+          </li>
+          <li class="pull-left">
+            <span i18n:translate="need_support_the_discussion">you need to support the discussion</span>
+            <span i18n:translate="and"></span></li>
+          <li class="pull-left"><span i18n:translate="want_structured_result">you want a structured result of given arguments</span>.
+          </li>
         </ul>
       </div>
     </div>
@@ -359,7 +373,8 @@
       <div class="col-lg-8 mx-auto text-center">
         <h2 class="section-heading" i18n:translate="get_in_touch">Let's Get In Touch!</h2>
         <hr class="primary">
-        <p i18n:translate="ready_to_start_with_us">Ready to start your next discussion with us? That's great! Send us an email and we will get back to you as soon as possible!</p>
+        <p i18n:translate="ready_to_start_with_us">Ready to start your next discussion with us? That's great! Send us an
+          email and we will get back to you as soon as possible!</p>
       </div>
     </div>
     <div class="row">
