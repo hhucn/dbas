@@ -91,6 +91,7 @@ def get_overview(page):
     general = list()
     general.append(__get_dash_dict('Issue', page + 'Issue'))
     general.append(__get_dash_dict('Language', page + 'Language'))
+    general.append(__get_dash_dict('History', page + 'History'))
 
     # all tables for the 'users' group
     users = list()
@@ -98,7 +99,6 @@ def get_overview(page):
     users.append(__get_dash_dict('User', page + 'User'))
     users.append(__get_dash_dict('Settings', page + 'Settings'))
     users.append(__get_dash_dict('Message', page + 'Message'))
-    general.append(__get_dash_dict('History', page + 'History'))
 
     # all tables for the 'content' group
     content = list()
@@ -150,9 +150,8 @@ def get_overview(page):
     return_list.append([{'name': 'General', 'content': general},
                         {'name': 'Users', 'content': users},
                         {'name': 'Content', 'content': content},
-                        {'name': 'Voting', 'content': voting}])
-    # second row
-    return_list.append([{'name': 'Reviews', 'content': reviews},
+                        {'name': 'Voting', 'content': voting},
+                        {'name': 'Reviews', 'content': reviews},
                         {'name': 'Reviewer', 'content': reviewer},
                         {'name': 'Reputation', 'content': reputation}])
 

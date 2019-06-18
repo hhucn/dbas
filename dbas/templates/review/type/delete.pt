@@ -81,7 +81,7 @@
 
   <div class="row" style="margin-bottom: 1em;">
 
-    <div class="col-md-offset-1 col-md-6">
+    <div class="offset-md-1 col-md-6">
 
       <div class="well well-sm center" style="text-align: justify;">
         <div tal:omit-tag="">
@@ -96,7 +96,7 @@
           </div>
           <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
           <span class="lead" id="reviewed-argument-text">
-                  ${structure:subpage.elements.reviewed_element.text}
+              ${structure:subpage.elements.reviewed_element.text}
           </span>
           <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
           <br>
@@ -105,7 +105,7 @@
 
     </div>
 
-    <div class="col-md-offset-2 col-md-3">
+    <div class="offset-md-2 col-md-3">
       <table id="stats-table" class="table table-condensed pull-right"
              style="font-size: 14px;" data-extra-info="${subpage.elements.reviewed_element.extra_info}">
         <tbody>

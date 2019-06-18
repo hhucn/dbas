@@ -11,7 +11,7 @@
 
       <div class="container">
         <div class="row">
-          <div class="col-md-offset-3 col-md-6">
+          <div class="offset-md-3 col-md-6">
             <div class="batman-container">
               <!--batman-->
               <div class="batman">
@@ -89,8 +89,8 @@
               </div>
             </div>
 
-          <h4 class="text-center">You are the user D-BAS deserves</h4>
-          <p class="lead text-center">but not the one it needs right now</p>
+            <h4 class="text-center">You are the user D-BAS deserves</h4>
+            <p class="lead text-center">but not the one it needs right now</p>
           </div>
         </div>
       </div>

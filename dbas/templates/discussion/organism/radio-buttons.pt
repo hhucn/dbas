@@ -7,7 +7,7 @@
            tal:repeat="item [item for item in items.elements if item.url not in ['login', 'add']]"
           style="${item.style}">
         <div class="discussion-space-list-row__left-side premise-input" style="display: flex; flex-grow: 1">
-          <div class="form-check form-check-inline">
+          <div class="form-check">
             <input id="${item.id}" type="radio"
                    name="discussion-button-group"
                    onclick='location.href="${item.url}";'

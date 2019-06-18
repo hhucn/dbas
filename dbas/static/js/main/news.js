@@ -120,7 +120,7 @@ function News() {
         if ($(_this).attr('id') === shareUrlButtonMail) {
             return;
         }
-        var id = $(_this).closest('.panel-heading').attr('id'),
+        var id = $(_this).closest('.card-header').attr('id'),
             title = $('#' + id + '_title').text(),
             date = $('#' + id + '_date').text(),
             author = $('#' + id + '_author').text();
