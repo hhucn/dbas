@@ -5,7 +5,7 @@
   <script
       src="${request.static_path('dbas:static/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js')}"></script>
   <script
-      src="${request.static_path('dbas:static/node_modules/bootstrap-tour/build/js/bootstrap-tour-standalone.min.js')}"></script>
+      src="${request.static_path('dbas:static/node_modules/bootstrap-tourist/bootstrap-tourist.js')}"></script>
   <script
       src="${request.static_path('dbas:static/node_modules/datatables/media/js/jquery.dataTables.min.js')}"></script>
   <script

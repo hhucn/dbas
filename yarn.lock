@@ -232,23 +232,15 @@ bootstrap-slider@^10.0.0:
   resolved "https://registry.yarnpkg.com/bootstrap-slider/-/bootstrap-slider-10.0.2.tgz#442d84293aea248a31b1a3f976ac3737a7362a62"
   integrity sha1-RC2EKTrqJIoxsaP5dqw3N6c2KmI=
 
-bootstrap-tour@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/bootstrap-tour/-/bootstrap-tour-0.12.0.tgz#c56eb48debe9cf788378a20184ef5a761b13b650"
-  integrity sha512-J+Nure5q3eHKVAy0Oi0Y7bGhdVsnCl2bfaAYFg7hNcdWK+lyXtS3fLHIUqzbvdW//wcy2FRMHSr7G6EuisBWoA==
-  dependencies:
-    bootstrap "~3"
-    jquery ">=1.8"
+bootstrap-tourist@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/bootstrap-tourist/-/bootstrap-tourist-0.0.10.tgz#0b07d7bc3aef3b9bf75b0d0a153eec27d010b15f"
+  integrity sha512-xDAOjQEN+mr2yCQEXsYaskxdCTVjitIGQzJvzZA6e9xm/t12YjbcHykxrj2QPFDjXYe4QVYeBvmy3FEyMThvtQ==
 
 bootstrap@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.1.1.tgz#3aec85000fa619085da8d2e4983dfd67cf2114cb"
   integrity sha512-SpiDSOcbg4J/PjVSt4ny5eY6j74VbVSjROY4Fb/WIUXBV9cnb5luyR4KnPvNoXuGnBK1T+nJIWqRsvU3yP8Mcg==
-
-bootstrap@~3:
-  version "3.3.7"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.3.7.tgz#5a389394549f23330875a3b150656574f8a9eb71"
-  integrity sha1-WjiTlFSfIzMIdaOxUGVldPip63E=
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -903,7 +895,7 @@ jquery-waypoints@^2.0.5:
   resolved "https://registry.yarnpkg.com/jquery-waypoints/-/jquery-waypoints-2.0.5.tgz#c302b188e2957ed763098793304a76356aeeee04"
   integrity sha1-wwKxiOKVftdjCYeTMEp2NWru7gQ=
 
-"jquery@>= 1.7", jquery@>=1.7, jquery@>=1.7.0, jquery@>=1.8, jquery@^3.3.1:
+"jquery@>= 1.7", jquery@>=1.7, jquery@>=1.7.0, jquery@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
   integrity sha512-Ubldcmxp5np52/ENotGxlLe6aGMvmF4R8S6tZjsP6Knsaxd/xp3Zrh50cG93lR6nPXyUFwzN3ZSOQI0wRJNdGg==

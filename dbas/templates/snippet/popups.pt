@@ -772,7 +772,7 @@
   </div>
 
   <!-- ADD TOPIC -->
-  <div class="modal fade in" id="popup-add-topic" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddTopic"
+  <div class="modal in" id="popup-add-topic" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddTopic"
        aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
