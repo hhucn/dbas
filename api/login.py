@@ -159,7 +159,8 @@ def encode_payload(request: Request, payload: dict) -> str:
 def user_payload(user: User):
     return {
         'nickname': user.nickname,
-        'id': user.uid
+        'id': user.uid,
+        'group': user.group.name
     }
 
 
