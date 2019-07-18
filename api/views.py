@@ -29,14 +29,15 @@ from dbas.lib import (get_all_arguments_by_statement,
                       Attitudes, Relations)
 from dbas.strings.matcher import get_all_statements_matching
 from dbas.strings.translator import Keywords as _, get_translation, Translator
-from dbas.validators.common import valid_q_parameter
+from dbas.validators.common import valid_q_parameter, valid_language
 from dbas.validators.core import has_keywords_in_json_path, validate, has_maybe_keywords, has_keywords_in_path
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_reason_and_position_not_equal, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body, \
-    valid_support
+    valid_support, valid_new_issue
 from dbas.validators.eden import valid_optional_origin
 from dbas.views import jump, emit_participation
+from dbas.views.discussion.json import create_issue_after_validation
 from .login import validate_credentials, valid_token, valid_token_optional, valid_api_token, check_jwt, encode_payload
 from .references import (get_all_references_by_reference,
                          store_reference)
@@ -110,6 +111,11 @@ positions = Service(name='Positions',
                     path='/{slug}/positions',
                     description='Positions of a specific issue',
                     cors_policy=cors_policy)
+
+issue = Service(name="issue",
+                path="/issue",
+                description="Adds a new issue",
+                cors_policy=cors_policy)
 
 # Prefix with 'z' so it is added as the last route
 zinit = Service(name='api_init',
@@ -698,6 +704,14 @@ def add_premise_to_argument(request):
     __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, pd['statement_uids'])
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
+
+
+@issue.post(require_csrf=False)
+@validate(valid_token, valid_language, valid_new_issue,
+          has_keywords_in_json_path(('is_public', bool), ('is_read_only', bool)))
+def add_issue(request):
+    # set_new_issue already checks for validity of mandatory fields in json
+    return create_issue_after_validation(request)
 
 
 @resource(collection_path='/users', path=r'/users/{id:\d+}', cors_policy=cors_policy)
