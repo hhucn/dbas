@@ -1,4 +1,5 @@
 import logging
+
 from pyramid.request import Request
 from pyramid.response import Response
 from pyramid.view import view_config
@@ -270,15 +271,7 @@ def set_correction_of_some_statements(request):
     return set_correction_of_statement(elements, db_user, _tn)
 
 
-@view_config(route_name='set_new_issue', renderer='json')
-@validate(valid_user, valid_language, valid_new_issue,
-          has_keywords_in_json_path(('is_public', bool), ('is_read_only', bool)))
-def set_new_issue(request):
-    """
-
-    :param request: current request of the server
-    :return:
-    """
+def create_issue_after_validation(request):
     LOG.debug("Set a new issue: %s", request.json_body)
     info = escape_string(request.validated['info'])
     long_info = escape_string(request.validated['long_info'])
@@ -288,6 +281,18 @@ def set_new_issue(request):
     is_read_only = request.validated['is_read_only']
 
     return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only)
+
+
+@view_config(route_name='set_new_issue', renderer='json')
+@validate(valid_user, valid_language, valid_new_issue,
+          has_keywords_in_json_path(('is_public', bool), ('is_read_only', bool)))
+def set_new_issue(request):
+    """
+
+    :param request: current request of the server
+    :return:
+    """
+    return create_issue_after_validation(request)
 
 
 @view_config(route_name='set_seen_statements', renderer='json')

@@ -129,6 +129,20 @@ paths:
         404:
           description: This user-id does not exist.
 
+  /issue:
+    post:
+      summary: Create a new issue.
+      description: Create a new issue over the API. Need to pass a valid user-token.
+      tags:
+        - discussion
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/issue'
+
   /issues:
     get:
       summary: List all issues.
