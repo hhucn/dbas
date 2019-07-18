@@ -901,6 +901,12 @@ function _t_discussion(id) {
         return get_it('en', id);
     }
     var lang = info.data('discussion-language');
+
+    var transform_to_discussion_language = ['issue', 'position', 'statement', 'support', 'attack'];
+    if (transform_to_discussion_language.includes(id)) {
+        lang = $('#hidden_language').val();
+    }
+
     return get_it(lang, id);
 }
 

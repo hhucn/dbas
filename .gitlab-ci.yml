@@ -1,5 +1,8 @@
 image: docker
 
+services:
+  - docker:stable-dind
+
 stages:
   - build
   - test
@@ -33,10 +36,8 @@ build_test_image:
     - 40c
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE --pull .
-    - docker tag $CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE:experimental
+    - docker build -t $CI_REGISTRY_IMAGE:experimental --pull .
     - docker push $CI_REGISTRY_IMAGE:experimental
-    # Build database
 
 build_test_db_image:
   stage: build
@@ -44,8 +45,7 @@ build_test_db_image:
     - 40c
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
-    - docker tag $CI_REGISTRY_IMAGE/db $CI_REGISTRY_IMAGE/db:testing
+    - docker build -t $CI_REGISTRY_IMAGE/db:testing --pull docker/db
     - docker push $CI_REGISTRY_IMAGE/db:testing
 
 flake8:
@@ -83,33 +83,24 @@ sonar:
   image: hhucn/sonar-scanner
   stage: analysis
   script:
-    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.20.2 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
+    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.21.0 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
   only:
     - development
   allow_failure: true
   when: always
+
+
+include:
+  - template: SAST.gitlab-ci.yml
 
 sast:
   stage: analysis
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run
-        --env SAST_CONFIDENCE_LEVEL="${SAST_CONFIDENCE_LEVEL:-3}"
-        --volume "$PWD:/code"
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
-  artifacts:
-    paths: [gl-sast-report.json]
   only:
     - development
   when: always
 
+# -----------------------------------------------------------------------------
 
 build_production_image:
   stage: build-images
@@ -117,6 +108,9 @@ build_production_image:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE .
     - docker push $CI_REGISTRY_IMAGE
+    # Build production docs for live version
+    - docker build -t $CI_REGISTRY_IMAGE/docs -f Dockerfile.docs --pull .
+    - docker push $CI_REGISTRY_IMAGE/docs
   only:
     - master
 
@@ -129,24 +123,17 @@ build_production_db_image:
   only:
     - master
 
-build_production_docs_image:
-  stage: build-images
-  script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/docs -f Dockerfile.docs --pull .
-    - docker push $CI_REGISTRY_IMAGE/docs
-  only:
-    - master
-
-
+# -----------------------------------------------------------------------------
 
 build_dev_image:
   stage: build-images
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE .
-    - docker tag $CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE:development
+    - docker build -t $CI_REGISTRY_IMAGE:development .
     - docker push $CI_REGISTRY_IMAGE:development
+    # Build docs image for development
+    - docker build -t $CI_REGISTRY_IMAGE/docs:development -f Dockerfile.docs --pull .
+    - docker push $CI_REGISTRY_IMAGE/docs
   only:
     - development
 
@@ -155,22 +142,12 @@ build_db_dev_image:
   script:
     # Build and deploy database
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
-    - docker tag $CI_REGISTRY_IMAGE/db $CI_REGISTRY_IMAGE/db:development
+    - docker build -t $CI_REGISTRY_IMAGE/db:development --pull docker/db
     - docker push $CI_REGISTRY_IMAGE/db:development
   only:
     - development
 
-build_docs_dev_image:
-  stage: build-images
-  script:
-    # Build and deploy docs image
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/docs -f Dockerfile.docs --pull .
-    - docker tag $CI_REGISTRY_IMAGE/docs $CI_REGISTRY_IMAGE/docs:development
-    - docker push $CI_REGISTRY_IMAGE/docs
-  only:
-    - development
+# -----------------------------------------------------------------------------
 
 deploy_production:
   image: alpine

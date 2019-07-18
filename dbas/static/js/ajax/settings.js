@@ -194,6 +194,6 @@ function AjaxSettingsHandler() {
      *
      */
     this.deleteAccount = function () {
-        redirectAfterAjax('user/delete');
+        redirectAfterAjax('/user/delete');
     };
 }

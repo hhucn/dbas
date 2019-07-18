@@ -77,7 +77,7 @@ class Helper:
         :param browser:
         :return:
         """
-        browser.visit('user/logout')
+        browser.visit('/user/logout')
         return browser
 
     @staticmethod
@@ -1427,102 +1427,150 @@ class FrontendTests:
 
 
 test_list = [
-    {'console_description': 'tests for normal/not logged in pages',
-     'test_description': 'tests for normal/not logged in pages',
-     'test_call': FrontendTests.test_pages_when_not_logged_in,
-     'test_id': 0},
-    {'console_description': 'tests for login logout',
-     'test_description': 'tests for login logout',
-     'test_call': FrontendTests.test_login_logout,
-     'test_id': 1},
-    {'console_description': 'tests for logged in pages',
-     'test_description': 'tests for logged in pages',
-     'test_call': FrontendTests.test_pages_when_logged_in,
-     'test_id': 2},
-    {'console_description': 'tests for popups',
-     'test_description': 'tests for popups',
-     'test_call': FrontendTests.test_popups,
-     'test_id': 3},
-    {'console_description': 'tests for contact form',
-     'test_description': 'tests for contact form',
-     'test_call': FrontendTests.test_contact_form,
-     'test_id': 4},
-    {'console_description': 'tests for language switch',
-     'test_description': 'tests for language switch',
-     'test_call': FrontendTests.test_language_switch,
-     'test_id': 5},
-    {'console_description': 'tests for discussion buttons',
-     'test_description': 'tests for discussion buttons',
-     'test_call': FrontendTests.test_discussion_buttons,
-     'test_id': 6},
-    {'console_description': 'tests for demo discussion',
-     'test_description': 'tests for demo discussion',
-     'test_call': FrontendTests.test_demo_discussion,
-     'test_id': 7},
-    {'console_description': 'tests for demo discussion with all functions',
-     'test_description': 'tests for demo discussion with all functions',
-     'test_call': FrontendTests.test_functions_while_discussion,
-     'test_id': 8},
-    {'console_description': 'tests for content',
-     'test_description': 'tests for content',
-     'test_call': FrontendTests.test_content,
-     'test_id': 9},
-    {'console_description': 'tests for public user page',
-     'test_description': 'tests for public user page',
-     'test_call': FrontendTests.test_user_page,
-     'test_id': 10},
-    {'console_description': 'tests for notification system',
-     'test_description': 'tests for notification system',
-     'test_call': FrontendTests.test_notification_system,
-     'test_id': 11},
-    {'console_description': 'tests for review page',
-     'test_description': 'test for review_page',
-     'test_call': FrontendTests.test_review_page,
-     'test_id': 12},
-    {'console_description': 'tests for flag statement',
-     'test_description': 'test for flag statement',
-     'test_call': FrontendTests.test_flag_statement,
-     'test_id': 13},
-    {'console_description': 'tests for flag argument',
-     'test_description': 'test for flag argument',
-     'test_call': FrontendTests.test_flag_argument,
-     'test_id': 14},
-    {'console_description': 'tests for review queue (only with 13!)',
-     'test_description': 'test for review queue',
-     'test_call': FrontendTests.test_review_queue,
-     'test_id': 15},
-    {'console_description': 'tests for undo review in queue (only with 15!)',
-     'test_description': 'test for undo review in queue',
-     'test_call': FrontendTests.test_undo_review_in_queue,
-     'test_id': 16},
-    {'console_description': 'tests for cancel review in queue',
-     'test_description': 'test for cancel review in queue',
-     'test_call': FrontendTests.test_cancel_review_in_queue,
-     'test_id': 17},
-    {'console_description': 'tests for edit statement',
-     'test_description': 'test for edit statement',
-     'test_call': FrontendTests.test_edit_statement,
-     'test_id': 18},
-    {'console_description': 'tests for edit as optimization',
-     'test_description': 'test for edit as optimization',
-     'test_call': FrontendTests.test_edit_as_optimization,
-     'test_id': 19},
-    {'console_description': 'tests for delete my own statement',
-     'test_description': 'test for delete my own statement',
-     'test_call': FrontendTests.test_delete_own_statement,
-     'test_id': 20},
-    {'console_description': 'tests for delete my own argument',
-     'test_description': 'test for delete my own argument',
-     'test_call': FrontendTests.test_delete_own_argument,
-     'test_id': 21},
-    {'console_description': 'tests for the admin interface',
-     'test_description': 'test for the admin interface',
-     'test_call': FrontendTests.test_admin_interface,
-     'test_id': 22},
-    {'console_description': 'tests for review popup',
-     'test_description': 'test for the review popup',
-     'test_call': FrontendTests.test_review_popup,
-     'test_id': 23}
+    {
+        'console_description': 'tests for normal/not logged in pages',
+        'test_description': 'tests for normal/not logged in pages',
+        'test_call': FrontendTests.test_pages_when_not_logged_in,
+        'test_id': 0
+    },
+    {
+        'console_description': 'tests for login logout',
+        'test_description': 'tests for login logout',
+        'test_call': FrontendTests.test_login_logout,
+        'test_id': 1
+    },
+    {
+        'console_description': 'tests for logged in pages',
+        'test_description': 'tests for logged in pages',
+        'test_call': FrontendTests.test_pages_when_logged_in,
+        'test_id': 2
+    },
+    {
+        'console_description': 'tests for popups',
+        'test_description': 'tests for popups',
+        'test_call': FrontendTests.test_popups,
+        'test_id': 3
+    },
+    {
+        'console_description': 'tests for contact form',
+        'test_description': 'tests for contact form',
+        'test_call': FrontendTests.test_contact_form,
+        'test_id': 4
+    },
+    {
+        'console_description': 'tests for language switch',
+        'test_description': 'tests for language switch',
+        'test_call': FrontendTests.test_language_switch,
+        'test_id': 5
+    },
+    {
+        'console_description': 'tests for discussion buttons',
+        'test_description': 'tests for discussion buttons',
+        'test_call': FrontendTests.test_discussion_buttons,
+        'test_id': 6
+    },
+    {
+        'console_description': 'tests for demo discussion',
+        'test_description': 'tests for demo discussion',
+        'test_call': FrontendTests.test_demo_discussion,
+        'test_id': 7
+    },
+    {
+        'console_description': 'tests for demo discussion with all functions',
+        'test_description': 'tests for demo discussion with all functions',
+        'test_call': FrontendTests.test_functions_while_discussion,
+        'test_id': 8
+    },
+    {
+        'console_description': 'tests for content',
+        'test_description': 'tests for content',
+        'test_call': FrontendTests.test_content,
+        'test_id': 9
+    },
+    {
+        'console_description': 'tests for public user page',
+        'test_description': 'tests for public user page',
+        'test_call': FrontendTests.test_user_page,
+        'test_id': 10
+    },
+    {
+        'console_description': 'tests for notification system',
+        'test_description': 'tests for notification system',
+        'test_call': FrontendTests.test_notification_system,
+        'test_id': 11
+    },
+    {
+        'console_description': 'tests for review page',
+        'test_description': 'test for review_page',
+        'test_call': FrontendTests.test_review_page,
+        'test_id': 12
+    },
+    {
+        'console_description': 'tests for flag statement',
+        'test_description': 'test for flag statement',
+        'test_call': FrontendTests.test_flag_statement,
+        'test_id': 13
+    },
+    {
+        'console_description': 'tests for flag argument',
+        'test_description': 'test for flag argument',
+        'test_call': FrontendTests.test_flag_argument,
+        'test_id': 14
+    },
+    {
+        'console_description': 'tests for review queue (only with 13!)',
+        'test_description': 'test for review queue',
+        'test_call': FrontendTests.test_review_queue,
+        'test_id': 15
+    },
+    {
+        'console_description': 'tests for undo review in queue (only with 15!)',
+        'test_description': 'test for undo review in queue',
+        'test_call': FrontendTests.test_undo_review_in_queue,
+        'test_id': 16
+    },
+    {
+        'console_description': 'tests for cancel review in queue',
+        'test_description': 'test for cancel review in queue',
+        'test_call': FrontendTests.test_cancel_review_in_queue,
+        'test_id': 17
+    },
+    {
+        'console_description': 'tests for edit statement',
+        'test_description': 'test for edit statement',
+        'test_call': FrontendTests.test_edit_statement,
+        'test_id': 18
+    },
+    {
+        'console_description': 'tests for edit as optimization',
+        'test_description': 'test for edit as optimization',
+        'test_call': FrontendTests.test_edit_as_optimization,
+        'test_id': 19
+    },
+    {
+        'console_description': 'tests for delete my own statement',
+        'test_description': 'test for delete my own statement',
+        'test_call': FrontendTests.test_delete_own_statement,
+        'test_id': 20
+    },
+    {
+        'console_description': 'tests for delete my own argument',
+        'test_description': 'test for delete my own argument',
+        'test_call': FrontendTests.test_delete_own_argument,
+        'test_id': 21
+    },
+    {
+        'console_description': 'tests for the admin interface',
+        'test_description': 'test for the admin interface',
+        'test_call': FrontendTests.test_admin_interface,
+        'test_id': 22
+    },
+    {
+        'console_description': 'tests for review popup',
+        'test_description': 'test for the review popup',
+        'test_call': FrontendTests.test_review_popup,
+        'test_id': 23
+    }
 ]
 
 if __name__ == "__main__":
