@@ -292,7 +292,7 @@ def set_new_issue(request):
     :param request: current request of the server
     :return:
     """
-    create_issue_after_validation(request)
+    return create_issue_after_validation(request)
 
 
 @view_config(route_name='set_seen_statements', renderer='json')
