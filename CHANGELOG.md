@@ -1,3 +1,11 @@
+### 1.21.1 (2019-07-18)
+- Save the user's group in the JWT token
+- Update node version
+- Add route to create an issue from API [!759](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/759)
+- Simplify docker build process, fix doc-building [!757](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/757)
+- Remove redundant arguments when searching for a reference [!753](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/753)
+- Language fix for graph view [!754](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/754)
+
 ### 1.20.1 (2019-05-08)
 - Hotfix to allow new LDAP users
 
