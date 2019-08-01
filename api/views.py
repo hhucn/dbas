@@ -10,7 +10,7 @@ from typing import List
 
 from cornice import Service
 from cornice.resource import resource, view
-from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound
+from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound, HTTPCreated
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
 
@@ -21,6 +21,7 @@ from api.models import DataItem, DataBubble, DataReference, DataOrigin
 from api.origins import add_origin_for_list_of_statements
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReference
+from dbas.events import UserStatementAttitude
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.handler.user import set_new_oauth_user
@@ -95,6 +96,12 @@ attitude = Service(name='api_attitude',
                    path=r'/{slug}/attitude/{position_id:\d+}',
                    description='Discussion Attitude',
                    cors_policy=cors_policy)
+
+statement_attitude = Service(name='api_statement_attitude',
+                             path=r'/attitude/{statement_id:\d+}/{attitude:(' + '|'.join(
+                                 map(str, Attitudes)) + ')}',
+                             description='Save Attitude to Statement',
+                             cors_policy=cors_policy)
 
 finish = Service(name='api_finish',
                  path=r'/{slug}/finish/{argument_id:\d+}',
@@ -704,6 +711,19 @@ def add_premise_to_argument(request):
     __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, pd['statement_uids'])
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
+
+
+@statement_attitude.post(require_csrf=False)
+@validate(valid_token, valid_statement(location="path"), valid_attitude)
+def add_statement_attitude(request):
+    db_user: User = request.validated['user']
+    db_statement: Statement = request.validated['statement']
+    is_supportive = request.validated['attitude'] == Attitudes.AGREE
+
+    event = UserStatementAttitude(db_user, db_statement, is_supportive)
+    request.registry.notify(event)
+
+    return HTTPCreated()
 
 
 @issue.post(require_csrf=False)

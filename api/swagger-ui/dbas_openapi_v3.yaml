@@ -448,6 +448,29 @@ paths:
       security:
         - token: []
 
+  /attitude/{statement-id}/{attitude}:
+    post:
+      tags:
+        - add
+      summary: Save a user's attitude to a statement.
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: statement-id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: attitude
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [agree, disagree]
+      responses:
+        201:
+          description: CREATED
+      security:
+        - token: []
 
   /{slug}/reaction/{arg-user}/{relation}/{arg-sys}:
     get:
