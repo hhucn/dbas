@@ -3,17 +3,18 @@ Testing the routes of the API.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
+import json
 import unittest
+from typing import List
+from unittest import mock
 
 import hypothesis.strategies as st
-import json
 import transaction
 from hypothesis import given, settings
 from pyramid import httpexceptions
 from pyramid.interfaces import IRequest
 from pyramid.response import Response
 from pyramid.testing import DummyRequest
-from typing import List
 
 import api.views as apiviews
 from admin.lib import generate_application_token
@@ -22,6 +23,7 @@ from admin.lib import generate_application_token
 from api.models import DataReference
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, StatementReference
+from dbas.events import UserStatementAttitude
 from dbas.lib import Relations, Attitudes
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
@@ -442,6 +444,56 @@ class TestDiscussionJustifyArgumentPOST(TestCaseWithConfig):
 
         response: Response = apiviews.add_premise_to_argument(request)
         self.assertEqual(response.status_code, 400, response.body)
+
+
+class TestStatementAttitudePOST(TestCaseWithConfig):
+
+    def test_positive_attitude(self):
+        # Add position
+        request = create_request_with_token_header(nickname="Tobias", match_dict={
+            'statement_id': self.statement_cat_or_dog.uid,
+            'attitude': Attitudes.DISAGREE.value
+        })
+        request.registry.notify = mock.Mock()
+
+        response: Response = apiviews.add_statement_attitude(request)
+        self.assertEqual(response.status_code, 201, response.body)
+        request.registry.notify.assert_called_with(
+            UserStatementAttitude(self.user_tobi, self.statement_cat_or_dog, False))
+
+    def test_negative_attitude(self):
+        # Add position
+        request = create_request_with_token_header(nickname="Tobias", match_dict={
+            'statement_id': self.statement_cat_or_dog.uid,
+            'attitude': Attitudes.AGREE.value
+        })
+        request.registry.notify = mock.Mock()
+
+        response: Response = apiviews.add_statement_attitude(request)
+        self.assertEqual(response.status_code, 201, response.body)
+        request.registry.notify.assert_called_with(
+            UserStatementAttitude(self.user_tobi, self.statement_cat_or_dog, True))
+
+    def test_no_attitude(self):
+        # Add position
+        request = create_request_with_token_header(nickname="Tobias", match_dict={
+            'statement_id': self.statement_cat_or_dog.uid
+        })
+        request.registry.notify = mock.Mock()
+
+        response: Response = apiviews.add_statement_attitude(request)
+        self.assertEqual(response.status_code, 400, response.body)
+
+    def test_no_token(self):
+        # Add position
+        request = construct_dummy_request(matchdict={
+            'statement_id': self.statement_cat_or_dog.uid,
+            'attitude': Attitudes.AGREE.value
+        })
+        request.registry.notify = mock.Mock()
+
+        response: Response = apiviews.add_statement_attitude(request)
+        self.assertEqual(response.status_code, 401, response.body)
 
 
 class TestDiscussionReaction(TestCaseWithConfig):

@@ -3,7 +3,7 @@ servers:
   - url: 'http://localhost:4284/api'
   - url: 'https://dbas.cs.uni-duesseldorf.de/api'
 info:
-  version: "1.20.2"
+  version: "1.21.0"
   title: D-BAS
 
 paths:
@@ -128,6 +128,20 @@ paths:
                 $ref: '#/components/schemas/user'
         404:
           description: This user-id does not exist.
+
+  /issue:
+    post:
+      summary: Create a new issue.
+      description: Create a new issue over the API. Need to pass a valid user-token.
+      tags:
+        - discussion
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/issue'
 
   /issues:
     get:
@@ -434,6 +448,29 @@ paths:
       security:
         - token: []
 
+  /attitude/{statement-id}/{attitude}:
+    post:
+      tags:
+        - add
+      summary: Save a user's attitude to a statement.
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: statement-id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: attitude
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [agree, disagree]
+      responses:
+        201:
+          description: CREATED
+      security:
+        - token: []
 
   /{slug}/reaction/{arg-user}/{relation}/{arg-sys}:
     get:

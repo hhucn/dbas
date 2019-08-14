@@ -10,7 +10,7 @@ from typing import List
 
 from cornice import Service
 from cornice.resource import resource, view
-from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound
+from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound, HTTPCreated
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
 
@@ -21,6 +21,7 @@ from api.models import DataItem, DataBubble, DataReference, DataOrigin
 from api.origins import add_origin_for_list_of_statements
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReference
+from dbas.events import UserStatementAttitude
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.handler.user import set_new_oauth_user
@@ -29,14 +30,15 @@ from dbas.lib import (get_all_arguments_by_statement,
                       Attitudes, Relations)
 from dbas.strings.matcher import get_all_statements_matching
 from dbas.strings.translator import Keywords as _, get_translation, Translator
-from dbas.validators.common import valid_q_parameter
+from dbas.validators.common import valid_q_parameter, valid_language
 from dbas.validators.core import has_keywords_in_json_path, validate, has_maybe_keywords, has_keywords_in_path
 from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
     valid_reason_and_position_not_equal, \
     valid_argument, valid_relation, valid_reaction_arguments, valid_new_position_in_body, valid_reason_in_body, \
-    valid_support
+    valid_support, valid_new_issue
 from dbas.validators.eden import valid_optional_origin
 from dbas.views import jump, emit_participation
+from dbas.views.discussion.json import create_issue_after_validation
 from .login import validate_credentials, valid_token, valid_token_optional, valid_api_token, check_jwt, encode_payload
 from .references import (get_all_references_by_reference,
                          store_reference)
@@ -95,6 +97,12 @@ attitude = Service(name='api_attitude',
                    description='Discussion Attitude',
                    cors_policy=cors_policy)
 
+statement_attitude = Service(name='api_statement_attitude',
+                             path=r'/attitude/{statement_id:\d+}/{attitude:(' + '|'.join(
+                                 map(str, Attitudes)) + ')}',
+                             description='Save Attitude to Statement',
+                             cors_policy=cors_policy)
+
 finish = Service(name='api_finish',
                  path=r'/{slug}/finish/{argument_id:\d+}',
                  description='End of a discussion',
@@ -110,6 +118,11 @@ positions = Service(name='Positions',
                     path='/{slug}/positions',
                     description='Positions of a specific issue',
                     cors_policy=cors_policy)
+
+issue = Service(name="issue",
+                path="/issue",
+                description="Adds a new issue",
+                cors_policy=cors_policy)
 
 # Prefix with 'z' so it is added as the last route
 zinit = Service(name='api_init',
@@ -698,6 +711,27 @@ def add_premise_to_argument(request):
     __store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, pd['statement_uids'])
 
     return __http_see_other_with_cors_header('/api' + pd['url'])
+
+
+@statement_attitude.post(require_csrf=False)
+@validate(valid_token, valid_statement(location="path"), valid_attitude)
+def add_statement_attitude(request):
+    db_user: User = request.validated['user']
+    db_statement: Statement = request.validated['statement']
+    is_supportive = request.validated['attitude'] == Attitudes.AGREE
+
+    event = UserStatementAttitude(db_user, db_statement, is_supportive)
+    request.registry.notify(event)
+
+    return HTTPCreated()
+
+
+@issue.post(require_csrf=False)
+@validate(valid_token, valid_language, valid_new_issue,
+          has_keywords_in_json_path(('is_public', bool), ('is_read_only', bool)))
+def add_issue(request):
+    # set_new_issue already checks for validity of mandatory fields in json
+    return create_issue_after_validation(request)
 
 
 @resource(collection_path='/users', path=r'/users/{id:\d+}', cors_policy=cors_policy)
