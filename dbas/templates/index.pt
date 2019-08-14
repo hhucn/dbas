@@ -5,14 +5,6 @@
   <div metal:use-macro="load: snippet/header.pt"></div>
   <link type="text/css" href="${request.static_path('dbas:static/node_modules/bootstrap/dist/css/bootstrap.min.css')}"
         rel="stylesheet">
-  <link type="text/css"
-        href="${request.static_path('dbas:static/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css')}"
-        rel="stylesheet">
-  <link type="text/css"
-        href="${request.static_path('dbas:static/node_modules/bootstrap-tourist/bootstrap-tourist.css')}"
-        rel="stylesheet">
-  <link type="text/css" href="${request.static_path('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}"
-        rel="stylesheet">
   <link type="text/css" href="${request.static_path('dbas:static/css/creative.css')}" rel="stylesheet">
   <script src="${request.static_path('dbas:static/node_modules/jquery-migrate/dist/jquery-migrate.js')}"></script>
 </head>
