@@ -126,11 +126,18 @@ body.loading
 .container
   margin-bottom: 1em
 
+@media (min-width: 1600px)
+  .container
+    max-width: 1570px
+
 .colored-container
   background: rgba(255, 255, 255, 1)
   padding: 1em
   box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3)
   border-radius: 5px
+
+.discussion-overview
+  padding: 1.2em 5em
 
 .news
   display: inline-block
@@ -161,9 +168,6 @@ body.loading
   background: url('../images/bg_diagonals1.png') repeat fixed center
   z-index: 9999999
 
-.adblockenabled
-  background: url('../images/bg_diagonals2.png') repeat fixed center
-  z-index: 9999998
 
 .session_expired, .request_failed, .request_success
   z-index: 9999997

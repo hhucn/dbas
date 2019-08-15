@@ -1,6 +1,6 @@
 <!-- tje dialog space itself whoch embedds the bubbles, radio buttons as well as a sidebar -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-  <div class="container card" id="discussion-container" style="min-height: 200px;">
+  <div class="container colored-container card" id="discussion-container" style="min-height: 200px;">
     <div id="dialog-wrapper" class="card-body content-wrapper pull-left">
 
       <p id="read-only-banner" class="text-center" tal:condition="issues.read_only">

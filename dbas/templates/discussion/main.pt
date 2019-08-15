@@ -25,7 +25,6 @@
       <div metal:use-macro="load: organism/add-statement.pt"></div>
 
       <div metal:use-macro="load: organism/add-position.pt"></div>
-
     </div>
 
   </tal:block>

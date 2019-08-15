@@ -1368,11 +1368,11 @@
   <div id="privacy-policy-popup">
     <div class="row">
       <div class="col-md-10">
-        <span class="lead" id="privacy-policy-text"></span>
-        <a id="privacy-policy-link" href="/privacy_policy"></a>
+        <span class="lead text-white" id="privacy-policy-text"></span>
+        <a id="privacy-policy-link" class="btn btn-sm btn-outline-light" href="/privacy_policy"></a>
       </div>
       <div class="col-md-2">
-        <button id="privacy-policy-btn" class="btn btn-default"></button>
+        <button id="privacy-policy-btn" class="btn btn-light"></button>
       </div>
     </div>
   </div>
