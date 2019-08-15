@@ -5,7 +5,7 @@ ENV TEMPLATE_FOLDER /dbas/dbas/templates/
 ENV CHAMELEON_CACHE ${TEMPLATE_FOLDER}cache
 
 RUN apt-get update -qq && \
-    apt-get install -yqq curl gnupg2 && \
+    apt-get install -yqq curl gnupg2 make && \
     curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
@@ -36,7 +36,7 @@ RUN pip install -q -U pip && \
 
 COPY . /dbas/
 
-RUN ./build_assets.sh && python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
+RUN make && python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
 
 EXPOSE 4284
 CMD sh -c "alembic upgrade head && pserve development.ini --reload"
