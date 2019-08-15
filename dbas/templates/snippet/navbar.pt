@@ -1,5 +1,5 @@
 <div i18n:domain="dbas" metal:define-macro="layout">
-  <nav id="custom-bootstrap-menu" class="navbar navbar-expand-md navbar-default bg-light fixed-top">
+  <nav id="custom-bootstrap-menu" class="navbar navbar-expand-md navbar-light bg-light fixed-top">
     <a class="navbar-brand d-flex align-items-center" href="/" data-toggle="tooltip" data-placement="right">
       <img src="${request.static_path('dbas:static/images/logo/black.svg')}" alt="D-BAS Logo">
       <span>D-BAS</span>
@@ -17,20 +17,21 @@
     <div id="navbarNav" class="collapse navbar-collapse">
       <ul class="navbar-nav ml-auto">
         <li id="content-link" class="nav-item" tal:condition="not:extras.ongoing_discussion">
-          <a class="nav-link" href="/discuss" data-toggle="tooltip" data-placement="left">
+          <a class="btn btn-light" href="/discuss" data-toggle="tooltip" data-placement="left">
             <i class="fa fa-play" aria-hidden="true"></i><span i18n:translate="lets_go">Let's go</span>
           </a>
         </li>
 
         <li id="my-discussions-link" class="nav-item" tal:condition="extras.logged_in">
-          <a class="nav-link" href="/mydiscussions" data-toggle="tooltip" data-placement="left">
+          <a class="btn btn-light" href="/mydiscussions" data-toggle="tooltip" data-placement="left">
             <i class="fa fa-address-card-o"
                aria-hidden="true"></i><span i18n:translate="my_discussions">My Discussions</span>
           </a>
         </li>
 
         <li class="nav-item dropdown" tal:condition="extras.ongoing_discussion" style="cursor: pointer;">
-          <a class="dropdown-toggle nav-link" data-toggle="dropdown" id="issue-dropdown" aria-haspopup="true"
+          <a class="btn btn-light dropdown-toggle nav-link" data-toggle="dropdown" id="issue-dropdown"
+             aria-haspopup="true"
              aria-expanded="true" id="${issues.uid}">
             <i class="fa fa-files-o" aria-hidden="true"></i><span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span
               class="caret"></span>
@@ -68,7 +69,7 @@
         </li>
 
         <li id="login-link" class="nav-item" tal:condition="not:extras.logged_in">
-          <a id="link_popup_login" class="nav-link cursor-pointer" data-toggle="modal"
+          <a id="link_popup_login" class="btn btn-light" data-toggle="modal"
              data-target="#popup-login"
              data-placement="left">
             <i class="fa fa-sign-in" aria-hidden="true"></i><span i18n:translate="login">Login</span>
@@ -77,7 +78,7 @@
 
         <li id="review-link" class="nav-item" tal:condition="extras.logged_in"
             data-broke-limit="${discussion.broke_limit}">
-          <a class="nav-link" href="/review" data-toggle="tooltip" data-placement="left">
+          <a class="btn btn-light" href="/review" data-toggle="tooltip" data-placement="left">
             <i class="fa fa-pencil" aria-hidden="true"></i><span i18n:translate="review">Review</span>
             <span tal:condition="extras.review_count > 0"
                 class="badge badge-primary">${extras.review_count}</span>
@@ -85,7 +86,7 @@
         </li>
 
         <li tal:condition="extras.logged_in" class="nav-item dropdown" data-toggle="tooltip" data-placement="left">
-          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown"
+          <a class="btn btn-light dropdown-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown"
              aria-haspopup="true"
              aria-expanded="true">
             <img src="${extras.users_avatar}" class="img-circle" alt="gravatar" style="max-width: 25px;">
@@ -116,13 +117,13 @@
         </li>
 
         <li id="header-language-selector" class="nav-item" tal:condition="extras.lang_is_en">
-          <a class="nav-link" id="link-trans-de" style="cursor:pointer">
+          <a class="btn btn-light" id="link-trans-de" style="cursor:pointer">
             <img class="language_selector_img" src="${request.static_path('dbas:static/images/flags/de-24.png')}"
                  alt="flag_ge">
           </a>
         </li>
         <li id="header-language-selector" class="nav-item" tal:condition="extras.lang_is_de">
-          <a class="nav-link" id="link-trans-en" style="cursor:pointer">
+          <a class="btn btn-light" id="link-trans-en" style="cursor:pointer">
             <img class="language_selector_img" src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}"
                  alt="flag_us-gb">
           </a>
