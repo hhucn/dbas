@@ -250,12 +250,3 @@ def _locale_negotiator(request: Request):
         if locale_name is None:
             return request.registry.settings['pyramid.default_locale_name']
     return locale_name
-
-# NEVER COMMIT THIS
-# http://blog.digital-horror.com/how-to-setup-pycharms-remote-debugger-for-docker/
-import pydevd
-
-try:
-    pydevd.settrace('192.168.2.231', port=4444, stdoutToServer=True, stderrToServer=True)
-except Exception as e:
-    print(e)
