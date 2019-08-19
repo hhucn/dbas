@@ -34,16 +34,20 @@ class StatementsHandlerTest(TestCaseWithConfig):
         ret_dict = set_correction_of_statement(right_elements, self.user_tobi, self.trans)
         self.assertFalse(ret_dict['error'])
 
-    def test_find_existing_premisegroup(self):
+
+class FindExistingPremisegroupTest(TestCaseWithConfig):
+    def test_find_existing_premisegroup_with_two_statements(self):
         statement_fluffy = DBDiscussionSession.query(Statement).get(15)
         statement_small = DBDiscussionSession.query(Statement).get(16)
         premisegroup = find_existing_premisegroup([statement_fluffy, statement_small])
         self.assertEqual(premisegroup.uid, 12)
 
+    def test_existing_premisegroup_with_more_statements_not_found(self):
         statement_fluffy = DBDiscussionSession.query(Statement).get(15)
         premisegroup = find_existing_premisegroup([statement_fluffy])
         self.assertEqual(premisegroup, None)
 
+    def test_find_existing_premisegroup_with_one_statement(self):
         statement_capricious = DBDiscussionSession.query(Statement).get(6)
         premisegroup = find_existing_premisegroup([statement_capricious])
         self.assertEqual(premisegroup.uid, 3)
