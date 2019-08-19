@@ -347,12 +347,12 @@ $(document).ready(function () {
         ajaxStart: function ajaxStartFct() {
             timer && clearTimeout(timer);
             timer = setTimeout(function () {
-                $('body').addClass('loading');
+                $('#ajaxloader').addClass('rotating');
             }, 150);
         },
         ajaxStop: function ajaxStopFct() {
             clearTimeout(timer);
-            $('body').removeClass('loading');
+            $('#ajaxloader').removeClass('rotating');
         }
     });
 

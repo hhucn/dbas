@@ -1,12 +1,9 @@
 <div i18n:domain="dbas" metal:define-macro="layout">
   <nav id="custom-bootstrap-menu" class="navbar navbar-expand-md navbar-light bg-light fixed-top">
-    <a class="navbar-brand d-flex align-items-center" href="/" data-toggle="tooltip" data-placement="right">
-      <img src="${request.static_path('dbas:static/images/logo/black.svg')}" alt="D-BAS Logo">
+    <a class="navbar-brand d-flex align-items-center" href="/" data-toggle="tooltip"
+       data-placement="right">
+      <img id="ajaxloader" src="${request.static_path('dbas:static/images/logo/black.svg')}" alt="D-BAS Logo">
       <span>D-BAS</span>
-    </a>
-    <a class="navbar-brand ajaxloader">
-      <img class="center rotating" src="${request.static_path('dbas:static/images/logo/black.svg')}"
-           alt="loading">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +31,7 @@
              aria-haspopup="true"
              aria-expanded="true" id="${issues.uid}">
             <i class="fa fa-files-o" aria-hidden="true"></i><span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span
-              class="caret"></span>
+                  class="caret"></span>
           </a>
           <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
             <li tal:repeat="issue issues.all" class="${issue.enabled}">
@@ -81,7 +78,7 @@
           <a class="btn btn-light" href="/review" data-toggle="tooltip" data-placement="left">
             <i class="fa fa-pencil" aria-hidden="true"></i><span i18n:translate="review">Review</span>
             <span tal:condition="extras.review_count > 0"
-                class="badge badge-primary">${extras.review_count}</span>
+                    class="badge badge-primary">${extras.review_count}</span>
           </a>
         </li>
 
@@ -104,8 +101,8 @@
               <i class="fa fa-envelope-o"
                  aria-hidden="true" tal:condition="not:extras.notifications.has_unread"></i>
               <span i18n:translate="notifications">Notifications</span><span
-                id="menu_badge_count_notifications" tal:condition="extras.notifications.has_unread"
-                class="badge" style="margin-left: 1em">${extras.notifications.new_count}</span>
+                    id="menu_badge_count_notifications" tal:condition="extras.notifications.has_unread"
+                    class="badge" style="margin-left: 1em">${extras.notifications.new_count}</span>
             </a>
             <a class="dropdown-item" tal:condition="extras.is_admin" href="/admin/">
               <i class="fa fa-sliders" aria-hidden="true"></i><span i18n:translate="Admin">Admin</span>
