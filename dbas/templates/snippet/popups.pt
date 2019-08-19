@@ -349,17 +349,11 @@
                   </div>
                 </div>
               </form>
-              <div class="row justify-content-between" style="padding-left: 15px;">
-                <div class="form-check form-check-inline">
-                  <input id="keep-login-box" class="form-check-input" type="checkbox" style="float:left;">
-                  <label for="keep-login-box" class="form-check-label">
-                    <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
-                  </label>
-                </div>
-                <a id="popup-login-forgot-password-text"
-                   class="cursor-pointer pull-right" i18n:translate="forgot_password">
-                  Forgot your password?
-                </a>
+              <div class="form-check form-check-inline">
+                <input id="keep-login-box" class="form-check-input" type="checkbox" style="float:left;">
+                <label for="keep-login-box" class="form-check-label">
+                  <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
+                </label>
               </div>
               <div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">
                 <label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">
@@ -377,13 +371,24 @@
                        name="form.passwordrequest.submitted" value="${extras.buttons.request_password}"
                        class="btn btn-primary">
               </div>
-              <div class="pull-right">
-                <button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">
-                  Log In
-                </button>
-                <button type="button" class="btn btn-secondary" id="popup-login-close-button2" i18n:translate="close">
-                  Close
-                </button>
+              <div class="row pt-3">
+                <div class="col">
+                  <a id="popup-login-forgot-password-text"
+                     class="cursor-pointer btn btn-light" i18n:translate="forgot_password">
+                    Forgot your password?
+                  </a>
+                </div>
+                <div class="col">
+                  <div class="pull-right">
+                    <button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">
+                      Log In
+                    </button>
+                    <button type="button" class="btn btn-secondary"
+                            id="popup-login-close-button2" i18n:translate="close">
+                      Close
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
             <div id="signup">
