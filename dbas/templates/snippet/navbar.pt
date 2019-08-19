@@ -27,7 +27,7 @@
         </li>
 
         <li class="nav-item dropdown" tal:condition="extras.ongoing_discussion" style="cursor: pointer;">
-          <a class="btn btn-light dropdown-toggle nav-link" data-toggle="dropdown" id="issue-dropdown"
+          <a class="btn btn-light dropdown-toggle" data-toggle="dropdown" id="issue-dropdown"
              aria-haspopup="true"
              aria-expanded="true" id="${issues.uid}">
             <i class="fa fa-files-o" aria-hidden="true"></i><span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span
