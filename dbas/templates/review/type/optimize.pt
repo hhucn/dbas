@@ -1,15 +1,11 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-
-  <div class="row" style="margin-bottom: 1em;">
-    <div class="col-md-12">
-      <ul class="breadcrumb">
-        <li><a href="/review" i18n:translate="review">Review</a></li>
-        <li class="active" i18n:translate="optimizations">
-          Optimizations
-        </li>
-      </ul>
-    </div>
-  </div>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/review" i18n:translate="review">Review</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><span i18n:translate="optimizations">Optimizations</span>
+      </li>
+    </ol>
+  </nav>
 
   <div class="row" style="margin-bottom: 1em;">
     <div class="col-md-7">
@@ -20,17 +16,17 @@
     </div>
     <div class="col-md-5">
       <div class="btn-group pull-right">
-        <a id="opti_ack" href="#" class="review-btn-optimize btn btn-success btn-sm"
+        <a id="opti_ack" href="#" class="review-btn-optimize btn btn-success"
            data-queue="optimization" i18n:translate="correct_it"
            data-id="${subpage.elements.reviewed_element.stats.id}">
           Let me correct it
         </a>
-        <a id="opti_nack" href="#" class="review-btn-optimize btn btn-danger btn-sm"
+        <a id="opti_nack" href="#" class="review-btn-optimize btn btn-danger"
            data-queue="optimization" i18n:translate="its_okay_so"
            data-id="${subpage.elements.reviewed_element.stats.id}">
           It's okay so
         </a>
-        <a id="opti_skip" href="#" class="review-btn-optimize btn btn-info btn-sm"
+        <a id="opti_skip" href="#" class="review-btn-optimize btn btn-info"
            data-queue="optimization" i18n:translate="skip_it"
            data-id="${subpage.elements.reviewed_element.stats.id}">
           Skip it
@@ -101,7 +97,7 @@
           </div>
           <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
           <span class="lead" id="reviewed-argument-text">
-              ${structure:subpage.elements.reviewed_element.text}
+                  ${structure:subpage.elements.reviewed_element.text}
           </span>
           <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
           <br>
@@ -176,7 +172,7 @@
         <p class="lead" id="request-lock-text">
           <span i18n:translate="argument_is_locked">This argument is locked for your edit. You have </span>
           <span id="countdown_timer_min"></span><span id="countdown_timer_point">:</span><span
-            id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
+                id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
           <span class="lead" i18n:translate="please_make_your_edits">Please make your edits in grammar and/or spelling here:</span>
         </p>
 

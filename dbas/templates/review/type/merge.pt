@@ -1,13 +1,10 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-
-  <div class="row" style="margin-bottom: 1em;">
-    <div class="col-md-12">
-      <ul class="breadcrumb">
-        <li><a href="/review" i18n:translate="review">Review</a></li>
-        <li class="active" i18n:translate="merge">Merge</li>
-      </ul>
-    </div>
-  </div>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/review" i18n:translate="review">Review</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><span i18n:translate="merge">Merge</span></li>
+    </ol>
+  </nav>
 
   <div class="row" style="margin-bottom: 1em;">
     <div class="col-md-7">
@@ -18,17 +15,17 @@
     </div>
     <div class="col-md-5">
       <div class="btn-group pull-right">
-        <a id="merge_ack" href="#" class="review-btn-merge btn btn-success btn-sm"
+        <a id="merge_ack" href="#" class="review-btn-merge btn btn-success"
            data-queue="merges" i18n:translate="change_okay"
            data-id="${subpage.elements.reviewed_element.stats.id}">
           Change is okay
         </a>
-        <a id="merge_nack" href="#" class="review-btn-merge btn btn-danger btn-sm"
+        <a id="merge_nack" href="#" class="review-btn-merge btn btn-danger"
            data-queue="merges" i18n:translate="reject_it"
            data-id="${subpage.elements.reviewed_element.stats.id}">
           Reject it
         </a>
-        <a id="merge_skip" href="#" class="review-btn-merge btn btn-info btn-sm"
+        <a id="merge_skip" href="#" class="review-btn-merge btn btn-info"
            data-queue="merges" i18n:translate="skip_it" data-id="${subpage.elements.reviewed_element.stats.id}">
           Skip it
         </a>
@@ -81,7 +78,7 @@
         <br>
         <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
         <span class="lead" id="reviewed-argument-text">
-            ${structure:subpage.elements.reviewed_element.merged_text}
+                ${structure:subpage.elements.reviewed_element.merged_text}
         </span>
         <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
         <br>

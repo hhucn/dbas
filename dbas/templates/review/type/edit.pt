@@ -1,16 +1,10 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-
-
-  <div class="row" style="margin-bottom: 1em;">
-    <div class="col-md-12">
-      <ul class="breadcrumb">
-        <li><a href="/review" i18n:translate="review">Review</a></li>
-        <li class="active" i18n:translate="edits">
-          Edits
-        </li>
-      </ul>
-    </div>
-  </div>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/review" i18n:translate="review">Review</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><span i18n:translate="edits">Edits</span></li>
+    </ol>
+  </nav>
 
   <div class="row" style="margin-bottom: 1em;">
     <div class="col-md-7">
@@ -21,15 +15,15 @@
     </div>
     <div class="col-md-5">
       <div class="btn-group pull-right">
-        <a id="edit_ack" href="#" class="review-btn-edit btn btn-success btn-sm"
+        <a id="edit_ack" href="#" class="review-btn-edit btn btn-success"
            data-queue="edit" i18n:translate="its_okay" data-id="${subpage.elements.reviewed_element.stats.id}">
           It's Okay
         </a>
-        <a id="edit_nack" href="#" class="review-btn-edit btn btn-danger btn-sm"
+        <a id="edit_nack" href="#" class="review-btn-edit btn btn-danger"
            data-queue="edit" i18n:translate="reject_it" data-id="${subpage.elements.reviewed_element.stats.id}">
           Reject it
         </a>
-        <a id="edit_skip" href="#" class="review-btn-edit btn btn-info btn-sm"
+        <a id="edit_skip" href="#" class="review-btn-edit btn btn-info"
            data-queue="edit" i18n:translate="skip_it" data-id="${subpage.elements.reviewed_element.stats.id}">
           Skip it
         </a>
@@ -81,7 +75,7 @@
         </div>
         <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
         <span class="lead" id="reviewed-argument-corrected-version">
-            ${structure:subpage.elements.reviewed_element.corrected_version}
+                ${structure:subpage.elements.reviewed_element.corrected_version}
         </span>
         <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
       </div>
@@ -93,7 +87,7 @@
         </div>
         <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
         <span class="lead" id="reviewed-argument-correction">
-            ${structure:subpage.elements.reviewed_element.corrections}
+                ${structure:subpage.elements.reviewed_element.corrections}
         </span>
         <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
       </div>
@@ -105,7 +99,7 @@
           </div>
           <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
           <span class="lead" id="reviewed-argument-text">
-              ${structure:subpage.elements.reviewed_element.text}
+                  ${structure:subpage.elements.reviewed_element.text}
           </span>
           <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
           <br>

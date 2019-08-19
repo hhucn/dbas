@@ -1,13 +1,10 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-
-  <div class="row" style="margin-bottom: 1em;">
-    <div class="col-md-12">
-      <ul class="breadcrumb">
-        <li><a href="/review" i18n:translate="review">Review</a></li>
-        <li class="active" i18n:translate="duplicates">Duplicates</li>
-      </ul>
-    </div>
-  </div>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/review" i18n:translate="review">Review</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><span i18n:translate="duplicates">Duplicates</span></li>
+    </ol>
+  </nav>
 
   <div class="row" style="margin-bottom: 1em;">
     <div class="col-md-7">
@@ -19,18 +16,18 @@
     <div class="col-md-5" tal:condition="subpage.button_set.is_duplicate">
       <div class="btn-group pull-right">
         <a id="duplicate_ack" href="#"
-           class="review-btn-duplicate btn btn-success btn-sm"
+           class="review-btn-duplicate btn btn-success"
            data-queue="duplicates" i18n:translate="duplicate"
            data-id="${subpage.elements.reviewed_element.stats.id}">
           Duplicate
         </a>
         <a id="duplicate_nack" href="#"
-           class="review-btn-duplicate btn btn-danger btn-sm"
+           class="review-btn-duplicate btn btn-danger"
            data-queue="duplicates" i18n:translate="unique"
            data-id="${subpage.elements.reviewed_element.stats.id}">
           Unique
         </a>
-        <a id="duplicate_skip" href="#" class="review-btn-duplicate btn btn-info btn-sm"
+        <a id="duplicate_skip" href="#" class="review-btn-duplicate btn btn-info"
            data-queue="duplicates" i18n:translate="skip_it"
            data-id="${subpage.elements.reviewed_element.stats.id}">
           Skip it
@@ -49,7 +46,7 @@
         </p>
         <ul tal:condition="subpage.button_set.is_duplicate" style="padding-left: 0.5em">
           <li><span
-              class="text-success" i18n:translate="its_duplicate">It's a duplicate</span>
+                  class="text-success" i18n:translate="its_duplicate">It's a duplicate</span>
             <span i18n:translate="marked_statement_is_duplicate">, if the marked statement is a duplicate.</span>
           </li>
           <li>
@@ -80,7 +77,7 @@
         </div>
         <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
         <span class="lead" id="reviewed-argument-text">
-            ${structure:subpage.elements.reviewed_element.text}
+                ${structure:subpage.elements.reviewed_element.text}
         </span>
         <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
         <br>
@@ -92,7 +89,7 @@
         <br>
         <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
         <span class="lead" id="reviewed-argument-text">
-            ${subpage.elements.reviewed_element.duplicate_of}
+                ${subpage.elements.reviewed_element.duplicate_of}
         </span>
         <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
       </div>

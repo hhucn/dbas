@@ -835,7 +835,7 @@ msgstr "Thank you"
 msgid "finish_text"
 msgstr ""
 "Your participation in this discussion was saved and will be used for "
-"evaluation later. If you have any questions, please do not hesitat to"
+"evaluation later. If you have any questions, please do not hesitate to"
 
 #. Default: contact us
 #: templates/discussion/exit.pt:13
