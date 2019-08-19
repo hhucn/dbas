@@ -1370,14 +1370,20 @@
   </div>
 
   <!-- PRIVACY POLICY COOKIE -->
-  <div id="privacy-policy-popup">
-    <div class="row">
-      <div class="col-md-10">
-        <span class="lead text-white" id="privacy-policy-text"></span>
-        <a id="privacy-policy-link" class="btn btn-sm btn-outline-light" href="/privacy_policy"></a>
+  <div id="cookie-toast" class="toast" role="alert" data-autohide="false">
+    <div class="toast-header bg-warning">
+      <strong class="mr-auto text-dark">Cookies</strong>
+      <button type="button" class="ml-2 mb-1 close" aria-label="Close"
+              onclick="$('#cookie-toast').toast('hide')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="toast-body">
+      <div>
+        If you continue using our website, we'll assume that you are happy to receive all cookies.
       </div>
-      <div class="col-md-2">
-        <button id="privacy-policy-btn" class="btn btn-light"></button>
+      <div class="d-flex flex-row-reverse">
+        <a class="btn btn-sm btn-link" href="/privacy_policy">More Information</a>
       </div>
     </div>
   </div>
