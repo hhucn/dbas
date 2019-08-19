@@ -1,15 +1,14 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
 
-  <!--<script src="${request.static_path('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>-->
   <script src="${request.static_path('dbas:static/node_modules/bootstrap/dist/js/bootstrap.bundle.js')}"></script>
   <script
-      src="${request.static_path('dbas:static/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js')}"></script>
+          src="${request.static_path('dbas:static/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js')}"></script>
   <script
-      src="${request.static_path('dbas:static/node_modules/bootstrap-tourist/bootstrap-tourist.js')}"></script>
+          src="${request.static_path('dbas:static/node_modules/bootstrap-tourist/bootstrap-tourist.js')}"></script>
   <script
-      src="${request.static_path('dbas:static/node_modules/datatables/media/js/jquery.dataTables.min.js')}"></script>
+          src="${request.static_path('dbas:static/node_modules/datatables/media/js/jquery.dataTables.min.js')}"></script>
   <script
-      src="${request.static_path('dbas:static/node_modules/datatables-bootstrap/js/dataTables.bootstrap.js')}"></script>
+          src="${request.static_path('dbas:static/node_modules/datatables-bootstrap/js/dataTables.bootstrap.js')}"></script>
 
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="${request.static_path('dbas:static/node_modules/jquery-slimscroll/jquery.slimscroll.min.js')}"></script>
