@@ -4,9 +4,8 @@
     <div id="dialog-wrapper" class="card-body content-wrapper pull-left">
 
       <p id="read-only-banner" class="text-center" tal:condition="issues.read_only">
-            <span class="label label-info">
-              <span i18n:translate="info">Info</span>
-              <span i18n:translate="discussion_is_read_only">In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!</span>
+            <span class="alert alert-warning">
+              <span i18n:translate="discussion_is_read_only">Diese Diskussion ist geschlossen und es können keine weiteren Beiträge mehr hinzugefügt werden.</span>
             </span>
       </p>
 
