@@ -47,7 +47,7 @@ en_lang = {
     _.notification: 'Notification',
     _.notificationDeleted: 'Notification deleted',
     _.pwdNotEqual: 'Passwords are not equal',
-    _.pwdShort: 'Password is too short (at least 5 chars)',
+    _.pwdShort: 'Password is too short (at least 6 chars)',
     _.nickIsTaken: 'Username is taken',
     _.mailIsTaken: 'E-Mail is already assigned',
     _.mailNotValid: 'E-Mail is not valid',
