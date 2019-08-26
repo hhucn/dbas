@@ -1,15 +1,15 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
 
   <div class="col-md-4">
-    <div class="panel panel-default" style="height: 30%;">
-      <div class="panel-heading" style="height: 5em;">
+    <div class="card" style="height: 30%;">
+      <div class="card-header" style="height: 5em;">
         <a class="social-wrapper"><i class="social-em fa fa-envelope social"></i></a>
         <a class="social-wrapper"><i class="social-tw fa fa-twitter social"></i></a>
         <a class="social-wrapper"><i class="social-gp fa fa-google-plus social"></i></a>
         <a class="social-wrapper"><i class="social-fb fa fa-facebook social"></i></a>
         <h5 style="width: 50%; height:1.5em; border-radius: 5px; background-color: #d3d3d3;"></h5>
       </div>
-      <div class="panel-body" style="text-align: justify; height: 2965px;">
+      <div class="card-body" style="text-align: justify; height: 2965px;">
         <p style="width: 100%; height:1em; border-radius: 5px; background-color: #d3d3d3;"></p>
         <br>
         <p style="width: 100%; height:1em; border-radius: 5px; background-color: #d3d3d3;"></p>

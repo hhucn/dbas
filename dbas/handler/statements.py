@@ -1,8 +1,9 @@
 import logging
-import transaction
 from os import environ
-from sqlalchemy import func
 from typing import List, Tuple, Dict, Any, Optional
+
+import transaction
+from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
@@ -496,36 +497,36 @@ def insert_new_premises_for_argument(premisegroup: List[str], current_attack, ar
     return new_argument
 
 
-def set_statements_as_new_premisegroup(statements: List[Statement], db_user: User, db_issue: Issue):
+def find_existing_premisegroup(statements: List[Statement]) -> Optional[PremiseGroup]:
+    """
+    For a list of statements, check whether a premise group which exactly contains these statements exists.
+    Returns that premise group if it exists, otherwise returns None.
+    """
+    statement_uids = {statement.uid for statement in statements}
+    db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statements[0].uid).all()
+    for premise in db_premises:
+        premisegroup = premise.premisegroup
+        statement_uids_in_premisegroup = {premise.statement_uid for premise in premisegroup.premises}
+        if statement_uids == statement_uids_in_premisegroup:
+            return premisegroup
+
+
+def set_statements_as_new_premisegroup(statements: List[Statement], db_user: User, db_issue: Issue) -> PremiseGroup:
     """
     Set the given statements together as new premise group
+
+    Re-uses existing premise groups containing the same statements.
 
     :param statements: [Statement]
     :param db_user: User
     :param db_issue: Issue
-    :return: PremiseGroup.uid
+    :return: PremiseGroup
     """
     LOG.debug("User: %s, statement: %s, issue: %s", db_user.uid, [s.uid for s in statements], db_issue.uid)
     # check for duplicate
-    all_groups = []
-    for statement in statements:
-        # get the premise
-        db_premise = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement.uid).first()
-        if db_premise:
-            # getting all groups, where the premise is member
-            db_premisegroup = DBDiscussionSession.query(Premise).filter_by(
-                premisegroup_uid=db_premise.premisegroup_uid).all()
-            groups = set()
-            for group in db_premisegroup:
-                groups.add(group.premisegroup_uid)
-            all_groups.append(groups)
-    # if every set in this array has one common member, they are all in the same group
-    if len(all_groups) > 0:
-        intersec = set.intersection(*all_groups)
-        for group in intersec:
-            db_premise = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=group).all()
-            if len(db_premise) == len(statements):
-                return DBDiscussionSession.query(PremiseGroup).get(group)
+    existing_premisegroup = find_existing_premisegroup(statements)
+    if existing_premisegroup is not None:
+        return existing_premisegroup
 
     premise_group = PremiseGroup(author=db_user.uid)
     DBDiscussionSession.add(premise_group)

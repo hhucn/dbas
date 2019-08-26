@@ -61,9 +61,10 @@ function GuidedTour() {
     var _this = this;
     this.tour = new Tour({
         steps: _this.stepList,
+        framework: "bootstrap4",
         backdrop: true,
         backdropPadding: 5,
-        template: _this.guided_tour_template,
+        // template: _this.guided_tour_template,
         onEnd: _this.endFn
     });
 
@@ -152,7 +153,7 @@ GuidedTour.prototype.__prepareSteps = function () {
         template: this.guided_tour_template_end
     };
 
-    return[
+    return [
         issue,
         startDiscussion,
         markOpinion,

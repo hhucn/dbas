@@ -3,7 +3,7 @@ servers:
   - url: 'http://localhost:4284/api'
   - url: 'https://dbas.cs.uni-duesseldorf.de/api'
 info:
-  version: "1.21.0"
+  version: "1.22.0"
   title: D-BAS
 
 paths:
@@ -448,6 +448,29 @@ paths:
       security:
         - token: []
 
+  /attitude/{statement-id}/{attitude}:
+    post:
+      tags:
+        - add
+      summary: Save a user's attitude to a statement.
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: statement-id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: attitude
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [agree, disagree]
+      responses:
+        201:
+          description: CREATED
+      security:
+        - token: []
 
   /{slug}/reaction/{arg-user}/{relation}/{arg-sys}:
     get:

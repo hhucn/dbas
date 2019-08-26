@@ -30,7 +30,7 @@
         href="${request.static_path('dbas:static/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css')}"
         rel="stylesheet">
   <link type="text/css"
-        href="${request.static_path('dbas:static/node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.min.css')}"
+        href="${request.static_path('dbas:static/node_modules/bootstrap-tourist/bootstrap-tourist.css')}"
         rel="stylesheet">
   <link type="text/css" href="${request.static_path('dbas:static/node_modules/font-awesome/css/font-awesome.min.css')}"
         rel="stylesheet">

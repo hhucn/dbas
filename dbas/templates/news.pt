@@ -32,8 +32,8 @@
       <div id="raw-elements" style="display: none">
 
         <div class="col-md-4" tal:repeat="n news">
-          <div class="panel panel-default">
-            <div id="${n.uid}" class="panel-heading">
+          <div class="card">
+            <div id="${n.uid}" class="card-header">
               <a class="social-wrapper share-mail" title="Mail"><i class="social-em fa fa-envelope social"></i></a>
               <a class="social-wrapper share-twitter" title="Twitter"><i class="social-tw fa fa-twitter social"></i></a>
               <a class="social-wrapper share-google" title="Google+"><i class="social-gp fa fa-google-plus social"></i></a>
@@ -42,7 +42,7 @@
                 <span id="${n.title_id}" class="font-semi-bold"> ${n.title} </span>
               </h5>
             </div>
-            <div class="panel-body" style="text-align: justify;">
+            <div class="card-body" style="text-align: justify;">
               <h6>
                 <span id="${n.author_id}">${n.author}</span>,
                 <span id="${n.date_id}">${n.date}</span>

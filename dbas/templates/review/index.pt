@@ -16,15 +16,19 @@
 
       <div class="container colored-container">
 
-        <ul id="review-tabs" class="nav nav-tabs" style="display: table; margin: 0 auto;">
-          <li class="tab-login active"><a href="#queues" i18n:translate="queues">Queues</a></li>
-          <li class="tab-login"><a href="#howto" i18n:translate="howto">How To</a></li>
+        <ul id="review-tabs" class="nav nav-tabs justify-content-center">
+          <li class="nav-item tab-login">
+            <a class="nav-link active" href="#queues" i18n:translate="queues">Queues</a>
+          </li>
+          <li class="nav-item tab-login">
+            <a class="nav-link" href="#howto" i18n:translate="howto">How To</a>
+          </li>
         </ul>
 
         <div id="queues" class="center review-wrapper">
           <div class="row">
-            <div class="col-md-offset-2 col-md-8 col-md-offset-2">
-              <div class="bs-callout bs-callout-primary">
+            <div class=" col-md-8 offset-md-2">
+              <div class="alert alert-info">
                 <h5><strong i18n:translate="help_to_improve">Help improve the dialog</strong></h5>
                 <span i18n:translate="dbas_is_moderated_by">D-BAS is moderated by you. Help your discussion members learn to argue and raise the quality of argumenty by:</span>
                 <ul class="left">
@@ -58,7 +62,7 @@
           </div>
 
           <div class="row">
-            <div class="col-md-offset-1 col-md-10 col-md-offset-1">
+            <div class="col">
               <table class="table table-condensed" id="review-table">
                 <thead>
                 <tr>
@@ -108,7 +112,7 @@
 
         <div id="howto" class="center review-wrapper" style="display: none;">
           <div class="left row">
-            <div class="col-md-offset-2 col-md-8 col-xs-offset-1 col-cs-10" style="margin-top: 1em;">
+            <div class="offset-md-2 col-md-8 col-xs-offset-1 col-cs-10" style="margin-top: 1em;">
               <h4 i18n:translate="what_is_reputation">
                 What is reputation? How do I earn (and lose) it?
               </h4>
@@ -137,13 +141,13 @@
               </div>
             </div>
 
-            <div class="col-md-offset-2 col-md-8" style="margin-top: 1em;">
+            <div class="offset-md-2 col-md-8" style="margin-top: 1em;">
               <h4 i18n:translate="privileges">Privileges</h4>
               <span i18n:translate="privileges_explanation">
                 Privileges control what you can see in the review queues of D-BAS. Gain more privileges by increasing your reputation.
               </span>
               <div class="row" style="margin-top: 1em;">
-                <div class="col-md-offset-2 col-md-8">
+                <div class="offset-md-2 col-md-8">
                   <table class="table table-condensed">
                     <tbody>
                     <tr class="review-table-row" tal:repeat="privilege privilege_list">

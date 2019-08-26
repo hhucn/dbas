@@ -1,18 +1,18 @@
 <!-- snippet of discussion created by the user. here options like the ab can be set -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-  <div class="container colored-container">
+  <div class="container colored-container discussion-overview">
     <div class="row">
       <div class="col-md-12">
         <h4 i18n:translate="my_discussions" class="text-center">My Discussions</h4>
         <p i18n:translate="summary_your_discussions"
-                class="lead text-center" tal:condition="len(issues.user)>0">This is a summary of the
-          discussions you have created:</p>
+            class="lead text-center" tal:condition="len(issues.user)>0">This is a summary of the
+          discussions you have created</p>
         <p i18n:translate="you_created_no_discussion"
-                class="lead text-center" tal:condition="len(issues.user)<1">You have not created any
+            class="lead text-center" tal:condition="len(issues.user)<1">You have not created any
           discussion yet, but you can use the add button in the bottom right to create your own
           discussion.</p>
 
-        <table class="table table-striped table-hover" tal:condition="len(issues.user)>0">
+        <table class="table table-hover table-responsive-lg" tal:condition="len(issues.user)>0">
           <thead>
           <tr>
             <th i18n:translate="title">Titel</th>
@@ -48,8 +48,9 @@
             <td>
               <img tal:condition="issue.lang.is_de" src="${request.static_path('dbas:static/images/flags/de-24.png')}"
                                                     alt="flag_de">
-              <img tal:condition="issue.lang.is_en" src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}"
-                                                    alt="flag_us-gb">
+              <img tal:condition="issue.lang.is_en"
+                  src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}"
+                  alt="flag_us-gb">
             </td>
             <td>${issue.date}</td>
             <td>

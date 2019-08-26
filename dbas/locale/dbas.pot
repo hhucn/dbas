@@ -1,0 +1,2482 @@
+#
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2019-08-19 14:06+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 4.13\n"
+
+#. Default: Imprint
+#. Default: Impressum
+#: ././templates/imprint.pt:6 ././templates/imprint.pt:20
+#: ././templates/snippet/footer.pt:11
+msgid "imprint"
+msgstr ""
+
+#. Default: Our imprint, a list of used software and the latest changelog
+#: ././templates/imprint.pt:7
+msgid "imprint_list_of_software_and_changelog"
+msgstr ""
+
+#. Default: Angaben gemäß § 5 TMG
+#: ././templates/imprint.pt:21
+msgid "data_tmg"
+msgstr ""
+
+#. Default: Kontakt:
+#. Default: Contact
+#: ././templates/imprint.pt:22 ././templates/index.pt:48
+#: ././templates/snippet/footer.pt:21
+msgid "contact"
+msgstr ""
+
+#. Default: Institut für Informatik
+#: ././templates/imprint.pt:23
+msgid "department_of_cs"
+msgstr ""
+
+#. Default: Lehrstuhl für Rechnernetze
+#: ././templates/imprint.pt:24
+msgid "chair_of_cn"
+msgstr ""
+
+#. Default: Weiteres im
+#: ././templates/imprint.pt:31
+msgid "weiteres im"
+msgstr ""
+
+#. Default: Impressum der HHU
+#: ././templates/imprint.pt:32
+msgid "imprint_hhu"
+msgstr ""
+
+#. Default: unserer Datenschutzerklärung
+#: ././templates/imprint.pt:33
+msgid "our_privacy"
+msgstr ""
+
+#. Default: or checkout the
+#: ././templates/imprint.pt:34
+msgid "or_checkout_the"
+msgstr ""
+
+#. Default: license of D-BAS (MIT)
+#: ././templates/imprint.pt:36
+msgid "licence_dbas"
+msgstr ""
+
+#. Default: Copyrights and used Software
+#: ././templates/imprint.pt:40
+msgid "copyright_and_used_software"
+msgstr ""
+
+#. Default: Changes
+#: ././templates/imprint.pt:102
+msgid "changes"
+msgstr ""
+
+#. Default: Frequent Questions
+#: ././templates/faq.pt:6
+msgid "faq"
+msgstr ""
+
+#. Default: Simple answers to your most common questions
+#: ././templates/faq.pt:7
+msgid "simple_answers"
+msgstr ""
+
+#. Default: How do we handle your login data?
+#: ././templates/faq.pt:27
+msgid "faq_question_ldap"
+msgstr ""
+
+#. Default: If you are using the LDAP login, we are using the name information
+#. service of the University Düsseldorf. Your password is send from your
+#. computer, to our server (which is placed at the University) and then towards
+#. the service of the ZIM. Each transmission is secured and encrypted.
+#. Additionally we will never save, log or display your password anywhere!
+#: ././templates/faq.pt:30
+msgid "faq_answer_ldap"
+msgstr ""
+
+#. Default: What is the difference between interest and opinion?
+#: ././templates/faq.pt:34
+msgid "faq_question_interest_opinion"
+msgstr ""
+
+#. Default: If you select any answer in D-BAS, you will be interested in this
+#. statement/reaction/... but we will never think, that this is your personal
+#. opinion. Only if you mark an statement or argument as your opinion, we will
+#. know, that you have the same opinion like the given text.
+#: ././templates/faq.pt:37
+msgid "faq_answer_interest_opinion"
+msgstr ""
+
+#. Default: Can I mark an statement or argument as my opinion?
+#: ././templates/faq.pt:41
+msgid "faq_question_mark_opinion"
+msgstr ""
+
+#. Default: Yes, you can! Please press the yellow star at the beginning of a
+#. green bubble to mark a statement or an argument as your opinon. For this you
+#. have to be logged in.
+#: ././templates/faq.pt:44
+msgid "faq_answer_mark_opinion"
+msgstr ""
+
+#. Default: Is there any overview about all given arguments and statements?
+#: ././templates/faq.pt:48
+msgid "faq_question_graph"
+msgstr ""
+
+#. Default: Yes, we have a graphical representation. Simply open the little
+#. sidebar in the discussion window and click on 'graph view'
+#: ././templates/faq.pt:51
+msgid "faq_answer_graph"
+msgstr ""
+
+#. Default: What are these little icons next to the statements?
+#: ././templates/faq.pt:56
+msgid "faq_question_buttons_next_to_statement"
+msgstr ""
+
+#. Default: These little icons will appear on each set of statements in the
+#. answer field, if you are logged in.
+#: ././templates/faq.pt:59
+msgid "faq_answer_buttons_next_to_statement"
+msgstr ""
+
+#. Default: The pencil allows you to submit proposals for edits.
+#: ././templates/faq.pt:64
+msgid "faq_answer_pencil_next_to_statement"
+msgstr ""
+
+#. Default: With the help of the flag you can report statements, if there is
+#. something wrong.
+#: ././templates/faq.pt:67
+msgid "faq_answer_flag_next_to_statement"
+msgstr ""
+
+#. Default: You made an statement on your own and not happy with it? Let's
+#. unsubscribe yourself as author.
+#: ././templates/faq.pt:70
+msgid "faq_answer_trash_next_to_statement"
+msgstr ""
+
+#. Default: You are reading an statement, which should be supporting your
+#. conclusion, but it is nonsense? Let's attack this one!
+#: ././templates/faq.pt:73
+msgid "faq_answer_bomb_next_to_statement"
+msgstr ""
+
+#. Default: There is this specific website with facts about an statement? With
+#. the link-icon you can add references for a statement / argument.
+#: ././templates/faq.pt:76
+msgid "faq_answer_link_next_to_statement"
+msgstr ""
+
+#. Default: What do I do if I found a bug or have other questions about D-BAS?
+#: ././templates/faq.pt:81
+msgid "faq_question_bug"
+msgstr ""
+
+#. Default: If you think you've found an issue or have any other questions not
+#. covered above, please email us via
+#: ././templates/faq.pt:84
+msgid "faq_answer_bug1"
+msgstr ""
+
+#. Default: Please keep in mind that our current team is quite small and we'll
+#. do our very best to get back to you ASAP.
+#: ././templates/faq.pt:86
+msgid "faq_answer_bug2"
+msgstr ""
+
+#. Default: News
+#: ././templates/news.pt:6 ././templates/snippet/footer.pt:43
+msgid "news"
+msgstr ""
+
+#. Default: Latest news of D-BAS
+#: ././templates/news.pt:9
+msgid "latest_news_of_dbas"
+msgstr ""
+
+#. Default: Privacy Policy
+#. Default: privacy_policy
+#: ././templates/privacy.pt:6 ././templates/snippet/footer.pt:16
+msgid "privacy_policy"
+msgstr ""
+
+#. Default: This is our privacy policy according to the DSVGO
+#: ././templates/privacy.pt:7
+msgid "privacy_policy_text"
+msgstr ""
+
+#. Default: 404 Error
+#: ././templates/404.pt:5
+msgid "404"
+msgstr ""
+
+#. Default: Something went wrong
+#: ././templates/404.pt:6
+msgid "something_wrong"
+msgstr ""
+
+#. Default: The page
+#: ././templates/404.pt:18
+msgid "404_text_part1"
+msgstr ""
+
+#. Default: could not be found
+#: ././templates/404.pt:20
+msgid "404_text_part2"
+msgstr ""
+
+#. Default: , because the input parameter seems to be wrong.
+#: ././templates/404.pt:20
+msgid "wrong_input_params"
+msgstr ""
+
+#. Default: , because the author revoked the content.
+#: ././templates/404.pt:20
+msgid "author_revoked_content"
+msgstr ""
+
+#. Default: Go home
+#: ././templates/404.pt:23
+msgid "go-home"
+msgstr ""
+
+#. Default: or
+#: ././templates/404.pt:25
+msgid "or"
+msgstr ""
+
+#. Default: go back to the discussion
+#: ././templates/404.pt:26
+msgid "go_back_to_the_discussion"
+msgstr ""
+
+#. Default: JavaScript is not enabled:
+#: ././templates/basetemplate.pt:21
+msgid "js_disabled1"
+msgstr ""
+
+#. Default: Please enable JavaScript!
+#: ././templates/basetemplate.pt:22
+msgid "js_disabled2"
+msgstr ""
+
+#. Default: Your request failed!
+#: ././templates/basetemplate.pt:28
+msgid "request_failed"
+msgstr ""
+
+#. Default: Please reload the page.
+#: ././templates/basetemplate.pt:29
+msgid "please_reload"
+msgstr ""
+
+#. Default: Your request succeded!
+#: ././templates/basetemplate.pt:36 ././templates/basetemplate.pt:37
+msgid "request_success"
+msgstr ""
+
+#. Default: About
+#: ././templates/index.pt:33
+msgid "about"
+msgstr ""
+
+#. Default: Requirements
+#: ././templates/index.pt:36 ././templates/index.pt:123
+msgid "requirements"
+msgstr ""
+
+#. Default: Services
+#: ././templates/index.pt:39
+msgid "services"
+msgstr ""
+
+#. Default: Github
+#: ././templates/index.pt:42
+msgid "github"
+msgstr ""
+
+#. Default: The solution for every Large Scale Online-Discussion
+#: ././templates/index.pt:76
+msgid "landing-page-heading"
+msgstr ""
+
+#. Default: Welcome to D-BAS! This is our Dialog-Based Argumentation System. It
+#. offers a clear discussion structure, a modern web interface, a decentralized
+#. moderation system and is easy to use for everyone!
+#: ././templates/index.pt:80
+msgid "welcome_to_dbas"
+msgstr ""
+
+#. Default: Find Out More
+#: ././templates/index.pt:87
+msgid "find_out_more"
+msgstr ""
+
+#. Default: or start directly
+#: ././templates/index.pt:92
+msgid "start_directly"
+msgstr ""
+
+#. Default: We've got what you need!
+#: ././templates/index.pt:103
+msgid "we_have_you_need"
+msgstr ""
+
+#. Default: With the rise of the Internet, we now have a basic infrastructure,
+#. which makes participation easier for everyone and independent of space and
+#. time. Online participation offers many possibilities for users as well as
+#. operators, has an impact on political and administrative decisions and has
+#. the potential to strengthen the acceptance and the quality of them. We offer
+#. a novel approach for large scale online-discussion. Feel free to try it out
+#. now!
+#: ././templates/index.pt:107
+msgid "landing_page_intro"
+msgstr ""
+
+#. Default: We are aware of the fact, that D-BAS is not suitable for every
+#. online discussion, of course! But we give our best to deliver a software
+#. which can support rational online argumentations! You should give D-BAS a
+#. try if:
+#: ././templates/index.pt:127
+msgid "requirements_text"
+msgstr ""
+
+#. Default: your discussion is very controversy
+#: ././templates/index.pt:134
+msgid "discussion_is_controversy"
+msgstr ""
+
+#. Default: your participants are willing to debate
+#: ././templates/index.pt:136
+msgid "participants_willing_debate"
+msgstr ""
+
+#. Default: some participants will come back
+#: ././templates/index.pt:138
+msgid "participants_come_back"
+msgstr ""
+
+#. Default: you need to support the discussion
+#: ././templates/index.pt:141
+msgid "need_support_the_discussion"
+msgstr ""
+
+#. Default: you want a structured result of given arguments
+#: ././templates/index.pt:143
+msgid "want_structured_result"
+msgstr ""
+
+#. Default: That's interesting, isn't it?
+#: ././templates/index.pt:153
+msgid "thats_interessting_isnt_it"
+msgstr ""
+
+#. Default: Get Started
+#: ././templates/index.pt:154 ././templates/discussion/start.pt:23
+msgid "get_started"
+msgstr ""
+
+#. Default: At Your Service
+#: ././templates/index.pt:162
+msgid "at_your_service"
+msgstr ""
+
+#. Default: Easy to Use
+#: ././templates/index.pt:172
+msgid "easy_to_use"
+msgstr ""
+
+#. Default: No complicated argumentation! Step-by-step dialogs!
+#: ././templates/index.pt:173
+msgid "easy_to_use_text"
+msgstr ""
+
+#. Default: Clear Structure
+#: ././templates/index.pt:180
+msgid "clear_structure"
+msgstr ""
+
+#. Default: Argument-maps are to messy! Let's use a modern chat-interface!
+#: ././templates/index.pt:181
+msgid "clear_structure_text"
+msgstr ""
+
+#. Default: Decentralized Mods
+#: ././templates/index.pt:188
+msgid "dec_mods"
+msgstr ""
+
+#. Default: Give the power to the crowd! They know how to use it!
+#: ././templates/index.pt:189
+msgid "dec_mods_text"
+msgstr ""
+
+#. Default: Proved Scientifically
+#: ././templates/index.pt:197
+msgid "developed_at_uni"
+msgstr ""
+
+#. Default: D-BAS was developed at the university in cooperation with city
+#. councils.
+#: ././templates/index.pt:198
+msgid "developed_at_uni_text"
+msgstr ""
+
+#. Default: Tested by a Crowd
+#: ././templates/index.pt:208
+msgid "tested_by_crowd"
+msgstr ""
+
+#. Default: D-BAS was test by many students and citizens!
+#: ././templates/index.pt:209
+msgid "tested_by_crowd_text"
+msgstr ""
+
+#. Default: Ready to Ship
+#: ././templates/index.pt:217
+msgid "ready_to_ship"
+msgstr ""
+
+#. Default: Easy to deploy and maintain, because it is shipped in Docker
+#. Containers!
+#: ././templates/index.pt:218
+msgid "ready_to_ship_text"
+msgstr ""
+
+#. Default: Up to Date
+#: ././templates/index.pt:226
+msgid "up_to_date"
+msgstr ""
+
+#. Default: We update dependencies to keep things fresh.
+#: ././templates/index.pt:227
+msgid "up_to_date_text"
+msgstr ""
+
+#. Default: Made with Love
+#: ././templates/index.pt:235
+msgid "made_with_love"
+msgstr ""
+
+#. Default: You have to make your software with love these days!
+#: ././templates/index.pt:236
+msgid "made_with_love_text"
+msgstr ""
+
+#. Default: Free Download at Github!
+#: ././templates/index.pt:247
+msgid "free_at_github"
+msgstr ""
+
+#. Default: Download Now
+#: ././templates/index.pt:250
+msgid "download_now"
+msgstr ""
+
+#. Default: From the University into Practice
+#: ././templates/index.pt:259
+msgid "from_uni_to_pratice"
+msgstr ""
+
+#. Default: This work is part of the graduate school on
+#: ././templates/index.pt:261
+msgid "work_based_on"
+msgstr ""
+
+#. Default: Online-Participation
+#: ././templates/index.pt:264 ././templates/index.pt:269
+msgid "online_participation"
+msgstr ""
+
+#. Default: It is funded by the
+#: ././templates/index.pt:272
+msgid "funded_by"
+msgstr ""
+
+#. Default: Ministry of Innovation, Science and Research in North Rhine-
+#. Westphalia
+#: ././templates/index.pt:275
+msgid "ministry_of_innovation"
+msgstr ""
+
+#. Default: Heinrich-Heine-University Duesseldorf
+#: ././templates/index.pt:289
+msgid "hhu"
+msgstr ""
+
+#. Default: Graduation School on Online Participation
+#: ././templates/index.pt:297
+msgid "graduate_school_online_participation"
+msgstr ""
+
+#. Default: University of Applied Sciences for Public Administration and
+#. management of North Rhine-Westphalia
+#: ././templates/index.pt:306
+msgid "fhoev"
+msgstr ""
+
+#. Default: Duesseldorf Institut of Internet and Democracy
+#: ././templates/index.pt:316
+msgid "diid"
+msgstr ""
+
+#. Default: Statistics
+#: ././templates/index.pt:327
+msgid "statistics"
+msgstr ""
+
+#. Default: Arguments
+#: ././templates/index.pt:335
+msgid "arguments"
+msgstr ""
+
+#. Default: Discussions
+#: ././templates/index.pt:341
+msgid "discussions"
+msgstr ""
+
+#. Default: Users
+#: ././templates/index.pt:348
+msgid "users"
+msgstr ""
+
+#. Default: Reviews
+#: ././templates/index.pt:355
+msgid "reviews"
+msgstr ""
+
+#. Default: Let's Get In Touch!
+#: ././templates/index.pt:366
+msgid "get_in_touch"
+msgstr ""
+
+#. Default: Ready to start your next discussion with us? That's great! Send us
+#. an email and we will get back to you as soon as possible!
+#: ././templates/index.pt:368
+msgid "ready_to_start_with_us"
+msgstr ""
+
+#. Default: Field Experiment 2017
+#: ././templates/fieldtest.pt:7
+msgid "field_experiment_2017"
+msgstr ""
+
+#. Default: Most important information about our field experiment in May 2017
+#: ././templates/fieldtest.pt:9
+msgid "most_important_information_about_field_experiment"
+msgstr ""
+
+#. Default: When/Where?
+#: ././templates/fieldtest.pt:21
+msgid "when_where"
+msgstr ""
+
+#. Default: May 2017 at the University of Düsseldorf, Germany.
+#: ././templates/fieldtest.pt:22
+msgid "may_2017_hhu"
+msgstr ""
+
+#. Default: Setting?
+#: ././templates/fieldtest.pt:26
+msgid "setting"
+msgstr ""
+
+#. Default: We invited all computer science students of our university via mail
+#. to talk about the question: How can the studies of computer-science be
+#. improved and the problems caused by the large number of students be solved?
+#: ././templates/fieldtest.pt:28
+msgid "setting_description"
+msgstr ""
+
+#. Default: Key Facts?
+#: ././templates/fieldtest.pt:32
+msgid "key_fact"
+msgstr ""
+
+#. Default: Our key facts in short
+#: ././templates/fieldtest.pt:34
+msgid "key_facts"
+msgstr ""
+
+#. Default: 318 visitor, 137 returned at least once
+#: ././templates/fieldtest.pt:36
+msgid "key_fact1"
+msgstr ""
+
+#. Default: 47 registrations, 35 contributed at least once
+#: ././templates/fieldtest.pt:37
+msgid "key_fact2"
+msgstr ""
+
+#. Default: 235 contributed arguments
+#: ././templates/fieldtest.pt:38
+msgid "key_fact3"
+msgstr ""
+
+#. Default: 47 flagged statements
+#: ././templates/fieldtest.pt:39
+msgid "key_fact4"
+msgstr ""
+
+#. Default: The discussion can be seen
+#: ././templates/fieldtest.pt:41
+msgid "discussion_can_be_seen"
+msgstr ""
+
+#. Default: here
+#: ././templates/fieldtest.pt:43 ././templates/fieldtest.pt:46
+#: ././templates/fieldtest.pt:70
+msgid "here"
+msgstr ""
+
+#. Default: and a translated, english version is available
+#: ././templates/fieldtest.pt:44
+msgid "and_a_translated"
+msgstr ""
+
+#. Default: Why?
+#: ././templates/fieldtest.pt:50
+msgid "why"
+msgstr ""
+
+#. Default: We were primarily focused on two question
+#: ././templates/fieldtest.pt:52
+msgid "key_questions"
+msgstr ""
+
+#. Default: Does the dialog-based approach works for untrained users in a real-
+#. world setting?
+#: ././templates/fieldtest.pt:54
+msgid "key_question1"
+msgstr ""
+
+#. Default: Does a decentralized moderation system works for a dialog-based
+#. argumentation system?
+#: ././templates/fieldtest.pt:57
+msgid "key_question2"
+msgstr ""
+
+#. Default: Findings?
+#: ././templates/fieldtest.pt:64
+msgid "findings"
+msgstr ""
+
+#. Default: We had many findings from our field experiment. The main results
+#. are summarized in
+#: ././templates/fieldtest.pt:66
+msgid "findings1"
+msgstr ""
+
+#. Default: this paper
+#: ././templates/fieldtest.pt:68
+msgid "this_paper"
+msgstr ""
+
+#. Default: Next to this, our colleague developed a tool to translate real
+#. world argumentation of D-BAS into abstract argumentation frameworks. This
+#. paper can be read
+#: ././templates/fieldtest.pt:69
+msgid "findings2"
+msgstr ""
+
+#. Default: The resulting dump of our PostgreSQL database can be downloaded
+#. from our
+#: ././templates/fieldtest.pt:72
+msgid "findings3"
+msgstr ""
+
+#. Default: server
+#: ././templates/fieldtest.pt:73
+msgid "server"
+msgstr ""
+
+#. Default: License CC BY-NC-SA
+#: ././templates/fieldtest.pt:74
+msgid "license_cc_by_nc_sa"
+msgstr ""
+
+#. Default: The archive contains three versions: the originaldataset of the
+#. discussion in German, a dataset which includes some corrections and a
+#. translated one.
+#: ././templates/fieldtest.pt:75
+msgid "the archive contains"
+msgstr ""
+
+#. Default: The translation into an abstract AF can be
+#: ././templates/fieldtest.pt:76
+msgid "findings4"
+msgstr ""
+
+#. Default: fetched to
+#: ././templates/fieldtest.pt:77
+msgid "fetched to"
+msgstr ""
+
+#. Default: Open Source?
+#: ././templates/fieldtest.pt:83
+msgid "ope-Source"
+msgstr ""
+
+#. Default: Of course! Every used tool is published under the MIT licence and
+#. hosted on GitHub
+#: ././templates/fieldtest.pt:85
+msgid "of_course_it_is_open_source"
+msgstr ""
+
+#. Default: Documentation
+#: ././templates/docs.pt:6
+msgid "docs"
+msgstr ""
+
+#. Default: Where do I find it?
+#: ././templates/docs.pt:7
+msgid "where_do_i_find_it"
+msgstr ""
+
+#. Default: Help
+#: ././templates/snippet/footer.pt:33
+msgid "Help"
+msgstr ""
+
+#. Default: Docs
+#: ././templates/snippet/footer.pt:38
+msgid "Documentation"
+msgstr ""
+
+#. Default: Github
+#: ././templates/snippet/footer.pt:48
+msgid "Github"
+msgstr ""
+
+#. Default: Field Experiment
+#: ././templates/snippet/footer.pt:53
+msgid "field_experiment"
+msgstr ""
+
+#. Default: Okay
+#: ././templates/snippet/popups.pt:56 ././templates/snippet/popups.pt:85
+#: ././templates/snippet/popups.pt:119 ././templates/snippet/popups.pt:1360
+msgid "okay"
+msgstr ""
+
+#. Default: Cancel
+#: ././templates/snippet/popups.pt:59 ././templates/snippet/popups.pt:89
+#: ././templates/snippet/popups.pt:123 ././templates/snippet/popups.pt:1105
+#: ././templates/snippet/popups.pt:1173 ././templates/snippet/popups.pt:1364
+#: ././templates/review/history.pt:115
+msgid "cancel"
+msgstr ""
+
+#. Default: Do not remind me again
+#: ././templates/snippet/popups.pt:112
+msgid "do_not_remind_me_again"
+msgstr ""
+
+#. Default: Information are missing
+#: ././templates/snippet/popups.pt:183
+msgid "information_missing"
+msgstr ""
+
+#. Default: During the authentication we could not fetch all of the necessary
+#. information. Please add the missing information, so we can add a new account
+#. in D-BAS (Login via other providers won't work).
+#: ././templates/snippet/popups.pt:186
+msgid "plase_add_missing_infos_we_add_account"
+msgstr ""
+
+#. Default: Your First Name
+#: ././templates/snippet/popups.pt:192 ././templates/snippet/popups.pt:398
+msgid "first_name"
+msgstr ""
+
+#. Default: Your Last Name
+#: ././templates/snippet/popups.pt:202 ././templates/snippet/popups.pt:408
+msgid "last_name"
+msgstr ""
+
+#. Default: Your Nickname
+#. Default: Nickname
+#: ././templates/snippet/popups.pt:211 ././templates/snippet/popups.pt:417
+#: ././templates/user/settings.pt:30
+msgid "nickname"
+msgstr ""
+
+#. Default: Your Gender
+#: ././templates/snippet/popups.pt:221 ././templates/snippet/popups.pt:425
+msgid "your_gender"
+msgstr ""
+
+#. Default: Your Email Address
+#: ././templates/snippet/popups.pt:241 ././templates/snippet/popups.pt:445
+msgid "your_email"
+msgstr ""
+
+#. Default: Your Password
+#: ././templates/snippet/popups.pt:250 ././templates/snippet/popups.pt:455
+msgid "password"
+msgstr ""
+
+#. Default: Password (confirm)
+#: ././templates/snippet/popups.pt:261 ././templates/snippet/popups.pt:466
+msgid "password-confirm"
+msgstr ""
+
+#. Default: Error:
+#: ././templates/snippet/popups.pt:275 ././templates/snippet/popups.pt:506
+#: ././templates/snippet/popups.pt:524
+msgid "error"
+msgstr ""
+
+#. Default: Info:
+#: ././templates/snippet/popups.pt:283 ././templates/snippet/popups.pt:513
+#: ././templates/snippet/popups.pt:537
+msgid "info"
+msgstr ""
+
+#. Default: Register
+#: ././templates/snippet/popups.pt:290 ././templates/snippet/popups.pt:544
+msgid "register"
+msgstr ""
+
+#. Default: Close
+#: ././templates/snippet/popups.pt:294 ././templates/snippet/popups.pt:387
+#: ././templates/snippet/popups.pt:546 ././templates/snippet/popups.pt:709
+#: ././templates/snippet/popups.pt:773
+msgid "close"
+msgstr ""
+
+#. Default: Log In
+#. Default: Login
+#: ././templates/snippet/popups.pt:310 ././templates/snippet/popups.pt:383
+#: ././templates/snippet/navbar.pt:72
+msgid "login"
+msgstr ""
+
+#. Default: Sign Up
+#: ././templates/snippet/popups.pt:313
+msgid "sign_up"
+msgstr ""
+
+#. Default: Your submitted data is being licensed under Creative Commons Share
+#. Alike (<dynamic element>) and will be used for scientific purposes. We will
+#. never share your password or e-mail address. By registering or logging in,
+#. you are accepting these terms.
+#: ././templates/snippet/popups.pt:322
+msgid "all_data_is_free"
+msgstr ""
+
+#. Default: Your Nickname
+#: ././templates/snippet/popups.pt:331
+msgid "your_nickname"
+msgstr ""
+
+#. Default: Your Password
+#: ././templates/snippet/popups.pt:342
+msgid "your_password"
+msgstr ""
+
+#. Default: Keep me logged in
+#: ././templates/snippet/popups.pt:355
+msgid "keep_me_logged_in"
+msgstr ""
+
+#. Default: Please fill in your e-mail below. A new password will be send this
+#. address. This does not affect other services of the HHU:
+#: ././templates/snippet/popups.pt:359
+msgid "fill_in_mail_for_password"
+msgstr ""
+
+#. Default: Forgot your password?
+#: ././templates/snippet/popups.pt:377
+msgid "forgot_password"
+msgstr ""
+
+#. Default: Password Strength
+#: ././templates/snippet/popups.pt:477
+msgid "password-strength"
+msgstr ""
+
+#. Default: very weak
+#: ././templates/snippet/popups.pt:480
+msgid "password_strength"
+msgstr ""
+
+#. Default: Solve this captcha
+#: ././templates/snippet/popups.pt:484
+msgid "captcha"
+msgstr ""
+
+#. Default: Success:
+#. Default: Success
+#: ././templates/snippet/popups.pt:499 ././templates/snippet/popups.pt:530
+#: ././templates/discussion/organism/dialog-space.pt:23
+msgid "success"
+msgstr ""
+
+#. Default: Or login via
+#: ././templates/snippet/popups.pt:553
+msgid "or_login_via"
+msgstr ""
+
+#. Default: Writing a new message
+#: ././templates/snippet/popups.pt:663 ././templates/snippet/popups.pt:724
+msgid "writing_message"
+msgstr ""
+
+#. Default: Error:
+#: ././templates/snippet/popups.pt:685 ././templates/snippet/popups.pt:758
+msgid "error:"
+msgstr ""
+
+#. Default: Success:
+#: ././templates/snippet/popups.pt:691 ././templates/snippet/popups.pt:764
+msgid "success:"
+msgstr ""
+
+#. Default: Author
+#: ././templates/snippet/popups.pt:699
+msgid "author"
+msgstr ""
+
+#. Default: Date
+#: ././templates/snippet/popups.pt:701 ././templates/review/reputation.pt:25
+msgid "date"
+msgstr ""
+
+#. Default: Send News
+#: ././templates/snippet/popups.pt:706
+msgid "send_news"
+msgstr ""
+
+#. Default: Send Notifcation
+#: ././templates/snippet/popups.pt:771
+msgid "send_notification"
+msgstr ""
+
+#. Default: Add Topic
+#. Default: Add a Topic
+#: ././templates/snippet/popups.pt:787 ././templates/snippet/navbar.pt:54
+#: ././templates/snippet/navbar.pt:59
+msgid "add_topic"
+msgstr ""
+
+#. Default: Please enter your title here:
+#: ././templates/snippet/popups.pt:792
+msgid "please_enter_title"
+msgstr ""
+
+#. Default: Please enter a short-description or question here:
+#: ././templates/snippet/popups.pt:798
+msgid "please_enter_info"
+msgstr ""
+
+#. Default: Please enter the full description here:
+#: ././templates/snippet/popups.pt:806
+msgid "please_enter_long_info"
+msgstr ""
+
+#. Default: Language of the discussion:
+#: ././templates/snippet/popups.pt:817
+msgid "please_select_language_for_topic"
+msgstr ""
+
+#. Default: Is the topic available for the public?
+#: ././templates/snippet/popups.pt:843
+msgid "is_topic_available_for_public"
+msgstr ""
+
+#. Default: Is the topic read only?
+#: ././templates/snippet/popups.pt:860
+msgid "is_topic_read_only"
+msgstr ""
+
+#. Default: Selecting a reason
+#: ././templates/snippet/popups.pt:901
+msgid "select-reason"
+msgstr ""
+
+#. Default: The statement under consideration is as follows
+#: ././templates/snippet/popups.pt:905
+msgid "statement_under_consideration_is"
+msgstr ""
+
+#. Default: The argument under consideration is as follows
+#: ././templates/snippet/popups.pt:910 ././templates/snippet/popups.pt:993
+msgid "argument_under_consideration_is"
+msgstr ""
+
+#. Default: The text needs to be revised.
+#: ././templates/snippet/popups.pt:924
+msgid "text_need_to_be_revised"
+msgstr ""
+
+#. Default: This statement is off topic or irrelevant.
+#: ././templates/snippet/popups.pt:933
+msgid "statement_offtopic_or_irrelevant"
+msgstr ""
+
+#. Default: This argument is off topic or irrelevant.
+#: ././templates/snippet/popups.pt:936
+msgid "argument_offtopic_or_irrelevant"
+msgstr ""
+
+#. Default: This statement is harmful or abusive.
+#: ././templates/snippet/popups.pt:944
+msgid "statement_harmful"
+msgstr ""
+
+#. Default: This argument is harmful or abusive.
+#: ././templates/snippet/popups.pt:946
+msgid "argument_harmful"
+msgstr ""
+
+#. Default: This statement is a duplicate.
+#: ././templates/snippet/popups.pt:953
+msgid "statement_duplicate"
+msgstr ""
+
+#. Default: This statement should be merged.
+#: ././templates/snippet/popups.pt:960
+msgid "statement_merge"
+msgstr ""
+
+#. Default: This statement has more than one message.
+#: ././templates/snippet/popups.pt:968
+msgid "statement_split"
+msgstr ""
+
+#. Default: Reporting (parts of) an argument
+#: ././templates/snippet/popups.pt:988
+msgid "reporting_parts_argument"
+msgstr ""
+
+#. Default: Please choose which part of the argument you want to report
+#: ././templates/snippet/popups.pt:996
+msgid "please_choose_part_to_report"
+msgstr ""
+
+#. Default: Report
+#: ././templates/snippet/popups.pt:1004
+msgid "report"
+msgstr ""
+
+#. Default: Report the whole argument.
+#: ././templates/snippet/popups.pt:1011
+msgid "report_whole_argument"
+msgstr ""
+
+#. Default: Split Statements
+#: ././templates/snippet/popups.pt:1084 ././templates/snippet/popups.pt:1120
+msgid "split_statement"
+msgstr ""
+
+#. Default: Please enter the split version of the statement; one per input
+#. field.
+#: ././templates/snippet/popups.pt:1088
+msgid "split_multiple_statements"
+msgstr ""
+
+#. Default: Submit
+#: ././templates/snippet/popups.pt:1102 ././templates/snippet/popups.pt:1170
+msgid "submit"
+msgstr ""
+
+#. Default: The selected statement is already splitted in several parts, like
+#. the list illustrates below. Do you want to continue with a new split?
+#: ././templates/snippet/popups.pt:1125
+msgid "split_multiple_statements_of_pgroup"
+msgstr ""
+
+#. Default: The statement
+#: ././templates/snippet/popups.pt:1129 ././templates/snippet/popups.pt:1198
+msgid "the_statement"
+msgstr ""
+
+#. Default: consist out of
+#: ././templates/snippet/popups.pt:1131 ././templates/snippet/popups.pt:1201
+msgid "consist_out_of"
+msgstr ""
+
+#. Default: Yes
+#: ././templates/snippet/popups.pt:1135 ././templates/snippet/popups.pt:1205
+msgid "yes"
+msgstr ""
+
+#. Default: No
+#: ././templates/snippet/popups.pt:1138 ././templates/snippet/popups.pt:1208
+msgid "no"
+msgstr ""
+
+#. Default: Merge Statement
+#: ././templates/snippet/popups.pt:1153 ././templates/snippet/popups.pt:1189
+msgid "merge_statement"
+msgstr ""
+
+#. Default: Please select the statements, that should be concatenated.
+#: ././templates/snippet/popups.pt:1156
+msgid "merge_multiple_statements"
+msgstr ""
+
+#. Default: The selected statement already consists out of multiple statement.
+#. Further on the several statements are listed. Do you want to continue with
+#. the merge?
+#: ././templates/snippet/popups.pt:1194
+msgid "merge_multiple_statements_of_pgroup"
+msgstr ""
+
+#. Default: Caution
+#: ././templates/snippet/popups.pt:1225
+msgid "caution"
+msgstr ""
+
+#. Default: Do you really want to disassociate yourself from your content? This
+#. step is irreversible! Subsequently you will not be the author of this
+#. statement anymore!
+#: ././templates/snippet/popups.pt:1229
+msgid "do_you_really_disassociate_step_irreversible"
+msgstr ""
+
+#. Default: Please choose a step to jump in
+#: ././templates/snippet/popups.pt:1252
+msgid "choose_a_step_to_jump_in"
+msgstr ""
+
+#. Default: Below you find a list with all arguments, where your selected text
+#. is used:
+#: ././templates/snippet/popups.pt:1257
+msgid "below_you_will_find_list_with_jump_arguments"
+msgstr ""
+
+#. Default: References
+#: ././templates/snippet/popups.pt:1275
+msgid "refereces"
+msgstr ""
+
+#. Default: Statement is a cite from a website like a newspaper article, which
+#. underpins the opinion. The source is the website as link.
+#: ././templates/snippet/popups.pt:1281
+msgid "statement_reference_definition"
+msgstr ""
+
+#. Default: Statement
+#: ././templates/snippet/popups.pt:1286 ././templates/snippet/popups.pt:1316
+#: ././templates/review/history.pt:47
+msgid "statement"
+msgstr ""
+
+#. Default: Source
+#: ././templates/snippet/popups.pt:1295
+msgid "source"
+msgstr ""
+
+#. Default: Please choose a statement for your reference!
+#: ././templates/snippet/popups.pt:1303
+msgid "please_choose_a_reference"
+msgstr ""
+
+#. Default: Add reference
+#: ././templates/snippet/popups.pt:1322
+msgid "add_reference"
+msgstr ""
+
+#. Default: Cookies
+#: ././templates/snippet/popups.pt:1375
+msgid "cookie-toast-header"
+msgstr ""
+
+#. Default: If you continue using our website, we'll assume that you are happy
+#. to receive all cookies.
+#: ././templates/snippet/popups.pt:1382
+msgid "cookie-toast-body"
+msgstr ""
+
+#. Default: More Information
+#: ././templates/snippet/popups.pt:1387
+msgid "cookie-toast-more-btn"
+msgstr ""
+
+#. Default: Toggle navigation
+#: ././templates/snippet/navbar.pt:10
+msgid "Toggle Navigation"
+msgstr ""
+
+#. Default: Let's go
+#: ././templates/snippet/navbar.pt:18
+msgid "lets_go"
+msgstr ""
+
+#. Default: My Discussions
+#: ././templates/snippet/navbar.pt:25
+#: ././templates/discussion/organism/overview-user.pt:6
+msgid "my_discussions"
+msgstr ""
+
+#. Default: Switch Topic
+#: ././templates/snippet/navbar.pt:33
+msgid "switch_topic"
+msgstr ""
+
+#. Default: Übersicht
+#: ././templates/snippet/navbar.pt:51
+msgid "overview"
+msgstr ""
+
+#. Default: Review
+#: ././templates/snippet/navbar.pt:79 ././templates/review/type/split.pt:4
+#: ././templates/review/type/duplicate.pt:4
+#: ././templates/review/type/optimize.pt:4
+#: ././templates/review/type/delete.pt:4 ././templates/review/type/merge.pt:4
+#: ././templates/review/type/edit.pt:4
+msgid "review"
+msgstr ""
+
+#. Default: Settings
+#: ././templates/snippet/navbar.pt:97 ././templates/user/settings.pt:54
+msgid "settings"
+msgstr ""
+
+#. Default: Notifications
+#: ././templates/snippet/navbar.pt:103
+msgid "notifications"
+msgstr ""
+
+#. Default: Admin
+#: ././templates/snippet/navbar.pt:108
+msgid "Admin"
+msgstr ""
+
+#. Default: Logout
+#: ././templates/snippet/navbar.pt:111
+msgid "logout"
+msgstr ""
+
+#. Default: Personal User Page
+#: ././templates/user/details.pt:6
+msgid "personal_user_page"
+msgstr ""
+
+#. Default: This are the details of
+#: ././templates/user/details.pt:8
+msgid "this_are_the_details_of"
+msgstr ""
+
+#. Default: Public Information of
+#: ././templates/user/details.pt:21
+msgid "public_information_of"
+msgstr ""
+
+#. Default: Last Action
+#: ././templates/user/details.pt:26
+msgid "last_action"
+msgstr ""
+
+#. Default: Last Login
+#: ././templates/user/details.pt:30
+msgid "last_login"
+msgstr ""
+
+#. Default: Registered
+#: ././templates/user/details.pt:34
+msgid "registered"
+msgstr ""
+
+#. Default: Profile Picture of
+#: ././templates/user/details.pt:42
+msgid "profile_picture_of"
+msgstr ""
+
+#. Default: Discussion Statistics
+#: ././templates/user/details.pt:48 ././templates/user/settings.pt:183
+msgid "discussion_stat"
+msgstr ""
+
+#. Default: Statements posted
+#: ././templates/user/details.pt:52 ././templates/user/settings.pt:190
+#: ././templates/discussion/exit.pt:34
+msgid "statements_posted"
+msgstr ""
+
+#. Default: Edits done
+#: ././templates/user/details.pt:56 ././templates/user/settings.pt:200
+#: ././templates/discussion/exit.pt:38
+msgid "edits_done"
+msgstr ""
+
+#. Default: Reviews proposed
+#: ././templates/user/details.pt:60
+msgid "reviews_proposed"
+msgstr ""
+
+#. Default: Votes for Arguments
+#. Default: Votes for Statements
+#: ././templates/user/details.pt:64 ././templates/user/settings.pt:243
+#: ././templates/discussion/exit.pt:61
+msgid "discussion_votes_arguments"
+msgstr ""
+
+#. Default: Votes for Statements
+#. Default: Votes for Arguments
+#: ././templates/user/details.pt:68 ././templates/user/settings.pt:233
+#: ././templates/discussion/exit.pt:55
+msgid "discussion_votes_statements"
+msgstr ""
+
+#. Default: Reputation
+#: ././templates/user/details.pt:72 ././templates/user/settings.pt:253
+#: ././templates/review/reputation.pt:27
+msgid "reputation"
+msgstr ""
+
+#. Default: Notification Board
+#: ././templates/user/notifications.pt:6
+msgid "notification_board"
+msgstr ""
+
+#. Default: unread notifications and
+#: ././templates/user/notifications.pt:9
+msgid "unreadNotificationAnd"
+msgstr ""
+
+#. Default: total in the inbox.
+#: ././templates/user/notifications.pt:11
+msgid "totalInTheInbox"
+msgstr ""
+
+#. Default: There are
+#: ././templates/user/notifications.pt:12
+msgid "thereAre"
+msgstr ""
+
+#. Default: in the outbox.
+#: ././templates/user/notifications.pt:14
+msgid "inTheOutbox"
+msgstr ""
+
+#. Default: Inbox
+#: ././templates/user/notifications.pt:29
+msgid "inbox"
+msgstr ""
+
+#. Default: Outbox
+#: ././templates/user/notifications.pt:32
+msgid "outbox"
+msgstr ""
+
+#. Default: NEW
+#: ././templates/user/notifications.pt:51
+msgid "new"
+msgstr ""
+
+#. Default: From:
+#: ././templates/user/notifications.pt:56
+#: ././templates/user/notifications.pt:65
+msgid "from"
+msgstr ""
+
+#. Default: answer
+#: ././templates/user/notifications.pt:70
+#: ././templates/user/notifications.pt:115
+msgid "answer"
+msgstr ""
+
+#. Default: Set everything as read
+#: ././templates/user/notifications.pt:80
+msgid "set_as_read"
+msgstr ""
+
+#. Default: Delete everything
+#: ././templates/user/notifications.pt:84
+#: ././templates/user/notifications.pt:125
+msgid "delete_everything"
+msgstr ""
+
+#. Default: To:
+#. Default: to:
+#: ././templates/user/notifications.pt:101
+#: ././templates/user/notifications.pt:110
+msgid "to"
+msgstr ""
+
+#. Default: Settings
+#: ././templates/user/settings.pt:6
+msgid "Settings"
+msgstr ""
+
+#. Default: List of several information mapped with your account
+#: ././templates/user/settings.pt:7
+msgid "list_of_information"
+msgstr ""
+
+#. Default: Personal Information
+#: ././templates/user/settings.pt:18
+msgid "personal_information"
+msgstr ""
+
+#. Default: Firstname
+#: ././templates/user/settings.pt:22
+msgid "firstname"
+msgstr ""
+
+#. Default: Surname
+#: ././templates/user/settings.pt:26
+msgid "surname"
+msgstr ""
+
+#. Default: Public Nickname
+#: ././templates/user/settings.pt:34
+msgid "public_nickname"
+msgstr ""
+
+#. Default: Click here for your public page
+#: ././templates/user/settings.pt:38
+msgid "click_here_for_public_page"
+msgstr ""
+
+#. Default: Group
+#: ././templates/user/settings.pt:47
+msgid "group"
+msgstr ""
+
+#. Default: Receive Notifications
+#: ././templates/user/settings.pt:59
+msgid "receive_notifications"
+msgstr ""
+
+#. Default: Receive E-Mails
+#: ././templates/user/settings.pt:72
+msgid "receive_mails"
+msgstr ""
+
+#. Default: Nickname is public
+#: ././templates/user/settings.pt:85
+msgid "nickname_is_public"
+msgstr ""
+
+#. Default: Preferred message language
+#: ././templates/user/settings.pt:98
+msgid "message_language"
+msgstr ""
+
+#. Default: Guided tour on startup
+#: ././templates/user/settings.pt:140
+msgid "guided_tour_on_start_up"
+msgstr ""
+
+#. Default: Delete my Account
+#: ././templates/user/settings.pt:152
+msgid "delete_my_account"
+msgstr ""
+
+#. Default: Delete
+#: ././templates/user/settings.pt:155
+msgid "delete"
+msgstr ""
+
+#. Default: Settings could not be set. Please try again later.
+#: ././templates/user/settings.pt:166
+msgid "settings_not_set"
+msgstr ""
+
+#. Default: Settings were set successfully.
+#: ././templates/user/settings.pt:171
+msgid "settings_set"
+msgstr ""
+
+#. Default: Clicks for Arguments
+#: ././templates/user/settings.pt:209 ././templates/discussion/exit.pt:67
+msgid "discussion_clicked_statements"
+msgstr ""
+
+#. Default: Clicks for Statements
+#: ././templates/user/settings.pt:219 ././templates/discussion/exit.pt:73
+msgid "discussion_clicked_arguments"
+msgstr ""
+
+#. Default: Profile Picture
+#: ././templates/user/settings.pt:272
+msgid "profile_picture"
+msgstr ""
+
+#. Default: Change your profile picture on the
+#: ././templates/user/settings.pt:276
+msgid "change_gravatar"
+msgstr ""
+
+#. Default: A Gravatar is a globally recognized avatar. You upload it and
+#. create your profile just once, and then when you participate in any
+#. Gravatar-enabled site, your Gravatar image will automatically follow you
+#. there, except your nickname is not public!
+#: ././templates/user/settings.pt:279
+msgid "what_is_gravatar"
+msgstr ""
+
+#. Default: Statistics could not be deleted.
+#: ././templates/user/settings.pt:289 ././templates/user/settings.pt:380
+msgid "statistics_not_deleted"
+msgstr ""
+
+#. Default: Statistics were set successfully deleted.
+#: ././templates/user/settings.pt:295 ././templates/user/settings.pt:386
+msgid "statistics_deletet"
+msgstr ""
+
+#. Default: Change your password in D-BAS
+#: ././templates/user/settings.pt:304
+msgid "change_dbas_password"
+msgstr ""
+
+#. Default: This does not affect other services next to D-BAS.
+#: ././templates/user/settings.pt:306
+msgid "this_does_not_affect_other_services"
+msgstr ""
+
+#. Default: Old password
+#: ././templates/user/settings.pt:313
+msgid "old_password"
+msgstr ""
+
+#. Default: New Password
+#: ././templates/user/settings.pt:327
+msgid "new_password"
+msgstr ""
+
+#. Default: New Password (confirm)
+#: ././templates/user/settings.pt:339
+msgid "new_password_confirm"
+msgstr ""
+
+#. Default: Your password was changed
+#: ././templates/user/settings.pt:365
+msgid "password_changed"
+msgstr ""
+
+#. Default: The history of votes
+#: ././templates/review/history.pt:8
+msgid "history_of_votes"
+msgstr ""
+
+#. Default: Current decisions
+#: ././templates/review/history.pt:12
+msgid "current_decisions"
+msgstr ""
+
+#. Default: This page contains lists with an over of past votes for each queue
+#: ././templates/review/history.pt:14
+msgid "page_contains_list_past_votes"
+msgstr ""
+
+#. Default: This page contains lists with an over of ongoing votes for each
+#. queue
+#: ././templates/review/history.pt:17
+msgid "page_contains_list_ongoing_votes"
+msgstr ""
+
+#. Default: You have to earn more reputation for this queue
+#: ././templates/review/history.pt:27
+msgid "earn_more_reputation_for_queue"
+msgstr ""
+
+#. Default: You have no access to this site
+#: ././templates/review/history.pt:28
+msgid "you_have_no_access"
+msgstr ""
+
+#. Default: No decisions for this queue.
+#: ././templates/review/history.pt:41
+msgid "no_decision_for_this_queue"
+msgstr ""
+
+#. Default: Edit
+#: ././templates/review/history.pt:48
+msgid "edit"
+msgstr ""
+
+#. Default: Reason
+#: ././templates/review/history.pt:49
+msgid "reason"
+msgstr ""
+
+#. Default: Original
+#: ././templates/review/history.pt:50 ././templates/review/history.pt:51
+#: ././templates/review/type/optimize.pt:182
+msgid "original"
+msgstr ""
+
+#. Default: Votes
+#: ././templates/review/history.pt:52
+msgid "votes"
+msgstr ""
+
+#. Default: Accepted
+#: ././templates/review/history.pt:53
+msgid "accepted"
+msgstr ""
+
+#. Default: Voters Pro
+#: ././templates/review/history.pt:54
+msgid "voters_pro"
+msgstr ""
+
+#. Default: Voters Con
+#: ././templates/review/history.pt:55
+msgid "voters_con"
+msgstr ""
+
+#. Default: Timestamp
+#: ././templates/review/history.pt:56
+msgid "timestamp"
+msgstr ""
+
+#. Default: Reporter
+#: ././templates/review/history.pt:57
+msgid "reporter"
+msgstr ""
+
+#. Default: Action
+#: ././templates/review/history.pt:58
+msgid "actions"
+msgstr ""
+
+#. Default: Undo
+#: ././templates/review/history.pt:110
+msgid "undo"
+msgstr ""
+
+#. Default: Decentralized Moderation System
+#: ././templates/review/queue.pt:6 ././templates/review/index.pt:6
+msgid "decentralized_moderation_system"
+msgstr ""
+
+#. Default: The moderation of D-BAS is decentralized, so that you are able to
+#. maintain the content
+#: ././templates/review/queue.pt:9 ././templates/review/index.pt:9
+msgid "moderation_of_dbas_is_decentralized"
+msgstr ""
+
+#. Default: No arguments to review in this queue!
+#: ././templates/review/queue.pt:18
+msgid "no_arguments_to_review"
+msgstr ""
+
+#. Default: Your Reputation
+#: ././templates/review/reputation.pt:6
+msgid "your_reputation"
+msgstr ""
+
+#. Default: Based on your user group, you have all rights!
+#: ././templates/review/reputation.pt:8 ././templates/review/index.pt:55
+msgid "unlimited_right_based_on_group"
+msgstr ""
+
+#. Default: Reputation count
+#: ././templates/review/reputation.pt:9
+msgid "reputation_count"
+msgstr ""
+
+#. Default: Action
+#: ././templates/review/reputation.pt:26
+msgid "action"
+msgstr ""
+
+#. Default: Queues
+#: ././templates/review/index.pt:21
+msgid "queues"
+msgstr ""
+
+#. Default: How To
+#: ././templates/review/index.pt:24
+msgid "howto"
+msgstr ""
+
+#. Default: Help improve the dialog
+#: ././templates/review/index.pt:32
+msgid "help_to_improve"
+msgstr ""
+
+#. Default: D-BAS is moderated by you. Help your discussion members learn to
+#. argue and raise the quality of argumenty by:
+#: ././templates/review/index.pt:33
+msgid "dbas_is_moderated_by"
+msgstr ""
+
+#. Default: Evaluate new statements
+#: ././templates/review/index.pt:36
+msgid "evaluate_new_statements"
+msgstr ""
+
+#. Default: Reviewing suspicious statements
+#: ././templates/review/index.pt:39
+msgid "reviewing_suspicious_statements"
+msgstr ""
+
+#. Default: Voting to close or reopen statements
+#: ././templates/review/index.pt:42
+msgid "voting_to_close"
+msgstr ""
+
+#. Default: Choose a task to get started.
+#: ././templates/review/index.pt:46
+msgid "choose_task"
+msgstr ""
+
+#. Default: Your current reputation count is
+#: ././templates/review/index.pt:58
+msgid "current_reputation_os"
+msgstr ""
+
+#. Default: Open Tasks
+#: ././templates/review/index.pt:69
+msgid "open_tasks"
+msgstr ""
+
+#. Default: Topic
+#: ././templates/review/index.pt:70
+msgid "topic"
+msgstr ""
+
+#. Default: Recent Reviews
+#: ././templates/review/index.pt:71
+msgid "recent_reviews"
+msgstr ""
+
+#. Default: None
+#: ././templates/review/index.pt:104
+msgid "None"
+msgstr ""
+
+#. Default: What is reputation? How do I earn (and lose) it?
+#: ././templates/review/index.pt:116
+msgid "what_is_reputation"
+msgstr ""
+
+#. Default: Reputation is a rough measurement of how work you are doing for the
+#. discussion and the community.
+#: ././templates/review/index.pt:119
+msgid "what_is_reputation_def"
+msgstr ""
+
+#. Default: you can earn it by using D-BAS and all of its great functions.
+#: ././templates/review/index.pt:120
+msgid "what_is_reputation_earn"
+msgstr ""
+
+#. Default: Basic use of D-BAS, does not require any reputation at all.
+#: ././templates/review/index.pt:121
+msgid "what_is_reputation_use"
+msgstr ""
+
+#. Default: You gain reputation when:
+#: ././templates/review/index.pt:124
+msgid "gain_rep_when"
+msgstr ""
+
+#. Default: You loose reputation when:
+#: ././templates/review/index.pt:133
+msgid "lose_rep_when"
+msgstr ""
+
+#. Default: Privileges
+#: ././templates/review/index.pt:145
+msgid "privileges"
+msgstr ""
+
+#. Default: Privileges control what you can see in the review queues of D-BAS.
+#. Gain more privileges by increasing your reputation.
+#: ././templates/review/index.pt:146
+msgid "privileges_explanation"
+msgstr ""
+
+#. Default: Split
+#: ././templates/review/type/split.pt:5
+msgid "split"
+msgstr ""
+
+#. Default: (more)
+#: ././templates/review/type/split.pt:12
+#: ././templates/review/type/duplicate.pt:12
+#: ././templates/review/type/optimize.pt:13
+#: ././templates/review/type/delete.pt:12 ././templates/review/type/merge.pt:12
+#: ././templates/review/type/edit.pt:12
+msgid "wrapped_more"
+msgstr ""
+
+#. Default: (less)
+#: ././templates/review/type/split.pt:13
+#: ././templates/review/type/duplicate.pt:13
+#: ././templates/review/type/optimize.pt:14
+#: ././templates/review/type/delete.pt:13 ././templates/review/type/merge.pt:13
+#: ././templates/review/type/edit.pt:13
+msgid "wrapped_less"
+msgstr ""
+
+#. Default: Change is okay
+#: ././templates/review/type/split.pt:20 ././templates/review/type/merge.pt:20
+msgid "change_okay"
+msgstr ""
+
+#. Default: Reject it
+#: ././templates/review/type/split.pt:25 ././templates/review/type/split.pt:50
+#: ././templates/review/type/merge.pt:25 ././templates/review/type/merge.pt:50
+#: ././templates/review/type/edit.pt:23 ././templates/review/type/edit.pt:49
+msgid "reject_it"
+msgstr ""
+
+#. Default: Skip it
+#: ././templates/review/type/split.pt:29 ././templates/review/type/split.pt:54
+#: ././templates/review/type/duplicate.pt:32
+#: ././templates/review/type/duplicate.pt:57
+#: ././templates/review/type/optimize.pt:31
+#: ././templates/review/type/optimize.pt:75
+#: ././templates/review/type/delete.pt:28
+#: ././templates/review/type/delete.pt:71 ././templates/review/type/merge.pt:29
+#: ././templates/review/type/merge.pt:54 ././templates/review/type/edit.pt:27
+#: ././templates/review/type/edit.pt:53
+msgid "skip_it"
+msgstr ""
+
+#. Default: Information for the different buttons
+#: ././templates/review/type/split.pt:41
+#: ././templates/review/type/duplicate.pt:44
+#: ././templates/review/type/optimize.pt:62
+#: ././templates/review/type/delete.pt:58 ././templates/review/type/merge.pt:41
+#: ././templates/review/type/edit.pt:39
+msgid "information_for_the_different_buttons"
+msgstr ""
+
+#. Default: Split it
+#: ././templates/review/type/split.pt:46
+msgid "split_it"
+msgstr ""
+
+#. Default: , if the selected statement is a set of more than one statement and
+#. the given proposals match to the original content.
+#: ././templates/review/type/split.pt:47
+msgid "marked_statement_to_slit"
+msgstr ""
+
+#. Default: for marked statements, which are unique.
+#: ././templates/review/type/split.pt:51
+msgid "statement_not_to_split"
+msgstr ""
+
+#. Default: if you are not sure and want to go to the next statement.
+#. Default: if you are not sure and want to go to the next argument.
+#: ././templates/review/type/split.pt:55
+#: ././templates/review/type/duplicate.pt:58
+#: ././templates/review/type/optimize.pt:76
+#: ././templates/review/type/delete.pt:72 ././templates/review/type/merge.pt:55
+#: ././templates/review/type/edit.pt:54
+msgid "skip_it_explanation"
+msgstr ""
+
+#. Default: In the discussion about
+#: ././templates/review/type/split.pt:70
+#: ././templates/review/type/duplicate.pt:71
+#: ././templates/review/type/optimize.pt:91
+#: ././templates/review/type/delete.pt:87 ././templates/review/type/edit.pt:69
+msgid "in_the_discussion_about"
+msgstr ""
+
+#. Default: In the discussions about
+#: ././templates/review/type/split.pt:71
+#: ././templates/review/type/duplicate.pt:72
+#: ././templates/review/type/optimize.pt:92
+#: ././templates/review/type/delete.pt:88 ././templates/review/type/edit.pt:70
+msgid "in_the_discussions_about"
+msgstr ""
+
+#. Default: following statement was flagged.
+#: ././templates/review/type/split.pt:75
+#: ././templates/review/type/duplicate.pt:76
+msgid "following_statement_was_flagged"
+msgstr ""
+
+#. Default: This statement should be split into:
+#: ././templates/review/type/split.pt:88
+msgid "this_statement_should_be_splitted"
+msgstr ""
+
+#. Default: Reported
+#: ././templates/review/type/split.pt:102
+#: ././templates/review/type/duplicate.pt:104
+#: ././templates/review/type/optimize.pt:125
+#: ././templates/review/type/delete.pt:110
+#: ././templates/review/type/merge.pt:94 ././templates/review/type/edit.pt:117
+msgid "reported"
+msgstr ""
+
+#. Default: Reported by
+#: ././templates/review/type/split.pt:106
+#: ././templates/review/type/duplicate.pt:108
+#: ././templates/review/type/optimize.pt:129
+#: ././templates/review/type/delete.pt:114
+#: ././templates/review/type/merge.pt:98 ././templates/review/type/edit.pt:121
+msgid "reported_by"
+msgstr ""
+
+#. Default: Viewed
+#: ././templates/review/type/split.pt:116
+#: ././templates/review/type/duplicate.pt:118
+#: ././templates/review/type/optimize.pt:139
+#: ././templates/review/type/delete.pt:124
+#: ././templates/review/type/merge.pt:108 ././templates/review/type/edit.pt:131
+msgid "viewed"
+msgstr ""
+
+#. Default: Relations
+#: ././templates/review/type/split.pt:120
+#: ././templates/review/type/duplicate.pt:122
+#: ././templates/review/type/optimize.pt:143
+#: ././templates/review/type/delete.pt:128
+#: ././templates/review/type/merge.pt:112 ././templates/review/type/edit.pt:135
+msgid "attacks"
+msgstr ""
+
+#. Default: Supports
+#: ././templates/review/type/split.pt:124
+#: ././templates/review/type/duplicate.pt:126
+#: ././templates/review/type/optimize.pt:147
+#: ././templates/review/type/delete.pt:132
+#: ././templates/review/type/merge.pt:116 ././templates/review/type/edit.pt:139
+msgid "supports"
+msgstr ""
+
+#. Default: Duplicates
+#: ././templates/review/type/duplicate.pt:5
+msgid "duplicates"
+msgstr ""
+
+#. Default: Duplicate
+#: ././templates/review/type/duplicate.pt:21
+msgid "duplicate"
+msgstr ""
+
+#. Default: Unique
+#: ././templates/review/type/duplicate.pt:27
+msgid "unique"
+msgstr ""
+
+#. Default: It's a duplicate
+#: ././templates/review/type/duplicate.pt:49
+msgid "its_duplicate"
+msgstr ""
+
+#. Default: , if the marked statement is a duplicate.
+#: ././templates/review/type/duplicate.pt:50
+msgid "marked_statement_is_duplicate"
+msgstr ""
+
+#. Default: It's unique
+#: ././templates/review/type/duplicate.pt:53
+msgid "its_unique"
+msgstr ""
+
+#. Default: for marked statements, which are unique.
+#: ././templates/review/type/duplicate.pt:54
+msgid "duplicate_is_unique"
+msgstr ""
+
+#. Default: This is the original statement:
+#: ././templates/review/type/duplicate.pt:88
+msgid "this_is_original_statements"
+msgstr ""
+
+#. Default: Optimizations
+#: ././templates/review/type/optimize.pt:5
+msgid "optimizations"
+msgstr ""
+
+#. Default: Let me correct it
+#: ././templates/review/type/optimize.pt:21
+#: ././templates/review/type/optimize.pt:67
+msgid "correct_it"
+msgstr ""
+
+#. Default: It's okay so
+#: ././templates/review/type/optimize.pt:26
+#: ././templates/review/type/optimize.pt:71
+msgid "its_okay_so"
+msgstr ""
+
+#. Default: Information for the different reasons
+#: ././templates/review/type/optimize.pt:42
+#: ././templates/review/type/delete.pt:38
+msgid "information_for_the_different_reasons"
+msgstr ""
+
+#. Default: Off topic or irrelevant
+#: ././templates/review/type/optimize.pt:45
+#: ././templates/review/type/delete.pt:41
+msgid "off_topic_or_irrelevant"
+msgstr ""
+
+#. Default: text does not belong to the topic under discussion
+#: ././templates/review/type/optimize.pt:46
+#: ././templates/review/type/delete.pt:42
+msgid "off_topic_explanation"
+msgstr ""
+
+#. Default: Inappropriate, harmful or abusive
+#: ././templates/review/type/optimize.pt:49
+#: ././templates/review/type/delete.pt:45
+msgid "inappropriate_harmful_abbusive"
+msgstr ""
+
+#. Default: are posts, which are inappropriate, harmful or abbusive
+#: ././templates/review/type/optimize.pt:50
+#: ././templates/review/type/delete.pt:46
+msgid "inappropriate_harmful_abbusive_explanation"
+msgstr ""
+
+#. Default: Needs optimization
+#: ././templates/review/type/optimize.pt:53
+#: ././templates/review/type/delete.pt:49
+msgid "needs_optimization"
+msgstr ""
+
+#. Default: if posts are useful, but need edits in grammar and/or spelling
+#: ././templates/review/type/optimize.pt:54
+#: ././templates/review/type/delete.pt:50
+msgid "needs_optimization_explanation"
+msgstr ""
+
+#. Default: , if you have an idea for a better formulation with the same
+#. content.
+#: ././templates/review/type/optimize.pt:68
+msgid "correct_it_explanation"
+msgstr ""
+
+#. Default: for arguments, which can be understood as-is.
+#: ././templates/review/type/optimize.pt:72
+msgid "its_okay_so_explanation"
+msgstr ""
+
+#. Default: following argument was flagged.
+#: ././templates/review/type/optimize.pt:96
+#: ././templates/review/type/delete.pt:92
+msgid "following_argument_was_flagged"
+msgstr ""
+
+#. Default: Context, where the statement is used:
+#: ././templates/review/type/optimize.pt:110
+msgid "context_where_statement_is_used"
+msgstr ""
+
+#. Default: Request lock
+#: ././templates/review/type/optimize.pt:167
+msgid "request_lock"
+msgstr ""
+
+#. Default: This argument is locked for your edit. You have
+#: ././templates/review/type/optimize.pt:173
+msgid "argument_is_locked"
+msgstr ""
+
+#. Default: minutes
+#: ././templates/review/type/optimize.pt:175
+msgid "minutes"
+msgstr ""
+
+#. Default: Please make your edits in grammar and/or spelling here:
+#: ././templates/review/type/optimize.pt:176
+msgid "please_make_your_edits"
+msgstr ""
+
+#. Default: Your correcture
+#: ././templates/review/type/optimize.pt:183
+msgid "your correcture"
+msgstr ""
+
+#. Default: Send
+#: ././templates/review/type/optimize.pt:201
+msgid "send"
+msgstr ""
+
+#. Default: Deletes
+#: ././templates/review/type/delete.pt:5
+msgid "deletes"
+msgstr ""
+
+#. Default: Delete it
+#: ././templates/review/type/delete.pt:20
+#: ././templates/review/type/delete.pt:67
+msgid "delete_it"
+msgstr ""
+
+#. Default: It's Okay
+#. Default: It's okay
+#: ././templates/review/type/delete.pt:24
+#: ././templates/review/type/delete.pt:63 ././templates/review/type/edit.pt:19
+#: ././templates/review/type/edit.pt:45
+msgid "its_okay"
+msgstr ""
+
+#. Default: for arguments, which should not be deleted.
+#: ././templates/review/type/delete.pt:64
+msgid "its_okay_explanation"
+msgstr ""
+
+#. Default: for arguments, that should be deleted based on the reason above.
+#: ././templates/review/type/delete.pt:68
+msgid "delete_it_explanation"
+msgstr ""
+
+#. Default: Merge
+#: ././templates/review/type/merge.pt:5
+msgid "merge"
+msgstr ""
+
+#. Default: Merge it
+#: ././templates/review/type/merge.pt:46
+msgid "merge_it"
+msgstr ""
+
+#. Default: , if the selected statements should be one, single statements and
+#. the given proposal matches to the original contents.
+#: ././templates/review/type/merge.pt:47
+msgid "marked_statement_to_merge"
+msgstr ""
+
+#. Default: for marked statements, which are unique.
+#: ././templates/review/type/merge.pt:51
+msgid "statement_not_to_merge"
+msgstr ""
+
+#. Default: This statement should be merged to:
+#: ././templates/review/type/merge.pt:77
+msgid "this_statement_should_be_merged"
+msgstr ""
+
+#. Default: Edits
+#: ././templates/review/type/edit.pt:5
+msgid "edits"
+msgstr ""
+
+#. Default: , if the correction is acceptable and the argument is not
+#. falsified.
+#: ././templates/review/type/edit.pt:46
+msgid "correction_is_okay"
+msgstr ""
+
+#. Default: for correction which are inappropriate are wrong.
+#: ././templates/review/type/edit.pt:50
+msgid "reject_itexplanation"
+msgstr ""
+
+#. Default: following argument was corrected.
+#: ././templates/review/type/edit.pt:74
+msgid "following_argument_was_corrected"
+msgstr ""
+
+#. Default: These are the edits:
+#: ././templates/review/type/edit.pt:86
+msgid "these_are_the_edits"
+msgstr ""
+
+#. Default: This is the original version
+#: ././templates/review/type/edit.pt:98
+msgid "this_is_original_version"
+msgstr ""
+
+#. Default: Thank you
+#: ././templates/discussion/exit.pt:8
+msgid "thank_you"
+msgstr ""
+
+#. Default: Your participation in this discussion was saved and will be used
+#. for evaluation later. If you have any questions, please do not hesitate to
+#: ././templates/discussion/exit.pt:11
+msgid "finish_text"
+msgstr ""
+
+#. Default: contact us
+#: ././templates/discussion/exit.pt:13
+msgid "contact_us"
+msgstr ""
+
+#. Default: Today's Summary
+#: ././templates/discussion/exit.pt:29
+msgid "todays_summary"
+msgstr ""
+
+#. Default: Statements reported
+#: ././templates/discussion/exit.pt:42
+msgid "statements_reported"
+msgstr ""
+
+#. Default: Collected reputation
+#: ././templates/discussion/exit.pt:46
+msgid "reputation_colltected"
+msgstr ""
+
+#. Default: Let's go home!
+#: ././templates/discussion/exit.pt:90
+msgid "lets_go_home"
+msgstr ""
+
+#. Default: Back to the discussion!
+#: ././templates/discussion/exit.pt:94
+msgid "back_to_the_discussion"
+msgstr ""
+
+#. Default: Overview of the Discussions
+#: ././templates/discussion/myoverview.pt:8
+msgid "overview_of_discussion="
+msgstr ""
+
+#. Default: This page contains an over of discussions you have created as well
+#. as other participants created
+#: ././templates/discussion/myoverview.pt:9
+msgid "page_contains_overview_all_created"
+msgstr ""
+
+#. Default: Overview of the Discussions
+#: ././templates/discussion/start.pt:9
+msgid "overview_of_discussion"
+msgstr ""
+
+#. Default: Current Discussions
+#: ././templates/discussion/start.pt:33
+msgid "current_discussion"
+msgstr ""
+
+#. Default: Titel
+#: ././templates/discussion/start.pt:37 ././templates/discussion/start.pt:68
+#: ././templates/discussion/organism/overview-other.pt:26
+#: ././templates/discussion/organism/overview-user.pt:18
+msgid "title"
+msgstr ""
+
+#. Default: Language
+#: ././templates/discussion/start.pt:38 ././templates/discussion/start.pt:69
+#: ././templates/discussion/organism/overview-other.pt:29
+#: ././templates/discussion/organism/overview-user.pt:21
+msgid "language"
+msgstr ""
+
+#. Default: Statements
+#: ././templates/discussion/start.pt:39 ././templates/discussion/start.pt:70
+#: ././templates/discussion/organism/overview-other.pt:27
+#: ././templates/discussion/organism/overview-user.pt:19
+#: ././templates/discussion/organism/graph-sidebar.pt:23
+msgid "statements"
+msgstr ""
+
+#. Default: Creation
+#: ././templates/discussion/start.pt:40 ././templates/discussion/start.pt:71
+#: ././templates/discussion/organism/overview-other.pt:30
+#: ././templates/discussion/organism/overview-user.pt:22
+msgid "creation"
+msgstr ""
+
+#. Default: Closed Discussions
+#: ././templates/discussion/start.pt:64
+msgid "closed_discussion"
+msgstr ""
+
+#. Default: More Discussions
+#: ././templates/discussion/organism/overview-other.pt:6
+msgid "more_discussions"
+msgstr ""
+
+#. Default: This is a summary of discussions other participants have created,
+#. but you are an admin. So you can en- and disable these discussions too
+#: ././templates/discussion/organism/overview-other.pt:9
+msgid "summary_discussion_other_users_but_admin"
+msgstr ""
+
+#. Default: This is a summary of discussions other participants have created
+#: ././templates/discussion/organism/overview-other.pt:15
+msgid "summary_discussion_other_users"
+msgstr ""
+
+#. Default: Other users have not created any discussion yet.
+#: ././templates/discussion/organism/overview-other.pt:19
+msgid "other_users_not_discussion"
+msgstr ""
+
+#. Default: Participants
+#: ././templates/discussion/organism/overview-other.pt:28
+#: ././templates/discussion/organism/overview-user.pt:20
+msgid "participants"
+msgstr ""
+
+#. Default: Enabled
+#: ././templates/discussion/organism/overview-other.pt:32
+#: ././templates/discussion/organism/overview-user.pt:23
+msgid "enabled"
+msgstr ""
+
+#. Default: Public
+#: ././templates/discussion/organism/overview-other.pt:36
+#: ././templates/discussion/organism/overview-user.pt:27
+msgid "public"
+msgstr ""
+
+#. Default: Writable
+#: ././templates/discussion/organism/overview-other.pt:41
+msgid "Writable"
+msgstr ""
+
+#. Default: Short Link
+#: ././templates/discussion/organism/overview-other.pt:45
+#: ././templates/discussion/organism/overview-user.pt:35
+msgid "short_link"
+msgstr ""
+
+#. Default: Start
+#: ././templates/discussion/organism/graph-view.pt:9
+msgid "start"
+msgstr ""
+
+#. Default: Now
+#: ././templates/discussion/organism/graph-view.pt:14
+msgid "now"
+msgstr ""
+
+#. Default: This is a summary of the discussions you have created
+#: ././templates/discussion/organism/overview-user.pt:8
+msgid "summary_your_discussions"
+msgstr ""
+
+#. Default: You have not created any discussion yet, but you can use the add
+#. button in the bottom right to create your own discussion.
+#: ././templates/discussion/organism/overview-user.pt:11
+msgid "you_created_no_discussion"
+msgstr ""
+
+#. Default: Writable
+#: ././templates/discussion/organism/overview-user.pt:31
+msgid "writable"
+msgstr ""
+
+#. Default: Diese Diskussion ist geschlossen und es können keine weiteren
+#. Beiträge mehr hinzugefügt werden.
+#: ././templates/discussion/organism/dialog-space.pt:8
+msgid "discussion_is_read_only"
+msgstr ""
+
+#. Default: It has an estimated cost of
+#: ././templates/discussion/organism/add-statement.pt:102
+msgid "decidotron_cost_of_position"
+msgstr ""
+
+#. Default: Die Zeit zum hinzufügen von neuen Vorschlägen ist abgelaufen. Du
+#. kannst allerdings noch abstimmen!
+#: ././templates/discussion/organism/add-statement.pt:139
+msgid "decidotron_positions_ended"
+msgstr ""
+
+#. Default: Complete View
+#: ././templates/discussion/organism/graph-sidebar.pt:7
+msgid "complete_view"
+msgstr ""
+
+#. Default: Default View
+#: ././templates/discussion/organism/graph-sidebar.pt:11
+msgid "default_view"
+msgstr ""
+
+#. Default: Labels
+#: ././templates/discussion/organism/graph-sidebar.pt:15
+msgid "labels"
+msgstr ""
+
+#. Default: Positions
+#: ././templates/discussion/organism/graph-sidebar.pt:19
+msgid "positions"
+msgstr ""
+
+#. Default: My path
+#: ././templates/discussion/organism/graph-sidebar.pt:27
+#: ././templates/discussion/organism/graph-sidebar.pt:31
+msgid "my_path"
+msgstr ""
+
+#. Default: My statements
+#: ././templates/discussion/organism/graph-sidebar.pt:35
+msgid "my_statements"
+msgstr ""
+
+#. Default: Supports
+#: ././templates/discussion/organism/graph-sidebar.pt:40
+msgid "supports_on_my_statements"
+msgstr ""
+
+#. Default: Relations
+#: ././templates/discussion/organism/graph-sidebar.pt:45
+msgid "attacks_on_my_statements"
+msgstr ""
+
+#. Default: Vote!
+#: ././templates/discussion/organism/dialog-sidebar.pt:34
+msgid "decidotron_vote_button_label"
+msgstr ""
+
+#. Default: Login to vote!
+#: ././templates/discussion/organism/dialog-sidebar.pt:41
+msgid "decidotron_login_to_vote_button_label"
+msgstr ""
+
+#. Default: Voting will be possible from
+#: ././templates/discussion/organism/dialog-sidebar.pt:46
+msgid "decidotron_vote_will_start_at_button_label"
+msgstr ""
+
+#. Default: Results
+#: ././templates/discussion/organism/dialog-sidebar.pt:52
+msgid "decidotron_vote_results_button_label"
+msgstr ""
+
+#. Default: Restart Discussion
+#: ././templates/discussion/organism/dialog-sidebar.pt:58
+msgid "restart_discussion"
+msgstr ""
+
+#. Default: Share URL
+#: ././templates/discussion/organism/dialog-sidebar.pt:64
+msgid "share_url"
+msgstr ""
+
+#. Default: Opinion Barometer
+#: ././templates/discussion/organism/dialog-sidebar.pt:70
+msgid "Barometer"
+msgstr ""
+
+#. Default: Graph View
+#: ././templates/discussion/organism/dialog-sidebar.pt:76
+msgid "graph_view"
+msgstr ""
+
+#. Default: Search for Statements
+#: ././templates/discussion/organism/dialog-sidebar.pt:82
+msgid "search"
+msgstr ""
+
+#. Default: Ask a Friend
+#: ././templates/discussion/organism/dialog-sidebar.pt:88
+msgid "ask_friend"
+msgstr ""
+
+#. Default: Leave the Discussion
+#: ././templates/discussion/organism/dialog-sidebar.pt:94
+msgid "exit_discussion"
+msgstr ""

@@ -6,10 +6,10 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
+          <h5 class="modal-title" id="myModalLabelEditStatements">${extras.title.edit_statement}</h5>
           <button type="button" id="popup-edit-statement-close" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h5 class="modal-title" id="myModalLabelEditStatements">${extras.title.edit_statement}</h5>
         </div>
         <div id="popup-edit-statement-body">
           <p id="popup-edit-statement-success-description" class="text-success"></p>
@@ -44,10 +44,10 @@
         <div class="modal-header">
           <h4 class="modal-title">
             <span id="myModalLabelConfirmDialog">...</span>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
           </h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
         </div>
@@ -69,15 +69,15 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelConfirmRowDialog">...</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelConfirmRowDialog">...</h4>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-md-6"></div>
-            <div class="col-md-offset-1 col-md-5"></div>
+            <div class="offset-md-1 col-md-5"></div>
           </div>
         </div>
         <div class="modal-footer">
@@ -100,10 +100,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelConfirmDialogCheckbox">...</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelConfirmDialogCheckbox">...</h4>
         </div>
         <div class="modal-body"></div>
         <div id="modal-checkbox-body">
@@ -134,10 +134,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h5 class="modal-title" id="myModalLabelURL">${extras.tag.url_sharing}</h5>
           <button type="button" id="popup-url-sharing-close" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h5 class="modal-title" id="myModalLabelURL">${extras.tag.url_sharing}</h5>
         </div>
         <div id="popup-url-sharing-body">
           <div id="popup-url-sharing-content"></div>
@@ -177,10 +177,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h5 class="modal-title" i18n:translate="information_missing">Information are missing</h5>
           <button type="button" id="popup-complete-login-close" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h5 class="modal-title" i18n:translate="information_missing">Information are missing</h5>
         </div>
         <div id="popup-complete-login-body">
           <p class="text-info" style="margin: 0 2em;" i18n:translate="plase_add_missing_infos_we_add_account">During the
@@ -300,19 +300,22 @@
   </div>
 
   <!-- LOGIN POPUP -->
-  <div class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin"
+  <div class="modal" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin"
        aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
+          <ul class="nav nav-tabs">
+            <li id="nav-tab-login" class="nav-item tab-login">
+              <a class="nav-link active" href="#login" i18n:translate="login">Log In</a>
+            </li>
+            <li id="nav-tab-signup" class="nav-item tab-login">
+              <a class="nav-link" href="#signup" i18n:translate="sign_up">Sign Up</a>
+            </li>
+          </ul>
           <button type="button" id="popup-login-close" class="close" data-dismiss="modal" aria-label="Close"><span
               aria-hidden="true">&times;</span>
           </button>
-          <br>
-          <ul class="nav nav-tabs" style="display: table; margin: 0 auto;">
-            <li id="nav-tab-login" class="tab-login active"><a href="#login" i18n:translate="login">Log In</a></li>
-            <li id="nav-tab-signup" class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>
-          </ul>
         </div>
         <div id="popup-login-body">
           <div class="alert alert-secondary">
@@ -320,44 +323,41 @@
               Share Alike (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>)
               and will be used for scientific purposes. We will never share your
               password or e-mail address. By registering or logging in, you are accepting these terms.</p>
+            <p class="text-info" i18n:translate="hhu_ldap">
+              If you are a member of the Heinrich-Heine-University Düsseldorf, you can use your account from your
+              university's identity management (LDAP) to log in.
+            </p>
           </div>
           <div class="tab-content">
             <div id="login">
               <form autocomplete="on">
                 <div class="form-group">
-                  <div class="col-md-12">
-                    <label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">
-                      Your Nickname
-                    </label>
-                    <div class="col-md-9 input-group">
-                      <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                      <input id="login-user" type="text" class="form-control"
-                             placeholder="${extras.tag.placeholder_nickname}" autocomplete="on">
-                    </div>
+                  <label for="login-user" i18n:translate="your_nickname">
+                    Your Nickname
+                  </label>
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                      <i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                    <input id="login-user" type="text" class="form-control"
+                           placeholder="${extras.tag.placeholder_nickname}" autocomplete="on">
                   </div>
                 </div>
                 <div class="form-group">
-                  <div class="col-md-12">
-                    <label class="col-md-3 control-label" for="login-pw" i18n:translate="your_password">
-                      Your Password
-                    </label>
-                    <div class="col-md-9 input-group">
-                      <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-                      <input id="login-pw" type="password" class="form-control"
-                             placeholder="${extras.tag.placeholder_password}" autocomplete="on">
-                    </div>
+                  <label for="login-pw" i18n:translate="your_password">
+                    Your Password
+                  </label>
+                  <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
+                    <input id="login-pw" type="password" class="form-control"
+                           placeholder="${extras.tag.placeholder_password}" autocomplete="on">
                   </div>
                 </div>
               </form>
-              <div style="padding-left: 15px;">
-                <label>
-                  <input id="keep-login-box" type="checkbox" style="float:left;">
+              <div class="form-check form-check-inline">
+                <input id="keep-login-box" class="form-check-input" type="checkbox" style="float:left;">
+                <label for="keep-login-box" class="form-check-label">
                   <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
                 </label>
-                <a id="popup-login-forgot-password-text"
-                   class="cursor-pointer pull-right" i18n:translate="forgot_password">
-                  Forgot your password?
-                </a>
               </div>
               <div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">
                 <label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">
@@ -375,13 +375,24 @@
                        name="form.passwordrequest.submitted" value="${extras.buttons.request_password}"
                        class="btn btn-primary">
               </div>
-              <div class="pull-right">
-                <button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">
-                  Log In
-                </button>
-                <button type="button" class="btn btn-secondary" id="popup-login-close-button2" i18n:translate="close">
-                  Close
-                </button>
+              <div class="row pt-3">
+                <div class="col">
+                  <a id="popup-login-forgot-password-text"
+                     class="cursor-pointer btn btn-light" i18n:translate="forgot_password">
+                    Forgot your password?
+                  </a>
+                </div>
+                <div class="col">
+                  <div class="pull-right">
+                    <button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">
+                      Log In
+                    </button>
+                    <button type="button" class="btn btn-secondary"
+                            id="popup-login-close-button2" i18n:translate="close">
+                      Close
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
             <div id="signup">
@@ -576,13 +587,13 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
+          <span id="popup-set-premisegroups-counter" class="lead badge" style="float:right; margin: 1em;">1/4</span>
+          <h4 class="modal-title"
+              id="myModalLabelSetPGroup" i18n:translate="need-help-to-understand-statement">${extras.tag.need_help_to_understand_statement}</h4>
           <button type="button" id="popup-set-premisegroups-close" class="close" data-dismiss="modal"
                   aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <span id="popup-set-premisegroups-counter" class="lead badge" style="float:right; margin: 1em;">1/4</span>
-          <h4 class="modal-title"
-              id="myModalLabelSetPGroup" i18n:translate="need-help-to-understand-statement">${extras.tag.need_help_to_understand_statement}</h4>
         </div>
         <div id="popup-set-premisegroups-body" class="lead">
           <span>${extras.tag.set_premisegroups_intro1}</span><strong><span
@@ -650,10 +661,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h5 class="modal-title" id="myModalLabelNews" i18n:translate="writing_message">Writing a new message</h5>
           <button type="button" id="popup-write-news-close" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h5 class="modal-title" id="myModalLabelNews" i18n:translate="writing_message">Writing a new message</h5>
         </div>
         <div id="popup-writing-news-body">
 
@@ -711,12 +722,12 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" id="popup-write-notification-close" class="close" data-dismiss="modal"
-                  aria-label="Close"><span aria-hidden="true">&times;</span>
-          </button>
           <h5 class="modal-title" id="myModalLabelNotification" i18n:translate="writing_message">
             Writing a new message
           </h5>
+          <button type="button" id="popup-write-notification-close" class="close" data-dismiss="modal"
+                  aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div id="popup-notification-body">
 
@@ -770,14 +781,14 @@
   </div>
 
   <!-- ADD TOPIC -->
-  <div class="modal fade in" id="popup-add-topic" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddTopic"
+  <div class="modal in" id="popup-add-topic" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddTopic"
        aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 id="myModalLabelAddTopic" i18n:translate="add_topic">Add Topic</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
           </button>
-          <h4 id="myModalLabelAddTopic" i18n:translate="add_topic">Add Topic</h4>
         </div>
         <div class="modal-body">
 
@@ -888,10 +899,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelFlagStatement" i18n:translate="select-reason">Selecting a reason</h4>
           <button name="popup-flag-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelFlagStatement" i18n:translate="select-reason">Selecting a reason</h4>
         </div>
         <div class="modal-body">
           <p class="statement_text lead">
@@ -975,11 +986,11 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelFlagArgument" i18n:translate="reporting_parts_argument">Reporting
+            (parts of) an argument</h4>
           <button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelFlagArgument" i18n:translate="reporting_parts_argument">Reporting
-            (parts of) an argument</h4>
         </div>
         <div class="modal-body">
           <p class="lead">
@@ -1016,10 +1027,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelDuplicateStatement">${extras.title.statement_is_duplicate}</h4>
           <button name="popup-duplicate-statement-close" type="button" class="close" data-dismiss="modal"
                   aria-label="Close"><span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelDuplicateStatement">${extras.title.statement_is_duplicate}</h4>
         </div>
         <div class="modal-body">
           <p class="lead">${extras.title.you_have_selected_statement}:</p>
@@ -1052,10 +1063,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelChooseStatement">${extras.title.select_statement}</h4>
           <button name="popup-choose-statement-close" type="button" class="close" data-dismiss="modal"
                   aria-label="Close"><span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelChooseStatement">${extras.title.select_statement}</h4>
         </div>
         <div class="modal-body">
           <p class="lead">${extras.title.select_multiple_statements}</p>
@@ -1071,11 +1082,11 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">Split
+            Statements</h4>
           <button name="popup-split-statement-close" type="button" class="close" data-dismiss="modal"
                   aria-label="Close"><span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">Split
-            Statements</h4>
         </div>
         <div class="modal-body">
           <p class="lead" i18n:translate="split_multiple_statements">
@@ -1107,12 +1118,12 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button name="popup-split-premisegroup-close" type="button" class="close" data-dismiss="modal"
-                  aria-label="Close"><span aria-hidden="true">&times;</span>
-          </button>
           <h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">
             Split Statements
           </h4>
+          <button name="popup-split-premisegroup-close" type="button" class="close" data-dismiss="modal"
+                  aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <p class="lead" i18n:translate="split_multiple_statements_of_pgroup">
@@ -1140,10 +1151,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelMergeStatement" i18n:translate="merge_statement">Merge Statement</h4>
           <button name="popup-merge-statement-close" type="button" class="close" data-dismiss="modal"
                   aria-label="Close"><span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelMergeStatement" i18n:translate="merge_statement">Merge Statement</h4>
         </div>
         <div class="modal-body">
           <p class="lead" i18n:translate="merge_multiple_statements">
@@ -1175,13 +1186,13 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelMergePremisegroup" i18n:translate="merge_statement">
+            Merge Statement
+          </h4>
           <button name="popup-merge-premisegroup-close" type="button" class="close" data-dismiss="modal"
                   aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelMergePremisegroup" i18n:translate="merge_statement">
-            Merge Statement
-          </h4>
         </div>
         <div class="modal-body">
           <p class="lead" i18n:translate="merge_multiple_statements_of_pgroup">
@@ -1210,13 +1221,13 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
           <h4 class="modal-title" id="myModalLabelDelete">
             <i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i>
             <span i18n:translate="caution">Caution</span>
           </h4>
+          <button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <p class="lead" i18n:translate="do_you_really_disassociate_step_irreversible">
@@ -1239,12 +1250,12 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button name="popup-jump-graph-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
           <h4 class="modal-title" id="myModalLabelPositions" i18n:translate="choose_a_step_to_jump_in">
             Please choose a step to jump in
           </h4>
+          <button name="popup-jump-graph-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <p class="lead" i18n:translate="below_you_will_find_list_with_jump_arguments">
@@ -1262,10 +1273,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelReferences" i18n:translate="refereces">References</h4>
           <button name="popup-references-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelReferences" i18n:translate="refereces">References</h4>
         </div>
         <div class="modal-body">
           <div id="popup-references-body">
@@ -1325,10 +1336,10 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelBarometer">...</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="myModalLabelBarometer">...</h4>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -1345,7 +1356,7 @@
                        data-offstyle="default">
               </div>
             </div>
-            <div class="col-md-offset-1 col-md-5"></div>
+            <div class="offset-md-1 col-md-5"></div>
           </div>
         </div>
         <div class="modal-footer">
@@ -1363,14 +1374,21 @@
   </div>
 
   <!-- PRIVACY POLICY COOKIE -->
-  <div id="privacy-policy-popup">
-    <div class="row">
-      <div class="col-md-10">
-        <span class="lead" id="privacy-policy-text"></span>
-        <a id="privacy-policy-link" href="/privacy_policy"></a>
+  <div id="cookie-toast" class="toast" role="alert" data-autohide="false">
+    <div class="toast-header bg-warning">
+      <strong class="mr-auto text-dark" i18n:translate="cookie-toast-header">Cookies</strong>
+      <button type="button" class="ml-2 mb-1 close" aria-label="Close"
+              onclick="$('#cookie-toast').toast('hide')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="toast-body">
+      <div i18n:translate="cookie-toast-body">
+        If you continue using our website, we'll assume that you are happy to receive all cookies.
       </div>
-      <div class="col-md-2">
-        <button id="privacy-policy-btn" class="btn btn-default"></button>
+      <div class="d-flex flex-row-reverse">
+        <a class="btn btn-sm btn-link" href="/privacy_policy"
+             i18n:translate="cookie-toast-more-btn">More Information</a>
       </div>
     </div>
   </div>

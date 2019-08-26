@@ -1,26 +1,26 @@
 <!-- snippet of discussion created by the user. here options like the ab can be set (if the user is an admin)-->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-  <div class="container colored-container">
+  <div class="container colored-container discussion-overview">
     <div class="row">
       <div class="col-md-12">
         <h4 i18n:translate="more_discussions" class="text-center">More Discussions</h4>
         <div tal:omit-tag="" tal:condition="extras.is_admin">
           <p i18n:translate="summary_discussion_other_users_but_admin"
-                  class="lead text-center text-danger" tal:condition="len(issues.other)>0">
+              class="lead text-center text-danger" tal:condition="len(issues.other)>0">
             This is a summary of discussions other participants have created, but you are an admin. So you can en-
-            and disable these discussions too:</p>
+            and disable these discussions too</p>
         </div>
         <div tal:omit-tag="" tal:condition="not:extras.is_admin">
           <p i18n:translate="summary_discussion_other_users"
-                  class="lead text-center" tal:condition="len(issues.other)>0">
-            This is a summary of discussions other participants have created:
+              class="lead text-center" tal:condition="len(issues.other)>0">
+            This is a summary of discussions other participants have created
           </p>
         </div>
         <p i18n:translate="other_users_not_discussion" class="lead text-center" tal:condition="len(issues.other)<1">
           Other users have not created any discussion yet.
         </p>
 
-        <table class="table table-striped table-hover" tal:condition="len(issues.other)>0">
+        <table class="table table-hover table-responsive-lg" tal:condition="len(issues.other)>0">
           <thead>
           <tr>
             <th i18n:translate="title">Titel</th>
@@ -59,8 +59,9 @@
             <td>
               <img tal:condition="issue.lang.is_de" src="${request.static_path('dbas:static/images/flags/de-24.png')}"
                                                     alt="flag_de">
-              <img tal:condition="issue.lang.is_en" src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}"
-                                                    alt="flag_us-gb">
+              <img tal:condition="issue.lang.is_en"
+                  src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}"
+                  alt="flag_us-gb">
             </td>
             <td>${issue.date}</td>
             <td tal:condition="not:extras.is_admin">
@@ -99,7 +100,7 @@
               <a href="${issue.short_url}" title="${issue.url}">${issue.short_url}</a>
             </td>
             <td tal:condition="not:issue.is_enabled">
-                    ${issue.short_url}
+                ${issue.short_url}
             </td>
           </tr>
           </tbody>
