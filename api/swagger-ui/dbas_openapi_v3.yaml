@@ -3,7 +3,7 @@ servers:
   - url: 'http://localhost:4284/api'
   - url: 'https://dbas.cs.uni-duesseldorf.de/api'
 info:
-  version: "1.21.0"
+  version: "1.22.0"
   title: D-BAS
 
 paths:
