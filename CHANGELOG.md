@@ -1,4 +1,11 @@
-### 1.21.1 (2019-07-18)
+### 1.22.0 (2019-08-26)
+- Migrate to Bootstrap 4 and rework UI [!755](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/755)
+- Add Makefile to split old shell script [!761](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/761)
+- Simplify and correct duplication check in `set_statements_as_new_premisegroup` [!762](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/762)
+- Fix API route in ElasticSearch [!763](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/763)
+- Fix wrong counting of password length [!764](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/764)
+
+### 1.21.0 (2019-07-18)
 - Save the user's group in the JWT token
 - Update node version
 - Add route to create an issue from API [!759](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/759)
