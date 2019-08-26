@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2019-08-19 08:44+0000\n"
+"POT-Creation-Date: 2019-08-19 13:59+0000\n"
 "PO-Revision-Date: 2016-10-25 10:46+0200\n"
 "Last-Translator: Christian Meter <meter@hhu.de>\n"
 "Language-Team: English\n"
@@ -85,7 +85,7 @@ msgid "api_token_revoke"
 msgstr "Revoke"
 
 #. Default: Generate a new application token
-#: templates/admin.pt:218
+#: templates/admin.pt:217
 msgid "api_token_generate_title"
 msgstr "Generate a new App Token"
 

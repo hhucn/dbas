@@ -323,6 +323,10 @@
               Share Alike (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>)
               and will be used for scientific purposes. We will never share your
               password or e-mail address. By registering or logging in, you are accepting these terms.</p>
+            <p class="text-info" i18n:translate="hhu_ldap">
+              If you are a member of the Heinrich-Heine-University Düsseldorf, you can use your account from your
+              university's identity management (LDAP) to log in.
+            </p>
           </div>
           <div class="tab-content">
             <div id="login">
