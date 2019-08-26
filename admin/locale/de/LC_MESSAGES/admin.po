@@ -1,13 +1,12 @@
 #
 # German translations for PACKAGE package
 # This file is distributed under the same license as the PACKAGE package.
-# Tobias Krauthoff <tobias.krauthoff@uni-duesseldorf.de>, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2019-02-04 13:47+0000\n"
+"POT-Creation-Date: 2019-08-19 13:59+0000\n"
 "PO-Revision-Date: 2016-10-25 10:45+0200\n"
-"Last-Translator: Tobias Krauthoff <tobias.krauthoff@uni-duesseldorf.de>\n"
+"Last-Translator: Christian Meter <meter@hhu.de>\n"
 "Language-Team: German\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -22,77 +21,77 @@ msgid "decentralized_moderation_system"
 msgstr "Admin Menü"
 
 #. Default: Error
-#: templates/admin.pt:8 templates/admin.pt:57
+#: templates/admin.pt:8 templates/admin.pt:58
 msgid "error"
 msgstr "Fehler"
 
 #. Default: You have no rights for this page!
-#: templates/admin.pt:8
+#: templates/admin.pt:9
 msgid "no_admin_message"
 msgstr "Sie haben keine Rechte für diese Seite"
 
 #. Default: Every edit and/or delete operation can have far-reaching
 #. implications for the complete system. Maybe it will be unusable after the
 #. operation!
-#: templates/admin.pt:10
+#: templates/admin.pt:11
 msgid "admin_caution_message"
 msgstr ""
 "Jede Änderung/Löschung kann weitreichende Folgen für das gesamte System "
 "haben. Eventuell ist dieses danach sogar unbenutzbar!"
 
 #. Default: Your Nickname
-#: templates/admin.pt:26
+#: templates/admin.pt:27
 msgid "your_nickname"
 msgstr "Nickname"
 
 #. Default: Your Password
-#: templates/admin.pt:36
+#: templates/admin.pt:37
 msgid "your_password"
 msgstr "Passwort"
 
 #. Default: Keep me logged in
-#: templates/admin.pt:50
+#: templates/admin.pt:51
 msgid "keep_me_logged_in"
 msgstr "Eingeloggt bleiben"
 
 #. Default: Log In
-#: templates/admin.pt:63
+#: templates/admin.pt:64
 msgid "login"
 msgstr "Log In"
 
 #. Default: Security
-#: templates/admin.pt:179
+#: templates/admin.pt:175
 msgid "security"
 msgstr "Sicherheit"
 
 #. Default: Application tokens
-#: templates/admin.pt:188
+#: templates/admin.pt:184
 msgid "Application-tokens"
 msgstr "Application tokens"
 
 #. Default: Owner
-#: templates/admin.pt:195 templates/admin.pt:230
+#: templates/admin.pt:191 templates/admin.pt:227
 msgid "api_token_owner"
 msgstr "Besitzer"
 
 #. Default: Created
-#: templates/admin.pt:196
+#: templates/admin.pt:192
 msgid "api_token_created"
 msgstr "Erstellt"
 
 #. Default: Revoke
-#: templates/admin.pt:197
+#: templates/admin.pt:193
 msgid "api_token_revoke"
 msgstr "Zurückziehen"
 
 #. Default: Generate a new application token
-#: templates/admin.pt:221
+#: templates/admin.pt:217
 msgid "api_token_generate_title"
 msgstr "Neues App-Token erstellen"
 
 #. Default: Please write this token down. You will not be able to see this
 #. token again.
-#: templates/admin.pt:228
+#: templates/admin.pt:225
 msgid "api_token_warning"
 msgstr "Bitte notieren sie sich das Token. Sie werden es nicht erneut sehen."
 

@@ -1,139 +1,136 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/review" i18n:translate="review">Review</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><span i18n:translate="duplicates">Duplicates</span></li>
+    </ol>
+  </nav>
 
-    <div class="row" style="margin-bottom: 1em;">
-      <div class="col-md-12">
-        <ul class="breadcrumb">
-          <li><a href="/review" i18n:translate="review">Review</a></li>
-          <li class="active" i18n:translate="duplicates">Duplicates</li>
+  <div class="row" style="margin-bottom: 1em;">
+    <div class="col-md-7">
+      <h6>${structure:subpage.elements.reviewed_element.reason}
+        <a id="more_about_reason" href="#" i18n:translate="wrapped_more">(more)</a>
+        <a id="less_about_reason" href="#" i18n:translate="wrapped_less" style="display: none;">(less)</a>
+      </h6>
+    </div>
+    <div class="col-md-5" tal:condition="subpage.button_set.is_duplicate">
+      <div class="btn-group pull-right">
+        <a id="duplicate_ack" href="#"
+           class="review-btn-duplicate btn btn-success"
+           data-queue="duplicates" i18n:translate="duplicate"
+           data-id="${subpage.elements.reviewed_element.stats.id}">
+          Duplicate
+        </a>
+        <a id="duplicate_nack" href="#"
+           class="review-btn-duplicate btn btn-danger"
+           data-queue="duplicates" i18n:translate="unique"
+           data-id="${subpage.elements.reviewed_element.stats.id}">
+          Unique
+        </a>
+        <a id="duplicate_skip" href="#" class="review-btn-duplicate btn btn-info"
+           data-queue="duplicates" i18n:translate="skip_it"
+           data-id="${subpage.elements.reviewed_element.stats.id}">
+          Skip it
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" id="more_about_reason_content" style="display:none; margin-bottom: 1em;">
+    <div class="col-md-7">
+    </div>
+    <div class="col-md-5">
+      <blockquote class="blockquote-reverse" style="text-align: left;">
+        <p class="lead" i18n:translate="information_for_the_different_buttons">
+          Information for the different buttons
+        </p>
+        <ul tal:condition="subpage.button_set.is_duplicate" style="padding-left: 0.5em">
+          <li><span
+                  class="text-success" i18n:translate="its_duplicate">It's a duplicate</span>
+            <span i18n:translate="marked_statement_is_duplicate">, if the marked statement is a duplicate.</span>
+          </li>
+          <li>
+            <span class="text-danger" i18n:translate="its_unique">It's unique</span>
+            <span i18n:translate="duplicate_is_unique">for marked statements, which are unique.</span>
+          </li>
+          <li>
+            <span class="text-info" i18n:translate="skip_it">Skip it</span>
+            <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next statement.</span>
+          </li>
         </ul>
-      </div>
+      </blockquote>
     </div>
+  </div>
 
-    <div class="row" style="margin-bottom: 1em;">
-      <div class="col-md-7">
-        <h6>${structure:subpage.elements.reviewed_element.reason}
-          <a id="more_about_reason" href="#" i18n:translate="wrapped_more">(more)</a>
-          <a id="less_about_reason" href="#" i18n:translate="wrapped_less" style="display: none;">(less)</a>
-        </h6>
-      </div>
-      <div class="col-md-5" tal:condition="subpage.button_set.is_duplicate">
-        <div class="btn-group pull-right">
-          <a id="duplicate_ack" href="#"
-             class="review-btn-duplicate btn btn-success btn-sm"
-             data-queue="duplicates" i18n:translate="duplicate"
-             data-id="${subpage.elements.reviewed_element.stats.id}">
-            Duplicate
-          </a>
-          <a id="duplicate_nack" href="#"
-             class="review-btn-duplicate btn btn-danger btn-sm"
-             data-queue="duplicates" i18n:translate="unique"
-             data-id="${subpage.elements.reviewed_element.stats.id}">
-            Unique
-          </a>
-          <a id="duplicate_skip" href="#" class="review-btn-duplicate btn btn-info btn-sm"
-             data-queue="duplicates" i18n:translate="skip_it"
-             data-id="${subpage.elements.reviewed_element.stats.id}">
-            Skip it
-          </a>
-        </div>
-      </div>
-    </div>
+  <div class="row" style="margin-bottom: 1em;">
 
-    <div class="row" id="more_about_reason_content" style="display:none; margin-bottom: 1em;">
-      <div class="col-md-7">
-      </div>
-      <div class="col-md-5">
-        <blockquote class="blockquote-reverse" style="text-align: left;">
-          <p class="lead" i18n:translate="information_for_the_different_buttons">
-            Information for the different buttons
-          </p>
-          <ul tal:condition="subpage.button_set.is_duplicate" style="padding-left: 0.5em">
-            <li><span
-                    class="text-success" i18n:translate="its_duplicate">It's a duplicate</span>
-              <span i18n:translate="marked_statement_is_duplicate">, if the marked statement is a duplicate.</span>
-            </li>
-            <li>
-              <span class="text-danger" i18n:translate="its_unique">It's unique</span>
-              <span i18n:translate="duplicate_is_unique">for marked statements, which are unique.</span>
-            </li>
-            <li>
-              <span class="text-info" i18n:translate="skip_it">Skip it</span>
-              <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next statement.</span>
-            </li>
-          </ul>
-        </blockquote>
-      </div>
-    </div>
-
-    <div class="row" style="margin-bottom: 1em;">
-
-      <div class="col-md-offset-1 col-md-6">
-        <div class="well well-sm center" style="text-align: justify;">
-            <div style="margin-bottom: 1em;">
+    <div class="offset-md-1 col-md-6">
+      <div class="well well-sm center" style="text-align: justify;">
+        <div style="margin-bottom: 1em;">
                   <span tal:omit-tag="" tal:switch="len(subpage.elements.reviewed_element.issue_titles) > 1">
                     <span tal:case="False" i18n:translate="in_the_discussion_about">In the discussion about</span>
                     <span tal:case="True" i18n:translate="in_the_discussions_about">In the discussions about</span>
                   </span>
-              <i tal:repeat="title subpage.elements.reviewed_element.issue_titles">${structure:title}
-                <span tal:condition="not:repeat.title.end">,</span></i>
-              <span i18n:translate="following_statement_was_flagged">following statement was flagged.</span>
-            </div>
-            <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-            <span class="lead" id="reviewed-argument-text">
-                    ${structure:subpage.elements.reviewed_element.text}
-            </span>
-            <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
-            <br>
-          </div>
-
-        <div class="well well-sm center"
-             style="text-align: justify;" tal:condition="subpage.button_set.is_duplicate">
-          <span i18n:translate="this_is_original_statements">This is the original statement:</span>
-          <br>
-          <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-          <span class="lead" id="reviewed-argument-text">
-                  ${subpage.elements.reviewed_element.duplicate_of}
-          </span>
-          <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+          <i tal:repeat="title subpage.elements.reviewed_element.issue_titles">${structure:title}
+            <span tal:condition="not:repeat.title.end">,</span></i>
+          <span i18n:translate="following_statement_was_flagged">following statement was flagged.</span>
         </div>
-
+        <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+        <span class="lead" id="reviewed-argument-text">
+                ${structure:subpage.elements.reviewed_element.text}
+        </span>
+        <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+        <br>
       </div>
 
-      <div class="col-md-offset-2 col-md-3">
-        <table id="stats-table" class="table table-condensed pull-right"
-               style="font-size: 14px;" tal:attributes="data-extra-info subpage.elements.reviewed_element.extra_info">
-          <tbody>
-          <tr>
-            <td i18n:translate="reported">Reported</td>
-            <td>${subpage.elements.reviewed_element.stats.reported}</td>
-          </tr>
-          <tr>
-            <td i18n:translate="reported_by">Reported by</td>
-            <td>
-              <a href="${subpage.elements.reviewed_element.stats.reporter_url}">
-                <img class="img-circle" src="${subpage.elements.reviewed_element.stats.reporter_gravatar}">
-                <span>${subpage.elements.reviewed_element.stats.reporter}</span>
-              </a>
-            </td>
-          </tr>
-          <tal:comment replace="nothing">
-            <tr>
-              <td i18n:translate="viewed">Viewed</td>
-              <td>${subpage.elements.reviewed_element.stats.viewed}</td>
-            </tr>
-            <tr>
-              <td i18n:translate="attacks">Relations</td>
-              <td>${subpage.elements.reviewed_element.stats.attacks}</td>
-            </tr>
-            <tr>
-              <td i18n:translate="supports">Supports</td>
-              <td>${subpage.elements.reviewed_element.stats.supports}</td>
-            </tr>
-          </tal:comment>
-          </tbody>
-        </table>
+      <div class="well well-sm center"
+           style="text-align: justify;" tal:condition="subpage.button_set.is_duplicate">
+        <span i18n:translate="this_is_original_statements">This is the original statement:</span>
+        <br>
+        <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+        <span class="lead" id="reviewed-argument-text">
+                ${subpage.elements.reviewed_element.duplicate_of}
+        </span>
+        <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
       </div>
 
     </div>
+
+    <div class="offset-md-2 col-md-3">
+      <table id="stats-table" class="table table-condensed pull-right"
+             style="font-size: 14px;" tal:attributes="data-extra-info subpage.elements.reviewed_element.extra_info">
+        <tbody>
+        <tr>
+          <td i18n:translate="reported">Reported</td>
+          <td>${subpage.elements.reviewed_element.stats.reported}</td>
+        </tr>
+        <tr>
+          <td i18n:translate="reported_by">Reported by</td>
+          <td>
+            <a href="${subpage.elements.reviewed_element.stats.reporter_url}">
+              <img class="img-circle" src="${subpage.elements.reviewed_element.stats.reporter_gravatar}">
+              <span>${subpage.elements.reviewed_element.stats.reporter}</span>
+            </a>
+          </td>
+        </tr>
+        <tal:comment replace="nothing">
+          <tr>
+            <td i18n:translate="viewed">Viewed</td>
+            <td>${subpage.elements.reviewed_element.stats.viewed}</td>
+          </tr>
+          <tr>
+            <td i18n:translate="attacks">Relations</td>
+            <td>${subpage.elements.reviewed_element.stats.attacks}</td>
+          </tr>
+          <tr>
+            <td i18n:translate="supports">Supports</td>
+            <td>${subpage.elements.reviewed_element.stats.supports}</td>
+          </tr>
+        </tal:comment>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 
 </tal:block>

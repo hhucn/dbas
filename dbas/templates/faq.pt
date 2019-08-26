@@ -22,7 +22,7 @@
 
       <div class="container colored-container">
         <div class="row">
-          <div class="col-md-offset-2 col-md-8">
+          <div class="offset-md-2 col-md-8">
             <h5>
               <span i18n:translate="faq_question_ldap">How do we handle your login data?</span>
             </h5>

@@ -31,7 +31,6 @@ clean-js:
 	find . \( -name ${dbas_min_js} -o -name ${admin_min_js} \) -type f -delete
 
 sass:
-	@echo ":: Compile SASS"
 	sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed
 	sass dbas/static/css/creative.sass dbas/static/css/creative.css --style compressed
 

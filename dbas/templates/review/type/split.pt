@@ -1,13 +1,10 @@
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-
-  <div class="row" style="margin-bottom: 1em;">
-    <div class="col-md-12">
-      <ul class="breadcrumb">
-        <li><a href="/review" i18n:translate="review">Review</a></li>
-        <li class="active" i18n:translate="split">Split</li>
-      </ul>
-    </div>
-  </div>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/review" i18n:translate="review">Review</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><span i18n:translate="split">Split</span></li>
+    </ol>
+  </nav>
 
   <div class="row" style="margin-bottom: 1em;">
     <div class="col-md-7">
@@ -18,17 +15,17 @@
     </div>
     <div class="col-md-5" tal:condition="subpage.button_set.is_split">
       <div class="btn-group pull-right">
-        <a id="split_ack" href="#" class="review-btn-split btn btn-success btn-sm"
+        <a id="split_ack" href="#" class="review-btn-split btn btn-success"
            data-queue="splits" i18n:translate="change_okay"
            data-id="${subpage.elements.reviewed_element.stats.id}">
           Change is okay
         </a>
-        <a id="split_nack" href="#" class="review-btn-split btn btn-danger btn-sm"
+        <a id="split_nack" href="#" class="review-btn-split btn btn-danger"
            data-queue="splits" i18n:translate="reject_it"
            data-id="${subpage.elements.reviewed_element.stats.id}">
           Reject it
         </a>
-        <a id="split_skip" href="#" class="review-btn-split btn btn-info btn-sm"
+        <a id="split_skip" href="#" class="review-btn-split btn btn-info"
            data-queue="splits" i18n:translate="skip_it" data-id="${subpage.elements.reviewed_element.stats.id}">
           Skip it
         </a>
@@ -64,7 +61,7 @@
 
   <div class="row" style="margin-bottom: 1em;">
 
-    <div class="col-md-offset-1 col-md-6">
+    <div class="offset-md-1 col-md-6">
 
       <div class="well well-sm center" style="text-align: justify;">
         <div tal:omit-tag="">
@@ -97,7 +94,7 @@
       </div>
     </div>
 
-    <div class="col-md-offset-2 col-md-3">
+    <div class="offset-md-2 col-md-3">
       <table id="stats-table" class="table table-condensed pull-right"
              style="font-size: 14px;" data-extra-info="${subpage.elements.reviewed_element.extra_info}">
         <tbody>

@@ -41,10 +41,10 @@
             <div class="tab-content">
               <div class="tab-pane fade active in" id="inbox">
                 <div class="panel-group" id="accordion" style="margin-top: 2em;">
-                  <div id="${msg.id}" class="panel panel-default" tal:repeat="msg extras.notifications.inbox"
+                  <div id="${msg.id}" class="card" tal:repeat="msg extras.notifications.inbox"
                        style="margin-bottom: 1em;">
-                    <div class="panel-heading">
-                      <h4 class="panel-title">
+                    <div class="card-header">
+                      <h4 class="card-title">
                         <input id="${msg.id}" class="msg-checkbox" type="checkbox">
                         <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion"
                            href="${structure:msg.collapse_link}">
@@ -54,12 +54,12 @@
                         </a>
                         <span class="pull-right" style="padding-right: 1em;">
                           <span i18n:translate="from">From:</span>
-                                ${msg.from_author}, ${msg.timestamp}
+                            ${msg.from_author}, ${msg.timestamp}
                         </span>
                       </h4>
                     </div>
                     <div id="${msg.collapse_id}" class="panel-collapse collapse">
-                      <div class="panel-body">
+                      <div class="card-body">
                         <div>${structure:msg.content}</div>
                         <div tal:condition="msg.show_from_author" style="float:right; padding: 0.2em;">
                           <span i18n:translate="from">From:</span>
@@ -87,23 +87,24 @@
 
               <div class="tab-pane fade in" id="outbox">
                 <div class="panel-group" id="accordion" style="margin-top: 2em;">
-                  <div id="${msg.id}" class="panel panel-default" tal:repeat="msg extras.notifications.outbox"
+                  <div id="${msg.id}" class="card" tal:repeat="msg extras.notifications.outbox"
                        style="margin-bottom: 1em;">
-                    <div class="panel-heading">
-                      <h4 class="panel-title">
+                    <div class="card-header">
+                      <h4 class="card-title">
                         <input class="msg-checkbox" type="checkbox" data-id="${msg.id}">
                         <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion"
                            href="${structure:msg.collapse_link}">
-                          <span class="text-primary notification-title" tal:condition="msg.read">${structure:msg.topic}</span>
+                          <span
+                              class="text-primary notification-title" tal:condition="msg.read">${structure:msg.topic}</span>
                         </a>
                         <span style="float: right; padding-right: 1em;">
                           <span i18n:translate="to">To:</span>
-                                ${msg.to_author}, ${msg.timestamp}
+                            ${msg.to_author}, ${msg.timestamp}
                         </span>
                       </h4>
                     </div>
                     <div id="${msg.collapse_id}" class="panel-collapse collapse">
-                      <div class="panel-body">
+                      <div class="card-body">
                         <div class="notification-content" style="overflow: auto;">${structure:msg.content}</div>
                         <div style="float:right; padding: 0.2em;">
                           <span i18n:translate="to">to:</span>

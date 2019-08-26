@@ -47,13 +47,9 @@ function addCookieConsent() {
     'use strict';
 
     if (!Cookies.get('EU_COOKIE_LAW_CONSENT')) {
-        $('#privacy-policy-popup').show();
-        $('#privacy-policy-text').text(_t(euCookiePopupText));
-        $('#privacy-policy-link').html(_t(euCookiePopoupButton2));
-        $('#privacy-policy-btn').text(_t(euCookiePopoupButton1)).click(function () {
-            $('#privacy-policy-popup').hide();
-            Cookies.set('EU_COOKIE_LAW_CONSENT', true, {expires: 180});
-        });
+        $('#cookie-toast')
+            .toast("show")
+            .on('hide.bs.toast', () => Cookies.set('EU_COOKIE_LAW_CONSENT', true, {expires: 180}));
     }
 }
 
@@ -175,8 +171,8 @@ function prepareLoginRegistrationPopup() {
     // switching tabs
     $('.tab-login a').on('click', function (e) {
         e.preventDefault();
-        $(this).parent().addClass('active');
-        $(this).parent().siblings().removeClass('active');
+        $(this).parent().siblings().children().removeClass('active');
+        $(this).addClass('active');
         var target = $(this).attr('href');
         $('.tab-content > div').not(target).hide();
         $(target).fadeIn(600);
@@ -347,12 +343,12 @@ $(document).ready(function () {
         ajaxStart: function ajaxStartFct() {
             timer && clearTimeout(timer);
             timer = setTimeout(function () {
-                $('body').addClass('loading');
+                $('#ajaxloader').addClass('rotating');
             }, 150);
         },
         ajaxStop: function ajaxStopFct() {
             clearTimeout(timer);
-            $('body').removeClass('loading');
+            $('#ajaxloader').removeClass('rotating');
         }
     });
 

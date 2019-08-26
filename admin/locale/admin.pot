@@ -1,103 +1,95 @@
 #
-# English translations for PACKAGE package
+# SOME DESCRIPTIVE TITLE
 # This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
 "POT-Creation-Date: 2019-08-19 13:59+0000\n"
-"PO-Revision-Date: 2016-10-25 10:46+0200\n"
-"Last-Translator: Christian Meter <meter@hhu.de>\n"
-"Language-Team: English\n"
-"Language: en\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Lingua 4.9\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Lingua 4.13\n"
 
 #. Default: Admin Menu
-#: templates/admin.pt:5
+#: ././templates/admin.pt:5
 msgid "decentralized_moderation_system"
-msgstr "Admin Menu"
+msgstr ""
 
 #. Default: Error
-#: templates/admin.pt:8 templates/admin.pt:58
+#: ././templates/admin.pt:8 ././templates/admin.pt:58
 msgid "error"
-msgstr "Error:"
+msgstr ""
 
 #. Default: You have no rights for this page!
-#: templates/admin.pt:9
+#: ././templates/admin.pt:9
 msgid "no_admin_message"
-msgstr "You have no rights for this page!"
+msgstr ""
 
 #. Default: Every edit and/or delete operation can have far-reaching
 #. implications for the complete system. Maybe it will be unusable after the
 #. operation!
-#: templates/admin.pt:11
+#: ././templates/admin.pt:11
 msgid "admin_caution_message"
 msgstr ""
-"Every edit and/or delete operation can have far-reaching implications for "
-"the complete system. Maybe it will be unusable after the operation!"
 
 #. Default: Your Nickname
-#: templates/admin.pt:27
+#: ././templates/admin.pt:27
 msgid "your_nickname"
-msgstr "Your Nickname"
+msgstr ""
 
 #. Default: Your Password
-#: templates/admin.pt:37
+#: ././templates/admin.pt:37
 msgid "your_password"
-msgstr "Your Password"
+msgstr ""
 
 #. Default: Keep me logged in
-#: templates/admin.pt:51
+#: ././templates/admin.pt:51
 msgid "keep_me_logged_in"
-msgstr "Keep me logged in"
+msgstr ""
 
 #. Default: Log In
-#: templates/admin.pt:64
+#: ././templates/admin.pt:64
 msgid "login"
-msgstr "Log In"
+msgstr ""
 
 #. Default: Security
-#: templates/admin.pt:175
+#: ././templates/admin.pt:175
 msgid "security"
-msgstr "Security"
+msgstr ""
 
 #. Default: Application tokens
-#: templates/admin.pt:184
+#: ././templates/admin.pt:184
 msgid "Application-tokens"
-msgstr "App Tokens"
+msgstr ""
 
 #. Default: Owner
-#: templates/admin.pt:191 templates/admin.pt:227
+#: ././templates/admin.pt:191 ././templates/admin.pt:227
 msgid "api_token_owner"
-msgstr "Owner"
+msgstr ""
 
 #. Default: Created
-#: templates/admin.pt:192
+#: ././templates/admin.pt:192
 msgid "api_token_created"
-msgstr "Created"
+msgstr ""
 
 #. Default: Revoke
-#: templates/admin.pt:193
+#: ././templates/admin.pt:193
 msgid "api_token_revoke"
-msgstr "Revoke"
+msgstr ""
 
 #. Default: Generate a new application token
-#: templates/admin.pt:217
+#: ././templates/admin.pt:217
 msgid "api_token_generate_title"
-msgstr "Generate a new App Token"
+msgstr ""
 
 #. Default: Please write this token down. You will not be able to see this
 #. token again.
-#: templates/admin.pt:225
+#: ././templates/admin.pt:225
 msgid "api_token_warning"
 msgstr ""
-"Please write this token down. You will not be able to see this token again."
-
-#~ msgid "caution"
-#~ msgstr "Achtung"
-
-#~ msgid "Admin"
-#~ msgstr "Admin"
