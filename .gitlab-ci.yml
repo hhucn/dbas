@@ -33,7 +33,7 @@ stages:
 build_test_image:
   stage: build
   tags:
-    - 40c
+    - ht
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE:experimental --pull .
@@ -42,7 +42,7 @@ build_test_image:
 build_test_db_image:
   stage: build
   tags:
-    - 40c
+    - ht
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/db:testing --pull docker/db
