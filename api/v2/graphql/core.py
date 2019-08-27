@@ -166,11 +166,28 @@ class IssueGraph(SQLAlchemyObjectType):
                                            description="Return the graph data as Cypher CREATE statements for Neo4j.",
                                            default_value={})
 
+    participating_authors = graphene.List(graphene.NonNull(UserGraph,
+                                                           description="""Users that authored at least one statement in this issue.
+                                          \n\nATTENTION! The anonymous user will be set, when the original author deleted the account"""))
+    no_of_participating_authors = graphene.NonNull(graphene.Int,
+                                                   description="""Number of Users that authored a premise. 
+                                               \n\nATTENTION! Does not count deleted Users! The anonymous user is counted!""")
+    no_of_participants = graphene.NonNull(graphene.Int,
+                                          description="""
+                                        Number of Users that visited the issue at least once. 
+                                        \n\nATTENTION! Does not count deleted Users! The anonymous user is counted!""")
+
     def resolve_position(self, info, **kwargs):
         return resolve_field_query(kwargs, info, StatementGraph)
 
     def resolve_arguments(self, info, **kwargs):
         return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, ArgumentGraph)
+
+    def resolve_no_of_participating_authors(self: Issue, info):
+        return len(self.participating_authors)
+
+    def resolve_no_of_participants(self: Issue, info):
+        return len(self.participating_authors)
 
     class Meta:
         model = Issue
