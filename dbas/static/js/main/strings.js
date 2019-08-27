@@ -773,7 +773,7 @@ var dbas_de = {
     'textMinCountMessageDuringTyping': 'Zeichen noch ...',
     'textMaxCountMessage': 'Zeichen verbleibend',
     'textMaxCountMessageError': 'Halten Sie Ihre Aussagen kurz',
-    'textMultipleStatements': 'Anscheinend wollen Sie mehrere Aussage  anstelle von einer hinzufügen. Vielleicht ist es besser die Aussagen mit dem "+" Button einzeln hinzuzufügen',
+    'textMultipleStatements': 'Anscheinend wollen Sie mehrere Aussagen anstelle von einer hinzufügen. Vielleicht ist es besser, die Aussagen mit dem "+" Button einzeln hinzuzufügen',
     'valid': 'Gültigkeit',
     'veryweak': 'sehr schwach',
     'youAreAbleToReviewNow': 'Sie können nun andere Beiträge begutachten',
