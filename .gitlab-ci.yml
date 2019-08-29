@@ -163,6 +163,6 @@ deploy_production:
     - chmod 700 ~/.ssh/
     - ssh-keyscan -H 'docker-int.cn.uni-duesseldorf.de' > ~/.ssh/known_hosts
   script:
-    - ssh root@docker-int.cn.uni-duesseldorf.de
+    - ssh root@docker-int.cn.uni-duesseldorf.de "$DEPLOY_YMLS"
   only:
     - master
