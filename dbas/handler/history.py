@@ -1,7 +1,5 @@
 """
 Provides helping function for creating the history as bubbles.
-
-.. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
 from typing import List, Optional

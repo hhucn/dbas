@@ -1,7 +1,5 @@
 """
 Class for front end tests with Splinter and Selenium
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import sys

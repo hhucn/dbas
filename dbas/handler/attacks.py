@@ -1,7 +1,5 @@
 """
 This script handles attacks for given arguments.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import logging

@@ -1,7 +1,5 @@
 """
 Provides helping function for database querys.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import logging

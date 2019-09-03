@@ -4,9 +4,6 @@ from setuptools import setup, find_packages
 
 from dbas.views.helper import version
 
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
-
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.md')) as f:
     README = f.read()
@@ -25,9 +22,9 @@ setup(name='dbas',
           "Topic :: Internet :: WWW/HTTP",
           "Topic :: Internet :: WWW/HTTP :: WSGI :: NGINX :: Application",
       ],
-      author='Tobias Krauthoff',
-      author_email='krauthoff@cs.uni-duesseldorf.de',
-      url='https://dbas.cs.uni-duesseldorf.de',
+      author='hhucn',
+      author_email='dbas@cs.hhu.de',
+      url='https://dbas.cs.hhu.de',
       keywords='web pyramid pylons dialog-based argumentation software',
       packages=find_packages(),
       include_package_data=True,

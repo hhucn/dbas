@@ -1,7 +1,5 @@
 """
 Provides helping function for dictionaries, which are used in discussions.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
 from typing import List, Optional

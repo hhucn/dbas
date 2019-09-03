@@ -1,9 +1,7 @@
 """
-Introducing websockets.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
-"""
+Introducing websockets."""
 import logging
+
 from cornice import Service
 from pyramid_mailer import get_mailer
 

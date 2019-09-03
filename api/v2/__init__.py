@@ -1,12 +1,9 @@
 """
 REST API for to communicate with the world. Enables remote discussion from arbitrary locations.
-
-.. sectionauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 import sys
 
 from pyramid.config import Configurator
-
 
 # Enable console print when in dockerized environment
 ENABLE_DOCKER_PRINT = True
@@ -22,6 +19,7 @@ if ENABLE_DOCKER_PRINT:
 
         def __getattr__(self, attr):
             return getattr(self.stream, attr)
+
 
     sys.stdout = Unbuffered(sys.stdout)
 

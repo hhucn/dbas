@@ -1,7 +1,5 @@
 """
 Introducing an graph manager.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import logging

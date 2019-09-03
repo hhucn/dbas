@@ -1,8 +1,5 @@
 """
 Common, pure functions used by the API.
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import json

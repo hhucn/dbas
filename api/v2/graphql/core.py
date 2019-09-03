@@ -1,7 +1,5 @@
 """
 GraphQL Core. Here are the models listed, which can be queried by GraphQl.
-
-.. sectionauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 
 import arrow

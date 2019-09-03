@@ -1,10 +1,9 @@
 """
 Security module of D-BAS, where the groups are set
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import logging
+
 from pyramid.security import Allow, Everyone
 from sqlalchemy.exc import InternalError
 

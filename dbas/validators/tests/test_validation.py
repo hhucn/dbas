@@ -1,8 +1,5 @@
 """
 Unit tests for our validators
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 from dbas.database.discussion_model import ReviewDelete

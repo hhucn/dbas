@@ -70,14 +70,14 @@ class AjaxTest(unittest.TestCase):
         self.assertNotEqual(len(response['message']), 0)
 
     def test_user_password_request_failure_wrong_key(self):
-        request = construct_dummy_request(json_body={'emai': 'krauthoff@cs.uni-duesseldorf.de'})
+        request = construct_dummy_request(json_body={'emai': 'krauthoff@cs.hhu.de'})
         response = user_password_request(request)
         self.assertIsNotNone(response)
         self.assertEqual(response.status_code, 400)
 
     def test_user_password_request(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        request = construct_dummy_request(json_body={'email': 'krauthoff@cs.uni-duesseldorf.de'})
+        request = construct_dummy_request(json_body={'email': 'krauthoff@cs.hhu.de'})
         response = user_password_request(request)
         self.assertIsNotNone(response)
         self.assertNotEqual(db_user.password, get_hashed_password('tobias'))

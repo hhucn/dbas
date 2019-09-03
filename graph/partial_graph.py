@@ -1,8 +1,4 @@
 # Methods to get a partial graph
-#
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
-
 
 import logging
 

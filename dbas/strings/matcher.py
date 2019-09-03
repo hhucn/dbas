@@ -1,8 +1,5 @@
 """
-Provides methods for comparing strings.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
-"""
+Provides methods for comparing strings."""
 
 import difflib
 import logging

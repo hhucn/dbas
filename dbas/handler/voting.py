@@ -3,8 +3,6 @@ Class for handling votes of each user.
 
 Functions for setting votes of users. They set votes by clicking the statements in D-BAS.
 We are not deleting opposite votes for detecting opinion changes!
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import logging

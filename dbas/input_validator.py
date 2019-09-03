@@ -1,7 +1,5 @@
 """
 Methods for validating input params given via url or ajax
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
 from typing import Optional, Union

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 # Minimizes files with node's yuicompressor and appends them
 
 # path of current file
