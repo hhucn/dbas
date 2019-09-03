@@ -44,7 +44,7 @@ After this you can hit [http://localhost:4284](http://localhost:4284) for D-BAS.
 
 If your container stucks during the first start up, please install D-BAS manually via:
 
-    docker-compose exec web ./build_assets.sh
+    docker-compose exec web make
 
 Afterwards everything should be fine.
 

@@ -44,7 +44,7 @@ Or take a look at dbas > Registry for the newest information (Port *5001* may no
 
 If your container stucks during the first start up, please install D-BAS manually via::
 
-    $ docker-compose exec web ./build_assets.sh
+    $ docker-compose exec web make
 
 Afterwards everything should be fine.
 
