@@ -87,7 +87,7 @@ class AuthLoginTest(TestCaseWithConfig):
             'firstname': self.uustring(),
             'lastname': self.uustring(),
             'nickname': self.uustring(),
-            'email': 'krauthoff@cs.hhu.de',
+            'email': 'krauthoff@cs.uni-duesseldorf.de',
             'gender': 'm',
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
