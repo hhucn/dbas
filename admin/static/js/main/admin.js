@@ -1,7 +1,3 @@
-/**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
 // main function
 $(document).ready(function () {
     'use strict';

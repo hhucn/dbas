@@ -1,8 +1,4 @@
 /**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
-/**
  * Use the browser's built-in functionality to quickly and safely escape the string
  * Based on http://shebang.brandonmintern.com/foolproof-html-escaping-in-javascript/
  *
@@ -95,7 +91,7 @@ function isMobileAgent() {
  * @param element
  * @returns {number}
  */
-function getPaddingOfElement (element) {
+function getPaddingOfElement(element) {
     'use strict';
     if (typeof element !== "undefined" && typeof element.css('padding') !== "undefined") {
         var pt = parseInt(element.css('padding-top').replace('px', ''));

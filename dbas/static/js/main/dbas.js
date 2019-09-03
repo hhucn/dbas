@@ -1,10 +1,6 @@
 /*global $, jQuery, alert*/
 
 /**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
-/**
  *
  * @param linkname name of the link
  */

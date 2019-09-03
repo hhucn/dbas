@@ -1,7 +1,3 @@
-/**
- * @author Teresa Uebber <teresa.uebber@hhu.de>, Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
 function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     'use strict';
     var isPartialGraphMode = is_partial_graph_mode;
@@ -237,7 +233,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         } else {
             container.empty();
         }
-        $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+        $("html, body").animate({scrollTop: $(document).height()}, "slow");
     };
 
     /**
@@ -593,14 +589,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         jsonData.nodes.forEach(function (e) {
             if (e.type === 'position') {
                 e.color = colors.blue;
-            }
-            else if (e.type === 'statement') {
+            } else if (e.type === 'statement') {
                 e.color = colors.yellow;
-            }
-            else if (e.type === 'issue') {
+            } else if (e.type === 'issue') {
                 e.color = colors.grey;
-            }
-            else {
+            } else {
                 e.color = colors.black;
             }
         });
@@ -761,8 +754,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             var id = node.id.replace('statement_', '');
             if (id in size.rel_node_factor) {
                 return size.node + size.node_factor * size.rel_node_factor[id];
-            }
-            else {
+            } else {
                 return size.node;
             }
         }
@@ -885,16 +877,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             resetSlider();
             if ($('#global-view').attr('data-global-view-loaded') === 'true' && $('#global-view:hidden').length === 0) {
                 new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);
-            }
-            else {
+            } else {
                 showDefaultView(jsonData, zoom);
             }
         });
         $('#global-view').off('click').click(function () {
             if ($(this).attr('data-global-view-loaded') === 'true') {
                 showDefaultView(jsonData, zoom);
-            }
-            else {
+            } else {
                 new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);
             }
         });
@@ -1040,8 +1030,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         if (isVisible.statements) {
             $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
             setDisplayStyleOfNodes('inline', 'inline');
-        }
-        else {
+        } else {
             $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('inline', 'none');
         }
@@ -1056,8 +1045,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         if (!isVisible.statements) {
             $('#labels').find('i').removeClass().addClass("fa fa-square-o");
             setDisplayStyleOfNodes('none', 'none');
-        }
-        else {
+        } else {
             $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('none', 'inline');
         }
@@ -1071,8 +1059,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         if (isVisible.position) {
             $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
             setDisplayStyleOfNodes('inline', 'inline');
-        }
-        else {
+        } else {
             $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('none', 'inline');
         }
@@ -1087,8 +1074,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         if (!isVisible.position) {
             $('#labels').find('i').removeClass().addClass("fa fa-square-o");
             setDisplayStyleOfNodes('none', 'none');
-        }
-        else {
+        } else {
             $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('inline', 'none');
         }
@@ -1166,8 +1152,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             edges.forEach(function (d) {
                 grayingElements(d);
             });
-        }
-        else {
+        } else {
             $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
         }
 
@@ -1187,8 +1172,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         if (!isVisible.attack) {
             $('#my-statements').find('i').removeClass().addClass("fa fa-square-o");
             highlightAllElements();
-        }
-        else {
+        } else {
             $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
             showAttacksOnMyStatements();
         }
@@ -1211,8 +1195,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             edges.forEach(function (d) {
                 grayingElements(d);
             });
-        }
-        else {
+        } else {
             $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
         }
 
@@ -1230,8 +1213,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         if (!isVisible.support) {
             $('#my-statements').find('i').removeClass().addClass("fa fa-square-o");
             highlightAllElements();
-        }
-        else {
+        } else {
             $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
             showSupportsOnMyStatements();
         }
@@ -1462,8 +1444,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // if circle d is currently clicked restore originally color of circle
             if (d.id === selectedCircleId) {
                 d3.select('#circle-' + d.id).attr('fill', d.color);
-            }
-            else {
+            } else {
                 d3.select('#circle-' + d.id).attr('fill', currentColorOfCircle);
             }
         }
@@ -1504,8 +1485,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // supports
             if ((isVisible.support || isVisible.attack) && selectUid(d.target.id) === circleUid) {
                 edgesCircleId.push(d);
-            }
-            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && (!isVisible.attack && !isVisible.support)) {
+            } else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && (!isVisible.attack && !isVisible.support)) {
                 edgesCircleId.push(d);
             }
         });
@@ -1524,8 +1504,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
             if (isVisible.support && d.color === colors.green) {
                 highlightElements(d);
-            }
-            else if (!isVisible.attack && !isVisible.support) {
+            } else if (!isVisible.attack && !isVisible.support) {
                 highlightElements(d);
             }
         });

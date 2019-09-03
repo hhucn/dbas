@@ -1,8 +1,4 @@
 /**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
-/**
  * Use this to call any url asynchronously
  *
  * @param url to call
