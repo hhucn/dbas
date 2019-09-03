@@ -5,12 +5,12 @@
     <section>
       <div class="text-center big-header">
         <h3 class="text-center"><span
-                class="text-center" i18n:translate="thank_you">Thank you</span><span tal:condition="show_summary">, ${summary.firstname}</span>!
+            class="text-center" i18n:translate="thank_you">Thank you</span><span tal:condition="show_summary">, ${summary.firstname}</span>!
         </h3>
         <p class="lead text-center" style="color: white;">
           <span class="lead" i18n:translate="finish_text">Your participation in this discussion was saved and will be used for evaluation later. If you have any questions, please do not hesitate to</span>
           <span class="lead">
-            <a href="mailto:dbas@cs.uni-duesseldorf.de" i18n:translate="contact_us">contact us</a>.</span>
+            <a href="mailto:dbas@cs.hhu.de" i18n:translate="contact_us">contact us</a>.</span>
         </p>
       </div>
     </section>
