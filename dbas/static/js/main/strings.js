@@ -212,6 +212,7 @@ var textMinCountMessageBegin2 = 'textMinCountMessageBegin2';
 var textMinCountMessageDuringTyping = 'textMinCountMessageDuringTyping';
 var textMaxCountMessage = 'textMaxCountMessage';
 var textMaxCountMessageError = 'textMaxCountMessageError';
+var textMultipleStatements = 'textMultipleStatements';
 var timestamp = 'timestamp';
 var typeofVote = 'typeofVote';
 var users = 'users';
@@ -499,6 +500,7 @@ var dbas_en = {
     'textMinCountMessageDuringTyping': 'more to go ...',
     'textMaxCountMessage': 'characters left',
     'textMaxCountMessageError': 'Keep it short',
+    'textMultipleStatements': 'It looks as if you are considering several points instead of giving one reason. Consider adding multiple reasons instead using the “+” button.',
     'users': 'Users',
     'userPasswordNotMatch': 'User / Password do not match',
     'usersWithSameOpinion': 'Users with the same decision',
@@ -771,6 +773,7 @@ var dbas_de = {
     'textMinCountMessageDuringTyping': 'Zeichen noch ...',
     'textMaxCountMessage': 'Zeichen verbleibend',
     'textMaxCountMessageError': 'Halten Sie Ihre Aussagen kurz',
+    'textMultipleStatements': 'Anscheinend wollen Sie mehrere Aussagen anstelle von einer hinzufügen. Vielleicht ist es besser, die Aussagen mit dem "+" Button einzeln hinzuzufügen',
     'valid': 'Gültigkeit',
     'veryweak': 'sehr schwach',
     'youAreAbleToReviewNow': 'Sie können nun andere Beiträge begutachten',
