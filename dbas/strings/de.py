@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-German translations of the keywords
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
-"""
+German translations of the keywords"""
 from .keywords import Keywords as _
 
 de_lang = {
@@ -282,7 +279,7 @@ de_lang = {
     _.emailWasNotSent: 'E-Mail wurde nicht gesendet',
     _.emailUnknown: 'Die Adresse ist nicht gültig',
     _.emailSentGeneric: 'Falls die Mailadresse gefunden werden konnte, schicken wir Ihnen eine Mail mit Instruktionen zu',
-    _.emailBodyText: 'Dies ist eine automatisch generierte E-Mail von D-BAS {}.\nBei Rückfragen können Sie gerne eine E-Mail an dbas@cs.uni-duesseldorf.de verfassen.\nDieses System ist Teil einer Doktorarbeit',
+    _.emailBodyText: 'Dies ist eine automatisch generierte E-Mail von D-BAS {}.\nBei Rückfragen können Sie gerne eine E-Mail an dbas@cs.hhu.de verfassen.\nDieses System ist Teil einer Doktorarbeit',
     _.emailArgumentAddTitle: 'D-BAS Infos zum Argument',
     _.emailArgumentAddBody: 'Zu Ihrem Argument wurden weitere Informationen hinzugefügt. Schauen Sie doch mal rein:',
     _.edit: 'Bearbeiten',
