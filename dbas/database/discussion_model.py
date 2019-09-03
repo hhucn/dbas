@@ -82,6 +82,8 @@ class Issue(DiscussionBase):
     language: 'Language' = relationship('Language', foreign_keys=[lang_uid])
     participating_users: List['User'] = relationship('User', secondary='user_participation',
                                                      back_populates='participates_in')
+
+    premises: List['Premise'] = relationship('Premise', back_populates='issue')
     statements = relationship('Statement', secondary='statement_to_issue')
     all_arguments = relationship('Argument', back_populates='issue')
 
@@ -110,6 +112,10 @@ class Issue(DiscussionBase):
 
     def __repr__(self):
         return f"<Issue {self.uid}: {self.slug}>"
+
+    @hybrid_property
+    def participating_authors(self) -> Set['User']:
+        return set([premise.author for premise in self.premises])
 
     @hybrid_property
     def lang(self):
@@ -962,7 +968,7 @@ class Premise(DiscussionBase):
 
     statement: Statement = relationship(Statement, foreign_keys=[statement_uid], back_populates='premises')
     author: User = relationship(User, foreign_keys=[author_uid])
-    issue: Issue = relationship(Issue, foreign_keys=[issue_uid])
+    issue: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates="premises")
 
     def __init__(self, premisesgroup, statement, is_negated, author, issue, is_disabled=False):
         """
