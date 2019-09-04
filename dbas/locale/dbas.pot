@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2019-09-03 13:55+0000\n"
+"POT-Creation-Date: 2019-09-04 08:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,7 +36,7 @@ msgstr ""
 #. Default: Kontakt:
 #. Default: Contact
 #: ././templates/imprint.pt:22 ././templates/index.pt:48
-#: ././templates/snippet/footer.pt:21
+#: ././templates/snippet/footer.pt:22
 msgid "contact"
 msgstr ""
 
@@ -61,27 +61,27 @@ msgid "imprint_hhu"
 msgstr ""
 
 #. Default: unserer Datenschutzerklärung
-#: ././templates/imprint.pt:33
+#: ././templates/imprint.pt:34
 msgid "our_privacy"
 msgstr ""
 
 #. Default: or checkout the
-#: ././templates/imprint.pt:34
+#: ././templates/imprint.pt:35
 msgid "or_checkout_the"
 msgstr ""
 
 #. Default: license of D-BAS (MIT)
-#: ././templates/imprint.pt:36
+#: ././templates/imprint.pt:37
 msgid "licence_dbas"
 msgstr ""
 
 #. Default: Copyrights and used Software
-#: ././templates/imprint.pt:40
+#: ././templates/imprint.pt:41
 msgid "copyright_and_used_software"
 msgstr ""
 
 #. Default: Changes
-#: ././templates/imprint.pt:102
+#: ././templates/imprint.pt:103
 msgid "changes"
 msgstr ""
 
@@ -203,7 +203,7 @@ msgid "faq_answer_bug2"
 msgstr ""
 
 #. Default: News
-#: ././templates/news.pt:6 ././templates/snippet/footer.pt:43
+#: ././templates/news.pt:6 ././templates/snippet/footer.pt:44
 msgid "news"
 msgstr ""
 
@@ -214,7 +214,7 @@ msgstr ""
 
 #. Default: Privacy Policy
 #. Default: privacy_policy
-#: ././templates/privacy.pt:6 ././templates/snippet/footer.pt:16
+#: ././templates/privacy.pt:6 ././templates/snippet/footer.pt:17
 msgid "privacy_policy"
 msgstr ""
 
@@ -752,22 +752,22 @@ msgid "where_do_i_find_it"
 msgstr ""
 
 #. Default: Help
-#: ././templates/snippet/footer.pt:33
+#: ././templates/snippet/footer.pt:34
 msgid "Help"
 msgstr ""
 
 #. Default: Docs
-#: ././templates/snippet/footer.pt:38
+#: ././templates/snippet/footer.pt:39
 msgid "Documentation"
 msgstr ""
 
 #. Default: Github
-#: ././templates/snippet/footer.pt:48
+#: ././templates/snippet/footer.pt:49
 msgid "Github"
 msgstr ""
 
 #. Default: Field Experiment
-#: ././templates/snippet/footer.pt:53
+#: ././templates/snippet/footer.pt:54
 msgid "field_experiment"
 msgstr ""
 
@@ -2381,14 +2381,19 @@ msgstr ""
 msgid "discussion_is_read_only"
 msgstr ""
 
+#. Default: Was muss ein Vorschlag beachten?
+#: ././templates/discussion/organism/add-statement.pt:73
+msgid "decidotron_proposal_definition"
+msgstr ""
+
 #. Default: It has an estimated cost of
-#: ././templates/discussion/organism/add-statement.pt:102
+#: ././templates/discussion/organism/add-statement.pt:103
 msgid "decidotron_cost_of_position"
 msgstr ""
 
 #. Default: Die Zeit zum hinzufügen von neuen Vorschlägen ist abgelaufen. Du
 #. kannst allerdings noch abstimmen!
-#: ././templates/discussion/organism/add-statement.pt:139
+#: ././templates/discussion/organism/add-statement.pt:140
 msgid "decidotron_positions_ended"
 msgstr ""
 

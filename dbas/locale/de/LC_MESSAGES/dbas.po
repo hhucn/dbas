@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2019-09-03 13:55+0000\n"
+"POT-Creation-Date: 2019-09-04 08:53+0000\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Christian Meter <meter@hhu.de>\n"
 "Language-Team: Deutsch\n"
@@ -34,7 +34,7 @@ msgstr "Angaben gemäß § 5 TMG"
 
 #. Default: Kontakt:
 #. Default: Contact
-#: templates/imprint.pt:22 templates/index.pt:48 templates/snippet/footer.pt:21
+#: templates/imprint.pt:22 templates/index.pt:48 templates/snippet/footer.pt:22
 msgid "contact"
 msgstr "Kontakt"
 
@@ -59,27 +59,27 @@ msgid "imprint_hhu"
 msgstr "Impressum der Heinrich-Heine-Universität Düsseldorf"
 
 #. Default: unserer Datenschutzerklärung
-#: templates/imprint.pt:33
+#: templates/imprint.pt:34
 msgid "our_privacy"
 msgstr "unserer Datenschutzerklärung"
 
 #. Default: or checkout the
-#: templates/imprint.pt:34
+#: templates/imprint.pt:35
 msgid "or_checkout_the"
 msgstr "oder weiteres in der"
 
 #. Default: license of D-BAS (MIT)
-#: templates/imprint.pt:36
+#: templates/imprint.pt:37
 msgid "licence_dbas"
 msgstr "Lizenz von (D-BAS)"
 
 #. Default: Copyrights and used Software
-#: templates/imprint.pt:40
+#: templates/imprint.pt:41
 msgid "copyright_and_used_software"
 msgstr "Verwendete Software"
 
 #. Default: Changes
-#: templates/imprint.pt:102
+#: templates/imprint.pt:103
 msgid "changes"
 msgstr "Versionsänderungen"
 
@@ -228,7 +228,7 @@ msgstr ""
 "versuchen werden, schnellstmöglich zu antworten."
 
 #. Default: News
-#: templates/news.pt:6 templates/snippet/footer.pt:43
+#: templates/news.pt:6 templates/snippet/footer.pt:44
 msgid "news"
 msgstr "Neuigkeiten"
 
@@ -239,7 +239,7 @@ msgstr "Die aktuellsten Nachrichten rund um D-BAS"
 
 #. Default: Privacy Policy
 #. Default: privacy_policy
-#: templates/privacy.pt:6 templates/snippet/footer.pt:16
+#: templates/privacy.pt:6 templates/snippet/footer.pt:17
 msgid "privacy_policy"
 msgstr "Datenschutzrichtlinien"
 
@@ -817,22 +817,22 @@ msgid "where_do_i_find_it"
 msgstr "Wo kann ich sie finden?"
 
 #. Default: Help
-#: templates/snippet/footer.pt:33
+#: templates/snippet/footer.pt:34
 msgid "Help"
 msgstr "Hilfe"
 
 #. Default: Docs
-#: templates/snippet/footer.pt:38
+#: templates/snippet/footer.pt:39
 msgid "Documentation"
 msgstr "Dokumentation"
 
 #. Default: Github
-#: templates/snippet/footer.pt:48
+#: templates/snippet/footer.pt:49
 msgid "Github"
 msgstr "Github"
 
 #. Default: Field Experiment
-#: templates/snippet/footer.pt:53
+#: templates/snippet/footer.pt:54
 msgid "field_experiment"
 msgstr "Feldstudie"
 
@@ -2463,14 +2463,20 @@ msgstr ""
 "Diese Diskussion ist geschlossen und es können keine weiteren Beiträge mehr "
 "hinzugefügt werden."
 
+#. Default: Was muss ein Vorschlag beachten?
+#: templates/discussion/organism/add-statement.pt:73
+#, fuzzy
+msgid "decidotron_proposal_definition"
+msgstr "Was muss ein Vorschlag beachten?"
+
 #. Default: It has an estimated cost of
-#: templates/discussion/organism/add-statement.pt:102
+#: templates/discussion/organism/add-statement.pt:103
 msgid "decidotron_cost_of_position"
 msgstr "Dies hat ungefähre Kosten von"
 
 #. Default: Die Zeit zum hinzufügen von neuen Vorschlägen ist abgelaufen. Du
 #. kannst allerdings noch abstimmen!
-#: templates/discussion/organism/add-statement.pt:139
+#: templates/discussion/organism/add-statement.pt:140
 msgid "decidotron_positions_ended"
 msgstr "Die Zeit zum Hinzufügen von neuen Vorschlägen ist abgelaufen."
 
