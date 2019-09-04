@@ -9,7 +9,6 @@
       <span aria-hidden="true">&times;</span>
     </button>
 
-
     <div id="proposal-explanation-modal" class="modal fade" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -123,7 +122,7 @@
             </div>
           </form>
         </div>
-        <div class="list-group" id="proposal-statement-list-group"></div>
+        <div class="list-group" id="proposal-statement-list-group" style="margin-bottom: 1rem"></div>
         <div class="text-center">
           <div class="col-12">
             <input id="send-new-statement" type="button" class="btn btn-primary" data-dismiss="modal"

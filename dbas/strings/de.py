@@ -612,7 +612,7 @@ de_lang = {
 
     _.questionTitle: 'Erhalten Sie mehr Informationen über die Aussage',
     _.saveMyStatement: 'Aussage speichern',
-    _.selectStatement: 'Bitte Wählen Sie eine Aussage',
+    _.selectStatement: 'Bitte wählen Sie eine Aussage',
     _.selectMultipleStatementsWhichFlag: 'Sie haben eine Verknüpfung von mehreren Aussagen gewählt. Welche möchten Sie melden?',
     _.showAllUsers: 'Zeig\' alle Benutzer',
     _.showAllArguments: 'Zeig\' alle Argumente',
