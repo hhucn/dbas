@@ -873,7 +873,7 @@ def pretty_print_options(message):
     # check for html
     if message[-1] == '>':
         pos = message.rfind('<')
-        if message[pos - 1:pos] not in ['.', '?', '!']:
+        if message[pos - 1] not in ['.', '?', '!']:
             message = message[0:pos] + '.' + message[pos:]
     elif not message.endswith(tuple(['.', '?', '!'])) and id != 'now':
         message += '.'

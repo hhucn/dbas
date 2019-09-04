@@ -391,7 +391,7 @@ de_lang = {
     _.isNotAGoodReasonAgainstArgument: 'ist kein guter Grund gegen das Argument, dass ',
     _.itIsNotRight: 'es nicht richtig ist, dass',
     _.isNotAGoodIdeaInColor: '<span class=\'text-danger\'>falsch ist</span>',
-    _.initialPositionInterest: 'Ich möchte darüber reden, dass',
+    _.initialPositionInterest: 'Ich möchte darüber reden, dass...',
     _.invalidEmail: 'Ihre E-Mail ist ungültig',
     _.iAcceptCounter: 'und ich akzeptiere, dass es ein Argument gegen',
     _.iAcceptArgument: 'und ich akzeptiere, dass es ein Argument für',

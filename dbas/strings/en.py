@@ -397,7 +397,7 @@ en_lang = {
     _.isNotAGoodIdeaInColor: '<span class=\'text-danger\'>is not a good idea</span>',
     _.isTrue: 'is true',
     _.areTrue: 'are true',
-    _.initialPositionInterest: 'I want to talk about the position that',
+    _.initialPositionInterest: 'I want to talk about the position...',
     # What is the initial position you are interested in?'
     _.invalidEmail: 'Your mail is invalid',
     _.iAcceptCounter: 'and I do accept that this is a counter-argument for',
