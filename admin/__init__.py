@@ -1,7 +1,5 @@
 """
 Views for the admin interface
-
-.. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 

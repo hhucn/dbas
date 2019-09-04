@@ -1,7 +1,5 @@
 """
-Unit tests for lib.py
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+Unit tests for lib.py.
 """
 
 import admin.lib as admin

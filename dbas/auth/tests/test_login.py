@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from uuid import uuid4
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid_mailer.mailer import DummyMailer
-from uuid import uuid4
 
 from dbas.auth.login import login_local_user, register_user_with_json_data
 from dbas.strings.keywords import Keywords as _
@@ -117,7 +118,7 @@ class AuthLoginTest(TestCaseWithConfig):
             'firstname': 'Bob',
             'lastname': 'Builder',
             'nickname': 'Builder',
-            'email': 'krauthoff@cs.uni-duesseldorf.de',
+            'email': 'krauthoff@cs.hhu.de',
             'gender': 'm',
             'password': self.uustring(),
             'passwordconfirm': self.uustring(),

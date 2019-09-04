@@ -1,8 +1,4 @@
 /**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
-/**
  * Little simple countdown-timer with 1000ms steps
  *
  * @param options dictionary with seconds, onUpdateStatus and onCounterEnd as functions

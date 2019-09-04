@@ -12,8 +12,7 @@ today! Here are the guidelines we'd like you to follow:
 
 ## <a name="question"></a> Got a Question or Problem?
 
-If you have questions about how to use D-BAS, please direct these to the Tobias
-Krauthoff <krauthoff@cs.uni-duesseldorf.de>
+If you have questions about how to use D-BAS, feel free to contact dbas@cs.hhu.de
 
 ## <a name="issue"></a> Found an Issue?
 
@@ -35,7 +34,7 @@ If you would like to implement a new feature then consider what kind of change i
 is:
 
 * **Major Changes** that you wish to contribute to the project should be discussed 
-  first with Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de> so that we can 
+  first with the maintainers so that we can 
   better coordinate our efforts, prevent duplication of work, and help you to 
   craft the change so that it is successfully accepted into the project.
 * **Small Changes** can be crafted and submitted to the 

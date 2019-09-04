@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
-
 # path of current file
 path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 file="websocket.min.js"

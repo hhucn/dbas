@@ -1,7 +1,5 @@
 """
 Unit tests for lib.py
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 import unittest
 

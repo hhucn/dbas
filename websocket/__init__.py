@@ -1,9 +1,8 @@
 """
 REST API for websockets.
-
-.. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 import logging
+
 from pyramid.config import Configurator
 
 LOG = logging.getLogger(__name__)

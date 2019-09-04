@@ -1,8 +1,5 @@
 """
 Utility functions for testing.
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import os
 

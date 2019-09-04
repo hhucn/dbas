@@ -1,7 +1,5 @@
 """
 Helper functions for tests.
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 import requests
 from nose.tools import assert_equals, assert_true

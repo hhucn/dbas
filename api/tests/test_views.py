@@ -1,7 +1,5 @@
 """
 Testing the routes of the API.
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 import json
 import unittest

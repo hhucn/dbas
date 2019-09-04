@@ -1,138 +1,140 @@
 <tal:block metal:use-macro="load: basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
-    <tal:block metal:fill-slot="content_page">
+  <tal:block metal:fill-slot="content_page">
 
-        <section>
-            <div class="text-center big-header">
-                <h3 i18n:translate="imprint" class="text-center">Imprint</h3>
-                <p i18n:translate="imprint_list_of_software_and_changelog" class="lead text-center">Our imprint, a list
-                    of used software and the latest changelog</p>
+    <section>
+      <div class="text-center big-header">
+        <h3 i18n:translate="imprint" class="text-center">Imprint</h3>
+        <p i18n:translate="imprint_list_of_software_and_changelog" class="lead text-center">Our imprint, a list
+          of used software and the latest changelog</p>
+      </div>
+    </section>
+
+    <div class="wrapper-container">
+
+      <div class="container">
+
+        <div class="row">
+
+          <div class="col-md-6">
+            <div class="colored-container" style="margin-bottom: 1em;">
+              <h4><span i18n:translate="imprint">Impressum</span> ${project}</h4>
+              <p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
+              <h5 i18n:translate="contact">Kontakt:</h5>
+              <span i18n:translate="department_of_cs">Institut für Informatik</span>
+              <br><span i18n:translate="chair_of_cn">Lehrstuhl für Rechnernetze</span>
+              <br><span>Universitätstraße 1</span>
+              <br><span>40225 Düsseldorf</span>
+              <br>
+              <br><span>E-Mail: </span><a target="_blank" href='mailto:dbas@cs.hhu.de'>dbas@cs.hhu.de</a>
+              <br>
+              <br>
+              <span i18n:translate="weiteres im">Weiteres im</span>
+              <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html" i18n:translate="imprint_hhu">Impressum
+                der HHU</a>,
+              <a href="/privacy_policy" i18n:translate="our_privacy">unserer Datenschutzerklärung</a>
+              <span i18n:translate="or_checkout_the">or checkout the</span> <a
+                href="https://github.com/hhucn/dbas/blob/master/LICENSE"
+                target="_blank" i18n:translate="licence_dbas">license of D-BAS (MIT)</a>.
             </div>
-        </section>
 
-        <div class="wrapper-container">
-
-            <div class="container">
-
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <div class="colored-container" style="margin-bottom: 1em;">
-                            <h4><span i18n:translate="imprint">Impressum</span> ${project}</h4>
-                            <p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
-                            <h5 i18n:translate="contact">Kontakt:</h5>
-                            <span i18n:translate="department_of_cs">Institut für Informatik</span>
-                            <br><span i18n:translate="chair_of_cn">Lehrstuhl für Rechnernetze</span>
-                            <br><span>Universitätstraße 1</span>
-                            <br><span>40225 Düsseldorf</span>
-                            <br>
-                            <br><span>E-Mail: </span><a target="_blank" href='mailto:dbas@cs.uni-duesseldorf.de'>dbas@cs.uni-duesseldorf.de</a>
-                            <br>
-                            <br>
-                            <span i18n:translate="weiteres im">Weiteres im</span>
-                            <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html" i18n:translate="imprint_hhu">Impressum der HHU</a>,
-                            <a href="/privacy_policy" i18n:translate="our_privacy">unserer Datenschutzerklärung</a>
-                            <span i18n:translate="or_checkout_the">or checkout the</span> <a
-                                href="https://github.com/hhucn/dbas/blob/master/LICENSE"
-                                target="_blank" i18n:translate="licence_dbas">license of D-BAS (MIT)</a>.
-                        </div>
-
-                        <div class="colored-container" style="margin-bottom: 1em">
-                            <h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <ul>
-                                        <li>
-                                            <a target="_blank" href="http://pylonsproject.org">
-                                                Pyramid Framework ${extras.pyramid_version}
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a target="_blank" href="http://www.getbootstrap.com/">Bootstrap</a>
-                                        </li>
-                                        <li>
-                                            <a target="_blank" href="https://bootswatch.com/">Bootswatch Theme</a>
-                                        </li>
-                                        <li>
-                                            <a target="_blank" href="http://bootstraptour.com/">Bootstrap Tour</a>
-                                        </li>
-                                        <li>
-                                            <a target="_blank" href="https://github.com/seiyria/bootstrap-slider">Bootstrap
-                                                Slider</a>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <ul>
-                                        <li>
-                                            <a target="_blank" href="http://www.gravatar.com/">Gravatar </a>
-                                        </li>
-                                        <li>
-                                            <a target="_blank" href="http://d3js.org">D3.js</a>
-                                        </li>
-                                        <li>
-                                            <a target="_blank"
-                                               href="http://theoatmeal.com/comics/state_web_summer#tumblr">404-Tumbeasts</a>
-                                        </li>
-                                        <li>
-                                            <a target="_blank"
-                                               href="https://github.com/js-cookie/js-cookie">js-cookie</a>
-                                        </li>
-                                        <li>
-                                            <a target="_blank" href="http://codepen.io/imshubhamsingh/pen/dNQzmG">CSS
-                                                Batman</a>
-                                        </li>
-                                        <li>
-                                            <a target="_blank"
-                                               href="http://startbootstrap.com/template-overviews/creative">
-                                                Creative Template
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a target="_blank" href="http://fontawesome.io/icons/">Font Awesome Icon</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="colored-container" style="margin-bottom: 1em">
-                            <h4>
-                                <span i18n:translate="changes">Changes</span>
-                            </h4>
-                            <div tal:omit-tag="" tal:repeat="imp imprint">
-                                <span class="project lead">${imp.title}</span>
-                                <ul>
-                                    <li tal:repeat="imp_bo imp.body">${imp_bo}</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
+            <div class="colored-container" style="margin-bottom: 1em">
+              <h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span>
+              </h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <ul>
+                    <li>
+                      <a target="_blank" href="http://pylonsproject.org">
+                        Pyramid Framework ${extras.pyramid_version}
+                      </a>
+                    </li>
+                    <li>
+                      <a target="_blank" href="http://www.getbootstrap.com/">Bootstrap</a>
+                    </li>
+                    <li>
+                      <a target="_blank" href="https://bootswatch.com/">Bootswatch Theme</a>
+                    </li>
+                    <li>
+                      <a target="_blank" href="http://bootstraptour.com/">Bootstrap Tour</a>
+                    </li>
+                    <li>
+                      <a target="_blank" href="https://github.com/seiyria/bootstrap-slider">Bootstrap
+                        Slider</a>
+                  </ul>
                 </div>
+                <div class="col-md-6">
+                  <ul>
+                    <li>
+                      <a target="_blank" href="http://www.gravatar.com/">Gravatar </a>
+                    </li>
+                    <li>
+                      <a target="_blank" href="http://d3js.org">D3.js</a>
+                    </li>
+                    <li>
+                      <a target="_blank"
+                         href="http://theoatmeal.com/comics/state_web_summer#tumblr">404-Tumbeasts</a>
+                    </li>
+                    <li>
+                      <a target="_blank"
+                         href="https://github.com/js-cookie/js-cookie">js-cookie</a>
+                    </li>
+                    <li>
+                      <a target="_blank" href="http://codepen.io/imshubhamsingh/pen/dNQzmG">CSS
+                        Batman</a>
+                    </li>
+                    <li>
+                      <a target="_blank"
+                         href="http://startbootstrap.com/template-overviews/creative">
+                        Creative Template
+                      </a>
+                    </li>
+                    <li>
+                      <a target="_blank" href="http://fontawesome.io/icons/">Font Awesome Icon</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                <div class="row" tal:omit-tag="" tal:condition="extras.usage_of_matomo">
-                    <div class="col-lg-6">
-                        <div class="colored-container" style="margin-bottom: 1em">
-                            <br>
-                            <h5>Reichweitenmessung mit Matomo</h5>
-                            <span> Im Rahmen der Reichweitenanalyse von Matomo werden auf Grundlage unserer berechtigten Interessen (d.h. Interesse an der Analyse, Optimierung und wirtschaftlichem Betrieb unseres Onlineangebotes im Sinne des Art. 6 Abs. 1 lit. f. DSGVO) die folgenden Daten verarbeittet: der von Ihnen verwendete Browsertyp und die Browserversion, das von Ihnen verwendete Betriebssystem, Ihr Herkunftsland, Datum und Uhrzeit der Serveranfrage, die Anzahl der Besuche, Ihre Verweildauer auf der Website sowie die von Ihnen betätigten externen Links. Die IP-Adresse der Nutzer wird anonymisiert, bevor sie gespeichert wird.
+          <div class="col-md-6">
+            <div class="colored-container" style="margin-bottom: 1em">
+              <h4>
+                <span i18n:translate="changes">Changes</span>
+              </h4>
+              <div tal:omit-tag="" tal:repeat="imp imprint">
+                <span class="project lead">${imp.title}</span>
+                <ul>
+                  <li tal:repeat="imp_bo imp.body">${imp_bo}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row" tal:omit-tag="" tal:condition="extras.usage_of_matomo">
+          <div class="col-lg-6">
+            <div class="colored-container" style="margin-bottom: 1em">
+              <br>
+              <h5>Reichweitenmessung mit Matomo</h5>
+              <span> Im Rahmen der Reichweitenanalyse von Matomo werden auf Grundlage unserer berechtigten Interessen (d.h. Interesse an der Analyse, Optimierung und wirtschaftlichem Betrieb unseres Onlineangebotes im Sinne des Art. 6 Abs. 1 lit. f. DSGVO) die folgenden Daten verarbeittet: der von Ihnen verwendete Browsertyp und die Browserversion, das von Ihnen verwendete Betriebssystem, Ihr Herkunftsland, Datum und Uhrzeit der Serveranfrage, die Anzahl der Besuche, Ihre Verweildauer auf der Website sowie die von Ihnen betätigten externen Links. Die IP-Adresse der Nutzer wird anonymisiert, bevor sie gespeichert wird.
                                 <br>
                                 Matomo verwendet Cookies, die auf dem Computer der Nutzer gespeichert werden und die eine Analyse der Benutzung unseres Onlineangebotes durch die Nutzer ermöglichen. Dabei können aus den verarbeiteten Daten pseudonyme Nutzungsprofile der Nutzer erstellt werden. Die Cookies haben eine Speicherdauer von einer Woche. Die durch das Cookie erzeugten Informationen über Ihre Benutzung dieser Webseite werden nur auf unserem Server gespeichert und nicht an Dritte weitergegeben.
                                 <br>
                                 Nutzer können der anonymisierten Datenerhebung durch das Programm Matomo jederzeit mit Wirkung für die Zukunft widersprechen, indem sie auf den untenstehenden Link klicken. In diesem Fall wird in ihrem Browser ein sog. Opt-Out-Cookie abgelegt, was zur Folge hat, dass Matomo keinerlei Sitzungsdaten mehr erhebt. Wenn Nutzer ihre Cookies löschen, so hat dies jedoch zur Folge, dass auch das Opt-Out-Cookie gelöscht wird und daher von den Nutzern erneut aktiviert werden muss.
-                            </span></div></div>
-                    <div class="col-lg-6">
-                        <div class="colored-container" style="margin-bottom: 1em">
-                            <h5><span>Matomo Opt-Out</span></h5>
-                            <iframe id="analytics-opt-out-iframe" style="border: 0; height: 250px; width: 600px;"
-                                    src="https://dbas.cs.uni-duesseldorf.de/analytics/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
-                        </div>
-                    </div>
-                </div>
+                            </span></div>
+          </div>
+          <div class="col-lg-6">
+            <div class="colored-container" style="margin-bottom: 1em">
+              <h5><span>Matomo Opt-Out</span></h5>
+              <iframe id="analytics-opt-out-iframe" style="border: 0; height: 250px; width: 600px;"
+                      src="https://dbas.cs.uni-duesseldorf.de/analytics/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
             </div>
+          </div>
         </div>
+      </div>
+    </div>
 
-    </tal:block>
+  </tal:block>
 </tal:block>

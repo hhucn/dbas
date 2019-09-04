@@ -1,7 +1,3 @@
-/**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
 function pxToEm(px) {
     'use strict';
     var baseSize = parseInt($("body").css('font-size').replace('px', ''));

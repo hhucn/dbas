@@ -1,7 +1,5 @@
 """
 Provides helping function for handling reputation.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 import logging
 from enum import Enum

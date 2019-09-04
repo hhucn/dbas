@@ -1,7 +1,5 @@
 /**
  * Script for the personal message board
- *
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 $(function () {

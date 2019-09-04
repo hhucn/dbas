@@ -1,15 +1,14 @@
 """
 Login Handler for D-BAS
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import logging
+from typing import Tuple, List
+
 import transaction
 from pyramid.security import remember
 from pyramid_mailer import Mailer
 from sqlalchemy import func
-from typing import Tuple, List
 from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data

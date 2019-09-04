@@ -44,16 +44,16 @@ After this you can hit [http://localhost:4284](http://localhost:4284) for D-BAS.
 
 If your container stucks during the first start up, please install D-BAS manually via:
 
-    docker-compose exec web ./build_assets.sh
+    docker-compose exec web make
 
 Afterwards everything should be fine.
 
 
 ## Maintainers
 
-* [Christian Meter](mailto:meter@cs.uni-duesseldorf.de)
+* [Christian Meter](mailto:meter@hhu.de)
 * [Björn Ebbinghaus](mailto:bjoern.ebbinghaus@uni-duesseldorf.de)
-* [Tobias Krauthoff](mailto:krauthoff@cs.uni-duesseldorf.de) (Alumnus)
+* [Tobias Krauthoff](mailto:tobias.krauthoff@uni-duesseldorf.de) (Alumnus)
 
 
 ### Contributors
@@ -74,6 +74,6 @@ Thanks to all former contributors! In order of appearance:
 ## License
 
 Copyright (c) 2016 - 2018 Tobias Krauthoff, Christian Meter  
-Copyright (c) 2018-2019 hhucn
+Copyright (c) 2018 - today hhucn
 
 Distributed under the [MIT License](LICENSE).

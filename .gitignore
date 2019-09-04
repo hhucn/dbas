@@ -46,6 +46,7 @@ analyzer/
 clean.sh
 .vscode/
 dbas/templates/cache
+venv/
 
 # Pycharm
 .idea/

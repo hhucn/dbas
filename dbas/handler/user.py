@@ -1,16 +1,15 @@
 """
 Handler for user-accounts
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import arrow
 import logging
 import random
 import uuid
-from arrow.arrow import Arrow
 from datetime import date, timedelta
-from pyramid_mailer import Mailer
 from typing import Tuple, List, Dict, Union, Any
+
+import arrow
+from arrow.arrow import Arrow
+from pyramid_mailer import Mailer
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession

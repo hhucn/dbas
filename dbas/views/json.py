@@ -1,7 +1,5 @@
 """
 Collection of pyramids views components of D-BAS' core.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import logging

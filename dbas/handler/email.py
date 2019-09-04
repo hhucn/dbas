@@ -1,7 +1,5 @@
 """
-Provides class for sending an email
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+Provides class for sending an email.
 """
 
 import logging

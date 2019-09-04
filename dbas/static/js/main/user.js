@@ -1,7 +1,5 @@
 /**
  * Script to get more data on the user pages.
- *
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 $(function () {
@@ -11,7 +9,7 @@ $(function () {
     if (window.location.href.indexOf(mainpage + 'user/') === -1) {
         return;
     }
-    if ($('#user_publick_nick').text() ==='Son Goku'){
+    if ($('#user_publick_nick').text() === 'Son Goku') {
         var url = '/static/images/westcapitalsuper.jpg';
         $('.big-header').css('background-image', 'url(' + url + ')');
     }
@@ -64,7 +62,7 @@ function User() {
     this.getPublicUserData = function () {
         var url = 'get_public_user_data';
         var href = window.location.href.split('/');
-        var user_id = href[href.length- 1 ];
+        var user_id = href[href.length - 1];
         var d = {
             'user_id': parseInt(user_id)
         };
@@ -89,7 +87,7 @@ function User() {
      */
     this.createChart = function (parsedData, space, id, count) {
         space.append('<canvas id="' + id + '" width="' + space.width() + '" height="300"></canvas>');
-        if (document.getElementById(id) === null){
+        if (document.getElementById(id) === null) {
             // 404 page
             return false;
         }
