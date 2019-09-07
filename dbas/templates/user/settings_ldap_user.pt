@@ -1,0 +1,302 @@
+<tal:block metal:use-macro="load: ../basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
+    <tal:block metal:fill-slot="content_page">
+
+        <section>
+            <div class="text-center big-header">
+                <h3 i18n:translate="Settings" class="text-center">Settings</h3>
+                <p i18n:translate="list_of_information" class="lead text-center">
+                    List of several information mapped with your account
+                </p>
+            </div>
+        </section>
+        <div class="wrapper-container">
+            <div class="container colored-container">
+                <div class="row" style="margin: 1em;">
+                    <div class="col-md-7">
+                        <h4>
+                            <i class="fa fa-user" aria-hidden="true" style="margin-right: 0.5em;"></i>
+                            <span i18n:translate="personal_information">Personal Information</span>
+                        </h4>
+                        <table id="info-table" class="table table-condensed table-collapsed">
+                            <tr>
+                                <td><span class="lead" i18n:translate="firstname">Firstname</span></td>
+                                <td>${settings.db_firstname}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="surname">Surname</span></td>
+                                <td>${settings.db_surname}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="nickname">Nickname</span></td>
+                                <td id="table_nickname">${settings.db_nickname}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="public_nickname">Public Nickname</span></td>
+                                <td>
+                                    <a id="value_public_page" href="#" tal:attributes="href settings.public_page_url">
+                                        <span id="value_public_nickname">${settings.db_public_nickname}</span>
+                                        (<span i18n:translate="click_here_for_public_page">Click here for your public page</span>)
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr tal:condition="settings.has_mail">
+                                <td><span class="lead">E-Mail</span></td>
+                                <td>${settings.db_mail}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="group">Group</span></td>
+                                <td>${settings.db_group}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-5">
+                        <h4><i class="fa fa-cogs" aria-hidden="true"
+                               style="margin-right: 0.5em;"></i><span i18n:translate="settings">Settings</span></h4>
+                        <table id="settings-table" class="table table-condensed table-collapsed">
+                            <tr>
+                                <td>
+                                    <span i18n:translate="receive_notifications"
+                                            class="lead">Receive Notifications</span>
+                                    <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 0.5em;"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom" tal:attributes="title settings.title_notifications"></i>
+                                </td>
+                                <td class="text-center">
+                                    <input id="receive-notifications-toggle" type="checkbox"
+                                           data-size="small" data-onstyle="success"
+                                           data-offstyle="danger" tal:attributes="checked settings.send_notifications; data-on settings.on; data-off settings.off">
+                                </td>
+                            </tr>
+                            <tr tal:condition="settings.has_mail">
+                                <td>
+                                    <span i18n:translate="receive_mails" class="lead">Receive E-Mails</span>
+                                    <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 0.5em;"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom" tal:attributes="title settings.title_mails"></i>
+                                </td>
+                                <td class="text-center">
+                                    <input id="receive-mails-toggle" type="checkbox"
+                                           data-size="small" data-onstyle="success"
+                                           data-offstyle="danger" tal:attributes="checked settings.send_mails; data-on settings.on; data-off settings.off">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span i18n:translate="nickname_is_public" class="lead">Nickname is public</span>
+                                    <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 0.5em;"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom" tal:attributes="title settings.title_public_nick"></i>
+                                </td>
+                                <td class="text-center">
+                                    <input id="public-nick-toggle" type="checkbox"
+                                           data-size="small" data-onstyle="success"
+                                           data-offstyle="danger" tal:attributes="checked settings.public_nick; data-on settings.on; data-off settings.off">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span i18n:translate="message_language" class="lead">
+                                        Preferred message language
+                                    </span>
+                                    <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 0.5em;"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom" tal:attributes="title settings.title_preferred_lang"></i>
+                                </td>
+                                <td class="text-center">
+                                    <div class="dropdown" data-toggle="tooltip" data-placement="left">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#language"
+                                           id="current-lang-images" tal:attributes="data-lang settings.current_ui_locales">
+                                            <img id="indicator-en" style="display:none;"
+                                                 src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}">
+                                            <img id="indicator-de" style="display:none;"
+                                                 src="${request.static_path('dbas:static/images/flags/de-24.png')}">
+                                            <span>${settings.current_lang}</span>
+                                            <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" id="settings-language-dropdown">
+                                            <li class="${extras.link_de_class}">
+                                                <a id="link-settings-de" style="cursor:pointer" data-ui-locales="de">
+                                                    <img class="language_selector_img"
+                                                         src="${request.static_path('dbas:static/images/flags/de-24.png')}"
+                                                         alt="flag_ge">
+                                                    Deutsch
+                                                </a>
+                                            </li>
+                                            <li tal:attributes="class extras.link_en_class">
+                                                <a id="link-settings-en" style="cursor:pointer" data-ui-locales="en">
+                                                    <img class="language_selector_img"
+                                                         src="${request.static_path('dbas:static/images/flags/us-gb-24.png')}"
+                                                         alt="flag_us-gb">
+                                                    English
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span i18n:translate="guided_tour_on_start_up" class="lead">
+                                        Guided tour on startup
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <input id="guided-tour-toggle" type="checkbox"
+                                           data-size="small" data-onstyle="success"
+                                           data-offstyle="danger" tal:attributes="data-on settings.on; data-off settings.off">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span i18n:translate="delete_my_account" class="lead">Delete my Account</span>
+                                </td>
+                                <td class="text-center">
+                                    <a id="delete_account" href="#" class="btn btn-danger" i18n:translate="delete">Delete</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="settings-alert" class="alert alert-dismissible alert-danger hidden">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                            <span id="settings-alert-message" i18n:translate="settings_not_set">Settings could not be set. Please try again later.</span>
+                        </div>
+                        <div id="settings-success" class="alert alert-dismissible alert-success hidden">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <i class="fa fa-circle" aria-hidden="true"></i>
+                            <span id="settings-success-message" i18n:translate="settings_set">Settings were set successfully.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container colored-container">
+                <div class="content row">
+
+                    <div class="col-md-8">
+                        <h4>
+                            <i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i>
+                            <span i18n:translate="discussion_stat">Discussion Statistics</span>
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-6 statistics">
+                                <table class="table table-condensed table-collapsed">
+                                    <tr>
+                                        <td>
+                                            <span class="lead" i18n:translate="statements_posted">Statements posted</span>
+                                            <a href="#">
+                                                <i id="info-statements" class="fa fa-info-circle"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-right"
+                                            id="statements-done-count">${settings.statements_posted}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="lead" i18n:translate="edits_done">Edits done</span>
+                                            <a href="#">
+                                                <i id="info-edits" class="fa fa-info-circle"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-right" id="edits-done-count">${settings.edits_done}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="lead" i18n:translate="discussion_clicked_statements">Clicks for Arguments</span>
+                                            <a href="#">
+                                                <i id="info-click-arguments" class="fa fa-info-circle"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-right"
+                                            id="discussion-arg-click-count">${settings.discussion_arg_clicks}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="lead" i18n:translate="discussion_clicked_arguments">Clicks for Statements</span>
+                                            <a href="#">
+                                                <i id="info-click-statements" class="fa fa-info-circle"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-right"
+                                            id="discussion-stat-click-count">${settings.discussion_stat_clicks}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6 statistics">
+                                <table class="table table-condensed table-collapsed">
+                                    <tr>
+                                        <td>
+                                            <span class="lead" i18n:translate="discussion_votes_statements">Votes for Statements</span>
+                                            <a href="#">
+                                                <i id="info-vote-statements" class="fa fa-info-circle"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-right"
+                                            id="discussion-stat-votes-count">${settings.discussion_stat_votes}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="lead" i18n:translate="discussion_votes_arguments">Votes for Arguments</span>
+                                            <a href="#">
+                                                <i id="info-vote-arguments" class="fa fa-info-circle"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-right"
+                                            id="discussion-arg-votes-count">${settings.discussion_arg_votes}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="lead" i18n:translate="reputation">Reputation</span>
+                                            <a href="/review/reputation">
+                                                <i class="fa fa-info-circle"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-right">${settings.reputation}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" style="font-size: 14px; margin-top: 3em">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="center text-center" style="margin-bottom: 1em;">
+                                    <img id="user_gravatar" class="img-circle img-thumbnail" style="max-width: 80px;"
+                                         src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
+                                    <br>
+                                    <span i18n:translate="profile_picture">Profile Picture</span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <span i18n:translate="change_gravatar">Change your profile picture on the</span>
+                                <a style="color: #2196f3;" href="https://en.gravatar.com/site/login">Gravatar
+                                    website</a>.
+                                <span i18n:translate="what_is_gravatar">A Gravatar is a globally recognized avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there, except your nickname is not public!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div id="statistics-alert" class="alert alert-dismissible alert-danger hidden">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        <span id="statistics-alert-message" i18n:translate="statistics_not_deleted">Statistics could not be deleted.</span>
+                    </div>
+
+                    <div id="statistics-success" class="alert alert-dismissible alert-success hidden">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <i class="fa fa-circle" aria-hidden="true"></i>
+                        <span id="statistics-success-message" i18n:translate="statistics_deletet">Statistics were set successfully deleted.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </tal:block>
+</tal:block>
