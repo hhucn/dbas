@@ -1253,3 +1253,15 @@ def get_enabled_issues_as_query():
     :return: Query
     """
     return DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
+
+
+def checks_if_user_is_ldap_user(db_user: User) -> bool:
+    """
+    Checks if user is ldap user
+
+    :param db_user
+    :return:
+    """
+
+    pw_for_ldap_user = 'NO_PW_BECAUSE_LDAP'
+    return db_user.validate_password(pw_for_ldap_user)
