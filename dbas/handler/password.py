@@ -70,7 +70,7 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
         LOG.debug("User could not be found for mail %s", email)
         return {
             'success': False,
-            'message': _tn.get(_.emailSentGeneric)
+            'message': _tn.get(_.emailPasswordRequestNoUser)
         }
 
     if checks_if_user_is_ldap_user(db_user):
