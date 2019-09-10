@@ -10,7 +10,7 @@ from dbas.handler.user import get_information_of, change_password
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string
+from dbas.lib import escape_string, checks_if_user_is_ldap_user
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
@@ -86,7 +86,7 @@ def settings(request):
 
     settings_dict = DictionaryHelper(ui_locales).prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error,
                                                                        message, db_user, request.application_url,
-                                                                       request.decorated['extras']['use_with_ldap'])
+                                                                       checks_if_user_is_ldap_user(db_user))
 
     prep_dict = main_dict(request, Translator(ui_locales).get(_.settings))
     prep_dict.update({
