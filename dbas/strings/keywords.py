@@ -531,7 +531,6 @@ class Keywords(Enum):
     publicNickTitle = 'publicNickTitle'
     passwordSubmit = 'passwordSubmit'
     passwordRequestLDAP = 'PasswordRequestLdap'
-    emailPasswordRequestNoUser = 'emailPasswordRequestNoUser'
     preferredLangTitle = 'preferredLangTitle'
     priv_access_x_queue = 'priv_access_{}_queue'
     priv_access_edit_queue = 'priv_access_edit_queue'
