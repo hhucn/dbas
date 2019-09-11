@@ -106,14 +106,8 @@ function callbackIfDoneForPasswordRequest(data) {
     info.hide();
     $('#' + popupLoginForgotPasswordBody).hide();
     $('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
-
-    if (!data.success) {
-        failed.show();
-        $('#' + popupLoginFailed + '-message').text(data.message);
-    } else {
-        success.show();
-        $('#' + popupLoginSuccess + '-message').text(data.message);
-    }
+    success.show();
+    $('#' + popupLoginSuccess + '-message').text(data.message);
 }
 
 $(document).ready(function mainDocumentReady() {
