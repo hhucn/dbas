@@ -186,7 +186,9 @@ def get_all_statements_matching(search_value: str) -> dict:
     """
     if is_host_resolved(SEARCH_HOST):
         if is_socket_open(SEARCH_HOST, SEARCH_PORT):
+            LOG.debug("Switching to elasticsearch for: %s", search_value)
             return get_statements_with_similarity_to(search_value)["results"]
+    LOG.debug("Switching to levensthein fallback for: %s", search_value)
     return get_all_statements_by_levensthein_similar_to(search_value)
 
 
