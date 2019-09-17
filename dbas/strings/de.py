@@ -62,6 +62,7 @@ de_lang = {
     _.newPwdIs: 'Ihr Passwort lautet: ',
     _.newPwdInfo: 'Wenn Sie die E-Mail nicht angefordert haben, informieren Sie bitte den Betreiber von D-BAS',
     _.dbasPwdRequest: 'D-BAS Passwort Anfrage',
+    _.passwordRequestLDAP: 'Sie sind als LDAP Benutzer registriert. Wenn Sie ihr Passwort vergessen haben besuchen Sie bitte "https://www.zim.hhu.de/services-des-zim/uni-kennung/faqs-zur-uni-kennung/was-mache-ich-wenn-ich-mein-passwort-der-uni-kennung-vergessen-habe.html"',
     _.antispamquestion: 'Was ist',
     _.defaultView: 'Standardansicht',
     _.positions: 'Positionen',

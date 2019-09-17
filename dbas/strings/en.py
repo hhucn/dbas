@@ -536,6 +536,7 @@ en_lang = {
     _.previous: 'Previous Entry',
     _.publicNickTitle: 'Enables/Disables the real username on your public page',
     _.passwordSubmit: 'Change Password',
+    _.passwordRequestLDAP: 'You are registered as an LDAP user. If you forget your password please visit "https://www.zim.hhu.de/services-des-zim/uni-kennung/faqs-zur-uni-kennung/was-mache-ich-wenn-ich-mein-passwort-der-uni-kennung-vergessen-habe.html/"',
     _.preferredLangTitle: 'Preferred language for all notifications/mails',
     _.priv_access_optimization_queue: 'Access to the optimization queue',
     _.priv_access_delete_queue: 'Access to the delete queue',
