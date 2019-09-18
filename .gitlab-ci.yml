@@ -153,6 +153,7 @@ deploy_production:
   image: alpine
   stage: deploy
   environment: production
+  dependencies: []
   tags:
     - cn
   before_script:
