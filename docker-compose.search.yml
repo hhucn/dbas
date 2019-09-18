@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   search:
-    image: hhucn/dbas-search:develop
+    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/search:development
     restart: on-failure
     ports:
       - "9200:9200"
