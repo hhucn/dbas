@@ -1,11 +1,10 @@
 """
 Collection of pyramids views components of D-BAS' core.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-import graphene
 import logging
+
+import graphene
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config, notfound_view_config
 from webob_graphql import serve_graphql_request

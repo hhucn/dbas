@@ -663,9 +663,9 @@ def __set_up_users(session, include_dummy_users=True):
 
     user0 = User(firstname=nick_of_anonymous_user, surname=nick_of_anonymous_user, nickname=nick_of_anonymous_user,
                  email='', password=pw0, group_uid=group2.uid, gender='m')
-    user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de',
+    user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.hhu.de',
                  password=pw2, group_uid=group0.uid, gender='m')
-    user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de',
+    user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.hhu.de',
                  password=pw4, group_uid=group0.uid, gender='m')
 
     session.add_all([user0, user2, user4])

@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-German translations of the keywords
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
-"""
+German translations of the keywords"""
 from .keywords import Keywords as _
 
 de_lang = {
@@ -65,6 +62,7 @@ de_lang = {
     _.newPwdIs: 'Ihr Passwort lautet: ',
     _.newPwdInfo: 'Wenn Sie die E-Mail nicht angefordert haben, informieren Sie bitte den Betreiber von D-BAS',
     _.dbasPwdRequest: 'D-BAS Passwort Anfrage',
+    _.passwordRequestLDAP: 'Sie sind als LDAP Benutzer registriert. Wenn Sie ihr Passwort vergessen haben besuchen Sie bitte "https://www.zim.hhu.de/services-des-zim/uni-kennung/faqs-zur-uni-kennung/was-mache-ich-wenn-ich-mein-passwort-der-uni-kennung-vergessen-habe.html"',
     _.antispamquestion: 'Was ist',
     _.defaultView: 'Standardansicht',
     _.positions: 'Positionen',
@@ -282,7 +280,7 @@ de_lang = {
     _.emailWasNotSent: 'E-Mail wurde nicht gesendet',
     _.emailUnknown: 'Die Adresse ist nicht gültig',
     _.emailSentGeneric: 'Falls die Mailadresse gefunden werden konnte, schicken wir Ihnen eine Mail mit Instruktionen zu',
-    _.emailBodyText: 'Dies ist eine automatisch generierte E-Mail von D-BAS {}.\nBei Rückfragen können Sie gerne eine E-Mail an dbas@cs.uni-duesseldorf.de verfassen.\nDieses System ist Teil einer Doktorarbeit',
+    _.emailBodyText: 'Dies ist eine automatisch generierte E-Mail von D-BAS {}.\nBei Rückfragen können Sie gerne eine E-Mail an dbas@cs.hhu.de verfassen.\nDieses System ist Teil einer Doktorarbeit',
     _.emailArgumentAddTitle: 'D-BAS Infos zum Argument',
     _.emailArgumentAddBody: 'Zu Ihrem Argument wurden weitere Informationen hinzugefügt. Schauen Sie doch mal rein:',
     _.edit: 'Bearbeiten',
@@ -391,7 +389,7 @@ de_lang = {
     _.isNotAGoodReasonAgainstArgument: 'ist kein guter Grund gegen das Argument, dass ',
     _.itIsNotRight: 'es nicht richtig ist, dass',
     _.isNotAGoodIdeaInColor: '<span class=\'text-danger\'>falsch ist</span>',
-    _.initialPositionInterest: 'Ich möchte darüber reden, dass',
+    _.initialPositionInterest: 'Ich möchte darüber reden, dass...',
     _.invalidEmail: 'Ihre E-Mail ist ungültig',
     _.iAcceptCounter: 'und ich akzeptiere, dass es ein Argument gegen',
     _.iAcceptArgument: 'und ich akzeptiere, dass es ein Argument für',
@@ -615,7 +613,7 @@ de_lang = {
 
     _.questionTitle: 'Erhalten Sie mehr Informationen über die Aussage',
     _.saveMyStatement: 'Aussage speichern',
-    _.selectStatement: 'Bitte Wählen Sie eine Aussage',
+    _.selectStatement: 'Bitte wählen Sie eine Aussage',
     _.selectMultipleStatementsWhichFlag: 'Sie haben eine Verknüpfung von mehreren Aussagen gewählt. Welche möchten Sie melden?',
     _.showAllUsers: 'Zeig\' alle Benutzer',
     _.showAllArguments: 'Zeig\' alle Argumente',

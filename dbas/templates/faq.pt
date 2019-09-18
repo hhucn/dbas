@@ -82,7 +82,7 @@
             </h5>
             <p>
               <span i18n:translate="faq_answer_bug1">If you think you've found an issue or have any other questions not covered above, please email us via </span>
-              <a href="mailto:dbas@cs.uni-duesseldorf.de">dbas@cs.uni-duesseldorf.de</a>.
+              <a href="mailto:dbas@cs.hhu.de">dbas@cs.hhu.de</a>.
               <span i18n:translate="faq_answer_bug2">Please keep in mind that our current team is quite small and we'll do our very best to get back to you ASAP.</span>
             </p>
           </div>

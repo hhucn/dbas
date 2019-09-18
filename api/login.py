@@ -1,7 +1,5 @@
 """
 Logic for user login, token generation and validation
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 import datetime
 import json

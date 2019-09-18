@@ -1,10 +1,6 @@
 /*global $, jQuery, alert*/
 
 /**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
-/**
  *
  * @param linkname name of the link
  */
@@ -328,6 +324,15 @@ function __keyUpFuncForTextwatcher(element, field, minLength, maxLength, msg) {
             field.addClass('text-info');
             field.text(_t_discussion(textMaxCountMessageError));
         }
+        // Display message if text is to long and contains a substring with a dot, exclamation or question mark and a whitespace at the end
+        var sentencePattern = /[.!?]\s/i;
+        if (maxLength <= currentLength && text.match(sentencePattern)) {
+            field.removeClass('text-danger');
+            field.addClass('text-info');
+            field.text(_t_discussion(textMultipleStatements));
+        }
+
+
     }
 }
 

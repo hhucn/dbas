@@ -1,11 +1,10 @@
 """
 Provides helping function round about the news.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import arrow
 import logging
+
+import arrow
 import transaction
 
 from dbas.database import DBDiscussionSession

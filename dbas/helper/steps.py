@@ -1,7 +1,5 @@
 """
 Helper for D-BAS Views
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
 from typing import Tuple, Union

@@ -82,7 +82,13 @@ def is_socket_open(host, port):
         if sock.connect_ex((host, port)) == 0:
             return True
         else:
-            return False
+            try:
+                if sock.connect_ex((host, port)) == 0:
+                    return True
+                else:
+                    return False
+            except socket.gaierror:
+                return False
 
 
 def is_host_resolved(hostname):

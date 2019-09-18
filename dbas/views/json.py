@@ -1,7 +1,5 @@
 """
 Collection of pyramids views components of D-BAS' core.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import logging
@@ -21,7 +19,6 @@ from dbas.validators.core import has_keywords_in_json_path, validate
 from dbas.validators.discussion import valid_issue_by_id, valid_statement, valid_text_length_of, valid_any_issue_by_id
 from dbas.validators.lib import add_error
 from dbas.validators.user import valid_user, valid_user_optional, valid_user_as_author
-from search.requester import get_statements_with_similarity_to
 
 LOG = logging.getLogger(__name__)
 
@@ -176,11 +173,13 @@ def get_suggestion_with_similarity_to(request):
     Get statements an all regarding information to a given search value.
     The results statements which have a similarity to the search value.
 
+    If the search via elasticsearch is not available there will be a fallback to the levensthein-distance.
+
     :param request: current request of the server
     :return: List of statements with a similarity to the search value
     """
     value = request.params.get('q')
-    return get_statements_with_similarity_to(value)
+    return fuzzy_string_matcher.get_all_statements_matching(value)
 
 
 # ajax - for sending news

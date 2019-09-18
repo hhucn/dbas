@@ -12,6 +12,7 @@ from sqlalchemy import func
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Language
 from dbas.handler.email import send_mail
+from dbas.lib import checks_if_user_is_ldap_user
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -70,6 +71,13 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
         return {
             'success': False,
             'message': _tn.get(_.emailSentGeneric)
+        }
+
+    if checks_if_user_is_ldap_user(db_user):
+        LOG.debug("User is no LDAP user")
+        return {
+            'success': False,
+            'message': _tn.get(_.passwordRequestLDAP)
         }
 
     rnd_pwd = get_rnd_passwd()

@@ -1,7 +1,5 @@
 """
 Provides helping function for dictionaries, which are used in discussions.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
 from typing import List, Optional
@@ -57,7 +55,7 @@ class DiscussionDictHelper(object):
         LOG.debug("At_start with positions: %s", position_count)
         _tn = Translator(self.lang)
         add_premise_text = _tn.get(_.whatIsYourIdea)
-        intro = _tn.get(_.initialPositionInterest) + ' ...'
+        intro = _tn.get(_.initialPositionInterest)
         save_statement_url = 'set_new_start_premise'
 
         start_bubble = create_speechbubble_dict(BubbleTypes.USER, uid='start', content=intro, omit_bubble_url=True,

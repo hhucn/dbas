@@ -29,7 +29,7 @@
                       <span>402255 Düsseldorf, Deutschland</span><br>
                       <span>Tel.: +49 211 81-11312</span><br>
                       <span>E-Mail: <a
-                              href="mailto: dbas@cs.uni-duesseldorf.de">dbas@cs.uni-duesseldorf.de</a></span><br>
+                          href="mailto: dbas@cs.hhu.de">dbas@cs.hhu.de</a></span><br>
                       <span>Website: ${extras.url}</span><br>
                     </div>
                     <div class="col-md-6">
@@ -40,7 +40,7 @@
                       <span>40225 Düsseldorf, Deutschland</span><br>
                       <span>Tel.: +49 211 81-13214</span><br>
                       <span>E-Mail: <a
-                              href="mailto: datenschutzbeauftragter@hhu.de">datenschutzbeauftragter@hhu.de</a></span><br>
+                          href="mailto: datenschutzbeauftragter@hhu.de">datenschutzbeauftragter@hhu.de</a></span><br>
                       <span>Website: ${extras.url}</span><br>
                     </div>
                   </div>
@@ -49,17 +49,18 @@
                   <h4>Inhalt</h4>
                   <div class="row">
                     <div class="col-md-12">
-                      <h5></h5>
                       <ul>
-                        <li><a class="js-scroll-trigger" href="#Allgemeines">Allgemeines zur Datenverarbeitung</a>
+                        <li><a class="js-scroll-trigger" href="#Allgemeines">
+                          Allgemeines zur Datenverarbeitung
+                        </a>
                         </li>
-                        <li><a class="js-scroll-trigger" href="#Bereitstellung">Bereitstellung der Website und
-                          Erstellung
-                          von Logfiles</a></li>
+                        <li><a class="js-scroll-trigger" href="#Bereitstellung">
+                          Bereitstellung der Website und Erstellung von Logfiles</a></li>
                         <li><a class="js-scroll-trigger" href="#Verwendung">Verwendung von Cookies</a></li>
                         <li><a class="js-scroll-trigger" href="#Registrierung">Registrierung</a></li>
                         <li><a class="js-scroll-trigger" href="#EMail">EMail</a></li>
-                        <li tal:condition="extras.usage_of_matomo"><a class="js-scroll-trigger" href="#Webanalyse">Webanalyse</a></li>
+                        <li tal:condition="extras.usage_of_matomo"><a class="js-scroll-trigger" href="#Webanalyse">Webanalyse</a>
+                        </li>
                         <li><a class="js-scroll-trigger" href="#Rechte">Rechte der betroffenen Person</a></li>
                       </ul>
                     </div>

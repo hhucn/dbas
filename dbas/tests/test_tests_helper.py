@@ -1,7 +1,5 @@
 """
 Testing the tests_helper!
-
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
 """
 
 from dbas.helper.test import add_settings_to_appconfig

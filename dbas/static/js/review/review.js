@@ -1,7 +1,3 @@
-/**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
 function Review() {
     'use strict';
 

@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Translator module for german and english version
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 from .de import de_lang

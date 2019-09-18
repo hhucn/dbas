@@ -1,7 +1,5 @@
 # Common library for Admin Component
-#
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
+
 import hashlib
 import logging
 import os

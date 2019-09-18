@@ -1,7 +1,5 @@
 """
 Provides helping function for dictionaries, which are used for the radio buttons.
-
-.. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import hashlib

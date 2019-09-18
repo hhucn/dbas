@@ -1,8 +1,4 @@
 /**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
-/**
  * Validate content of recaptcha. True if invalid.
  * @returns {boolean}
  */

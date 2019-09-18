@@ -1,9 +1,8 @@
 """
 Introducing an admin interface to enable easy database management.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
+
 from cornice import Service
 from pyramid.httpexceptions import exception_response
 

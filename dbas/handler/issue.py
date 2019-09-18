@@ -1,7 +1,5 @@
 """
 Provides helping function for issues.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import copy
 from datetime import date, timedelta

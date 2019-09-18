@@ -1,12 +1,9 @@
 """
 Provides functions
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import time
-
 import logging
+import time
 import urllib.request
 from os import environ
 

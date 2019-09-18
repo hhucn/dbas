@@ -9,7 +9,6 @@
       <span aria-hidden="true">&times;</span>
     </button>
 
-
     <div id="proposal-explanation-modal" class="modal fade" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -59,55 +58,52 @@
       </div>
     </div>
     <br>
-    <div class="col-lg-12 text-center">
-      <!--<p class="lead">${structure:discussion.add_premise_text}</p>-->
-      <div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-        <span id="add-statement-error-msg"></span>
-      </div>
-      <div style="margin-bottom: 1rem">
-        <button class="btn btn-primary" data-target="#proposal-explanation-modal" data-toggle="modal"
-                type="button">Was muss ein Vorschlag beachten?
-        </button>
-      </div>
-      <div id="add-statement-container-body">
-        <form>
-          <div class="form-group">
-            <label for="add-statement-container-main-input-position"
-                   class="col-lg-3 col-md-5 col-sm-6 control-label"
-                   style="color: #666; font-size: 17px; margin-top: 0.4em;">${structure:discussion.add_premise_text}</label>
-            <div class="col-lg-9 col-md-7 col-sm-6">
+
+    <div class="row">
+      <div class="offset-lg-1 col-lg-10">
+        <div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+          <span id="add-statement-error-msg"></span>
+        </div>
+        <div id="add-statement-container-body">
+          <form>
+            <div class="form-group">
+              <h5>
+                <label for="add-statement-container-main-input-position">
+                    ${structure:discussion.add_premise_text}
+                </label>
+              </h5>
               <input id="add-statement-container-main-input-position"
                      placeholder="${extras.tag.placeholder_position}"
                      data-key="position"
                      class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
             </div>
-          </div>
-          <br>
-          <div class="form-group">
-            <label for="add-statement-container-main-input-reason" class="col-lg-3 col-md-5 col-sm-6 control-label"
-                   style="color: #666; font-size: 17px; margin-top: 0.4em;">${extras.title.because}</label>
-            <div class="col-lg-9 col-md-7 col-sm-6">
+            <br>
+            <div class="form-group">
+              <h5>
+                <label for="add-statement-container-main-input-reason">
+                    ${extras.title.because}
+                </label>
+              </h5>
               <input id="add-statement-container-main-input-reason" data-key="reason"
                      placeholder="${extras.tag.placeholder_reason}"
                      class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
             </div>
-          </div>
-          <br>
-          <div class="form-group" tal:condition="issues.decidotron_budget">
-            <label for="add-statement-container-cost" class="col-lg-3 col-md-5 col-sm-6 control-label"
-                   style="color: #666; font-size: 17px; margin-top: 0.4em;" i18n:translate="decidotron_cost_of_position">
-              It has an estimated cost of </label>
-            <div class="input-group col-lg-9 col-md-7 col-sm-6">
-              <span class="input-group-addon">${issues.decidotron_budget.currency_symbol}</span>
-              <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="2000" type="number"
-                     min="${issues.decidotron_budget.min_position_cost}"
-                     step=50 max="${issues.decidotron_budget.max_position_cost}"
-                     class="form-control" style="width: 100%" required
-                     oninput="cost_field = $(this);
+            <br>
+            <div class="form-group" tal:condition="issues.decidotron_budget">
+              <label for="add-statement-container-cost" class="col-lg-3 col-md-5 col-sm-6 control-label"
+                     style="color: #666; font-size: 17px; margin-top: 0.4em;" i18n:translate="decidotron_cost_of_position">
+                It has an estimated cost of </label>
+              <div class="input-group col-lg-9 col-md-7 col-sm-6">
+                <span class="input-group-addon">${issues.decidotron_budget.currency_symbol}</span>
+                <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="2000" type="number"
+                       min="${issues.decidotron_budget.min_position_cost}"
+                       step=50 max="${issues.decidotron_budget.max_position_cost}"
+                       class="form-control" style="width: 100%" required
+                       oninput="cost_field = $(this);
                       parent_form_group = cost_field.closest('div.form-group');
                          costs = parseFloat(cost_field.val());
                          min_number = parseFloat(cost_field.attr('min'));
@@ -118,19 +114,30 @@
                          else{
                          parent_form_group.removeClass('has-error');
                          }">
+              </div>
+              <span class="help-block">
+                Bitte gib die geschätzte Kosten zwischen ${int(issues.decidotron_budget.min_position_cost)} ${issues.decidotron_budget.currency_symbol}
+                und ${int(issues.decidotron_budget.max_position_cost)} ${issues.decidotron_budget.currency_symbol} an.
+              </span>
             </div>
-            <span
-                class="help-block">Bitte gib die geschätzte Kosten zwischen ${int(issues.decidotron_budget.min_position_cost)} ${issues.decidotron_budget.currency_symbol}
-              und ${int(issues.decidotron_budget.max_position_cost)}
-                ${issues.decidotron_budget.currency_symbol} an.</span>
+          </form>
+        </div>
+        <div class="list-group" id="proposal-statement-list-group" style="margin-bottom: 1rem"></div>
+        <div class="text-center">
+          <div class="col-12">
+            <input id="send-new-statement" type="button" class="btn btn-primary" data-dismiss="modal"
+                   data-toggle="tooltip" data-placement="bottom" value="${extras.buttons.save_my_statement}"
+                   name="${discussion.mode}"/>
+            <button class="btn btn-outline-secondary" data-target="#proposal-explanation-modal" data-toggle="modal"
+                    type="button" i18n:translate="decidotron_proposal_definition" tal:condition="issues.decidotron_budget">
+              Criteria for a good proposal
+            </button>
           </div>
-        </form>
+        </div>
+
       </div>
-      <div class="list-group" id="proposal-statement-list-group"></div>
-      <input id="send-new-statement" type="button" class="btn btn-primary" data-dismiss="modal"
-             data-toggle="tooltip" data-placement="bottom" value="${extras.buttons.save_my_statement}"
-             name="${discussion.mode}"/>
     </div>
+
   </div>
 
   <div class="container colored-container"

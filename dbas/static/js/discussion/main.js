@@ -1,7 +1,4 @@
 /*global $, _t, _t_discussion */
-/**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
 
 
 function Main() {

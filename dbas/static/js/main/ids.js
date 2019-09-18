@@ -1,8 +1,4 @@
 /**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
-/**
  * ID's
  * @type {string}
  */

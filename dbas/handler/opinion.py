@@ -1,7 +1,5 @@
 """
 Provides helping function for getting some opinions.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
 import re

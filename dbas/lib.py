@@ -873,7 +873,7 @@ def pretty_print_options(message):
     # check for html
     if message[-1] == '>':
         pos = message.rfind('<')
-        if message[pos - 1:pos] not in ['.', '?', '!']:
+        if message[pos - 1] not in ['.', '?', '!']:
             message = message[0:pos] + '.' + message[pos:]
     elif not message.endswith(tuple(['.', '?', '!'])) and id != 'now':
         message += '.'
@@ -1253,3 +1253,15 @@ def get_enabled_issues_as_query():
     :return: Query
     """
     return DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
+
+
+def checks_if_user_is_ldap_user(db_user: User) -> bool:
+    """
+    Checks if user is ldap user
+
+    :param db_user
+    :return:
+    """
+
+    pw_for_ldap_user = 'NO_PW_BECAUSE_LDAP'
+    return db_user.validate_password(pw_for_ldap_user)

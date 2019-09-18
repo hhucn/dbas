@@ -1,7 +1,5 @@
 """
 Provides helping function for the managing the queue with all executed decisions as well as all ongoing decisions.
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import logging
 from typing import Optional

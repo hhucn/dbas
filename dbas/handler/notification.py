@@ -1,7 +1,5 @@
 """
 Provides functions for te internal messaging system
-
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import transaction

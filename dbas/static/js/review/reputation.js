@@ -1,7 +1,3 @@
-/**
- * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
- */
-
 // https://www.google.com/design/spec/style/color.html#color-color-palette
 var fillColorSet = [
     'rgba(200,230,201,0.4)',
@@ -132,7 +128,7 @@ function createChart(label, labels, displaydata, space, id, count) {
             datasets: [{
                 label: label,
                 data: displaydata,
-                fillColor:fillColorSet[count],
+                fillColor: fillColorSet[count],
                 borderColor: color_500_hex[count],
                 backgroundColor: color_100_rgba[count],
                 pointColor: "#fff",
@@ -143,7 +139,7 @@ function createChart(label, labels, displaydata, space, id, count) {
             }]
         },
     };
-    if (typeof($('#' + id)) !== 'undefined' && document.getElementById(id) !== null) {
+    if (typeof ($('#' + id)) !== 'undefined' && document.getElementById(id) !== null) {
         try {
             var chart = new Chart(ctx, chart_data);
             var divLegend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
