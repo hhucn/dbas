@@ -3,6 +3,8 @@ services:
   db:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas/db
     restart: unless-stopped
+    ports:
+      - "5432:5432"
     volumes:
       - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
       - ./docker/db/data:/var/lib/postgresql/data
