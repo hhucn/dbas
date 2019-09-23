@@ -5,7 +5,8 @@ from pyramid.response import Response
 from pyramid.view import view_config
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement
+from dbas.database.discussion_model import Statement, Issue
+from dbas.events import ParticipatedInDiscussion
 from dbas.handler import history as history_handler, user, issue as issue_handler
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement
 from dbas.handler.issue import set_discussions_properties
@@ -271,7 +272,7 @@ def set_correction_of_some_statements(request):
     return set_correction_of_statement(elements, db_user, _tn)
 
 
-def create_issue_after_validation(request):
+def create_issue_after_validation(request: Request):
     LOG.debug("Set a new issue: %s", request.json_body)
     info = escape_string(request.validated['info'])
     long_info = escape_string(request.validated['long_info'])
@@ -280,7 +281,13 @@ def create_issue_after_validation(request):
     is_public = request.validated['is_public']
     is_read_only = request.validated['is_read_only']
 
-    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only)
+    new_issue_dict = issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public,
+                                             is_read_only)
+    # Let the creator of the issue participate in it by default - otherwise private discussions are not show in overview
+    event = ParticipatedInDiscussion(request.validated['user'], DBDiscussionSession.query(Issue).filter(
+        Issue.uid == new_issue_dict['issue']['uid']).first())
+    request.registry.notify(event)
+    return new_issue_dict
 
 
 @view_config(route_name='set_new_issue', renderer='json')
