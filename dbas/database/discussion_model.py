@@ -107,6 +107,8 @@ class Issue(DiscussionBase):
         self.is_read_only = is_read_only
         self.date = get_now()
         self.is_featured = is_featured
+        author = DBDiscussionSession.query(User).get(self.author_uid)
+        self.participating_users = [author, ]
 
     def __repr__(self):
         return f"<Issue {self.uid}: {self.slug}>"
