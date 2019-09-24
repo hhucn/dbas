@@ -274,16 +274,14 @@ def set_correction_of_some_statements(request):
 def create_issue_after_validation(request: Request):
     LOG.debug("Set a new issue: %s", request.json_body)
 
-    DBDiscussionSession.add(Issue(title=escape_string(request.validated['title']),
-                                  info=escape_string(request.validated['info']),
-                                  long_info=escape_string(request.validated['long_info']),
-                                  author_uid=request.validated['user'].uid,
-                                  is_read_only=request.validated['is_read_only'],
-                                  is_private=not request.validated['is_public'],
-                                  lang_uid=request.validated['lang'].uid))
-    DBDiscussionSession.flush()
-    db_issue = DBDiscussionSession.query(Issue).filter(Issue.title == escape_string(request.validated['title']),
-                                                       Issue.info == escape_string(request.validated['info'])).first()
+    db_issue = Issue(title=escape_string(request.validated['title']),
+                     info=escape_string(request.validated['info']),
+                     long_info=escape_string(request.validated['long_info']),
+                     author_uid=request.validated['user'].uid,
+                     is_read_only=request.validated['is_read_only'],
+                     is_private=not request.validated['is_public'],
+                     lang_uid=request.validated['lang'].uid)
+    DBDiscussionSession.add(db_issue)
     return {'issue': get_issue_dict_for(db_issue, 0, request.validated['lang'].ui_locales)}
 
 
