@@ -20,7 +20,12 @@ Guest-User
 ==========
 
 The D-BAS database has one guest user.
-The name of the guest user is ``guest``. The password can be requested under ``dbas@cs.hhu.de``.
+The name of the guest user is ``guest``.
+The live database can be accessed from the university network.
+In order to access the live data, a password for the guest user must be requested.
+The password can be requested under ``dbas@cs.hhu.de``.
+
+For local development the password for the guest user is: ``guest``.
 
 The guest user has the exclusive right to ``SELECT`` the essential database tables. This includes:
 
