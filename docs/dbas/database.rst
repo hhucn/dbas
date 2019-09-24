@@ -19,6 +19,14 @@ another places of the program, we have to force transactions sometimes.
 Guest-User
 ==========
 
++-------------------+-------------------+------------------------+-------------------+
+|**Mode**           | **Name**          | **Password**           | **Permission**    |
++-------------------+-------------------+------------------------+-------------------+
+| development       | guest             | guest                  | read-only         |
++-------------------+-------------------+------------------------+-------------------+
+| production        | guest             | Ask: ``dbas@cs.hhu.de``| read-only         |
++-------------------+-------------------+------------------------+-------------------+
+
 The D-BAS database has one guest user.
 The name of the guest user is ``guest``.
 The live database can be accessed from the university network.
