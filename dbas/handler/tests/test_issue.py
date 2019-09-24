@@ -1,6 +1,6 @@
 import dbas.handler.issue as ih
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, User, Language
+from dbas.database.discussion_model import Issue, User
 from dbas.strings.translator import Translator
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
@@ -16,16 +16,6 @@ class TestIssueDictByIssue(TestCaseWithConfig):
 
 
 class IssueHandlerTests(TestCaseWithConfig):
-    def test_set_issue(self):
-        db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
-        info = 'infoinfoinfo'
-        long_info = 'long_infolong_infolong_info'
-        title = 'titletitletitle'
-        response = ih.set_issue(self.user_tobi, info, long_info, title, db_lang, False, False)
-        self.assertTrue(len(response['issue']) >= 0)
-
-        DBDiscussionSession.query(Issue).filter_by(title=title).delete()
-
     def test_prepare_json_of_issue(self):
         response = ih.prepare_json_of_issue(self.issue_town, self.user_anonymous)
         self.assertTrue(len(response) > 0)

@@ -24,34 +24,6 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Language, is_public: bool,
-              is_read_only: bool) -> Dict[str, Dict]:
-    """
-    Sets new issue, which will be a new discussion
-
-    :param db_user: User
-    :param info: Short information about the new issue
-    :param long_info: Long information about the new issue
-    :param title: Title of the new issue
-    :param db_lang: Language
-    :param is_public: Boolean
-    :param is_read_only: Boolean
-    :rtype: dict
-    :return: Collection with information about the new issue
-    """
-
-    DBDiscussionSession.add(Issue(title=title,
-                                  info=info,
-                                  long_info=long_info,
-                                  author_uid=db_user.uid,
-                                  is_read_only=is_read_only,
-                                  is_private=not is_public,
-                                  lang_uid=db_lang.uid))
-    DBDiscussionSession.flush()
-    db_issue = DBDiscussionSession.query(Issue).filter(Issue.title == title, Issue.info == info).first()
-    return {'issue': get_issue_dict_for(db_issue, 0, db_lang.ui_locales)}
-
-
 def prepare_json_of_issue(db_issue: Issue, db_user: User) -> Dict:
     """
     Prepares slug, info, argument count and the date of the issue as dict
