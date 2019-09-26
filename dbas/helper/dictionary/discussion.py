@@ -137,7 +137,7 @@ class DiscussionDictHelper:
         if not bubbles_already_last_in_list(bubbles_array, select_bubble):
             bubbles_array.append(select_bubble)
 
-        self.__append_now_bubble(bubbles_array)
+        self._append_now_bubble(bubbles_array)
 
         if not bubbles_already_last_in_list(bubbles_array, question_bubble):
             bubbles_array.append(question_bubble)
@@ -233,7 +233,7 @@ class DiscussionDictHelper:
 
         sys_msg += user_msg + dot + '<br>' + _tn.get(_.because) + '...'
 
-        self.__append_now_bubble(bubbles_array)
+        self._append_now_bubble(bubbles_array)
         sys_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_msg, omit_bubble_url=True, lang=self.lang)
         if not bubbles_already_last_in_list(bubbles_array, sys_bubble):
             bubbles_array.append(sys_bubble)
@@ -385,7 +385,7 @@ class DiscussionDictHelper:
         if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
             bubbles_array.remove(bubbles_array[-1])
 
-        self.__append_now_bubble(bubbles_array)
+        self._append_now_bubble(bubbles_array)
         if not bubbles_already_last_in_list(bubbles_array, bubble_user):
             bubbles_array.append(bubble_user)
         if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
@@ -565,7 +565,7 @@ class DiscussionDictHelper:
 
         sys_text = get_text_for_support(system_argument, argument_text, user.nickname, _tn)
 
-        self.__append_now_bubble(bubbles_array)
+        self._append_now_bubble(bubbles_array)
 
         user_text = get_text_for_argument_uid(user_argument.uid, nickname=user.nickname)
         bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=user_text, omit_bubble_url=True,
@@ -618,7 +618,7 @@ class DiscussionDictHelper:
         text = '{}. {}: {}?<br>{}...'.format(_tn.get(_.soYouEnteredMultipleReasons), question, discussed_text,
                                              _tn.get(_.because))
 
-        self.__append_now_bubble(bubbles_array)
+        self._append_now_bubble(bubbles_array)
 
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, uid='question-bubble', content=text,
                                                    omit_bubble_url=True, lang=self.lang)
@@ -663,12 +663,11 @@ class DiscussionDictHelper:
 
         return statement_list
 
-    def __append_now_bubble(self, bubbles_array) -> None:
+    def _append_now_bubble(self, bubbles_array: List[Dict[str, Any]]) -> None:
         """
         Appends the "now" bubble to the bubble array
 
-        :param bubbles_array:
-        :return:
+        :param bubbles_array: A list of bubbles that shall be added
         """
         if len(bubbles_array) > 0:
             _tn = Translator(self.lang)
