@@ -23,6 +23,17 @@ from dbas.strings.translator import Translator
 LOG = logging.getLogger(__name__)
 
 
+def wrap_in_tag(tag: str, content: str, attributes: str = ""):
+    """
+    Wraps some content in HTML tags with specific attributes.
+    :param tag: The tag that wraps the content
+    :param content: The content being wrapped
+    :param attributes: Optional attributes that can be assigned to the opening tag
+    :return: The wrapped content with the correct attributes.
+    """
+    return f"<{tag} {attributes}>{content}</{tag}>"
+
+
 class DiscussionDictHelper:
     """
     Provides all functions for creating the discussion dictionaries with all bubbles.
@@ -43,10 +54,6 @@ class DiscussionDictHelper:
         self.history = history
         self.slug = slug
         self.broke_limit = broke_limit
-
-    @staticmethod
-    def wrap_in_tag(tag, content, attributes=""):
-        return f"<{tag} {attributes}>{content}</{tag}>"
 
     def get_dict_for_start(self, start_empty: bool) -> Dict[str, Any]:
         """
@@ -307,12 +314,12 @@ class DiscussionDictHelper:
                                              with_html_tag=True, start_with_intro=True)
             data = get_name_link_of_arguments_author(argument, nickname)
             if data['is_valid']:
-                intro = data['link'] + ' ' + self.wrap_in_tag(tag_type, _tn.get(_.thinksThat))
+                intro = data['link'] + ' ' + wrap_in_tag(tag_type, _tn.get(_.thinksThat))
                 gender = data['gender']
             else:
-                intro = self.wrap_in_tag(tag_type, _tn.get(_.otherParticipantsThinkThat))
+                intro = wrap_in_tag(tag_type, _tn.get(_.otherParticipantsThinkThat))
             sys_text = intro + ' ' + start_with_small(text) + '. '
-            sys_text += '<br><br> ' + self.wrap_in_tag(tag_type, _tn.get(_.whatDoYouThinkAboutThat) + '?')
+            sys_text += '<br><br> ' + wrap_in_tag(tag_type, _tn.get(_.whatDoYouThinkAboutThat) + '?')
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, uid=str(argument.uid),
                                                   content=sys_text, other_author=data['user'])
             if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
