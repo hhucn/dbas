@@ -125,11 +125,10 @@ class DiscussionDictHelper(object):
         if not text:
             return None
 
-        tag_start = '<{} data-argumentation-type="position">'.format(tag_type)
-        tag_end = '</{}>'.format(tag_type)
-
         # system bubble
-        system_question = get_system_bubble_text_for_justify_statement(is_supportive, _tn, tag_start, text, tag_end)
+        additional_display_attributes = 'data-argumentation-type="position"'
+        system_question = get_system_bubble_text_for_justify_statement(is_supportive, _tn, text,
+                                                                       additional_display_attributes)
 
         # user bubble
         nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
