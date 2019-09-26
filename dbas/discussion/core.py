@@ -251,7 +251,7 @@ def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: str, path
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
-    discussion_dict = _ddh.get_dict_for_choosing(conclusion.uid, conclusion_is_argument, is_supportive)
+    discussion_dict = _ddh.get_dict_for_choosing(conclusion, conclusion_is_argument, is_supportive)
     item_dict = _idh.get_array_for_choosing(conclusion.uid, pgroup_ids, conclusion_is_argument, is_supportive,
                                             db_user.nickname)
 

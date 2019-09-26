@@ -2,7 +2,7 @@
 Provides helping function for dictionaries, which are used in discussions.
 """
 import logging
-from typing import List, Optional, Any, Dict
+from typing import List, Optional, Any, Dict, Union
 
 import dbas.handler.history as history_handler
 from dbas.database import DBDiscussionSession
@@ -584,42 +584,39 @@ class DiscussionDictHelper:
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_choosing(self, uid: int, is_uid_argument, is_supportive) -> dict:
+    def get_dict_for_choosing(self, discussion_object: Union[Argument, Statement], discussion_obj_is_argument: bool,
+                              is_supportive: bool) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the choosing an premise,
         when the user inserted more than one new premise.
 
-        :param uid: Argument.uid or Statement.uid
-        :param is_uid_argument: Boolean
-        :param is_supportive: Boolean
-        :return:
+        :param discussion_object: The argument/statement which is used for the choice
+        :param discussion_obj_is_argument: Whether the discussion object is an argument
+        :param is_supportive: Whether the object is supportive
+        :return: A dictionary representing the choice the user needs to make
         """
         _tn = Translator(self.lang)
         bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
-        add_premise_text = ''
-        save_statement_url = 'set_new_start_statement'
 
         LOG.debug("Choosing dictionary for bubbles.")
-        a = _tn.get(_.soYouEnteredMultipleReasons)
-        if is_uid_argument:
-            c = get_text_for_argument_uid(uid)
-        else:
-            statement = DBDiscussionSession.query(Statement).get(uid)
-            c = statement.get_text()
 
-        if is_supportive:
-            if is_uid_argument:
-                b = _tn.get(_.whatIsYourMostImportantReasonForArgument)
+        if discussion_obj_is_argument:
+            discussed_text = get_text_for_argument_uid(discussion_object.uid)
+            if is_supportive:
+                question = _tn.get(_.whatIsYourMostImportantReasonForArgument)
             else:
-                b = _tn.get(_.whatIsYourMostImportantReasonForStatement)
+                question = _tn.get(_.whatIsYourMostImportantReasonAgainstArgument)
         else:
-            if is_uid_argument:
-                b = _tn.get(_.whatIsYourMostImportantReasonAgainstArgument)
+            discussed_text = discussion_object.get_text()
+            if is_supportive:
+                question = _tn.get(_.whatIsYourMostImportantReasonForStatement)
             else:
-                b = _tn.get(_.whatIsYourMostImportantReasonAgainstStatement)
-        b = b.replace('{}', '')
+                question = _tn.get(_.whatIsYourMostImportantReasonAgainstStatement)
 
-        text = '{}. {}: {}?<br>{}...'.format(a, b, c, _tn.get(_.because))
+        question = question.replace('{}', '')
+
+        text = '{}. {}: {}?<br>{}...'.format(_tn.get(_.soYouEnteredMultipleReasons), question, discussed_text,
+                                             _tn.get(_.because))
 
         self.__append_now_bubble(bubbles_array)
 
@@ -630,8 +627,8 @@ class DiscussionDictHelper:
 
         return {
             'bubbles': bubbles_array,
-            'add_premise_text': add_premise_text,
-            'save_statement_url': save_statement_url,
+            'add_premise_text': '',
+            'save_statement_url': 'set_new_start_statement',
             'mode': '',
             'broke_limit': self.broke_limit
         }
