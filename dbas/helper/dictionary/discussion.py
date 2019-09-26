@@ -329,61 +329,57 @@ class DiscussionDictHelper:
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_argumentation(self, db_user_argument: Argument, arg_sys_id: Optional[int],
-                                   attack: Optional[Relations], history: str, db_user: User) -> dict:
+    def get_dict_for_argumentation(self, argument: Argument, arg_sys_id: Optional[int],
+                                   relation: Optional[Relations], history: str, user: User) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the argumentation window.
 
-        :param db_user_argument: Argument
+        :param argument: Argument which is presented
         :param arg_sys_id: Argument.uid / not necessary if attack=end
-        :param attack: String (undermine, support, undercut, rebut, ...)
+        :param relation: String (undermine, support, undercut, rebut, ...)
         :param history: History
-        :param db_user: User
+        :param user: User
         :return: dict()
         """
-        LOG.debug("At_argumentation about %s", db_user_argument.uid)
-        nickname = db_user.nickname
-        if db_user.nickname == nick_of_anonymous_user:
-            db_user = None
+        LOG.debug("At_argumentation about %s", argument.uid)
+        nickname = user.nickname
+        if user.nickname == nick_of_anonymous_user:
+            user = None
             nickname = None
 
         bubbles_array = history_handler.create_bubbles(self.history, nickname, self.lang, self.slug)
-        add_premise_text = ''
-        save_statement_url = 'set_new_start_statement'
         bubble_mid = ''
-        splitted_history = history_handler.split(self.history)
-        user_changed_opinion = splitted_history[-1].endswith(str(db_user_argument.uid))
+        split_history = history_handler.split(self.history)
+        has_user_changed_opinion = split_history[-1].endswith(str(argument.uid))
         statement_list = list()
-        db_argument = DBDiscussionSession.query(Argument).get(db_user_argument.uid)
         gender_of_counter_arg = ''
 
-        db_enemy = None
+        enemy_user = None
         if arg_sys_id is not None:
-            db_tmp_arg = DBDiscussionSession.query(Argument).get(arg_sys_id)
-            data = get_name_link_of_arguments_author(db_tmp_arg, nickname)
-            db_enemy = data['user']
+            enemy_argument = DBDiscussionSession.query(Argument).get(arg_sys_id)
+            enemy_data = get_name_link_of_arguments_author(enemy_argument, nickname)
+            enemy_user = enemy_data['user']
 
-        if not attack:
-            prep_dict = self.__get_dict_for_argumentation_end(db_user_argument.uid, user_changed_opinion, db_user)
+        if not relation:
+            prep_dict = self.__get_dict_for_argumentation_end(argument.uid, has_user_changed_opinion, user)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=prep_dict['sys'], omit_bubble_url=True,
-                                                  lang=self.lang, other_author=db_enemy)
+                                                  lang=self.lang, other_author=enemy_user)
             bubble_mid = create_speechbubble_dict(BubbleTypes.INFO, content=prep_dict['mid'], omit_bubble_url=True,
                                                   lang=self.lang)
         else:
             prep_dict = self.__get_dict_for_argumentation(
-                db_argument, arg_sys_id, history, attack, nickname, db_user_argument.is_supportive)
+                argument, arg_sys_id, history, relation, nickname, argument.is_supportive)
             quid = 'question-bubble-' + str(arg_sys_id) if int(arg_sys_id) > 0 else ''
-            is_author = is_author_of_argument(db_user, prep_dict['confrontation'].uid)
+            is_author = is_author_of_argument(user, prep_dict['confrontation'].uid)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, is_author=is_author, uid=quid,
                                                   content=prep_dict['sys'], omit_bubble_url=True, lang=self.lang,
-                                                  other_author=db_enemy)
+                                                  other_author=enemy_user)
             statement_list = self.__get_all_statement_texts_by_argument(prep_dict['confrontation'])
             gender_of_counter_arg = prep_dict['gender']
 
         bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=prep_dict['user'], omit_bubble_url=True,
-                                               argument_uid=db_user_argument.uid,
-                                               is_supportive=db_user_argument.is_supportive, db_user=db_user,
-                                               lang=self.lang, other_author=db_enemy)
+                                               argument_uid=argument.uid, is_supportive=argument.is_supportive,
+                                               db_user=user, lang=self.lang, other_author=enemy_user)
 
         # dirty fixes
         if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
@@ -395,13 +391,13 @@ class DiscussionDictHelper:
         if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
             bubbles_array.append(bubble_sys)
 
-        if not attack:
+        if not relation:
             bubbles_array.append(bubble_mid)
 
         return {
             'bubbles': bubbles_array,
-            'add_premise_text': add_premise_text,
-            'save_statement_url': save_statement_url,
+            'add_premise_text': '',
+            'save_statement_url': 'set_new_start_statement',
             'mode': '',
             'extras': statement_list,
             'gender': gender_of_counter_arg,
