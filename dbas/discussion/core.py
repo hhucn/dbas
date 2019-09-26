@@ -283,7 +283,7 @@ def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: str, pa
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
-    discussion_dict = _ddh.get_dict_for_jump(db_argument.uid)
+    discussion_dict = _ddh.get_dict_for_jump(db_argument)
     item_dict = _idh.get_array_for_jump(db_argument.uid, db_issue.slug)
 
     return {

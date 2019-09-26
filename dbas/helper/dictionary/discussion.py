@@ -498,16 +498,17 @@ class DiscussionDictHelper:
             'confrontation': confrontation
         }
 
-    def get_dict_for_jump(self, uid) -> dict:
+    def get_dict_for_jump(self, argument: Argument) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the jump step
 
-        :param uid: Argument.uid
-        :return: dict()
+        :param argument: The argument to which the system shall jump
+        :return: A dictionary representing an argument after a user jumps to it
         """
-        LOG.debug("Argument %s", uid)
+        LOG.debug("Argument: %s", argument)
         _tn = Translator(self.lang)
-        argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
+        argument_text = get_text_for_argument_uid(argument.uid, colored_position=True, with_html_tag=True,
+                                                  attack_type='jump')
         bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
 
         coming_from_jump = False
@@ -516,8 +517,7 @@ class DiscussionDictHelper:
             coming_from_jump = '/jump' in self.history[:-1] if len(splitted_history) > 0 else False
         intro = (_tn.get(_.canYouBeMorePrecise) + '<br><br>') if coming_from_jump else ''
 
-        db_argument = DBDiscussionSession.query(Argument).get(uid)
-        if db_argument.conclusion_uid is not None:
+        if argument.conclusion_uid is not None:
             intro += _tn.get(_.whatDoYouThinkArgument).strip() + ': '
         else:
             bind = ', ' if self.lang == 'de' else ' '
@@ -528,19 +528,17 @@ class DiscussionDictHelper:
             argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
 
         text = intro + argument_text + '?'
-        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, uid='question-bubble-{}'.format(uid),
-                                          content=text, omit_bubble_url=True, lang=self.lang)
+        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True,
+                                          uid='question-bubble-{}'.format(argument.uid), content=text,
+                                          omit_bubble_url=True, lang=self.lang)
         bubbles_array.append(bubble)
-
-        # add statements of discussion to report them
-        statement_list = self.__get_all_statement_texts_by_argument(db_argument)
 
         return {
             'bubbles': bubbles_array,
             'add_premise_text': '',
             'save_statement_url': '',
             'mode': '',
-            'extras': statement_list,
+            'extras': self.__get_all_statement_texts_by_argument(argument),
             'broke_limit': self.broke_limit
         }
 
