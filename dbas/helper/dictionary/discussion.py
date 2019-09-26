@@ -9,6 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement, \
     get_system_bubble_text_for_justify_statement
+from dbas.helper.html_tags import wrap_in_tag
 from dbas.helper.url import UrlManager
 from dbas.lib import get_text_for_argument_uid, get_text_for_conclusion, create_speechbubble_dict, \
     is_author_of_argument, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, \
@@ -21,17 +22,6 @@ from dbas.strings.text_generator import tag_type, get_header_for_users_confronta
 from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
-
-
-def wrap_in_tag(tag: str, content: str, attributes: str = ""):
-    """
-    Wraps some content in HTML tags with specific attributes.
-    :param tag: The tag that wraps the content
-    :param content: The content being wrapped
-    :param attributes: Optional attributes that can be assigned to the opening tag
-    :return: The wrapped content with the correct attributes.
-    """
-    return f"<{tag} {attributes}>{content}</{tag}>"
 
 
 class DiscussionDictHelper:

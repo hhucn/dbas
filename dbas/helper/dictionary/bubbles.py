@@ -3,7 +3,7 @@ from typing import Tuple
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import MarkedStatement, Statement, User
-from dbas.helper.dictionary.discussion import wrap_in_tag
+from dbas.helper.html_tags import wrap_in_tag
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 from dbas.strings.text_generator import tag_type
