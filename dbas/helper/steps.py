@@ -159,6 +159,6 @@ def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument
 
     # justifying argument
     item_dict = _idh.get_array_for_justify_argument(db_argument.uid, relation, db_user, history)
-    discussion_dict = _ddh.get_dict_for_justify_argument(db_argument.uid, supportive, relation)
+    discussion_dict = _ddh.get_dict_for_justify_argument(db_argument, supportive, relation)
 
     return item_dict, discussion_dict

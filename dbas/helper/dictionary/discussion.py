@@ -170,37 +170,33 @@ class DiscussionDictHelper:
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_justify_argument(self, uid, is_supportive, attack):
+    def get_dict_for_justify_argument(self, argument: Argument, is_supportive: bool, relation: str) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for a step in discussion,
         where the user justifies his attack she has done.
 
-        :param uid: Argument.uid
-        :param is_supportive: Boolean
-        :param attack: String (undermine, support, undercut, rebut, ...)
+        :param argument: The argument being justified
+        :param is_supportive: Whether the justificaiton is supportive
+        :param relation: The type of relation used for the justification
         :return: dict()
         """
         LOG.debug("Entering get_dict_for_justify_argument")
         _tn = Translator(self.lang)
         bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
-        add_premise_text = ''
-        save_statement_url = 'set_new_premises_for_argument'
 
-        db_argument = DBDiscussionSession.query(Argument).get(uid)
-        if not db_argument:
+        if argument is None:
             return {
                 'bubbles': bubbles_array,
-                'add_premise_text': add_premise_text,
-                'save_statement_url': save_statement_url,
+                'add_premise_text': '',
+                'save_statement_url': 'set_new_premises_for_argument',
                 'mode': '',
                 'broke_limit': self.broke_limit
             }
 
-        confrontation = get_text_for_argument_uid(uid)
-        premise = db_argument.get_premisegroup_text()
-        conclusion = get_text_for_conclusion(db_argument, is_users_opinion=False)
+        premise = argument.get_premisegroup_text()
+        conclusion = get_text_for_conclusion(argument, is_users_opinion=False)
 
-        if db_argument.conclusion_uid is None:
+        if argument.conclusion_uid is None:
             conclusion = start_with_small(conclusion)
 
         while premise.endswith(('.', '?', '!')):
@@ -209,14 +205,13 @@ class DiscussionDictHelper:
             conclusion = premise[:-1]
 
         redirect_from_jump = 'jump/' in self.history.split('-')[-1]
-        user_msg, sys_msg = get_header_for_users_confrontation_response(db_argument, self.lang, premise,
-                                                                        attack, conclusion, False,
-                                                                        is_supportive, self.nickname,
+        user_msg, sys_msg = get_header_for_users_confrontation_response(argument, self.lang, premise, relation,
+                                                                        conclusion, False, is_supportive, self.nickname,
                                                                         redirect_from_jump=redirect_from_jump)
 
-        add_premise_text = self.__get_add_premise_text_for_justify_argument(confrontation, premise, attack,
-                                                                            conclusion, db_argument, is_supportive,
-                                                                            user_msg)
+        add_premise_text = self.__get_add_premise_text_for_justify_argument(get_text_for_argument_uid(argument.uid),
+                                                                            premise, relation, conclusion, argument,
+                                                                            is_supportive, user_msg)
         start = '<{} data-argumentation-type="position">'.format(tag_type)
         end = '</{}>'.format(tag_type)
         user_msg = user_msg.format(start, end)
@@ -225,12 +220,12 @@ class DiscussionDictHelper:
         con_tag = '<{} class="text-danger">'.format(tag_type)
         end_tag = '</{}>'.format(tag_type)
 
-        if attack == Relations.UNDERCUT:
+        if relation == Relations.UNDERCUT:
             sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument).rstrip().format(pro_tag, end_tag) + ': '
             dot = '.'
         else:
             dot = '?'
-            if attack == Relations.UNDERMINE:
+            if relation == Relations.UNDERMINE:
                 sys_msg = _tn.get(_.whatIsYourMostImportantReasonAgainstStatement).rstrip().format(con_tag, end_tag)
                 sys_msg += ', ' if self.lang == 'de' else ' '
             else:
@@ -246,10 +241,10 @@ class DiscussionDictHelper:
         return {
             'bubbles': bubbles_array,
             'add_premise_text': add_premise_text,
-            'save_statement_url': save_statement_url,
+            'save_statement_url': 'set_new_premises_for_argument',
             'mode': '',
-            'attack_type': attack,
-            'arg_uid': uid,
+            'attack_type': relation,
+            'arg_uid': argument.uid,
             'broke_limit': self.broke_limit
         }
 
