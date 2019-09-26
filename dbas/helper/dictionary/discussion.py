@@ -486,7 +486,7 @@ class DiscussionDictHelper:
         user_text += current_argument if current_argument != '' else premise
 
         sys_text, gender = get_text_for_confrontation(self.lang, nickname, premise, get_text_for_conclusion(user_arg),
-                                                      (confrontation.get_conclusion_text(),), is_supportive, relation,
+                                                      confrontation.get_conclusion_text(), is_supportive, relation,
                                                       confrontation.get_premisegroup_text(), reply_for_argument,
                                                       not user_arg.is_supportive, user_arg, confrontation)
         gender_of_counter_arg = gender
