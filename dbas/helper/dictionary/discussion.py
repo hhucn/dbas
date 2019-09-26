@@ -584,39 +584,6 @@ class DiscussionDictHelper:
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_jump_decision(self, uid) -> dict:
-        """
-        Prepares the discussion dict with all bubbles for the jump decision step
-
-        :param uid: Argument.uid
-        :return: dict()
-        """
-        LOG.debug("Entering get_dict_got_jump_decision")
-        _tn = Translator(self.lang)
-
-        db_argument = DBDiscussionSession.query(Argument).get(uid)
-        tag_premise = '<' + tag_type + ' data-argumentation-type="argument">'
-        tag_conclusion = '<' + tag_type + ' data-argumentation-type="attack">'
-        tag_end = '</' + tag_type + '>'
-        premise = db_argument.get_premisegroup_text()
-        premise = tag_premise + premise + tag_end
-        conclusion = tag_conclusion + get_text_for_conclusion(db_argument) + tag_end
-        aand = ' ' + _tn.get(_.aand) + ' '
-
-        text = _tn.get(_.whatDoYouThinkAbout)
-        text += ' ' + premise + aand + conclusion + '?'
-        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=text, omit_bubble_url=True, lang=self.lang)
-
-        bubbles_array = [bubble]
-
-        return {
-            'bubbles': bubbles_array,
-            'add_premise_text': '',
-            'save_statement_url': '',
-            'mode': '',
-            'broke_limit': self.broke_limit
-        }
-
     def get_dict_for_choosing(self, uid: int, is_uid_argument, is_supportive) -> dict:
         """
         Prepares the discussion dict with all bubbles for the choosing an premise,
