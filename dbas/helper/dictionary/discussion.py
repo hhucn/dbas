@@ -144,7 +144,7 @@ class DiscussionDictHelper:
 
         if not self.nickname and first_bubble:
             _t = Translator(self.lang)
-            user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+            user = User.by_nickname(nickname)
             msg_dict = {
                 'm': _.voteCountTextFirstM,
                 'f': _.voteCountTextFirstF,
