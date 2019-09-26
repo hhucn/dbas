@@ -2,7 +2,7 @@
 Provides helping function for dictionaries, which are used in discussions.
 """
 import logging
-from typing import List, Optional
+from typing import List, Optional, Any, Dict
 
 import dbas.handler.history as history_handler
 from dbas.database import DBDiscussionSession
@@ -23,20 +23,20 @@ from dbas.strings.translator import Translator
 LOG = logging.getLogger(__name__)
 
 
-class DiscussionDictHelper(object):
+class DiscussionDictHelper:
     """
     Provides all functions for creating the discussion dictionaries with all bubbles.
     """
 
-    def __init__(self, lang, nickname=None, history: str = '', slug: str = '', broke_limit: bool = False):
+    def __init__(self, lang: str, nickname: str = None, history: str = '', slug: str = '', broke_limit: bool = False):
         """
         Initialize default values
 
-        :param lang: ui_locales
-        :param nickname: request.authenticated_userid
-        :param history: history
-        :param slug: String
-        :return:
+        :param lang: A ui_locales string for the desired language
+        :param nickname: The nickname of the concerned user, if any
+        :param history: The history encoded as a string
+        :param slug: The slug of the current issue
+        :param broke_limit: TODO fill in
         """
         self.lang = lang
         self.nickname = nickname
@@ -44,15 +44,15 @@ class DiscussionDictHelper(object):
         self.slug = slug
         self.broke_limit = broke_limit
 
-    def get_dict_for_start(self, position_count):
+    def get_dict_for_start(self, start_empty: bool) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the first step in discussion,
         where the user chooses a position.
 
-        :position_count: int
-        :return: dict()
+        :param start_empty: Indicates whether the bubbles shall start empty or with the initial start bubble
+        :return: A dictionary representing the bubbles needed for the start
         """
-        LOG.debug("At_start with positions: %s", position_count)
+        LOG.debug("At start with positions")
         _tn = Translator(self.lang)
         add_premise_text = _tn.get(_.whatIsYourIdea)
         intro = _tn.get(_.initialPositionInterest)
@@ -60,7 +60,7 @@ class DiscussionDictHelper(object):
 
         start_bubble = create_speechbubble_dict(BubbleTypes.USER, uid='start', content=intro, omit_bubble_url=True,
                                                 lang=self.lang)
-        bubbles_array = [] if position_count == 1 else [start_bubble]
+        bubbles_array = [] if start_empty else [start_bubble]
 
         return {
             'bubbles': bubbles_array,

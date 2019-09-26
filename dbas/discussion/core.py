@@ -35,7 +35,7 @@ def init(db_issue: Issue, db_user: User) -> dict:
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname=db_user.nickname, slug=slug)
 
     item_dict = ItemDictHelper(disc_ui_locales, db_issue).get_array_for_start(db_user)
-    discussion_dict = _ddh.get_dict_for_start(position_count=(len(item_dict['elements'])))
+    discussion_dict = _ddh.get_dict_for_start(len(item_dict['elements']) == 1)
 
     return {
         'issues': issue_dict,
