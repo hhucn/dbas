@@ -176,9 +176,9 @@ class DiscussionDictHelper:
         where the user justifies his attack she has done.
 
         :param argument: The argument being justified
-        :param is_supportive: Whether the justificaiton is supportive
+        :param is_supportive: Whether the justification is supportive
         :param relation: The type of relation used for the justification
-        :return: dict()
+        :return: A dictionary representing the bubbles needed to justify an argument
         """
         LOG.debug("Entering get_dict_for_justify_argument")
         _tn = Translator(self.lang)
@@ -283,51 +283,46 @@ class DiscussionDictHelper:
 
         return add_premise_text
 
-    def get_dict_for_dont_know_reaction(self, uid, nickname) -> dict:
+    def get_dict_for_dont_know_reaction(self, argument: Argument, nickname: str) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the third step,
         where an supportive argument will be presented.
 
-        :param uid: Argument.uid
-        :param nickname:
-        :return: dict()
+        :param argument: The argument which shall be presented for the don't know reaction
+        :param nickname: The Nickname of the user for whom the bubble needs to be shown
+        :return: A dictionary representing the bubbles needed to present an argument for the don't know reaction
         """
         LOG.debug("Entering get_dict_for_dont_know_reaction")
         _tn = Translator(self.lang)
         bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
-        add_premise_text = ''
-        save_statement_url = 'set_new_start_statement'
+        start_tag = '<' + tag_type + '>'
+        end_tag = '</' + tag_type + '>'
         gender = ''
-        b = '<' + tag_type + '>'
-        e = '</' + tag_type + '>'
         statement_list = list()
 
-        if int(uid) != 0:
-            text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=True,
-                                             start_with_intro=True)
-            db_argument = DBDiscussionSession.query(Argument).get(uid)
-            if not db_argument:
-                text = ''
-            data = get_name_link_of_arguments_author(db_argument, nickname)
-            gender = data['gender']
+        if argument is not None:
+            text = get_text_for_argument_uid(argument.uid, rearrange_intro=True, attack_type='dont_know',
+                                             with_html_tag=True, start_with_intro=True)
+            data = get_name_link_of_arguments_author(argument, nickname)
             if data['is_valid']:
-                intro = data['link'] + ' ' + b + _tn.get(_.thinksThat) + e
+                intro = data['link'] + ' ' + start_tag + _tn.get(_.thinksThat) + end_tag
+                gender = data['gender']
             else:
-                intro = b + _tn.get(_.otherParticipantsThinkThat) + e
+                intro = start_tag + _tn.get(_.otherParticipantsThinkThat) + end_tag
             sys_text = intro + ' ' + start_with_small(text) + '. '
-            sys_text += '<br><br> ' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, uid=uid, content=sys_text,
-                                                  other_author=data['user'])
+            sys_text += '<br><br> ' + start_tag + _tn.get(_.whatDoYouThinkAboutThat) + '?' + end_tag
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, uid=str(argument.uid),
+                                                  content=sys_text, other_author=data['user'])
             if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
                 bubbles_array.append(bubble_sys)
 
             # add statements of discussion to report them
-            statement_list = self.__get_all_statement_texts_by_argument(db_argument)
+            statement_list = self.__get_all_statement_texts_by_argument(argument)
 
         return {
             'bubbles': bubbles_array,
-            'add_premise_text': add_premise_text,
-            'save_statement_url': save_statement_url,
+            'add_premise_text': '',
+            'save_statement_url': 'set_new_start_statement',
             'mode': '',
             'extras': statement_list,
             'gender': gender,

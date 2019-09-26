@@ -130,7 +130,7 @@ def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stm
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
-    discussion_dict = _ddh.get_dict_for_dont_know_reaction(db_stmt_or_arg.uid, nickname)
+    discussion_dict = _ddh.get_dict_for_dont_know_reaction(db_stmt_or_arg, nickname)
     item_dict = _idh.get_array_for_dont_know_reaction(db_stmt_or_arg.uid, db_user, discussion_dict['gender'])
     return item_dict, discussion_dict
 
