@@ -209,9 +209,9 @@ class DiscussionDictHelper:
                                                                         conclusion, False, is_supportive, self.nickname,
                                                                         redirect_from_jump=redirect_from_jump)
 
-        add_premise_text = self.__get_add_premise_text_for_justify_argument(get_text_for_argument_uid(argument.uid),
-                                                                            premise, relation, conclusion, argument,
-                                                                            is_supportive, user_msg)
+        add_premise_text = self._add_premise_text_for_justify_argument(get_text_for_argument_uid(argument.uid),
+                                                                       premise, relation, conclusion, argument,
+                                                                       is_supportive, user_msg)
         start = '<{} data-argumentation-type="position">'.format(tag_type)
         end = '</{}>'.format(tag_type)
         user_msg = user_msg.format(start, end)
@@ -248,38 +248,38 @@ class DiscussionDictHelper:
             'broke_limit': self.broke_limit
         }
 
-    def __get_add_premise_text_for_justify_argument(self, confrontation, premise, attack, conclusion, db_argument,
-                                                    is_supportive, user_msg) -> str:
+    def _add_premise_text_for_justify_argument(self, confrontation: str, premise: str, relation: str,
+                                               conclusion: str, argument: Argument, is_supportive: bool,
+                                               user_msg: str) -> str:
         """
         Returns the text fot the add premise container during the justification for an argument
 
-        :param confrontation: String
-        :param premise: String
-        :param attack: String
-        :param conclusion: String
-        :param db_argument: Argument
-        :param is_supportive: Boolean
-        :param user_msg: String
-        :return: String
+        :param confrontation: The arguments text
+        :param premise: Content of the premise
+        :param relation: Type of relation encoded as a string
+        :param conclusion: The text of the conclusion
+        :param argument: The argument for which we try to build the justification
+        :param is_supportive: Whether the justification is supportive
+        :param user_msg: The users input
+        :return: Returns the text for the justification premise
         """
-        if attack == Relations.UNDERMINE:
-            add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack,
-                                                                  conclusion, db_argument.is_supportive)
+        if relation == Relations.UNDERMINE:
+            add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, relation,
+                                                                  conclusion, argument.is_supportive)
             add_premise_text = start_with_capital(add_premise_text)
 
-        elif attack == Relations.SUPPORT:
-            is_supportive = not is_supportive
+        elif relation == Relations.SUPPORT:
             # when the user rebuts a system confrontation, he attacks his own negated premise, therefore he supports
             # is own premise. so his premise is the conclusion and we need new premises ;-)
-            add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack,
-                                                                  conclusion, is_supportive)
+            add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, relation,
+                                                                  conclusion, not is_supportive)
 
-        elif attack == Relations.UNDERCUT:
+        elif relation == Relations.UNDERCUT:
             add_premise_text = user_msg.format('', '') + ', ' + '...'
 
         else:
-            add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack,
-                                                                  conclusion, db_argument.is_supportive)
+            add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, relation,
+                                                                  conclusion, argument.is_supportive)
 
         return add_premise_text
 
