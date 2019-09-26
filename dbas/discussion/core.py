@@ -213,7 +213,7 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
-    discussion_dict = _ddh.get_dict_for_supporting_each_other(db_arg_sys.uid, db_arg_user.uid, db_user.nickname)
+    discussion_dict = _ddh.get_dict_for_supporting_each_other(db_arg_sys, db_arg_user, db_user)
     item_dict = _idh.get_array_for_support(db_arg_sys.uid, db_issue.slug)
 
     return {

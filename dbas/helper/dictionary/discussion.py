@@ -542,40 +542,37 @@ class DiscussionDictHelper:
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_supporting_each_other(self, uid_system_arg, uid_user_arg, nickname) -> dict:
+    def get_dict_for_supporting_each_other(self, system_argument: Argument, user_argument: Argument, user: User) -> \
+            Dict[str, Any]:
         """
         Returns the dictionary during the supporting step
 
-        :param uid_system_arg: Argument.uid
-        :param uid_user_arg: Argument.uid
-        :param nickname: User.nickname
-        :return: dict()
+        :param system_argument: Argument chosen by the system
+        :param user_argument: Argument chosen by the user to support
+        :param user: The users attempting the support
+        :return: A dictionary representing an argument at the support step
         """
-        LOG.debug("Entering get_dict_for_supporting_each_other for arg uid: %s", uid_system_arg)
+        LOG.debug("Entering get_dict_for_supporting_each_other for arg: %s", system_argument)
         _tn = Translator(self.lang)
-        bubbles_array = history_handler.create_bubbles(self.history, nickname, self.lang, self.slug)
-        db_arg_system = DBDiscussionSession.query(Argument).get(uid_system_arg)
-        db_arg_user = DBDiscussionSession.query(Argument).get(uid_user_arg)
+        bubbles_array = history_handler.create_bubbles(self.history, user.nickname, self.lang, self.slug)
 
-        argument_text = get_text_for_argument_uid(uid_system_arg, colored_position=True, with_html_tag=True,
+        argument_text = get_text_for_argument_uid(system_argument.uid, colored_position=True, with_html_tag=True,
                                                   attack_type='jump')
 
         offset = len('</' + tag_type + '>') if argument_text.endswith('</' + tag_type + '>') else 1
         while argument_text[:-offset].endswith(('.', '?', '!')):
             argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
 
-        sys_text = get_text_for_support(db_arg_system, argument_text, nickname, _tn)
+        sys_text = get_text_for_support(system_argument, argument_text, user.nickname, _tn)
 
         self.__append_now_bubble(bubbles_array)
 
-        user_text = get_text_for_argument_uid(uid_user_arg, nickname=nickname)
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        user_text = get_text_for_argument_uid(user_argument.uid, nickname=user.nickname)
         bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=user_text, omit_bubble_url=True,
-                                               argument_uid=uid_user_arg, is_supportive=db_arg_user.is_supportive,
-                                               db_user=db_user, lang=self.lang)
+                                               argument_uid=user_argument.uid,
+                                               is_supportive=user_argument.is_supportive, db_user=user, lang=self.lang)
         bubbles_array.append(bubble_user)
-
-        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, uid='question-bubble-{}'.format(uid_system_arg),
+        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, uid='question-bubble-{}'.format(system_argument),
                                           content=sys_text, omit_bubble_url=True, lang=self.lang)
         bubbles_array.append(bubble)
 
