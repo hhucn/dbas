@@ -367,7 +367,7 @@ class DiscussionDictHelper:
             bubble_mid = create_speechbubble_dict(BubbleTypes.INFO, content=prep_dict['mid'], omit_bubble_url=True,
                                                   lang=self.lang)
         else:
-            prep_dict = self.__get_dict_for_argumentation(
+            prep_dict = self._get_dict_for_argumentation(
                 argument, arg_sys_id, history, relation, nickname, argument.is_supportive)
             quid = 'question-bubble-' + str(arg_sys_id) if int(arg_sys_id) > 0 else ''
             is_author = is_author_of_argument(user, prep_dict['confrontation'].uid)
@@ -405,7 +405,7 @@ class DiscussionDictHelper:
         }
 
     def _get_dict_for_argumentation_end(self, argument: Argument, has_user_changed_opinion: bool, user: User) -> \
-            Dict[str, Any]:
+            Dict[str, str]:
         """
         Returns a special dict() when the discussion ends during an argumentation
 
@@ -433,34 +433,31 @@ class DiscussionDictHelper:
             'sys': _tn.get(_.otherParticipantsDontHaveCounterForThat) + '.'
         }
 
-    def __get_dict_for_argumentation(self, user_arg: Argument, confrontation_arg_uid: int, history: str,
-                                     attack: Relations, nickname: str, is_supportive: bool) -> dict:
+    def _get_dict_for_argumentation(self, user_arg: Argument, confrontation_arg_uid: int, history: str,
+                                    relation: Relations, nickname: str, is_supportive: bool) -> Dict[str, Any]:
         """
         Returns dict() for the reaction step
 
-        :param user_arg: Argument
-        :param confrontation_arg_uid:  Argument.uid
-        :param history: String
-        :param attack: String
-        :param nickname: User.nickname
-        :param is_supportive: Boolean
-        :return: dict()
+        :param user_arg: Argument that the system reacts to
+        :param confrontation_arg_uid:  The id of the argument with which is reacted
+        :param history: The history up to this point of the discussion as a string
+        :param relation: The relation which is used in the confrontation
+        :param nickname: The nickname of the use being confronted
+        :param is_supportive: Whether the relation is supportive
+        :return: Returns a dictionary with information which help build a specific part of the argumentation
         """
         premise = user_arg.get_premisegroup_text()
-        conclusion = get_text_for_conclusion(user_arg)
-        db_confrontation = DBDiscussionSession.query(Argument).get(confrontation_arg_uid)
-        confr = db_confrontation.get_premisegroup_text()
-        sys_conclusion = (db_confrontation.get_conclusion_text())
-        if attack == Relations.UNDERMINE:
-            if db_confrontation.conclusion_uid != 0:
-                premise = db_confrontation.get_conclusion_text()
+        confrontation = DBDiscussionSession.query(Argument).get(confrontation_arg_uid)
+        if relation == Relations.UNDERMINE:
+            if confrontation.conclusion_uid != 0:
+                premise = confrontation.get_conclusion_text()
             else:
-                premise = get_text_for_argument_uid(db_confrontation.argument_uid, True, colored_position=True,
-                                                    attack_type=attack)
+                premise = get_text_for_argument_uid(confrontation.argument_uid, with_html_tag=True,
+                                                    colored_position=True, attack_type=str(relation))
 
-        # did the user changed his opinion?
+        # did the user change his opinion?
         history = history_handler.split(history)
-        user_changed_opinion = len(history) > 1 and '/undercut/' in history[-2]
+        has_user_changed_opinion = len(history) > 1 and '/undercut/' in history[-2]
 
         # argumentation is a reply for an argument, if the arguments conclusion of the user is no position
         conclusion_uid = user_arg.conclusion_uid
@@ -469,14 +466,14 @@ class DiscussionDictHelper:
             tmp_arg = DBDiscussionSession.query(Argument).get(tmp_arg.argument_uid)
             conclusion_uid = tmp_arg.conclusion_uid
 
-        db_statement = DBDiscussionSession.query(Statement).get(conclusion_uid)
-        reply_for_argument = not (db_statement and db_statement.is_position)
+        statement = DBDiscussionSession.query(Statement).get(conclusion_uid)
+        reply_for_argument = not (statement and statement.is_position)
         support_counter_argument = 'reaction' in self.history.split('-')[-1]
 
         current_argument = get_text_for_argument_uid(user_arg.uid, nickname=nickname, with_html_tag=True,
                                                      colored_position=True,
-                                                     user_changed_opinion=user_changed_opinion, attack_type=attack,
-                                                     minimize_on_undercut=True,
+                                                     user_changed_opinion=has_user_changed_opinion,
+                                                     attack_type=str(relation), minimize_on_undercut=True,
                                                      support_counter_argument=support_counter_argument)
 
         current_argument = start_with_capital(current_argument)
@@ -485,19 +482,20 @@ class DiscussionDictHelper:
 
         # check for support and build text
         _tn = Translator(self.lang)
-        user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''
+        user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if has_user_changed_opinion else ''
         user_text += current_argument if current_argument != '' else premise
 
-        sys_text, gender = get_text_for_confrontation(self.lang, nickname, premise, conclusion,
-                                                      sys_conclusion, is_supportive, attack, confr, reply_for_argument,
-                                                      not user_arg.is_supportive, user_arg, db_confrontation)
+        sys_text, gender = get_text_for_confrontation(self.lang, nickname, premise, get_text_for_conclusion(user_arg),
+                                                      (confrontation.get_conclusion_text(),), is_supportive, relation,
+                                                      confrontation.get_premisegroup_text(), reply_for_argument,
+                                                      not user_arg.is_supportive, user_arg, confrontation)
         gender_of_counter_arg = gender
 
         return {
             'user': user_text,
             'sys': sys_text,
             'gender': gender_of_counter_arg,
-            'confrontation': db_confrontation
+            'confrontation': confrontation
         }
 
     def get_dict_for_jump(self, uid) -> dict:
