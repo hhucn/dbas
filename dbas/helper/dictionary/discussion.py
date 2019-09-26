@@ -54,35 +54,33 @@ class DiscussionDictHelper:
         """
         LOG.debug("At start with positions")
         _tn = Translator(self.lang)
-        add_premise_text = _tn.get(_.whatIsYourIdea)
-        intro = _tn.get(_.initialPositionInterest)
-        save_statement_url = 'set_new_start_premise'
 
-        start_bubble = create_speechbubble_dict(BubbleTypes.USER, uid='start', content=intro, omit_bubble_url=True,
-                                                lang=self.lang)
-        bubbles_array = [] if start_empty else [start_bubble]
+        bubbles_array = []
+        if not start_empty:
+            start_bubble = create_speechbubble_dict(BubbleTypes.USER, uid='start',
+                                                    content=_tn.get(_.initialPositionInterest), omit_bubble_url=True,
+                                                    lang=self.lang)
+            bubbles_array = [start_bubble]
 
         return {
             'bubbles': bubbles_array,
-            'add_premise_text': add_premise_text,
-            'save_statement_url': save_statement_url,
+            'add_premise_text': _tn.get(_.whatIsYourIdea),
+            'save_statement_url': 'set_new_start_premise',
             'mode': '',
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_attitude(self, db_position: Statement) -> dict:
+    def get_dict_for_attitude(self, position: Statement) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the second step in discussion,
         where the user chooses her attitude.
 
-        :param db_position: Statement
-        :return: dict()
+        :param position: The special statement that should be presented
+        :return: A dictionary representing the bubbles needed to show a position
         """
         LOG.debug("Entering get_dict_for_attitude")
         _tn = Translator(self.lang)
-        add_premise_text = ''
-        save_statement_url = 'set_new_start_statement'
-        statement_text = db_position.get_html()
+        statement_text = position.get_html()
 
         if self.lang != 'de':
             pos = len('<' + tag_type + ' data-argumentation-type="position">')
@@ -90,14 +88,12 @@ class DiscussionDictHelper:
 
         text = _tn.get(_.whatDoYouThinkAbout)
         text += ' ' + statement_text + '?'
-        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=text, omit_bubble_url=True, lang=self.lang)
-
-        bubbles_array = [bubble]
+        start_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=text, omit_bubble_url=True, lang=self.lang)
 
         return {
-            'bubbles': bubbles_array,
-            'add_premise_text': add_premise_text,
-            'save_statement_url': save_statement_url,
+            'bubbles': [start_bubble],
+            'add_premise_text': '',
+            'save_statement_url': 'set_new_start_statement',
             'mode': '',
             'broke_limit': self.broke_limit
         }
