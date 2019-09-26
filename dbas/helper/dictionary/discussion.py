@@ -6,7 +6,7 @@ from typing import List, Optional, Any, Dict, Union
 
 import dbas.handler.history as history_handler
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, Premise, User
+from dbas.database.discussion_model import Argument, Statement, User
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement, \
     get_system_bubble_text_for_justify_statement
 from dbas.helper.url import UrlManager
@@ -317,7 +317,7 @@ class DiscussionDictHelper:
                 bubbles_array.append(bubble_sys)
 
             # add statements of discussion to report them
-            statement_list = self.__get_all_statement_texts_by_argument(argument)
+            statement_list = self._get_all_statement_texts_by_argument(argument)
 
         return {
             'bubbles': bubbles_array,
@@ -374,7 +374,7 @@ class DiscussionDictHelper:
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, is_author=is_author, uid=quid,
                                                   content=prep_dict['sys'], omit_bubble_url=True, lang=self.lang,
                                                   other_author=enemy_user)
-            statement_list = self.__get_all_statement_texts_by_argument(prep_dict['confrontation'])
+            statement_list = self._get_all_statement_texts_by_argument(prep_dict['confrontation'])
             gender_of_counter_arg = prep_dict['gender']
 
         bubble_user = create_speechbubble_dict(BubbleTypes.USER, content=prep_dict['user'], omit_bubble_url=True,
@@ -538,7 +538,7 @@ class DiscussionDictHelper:
             'add_premise_text': '',
             'save_statement_url': '',
             'mode': '',
-            'extras': self.__get_all_statement_texts_by_argument(argument),
+            'extras': self._get_all_statement_texts_by_argument(argument),
             'broke_limit': self.broke_limit
         }
 
@@ -634,20 +634,18 @@ class DiscussionDictHelper:
         }
 
     @staticmethod
-    def __get_all_statement_texts_by_argument(argument) -> List[dict]:
+    def _get_all_statement_texts_by_argument(argument: Argument) -> List[Dict[str, Any]]:
         """
         Returns all statement texts for a given argument
 
-        :param argument: Argument.uid
-        :return: [dict()]
+        :param argument: The argument for which the texts shall be returned.
+        :return: A list containing dictionaries representing the texts of the statements of `argument`
         """
         statement_list = list()
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=argument.premisegroup_uid).all()
-
         LOG.debug("Argument %s, conclusion: %s / %s, premise count: %s", argument.uid, argument.conclusion_uid,
-                  argument.argument_uid, len(db_premises))
+                  argument.argument_uid, len(argument.premises))
 
-        for premise in db_premises:
+        for premise in argument.premises:
             statement_list.append({'text': premise.get_text(),
                                    'uid': premise.statement_uid})
 
@@ -656,15 +654,12 @@ class DiscussionDictHelper:
                                    'uid': argument.conclusion_uid})
 
         else:
-            db_conclusion_argument = DBDiscussionSession.query(Argument).get(argument.argument_uid)
-            db_conclusion_premises = DBDiscussionSession.query(Premise).filter_by(
-                premisegroup_uid=db_conclusion_argument.premisegroup_uid).all()
-            for conclusion_premise in db_conclusion_premises:
+            for conclusion_premise in argument.attacks.premises:
                 statement_list.append({'text': conclusion_premise.get_text(),
                                        'uid': conclusion_premise.statement_uid})
 
-            statement_list.append({'text': db_conclusion_argument.get_conclusion_text(),
-                                   'uid': db_conclusion_argument.conclusion_uid})
+            statement_list.append({'text': argument.attacks.get_conclusion_text(),
+                                   'uid': argument.attacks.conclusion_uid})
 
         return statement_list
 
