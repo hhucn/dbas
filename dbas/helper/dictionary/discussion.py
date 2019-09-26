@@ -361,7 +361,7 @@ class DiscussionDictHelper:
             enemy_user = enemy_data['user']
 
         if not relation:
-            prep_dict = self.__get_dict_for_argumentation_end(argument.uid, has_user_changed_opinion, user)
+            prep_dict = self._get_dict_for_argumentation_end(argument, has_user_changed_opinion, user)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, content=prep_dict['sys'], omit_bubble_url=True,
                                                   lang=self.lang, other_author=enemy_user)
             bubble_mid = create_speechbubble_dict(BubbleTypes.INFO, content=prep_dict['mid'], omit_bubble_url=True,
@@ -404,21 +404,20 @@ class DiscussionDictHelper:
             'broke_limit': self.broke_limit
         }
 
-    def __get_dict_for_argumentation_end(self, argument_uid: int, user_changed_opinion: bool, db_user: User) -> dict:
+    def _get_dict_for_argumentation_end(self, argument: Argument, has_user_changed_opinion: bool, user: User) -> \
+            Dict[str, Any]:
         """
         Returns a special dict() when the discussion ends during an argumentation
 
-        :param argument_uid: Argument.uid
-        :param user_changed_opinion:  Boolean
-        :param db_user: User
-        :return: String, String, String
+        :param argument: The argument which ends the discussion
+        :param has_user_changed_opinion:  Whether the user has changed opinion regarding `argument`
+        :param user: The user arguing
+        :return: Returns a dictionary with information which help build the end of the argumentation
         """
-        nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
+        nickname = user.nickname if user and user.nickname != nick_of_anonymous_user else None
         _tn = Translator(self.lang)
-        text = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion,
+        text = get_text_for_argument_uid(argument.uid, user_changed_opinion=has_user_changed_opinion,
                                          minimize_on_undercut=True, nickname=nickname)
-        user_text = start_with_capital(text)
-        sys_text = _tn.get(_.otherParticipantsDontHaveCounterForThat) + '.'
         trophy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
         mid_text = '{} {} {} <br>{}'.format(trophy, _tn.get(_.congratulation), trophy,
                                             _tn.get(_.discussionCongratulationEnd))
@@ -429,9 +428,9 @@ class DiscussionDictHelper:
             mid_text += _tn.get(_.discussionEndLinkTextWithQueueNotLoggedIn)
 
         return {
-            'user': user_text,
+            'user': start_with_capital(text),
             'mid': mid_text,
-            'sys': sys_text
+            'sys': _tn.get(_.otherParticipantsDontHaveCounterForThat) + '.'
         }
 
     def __get_dict_for_argumentation(self, user_arg: Argument, confrontation_arg_uid: int, history: str,
