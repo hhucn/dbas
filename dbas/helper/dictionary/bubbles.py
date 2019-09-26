@@ -3,6 +3,7 @@ from typing import Tuple
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import MarkedStatement, Statement, User
+from dbas.helper.dictionary.discussion import DiscussionDictHelper as _dhh
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
 from dbas.strings.text_generator import tag_type
@@ -76,7 +77,7 @@ def get_system_bubble_text_for_justify_statement(is_supportive: bool, _tn: Trans
     else:
         question = _tn.get(_.whatIsYourMostImportantReasonWhyFor)
 
-    question += ' <{} {}>'.format(tag_type, additional_display_attributes) + text + '</{}>'.format(tag_type)
+    question += _dhh.wrap_in_tag(tag_type, text, additional_display_attributes)
 
     if _tn.get_lang() != 'de':
         question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)

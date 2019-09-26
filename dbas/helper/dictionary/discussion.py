@@ -36,13 +36,17 @@ class DiscussionDictHelper:
         :param nickname: The nickname of the concerned user, if any
         :param history: The history encoded as a string
         :param slug: The slug of the current issue
-        :param broke_limit: TODO fill in
+        :param broke_limit: Whether the user just now got enough points to access the Review-System
         """
         self.lang = lang
         self.nickname = nickname
         self.history = history
         self.slug = slug
         self.broke_limit = broke_limit
+
+    @staticmethod
+    def wrap_in_tag(tag, content, attributes=""):
+        return f"<{tag} {attributes}>{content}</{tag}>"
 
     def get_dict_for_start(self, start_empty: bool) -> Dict[str, Any]:
         """
@@ -295,8 +299,6 @@ class DiscussionDictHelper:
         LOG.debug("Entering get_dict_for_dont_know_reaction")
         _tn = Translator(self.lang)
         bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
-        start_tag = '<' + tag_type + '>'
-        end_tag = '</' + tag_type + '>'
         gender = ''
         statement_list = list()
 
@@ -305,12 +307,12 @@ class DiscussionDictHelper:
                                              with_html_tag=True, start_with_intro=True)
             data = get_name_link_of_arguments_author(argument, nickname)
             if data['is_valid']:
-                intro = data['link'] + ' ' + start_tag + _tn.get(_.thinksThat) + end_tag
+                intro = data['link'] + ' ' + self.wrap_in_tag(tag_type, _tn.get(_.thinksThat))
                 gender = data['gender']
             else:
-                intro = start_tag + _tn.get(_.otherParticipantsThinkThat) + end_tag
+                intro = self.wrap_in_tag(tag_type, _tn.get(_.otherParticipantsThinkThat))
             sys_text = intro + ' ' + start_with_small(text) + '. '
-            sys_text += '<br><br> ' + start_tag + _tn.get(_.whatDoYouThinkAboutThat) + '?' + end_tag
+            sys_text += '<br><br> ' + self.wrap_in_tag(tag_type, _tn.get(_.whatDoYouThinkAboutThat) + '?')
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, uid=str(argument.uid),
                                                   content=sys_text, other_author=data['user'])
             if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
