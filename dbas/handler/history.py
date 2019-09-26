@@ -204,7 +204,8 @@ def __get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str
     is_supportive = steps[2] == Attitudes.AGREE.value or steps[2] == Attitudes.DONT_KNOW.value
 
     _tn = Translator(lang)
-    msg, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
+    statement = DBDiscussionSession.query(Statement).get(uid)
+    msg, tmp = get_user_bubble_text_for_justify_statement(statement, db_user, is_supportive, _tn)
 
     bubble_user = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=msg, omit_bubble_url=False,
                                            statement_uid=uid, is_supportive=is_supportive, db_user=db_user,

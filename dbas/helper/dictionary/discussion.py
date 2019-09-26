@@ -133,7 +133,7 @@ class DiscussionDictHelper(object):
 
         # user bubble
         nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
-        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(db_statement.uid, db_user,
+        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(db_statement, db_user,
                                                                                  is_supportive, _tn)
 
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=system_question, omit_bubble_url=True,

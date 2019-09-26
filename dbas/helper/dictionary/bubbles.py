@@ -1,25 +1,27 @@
 import logging
+from typing import Tuple
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import MarkedStatement, Statement
+from dbas.database.discussion_model import MarkedStatement, Statement, User
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
+from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
 
 
-def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive, _tn):
+def get_user_bubble_text_for_justify_statement(statement: Statement, user: User, is_supportive: bool,
+                                               _tn: Translator) -> Tuple[str, str]:
     """
     Returns user text for a bubble when the user has to justify a statement and text for the add-position-container
 
-    :param stmt_uid: Statement.uid
-    :param db_user: User
-    :param is_supportive: Boolean
-    :param _tn: Translator
+    :param statement: The statement that shall be justified
+    :param user: The user concerned
+    :param is_supportive: Indicates whether the justification is too be supportive
+    :param _tn: The default Translator
     :return: String, String
     """
-    LOG.debug("%s is supportive? %s", stmt_uid, is_supportive)
-    statement = DBDiscussionSession.query(Statement).get(stmt_uid)
+    LOG.debug("%s is supportive? %s", statement, is_supportive)
     text = statement.get_text()
 
     if _tn.get_lang() == 'de':
@@ -31,10 +33,10 @@ def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive,
     add_premise_text += ', ...'
 
     is_users_opinion = False
-    if db_user:
+    if user:
         db_marked_statement = DBDiscussionSession.query(MarkedStatement).filter(
-            MarkedStatement.statement_uid == stmt_uid,
-            MarkedStatement.author_uid == db_user.uid
+            MarkedStatement.statement_uid == statement.uid,
+            MarkedStatement.author_uid == user.uid
         ).first()
         is_users_opinion = db_marked_statement is not None
 
