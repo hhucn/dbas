@@ -98,45 +98,41 @@ class DiscussionDictHelper:
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_justify_statement(self, db_statement: Statement, slug, is_supportive, count_of_items,
-                                       db_user: User):
+    def get_dict_for_justify_statement(self, statement: Statement, slug: str, is_supportive: bool,
+                                       first_bubble: bool, user: User) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the third step in discussion,
         where the user justifies his position.
 
-        :param db_statement: Statement
-        :param db_user: User
-        :param slug: Issue.slug
-        :param is_supportive: Boolean
-        :param count_of_items: Integer
-        :return: dict()
+        :param statement: The statement that needs to be justified
+        :param user: The user doing the justification
+        :param slug: The slug of the corresponding issue
+        :param is_supportive: Whether the justification is supportive
+        :param first_bubble: Indicates whether this justification is the first real element
+        :return: A dictionary representing the bubbles needed to justify a statement
         """
         LOG.debug("Entering get_dict_for_justify_statement")
         _tn = Translator(self.lang)
 
         bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
 
-        save_statement_url = 'set_new_start_statement'
-        text = db_statement.get_text()
+        text = statement.get_text()
         if not text:
-            return None
+            return {}
 
         # system bubble
-        additional_display_attributes = 'data-argumentation-type="position"'
         system_question = get_system_bubble_text_for_justify_statement(is_supportive, _tn, text,
-                                                                       additional_display_attributes)
+                                                                       'data-argumentation-type="position"')
 
         # user bubble
-        nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
-        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(db_statement, db_user,
-                                                                                 is_supportive, _tn)
-
+        nickname = user.nickname if user and user.nickname != nick_of_anonymous_user else None
+        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(statement, user, is_supportive, _tn)
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=system_question, omit_bubble_url=True,
                                                    lang=self.lang)
-        url = UrlManager(slug).get_url_for_statement_attitude(db_statement.uid)
+        url = UrlManager(slug).get_url_for_statement_attitude(statement.uid)
         select_bubble = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=user_text,
-                                                 omit_bubble_url=False, statement_uid=db_statement.uid,
-                                                 is_supportive=is_supportive, db_user=db_user, lang=self.lang)
+                                                 omit_bubble_url=False, statement_uid=statement.uid,
+                                                 is_supportive=is_supportive, db_user=user, lang=self.lang)
 
         if not bubbles_already_last_in_list(bubbles_array, select_bubble):
             bubbles_array.append(select_bubble)
@@ -146,17 +142,17 @@ class DiscussionDictHelper:
         if not bubbles_already_last_in_list(bubbles_array, question_bubble):
             bubbles_array.append(question_bubble)
 
-        if not self.nickname and count_of_items == 1:
+        if not self.nickname and first_bubble:
             _t = Translator(self.lang)
-            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+            user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
             msg_dict = {
                 'm': _.voteCountTextFirstM,
                 'f': _.voteCountTextFirstF,
                 'n': _.voteCountTextFirst,
             }
 
-            if db_user:
-                msg = msg_dict[db_user.gender]
+            if user:
+                msg = msg_dict[user.gender]
             else:
                 msg = _.voteCountTextFirst
 
@@ -168,7 +164,7 @@ class DiscussionDictHelper:
         return {
             'bubbles': bubbles_array,
             'add_premise_text': add_premise_text,
-            'save_statement_url': save_statement_url,
+            'save_statement_url': 'set_new_start_statement',
             'mode': '',
             'is_supportive': is_supportive,
             'broke_limit': self.broke_limit

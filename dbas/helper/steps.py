@@ -106,7 +106,7 @@ def preparation_for_justify_statement(history, db_user: User, path, db_issue: Is
 
     item_dict = _idh.get_array_for_justify_statement(db_statement, db_user, supportive, history)
     discussion_dict = _ddh.get_dict_for_justify_statement(db_statement, slug, supportive,
-                                                          len(item_dict['elements']), db_user)
+                                                          len(item_dict['elements']) == 1, db_user)
     return item_dict, discussion_dict
 
 
