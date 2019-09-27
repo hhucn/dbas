@@ -1790,6 +1790,11 @@ class ReviewOptimization(AbstractReviewCase):
             return [self.argument.issue]
         return self.statement.issues
 
+    def is_locked(self) -> bool:
+        lock = DBDiscussionSession.query(OptimizationReviewLocks).filter(
+            OptimizationReviewLocks.review_optimization_uid == self.uid).one_or_none()
+        return lock is not None
+
 
 class ReviewDuplicate(AbstractReviewCase):
     """
@@ -2298,7 +2303,7 @@ class OptimizationReviewLocks(DiscussionBase):
     review_optimization_uid: int = Column(Integer, ForeignKey('review_optimizations.uid'))
     locked_since = Column(ArrowType, default=get_now(), nullable=True)
 
-    authors: User = relationship('User', foreign_keys=[author_uid])
+    author: User = relationship('User', foreign_keys=[author_uid])
     review_optimization: ReviewOptimization = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
 
     def __init__(self, author, review_optimization):
