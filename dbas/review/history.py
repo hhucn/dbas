@@ -29,7 +29,7 @@ def get_review_history(main_page, db_user, translator):
     :param translator: Translator
     :return: dict()
     """
-    return __get_reviews_from_history_queue(main_page, db_user, translator, True)
+    return _get_reviews_from_history_queue(main_page, db_user, translator, True)
 
 
 def get_ongoing_reviews(main_page, db_user, translator):
@@ -41,10 +41,10 @@ def get_ongoing_reviews(main_page, db_user, translator):
     :param translator: Translator
     :return: dict()
     """
-    return __get_reviews_from_history_queue(main_page, db_user, translator, False)
+    return _get_reviews_from_history_queue(main_page, db_user, translator, False)
 
 
-def __get_reviews_from_history_queue(main_page, db_user, translator, is_executed=False):
+def _get_reviews_from_history_queue(main_page, db_user, translator, is_executed=False):
     """
 
     :param main_page: Host URL
@@ -56,7 +56,7 @@ def __get_reviews_from_history_queue(main_page, db_user, translator, is_executed
     past_decision = []
     for key in review_queues:
         review_table = get_review_model_by_key(key)
-        executed_list = __get_executed_reviews_of(key, main_page, review_table, translator, is_executed)
+        executed_list = _get_executed_reviews_of(key, main_page, review_table, translator, is_executed)
         past_decision.append({
             'title': start_with_capital(key) + ' Queue',
             'icon': reputation_icons[key],
@@ -68,13 +68,13 @@ def __get_reviews_from_history_queue(main_page, db_user, translator, is_executed
         })
 
     return {
-        'has_access': __has_access_to_history(db_user, is_executed),
+        'has_access': _has_access_to_history(db_user, is_executed),
         'is_history': is_executed,
         'past_decision': past_decision
     }
 
 
-def __get_executed_reviews_of(table, main_page, table_type, translator, is_executed=False):
+def _get_executed_reviews_of(table, main_page, table_type, translator, is_executed=False):
     """
     Returns array with all relevant information about the last reviews of the given table.
 
@@ -91,14 +91,14 @@ def __get_executed_reviews_of(table, main_page, table_type, translator, is_execu
         table_type.uid.desc()).all()
 
     for review in db_reviews:
-        entry = __get_executed_review_element_of(table, main_page, review, translator, is_executed)
+        entry = _get_executed_review_element_of(table, main_page, review, translator, is_executed)
         if entry:
             some_list.append(entry)
 
     return some_list
 
 
-def __get_executed_review_element_of(table_key, main_page, db_review, translator, is_executed) -> Optional[dict]:
+def _get_executed_review_element_of(table_key, main_page, db_review, translator, is_executed) -> Optional[dict]:
     """
 
     :param table_key: Shortcut for the table
@@ -128,7 +128,7 @@ def __get_executed_review_element_of(table_key, main_page, db_review, translator
     pro_list, con_list = adapter.get_all_votes_for(db_review)
 
     # and build up some dict
-    pdict = __handle_table_of_review_element(table_key, db_review, short_text, full_text, is_executed)
+    pdict = _handle_table_of_review_element(table_key, db_review, short_text, full_text, is_executed)
     if not pdict:
         return None
 
@@ -136,12 +136,12 @@ def __get_executed_review_element_of(table_key, main_page, db_review, translator
     pdict['timestamp'] = sql_timestamp_pretty_print(db_review.timestamp, translator.get_lang())
     pdict['votes_pro'] = pro_list
     pdict['votes_con'] = con_list
-    pdict['reporter'] = __get_user_dict_for_review(db_review.detector_uid, main_page)
+    pdict['reporter'] = _get_user_dict_for_review(db_review.detector_uid, main_page)
 
     return pdict
 
 
-def __handle_table_of_review_element(table_key, review, short_text, full_text, is_executed):
+def _handle_table_of_review_element(table_key, review, short_text, full_text, is_executed):
     """
 
     :param table_key:
@@ -162,7 +162,7 @@ def __handle_table_of_review_element(table_key, review, short_text, full_text, i
                                          full_text=full_text)
 
 
-def __get_user_dict_for_review(user_id, main_page):
+def _get_user_dict_for_review(user_id, main_page):
     """
     Fetches some data of the given user.
 
@@ -178,7 +178,7 @@ def __get_user_dict_for_review(user_id, main_page):
     }
 
 
-def __has_access_to_history(db_user, is_executed: bool) -> bool:
+def _has_access_to_history(db_user, is_executed: bool) -> bool:
     """
     Does the user has access to the history?
 

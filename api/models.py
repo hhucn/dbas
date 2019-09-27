@@ -34,7 +34,7 @@ class DataBubble(JSONBase):
     """
 
     @staticmethod
-    def __demultiplex_bubbletype(bubble):
+    def _demultiplex_bubbletype(bubble):
         """
         Use a single field to dispatch the type and resolve BubbleTypes-Enum.
 
@@ -57,7 +57,7 @@ class DataBubble(JSONBase):
 
         :param bubble:
         """
-        self.type = self.__demultiplex_bubbletype(bubble)
+        self.type = self._demultiplex_bubbletype(bubble)
         self.html = bubble['message']
         self.url = bubble['bubble_url'] if bubble['bubble_url'] != '' else None
         self.text = unhtmlify(bubble['message'])

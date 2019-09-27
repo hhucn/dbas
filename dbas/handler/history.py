@@ -16,7 +16,7 @@ from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_te
     relation_mapper
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small, replace_multiple_chars
-from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
+from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support, remove_punctuation
 from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
@@ -101,13 +101,13 @@ def create_bubbles(history: str, nickname: str = '', lang: str = '', slug: str =
             url += '?history=' + consumed_history
         consumed_history += step if len(consumed_history) == 0 else '-' + step
         if 'justify/' in step:
-            __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url)
+            _prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url)
 
         elif 'reaction/' in step:
-            __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_history, url)
+            _prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_history, url)
 
         elif 'support/' in step:
-            __prepare_support_step(bubble_array, index, step, db_user, lang)
+            _prepare_support_step(bubble_array, index, step, db_user, lang)
 
         else:
             LOG.debug("%s: unused case -> %s", index, step)
@@ -115,8 +115,8 @@ def create_bubbles(history: str, nickname: str = '', lang: str = '', slug: str =
     return bubble_array
 
 
-def __prepare_justify_statement_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
-                                     url: str) -> None:
+def _prepare_justify_statement_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
+                                    url: str) -> None:
     """
     Preparation for creating the justification bubbles
 
@@ -136,18 +136,18 @@ def __prepare_justify_statement_step(bubble_array: List[dict], index: int, step:
     relation = steps[3] if len(steps) > 3 else ''
 
     if [c for c in (Attitudes.AGREE.value, Attitudes.DISAGREE.value) if c in mode] and relation == '':
-        bubble = __get_bubble_from_justify_statement_step(step, db_user, lang, url)
+        bubble = _get_bubble_from_justify_statement_step(step, db_user, lang, url)
         if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
             bubble_array += bubble
 
     elif Attitudes.DONT_KNOW.value in mode and relation == '':
-        bubbles = __get_bubble_from_dont_know_step(step, db_user, lang)
+        bubbles = _get_bubble_from_dont_know_step(step, db_user, lang)
         if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
             bubble_array += bubbles
 
 
-def __prepare_reaction_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
-                            splitted_history: list, url: str) -> None:
+def _prepare_reaction_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
+                           splitted_history: list, url: str) -> None:
     """
     Preparation for creating the reaction bubbles
 
@@ -166,7 +166,7 @@ def __prepare_reaction_step(bubble_array: List[dict], index: int, step: str, db_
         bubble_array += bubbles
 
 
-def __prepare_support_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str) -> None:
+def _prepare_support_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str) -> None:
     """
     Preparation for creating the support bubbles
 
@@ -184,12 +184,12 @@ def __prepare_support_step(bubble_array: List[dict], index: int, step: str, db_u
     user_uid = int(steps[1])
     system_uid = int(steps[2])
 
-    bubble = __get_bubble_from_support_step(user_uid, system_uid, db_user, lang)
+    bubble = _get_bubble_from_support_step(user_uid, system_uid, db_user, lang)
     if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
         bubble_array += bubble
 
 
-def __get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str, url: str) -> List[dict]:
+def _get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str, url: str) -> List[dict]:
     """
     Creates bubbles for the justify-keyword for an statement.
 
@@ -213,7 +213,7 @@ def __get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str
     return [bubble_user]
 
 
-def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) \
+def _get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) \
         -> Optional[List[list]]:
     """
     Creates bubbles for the support-keyword for an statement.
@@ -236,10 +236,7 @@ def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: 
                                            db_user=db_user, lang=lang)
 
     argument_text = get_text_for_argument_uid(uid_system, colored_position=True, with_html_tag=True, attack_type='jump')
-    offset = len('</' + tag_type + '>') if argument_text.endswith('</' + tag_type + '>') else 1
-
-    while argument_text[:-offset].endswith(('.', '?', '!')):
-        argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
+    argument_text = remove_punctuation(argument_text)
 
     text = get_text_for_support(db_arg_system, argument_text, db_user.nickname, Translator(lang))
     db_other_author = DBDiscussionSession.query(User).get(db_arg_system.author_uid)
@@ -249,7 +246,7 @@ def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: 
     return [bubble_user, bubble_system]
 
 
-def __get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> List[dict]:
+def _get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> List[dict]:
     """
     Creates bubbles for the don't-know-reaction for a statement.
 
@@ -314,13 +311,13 @@ def get_bubble_from_reaction_step(step: str, db_user: User, lang: str, split_his
         LOG.debug("Wrong reaction")
         return None
 
-    return __create_reaction_history_bubbles(step, db_user, lang, split_history, url, color_steps, uid,
-                                             additional_uid, attack)
+    return _create_reaction_history_bubbles(step, db_user, lang, split_history, url, color_steps, uid,
+                                            additional_uid, attack)
 
 
-def __create_reaction_history_bubbles(step: str, db_user: User, lang: str, split_history: list, url: str,
-                                      color_steps: bool, uid: int, additional_uid: int,
-                                      attack) -> list:
+def _create_reaction_history_bubbles(step: str, db_user: User, lang: str, split_history: list, url: str,
+                                     color_steps: bool, uid: int, additional_uid: int,
+                                     attack) -> list:
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
     last_relation = get_last_relation(split_history)
 

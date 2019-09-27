@@ -9,6 +9,7 @@ from dbas.lib import Relations
 from dbas.strings import text_generator as tg
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
+from dbas.strings.text_generator import remove_punctuation
 from dbas.strings.translator import Translator
 from dbas.tests.utils import TestCaseWithConfig
 
@@ -520,3 +521,22 @@ class TestTextGeneration(unittest.TestCase):
             else:
                 self.assertNotIn("<br>", text)
                 self.assertIn("\n", text)
+
+
+class TestRemovePunctuation(TestCaseWithConfig):
+    def test_multiple_punctuations(self):
+        multiples = ["foo!", "foo!!", "foo!!!", "foo!!!!"]
+        removed_punctuations = [remove_punctuation(s) for s in multiples]
+        unique_strings = set(removed_punctuations)
+        self.assertEqual(len(unique_strings), 1)
+        self.assertEqual(unique_strings.pop(), "foo!")
+
+    def test_no_punctuation_no_removal(self):
+        dont_touch_me = "dont_touch_me"
+        untouched = remove_punctuation(dont_touch_me)
+        self.assertEqual(dont_touch_me, untouched)
+
+    def test_empty_input_should_not_be_touched(self):
+        input = ""
+        output = remove_punctuation(input)
+        self.assertEqual(input, output)
