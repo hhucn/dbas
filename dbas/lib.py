@@ -12,7 +12,7 @@ from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
 from random import randint
-from typing import List, Optional
+from typing import List, Optional, Union, Tuple
 from urllib import parse
 from uuid import uuid4
 
@@ -345,7 +345,7 @@ def get_all_arguments_with_text_and_url_by_statement(db_statement: Statement, ur
     return results
 
 
-def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: bool = False,
+def get_text_for_argument_uid(argument_or_uid: Union[Argument, int], nickname: str = None, with_html_tag: bool = False,
                               start_with_intro: bool = False, first_arg_by_user: bool = False,
                               user_changed_opinion: bool = False, rearrange_intro: bool = False,
                               colored_position: bool = False, attack_type: str = None,
@@ -354,7 +354,7 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
-    :param uid: Integer
+    :param argument_or_uid: Integer
     :param nickname: String
     :param with_html_tag: Boolean
     :param start_with_intro: Boolean
@@ -369,10 +369,14 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
     :param is_users_opinion: Boolean
     :return: String
     """
-    LOG.debug("Constructing text for argument with uid %s", uid)
-    db_argument: Argument = DBDiscussionSession.query(Argument).get(uid)
+    if isinstance(argument_or_uid, int):
+        db_argument: Argument = DBDiscussionSession.query(Argument).get(argument_or_uid)
+    else:
+        db_argument = argument_or_uid
     if not db_argument:
         return None
+
+    LOG.debug("Constructing text for argument with uid %s", argument_or_uid)
 
     lang = db_argument.lang
     _t = Translator(lang)
@@ -384,7 +388,7 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
         author_uid = db_user.uid
         pgroup: PremiseGroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisegroup_uid)
         marked_argument: MarkedArgument = DBDiscussionSession.query(MarkedArgument).filter_by(
-            argument_uid=uid,
+            argument_uid=argument_or_uid,
             author_uid=db_user.uid).first()
         premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None
 
@@ -1141,35 +1145,32 @@ def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: boo
     return gravatar_url
 
 
-def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=True, profile_picture_size=20):
+def get_author_data(user: User, gravatar_on_right_side=True, linked_with_users_page=True, profile_picture_size=20) \
+        -> Tuple[User, str, bool]:
     """
     Returns a-tag with gravatar of current author and users page as href
 
-    :param uid: Uid of the author
+    :param user: The author herself
     :param gravatar_on_right_side: True, if the gravatar is on the right of authors name
     :param linked_with_users_page: True, if the text is a link to the authors site
     :param profile_picture_size: Integer
     :return: HTML-String
     """
-    db_user = DBDiscussionSession.query(User).get(int(uid))
-    if not db_user:
-        return None, 'Missing author with uid ' + str(uid), False
-
-    nick = db_user.global_nickname
-    img_src = get_profile_picture(db_user, profile_picture_size)
+    nickname = user.global_nickname
+    img_src = get_profile_picture(user, profile_picture_size)
     link_begin = ''
     link_end = ''
     if linked_with_users_page:
-        link_begin = '<a href="/user/{}" title="{}">'.format(db_user.uid, nick)
+        link_begin = '<a href="/user/{}" title="{}">'.format(user.uid, nickname)
         link_end = '</a>'
 
     side = 'left' if gravatar_on_right_side else 'right'
     img = '<img class="img-circle" src="{}" style="padding-{}: 0.3em">'.format(img_src, side)
 
     if gravatar_on_right_side:
-        return db_user, '{}{}{}{}'.format(link_begin, nick, img, link_end), True
+        return user, '{}{}{}{}'.format(link_begin, nickname, img, link_end), True
     else:
-        return db_user, '{}{}{}{}'.format(link_begin, img, nick, link_end), True
+        return user, '{}{}{}{}'.format(link_begin, img, nickname, link_end), True
 
 
 def bubbles_already_last_in_list(bubble_list, bubbles):
