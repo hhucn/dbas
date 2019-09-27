@@ -2296,7 +2296,7 @@ class OptimizationReviewLocks(DiscussionBase):
     review_optimization_uid: int = Column(Integer, ForeignKey('review_optimizations.uid'))
     locked_since = Column(ArrowType, default=get_now(), nullable=True)
 
-    authors: User = relationship('User', foreign_keys=[author_uid])
+    author: User = relationship('User', foreign_keys=[author_uid])
     review_optimization: ReviewOptimization = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
 
     def __init__(self, author, review_optimization):

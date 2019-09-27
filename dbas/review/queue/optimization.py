@@ -1,7 +1,7 @@
 # Adaptee for the optimizations queue. Every accepted optimization will be an edit.
 import logging
 import random
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Dict, Any
 
 import transaction
 from beaker.session import Session
@@ -261,83 +261,63 @@ class OptimizationQueue(QueueABC):
         """
         pass
 
-    def lock_optimization_review(self, db_user: User, db_review: ReviewOptimization, translator: Translator):
+    def lock_optimization_review(self, user: User, review: ReviewOptimization, translator: Translator) -> \
+            Dict[str, Any]:
         """
         Locks a ReviewOptimization
 
-        :param db_user:
-        :param db_review:
+        :param user:
+        :param review:
         :param translator:
         :return:
         """
-        LOG.debug("Lock an Optimization-Review")
-        # check if author locked an item and maybe tidy up old locks
-        db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
-        if db_locks:
-            if self.is_review_locked(db_review):
-                LOG.debug("Review was already locked")
-                return {
-                    'success': '',
-                    'info': translator.get(_.dataAlreadyLockedByYou),
-                    'is_locked': True
-                }
-            else:
-                DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).delete()
+        LOG.debug("Lock an OptimizationReview")
+        # Tidy up expired lock first, then check whether the newest is already locked.
+        self.tidy_up_optimization_locks()
+        lock = DBDiscussionSession.query(OptimizationReviewLocks).get(review_optimization_uid=review.uid)
 
-        # is already locked?
-        if self.is_review_locked(db_review):
+        if lock is not None:
+            if lock.author == user:
+                return_info = translator.get(_.dataAlreadyLockedByYou)
+            else:
+                return_info = translator.get(_.dataAlreadyLockedByOthers)
+
             LOG.warning("Already locked case")
             return {
                 'success': '',
-                'info': translator.get(_.dataAlreadyLockedByOthers),
+                'info': return_info,
                 'is_locked': True
             }
 
-        DBDiscussionSession.add(OptimizationReviewLocks(db_user.uid, db_review.uid))
+        DBDiscussionSession.add(OptimizationReviewLocks(user.uid, review.uid))
         DBDiscussionSession.flush()
         transaction.commit()
-        success = translator.get(_.dataAlreadyLockedByYou)
 
-        LOG.debug("Review locked")
+        LOG.debug("Locking review %s".format(review))
         return {
-            'success': success,
+            'success': translator.get(_.dataAlreadyLockedByYou),
             'info': '',
             'is_locked': True
         }
 
-    def unlock_optimization_review(self, db_review: ReviewOptimization, translator: Translator):
+    def unlock_optimization_review(self, review: ReviewOptimization, translator: Translator) -> Dict[str, Any]:
         """
         Unlock the OptimizationReviewLocks
 
-        :param db_review:
+        :param review:
         :param translator:
         :return:
         """
         self.tidy_up_optimization_locks()
         LOG.debug("Unlocking Optimization-Review")
-        DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=db_review.uid).delete()
-        DBDiscussionSession.flush()
+        lock = DBDiscussionSession.query(OptimizationReviewLocks).get(review_optimization_uid=review.uid)
+        DBDiscussionSession.delete(lock)
         transaction.commit()
         return {
             'is_locked': False,
             'success': translator.get(_.dataUnlocked),
             'info': ''
         }
-
-    def is_review_locked(self, review: ReviewOptimization) -> bool:
-        """
-        Is the OptimizationReviewLocks set?
-
-        :param review: The OptimizationReview object where the lock shall be examined
-        :return: Return whether the OptimizationReview is locked
-        """
-        self.tidy_up_optimization_locks()
-        LOG.debug("Check whether review %s is locked.", review)
-        db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
-            review_optimization_uid=review.uid).first()
-        if not db_lock:
-            return False
-        return (get_now() - db_lock.locked_since).seconds < max_lock_time_in_sec
 
     @staticmethod
     def tidy_up_optimization_locks():
