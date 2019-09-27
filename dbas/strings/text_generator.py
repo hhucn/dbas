@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from typing import Optional
+from typing import Optional, Union
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement, \
-    Argument
+    Argument, Statement
 from dbas.lib import get_author_data, Relations, get_global_url
 from dbas.strings.lib import start_with_capital, start_with_small
 from .keywords import Keywords as _
@@ -746,7 +746,8 @@ def __translation_based_on_gender(_t, keyword_m, keyword_f, gender):
         return _t.get(keyword_f)
 
 
-def get_name_link_of_arguments_author(argument: Argument, nickname: Optional[str], with_link: bool = True):
+def get_name_link_of_arguments_author(argument: Union[Argument, Statement], nickname: Optional[str],
+                                      with_link: bool = True):
     """
     Will return author of the argument, if the first supporting user
 
@@ -755,11 +756,9 @@ def get_name_link_of_arguments_author(argument: Argument, nickname: Optional[str
     :param with_link:
     :return:
     """
-    user, link, is_valid = get_author_data(argument.author_uid, False, True)
-    db_author_of_argument = DBDiscussionSession.query(User).get(argument.author_uid)
-    gender = db_author_of_argument.gender if db_author_of_argument else 'n'
-
-    db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+    user, link, is_valid = get_author_data(argument.author, False, True)
+    gender = argument.author.gender if argument.author else 'n'
+    db_anonymous_user: User = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
 
     # if the data of arguments author is not okay, get the first user, who agrees with the argument
     if argument.author_uid == db_anonymous_user.uid or not is_valid:

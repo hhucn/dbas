@@ -2,7 +2,7 @@
 Helper for D-BAS Views
 """
 import logging
-from typing import Tuple, Union
+from typing import Tuple, Dict
 
 import dbas.handler.voting as voting_helper
 from dbas.database.discussion_model import Statement, Issue, User, Argument
@@ -36,19 +36,19 @@ def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_ar
     return item_dict, discussion_dict
 
 
-def handle_justification_dontknow(db_issue: Issue, db_user: User, db_stmt_or_arg: Union[Argument, Statement], history,
-                                  path) -> Tuple[dict, dict]:
+def handle_justification_dontknow(db_issue: Issue, db_user: User, argument: Argument, history, path) \
+        -> Tuple[Dict, Dict]:
     """
 
     :param db_issue: Current issue
     :param db_user: User
-    :param db_stmt_or_arg: Statement
+    :param argument: Statement
     :param history:
     :param path:
     :return:
     """
-    LOG.debug("Do not know for %s", db_stmt_or_arg.uid)
-    item_dict, discussion_dict = __preparation_for_dont_know_statement(db_issue, db_user, db_stmt_or_arg, history, path)
+    LOG.debug("Do not know for %s", argument)
+    item_dict, discussion_dict = __preparation_for_dont_know_statement(db_issue, db_user, argument, history, path)
     return item_dict, discussion_dict
 
 
@@ -110,14 +110,14 @@ def preparation_for_justify_statement(history, db_user: User, path, db_issue: Is
     return item_dict, discussion_dict
 
 
-def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, history, path) -> \
+def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, argument: Argument, history, path) -> \
         Tuple[dict, dict]:
     """
     Prepares some parameter for the "don't know" step
 
     :param db_issue: Current issue
     :param db_user: User
-    :param db_stmt_or_arg: Statement
+    :param argument: Statement
     :param history:
     :param path: request.path
     :return: dict(), dict(), dict()
@@ -130,8 +130,8 @@ def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stm
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
-    discussion_dict = _ddh.get_dict_for_dont_know_reaction(db_stmt_or_arg, nickname)
-    item_dict = _idh.get_array_for_dont_know_reaction(db_stmt_or_arg.uid, db_user, discussion_dict['gender'])
+    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument, nickname)
+    item_dict = _idh.get_array_for_dont_know_reaction(argument.uid, db_user, discussion_dict['gender'])
     return item_dict, discussion_dict
 
 

@@ -345,7 +345,7 @@ def get_all_arguments_with_text_and_url_by_statement(db_statement: Statement, ur
     return results
 
 
-def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: bool = False,
+def get_text_for_argument_uid(argument_or_uid: Union[Argument, int], nickname: str = None, with_html_tag: bool = False,
                               start_with_intro: bool = False, first_arg_by_user: bool = False,
                               user_changed_opinion: bool = False, rearrange_intro: bool = False,
                               colored_position: bool = False, attack_type: str = None,
@@ -354,7 +354,7 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
-    :param uid: Integer
+    :param argument_or_uid: Integer
     :param nickname: String
     :param with_html_tag: Boolean
     :param start_with_intro: Boolean
@@ -369,10 +369,14 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
     :param is_users_opinion: Boolean
     :return: String
     """
-    LOG.debug("Constructing text for argument with uid %s", uid)
-    db_argument: Argument = DBDiscussionSession.query(Argument).get(uid)
+    if isinstance(argument_or_uid, int):
+        db_argument: Argument = DBDiscussionSession.query(Argument).get(argument_or_uid)
+    else:
+        db_argument = argument_or_uid
     if not db_argument:
         return None
+
+    LOG.debug("Constructing text for argument with uid %s", argument_or_uid)
 
     lang = db_argument.lang
     _t = Translator(lang)
@@ -384,7 +388,7 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
         author_uid = db_user.uid
         pgroup: PremiseGroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisegroup_uid)
         marked_argument: MarkedArgument = DBDiscussionSession.query(MarkedArgument).filter_by(
-            argument_uid=uid,
+            argument_uid=argument_or_uid,
             author_uid=db_user.uid).first()
         premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None
 

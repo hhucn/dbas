@@ -300,7 +300,7 @@ class DiscussionDictHelper:
         statement_list = list()
 
         if argument is not None:
-            text = get_text_for_argument_uid(argument.uid, rearrange_intro=True, attack_type='dont_know',
+            text = get_text_for_argument_uid(argument, rearrange_intro=True, attack_type='dont_know',
                                              with_html_tag=True, start_with_intro=True)
             data = get_name_link_of_arguments_author(argument, nickname)
             if data['is_valid']:
