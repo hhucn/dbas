@@ -240,8 +240,8 @@ class User(DiscussionBase):
     clicked_statements: List['ClickedStatement'] = relationship('ClickedStatement', back_populates='user')
     clicked_arguments: List['ClickedArgument'] = relationship('ClickedArgument', back_populates='user')
 
-    def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, oauth_provider='',
-                 oauth_provider_id=''):
+    def __init__(self, firstname: str, surname: str, nickname: str, email: str, password: str, gender: str,
+                 group_uid: int, oauth_provider: Optional[str] = None, oauth_provider_id: Optional[str] = None):
         """
         Initializes a row in current user-table
 
