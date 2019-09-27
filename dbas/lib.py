@@ -12,7 +12,7 @@ from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
 from random import randint
-from typing import List, Optional
+from typing import List, Optional, Union, Tuple
 from urllib import parse
 from uuid import uuid4
 
@@ -1141,35 +1141,32 @@ def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: boo
     return gravatar_url
 
 
-def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=True, profile_picture_size=20):
+def get_author_data(user: User, gravatar_on_right_side=True, linked_with_users_page=True, profile_picture_size=20) \
+        -> Tuple[User, str, bool]:
     """
     Returns a-tag with gravatar of current author and users page as href
 
-    :param uid: Uid of the author
+    :param user: The author herself
     :param gravatar_on_right_side: True, if the gravatar is on the right of authors name
     :param linked_with_users_page: True, if the text is a link to the authors site
     :param profile_picture_size: Integer
     :return: HTML-String
     """
-    db_user = DBDiscussionSession.query(User).get(int(uid))
-    if not db_user:
-        return None, 'Missing author with uid ' + str(uid), False
-
-    nick = db_user.global_nickname
-    img_src = get_profile_picture(db_user, profile_picture_size)
+    nickname = user.global_nickname
+    img_src = get_profile_picture(user, profile_picture_size)
     link_begin = ''
     link_end = ''
     if linked_with_users_page:
-        link_begin = '<a href="/user/{}" title="{}">'.format(db_user.uid, nick)
+        link_begin = '<a href="/user/{}" title="{}">'.format(user.uid, nickname)
         link_end = '</a>'
 
     side = 'left' if gravatar_on_right_side else 'right'
     img = '<img class="img-circle" src="{}" style="padding-{}: 0.3em">'.format(img_src, side)
 
     if gravatar_on_right_side:
-        return db_user, '{}{}{}{}'.format(link_begin, nick, img, link_end), True
+        return user, '{}{}{}{}'.format(link_begin, nickname, img, link_end), True
     else:
-        return db_user, '{}{}{}{}'.format(link_begin, img, nick, link_end), True
+        return user, '{}{}{}{}'.format(link_begin, img, nickname, link_end), True
 
 
 def bubbles_already_last_in_list(bubble_list, bubbles):

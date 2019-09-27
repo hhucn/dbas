@@ -770,9 +770,8 @@ def get_name_link_of_arguments_author(argument: Argument, nickname: Optional[str
         db_author_of_argument = get_author_or_first_supporter_of_element(argument.uid, db_current_user.uid, True)
 
         if db_author_of_argument:
-            user, link, is_valid = get_author_data(db_author_of_argument.uid, gravatar_on_right_side=False,
+            user, link, is_valid = get_author_data(db_author_of_argument, gravatar_on_right_side=False,
                                                    linked_with_users_page=with_link)
-            db_author_of_argument = DBDiscussionSession.query(User).get(db_author_of_argument.uid)
             gender = db_author_of_argument.gender if db_author_of_argument else 'n'
         else:
             return {
