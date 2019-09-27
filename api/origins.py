@@ -11,7 +11,7 @@ from .lib import logger
 log = logger()
 
 
-def __store_origin(origin: DataOrigin, statement_uid: int) -> Optional[StatementOrigins]:
+def _store_origin(origin: DataOrigin, statement_uid: int) -> Optional[StatementOrigins]:
     """
     Extract origin of an entity, e.g. a statement, from api_data and store it into the database.
     """
@@ -37,4 +37,4 @@ def add_origin_for_list_of_statements(origin: DataOrigin, list_of_statement_uids
     if not isinstance(list_of_statement_uids, list):
         return None
     newly_added_statement_uids: Set[int] = set(list_of_statement_uids)
-    return [__store_origin(origin, statement_uid) for statement_uid in newly_added_statement_uids]
+    return [_store_origin(origin, statement_uid) for statement_uid in newly_added_statement_uids]

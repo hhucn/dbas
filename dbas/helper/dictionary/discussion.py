@@ -18,7 +18,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.text_generator import tag_type, get_header_for_users_confrontation_response, \
     get_text_for_add_premise_container, get_text_for_confrontation, get_text_for_support, \
-    get_name_link_of_arguments_author
+    get_name_link_of_arguments_author, remove_punctuation
 from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
@@ -522,9 +522,7 @@ class DiscussionDictHelper:
             bind = ', ' if self.lang == 'de' else ' '
             intro += _tn.get(_.whatDoYouThinkAboutThat) + bind + _tn.get(_.that) + ' '
 
-        offset = len('</' + tag_type + '>') if argument_text.endswith('</' + tag_type + '>') else 1
-        while argument_text[:-offset].endswith(('.', '?', '!')):
-            argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
+        argument_text = remove_punctuation(argument_text)
 
         text = intro + argument_text + '?'
         bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True,
@@ -557,10 +555,7 @@ class DiscussionDictHelper:
 
         argument_text = get_text_for_argument_uid(system_argument.uid, colored_position=True, with_html_tag=True,
                                                   attack_type='jump')
-
-        offset = len('</' + tag_type + '>') if argument_text.endswith('</' + tag_type + '>') else 1
-        while argument_text[:-offset].endswith(('.', '?', '!')):
-            argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
+        argument_text = remove_punctuation(argument_text)
 
         sys_text = get_text_for_support(system_argument, argument_text, user.nickname, _tn)
 

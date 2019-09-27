@@ -51,11 +51,11 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
             info = tn.get(_.alreadyFlaggedByOthers)
         return {'success': '', 'info': info}
 
-    return __add_flag(reason, argument_uid, statement_uid, extra_uid, db_user, tn)
+    return _add_flag(reason, argument_uid, statement_uid, extra_uid, db_user, tn)
 
 
-def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument_uid: Union[int, None],
-               statement_uid: Optional[int], extra_uid: Optional[int], db_user: User, tn: Translator) -> dict:
+def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument_uid: Union[int, None],
+              statement_uid: Optional[int], extra_uid: Optional[int], db_user: User, tn: Translator) -> dict:
     """
 
     :param reason:
@@ -69,16 +69,16 @@ def __add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReason
     reason_val = reason.value if isinstance(reason, ReviewDeleteReasons) else reason
     db_del_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason_val).first()
     if db_del_reason:
-        __add_delete_review(argument_uid, statement_uid, db_user.uid, db_del_reason.uid)
+        _add_delete_review(argument_uid, statement_uid, db_user.uid, db_del_reason.uid)
 
     elif reason_val == key_optimization:
-        __add_optimization_review(argument_uid, statement_uid, db_user.uid)
+        _add_optimization_review(argument_uid, statement_uid, db_user.uid)
 
     elif reason_val == key_duplicate:
         if statement_uid == extra_uid:
             LOG.debug("uid Error")
             return {'success': '', 'info': tn.get(_.internalKeyError)}
-        __add_duplication_review(statement_uid, extra_uid, db_user.uid)
+        _add_duplication_review(statement_uid, extra_uid, db_user.uid)
 
     return {'success': tn.get(_.thxForFlagText), 'info': ''}
 
@@ -110,9 +110,9 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
         return {'success': '', 'info': info}
 
     if key == key_merge:
-        __add_merge_review(pgroup.uid, db_user.uid, text_values)
+        _add_merge_review(pgroup.uid, db_user.uid, text_values)
     elif key == key_split:
-        __add_split_review(pgroup.uid, db_user.uid, text_values)
+        _add_split_review(pgroup.uid, db_user.uid, text_values)
 
     success = tn.get(_.thxForFlagText)
     return {'success': success, 'info': ''}
@@ -133,7 +133,7 @@ def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User
     return flag_statement_for_merge_or_split(key, pgroup, [], db_user, tn)
 
 
-def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
+def _add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
     """
     Adds a ReviewDelete row
 
@@ -150,7 +150,7 @@ def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
     transaction.commit()
 
 
-def __add_optimization_review(argument_uid, statement_uid, user_uid):
+def _add_optimization_review(argument_uid, statement_uid, user_uid):
     """
     Adds a ReviewOptimization row
 
@@ -166,7 +166,7 @@ def __add_optimization_review(argument_uid, statement_uid, user_uid):
     transaction.commit()
 
 
-def __add_duplication_review(duplicate_statement_uid, original_statement_uid, user_uid):
+def _add_duplication_review(duplicate_statement_uid, original_statement_uid, user_uid):
     """
     Adds a ReviewDuplicate row
 
@@ -184,7 +184,7 @@ def __add_duplication_review(duplicate_statement_uid, original_statement_uid, us
     transaction.commit()
 
 
-def __add_split_review(pgroup_uid, user_uid, text_values):
+def _add_split_review(pgroup_uid, user_uid, text_values):
     """
     Adds a row in the ReviewSplit table as well as the values, if not none
 
@@ -206,7 +206,7 @@ def __add_split_review(pgroup_uid, user_uid, text_values):
     transaction.commit()
 
 
-def __add_merge_review(pgroup_uid, user_uid, text_values):
+def _add_merge_review(pgroup_uid, user_uid, text_values):
     """
     Adds a row in the ReviewMerge table as well as the values, if not none
 

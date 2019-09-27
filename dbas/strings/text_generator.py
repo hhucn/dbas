@@ -828,3 +828,16 @@ def get_author_or_first_supporter_of_element(uid, current_user_uid, is_argument)
         return DBDiscussionSession.query(User).get(db_click.author_uid)
 
     return None
+
+
+def remove_punctuation(argument_text: str) -> str:
+    """
+    Remove multiple punctuations at the end of a line.
+
+    :param argument_text:
+    :return:
+    """
+    offset = len('</' + 'span' + '>') if argument_text.endswith('</' + 'span' + '>') else 1
+    while argument_text[:-offset].endswith(('.', '?', '!')):
+        argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
+    return argument_text
