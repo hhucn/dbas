@@ -1,6 +1,6 @@
+import json
 import unittest
 
-import json
 import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPError
@@ -171,7 +171,9 @@ class AjaxAddThingsTest(unittest.TestCase):
 
         self.assertIsNotNone(response)
         self.assertEqual(DBDiscussionSession.query(Issue).filter_by(title=request.json_body['title']).count(), 1)
-        DBDiscussionSession.query(Issue).filter_by(title=request.json_body['title']).delete()
+        # Calling .delete() on the queryset instead of on the session does not cascade. Beware!
+        issue = DBDiscussionSession.query(Issue).filter_by(title=request.json_body['title']).first()
+        DBDiscussionSession.delete(issue)
         transaction.commit()
 
     def test_set_new_issue_failure1(self):
