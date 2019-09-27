@@ -284,13 +284,13 @@ class DiscussionDictHelper:
 
         return add_premise_text
 
-    def get_dict_for_dont_know_reaction(self, argument: Argument, nickname: str) -> Dict[str, Any]:
+    def get_dict_for_dont_know_reaction(self, argument: Argument, user: User) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the third step,
         where an supportive argument will be presented.
 
         :param argument: The argument which shall be presented for the don't know reaction
-        :param nickname: The Nickname of the user for whom the bubble needs to be shown
+        :param user: The Nickname of the user for whom the bubble needs to be shown
         :return: A dictionary representing the bubbles needed to present an argument for the don't know reaction
         """
         LOG.debug("Entering get_dict_for_dont_know_reaction")
@@ -302,7 +302,7 @@ class DiscussionDictHelper:
         if argument is not None:
             text = get_text_for_argument_uid(argument, rearrange_intro=True, attack_type='dont_know',
                                              with_html_tag=True, start_with_intro=True)
-            data = get_name_link_of_arguments_author(argument, nickname)
+            data = get_name_link_of_arguments_author(argument, user.nickname)
             if data['is_valid']:
                 intro = data['link'] + ' ' + wrap_in_tag(tag_type, _tn.get(_.thinksThat))
                 gender = data['gender']

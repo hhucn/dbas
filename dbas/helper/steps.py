@@ -110,28 +110,27 @@ def preparation_for_justify_statement(history, db_user: User, path, db_issue: Is
     return item_dict, discussion_dict
 
 
-def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, argument: Argument, history, path) -> \
+def __preparation_for_dont_know_statement(db_issue: Issue, user: User, argument: Argument, history, path) -> \
         Tuple[dict, dict]:
     """
     Prepares some parameter for the "don't know" step
 
     :param db_issue: Current issue
-    :param db_user: User
+    :param user: User
     :param argument: Statement
     :param history:
     :param path: request.path
     :return: dict(), dict(), dict()
     """
     LOG.debug("Entering __preparation_for_dont_know_statement")
-    nickname = db_user.nickname
     slug = db_issue.slug
 
     disc_ui_locales = db_issue.lang
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, user.nickname, history, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
-    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument, nickname)
-    item_dict = _idh.get_array_for_dont_know_reaction(argument.uid, db_user, discussion_dict['gender'])
+    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument, user)
+    item_dict = _idh.get_array_for_dont_know_reaction(argument.uid, user, discussion_dict['gender'])
     return item_dict, discussion_dict
 
 
