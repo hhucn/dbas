@@ -1,9 +1,10 @@
 # Adaptee for the optimizations queue. Every accepted optimization will be an edit.
 import logging
 import random
+from typing import Tuple, Optional
+
 import transaction
 from beaker.session import Session
-from typing import Tuple, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerOptimization, ReviewOptimization, ReviewEdit, \
@@ -273,7 +274,7 @@ class OptimizationQueue(QueueABC):
         # check if author locked an item and maybe tidy up old locks
         db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
         if db_locks:
-            if self.is_review_locked(db_locks.review_optimization_uid):
+            if self.is_review_locked(db_review):
                 LOG.debug("Review was already locked")
                 return {
                     'success': '',
@@ -284,7 +285,7 @@ class OptimizationQueue(QueueABC):
                 DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).delete()
 
         # is already locked?
-        if self.is_review_locked(db_review.uid):
+        if self.is_review_locked(db_review):
             LOG.warning("Already locked case")
             return {
                 'success': '',
@@ -323,17 +324,17 @@ class OptimizationQueue(QueueABC):
             'info': ''
         }
 
-    def is_review_locked(self, review_uid):
+    def is_review_locked(self, review: ReviewOptimization) -> bool:
         """
         Is the OptimizationReviewLocks set?
 
-        :param review_uid: OptimizationReviewLocks.uid
-        :return: Boolean
+        :param review: The OptimizationReview object where the lock shall be examined
+        :return: Return whether the OptimizationReview is locked
         """
         self.tidy_up_optimization_locks()
-        LOG.debug("Check whether review %s is locked.", review_uid)
+        LOG.debug("Check whether review %s is locked.", review)
         db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
-            review_optimization_uid=review_uid).first()
+            review_optimization_uid=review.uid).first()
         if not db_lock:
             return False
         return (get_now() - db_lock.locked_since).seconds < max_lock_time_in_sec
@@ -346,11 +347,9 @@ class OptimizationQueue(QueueABC):
         :return: None
         """
         LOG.debug("Enter Tidy up function")
-        db_locks = DBDiscussionSession.query(OptimizationReviewLocks).all()
-        for lock in db_locks:
-            if (get_now() - lock.locked_since).seconds >= max_lock_time_in_sec:
-                DBDiscussionSession.query(OptimizationReviewLocks).filter_by(
-                    review_optimization_uid=lock.review_optimization_uid).delete()
+        expired_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter(
+            (get_now() - OptimizationReviewLocks.locked_since).seconds >= max_lock_time_in_sec)
+        DBDiscussionSession.delete(expired_locks)
 
     def __get_text_parts_of_argument(self, db_argument: Argument):
         """
