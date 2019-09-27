@@ -65,16 +65,16 @@ class AdapterTest(unittest.TestCase):
         _tn = Translator('en')
         db_review = DBDiscussionSession.query(ReviewOptimization).get(2)
         OptimizationQueue().unlock_optimization_review(db_review, _tn)
-        self.assertFalse(OptimizationQueue().is_review_locked(db_review.uid))
+        self.assertFalse(db_review.is_locked())
 
     def is_review_locked(self):
         tobias = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         _tn = Translator('en')
         db_review = DBDiscussionSession.query(ReviewOptimization).get(2)
         OptimizationQueue().lock_optimization_review(db_review, tobias, _tn)
-        self.assertTrue(OptimizationQueue().is_review_locked(2))
+        self.assertTrue(db_review.is_locked())
         OptimizationQueue().unlock_optimization_review(db_review, _tn)
-        self.assertFalse(OptimizationQueue().is_review_locked(2))
+        self.assertFalse(db_review.is_locked())
 
     def test_element_in_queue(self):
         adapter = QueueAdapter(db_user=self.user, application_url='url', translator=Translator('en'))

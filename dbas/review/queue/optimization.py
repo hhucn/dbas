@@ -1,6 +1,7 @@
 # Adaptee for the optimizations queue. Every accepted optimization will be an edit.
 import logging
 import random
+from datetime import timedelta
 from typing import Tuple, Optional, Dict, Any
 
 import transaction
@@ -84,7 +85,7 @@ class OptimizationQueue(QueueABC):
             db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
             text = get_text_for_argument_uid(db_argument.uid)
             issue_titles = [DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title]
-            parts = self.__get_text_parts_of_argument(db_argument)
+            parts = self._get_text_parts_of_argument(db_argument)
             context = [text]
         else:
             db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
@@ -274,7 +275,8 @@ class OptimizationQueue(QueueABC):
         LOG.debug("Lock an OptimizationReview")
         # Tidy up expired lock first, then check whether the newest is already locked.
         self.tidy_up_optimization_locks()
-        lock = DBDiscussionSession.query(OptimizationReviewLocks).get(review_optimization_uid=review.uid)
+        lock = DBDiscussionSession.query(OptimizationReviewLocks).filter(
+            OptimizationReviewLocks.review_optimization_uid == review.uid).one_or_none()
 
         if lock is not None:
             if lock.author == user:
@@ -290,7 +292,6 @@ class OptimizationQueue(QueueABC):
             }
 
         DBDiscussionSession.add(OptimizationReviewLocks(user.uid, review.uid))
-        DBDiscussionSession.flush()
         transaction.commit()
 
         LOG.debug("Locking review %s".format(review))
@@ -310,7 +311,8 @@ class OptimizationQueue(QueueABC):
         """
         self.tidy_up_optimization_locks()
         LOG.debug("Unlocking Optimization-Review")
-        lock = DBDiscussionSession.query(OptimizationReviewLocks).get(review_optimization_uid=review.uid)
+        lock = DBDiscussionSession.query(OptimizationReviewLocks).filter(
+            OptimizationReviewLocks.review_optimization_uid == review.uid).one_or_none()
         DBDiscussionSession.delete(lock)
         transaction.commit()
         return {
@@ -327,11 +329,11 @@ class OptimizationQueue(QueueABC):
         :return: None
         """
         LOG.debug("Enter Tidy up function")
-        expired_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter(
-            (get_now() - OptimizationReviewLocks.locked_since).seconds >= max_lock_time_in_sec)
-        DBDiscussionSession.delete(expired_locks)
+        expiry_threshold = get_now() - timedelta(seconds=max_lock_time_in_sec)
+        DBDiscussionSession.query(OptimizationReviewLocks).filter(
+            OptimizationReviewLocks.locked_since < expiry_threshold).delete()
 
-    def __get_text_parts_of_argument(self, db_argument: Argument):
+    def _get_text_parts_of_argument(self, db_argument: Argument):
         """
         Get all parts of an argument as string
 
