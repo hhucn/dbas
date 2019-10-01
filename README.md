@@ -53,7 +53,7 @@ Afterwards everything should be fine.
 
 * [Christian Meter](mailto:meter@hhu.de)
 * [Björn Ebbinghaus](mailto:bjoern.ebbinghaus@uni-duesseldorf.de)
-* [Tobias Krauthoff](mailto:tobias.krauthoff@uni-duesseldorf.de) (Alumnus)
+* [Tobias Schröder (neé Krauthoff)](mailto:tobias.krauthoff@uni-duesseldorf.de) (Alumnus)
 
 
 ### Contributors
@@ -73,7 +73,7 @@ Thanks to all former contributors! In order of appearance:
 
 ## License
 
-Copyright (c) 2016 - 2018 Tobias Krauthoff, Christian Meter  
+Copyright (c) 2016 - 2018 Tobias Schröder (neé Krauthoff), Christian Meter  
 Copyright (c) 2018 - today hhucn
 
 Distributed under the [MIT License](LICENSE).
