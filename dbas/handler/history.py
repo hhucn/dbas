@@ -22,6 +22,35 @@ from dbas.strings.translator import Translator
 LOG = logging.getLogger(__name__)
 
 
+class SessionHistory:
+    def __init__(self, session_history: List):
+        """
+        Creates current history object for user
+
+        :return:
+        """
+        self.session_history_array = session_history
+        self.session_history_string = ""
+
+    def append_action(self, action):
+        """
+        Appends new action to current history
+
+        :param action:
+        :return:
+        """
+        self.session_history_array.append(action.split('-')[-1])
+        self.session_history_string = action
+
+    def get_current_history(self):
+        """
+        Returns current history
+
+        :return:
+        """
+        return self.session_history_array
+
+
 def save_issue_uid(issue_uid: int, db_user: User) -> None:
     """
     Saves the Issue.uid for an user
@@ -417,7 +446,6 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
         history = '?history=' + history
 
     LOG.debug("Saving %s%s", path, history)
-
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
     DBDiscussionSession.flush()
 
