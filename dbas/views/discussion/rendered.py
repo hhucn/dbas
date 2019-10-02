@@ -57,7 +57,7 @@ def discussion_overview(request):
     prep_dict = main_dict(request, Translator(ui_locales).get(_.myDiscussions))
     modifiy_issue_main_url(issue_dict)
 
-    session_history = SessionHistory([])
+    session_history = SessionHistory()
     request.session.update({'session_history': session_history})
 
     prep_dict.update({
@@ -82,7 +82,7 @@ def start(request):
     issue_dict = issue_handler.get_issues_overview_on_start(request.validated['user'])
     prep_dict = main_dict(request, Translator(ui_locales).get(_.discussionStart))
 
-    session_history = SessionHistory([])
+    session_history = SessionHistory()
     request.session.update({'session_history': session_history})
 
     prep_dict.update(issue_dict)
