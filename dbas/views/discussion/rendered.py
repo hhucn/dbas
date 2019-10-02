@@ -10,6 +10,7 @@ from dbas.database.discussion_model import Statement, Argument, User
 from dbas.discussion import core as discussion
 from dbas.events import ParticipatedInDiscussion, UserArgumentAgreement
 from dbas.handler import issue as issue_handler, history as history_handler
+from dbas.handler.history import SessionHistory
 from dbas.handler.issue import get_issues_overview_for
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
@@ -55,6 +56,10 @@ def discussion_overview(request):
 
     prep_dict = main_dict(request, Translator(ui_locales).get(_.myDiscussions))
     modifiy_issue_main_url(issue_dict)
+
+    session_history = SessionHistory([])
+    request.session.update({'session_history': session_history})
+
     prep_dict.update({
         'issues': issue_dict
     })
@@ -76,6 +81,9 @@ def start(request):
     ui_locales = get_language_from_cookie(request)
     issue_dict = issue_handler.get_issues_overview_on_start(request.validated['user'])
     prep_dict = main_dict(request, Translator(ui_locales).get(_.discussionStart))
+
+    session_history = SessionHistory([])
+    request.session.update({'session_history': session_history})
 
     prep_dict.update(issue_dict)
     return prep_dict
@@ -135,6 +143,10 @@ def attitude(request):
     db_user = request.validated['user']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.session['session_history']
+    session_history.append_action(history)
+    request.session['session_history'] = session_history
+
     prepared_discussion = discussion.attitude(db_issue, db_user, db_statement, history, request.path)
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
@@ -169,6 +181,10 @@ def justify_statement(request) -> dict:
     inner_attitude = request.validated['attitude']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.session['session_history']
+    session_history.append_action(history)
+    request.session['session_history'] = session_history
+
     prepared_discussion = discussion.justify_statement(db_issue, db_user, db_statement, inner_attitude, history,
                                                        request.path)
     modify_discussion_url(prepared_discussion)
@@ -201,6 +217,10 @@ def dontknow_argument(request) -> dict:
     db_user = request.validated['user']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.session['session_history']
+    session_history.append_action(history)
+    request.session['session_history'] = session_history
+
     prepared_discussion = discussion.dont_know_argument(db_issue, db_user, db_argument, history, request.path)
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
@@ -233,6 +253,10 @@ def justify_argument(request) -> dict:
     relation = request.validated['relation']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.session['session_history']
+    session_history.append_action(history)
+    request.session['session_history'] = session_history
+
     prepared_discussion = discussion.justify_argument(db_issue, db_user, db_argument, inner_attitude, relation, history,
                                                       request.path)
     modify_discussion_url(prepared_discussion)
@@ -261,6 +285,10 @@ def reaction(request):
     db_issue = request.validated['issue']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.session['session_history']
+    session_history.append_action(history)
+    request.session['session_history'] = session_history
+
     prepared_discussion = discussion.reaction(db_issue, db_user,
                                               request.validated['arg_user'],
                                               request.validated['arg_sys'],
@@ -291,6 +319,10 @@ def support(request):
     db_issue = request.validated['issue']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.session['session_history']
+    session_history.append_action(history)
+    request.session['session_history'] = session_history
+
     prepared_discussion = discussion.support(db_issue, db_user,
                                              request.validated['arg_user'],
                                              request.validated['arg_sys'],
@@ -321,6 +353,11 @@ def finish(request):
     db_issue = request.validated['issue']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.session['session_history']
+    session_history.append_action(history)
+    request.session['session_history'] = session_history
+
+    LOG.debug(vars(request.session['session_history']))
 
     prepared_discussion = discussion.finish(db_issue,
                                             db_user,
@@ -376,6 +413,9 @@ def choose(request):
     db_issue = request.validated['issue']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.session['session_history']
+    session_history.append_action(history)
+    request.session['session_history'] = session_history
 
     prepared_discussion = discussion.choose(db_issue, db_user,
                                             request.validated['pgroup_uids'],
@@ -405,6 +445,9 @@ def jump(request):
     db_issue = request.validated['issue']
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.session['session_history']
+    session_history.append_action(history)
+    request.session['session_history'] = session_history
 
     prepared_discussion = discussion.jump(db_issue, db_user, request.validated['argument'], history, request.path)
 
