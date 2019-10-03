@@ -4,6 +4,7 @@ import dbas.handler.issue as issue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Statement
 from dbas.handler import user
+from dbas.handler.history import SessionHistory
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
@@ -45,7 +46,7 @@ def init(db_issue: Issue, db_user: User) -> dict:
     }
 
 
-def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: str, path: str) -> dict:
+def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: SessionHistory, path: str) -> dict:
     """
     Initialize the attitude step for a position in a discussion. Creates helper and returns a dictionary containing
     the first elements needed for the discussion.
@@ -66,7 +67,7 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: s
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, slug=db_issue.slug)
     discussion_dict = _ddh.get_dict_for_attitude(db_statement)
 
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history.get_session_history_as_string())
     item_dict = _idh.prepare_item_dict_for_attitude(db_statement.uid)
 
     return {
@@ -77,7 +78,8 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: s
     }
 
 
-def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, user_attitude: str, history,
+def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, user_attitude: str,
+                      history: SessionHistory,
                       path) -> dict:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
@@ -95,7 +97,7 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, u
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, user_attitude,
-                                                                history, path)
+                                                                history.get_session_history_as_string(), path)
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,
@@ -104,7 +106,8 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, u
     }
 
 
-def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, history: str, path: str) -> dict:
+def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, history: SessionHistory,
+                       path: str) -> dict:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
@@ -130,7 +133,7 @@ def dont_know_argument(db_issue: Issue, db_user: User, db_argument: Argument, hi
 
 
 def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, user_attitude: str, relation: str,
-                     history: str, path: str) -> dict:
+                     history: SessionHistory, path: str) -> dict:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
@@ -158,7 +161,8 @@ def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, user
     }
 
 
-def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, relation: Relations, history,
+def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, relation: Relations,
+             history: SessionHistory,
              path) -> dict:
     """
     Initialize the reaction step for a position in a discussion. Creates helper and returns a dictionary containing
@@ -179,9 +183,11 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
 
     add_click_for_argument(db_arg_user, db_user)
 
-    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history, slug=db_issue.slug, broke_limit=broke_limit)
-    _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=history)
-    discussion_dict = _ddh.get_dict_for_argumentation(db_arg_user, db_arg_sys.uid, relation, history, db_user)
+    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history.get_session_history_as_string(),
+                                slug=db_issue.slug, broke_limit=broke_limit)
+    _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=history.get_session_history_as_string())
+    discussion_dict = _ddh.get_dict_for_argumentation(db_arg_user, db_arg_sys.uid, relation,
+                                                      history.get_session_history_as_string(), db_user)
     item_dict = _idh.get_array_for_reaction(db_arg_sys.uid, db_arg_user.uid, db_arg_user.is_supportive, relation,
                                             discussion_dict['gender'])
 
@@ -193,7 +199,7 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     }
 
 
-def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, history: str,
+def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, history: SessionHistory,
             path: str) -> dict:
     """
     Initialize the support step for the end of a branch in a discussion. Creates helper and returns a dictionary
@@ -211,8 +217,9 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history.get_session_history_as_string(),
+                                slug=db_issue.slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history.get_session_history_as_string())
     discussion_dict = _ddh.get_dict_for_supporting_each_other(db_arg_sys, db_arg_user, db_user)
     item_dict = _idh.get_array_for_support(db_arg_sys.uid, db_issue.slug)
 
@@ -224,7 +231,7 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     }
 
 
-def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: str, path: str) -> dict:
+def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: SessionHistory, path: str) -> dict:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
     containing several feedback options regarding this argument.
@@ -249,8 +256,9 @@ def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: str, path
     else:
         conclusion = created_argument.conclusion
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history.get_session_history_as_string(),
+                                slug=db_issue.slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history.get_session_history_as_string())
     discussion_dict = _ddh.get_dict_for_choosing(conclusion, conclusion_is_argument, is_supportive)
     item_dict = _idh.get_array_for_choosing(conclusion.uid, pgroup_ids, conclusion_is_argument, is_supportive,
                                             db_user.nickname)
@@ -263,7 +271,7 @@ def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: str, path
     }
 
 
-def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: str, path: str) -> dict:
+def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: SessionHistory, path: str) -> dict:
     """
     Initialize the jump step for an argument in a discussion. Creates helper and returns a dictionary containing
     several feedback options regarding this argument.
@@ -281,8 +289,9 @@ def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: str, pa
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=db_issue.slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history.get_session_history_as_string(),
+                                slug=db_issue.slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history.get_session_history_as_string())
     discussion_dict = _ddh.get_dict_for_jump(db_argument)
     item_dict = _idh.get_array_for_jump(db_argument.uid, db_issue.slug)
 
@@ -294,11 +303,13 @@ def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: str, pa
     }
 
 
-def finish(db_issue: Issue, db_user: User, db_argument: Argument, history: str) -> dict:
+def finish(db_issue: Issue, db_user: User, db_argument: Argument, history: SessionHistory) -> dict:
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
 
-    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history, slug=db_issue.slug)
-    discussion_dict = _ddh.get_dict_for_argumentation(db_argument, None, None, history, db_user)
+    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history.get_session_history_as_string(),
+                                slug=db_issue.slug)
+    discussion_dict = _ddh.get_dict_for_argumentation(db_argument, None, None, history.get_session_history_as_string(),
+                                                      db_user)
     item_dict = ItemDictHelper.get_empty_dict()
 
     return {
