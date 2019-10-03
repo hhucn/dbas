@@ -32,15 +32,16 @@ class SessionHistory:
         self.session_history_array = []
         self.session_history_string = ""
 
-    def append_action(self, action):
+    def append_action(self, request: Request):
         """
         Appends new action to current history
 
-        :param action:
+        :param request
         :return:
         """
-        self.session_history_array.append(action.split('-')[-1])
-        self.session_history_string = action
+        history_action = request.params.get('history', '')
+        self.session_history_array.append(history_action.split('-')[-1])
+        self.session_history_string = history_action
 
     def get_current_history(self):
         """
