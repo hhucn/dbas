@@ -43,13 +43,21 @@ class SessionHistory:
         self.session_history_array.append(history_action.split('-')[-1])
         self.session_history_string = history_action
 
-    def get_current_history(self):
+    def get_session_history(self) -> List:
         """
         Returns current history
 
         :return:
         """
         return self.session_history_array
+
+    def get_session_history_as_string(self) -> str:
+        """
+        Returns session history as string
+
+        :return:
+        """
+        return self.session_history_string
 
 
 def save_issue_uid(issue_uid: int, db_user: User) -> None:
