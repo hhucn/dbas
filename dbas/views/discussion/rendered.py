@@ -144,8 +144,9 @@ def attitude(request):
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
-    session_history.append_action(history)
-    request.session.update({'session_history': session_history})
+    if session_history is not None:
+        session_history.append_action(history)
+        request.session.update({'session_history': session_history})
 
     prepared_discussion = discussion.attitude(db_issue, db_user, db_statement, history, request.path)
     modify_discussion_url(prepared_discussion)
@@ -182,8 +183,9 @@ def justify_statement(request) -> dict:
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
-    session_history.append_action(history)
-    request.session.update({'session_history': session_history})
+    if session_history is not None:
+        session_history.append_action(history)
+        request.session.update({'session_history': session_history})
 
     prepared_discussion = discussion.justify_statement(db_issue, db_user, db_statement, inner_attitude, history,
                                                        request.path)
@@ -218,8 +220,10 @@ def dontknow_argument(request) -> dict:
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
-    session_history.append_action(history)
-    request.session.update({'session_history': session_history})
+    if session_history is not None:
+        session_history.append_action(history)
+        request.session.update({'session_history': session_history})
+
     prepared_discussion = discussion.dont_know_argument(db_issue, db_user, db_argument, history, request.path)
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
@@ -253,8 +257,9 @@ def justify_argument(request) -> dict:
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
-    session_history.append_action(history)
-    request.session.update({'session_history': session_history})
+    if session_history is not None:
+        session_history.append_action(history)
+        request.session.update({'session_history': session_history})
 
     prepared_discussion = discussion.justify_argument(db_issue, db_user, db_argument, inner_attitude, relation, history,
                                                       request.path)
@@ -285,8 +290,9 @@ def reaction(request):
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
-    session_history.append_action(history)
-    request.session.update({'session_history': session_history})
+    if session_history is not None:
+        session_history.append_action(history)
+        request.session.update({'session_history': session_history})
 
     prepared_discussion = discussion.reaction(db_issue, db_user,
                                               request.validated['arg_user'],
@@ -319,8 +325,9 @@ def support(request):
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
-    session_history.append_action(history)
-    request.session.update({'session_history': session_history})
+    if session_history is not None:
+        session_history.append_action(history)
+        request.session.update({'session_history': session_history})
 
     prepared_discussion = discussion.support(db_issue, db_user,
                                              request.validated['arg_user'],
@@ -353,10 +360,11 @@ def finish(request):
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
-    session_history.append_action(history)
-    request.session.update({'session_history': session_history})
+    if session_history is not None:
+        session_history.append_action(history)
+        request.session.update({'session_history': session_history})
 
-    LOG.debug(vars(request.session['session_history']))
+        LOG.debug(vars(request.session['session_history']))
 
     prepared_discussion = discussion.finish(db_issue,
                                             db_user,
@@ -413,8 +421,9 @@ def choose(request):
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
-    session_history.append_action(history)
-    request.session.update({'session_history': session_history})
+    if session_history is not None:
+        session_history.append_action(history)
+        request.session.update({'session_history': session_history})
 
     prepared_discussion = discussion.choose(db_issue, db_user,
                                             request.validated['pgroup_uids'],
@@ -445,8 +454,9 @@ def jump(request):
 
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
-    session_history.append_action(history)
-    request.session.update({'session_history': session_history})
+    if session_history is not None:
+        session_history.append_action(history)
+        request.session.update({'session_history': session_history})
 
     prepared_discussion = discussion.jump(db_issue, db_user, request.validated['argument'], history, request.path)
 
