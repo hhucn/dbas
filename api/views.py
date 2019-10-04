@@ -265,9 +265,10 @@ def discussion_attitude(request):
     db_issue = request.validated['issue']
     db_user = request.validated['user']
     history_handler.save_and_set_cookie(request, db_user, db_issue)
-    sesssion_history = request.session.get('session_history')
+    session_history = request.session.get('session_history')
+    history_handler.save_history_to_session_history(request, session_history)
 
-    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, sesssion_history, request.path)
+    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, session_history, request.path)
     bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
@@ -293,6 +294,7 @@ def discussion_justify_statement(request) -> dict:
     db_issue = request.validated['issue']
     history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
+    history_handler.save_history_to_session_history(request, session_history)
 
     prepared_discussion = discussion.justify_statement(db_issue, db_user, request.validated['statement'],
                                                        request.validated['attitude'], session_history, request.path)
@@ -319,6 +321,7 @@ def discussion_dontknow_argument(request) -> dict:
     db_issue = request.validated['issue']
     history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
+    history_handler.save_history_to_session_history(request, session_history)
 
     prepared_discussion = discussion.dont_know_argument(db_issue, db_user, request.validated['argument'],
                                                         session_history,
@@ -348,6 +351,7 @@ def discussion_justify_argument(request) -> dict:
     db_issue = request.validated['issue']
     history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
+    history_handler.save_history_to_session_history(request, session_history)
 
     prepared_discussion = discussion.justify_argument(db_issue, db_user, request.validated['argument'],
                                                       request.validated['attitude'], request.validated['relation'],
@@ -375,6 +379,7 @@ def discussion_reaction(request):
     db_issue = request.validated['issue']
     history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
+    history_handler.save_history_to_session_history(request, session_history)
 
     prepared_discussion = discussion.reaction(db_issue, db_user,
                                               request.validated['arg_user'],
@@ -410,6 +415,8 @@ def discussion_support(request):
 
     history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
+    history_handler.save_history_to_session_history(request, session_history)
+
     prepared_discussion = discussion.support(db_issue, db_user,
                                              request.validated['arg_user'],
                                              request.validated['arg_sys'],
@@ -432,6 +439,7 @@ def discussion_finish(request):
     db_issue = request.validated['issue']
     history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
+    history_handler.save_history_to_session_history(request, session_history)
 
     prepared_discussion = discussion.finish(db_issue, db_user,
                                             request.validated['argument'], session_history)
@@ -648,6 +656,7 @@ def add_position_with_premise(request):
     origin: DataOrigin = request.validated['origin']
     history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
+    history_handler.save_history_to_session_history(request, session_history)
     host, path = split_url(request.environ.get("HTTP_REFERER"))
 
     new_position = set_position(db_user, db_issue, request.validated['position-text'])
@@ -689,6 +698,8 @@ def add_premise_to_statement(request: IRequest):
     origin: DataOrigin = request.validated['origin']
     history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
+    history_handler.save_history_to_session_history(request, session_history)
+
     host, path = split_url(request.environ.get("HTTP_REFERER"))
 
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
@@ -711,6 +722,8 @@ def add_premise_to_argument(request):
     origin: DataOrigin = request.validated['origin']
     history_handler.save_and_set_cookie(request, db_user, db_issue)
     session_history = request.session.get('session_history')
+    history_handler.save_history_to_session_history(request, session_history)
+
     host, path = split_url(request.environ.get("HTTP_REFERER"))
 
     if reference_text:
