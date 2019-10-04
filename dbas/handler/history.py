@@ -45,7 +45,7 @@ class SessionHistory:
 
     def get_session_history(self) -> List:
         """
-        Returns current history
+        Returns session history
 
         :return:
         """
@@ -58,6 +58,12 @@ class SessionHistory:
         :return:
         """
         return self.session_history_string
+
+
+def save_history_to_session_history(request: Request, session_history: SessionHistory):
+    if session_history is not None:
+        session_history.append_action(request)
+        request.session.update({'session_history': session_history})
 
 
 def save_issue_uid(issue_uid: int, db_user: User) -> None:
