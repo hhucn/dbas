@@ -354,7 +354,8 @@ def finish(request):
     session_history = request.session.get('session_history')
     history_handler.save_history_to_session_history(request, session_history)
 
-    LOG.debug(vars(request.session['session_history']))
+    if session_history is not None:
+        LOG.debug(vars(request.session['session_history']))
 
     prepared_discussion = discussion.finish(db_issue,
                                             db_user,
