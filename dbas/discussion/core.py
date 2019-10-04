@@ -66,8 +66,11 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, slug=db_issue.slug)
     discussion_dict = _ddh.get_dict_for_attitude(db_statement)
+    session_history = ''
+    if history is not None:
+        session_history = history.get_session_history_as_string()
 
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history.get_session_history_as_string())
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=session_history)
     item_dict = _idh.prepare_item_dict_for_attitude(db_statement.uid)
 
     return {
@@ -95,9 +98,13 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, u
     """
     LOG.debug("Entering justify_statement")
 
+    session_history = ''
+    if history is not None:
+        session_history = history.get_session_history_as_string()
+
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, user_attitude,
-                                                                history.get_session_history_as_string(), path)
+                                                                session_history, path)
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,
@@ -183,11 +190,15 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
 
     add_click_for_argument(db_arg_user, db_user)
 
-    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history.get_session_history_as_string(),
+    session_history = ''
+    if history is not None:
+        session_history = history.get_session_history_as_string()
+
+    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, session_history,
                                 slug=db_issue.slug, broke_limit=broke_limit)
-    _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=history.get_session_history_as_string())
+    _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=session_history)
     discussion_dict = _ddh.get_dict_for_argumentation(db_arg_user, db_arg_sys.uid, relation,
-                                                      history.get_session_history_as_string(), db_user)
+                                                      session_history, db_user)
     item_dict = _idh.get_array_for_reaction(db_arg_sys.uid, db_arg_user.uid, db_arg_user.is_supportive, relation,
                                             discussion_dict['gender'])
 
@@ -217,9 +228,13 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history.get_session_history_as_string(),
+    session_history = ''
+    if history is not None:
+        session_history = history.get_session_history_as_string()
+
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, session_history,
                                 slug=db_issue.slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history.get_session_history_as_string())
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=session_history)
     discussion_dict = _ddh.get_dict_for_supporting_each_other(db_arg_sys, db_arg_user, db_user)
     item_dict = _idh.get_array_for_support(db_arg_sys.uid, db_issue.slug)
 
@@ -256,9 +271,13 @@ def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: SessionHi
     else:
         conclusion = created_argument.conclusion
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history.get_session_history_as_string(),
+    session_history = ''
+    if history is not None:
+        session_history = history.get_session_history_as_string()
+
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, session_history,
                                 slug=db_issue.slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history.get_session_history_as_string())
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=session_history)
     discussion_dict = _ddh.get_dict_for_choosing(conclusion, conclusion_is_argument, is_supportive)
     item_dict = _idh.get_array_for_choosing(conclusion.uid, pgroup_ids, conclusion_is_argument, is_supportive,
                                             db_user.nickname)
@@ -289,9 +308,13 @@ def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: Session
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history.get_session_history_as_string(),
+    session_history = ''
+    if history is not None:
+        session_history = history.get_session_history_as_string()
+
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history=session_history,
                                 slug=db_issue.slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history.get_session_history_as_string())
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=session_history)
     discussion_dict = _ddh.get_dict_for_jump(db_argument)
     item_dict = _idh.get_array_for_jump(db_argument.uid, db_issue.slug)
 
@@ -306,9 +329,13 @@ def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: Session
 def finish(db_issue: Issue, db_user: User, db_argument: Argument, history: SessionHistory) -> dict:
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
 
-    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history.get_session_history_as_string(),
+    session_history = ''
+    if history is not None:
+        session_history = history.get_session_history_as_string()
+
+    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, session_history,
                                 slug=db_issue.slug)
-    discussion_dict = _ddh.get_dict_for_argumentation(db_argument, None, None, history.get_session_history_as_string(),
+    discussion_dict = _ddh.get_dict_for_argumentation(db_argument, None, None, session_history,
                                                       db_user)
     item_dict = ItemDictHelper.get_empty_dict()
 
