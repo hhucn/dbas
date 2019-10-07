@@ -30,7 +30,6 @@ class SessionHistory:
         :return:
         """
         self.session_history_array = []
-        self.session_history_string = ""
 
     def append_action(self, request: Request):
         """
@@ -40,8 +39,8 @@ class SessionHistory:
         :return:
         """
         history_action = request.params.get('history', '')
-        self.session_history_array.append(history_action.split('-')[-1])
-        self.session_history_string = history_action
+        if len(history_action) > 0:
+            self.session_history_array.append(history_action.split('-')[-1])
 
     def get_session_history(self) -> List:
         """
@@ -57,7 +56,7 @@ class SessionHistory:
 
         :return:
         """
-        return self.session_history_string
+        return "-".join(self.session_history_array)
 
 
 def save_history_to_session_history(request: Request):
