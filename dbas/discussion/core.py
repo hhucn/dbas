@@ -95,10 +95,6 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, u
     """
     LOG.debug("Entering justify_statement")
 
-    session_history = ''
-    if history is not None:
-        session_history = history.get_session_history_as_string()
-
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, user_attitude,
                                                                 history, path)
