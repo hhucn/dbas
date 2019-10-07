@@ -18,7 +18,8 @@ from websocket.lib import send_request_for_info_popup_to_socketio
 LOG = logging.getLogger(__name__)
 
 
-def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
+def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str,
+                                   history: SessionHistory,
                                    path):
     """
 
@@ -126,13 +127,9 @@ def __preparation_for_dont_know_statement(db_issue: Issue, user: User, argument:
     LOG.debug("Entering __preparation_for_dont_know_statement")
     slug = db_issue.slug
 
-    session_history = ''
-    if history is not None:
-        session_history = history.get_session_history_as_string()
-
     disc_ui_locales = db_issue.lang
-    _ddh = DiscussionDictHelper(disc_ui_locales, user.nickname, session_history, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=session_history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, user.nickname, history=history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument, user)
     item_dict = _idh.get_array_for_dont_know_reaction(argument.uid, user, discussion_dict['gender'])
@@ -157,13 +154,9 @@ def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument
     nickname = db_user.nickname
     slug = db_issue.slug
 
-    session_history = ''
-    if history is not None:
-        session_history = history.get_session_history_as_string()
-
     disc_ui_locales = db_issue.lang
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, session_history, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=session_history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history=history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
     # justifying argument
     item_dict = _idh.get_array_for_justify_argument(db_argument.uid, relation, db_user, history)
