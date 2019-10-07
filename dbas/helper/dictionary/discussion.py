@@ -29,7 +29,9 @@ class DiscussionDictHelper:
     Provides all functions for creating the discussion dictionaries with all bubbles.
     """
 
-    def __init__(self, lang: str, nickname: str = None, history: str = '', slug: str = '', broke_limit: bool = False):
+    def __init__(self, lang: str, nickname: str = None,
+                 history: history_handler.SessionHistory = None, slug: str = '',
+                 broke_limit: bool = False):
         """
         Initialize default values
 
@@ -39,9 +41,13 @@ class DiscussionDictHelper:
         :param slug: The slug of the current issue
         :param broke_limit: Whether the user just now got enough points to access the Review-System
         """
+        session_history = ''
+        if history is not None:
+            session_history = history.get_session_history_as_string()
+
         self.lang = lang
         self.nickname = nickname
-        self.history = history
+        self.history = session_history
         self.slug = slug
         self.broke_limit = broke_limit
 
