@@ -11,6 +11,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User, StatementToIssue, PositionCost
 from dbas.handler import attacks
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
+from dbas.handler.history import SessionHistory
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.url import UrlManager
 from dbas.lib import Relations, Attitudes, get_enabled_arguments_as_query, get_all_attacking_arg_uids_from_history, \
@@ -34,7 +35,7 @@ class ItemDictHelper(object):
     Provides all functions for creating the radio buttons.
     """
 
-    def __init__(self, lang, db_issue: Issue, path='', history=''):
+    def __init__(self, lang, db_issue: Issue, path='', history: SessionHistory = None):
         """
         Initialize default values
 
@@ -44,15 +45,19 @@ class ItemDictHelper(object):
         :param history: String
         :return:
         """
+        session_history = ''
+        if history is not None:
+            session_history = history.get_session_history_as_string()
+
         self.lang = lang
         self.db_issue = db_issue
         self.issue_read_only = db_issue.is_read_only
-        limiter = '-' if len(history) > 0 else ''
+        limiter = '-' if len(session_history) > 0 else ''
 
         path = path.replace(db_issue.slug, '').replace('discuss', '').replace('api', '')
         while path.startswith('/'):
             path = path[1:]
-        self.path = '{}{}/{}'.format(history, limiter, path)
+        self.path = '{}{}/{}'.format(session_history, limiter, path)
 
     @staticmethod
     def get_empty_dict() -> dict:
