@@ -60,7 +60,14 @@ class SessionHistory:
         return self.session_history_string
 
 
-def save_history_to_session_history(request: Request, session_history: SessionHistory):
+def save_history_to_session_history(request: Request):
+    """
+    Saves the current history from the URL to the history object in the request session
+
+    :param request:
+    :return:
+    """
+    session_history = request.session.get('session_history')
     if session_history is not None:
         session_history.append_action(request)
         request.session.update({'session_history': session_history})
@@ -504,6 +511,8 @@ def save_and_set_cookie(request: Request, db_user: User, issue: Issue) -> str:
     :return: current user's history
     """
     history = request.params.get('history', '')
+    save_history_to_session_history(request)
+
     if db_user and db_user.nickname != nick_of_anonymous_user:
         save_database(db_user, issue.slug, request.path, history)
         save_issue_uid(issue.uid, db_user)
