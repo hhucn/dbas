@@ -335,7 +335,8 @@ class DiscussionDictHelper:
         }
 
     def get_dict_for_argumentation(self, argument: Argument, arg_sys_id: Optional[int],
-                                   relation: Optional[Relations], history: str, user: User) -> Dict[str, Any]:
+                                   relation: Optional[Relations],
+                                   user: User) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the argumentation window.
 
