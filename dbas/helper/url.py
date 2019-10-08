@@ -5,6 +5,7 @@ import random
 
 from dbas.database.discussion_model import Statement, Issue
 from dbas.handler import attacks
+from dbas.handler.history import SessionHistory
 from dbas.lib import get_all_attacking_arg_uids_from_history, Attitudes, Relations
 
 
@@ -13,7 +14,7 @@ class UrlManager(object):
     URL-Manager for building all URLs. This includes DBAS-URLs as well as the API-URLs
     """
 
-    def __init__(self, slug='', history=''):
+    def __init__(self, slug='', history: SessionHistory = None):
         """
         Initialization of an URL-Manager
 
@@ -22,9 +23,12 @@ class UrlManager(object):
         :param history: String
         :return: None
         """
+        session_history = ''
+        if history is not None:
+            session_history = history.get_session_history_as_string()
         self.review_url = 'review/'
         self.slug = slug
-        self.history = history
+        self.history = session_history
 
     def get_review_url(self):
         """
