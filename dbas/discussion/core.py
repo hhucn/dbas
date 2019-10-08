@@ -183,15 +183,11 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
 
     add_click_for_argument(db_arg_user, db_user)
 
-    session_history = ''
-    if history is not None:
-        session_history = history.get_session_history_as_string()
-
     _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history=history,
                                 slug=db_issue.slug, broke_limit=broke_limit)
     _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(db_arg_user, db_arg_sys.uid, relation,
-                                                      session_history, db_user)
+                                                      db_user)
     item_dict = _idh.get_array_for_reaction(db_arg_sys.uid, db_arg_user.uid, db_arg_user.is_supportive, relation,
                                             discussion_dict['gender'])
 
@@ -310,13 +306,9 @@ def jump(db_issue: Issue, db_user: User, db_argument: Argument, history: Session
 def finish(db_issue: Issue, db_user: User, db_argument: Argument, history: SessionHistory) -> dict:
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
 
-    session_history = ''
-    if history is not None:
-        session_history = history.get_session_history_as_string()
-
     _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history=history,
                                 slug=db_issue.slug)
-    discussion_dict = _ddh.get_dict_for_argumentation(db_argument, None, None, session_history,
+    discussion_dict = _ddh.get_dict_for_argumentation(db_argument, None, None,
                                                       db_user)
     item_dict = ItemDictHelper.get_empty_dict()
 
