@@ -374,7 +374,7 @@ class DiscussionDictHelper:
                                                   lang=self.lang)
         else:
             prep_dict = self._get_dict_for_argumentation(
-                argument, arg_sys_id, history, relation, nickname, argument.is_supportive)
+                argument, arg_sys_id, self.history, relation, nickname, argument.is_supportive)
             quid = 'question-bubble-' + str(arg_sys_id) if int(arg_sys_id) > 0 else ''
             is_author = is_author_of_argument(user, prep_dict['confrontation'].uid)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, is_author=is_author, uid=quid,
