@@ -86,7 +86,7 @@ class ItemDictHelper(object):
         slug = self.db_issue.slug
 
         statements_array = []
-        _um = UrlManager(slug, history=self.path)
+        _um = UrlManager(slug, history=SessionHistory(self.path))
 
         ed = EditQueue()
         for statement in db_statements:
@@ -146,7 +146,7 @@ class ItemDictHelper(object):
         slug = DBDiscussionSession.query(Issue).get(self.db_issue.uid).slug
         statements_array = []
 
-        _um = UrlManager(slug, history=self.path)
+        _um = UrlManager(slug, history=SessionHistory(self.path))
 
         db_arguments = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == statement_uid,
                                                                   Argument.is_supportive == True).all()
@@ -190,7 +190,7 @@ class ItemDictHelper(object):
         db_arguments: List[Argument] = attacks.get_arguments_by_conclusion(db_statement.uid, is_supportive)
         uids: List[int] = [argument.uid for argument in db_arguments if db_arguments]
 
-        _um = UrlManager(slug, history=self.path)
+        _um = UrlManager(slug, history=SessionHistory(self.path))
 
         for argument in db_arguments:
             sarray = self.__get_statement_array_for_justify_statement(db_user, history, argument, uids, _tn, _um)
@@ -274,7 +274,7 @@ class ItemDictHelper(object):
         db_arguments = self.__get_arguments_based_on_attack(attack_type, argument_uid)
         uids = [argument.uid for argument in db_arguments if db_arguments]
 
-        _um = UrlManager(slug, history=self.path)
+        _um = UrlManager(slug, history=SessionHistory(self.path))
 
         for argument in db_arguments:
             sarray = self.__get_statement_array_for_justify_argument(argument_uid, attack_type, db_user, history,
@@ -401,7 +401,7 @@ class ItemDictHelper(object):
         # set real argument in history
         tmp_path = self.path.replace('/justify/{}/d'.format(db_argument.conclusion_uid),
                                      '/justify/{}/d'.format(argument_uid))
-        _um = UrlManager(slug, history=tmp_path)
+        _um = UrlManager(slug, history=SessionHistory(tmp_path))
 
         if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
             add_seen_argument(argument_uid, db_user)
@@ -516,7 +516,7 @@ class ItemDictHelper(object):
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, True, attack_type=attack, gender=gender)
         mode = Attitudes.AGREE if is_supportive else Attitudes.DISAGREE
-        _um = UrlManager(slug, history=self.path)
+        _um = UrlManager(slug, history=SessionHistory(self.path))
 
         relations = [relation for relation in Relations]
         for relation in relations:
@@ -659,7 +659,7 @@ class ItemDictHelper(object):
         LOG.debug("Entering get_array_for_choosing")
         statements_array = []
         slug = self.db_issue.slug
-        _um = UrlManager(slug, history=self.path)
+        _um = UrlManager(slug, history=SessionHistory(self.path))
         conclusion_uid = argument_or_statement_id if not is_argument else None
         argument_uid = argument_or_statement_id if is_argument else None
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -767,7 +767,7 @@ class ItemDictHelper(object):
         """
 
         db_argument = DBDiscussionSession.query(Argument).get(arg_uid)
-        _um = UrlManager(slug, history=self.path)
+        _um = UrlManager(slug, history=SessionHistory(self.path))
         db_premises = DBDiscussionSession.query(Premise).filter_by(
             premisegroup_uid=db_argument.premisegroup_uid).all()
         forbidden_attacks = attacks.get_forbidden_attacks_based_on_history(self.path)

@@ -438,12 +438,8 @@ def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, s
     # arguments=1: deliver new url
     # arguments>1: deliver url where the user has to choose between her inputs
 
-    session_history = ''
-    if history is not None:
-        session_history = history.get_session_history_as_string()
-
-    _um = UrlManager(db_issue.slug, session_history)
-    _main_um = UrlManager(db_issue.slug, history=session_history)
+    _um = UrlManager(db_issue.slug, history)
+    _main_um = UrlManager(db_issue.slug, history=history)
     new_argument_uids = prepared_dict['argument_uids']
 
     if len(new_argument_uids) == 1:
