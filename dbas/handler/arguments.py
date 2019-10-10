@@ -148,7 +148,10 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
     arg_id: int = arg_infos['arg_id']
     attack_type: str = arg_infos['attack_type']
     premisegroups = arg_infos['premisegroups']
-    session_history = SessionHistory(arg_infos['history'])
+    history = arg_infos['history']
+    session_history = SessionHistory()
+    if history is not None:
+        session_history = SessionHistory(history)
 
     LOG.debug("Count of new pgroups: %s", len(premisegroups))
     _tn = Translator(discussion_lang)
