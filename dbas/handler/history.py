@@ -23,13 +23,16 @@ LOG = logging.getLogger(__name__)
 
 
 class SessionHistory:
-    def __init__(self):
+    def __init__(self, history=''):
         """
         Creates current history object for user
 
         :return:
         """
-        self.session_history_array = []
+        session_history_array = []
+        if len(history) > 0:
+            session_history_array = history.split('-')
+        self.session_history_array = session_history_array
 
     def append_action(self, request: Request):
         """
