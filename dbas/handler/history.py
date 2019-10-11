@@ -43,9 +43,18 @@ class SessionHistory:
         """
         history_action = request.params.get('history', '')
         if len(history_action) > 0:
-            self.session_history_array.append(history_action.split('-')[-1])
+            # Splits history url by "-" and appends last history action to history array without a leading "/"
+            splitted_history = history_action.split('-')
+            last_splitted_history = splitted_history[-1]
+            cleaned_last_splitted = last_splitted_history[1:]
+            self.session_history_array.append(cleaned_last_splitted)
 
-    def get_session_history(self) -> List:
+    def get_nth_last_action(self, n):
+        if len(self.session_history_array) > 0:
+            return self.session_history_array[-n]
+        return ''
+
+    def get_session_history_as_list(self) -> List:
         """
         Returns session history
 
@@ -60,6 +69,47 @@ class SessionHistory:
         :return:
         """
         return "-".join(self.session_history_array)
+
+    def create_bubbles(self, nickname: str = '', lang: str = '', slug: str = '') -> List[dict]:
+        """
+        Creates the bubbles for every history step
+
+        :param history: String
+        :param nickname: User.nickname
+        :param lang: ui_locales
+        :param slug: String
+        :return: Array
+        """
+        if len(self.session_history_array) == 0:
+            return []
+
+        LOG.debug("nickname: %s, history: %s", nickname, self.get_session_history_as_string())
+
+        bubble_array = []
+        consumed_history = ''
+
+        nickname = nickname if nickname else nick_of_anonymous_user
+        db_user = nickname if isinstance(nickname, User) else DBDiscussionSession.query(User).filter_by(
+            nickname=nickname).first()
+
+        for index, step in enumerate(self.session_history_array):
+            url = '/' + slug + '/' + step
+            if len(consumed_history) != 0:
+                url += '?history=' + consumed_history
+            consumed_history += step if len(consumed_history) == 0 else '-' + step
+            if 'justify/' in step:
+                _prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url)
+
+            elif 'reaction/' in step:
+                _prepare_reaction_step(bubble_array, index, step, db_user, lang, self.session_history_array, url)
+
+            elif 'support/' in step:
+                _prepare_support_step(bubble_array, index, step, db_user, lang)
+
+            else:
+                LOG.debug("%s: unused case -> %s", index, step)
+
+        return bubble_array
 
 
 def save_history_to_session_history(request: Request):
@@ -123,49 +173,6 @@ def get_seen_statements_from(path: str) -> set:
     :return: a list of seen statement_uids
     """
     return set([int(s) for s in replace_multiple_chars(path, ['/', '-', '?'], ' ').split() if s.isdigit()])
-
-
-def create_bubbles(history: str, nickname: str = '', lang: str = '', slug: str = '') -> List[dict]:
-    """
-    Creates the bubbles for every history step
-
-    :param history: String
-    :param nickname: User.nickname
-    :param lang: ui_locales
-    :param slug: String
-    :return: Array
-    """
-    if len(history) == 0:
-        return []
-
-    LOG.debug("nickname: %s, history: %s", nickname, history)
-    splitted_history = split(history)
-
-    bubble_array = []
-    consumed_history = ''
-
-    nickname = nickname if nickname else nick_of_anonymous_user
-    db_user = nickname if isinstance(nickname, User) else DBDiscussionSession.query(User).filter_by(
-        nickname=nickname).first()
-
-    for index, step in enumerate(splitted_history):
-        url = '/' + slug + '/' + step
-        if len(consumed_history) != 0:
-            url += '?history=' + consumed_history
-        consumed_history += step if len(consumed_history) == 0 else '-' + step
-        if 'justify/' in step:
-            _prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url)
-
-        elif 'reaction/' in step:
-            _prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_history, url)
-
-        elif 'support/' in step:
-            _prepare_support_step(bubble_array, index, step, db_user, lang)
-
-        else:
-            LOG.debug("%s: unused case -> %s", index, step)
-
-    return bubble_array
 
 
 def _prepare_justify_statement_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
