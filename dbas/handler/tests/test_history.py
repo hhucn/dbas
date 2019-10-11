@@ -3,7 +3,7 @@ import unittest
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import History, Issue
 from dbas.handler import history
-from dbas.handler.history import split, get_last_relation
+from dbas.handler.history import split, get_last_relation, SessionHistory
 from dbas.tests.utils import TestCaseWithConfig
 
 
@@ -14,6 +14,7 @@ class HistoryHandlerTests(TestCaseWithConfig):
         self.last_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).order_by(
             Issue.uid.desc()).first()
         self.history = '/attitude/2-/justify/2/t-/reaction/12/undercut/13'
+        self.session_history = SessionHistory(self.history)
         settings = self.user_tobi.settings
         settings.set_last_topic_uid(self.first_issue.uid)
         DBDiscussionSession.add(settings)
@@ -35,7 +36,7 @@ class HistoryHandlerTests(TestCaseWithConfig):
         self.assertGreater(len(hist), 0)
 
     def test_create_bubbles_from_history(self):
-        bubbles = history.create_bubbles(self.history)
+        bubbles = self.session_history.create_bubbles()
         self.assertGreater(len(bubbles), 0)
 
     def test_save_path_in_database(self):
