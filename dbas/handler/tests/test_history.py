@@ -7,13 +7,50 @@ from dbas.handler.history import split, get_last_relation, SessionHistory
 from dbas.tests.utils import TestCaseWithConfig
 
 
+class HistoryBubblesTests(TestCaseWithConfig):
+    def setUp(self):
+        super().setUp()
+        self.first_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
+        self.last_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).order_by(
+            Issue.uid.desc()).first()
+        self.history_justify = '/attitude/2-/justify/2/t-/reaction/12/undercut/13'
+        self.history_dontknow = '/attitude/3-/justify/4/dontknow'
+        self.history_disagree = '/attitude/3-attitude/3-justify/3/disagree-/reaction/5/undercut/7'
+        self.history_agree = '/attitude/3-justify/3/agree-/reaction/4/rebut/5'
+        self.session_history_justify = SessionHistory(self.history_justify)
+        self.session_history_dontknow = SessionHistory(self.history_dontknow)
+        self.session_history_disagree = SessionHistory(self.history_disagree)
+        self.session_history_agree = SessionHistory(self.history_agree)
+        settings = self.user_tobi.settings
+        settings.set_last_topic_uid(self.first_issue.uid)
+        DBDiscussionSession.add(settings)
+        DBDiscussionSession.flush()
+
+    def test_create_bubbles_from_history_justify(self):
+        bubbles = self.session_history_justify.create_bubbles()
+        self.assertGreater(len(bubbles), 0)
+
+    def test_create_bubbles_from_history_dontknow(self):
+        bubbles = self.session_history_dontknow.create_bubbles()
+        self.assertGreater(len(bubbles), 0)
+
+    def test_create_bubbles_from_history_disagree(self):
+        bubbles = self.session_history_disagree.create_bubbles()
+        self.assertGreater(len(bubbles), 0)
+
+    def test_create_bubbles_from_history_agree(self):
+        bubbles = self.session_history_agree.create_bubbles()
+        self.assertGreater(len(bubbles), 0)
+
+
 class HistoryHandlerTests(TestCaseWithConfig):
     def setUp(self):
         super().setUp()
         self.first_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
         self.last_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).order_by(
             Issue.uid.desc()).first()
-        self.history = '/attitude/2-/justify/2/t-/reaction/12/undercut/13'
+        # self.history = '/attitude/2-/justify/2/t-/reaction/12/undercut/13'
+        self.history = '/attitude/3-/justify/4/dontknow'
         self.session_history = SessionHistory(self.history)
         settings = self.user_tobi.settings
         settings.set_last_topic_uid(self.first_issue.uid)
@@ -34,10 +71,6 @@ class HistoryHandlerTests(TestCaseWithConfig):
     def test_get_splitted_history(self):
         hist = history.split(self.history)
         self.assertGreater(len(hist), 0)
-
-    def test_create_bubbles_from_history(self):
-        bubbles = self.session_history.create_bubbles()
-        self.assertGreater(len(bubbles), 0)
 
     def test_save_path_in_database(self):
         db_hist1 = DBDiscussionSession.query(History).filter_by(author_uid=self.user_tobi.uid).all()
