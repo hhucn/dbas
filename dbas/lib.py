@@ -74,6 +74,24 @@ relation_mapper = {relation.value: relation for relation in Relations}
 attitude_mapper = {attitude.value: attitude for attitude in Attitudes}
 
 
+def enum(**named_value):
+    """
+    This method creates a enum with parameters.
+
+    :param named_value: Values of the Enum
+    :return: Enum with parameters defined in named_value
+    """
+    return type('Enum', (), named_value)
+
+
+def wrap_history_onto_enum(history: list) -> enum:
+    return enum(
+        UID=history[1],
+        ATTITUDE_TYPE=history[2],
+        RELATION=history[3] if len(history) >= 4 else ""
+    )
+
+
 def get_global_url():
     """
     Returns the global url of the project, based on the ENV
