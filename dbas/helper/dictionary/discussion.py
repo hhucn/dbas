@@ -474,7 +474,7 @@ class DiscussionDictHelper:
 
         statement = DBDiscussionSession.query(Statement).get(conclusion_uid)
         reply_for_argument = not (statement and statement.is_position)
-        support_counter_argument = 'reaction' in self.history.split('-')[-1]
+        support_counter_argument = 'reaction' in self.session_history.get_nth_last_action(1)
 
         current_argument = get_text_for_argument_uid(user_arg.uid, nickname=nickname, with_html_tag=True,
                                                      colored_position=True,
