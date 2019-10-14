@@ -13,7 +13,7 @@ from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_stat
 from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_conclusion, \
     bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, Relations, Attitudes, \
-    relation_mapper
+    relation_mapper, wrap_history_onto_enum
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small, replace_multiple_chars
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support, remove_punctuation
@@ -112,6 +112,10 @@ class SessionHistory:
         return bubble_array
 
 
+def cleaned_split_history_step(step):
+    return list(map(lambda x: int(x) if x.isdigit() else x, step.split('/')[1:]))
+
+
 def save_history_to_session_history(request: Request):
     """
     Saves the current history from the URL to the history object in the request session
@@ -189,11 +193,15 @@ def _prepare_justify_statement_step(bubble_array: List[dict], index: int, step: 
     :return: None
     """
     LOG.debug("%s: justify case -> %s", index, step)
-    steps = step.split('/')
-    if len(steps) < 3:
+    single_splitted_history_step = cleaned_split_history_step(step)
+    LOG.debug(single_splitted_history_step)
+    if len(single_splitted_history_step) < 3:
         return
-    mode = steps[2]
-    relation = steps[3] if len(steps) > 3 else ''
+    single_splitted_history_step_enum = wrap_history_onto_enum(single_splitted_history_step)
+    mode = single_splitted_history_step_enum.ATTITUDE_TYPE
+    relation = single_splitted_history_step_enum.ATTITUDE_TYPE if len(single_splitted_history_step) > 3 else ''
+
+    LOG.debug(mode)
 
     if [c for c in (Attitudes.AGREE.value, Attitudes.DISAGREE.value) if c in mode] and relation == '':
         bubble = _get_bubble_from_justify_statement_step(step, db_user, lang, url)
@@ -238,11 +246,12 @@ def _prepare_support_step(bubble_array: List[dict], index: int, step: str, db_us
     :return: None
     """
     LOG.debug("%s: support case -> %s", index, step)
-    steps = step.split('/')
-    if len(steps) < 3:
+    single_splitted_history_step = cleaned_split_history_step(step)
+    if len(single_splitted_history_step) < 3:
         return
-    user_uid = int(steps[1])
-    system_uid = int(steps[2])
+    single_splitted_history_step_enum = wrap_history_onto_enum(single_splitted_history_step)
+    user_uid = single_splitted_history_step_enum.UID
+    system_uid = single_splitted_history_step_enum.ATTITUDE_TYPE
 
     bubble = _get_bubble_from_support_step(user_uid, system_uid, db_user, lang)
     if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
@@ -259,9 +268,9 @@ def _get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str,
     :param url: String
     :return: [dict()]
     """
-    steps = step.split('/')
-    uid = int(steps[1])
-    is_supportive = steps[2] == Attitudes.AGREE.value or steps[2] == Attitudes.DONT_KNOW.value
+    single_splitted_history_step = wrap_history_onto_enum(cleaned_split_history_step(step))
+    uid = single_splitted_history_step.UID
+    is_supportive = single_splitted_history_step.ATTITUDE_TYPE == Attitudes.AGREE.value or single_splitted_history_step.ATTITUDE_TYPE == Attitudes.DONT_KNOW.value
 
     _tn = Translator(lang)
     statement = DBDiscussionSession.query(Statement).get(uid)
@@ -315,8 +324,8 @@ def _get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> List
     :param lang: ui_locales
     :return: [dict()]
     """
-    steps = step.split('/')
-    uid = int(steps[1])
+    single_splitted_history_step = wrap_history_onto_enum(cleaned_split_history_step(step))
+    uid = single_splitted_history_step.UID
 
     text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=False,
                                      start_with_intro=True)
@@ -357,15 +366,15 @@ def get_bubble_from_reaction_step(step: str, db_user: User, lang: str, split_his
     :return: [dict()]
     """
     LOG.debug("def: %s, %s", step, split_history)
-    steps = step.split('/')
-    uid = int(steps[1])
+    single_splitted_history_step = wrap_history_onto_enum(cleaned_split_history_step(step))
+    uid = single_splitted_history_step.UID
 
     if 'reaction' in step:
-        additional_uid = int(steps[3])
-        attack = relation_mapper[steps[2]]
+        additional_uid = single_splitted_history_step.RELATION
+        attack = relation_mapper[single_splitted_history_step.ATTITUDE_TYPE]
     else:
         attack = Relations.SUPPORT
-        additional_uid = int(steps[2])
+        additional_uid = single_splitted_history_step.ATTITUDE_TYPE
 
     if not check_reaction(uid, additional_uid, attack):
         LOG.debug("Wrong reaction")
