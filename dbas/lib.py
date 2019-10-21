@@ -84,7 +84,13 @@ def enum(**named_value):
     return type('Enum', (), named_value)
 
 
-def wrap_history_onto_enum(history: list) -> enum:
+def wrap_history_onto_enum(history: list, reaction_step=False) -> enum:
+    if reaction_step:
+        return enum(
+            UID=history[0],
+            ADDITIONAL_UID=history[2],
+            RELATION=history[1]
+        )
     return enum(
         UID=history[1],
         ATTITUDE_TYPE=history[2],
