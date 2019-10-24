@@ -9,10 +9,13 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup, \
     ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument, \
     ClickedStatement, SeenStatement, SeenArgument, StatementToIssue
+from dbas.handler.history import SessionHistory
 from dbas.lib import Relations
 from dbas.tests.utils import construct_dummy_request
 from dbas.views import set_new_premises_for_argument, set_new_start_premise, set_correction_of_some_statements, \
-    set_new_issue, set_statements_as_seen
+    set_new_issue, set_statements_as_seen, logging
+
+LOG = logging.getLogger(__name__)
 
 
 class AjaxAddThingsTest(unittest.TestCase):
@@ -46,7 +49,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
-    def __set_multiple_start_premises(self, view):
+    def __set_multiple_start_premises(self, view, history: SessionHistory = None):
         statement_in_issue2_uids = [el.statement_uid for el in
                                     DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=2).all()]
         db_conclusion = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
@@ -60,7 +63,8 @@ class AjaxAddThingsTest(unittest.TestCase):
             'conclusion_id': db_conclusion.uid,
             'issue': db_arg.issue_uid,
             'supportive': True
-        })
+        }, cookies={'_LOCALE_': 'en', '_HISTORY_': history.get_session_history_as_string()})
+        LOG.debug(request.cookies.get('_HISTORY_'))
         response = view(request)
         transaction.commit()
         db_arg_len2 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_conclusion.uid).count()
@@ -75,11 +79,13 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_new_start_premise(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        self.__set_multiple_start_premises(set_new_start_premise)
+        session_history = SessionHistory('foobar')
+        self.__set_multiple_start_premises(set_new_start_premise, session_history)
 
     def test_set_new_start_premise_twice(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        self.__set_multiple_start_premises(set_new_start_premise)
+        session_history = SessionHistory('foobar')
+        self.__set_multiple_start_premises(set_new_start_premise, session_history)
 
     def test_set_new_start_premise_failure1(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
@@ -104,7 +110,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'argument_id': 2,
             'attack_type': Relations.SUPPORT.value,
             'issue': 2
-        })
+        }, cookies={'_LOCALE_': 'en', '_HISTORY_': 'foobar'})
         response = set_new_premises_for_argument(request)
         db_arg2 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
         db_pgroups2 = DBDiscussionSession.query(PremiseGroup).count()

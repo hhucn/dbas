@@ -25,7 +25,7 @@ LOG = logging.getLogger(__name__)
 
 
 def set_arguments_premises(db_issue: Issue, db_user: User, db_argument: Argument, premisegroups: List[List[str]],
-                           attack_type: Relations, history, mailer) -> dict:
+                           attack_type: Relations, history: SessionHistory, mailer) -> dict:
     """
     Set new premise for a given conclusion and returns dictionary with url for the next step of the discussion
 
@@ -149,9 +149,10 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
     attack_type: str = arg_infos['attack_type']
     premisegroups = arg_infos['premisegroups']
     history = arg_infos['history']
+    LOG.debug((type(history)))
     session_history = SessionHistory()
     if history is not None:
-        session_history = SessionHistory(history)
+        session_history = SessionHistory(history.get_session_history_as_string())
 
     LOG.debug("Count of new pgroups: %s", len(premisegroups))
     _tn = Translator(discussion_lang)
