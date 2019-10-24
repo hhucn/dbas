@@ -6,6 +6,7 @@ from typing import Tuple, Dict
 
 import dbas.handler.voting as voting_helper
 from dbas.database.discussion_model import Statement, Issue, User, Argument
+from dbas.handler.history import SessionHistory
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.lib import Attitudes
@@ -17,7 +18,8 @@ from websocket.lib import send_request_for_info_popup_to_socketio
 LOG = logging.getLogger(__name__)
 
 
-def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
+def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str,
+                                   history: SessionHistory,
                                    path):
     """
 
@@ -36,7 +38,7 @@ def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_ar
     return item_dict, discussion_dict
 
 
-def handle_justification_dontknow(db_issue: Issue, db_user: User, argument: Argument, history, path) \
+def handle_justification_dontknow(db_issue: Issue, db_user: User, argument: Argument, history: SessionHistory, path) \
         -> Tuple[Dict, Dict]:
     """
 
@@ -53,7 +55,7 @@ def handle_justification_dontknow(db_issue: Issue, db_user: User, argument: Argu
 
 
 def handle_justification_argument(db_issue: Issue, db_user: User, db_argument: Argument, attitude: str,
-                                  relation: str, history, path) -> Tuple[dict, dict]:
+                                  relation: str, history: SessionHistory, path) -> Tuple[dict, dict]:
     """
 
     :param db_issue:
@@ -126,7 +128,7 @@ def __preparation_for_dont_know_statement(db_issue: Issue, user: User, argument:
     slug = db_issue.slug
 
     disc_ui_locales = db_issue.lang
-    _ddh = DiscussionDictHelper(disc_ui_locales, user.nickname, history, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, user.nickname, history=history, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument, user)
@@ -135,7 +137,7 @@ def __preparation_for_dont_know_statement(db_issue: Issue, user: User, argument:
 
 
 def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, relation: str,
-                                     supportive: bool, history, path):
+                                     supportive: bool, history: SessionHistory, path):
     """
     Prepares some parameter for the justification step for an argument
 
@@ -153,7 +155,7 @@ def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument
     slug = db_issue.slug
 
     disc_ui_locales = db_issue.lang
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history=history, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
     # justifying argument

@@ -10,6 +10,7 @@ from dbas.database.discussion_model import Statement, Argument, User
 from dbas.discussion import core as discussion
 from dbas.events import ParticipatedInDiscussion, UserArgumentAgreement
 from dbas.handler import issue as issue_handler, history as history_handler
+from dbas.handler.history import SessionHistory
 from dbas.handler.issue import get_issues_overview_for
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.decoration import prep_extras_dict
@@ -20,7 +21,7 @@ from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
 from dbas.validators.discussion import valid_issue_by_slug, valid_statement, valid_attitude, valid_argument, \
-    valid_relation, valid_reaction_arguments, valid_support, valid_list_of_premisegroups_in_path
+    valid_relation, valid_reaction_arguments, valid_support, valid_list_of_premisegroups_in_path, valid_history_object
 from dbas.validators.user import valid_user_optional
 from dbas.views.helper import main_dict, modify_discussion_url, modify_discussion_bubbles, prepare_request_dict, \
     append_extras_dict, append_extras_dict_during_justification_statement, \
@@ -55,6 +56,7 @@ def discussion_overview(request):
 
     prep_dict = main_dict(request, Translator(ui_locales).get(_.myDiscussions))
     modifiy_issue_main_url(issue_dict)
+
     prep_dict.update({
         'issues': issue_dict
     })
@@ -100,6 +102,9 @@ def init(request):
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
 
+    session_history = SessionHistory()
+    request.session.update({'session_history': session_history})
+
     rdict = prepare_request_dict(request)
 
     # redirect to oauth url after login and redirecting
@@ -118,7 +123,8 @@ def init(request):
 
 
 @view_config(route_name='discussion_attitude', renderer='../../templates/discussion/main.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}))
+@validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}),
+          valid_history_object)
 def attitude(request):
     """
     View configuration for discussion step, where we will ask the user for her attitude towards a statement.
@@ -134,8 +140,10 @@ def attitude(request):
     db_issue = request.validated['issue']
     db_user = request.validated['user']
 
-    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
-    prepared_discussion = discussion.attitude(db_issue, db_user, db_statement, history, request.path)
+    history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.validated.get('session_history')
+
+    prepared_discussion = discussion.attitude(db_issue, db_user, db_statement, session_history, request.path)
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
 
@@ -149,7 +157,7 @@ def attitude(request):
 @view_config(route_name='discussion_justify_statement', renderer='../../templates/discussion/main.pt',
              permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}),
-          valid_attitude)
+          valid_attitude, valid_history_object)
 def justify_statement(request) -> dict:
     r"""
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
@@ -168,8 +176,10 @@ def justify_statement(request) -> dict:
     db_user = request.validated['user']
     inner_attitude = request.validated['attitude']
 
-    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
-    prepared_discussion = discussion.justify_statement(db_issue, db_user, db_statement, inner_attitude, history,
+    history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.validated.get('session_history')
+
+    prepared_discussion = discussion.justify_statement(db_issue, db_user, db_statement, inner_attitude, session_history,
                                                        request.path)
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
@@ -182,7 +192,8 @@ def justify_statement(request) -> dict:
 
 @view_config(route_name='discussion_dontknow_argument', renderer='../../templates/discussion/main.pt',
              permission='everybody')
-@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
+@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}),
+          valid_history_object)
 def dontknow_argument(request) -> dict:
     r"""
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
@@ -200,8 +211,10 @@ def dontknow_argument(request) -> dict:
     db_issue = request.validated['issue']
     db_user = request.validated['user']
 
-    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
-    prepared_discussion = discussion.dont_know_argument(db_issue, db_user, db_argument, history, request.path)
+    history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.validated.get('session_history')
+
+    prepared_discussion = discussion.dont_know_argument(db_issue, db_user, db_argument, session_history, request.path)
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
 
@@ -213,7 +226,7 @@ def dontknow_argument(request) -> dict:
 @view_config(route_name='discussion_justify_argument', renderer='../../templates/discussion/main.pt',
              permission='everybody')
 @validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}),
-          valid_attitude, valid_relation)
+          valid_attitude, valid_relation, valid_history_object)
 def justify_argument(request) -> dict:
     r"""
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
@@ -232,8 +245,11 @@ def justify_argument(request) -> dict:
     inner_attitude = request.validated['attitude']
     relation = request.validated['relation']
 
-    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
-    prepared_discussion = discussion.justify_argument(db_issue, db_user, db_argument, inner_attitude, relation, history,
+    history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.validated.get('session_history')
+
+    prepared_discussion = discussion.justify_argument(db_issue, db_user, db_argument, inner_attitude, relation,
+                                                      session_history,
                                                       request.path)
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
@@ -244,7 +260,7 @@ def justify_argument(request) -> dict:
 
 
 @view_config(route_name='discussion_reaction', renderer='../../templates/discussion/main.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional, valid_reaction_arguments, valid_relation)
+@validate(check_authentication, valid_user_optional, valid_reaction_arguments, valid_relation, valid_history_object)
 def reaction(request):
     r"""
     View configuration for discussion step, where we will ask the user for her reaction (support, undercut, rebut)...
@@ -260,12 +276,14 @@ def reaction(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
 
-    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.validated.get('session_history')
+
     prepared_discussion = discussion.reaction(db_issue, db_user,
                                               request.validated['arg_user'],
                                               request.validated['arg_sys'],
                                               request.validated['relation'],
-                                              history, request.path)
+                                              session_history, request.path)
     rdict = prepare_request_dict(request)
 
     modify_discussion_url(prepared_discussion)
@@ -276,7 +294,7 @@ def reaction(request):
 
 
 @view_config(route_name='discussion_support', renderer='../../templates/discussion/main.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional, valid_support)
+@validate(check_authentication, valid_user_optional, valid_support, valid_history_object)
 def support(request):
     """
     View configuration for discussion step, where we will present another supportive argument.
@@ -290,11 +308,13 @@ def support(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
 
-    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.validated.get('session_history')
+
     prepared_discussion = discussion.support(db_issue, db_user,
                                              request.validated['arg_user'],
                                              request.validated['arg_sys'],
-                                             history, request.path)
+                                             session_history, request.path)
     rdict = prepare_request_dict(request)
 
     modify_discussion_url(prepared_discussion)
@@ -305,7 +325,8 @@ def support(request):
 
 
 @view_config(route_name='discussion_finish', renderer='../../templates/discussion/main.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
+@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}),
+          valid_history_object)
 def finish(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
@@ -320,12 +341,16 @@ def finish(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
 
-    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.validated.get('session_history')
+
+    if session_history is not None:
+        LOG.debug(vars(request.validated['session_history']))
 
     prepared_discussion = discussion.finish(db_issue,
                                             db_user,
                                             request.validated['argument'],
-                                            history)
+                                            session_history)
 
     modify_discussion_url(prepared_discussion)
     modify_discussion_bubbles(prepared_discussion, request.registry)
@@ -357,7 +382,8 @@ def dexit(request):
 
 
 @view_config(route_name='discussion_choose', renderer='../../templates/discussion/main.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional, valid_issue_by_slug, valid_list_of_premisegroups_in_path)
+@validate(check_authentication, valid_user_optional, valid_issue_by_slug, valid_list_of_premisegroups_in_path,
+          valid_history_object)
 def choose(request):
     """
     View configuration for discussion step, where the user has to choose between given statements.
@@ -375,11 +401,12 @@ def choose(request):
     db_user: User = request.validated['user']
     db_issue = request.validated['issue']
 
-    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.validated.get('session_history')
 
     prepared_discussion = discussion.choose(db_issue, db_user,
                                             request.validated['pgroup_uids'],
-                                            history, request.path)
+                                            session_history, request.path)
 
     rdict = prepare_request_dict(request)
 
@@ -391,7 +418,8 @@ def choose(request):
 
 
 @view_config(route_name='discussion_jump', renderer='../../templates/discussion/main.pt', permission='everybody')
-@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}))
+@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}),
+          valid_history_object)
 def jump(request):
     """
     View configuration for the jump view.
@@ -404,9 +432,11 @@ def jump(request):
     db_user = request.validated['user']
     db_issue = request.validated['issue']
 
-    history = history_handler.save_and_set_cookie(request, db_user, db_issue)
+    history_handler.save_and_set_cookie(request, db_user, db_issue)
+    session_history = request.validated.get('session_history')
 
-    prepared_discussion = discussion.jump(db_issue, db_user, request.validated['argument'], history, request.path)
+    prepared_discussion = discussion.jump(db_issue, db_user, request.validated['argument'], session_history,
+                                          request.path)
 
     rdict = prepare_request_dict(request)
 
