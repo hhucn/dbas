@@ -23,14 +23,14 @@ LOG = logging.getLogger(__name__)
 
 
 class SessionHistory:
-    def __init__(self, history=''):
+    def __init__(self, history: str = None):
         """
         Creates current history object for user
 
         :return:
         """
         session_history_array = []
-        if len(history) > 0:
+        if history is not None:
             session_history_array = history.split('-')
         self.session_history_array = session_history_array
 
