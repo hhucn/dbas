@@ -29,7 +29,9 @@ class DiscussionDictHelper:
     Provides all functions for creating the discussion dictionaries with all bubbles.
     """
 
-    def __init__(self, lang: str, nickname: str = None, history: str = '', slug: str = '', broke_limit: bool = False):
+    def __init__(self, lang: str, nickname: str = None,
+                 history: history_handler.SessionHistory = None, slug: str = '',
+                 broke_limit: bool = False):
         """
         Initialize default values
 
@@ -39,9 +41,12 @@ class DiscussionDictHelper:
         :param slug: The slug of the current issue
         :param broke_limit: Whether the user just now got enough points to access the Review-System
         """
+
         self.lang = lang
         self.nickname = nickname
-        self.history = history
+        if history is None:
+            history = history_handler.SessionHistory()
+        self.session_history = history
         self.slug = slug
         self.broke_limit = broke_limit
 
@@ -115,7 +120,7 @@ class DiscussionDictHelper:
         LOG.debug("Entering get_dict_for_justify_statement")
         _tn = Translator(self.lang)
 
-        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = self.session_history.create_bubbles(self.nickname, self.lang, self.slug)
 
         text = statement.get_text()
         if not text:
@@ -183,7 +188,7 @@ class DiscussionDictHelper:
         """
         LOG.debug("Entering get_dict_for_justify_argument")
         _tn = Translator(self.lang)
-        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = self.session_history.create_bubbles(self.nickname, self.lang, self.slug)
 
         if argument is None:
             return {
@@ -205,7 +210,7 @@ class DiscussionDictHelper:
         while conclusion.endswith(('.', '?', '!')):
             conclusion = premise[:-1]
 
-        redirect_from_jump = 'jump/' in self.history.split('-')[-1]
+        redirect_from_jump = 'jump/' in self.session_history.get_nth_last_action(1)
         user_msg, sys_msg = get_header_for_users_confrontation_response(argument, self.lang, premise, relation,
                                                                         conclusion, False, is_supportive, self.nickname,
                                                                         redirect_from_jump=redirect_from_jump)
@@ -295,7 +300,7 @@ class DiscussionDictHelper:
         """
         LOG.debug("Entering get_dict_for_dont_know_reaction")
         _tn = Translator(self.lang)
-        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = self.session_history.create_bubbles(self.nickname, self.lang, self.slug)
         gender = ''
         statement_list = list()
 
@@ -329,7 +334,8 @@ class DiscussionDictHelper:
         }
 
     def get_dict_for_argumentation(self, argument: Argument, arg_sys_id: Optional[int],
-                                   relation: Optional[Relations], history: str, user: User) -> Dict[str, Any]:
+                                   relation: Optional[Relations],
+                                   user: User) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the argumentation window.
 
@@ -346,10 +352,9 @@ class DiscussionDictHelper:
             user = None
             nickname = None
 
-        bubbles_array = history_handler.create_bubbles(self.history, nickname, self.lang, self.slug)
+        bubbles_array = self.session_history.create_bubbles(nickname, self.lang, self.slug)
         bubble_mid = ''
-        split_history = history_handler.split(self.history)
-        has_user_changed_opinion = split_history[-1].endswith(str(argument.uid))
+        has_user_changed_opinion = self.session_history.get_nth_last_action(1).endswith(str(argument.uid))
         statement_list = list()
         gender_of_counter_arg = ''
 
@@ -367,7 +372,8 @@ class DiscussionDictHelper:
                                                   lang=self.lang)
         else:
             prep_dict = self._get_dict_for_argumentation(
-                argument, arg_sys_id, history, relation, nickname, argument.is_supportive)
+                argument, arg_sys_id, relation, nickname,
+                argument.is_supportive)
             quid = 'question-bubble-' + str(arg_sys_id) if int(arg_sys_id) > 0 else ''
             is_author = is_author_of_argument(user, prep_dict['confrontation'].uid)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, is_author=is_author, uid=quid,
@@ -432,7 +438,7 @@ class DiscussionDictHelper:
             'sys': _tn.get(_.otherParticipantsDontHaveCounterForThat) + '.'
         }
 
-    def _get_dict_for_argumentation(self, user_arg: Argument, confrontation_arg_uid: int, history: str,
+    def _get_dict_for_argumentation(self, user_arg: Argument, confrontation_arg_uid: int,
                                     relation: Relations, nickname: str, is_supportive: bool) -> Dict[str, Any]:
         """
         Returns dict() for the reaction step
@@ -455,8 +461,9 @@ class DiscussionDictHelper:
                                                     colored_position=True, attack_type=str(relation))
 
         # did the user change his opinion?
-        history = history_handler.split(history)
-        has_user_changed_opinion = len(history) > 1 and '/undercut/' in history[-2]
+        has_user_changed_opinion = len(
+            self.session_history.get_session_history_as_list()) > 1 and '/undercut/' in self.session_history.get_nth_last_action(
+            2)
 
         # argumentation is a reply for an argument, if the arguments conclusion of the user is no position
         conclusion_uid = user_arg.conclusion_uid
@@ -467,7 +474,7 @@ class DiscussionDictHelper:
 
         statement = DBDiscussionSession.query(Statement).get(conclusion_uid)
         reply_for_argument = not (statement and statement.is_position)
-        support_counter_argument = 'reaction' in self.history.split('-')[-1]
+        support_counter_argument = 'reaction' in self.session_history.get_nth_last_action(1)
 
         current_argument = get_text_for_argument_uid(user_arg.uid, nickname=nickname, with_html_tag=True,
                                                      colored_position=True,
@@ -508,12 +515,12 @@ class DiscussionDictHelper:
         _tn = Translator(self.lang)
         argument_text = get_text_for_argument_uid(argument.uid, colored_position=True, with_html_tag=True,
                                                   attack_type='jump')
-        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = self.session_history.create_bubbles(self.nickname, self.lang, self.slug)
 
         coming_from_jump = False
-        if self.history:
-            splitted_history = self.history.split('-')
-            coming_from_jump = '/jump' in self.history[:-1] if len(splitted_history) > 0 else False
+        if self.session_history is not None:
+            coming_from_jump = '/jump' in self.session_history.get_nth_last_action(1) if len(
+                self.session_history.get_session_history_as_list()) > 0 else False
         intro = (_tn.get(_.canYouBeMorePrecise) + '<br><br>') if coming_from_jump else ''
 
         if argument.conclusion_uid is not None:
@@ -551,7 +558,7 @@ class DiscussionDictHelper:
         """
         LOG.debug("Entering get_dict_for_supporting_each_other for arg: %s", system_argument)
         _tn = Translator(self.lang)
-        bubbles_array = history_handler.create_bubbles(self.history, user.nickname, self.lang, self.slug)
+        bubbles_array = self.session_history.create_bubbles(user.nickname, self.lang, self.slug)
 
         argument_text = get_text_for_argument_uid(system_argument.uid, colored_position=True, with_html_tag=True,
                                                   attack_type='jump')
@@ -590,7 +597,7 @@ class DiscussionDictHelper:
         :return: A dictionary representing the choice the user needs to make
         """
         _tn = Translator(self.lang)
-        bubbles_array = history_handler.create_bubbles(self.history, self.nickname, self.lang, self.slug)
+        bubbles_array = self.session_history.create_bubbles(self.nickname, self.lang, self.slug)
 
         LOG.debug("Choosing dictionary for bubbles.")
 
