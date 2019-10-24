@@ -8,6 +8,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Issue
 from dbas.handler import history as history_handler, user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement
+from dbas.handler.history import SessionHistory
 from dbas.handler.issue import set_discussions_properties, get_issue_dict_for
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.statements import set_position, set_positions_premise, set_correction_of_statement, \
@@ -193,13 +194,14 @@ def set_new_start_argument(request: Request):
     reponse: Response = request.response
     if not prepared_dict_pos['errors']:
         LOG.debug("Set premise/reason")
+        session_history = SessionHistory(request.cookies.get('_HISTORY_'))
         prepared_dict_pos = set_positions_premise(request.validated['issue'],
                                                   request.validated['user'],
                                                   DBDiscussionSession.query(Statement).get(
                                                       prepared_dict_pos['statement_uids'][0]),
                                                   [[reason]],
                                                   True,
-                                                  request.cookies.get('_HISTORY_'),
+                                                  session_history,
                                                   request.mailer)
     else:
         reponse.status_code = 400
@@ -221,12 +223,13 @@ def set_new_start_premise(request):
     :return: json-dict()
     """
     LOG.debug("Set new premise for start: %s", request.json_body)
+    session_history = SessionHistory(request.cookies.get('_HISTORY_'))
     prepared_dict = set_positions_premise(request.validated['issue'],
                                           request.validated['user'],
                                           request.validated['conclusion'],
                                           request.validated['premisegroups'],
                                           request.validated['supportive'],
-                                          request.cookies.get('_HISTORY_'),
+                                          session_history,
                                           request.mailer)
     __modifiy_discussion_url(prepared_dict)
     return prepared_dict
@@ -243,12 +246,13 @@ def set_new_premises_for_argument(request):
     :return: json-dict()
     """
     LOG.debug("Set new premise for an argument. %s", request.json_body)
+    session_history = SessionHistory(request.cookies.get('_HISTORY_'))
     prepared_dict = set_arguments_premises(request.validated['issue'],
                                            request.validated['user'],
                                            request.validated['argument'],
                                            request.validated['premisegroups'],
                                            relation_mapper[request.validated['attack_type']],
-                                           request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
+                                           session_history,
                                            request.mailer)
     __modifiy_discussion_url(prepared_dict)
     return prepared_dict
