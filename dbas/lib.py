@@ -61,6 +61,13 @@ class Relations(Enum):
         return str(self.value)
 
 
+class ArgumentationStep(Enum):
+    HISTORY = 'history'
+    JUSTIFY = 'justify'
+    REACTION = 'reaction'
+    SUPPORT = 'support'
+
+
 class Attitudes(Enum):
     AGREE = 'agree'
     DISAGREE = 'disagree'

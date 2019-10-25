@@ -13,7 +13,7 @@ from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_stat
 from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_conclusion, \
     bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, Relations, Attitudes, \
-    relation_mapper, wrap_history_onto_enum
+    relation_mapper, wrap_history_onto_enum, ArgumentationStep
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small, replace_multiple_chars
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support, remove_punctuation
@@ -41,7 +41,7 @@ class SessionHistory:
         :param request
         :return:
         """
-        history_action = request.params.get('history', '')
+        history_action = request.params.get(ArgumentationStep.HISTORY.value, '')
         if len(history_action) > 0:
             # Splits history url by "-" and appends last history action to history array without a leading "/"
             splitted_history = history_action.split('-')
@@ -50,9 +50,13 @@ class SessionHistory:
             self.session_history_array.append(cleaned_last_splitted)
 
     def get_nth_last_action(self, n):
-        if len(self.session_history_array) > 0:
-            return self.session_history_array[-n]
-        return ''
+        """
+        This method returns the nth last actions of the session history.
+
+        :param n:
+        :return: nth last actions of the session history.
+        """
+        return self.session_history_array[-n] if len(self.session_history_array) > 0 else ''
 
     def get_session_history_as_list(self) -> List:
         """
@@ -95,15 +99,16 @@ class SessionHistory:
         for index, step in enumerate(self.session_history_array):
             url = '/' + slug + '/' + step
             if len(consumed_history) != 0:
-                url += '?history=' + consumed_history
+                url += '?' + ArgumentationStep.HISTORY.value + '=' + consumed_history
+
             consumed_history += step if len(consumed_history) == 0 else '-' + step
-            if 'justify/' in step:
+            if ArgumentationStep.JUSTIFY.value + '/' in step:
                 _prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url)
 
-            elif 'reaction/' in step:
+            elif ArgumentationStep.REACTION.value + '/' in step:
                 _prepare_reaction_step(bubble_array, index, step, db_user, lang, self.session_history_array, url)
 
-            elif 'support/' in step:
+            elif ArgumentationStep.SUPPORT.value + '/' in step:
                 _prepare_support_step(bubble_array, index, step, db_user, lang)
 
             else:
@@ -369,14 +374,15 @@ def get_bubble_from_reaction_step(step: str, db_user: User, lang: str, split_his
 
     steps = step.split('/')
     cleaned_split_history = cleaned_split_history_step(step)
-    if cleaned_split_history[0] == 'reaction':
+    if cleaned_split_history[0] == ArgumentationStep.REACTION.value:
         cleaned_split_history = cleaned_split_history[1:]
 
-    single_splitted_history_step = wrap_history_onto_enum(cleaned_split_history, 'reaction' in step)
+    single_splitted_history_step = wrap_history_onto_enum(cleaned_split_history,
+                                                          ArgumentationStep.REACTION.value in step)
     uid = single_splitted_history_step.UID
 
     LOG.debug(step)
-    if 'reaction' in step:
+    if ArgumentationStep.REACTION.value in step:
         additional_uid = single_splitted_history_step.ADDITIONAL_UID
         attack = relation_mapper[single_splitted_history_step.RELATION]
     else:
@@ -397,13 +403,13 @@ def _create_reaction_history_bubbles(step: str, db_user: User, lang: str, split_
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
     last_relation = get_last_relation(split_history)
 
-    user_changed_opinion = len(split_history) > 1 and '/undercut/' in split_history[-2]
+    user_changed_opinion = len(split_history) > 1 and '/' + Relations.UNDERCUT.value + '/' in split_history[-2]
     support_counter_argument = False
 
     if step in split_history:
         index = split_history.index(step)
         try:
-            support_counter_argument = 'reaction' in split_history[index - 1]
+            support_counter_argument = ArgumentationStep.REACTION.value in split_history[index - 1]
         except IndexError:
             support_counter_argument = False
 
@@ -490,7 +496,7 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
         path = '/{}/{}'.format(slug, path)
 
     if len(history) > 0:
-        history = '?history=' + history
+        history = '?' + ArgumentationStep.HISTORY.value + '=' + history
 
     LOG.debug("Saving %s%s", path, history)
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
@@ -535,7 +541,7 @@ def save_and_set_cookie(request: Request, db_user: User, issue: Issue) -> str:
     :rtype: str
     :return: current user's history
     """
-    history = request.params.get('history', '')
+    history = request.params.get(ArgumentationStep.HISTORY.value, '')
     save_history_to_session_history(request)
 
     if db_user and db_user.nickname != nick_of_anonymous_user:
