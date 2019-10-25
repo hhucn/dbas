@@ -372,7 +372,6 @@ def get_bubble_from_reaction_step(step: str, db_user: User, lang: str, split_his
     """
     LOG.debug("def: %s, %s", step, split_history)
 
-    steps = step.split('/')
     cleaned_split_history = cleaned_split_history_step(step)
     if cleaned_split_history[0] == ArgumentationStep.REACTION.value:
         cleaned_split_history = cleaned_split_history[1:]
@@ -382,12 +381,9 @@ def get_bubble_from_reaction_step(step: str, db_user: User, lang: str, split_his
     uid = single_splitted_history_step.UID
 
     LOG.debug(step)
-    if ArgumentationStep.REACTION.value in step:
-        additional_uid = single_splitted_history_step.ADDITIONAL_UID
-        attack = relation_mapper[single_splitted_history_step.RELATION]
-    else:
-        attack = Relations.SUPPORT
-        additional_uid = int(steps[2])
+
+    additional_uid = single_splitted_history_step.ADDITIONAL_UID
+    attack = relation_mapper[single_splitted_history_step.RELATION]
 
     if not check_reaction(uid, additional_uid, attack):
         LOG.debug("Wrong reaction")
