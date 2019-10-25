@@ -91,17 +91,27 @@ def enum(**named_value):
     return type('Enum', (), named_value)
 
 
-def wrap_history_onto_enum(history: list, reaction_step=False) -> enum:
+def wrap_history_onto_enum(history: list, reaction_step: bool = False) -> enum:
+    """
+    This method wraps the history onto an enum while considering
+    the specific use case in which the history object is used.
+
+    :param history: The history as a list
+    :param reaction_step: Is the current step a reaction step.
+    :return: Enum of the history considering the specific use-case.
+    """
+    history = history[(not reaction_step):]
+
     if reaction_step:
         return enum(
             UID=history[0],
-            ADDITIONAL_UID=history[2],
-            RELATION=history[1]
+            RELATION=history[1],
+            ADDITIONAL_UID=history[2]
         )
     return enum(
-        UID=history[1],
-        ATTITUDE_TYPE=history[2],
-        RELATION=history[3] if len(history) >= 4 else ""
+        UID=history[0],
+        ATTITUDE_TYPE=history[1],
+        RELATION=history[2] if len(history) >= 4 else ""
     )
 
 
