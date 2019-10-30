@@ -11,7 +11,7 @@ from typing import List
 from cornice import Service
 from cornice.resource import resource, view
 from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound, HTTPCreated, \
-    HTTPInternalServerError, HTTPException
+    HTTPException
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
 
@@ -817,7 +817,7 @@ def user_registration(request: Request) -> HTTPException:
     if success_message:
         return HTTPCreated(detail=success_message)
     else:
-        return HTTPInternalServerError(detail=error_message)
+        return HTTPBadRequest(detail=error_message)
 
 
 @resource(path=r'/pubkey')

@@ -700,7 +700,7 @@ class TestLocalUserRegistration(TestCaseWithConfig):
         response2: Response = apiviews.user_registration(request2)
 
         self.assertEqual(response1.status_code, 201)
-        self.assertEqual(response2.status_code, 500)
+        self.assertEqual(response2.status_code, 400)
 
 
 class TestReferences(TestCaseWithConfig):
