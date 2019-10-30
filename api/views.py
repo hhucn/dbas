@@ -53,7 +53,7 @@ LOG = logging.getLogger(__name__)
 cors_policy = dict(enabled=True,
                    headers=('Origin', 'X-Requested-With', 'X-Authentication'),
                    origins=('*',),
-                   credentials=True,  # TODO: how can i use this?
+                   credentials=True,  # TODO: how can I use this?
                    max_age=42)
 
 # =============================================================================
