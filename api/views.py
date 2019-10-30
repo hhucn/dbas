@@ -807,7 +807,7 @@ class ApiUser(object):
           has_keywords_in_json_path(('firstname', str), ('lastname', str), ('nickname', str), ('email', str),
                                     ('gender', str), ('password', str), ('lang', str)))
 def user_registration(request: Request) -> HTTPException:
-    LOG.debug("Register new user via API. %s", request.json_body)
+    LOG.debug(f"Register new user {request.validated['nickname']} via API.")
     mailer = request.mailer
 
     request.validated["passwordconfirm"] = request.validated["password"]
