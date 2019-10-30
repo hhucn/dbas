@@ -174,11 +174,6 @@ login = Service(name='login',
                 description="Log into external discussion system",
                 cors_policy=cors_policy)
 
-logout = Service(name='logout',
-                 path='/logout',
-                 description="Logout user",
-                 cors_policy=cors_policy)
-
 local_user_registration = Service(name="local_user_registration",
                                   path="/user_registration",
                                   description="Register a new user",
