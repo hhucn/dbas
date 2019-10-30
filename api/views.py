@@ -10,7 +10,8 @@ from typing import List
 
 from cornice import Service
 from cornice.resource import resource, view
-from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound, HTTPCreated
+from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound, HTTPCreated, \
+    HTTPInternalServerError, HTTPException
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
 
@@ -19,6 +20,7 @@ import dbas.handler.history as history_handler
 from api.lib import extract_items_and_bubbles, flatten, split_url, shallow_patch
 from api.models import DataItem, DataBubble, DataReference, DataOrigin
 from api.origins import add_origin_for_list_of_statements
+from dbas.auth.login import register_user_with_json_data
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReference
 from dbas.events import UserStatementAttitude
@@ -176,6 +178,11 @@ logout = Service(name='logout',
                  path='/logout',
                  description="Logout user",
                  cors_policy=cors_policy)
+
+local_user_registration = Service(name="local_user_registration",
+                                  path="/user_registration",
+                                  description="Register a new user",
+                                  cors_policy=cors_policy)
 
 
 # =============================================================================
@@ -798,6 +805,24 @@ class ApiUser(object):
         else:
             request.response.status = 400
             return result["error"]
+
+
+@local_user_registration.post(require_csrf=False)
+@validate(valid_token,
+          has_keywords_in_json_path(('firstname', str), ('lastname', str), ('nickname', str), ('email', str),
+                                    ('gender', str), ('password', str), ('lang', str)))
+def user_registration(request: Request) -> HTTPException:
+    LOG.debug("Register new user via API. %s", request.json_body)
+    mailer = request.mailer
+
+    request.validated["passwordconfirm"] = request.validated["password"]
+    success_message, error_message, _ = register_user_with_json_data(request.validated, request.validated["lang"],
+                                                                     mailer)
+
+    if success_message:
+        return HTTPCreated(detail=success_message)
+    else:
+        return HTTPInternalServerError(detail=error_message)
 
 
 @resource(path=r'/pubkey')
