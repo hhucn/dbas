@@ -141,7 +141,7 @@ def register_user_with_json_data(data: dict, lang: str, mailer: Mailer) -> (str,
     # does the group exist?
     if not db_group:
         msg = _tn.get(_.errorTryLateOrContant)
-        LOG.debug("Error occured")
+        LOG.debug("Error occurred")
         return success, msg, db_new_user
 
     user_data = {
