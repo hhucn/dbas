@@ -129,7 +129,7 @@ paths:
         404:
           description: This user-id does not exist.
 
-  /local_user_registration:
+  /user_registration:
     post:
       summary: Add a new D-BAS user
       description: >-
