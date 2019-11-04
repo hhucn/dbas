@@ -49,7 +49,7 @@ class SessionHistory:
             cleaned_last_splitted = last_splitted_history[1:]
             self.session_history_array.append(cleaned_last_splitted)
 
-    def get_nth_last_action(self, n):
+    def get_nth_last_action(self, n: int) -> str:
         """
         This method returns the nth last actions of the session history.
 
