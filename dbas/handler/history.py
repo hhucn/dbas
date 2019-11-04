@@ -32,7 +32,7 @@ class SessionHistory:
         session_history_array = []
         if history is not None:
             session_history_array = history.split('-')
-        self.session_history_array = session_history_array
+        self.session_history_array: List[str] = session_history_array
 
     def append_action(self, request: Request):
         """
@@ -47,7 +47,7 @@ class SessionHistory:
             splitted_history = history_action.split('-')
             last_splitted_history = splitted_history[-1]
             cleaned_last_splitted = last_splitted_history[1:]
-            self.session_history_array.append(cleaned_last_splitted)
+            self.get_session_history_as_list().append(cleaned_last_splitted)
 
     def get_nth_last_action(self, n: int) -> str:
         """
@@ -56,9 +56,9 @@ class SessionHistory:
         :param n:
         :return: nth last actions of the session history.
         """
-        return self.session_history_array[-n] if len(self.session_history_array) > 0 else ''
+        return self.get_session_history_as_list()[-n] if len(self.get_session_history_as_list()) > 0 else ''
 
-    def get_session_history_as_list(self) -> List:
+    def get_session_history_as_list(self) -> List[str]:
         """
         Returns session history
 
@@ -72,7 +72,7 @@ class SessionHistory:
 
         :return:
         """
-        return "-".join(self.session_history_array)
+        return "-".join(self.get_session_history_as_list())
 
     def create_bubbles(self, nickname: str = '', lang: str = '', slug: str = '') -> List[dict]:
         """
@@ -96,7 +96,7 @@ class SessionHistory:
         db_user = nickname if isinstance(nickname, User) else DBDiscussionSession.query(User).filter_by(
             nickname=nickname).first()
 
-        for index, step in enumerate(self.session_history_array):
+        for index, step in enumerate(self.get_session_history_as_list()):
             url = '/' + slug + '/' + step
             if len(consumed_history) != 0:
                 url += '?' + ArgumentationStep.HISTORY.value + '=' + consumed_history
@@ -106,7 +106,7 @@ class SessionHistory:
                 _prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url)
 
             elif ArgumentationStep.REACTION.value + '/' in step:
-                _prepare_reaction_step(bubble_array, index, step, db_user, lang, self.session_history_array, url)
+                _prepare_reaction_step(bubble_array, index, step, db_user, lang, self.get_session_history_as_list(), url)
 
             elif ArgumentationStep.SUPPORT.value + '/' in step:
                 _prepare_support_step(bubble_array, index, step, db_user, lang)
