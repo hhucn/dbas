@@ -175,7 +175,7 @@ login = Service(name='login',
                 cors_policy=cors_policy)
 
 local_user_registration = Service(name="local_user_registration",
-                                  path="/user_registration",
+                                  path="/user",
                                   description="Register a new user",
                                   cors_policy=cors_policy)
 
