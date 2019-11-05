@@ -129,6 +129,29 @@ paths:
         404:
           description: This user-id does not exist.
 
+  /user:
+    post:
+      summary: Add a new D-BAS user
+      description: >-
+        Add a new D-BAS user. Requires an API-Token!
+      tags:
+        - user-management
+      parameters:
+        - $ref: '#/components/parameters/authentication-token'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/local_user'
+      responses:
+        201:
+          description: The user was created
+        400:
+          description: An error like 'Nickname taken'
+      security:
+        - token: []
+
   /issue:
     post:
       summary: Create a new issue.
@@ -852,6 +875,34 @@ components:
           type: string
         description:
           type: string
+
+    local_user:
+      type: object
+      properties:
+        firstname:
+          type: string
+          example: Jimmy
+        lastname:
+          type: string
+          example: McJimbo
+        nickname:
+          type: string
+          example: TheGreatJimbo
+        lang:
+          type: string
+          example: de
+        email:
+          type: string
+          example: jim@bo.com
+        gender:
+          type: string
+          example: m w n
+        id:
+          type: integer
+          example: 12345678247354
+        password:
+          type: string
+          example: 123456
 
     oauth_user:
       type: object

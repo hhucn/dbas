@@ -10,7 +10,8 @@ from typing import List
 
 from cornice import Service
 from cornice.resource import resource, view
-from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound, HTTPCreated
+from pyramid.httpexceptions import HTTPSeeOther, HTTPUnauthorized, HTTPBadRequest, HTTPNotFound, HTTPCreated, \
+    HTTPException
 from pyramid.interfaces import IRequest
 from pyramid.request import Request
 
@@ -19,6 +20,7 @@ import dbas.handler.history as history_handler
 from api.lib import extract_items_and_bubbles, flatten, split_url, shallow_patch
 from api.models import DataItem, DataBubble, DataReference, DataOrigin
 from api.origins import add_origin_for_list_of_statements
+from dbas.auth.login import register_user_with_json_data
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReference
 from dbas.events import UserStatementAttitude
@@ -51,7 +53,7 @@ LOG = logging.getLogger(__name__)
 cors_policy = dict(enabled=True,
                    headers=('Origin', 'X-Requested-With', 'X-Authentication'),
                    origins=('*',),
-                   credentials=True,  # TODO: how can i use this?
+                   credentials=True,  # TODO: how can I use this?
                    max_age=42)
 
 # =============================================================================
@@ -172,10 +174,10 @@ login = Service(name='login',
                 description="Log into external discussion system",
                 cors_policy=cors_policy)
 
-logout = Service(name='logout',
-                 path='/logout',
-                 description="Logout user",
-                 cors_policy=cors_policy)
+local_user_registration = Service(name="local_user_registration",
+                                  path="/user",
+                                  description="Register a new user",
+                                  cors_policy=cors_policy)
 
 
 # =============================================================================
@@ -798,6 +800,24 @@ class ApiUser(object):
         else:
             request.response.status = 400
             return result["error"]
+
+
+@local_user_registration.post(require_csrf=False)
+@validate(valid_token,
+          has_keywords_in_json_path(('firstname', str), ('lastname', str), ('nickname', str), ('email', str),
+                                    ('gender', str), ('password', str), ('lang', str)))
+def user_registration(request: Request) -> HTTPException:
+    LOG.debug(f"Register new user {request.validated['nickname']} via API.")
+    mailer = request.mailer
+
+    request.validated["passwordconfirm"] = request.validated["password"]
+    success_message, error_message, _ = register_user_with_json_data(request.validated, request.validated["lang"],
+                                                                     mailer)
+
+    if success_message:
+        return HTTPCreated(detail=success_message)
+    else:
+        return HTTPBadRequest(detail=error_message)
 
 
 @resource(path=r'/pubkey')

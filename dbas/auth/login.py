@@ -3,7 +3,7 @@ Login Handler for D-BAS
 """
 
 import logging
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 import transaction
 from pyramid.security import remember
@@ -110,14 +110,14 @@ def __check_in_local_known_user(db_user: User, password: str, _tn) -> dict:
         return {'error': _tn.get(_.userPasswordNotMatch)}
 
 
-def register_user_with_json_data(data, lang, mailer: Mailer):
+def register_user_with_json_data(data: dict, lang: str, mailer: Mailer) -> (str, str, Optional[User]):
     """
-    Consume the ajax data for an login attempt
+    Consume the ajax data for a login attempt
 
     :param data: validated params of webserver's request
     :param lang: language
     :param mailer: Mailer
-    :return: Boolean, String, User
+    :return: success message, error message, created user
     """
     _tn = Translator(lang)
     success = ''
@@ -138,10 +138,10 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     # getting the authors group
     db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
 
-    # does the group exists?
+    # does the group exist?
     if not db_group:
         msg = _tn.get(_.errorTryLateOrContant)
-        LOG.debug("Error occured")
+        LOG.debug("Error occurred")
         return success, msg, db_new_user
 
     user_data = {

@@ -676,6 +676,33 @@ class TestUser(TestCaseWithConfig):
         self.assertDictEqual(response, tobias_krauthoff)
 
 
+class TestLocalUserRegistration(TestCaseWithConfig):
+    def _test_body(self, nick_suffix: str) -> dict:
+        return {
+            'firstname': 'This',
+            'lastname': 'Is',
+            'nickname': f'TEST-local-nick-{nick_suffix}',
+            'lang': 'en',
+            'email': f'bla+local-{nick_suffix}@bla.de',
+            'gender': 'n',
+            'password': '123456'
+        }
+
+    def test_add_user_works(self):
+        request = create_request_with_api_token_header(json_body=self._test_body("1"))
+        response: Response = apiviews.user_registration(request)
+        self.assertEqual(response.status_code, 201)
+
+    def test_add_user_twice_fails(self):
+        request1 = create_request_with_api_token_header(json_body=self._test_body("2"))
+        response1: Response = apiviews.user_registration(request1)
+        request2 = create_request_with_api_token_header(json_body=self._test_body("2"))
+        response2: Response = apiviews.user_registration(request2)
+
+        self.assertEqual(response1.status_code, 201)
+        self.assertEqual(response2.status_code, 400)
+
+
 class TestReferences(TestCaseWithConfig):
     def __assert_valid_references(self, response, expected_references: List[DataReference] = None):
         references = response.get('references')
