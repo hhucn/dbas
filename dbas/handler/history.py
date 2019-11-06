@@ -106,7 +106,8 @@ class SessionHistory:
                 _prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url)
 
             elif ArgumentationStep.REACTION.value + '/' in step:
-                _prepare_reaction_step(bubble_array, index, step, db_user, lang, self.get_session_history_as_list(), url)
+                _prepare_reaction_step(bubble_array, index, step, db_user, lang, self.get_session_history_as_list(),
+                                       url)
 
             elif ArgumentationStep.SUPPORT.value + '/' in step:
                 _prepare_support_step(bubble_array, index, step, db_user, lang)
@@ -492,7 +493,7 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
         path = '/{}/{}'.format(slug, path)
 
     if len(history) > 0:
-        history = '?' + ArgumentationStep.HISTORY.value + '=' + history
+        history = '?{}={}'.format(ArgumentationStep.HISTORY.value, history)
 
     LOG.debug("Saving %s%s", path, history)
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
