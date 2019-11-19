@@ -100,7 +100,6 @@ def wrap_history_onto_enum(history: list, reaction_step: bool = False) -> enum:
     :param reaction_step: Is the current step a reaction step.
     :return: Enum of the history considering the specific use-case.
     """
-   
     if not reaction_step:
         history = history[1:]
 
