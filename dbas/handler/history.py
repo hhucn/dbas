@@ -44,10 +44,10 @@ class SessionHistory:
         history_action = request.params.get(ArgumentationStep.HISTORY.value, '')
         if len(history_action) > 0:
             # Splits history url by "-" and appends last history action to history array without a leading "/"
-            splitted_history = history_action.split('-')
-            last_splitted_history = splitted_history[-1]
-            cleaned_last_splitted = last_splitted_history[1:]
-            self.get_session_history_as_list().append(cleaned_last_splitted)
+            split_history = history_action.split('-')
+            last_split_history = split_history[-1]
+            cleaned_last_split = last_split_history[1:]
+            self.get_session_history_as_list().append(cleaned_last_split)
 
     def get_nth_last_action(self, n: int) -> str:
         """
@@ -199,13 +199,13 @@ def _prepare_justify_statement_step(bubble_array: List[dict], index: int, step: 
     :return: None
     """
     LOG.debug("%s: justify case -> %s", index, step)
-    single_splitted_history_step = cleaned_split_history_step(step)
-    LOG.debug(single_splitted_history_step)
-    if len(single_splitted_history_step) < 3:
+    single_split_history_step = cleaned_split_history_step(step)
+    LOG.debug(single_split_history_step)
+    if len(single_split_history_step) < 3:
         return
-    single_splitted_history_step_enum = wrap_history_onto_enum(single_splitted_history_step)
-    mode = single_splitted_history_step_enum.ATTITUDE_TYPE
-    relation = single_splitted_history_step_enum.ATTITUDE_TYPE if len(single_splitted_history_step) > 3 else ''
+    single_split_history_step_enum = wrap_history_onto_enum(single_split_history_step)
+    mode = single_split_history_step_enum.ATTITUDE_TYPE
+    relation = single_split_history_step_enum.ATTITUDE_TYPE if len(single_split_history_step) > 3 else ''
 
     LOG.debug(mode)
 
@@ -221,7 +221,7 @@ def _prepare_justify_statement_step(bubble_array: List[dict], index: int, step: 
 
 
 def _prepare_reaction_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
-                           splitted_history: list, url: str) -> None:
+                           split_history: list, url: str) -> None:
     """
     Preparation for creating the reaction bubbles
 
@@ -230,12 +230,12 @@ def _prepare_reaction_step(bubble_array: List[dict], index: int, step: str, db_u
     :param step: String
     :param db_user: User
     :param lang: Language.ui_locales
-    :param splitted_history:
+    :param split_history:
     :param url: String
     :return: None
     """
     LOG.debug("%s: reaction case -> %s", index, step)
-    bubbles = get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url)
+    bubbles = get_bubble_from_reaction_step(step, db_user, lang, split_history, url)
     if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
 
@@ -252,12 +252,12 @@ def _prepare_support_step(bubble_array: List[dict], index: int, step: str, db_us
     :return: None
     """
     LOG.debug("%s: support case -> %s", index, step)
-    single_splitted_history_step = cleaned_split_history_step(step)
-    if len(single_splitted_history_step) < 3:
+    single_split_history_step = cleaned_split_history_step(step)
+    if len(single_split_history_step) < 3:
         return
-    single_splitted_history_step_enum = wrap_history_onto_enum(single_splitted_history_step)
-    user_uid = single_splitted_history_step_enum.UID
-    system_uid = single_splitted_history_step_enum.ATTITUDE_TYPE
+    single_split_history_step_enum = wrap_history_onto_enum(single_split_history_step)
+    user_uid = single_split_history_step_enum.UID
+    system_uid = single_split_history_step_enum.ATTITUDE_TYPE
 
     bubble = _get_bubble_from_support_step(user_uid, system_uid, db_user, lang)
     if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
@@ -274,9 +274,9 @@ def _get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str,
     :param url: String
     :return: [dict()]
     """
-    single_splitted_history_step = wrap_history_onto_enum(cleaned_split_history_step(step))
-    uid = single_splitted_history_step.UID
-    is_supportive = single_splitted_history_step.ATTITUDE_TYPE == Attitudes.AGREE.value or single_splitted_history_step.ATTITUDE_TYPE == Attitudes.DONT_KNOW.value
+    single_split_history_step = wrap_history_onto_enum(cleaned_split_history_step(step))
+    uid = single_split_history_step.UID
+    is_supportive = single_split_history_step.ATTITUDE_TYPE == Attitudes.AGREE.value or single_split_history_step.ATTITUDE_TYPE == Attitudes.DONT_KNOW.value
 
     _tn = Translator(lang)
     statement = DBDiscussionSession.query(Statement).get(uid)
@@ -330,8 +330,8 @@ def _get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> List
     :param lang: ui_locales
     :return: [dict()]
     """
-    single_splitted_history_step = wrap_history_onto_enum(cleaned_split_history_step(step))
-    uid = single_splitted_history_step.UID
+    single_split_history_step = wrap_history_onto_enum(cleaned_split_history_step(step))
+    uid = single_split_history_step.UID
 
     text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=False,
                                      start_with_intro=True)
@@ -377,14 +377,14 @@ def get_bubble_from_reaction_step(step: str, db_user: User, lang: str, split_his
     if cleaned_split_history[0] == ArgumentationStep.REACTION.value:
         cleaned_split_history = cleaned_split_history[1:]
 
-    single_splitted_history_step = wrap_history_onto_enum(cleaned_split_history,
-                                                          ArgumentationStep.REACTION.value in step)
-    uid = single_splitted_history_step.UID
+    single_split_history_step = wrap_history_onto_enum(cleaned_split_history,
+                                                       ArgumentationStep.REACTION.value in step)
+    uid = single_split_history_step.UID
 
     LOG.debug(step)
 
-    additional_uid = single_splitted_history_step.ADDITIONAL_UID
-    attack = relation_mapper[single_splitted_history_step.RELATION]
+    additional_uid = single_split_history_step.ADDITIONAL_UID
+    attack = relation_mapper[single_split_history_step.RELATION]
 
     if not check_reaction(uid, additional_uid, attack):
         LOG.debug("Wrong reaction")
