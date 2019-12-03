@@ -1,6 +1,6 @@
 from nose.tools import assert_true, assert_is_not_none
 
-from api.v2.graphql.tests.lib import graphql_query
+from api.v2.query.tests.lib import graphql_query
 
 
 def test_list_of_issues():

@@ -1,4 +1,4 @@
-from api.v2.graphql.tests.lib import graphql_query
+from api.v2.query.tests.lib import graphql_query
 from dbas.tests.utils import TestCaseWithConfig
 
 
