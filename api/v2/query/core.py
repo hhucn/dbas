@@ -11,7 +11,7 @@ from graphene_sqlalchemy.converter import convert_sqlalchemy_type
 from graphql.language import ast
 from sqlalchemy_utils import ArrowType
 
-from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
+from api.v2.query.resolve import resolve_field_query, resolve_list_query
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReference, \
     StatementOrigins, PremiseGroup, Premise, Argument, ClickedArgument, ClickedStatement

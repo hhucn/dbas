@@ -1,9 +1,8 @@
-import webtest
-import dbas
 import os
-
+import webtest
 from nose.tools import assert_is_not_none
 
+import dbas
 from api.lib import json_to_dict
 from dbas.helper.test import add_settings_to_appconfig
 
