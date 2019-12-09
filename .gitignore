@@ -7,7 +7,6 @@ build/
 dist/
 *.egg-info/
 source/
-poetry.lock
 
 # Installer logs
 pip-log.txt
