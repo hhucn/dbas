@@ -8,6 +8,7 @@ RUN apt-get update -qq && \
     apt-get install -yqq curl gnupg2 make && \
     curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python3 && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update -qq && \
     apt-get install -yqq build-essential libpq-dev python-dev libfontconfig nodejs locales libsasl2-dev libldap2-dev libssl-dev gettext bzip2 autoconf libffi-dev gcc iproute2 yarn && \
@@ -26,17 +27,19 @@ RUN apt-get update -qq && \
 
 WORKDIR /dbas
 
-COPY requirements.txt /dbas/
+COPY pyproject.toml /dbas/
+COPY poetry.lock /dbas/
 
-RUN pip install -q -U pip && \
-    pip install -r requirements.txt && \
+RUN $HOME/.poetry/bin/poetry config settings.virtualenvs.create false && \
+    $HOME/.poetry/bin/poetry update --no-interaction && \
+    $HOME/.poetry/bin/poetry install --no-interaction && \
     apt-get remove -y --purge build-essential gcc&& \
     apt-get autoremove -y && \
     apt-get clean -y
 
 COPY . /dbas/
 
-RUN make && python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
+RUN make && $HOME/.poetry/bin/poetry run python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
 
 EXPOSE 4284
-CMD sh -c "alembic upgrade head && pserve development.ini --reload"
+CMD sh -c "$HOME/.poetry/bin/poetry run alembic upgrade head && pserve development.ini --reload"
