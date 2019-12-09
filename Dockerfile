@@ -28,7 +28,6 @@ RUN apt-get update -qq && \
 WORKDIR /dbas
 
 COPY pyproject.toml /dbas/
-COPY poetry.lock /dbas/
 
 RUN $HOME/.poetry/bin/poetry config settings.virtualenvs.create false && \
     $HOME/.poetry/bin/poetry update --no-interaction && \
