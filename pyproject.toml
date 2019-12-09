@@ -54,7 +54,6 @@ pyramid = "=1.10.2"
 lingua = "=4.13"
 docutils = "=0.14"
 psycopg2 = "=2.8"
-pandas = "=0.25.2"
 
 [tool.poetry.dev-dependencies]
 
