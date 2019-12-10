@@ -326,7 +326,10 @@ class ItemDictHelper(object):
 
         # with a chance of 50% or at the end we will seed the new "support step"
         if not attack:
-            new_arg = get_another_argument_with_same_conclusion(argument.uid, history.get_session_history_as_string())
+            if history is not None:
+                new_arg = get_another_argument_with_same_conclusion(argument.uid, history.get_session_history_as_string())
+            else:
+                new_arg = get_another_argument_with_same_conclusion(argument.uid, "")
             the_other_one = new_arg is None
             if new_arg:
                 the_other_one = False
