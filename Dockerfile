@@ -42,4 +42,4 @@ COPY . /dbas/
 RUN make && poetry run python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
 
 EXPOSE 4284
-CMD sh -c "$HOME/.poetry/bin/poetry run alembic upgrade head && pserve development.ini --reload"
+CMD sh -c "poetry run alembic upgrade head && pserve development.ini --reload"
