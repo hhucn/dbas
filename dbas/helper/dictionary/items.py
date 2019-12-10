@@ -243,7 +243,7 @@ class ItemDictHelper(object):
         if attack:  # if there is an attack get the url to a reaction
             url = _um.get_url_for_reaction_on_argument(argument.uid, attack.value, arg_id_sys)
         else:  # if there is no attack, search for an argument to ask the user about
-            new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
+            new_arg = get_another_argument_with_same_conclusion(argument.uid, history.get_session_history_as_string())
             if new_arg:  # if one is found: get the url
                 url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
 
@@ -326,7 +326,10 @@ class ItemDictHelper(object):
 
         # with a chance of 50% or at the end we will seed the new "support step"
         if not attack:
-            new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
+            if history is not None:
+                new_arg = get_another_argument_with_same_conclusion(argument.uid, history.get_session_history_as_string())
+            else:
+                new_arg = get_another_argument_with_same_conclusion(argument.uid, "")
             the_other_one = new_arg is None
             if new_arg:
                 the_other_one = False
