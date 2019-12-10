@@ -3,6 +3,7 @@ FROM python:3.7-slim
 ENV locs /etc/locale.gen
 ENV TEMPLATE_FOLDER /dbas/dbas/templates/
 ENV CHAMELEON_CACHE ${TEMPLATE_FOLDER}cache
+ENV PATH $PATH:/root/.poetry/bin
 
 RUN apt-get update -qq && \
     apt-get install -yqq curl gnupg2 make && \
@@ -29,16 +30,16 @@ WORKDIR /dbas
 
 COPY pyproject.toml /dbas/
 
-RUN $HOME/.poetry/bin/poetry config settings.virtualenvs.create false && \
-    $HOME/.poetry/bin/poetry update --no-interaction && \
-    $HOME/.poetry/bin/poetry install --no-interaction && \
+RUN poetry config settings.virtualenvs.create false && \
+    poetry update --no-interaction && \
+    poetry install --no-interaction && \
     apt-get remove -y --purge build-essential gcc&& \
     apt-get autoremove -y && \
     apt-get clean -y
 
 COPY . /dbas/
 
-RUN make && $HOME/.poetry/bin/poetry run python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
+RUN make && poetry run python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
 
 EXPOSE 4284
 CMD sh -c "$HOME/.poetry/bin/poetry run alembic upgrade head && pserve development.ini --reload"
