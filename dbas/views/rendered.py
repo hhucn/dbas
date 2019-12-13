@@ -2,14 +2,13 @@
 Collection of pyramids views components of D-BAS' core.
 """
 
-import logging
-
 import graphene
+import logging
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config, notfound_view_config
 from webob_graphql import serve_graphql_request
 
-from api.v2.graphql.core import Query
+from api.v2.query.core import Query
 from dbas.database import DBDiscussionSession
 from dbas.helper.decoration import prep_extras_dict
 from dbas.validators.core import validate
@@ -18,7 +17,6 @@ from dbas.views.helper import main_dict
 LOG = logging.getLogger(__name__)
 
 
-# graphiql
 @view_config(route_name='main_graphiql', permission='everybody', require_csrf=False)
 def main_graphiql(request):
     """
