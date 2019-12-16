@@ -28,10 +28,10 @@ RUN apt-get update -qq && \
 
 WORKDIR /dbas
 
-COPY pyproject.toml /dbas/
+COPY pyproject.toml poetry.toml poetry.lock /dbas/
 
-RUN poetry config settings.virtualenvs.create false && \
-    poetry update --no-interaction && \
+RUN poetry self update && \
+    poetry config virtualenvs.create false && \
     poetry install --no-interaction && \
     apt-get remove -y --purge build-essential gcc&& \
     apt-get autoremove -y && \
