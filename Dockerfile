@@ -28,7 +28,7 @@ RUN apt-get update -qq && \
 
 WORKDIR /dbas
 
-COPY pyproject.toml poetry.toml poetry.lock /dbas/
+COPY pyproject.toml poetry.lock /dbas/
 
 RUN poetry self update && \
     poetry config virtualenvs.create false && \
