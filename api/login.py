@@ -63,7 +63,7 @@ def check_jwt(request, token) -> bool:
         add_error(request, "Invalid token", status_code=401, location="header")
         return False
 
-    user_by_id = DBDiscussionSession.query(User).get(payload['id'])  # type: User
+    user_by_id: User = DBDiscussionSession.query(User).get(payload['id'])
     if user_by_id is None:
         add_error(request, "Invalid token: user id is unknown", status_code=401, location="header")
         return False
