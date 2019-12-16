@@ -63,8 +63,18 @@ def check_jwt(request, token) -> bool:
         add_error(request, "Invalid token", status_code=401, location="header")
         return False
 
+    user_by_id = DBDiscussionSession.query(User).get(payload['id'])  # type: User
+    if user_by_id is None:
+        add_error(request, "Invalid token: user id is unknown", status_code=401, location="header")
+        return False
+
+    nickname_from_token = payload.get('nickname')
+    if nickname_from_token is not None and nickname_from_token != user_by_id.nickname:
+        add_error(request, "Invalid token: nickname and id do not match", status_code=401, location="header")
+        return False
+
     request.validated['token-payload'] = payload
-    request.validated['user'] = DBDiscussionSession.query(User).get(payload['id'])
+    request.validated['user'] = user_by_id
     request.validated['auth-by-api-token'] = False
     return True
 
