@@ -11,7 +11,8 @@ RUN apt-get update -qq && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update -qq && \
     apt-get install -yqq build-essential libpq-dev python-dev libfontconfig nodejs locales libsasl2-dev libldap2-dev libssl-dev gettext bzip2 autoconf libffi-dev gcc iproute2 yarn && \
-    npm install npx google-closure-compiler sass -g && \
+    npm install npx -g --force --no-optional && \
+    npm install google-closure-compiler sass -g --no-optional && \
     touch $locs && \
     echo "de_DE.UTF-8 UTF-8" >> $locs && \
     echo "en_US.UTF-8 UTF-8" >> $locs && \
