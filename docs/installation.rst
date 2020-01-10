@@ -42,7 +42,7 @@ If your access is denied, please try::
 
 Or take a look at dbas > Registry for the newest information (Port *5001* may not be up to date).
 
-If your container stucks during the first start up, please install D-BAS manually via::
+If your container stucks during the first start up (e.g. with `The 'dbas' distribution was not found and is required by the application`), please install D-BAS manually while the container is running via::
 
     $ docker-compose exec web make
 
