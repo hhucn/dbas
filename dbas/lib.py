@@ -886,7 +886,7 @@ def get_user_by_case_insensitive_nickname(nickname):
     :param nickname: String
     :return: User or None
     """
-    return DBDiscussionSession.query(User).filter(func.lower(User.nickname) == func.lower(nickname)).first()
+    return DBDiscussionSession.query(User).filter(User.nickname.ilike(nickname)).first()
 
 
 def get_user_by_case_insensitive_public_nickname(public_nickname):

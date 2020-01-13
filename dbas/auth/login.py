@@ -234,7 +234,8 @@ def __refresh_headers_and_url(request, db_user_nickname: str, keep_login: bool, 
     """
     LOG.debug("Login successful / keep_login: %s", keep_login)
     # This query needs to happen, as the session supplying db_user as before is closed in a caller of this function.
-    db_user = DBDiscussionSession().query(User).filter_by(nickname=db_user_nickname).first()
+    db_user = DBDiscussionSession().query(User).filter(User.nickname.ilike(db_user_nickname)).first()
+
     db_settings = db_user.settings
     db_settings.should_hold_the_login(keep_login)
     LOG.debug("Remembering headers for %s", db_user.nickname)
