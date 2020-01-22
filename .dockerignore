@@ -15,4 +15,4 @@ Dockerfile
 sessions.db
 poetry.toml
 
-*.min.j
+*.min.js
