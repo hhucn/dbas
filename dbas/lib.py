@@ -332,6 +332,7 @@ def get_all_arguments_with_text_by_statement_id(statement_uid: int) -> List[dict
     if arguments:
         return [{
             'uid': arg.uid,
+            'is_supportive': arg.is_supportive,
             'texts': {
                 'display': get_text_for_argument_uid(arg.uid),
                 'conclusion': arg.get_conclusion_text(),
