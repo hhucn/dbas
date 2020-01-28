@@ -31,6 +31,7 @@ WORKDIR /dbas
 
 COPY pyproject.toml poetry.lock /dbas/
 
+# virtualenvs false leads to a global installation of the packages
 RUN poetry self update && \
     poetry config virtualenvs.create false && \
     poetry install --no-interaction && \
@@ -40,7 +41,7 @@ RUN poetry self update && \
 
 COPY . /dbas/
 
-RUN make && poetry run python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
+RUN make && python3 precompile_templates.py --dir ${TEMPLATE_FOLDER}
 
 EXPOSE 4284
 CMD sh -c "alembic upgrade head && pserve development.ini --reload"
