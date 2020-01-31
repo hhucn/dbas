@@ -10,6 +10,22 @@ stages:
   - analysis
   - deploy
 
+# to cache both npm modules and Cypress binary we use environment variables
+# to point at the folders we can list as paths in "cache" job settings
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+
+# cache using branch name
+# https://gitlab.com/help/ci/caching/index.md
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .npm
+    - cache/Cypress
+    - node_modules
+
+
 .job-template: &add-services
   services:
     - name: $CI_REGISTRY/cn-tsn/project/dbas/dbas/db:testing
@@ -47,6 +63,53 @@ build_test_db_image:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/db:testing --pull docker/db
     - docker push $CI_REGISTRY_IMAGE/db:testing
+
+build_cypress:
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/frontendtest --pull frontendtest/
+    - docker push $CI_REGISTRY_IMAGE/frontendtest
+
+
+cypress:
+  stage: test
+  image: docker:dind
+  variables:
+    AUTHN_SECRET: '89#s3cr3t_15'
+    DB_HOST: db_$CI_JOB_ID
+    DB_PORT: '5432'
+    DB_USER: 'postgres'
+    DB_PW: 'DXxCNtfnt!MOo!f8LY1!Psw3KGzt@s!'
+    DB_NAME: 'discussion'
+    KEY_PATH: 'devkey.pem'
+    PUBKEY_PATH: 'devpublic.pem'
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker pull $CI_REGISTRY/cn-tsn/project/dbas/dbas/db:testing
+    - docker pull $CI_REGISTRY/cn-tsn/project/dbas/dbas:experimental
+    - docker pull $CI_REGISTRY_IMAGE/frontendtest
+    - docker network create -d bridge dbas_$CI_JOB_ID
+    - docker run -d --name db_$CI_JOB_ID --net=dbas_$CI_JOB_ID $CI_REGISTRY_IMAGE/db:testing
+    - sleep 8
+    - docker run -d --name web_$CI_JOB_ID --net=dbas_$CI_JOB_ID -e AUTHN_SECRET=$AUTHN_SECRET -e DB_HOST=$DB_HOST -e DB_PORT=$DB_PORT -e DB_USER=$DB_USER -e DB_PW=$DB_PW -e DB_NAME=$DB_NAME -e KEY_PATH=$KEY_PATH -e PUBKEY_PATH=$PUBKEY_PATH  $CI_REGISTRY_IMAGE:experimental
+    - sleep 5
+    - docker run -di --name frontendtest_$CI_JOB_ID --net=dbas_$CI_JOB_ID $CI_REGISTRY_IMAGE/frontendtest
+  script:
+    - docker exec frontendtest_$CI_JOB_ID bash -c "node_modules/.bin/cypress run --env WEB_HOST=web_$CI_JOB_ID"
+  after_script:
+    - mkdir cypress_artifacts/
+    - docker cp frontendtest_$CI_JOB_ID:/cypress cypress_artifacts/
+    - docker kill db_$CI_JOB_ID web_$CI_JOB_ID frontendtest_$CI_JOB_ID || true
+    - docker network rm dbas_$CI_JOB_ID || true
+  artifacts:
+    paths:
+      - cypress_artifacts/
+    expire_in: 1 day
+    when: on_failure
+
+
+
 
 flake8:
   stage: test

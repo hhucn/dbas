@@ -249,14 +249,14 @@ def get_another_argument_with_same_conclusion(uid, history):
     if db_arg.conclusion_uid is None:
         return None
 
-    # get forbidden uids
+    # get already seen uids
     splitted_histoy = history.split('-')
-    forbidden_uids = [history.split('/')[2] for history in splitted_histoy if 'reaction' in history] + [uid]
+    already_seen_uids = [history.split('/')[1] for history in splitted_histoy if 'reaction' in history] + [uid]
 
     db_supports = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == db_arg.conclusion_uid,
                                                              Argument.uid != db_arg.uid,
                                                              Argument.is_supportive == db_arg.is_supportive,
-                                                             ~Argument.uid.in_(forbidden_uids)).all()
+                                                             ~Argument.uid.in_(already_seen_uids)).all()
     if len(db_supports) == 0:
         return None
 
