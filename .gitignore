@@ -85,3 +85,6 @@ docker/db/entrypoint/.*.sql
 
 # Emacs temp-files
 .#*
+
+# Mac specific
+.DS_Store

@@ -11,9 +11,9 @@ with open(os.path.join(here, 'CHANGELOG.md')) as f:
     CHANGES = f.read()
 
 requires = []
-
+__version__ = version
 setup(name='dbas',
-      version=version,
+      version=__version__,
       description='Novel prototype for a dialog-based online argumentation',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
