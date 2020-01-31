@@ -13,13 +13,126 @@ from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_stat
 from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_conclusion, \
     bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, Relations, Attitudes, \
-    relation_mapper
+    relation_mapper, wrap_history_onto_enum, ArgumentationStep
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small, replace_multiple_chars
-from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
+from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support, remove_punctuation
 from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
+
+
+class SessionHistory:
+    def __init__(self, history: str = None):
+        """
+        Creates current history object for user
+
+        :return:
+        """
+        session_history_array = []
+        if history is not None:
+            session_history_array = history.split('-')
+        self.session_history_array: List[str] = session_history_array
+
+    def append_action(self, request: Request):
+        """
+        Appends new action to current history
+
+        :param request
+        :return:
+        """
+        history_action = request.params.get(ArgumentationStep.HISTORY.value, '')
+        if len(history_action) > 0:
+            # Splits history url by "-" and appends last history action to history array without a leading "/"
+            split_history = history_action.split('-')
+            last_split_history = split_history[-1]
+            cleaned_last_split = last_split_history[1:]
+            self.get_session_history_as_list().append(cleaned_last_split)
+
+    def get_nth_last_action(self, n: int) -> str:
+        """
+        This method returns the nth last actions of the session history.
+
+        :param n:
+        :return: nth last actions of the session history.
+        """
+        return self.get_session_history_as_list()[-n] if len(self.get_session_history_as_list()) > 0 else ''
+
+    def get_session_history_as_list(self) -> List[str]:
+        """
+        Returns session history
+
+        :return:
+        """
+        return self.session_history_array
+
+    def get_session_history_as_string(self) -> str:
+        """
+        Returns session history as string
+
+        :return:
+        """
+        return "-".join(self.get_session_history_as_list())
+
+    def create_bubbles(self, nickname: str = '', lang: str = '', slug: str = '') -> List[dict]:
+        """
+        Creates the bubbles for every history step
+
+        :param history: String
+        :param nickname: User.nickname
+        :param lang: ui_locales
+        :param slug: String
+        :return: Array
+        """
+        if len(self.session_history_array) == 0:
+            return []
+
+        LOG.debug("nickname: %s, history: %s", nickname, self.get_session_history_as_string())
+
+        bubble_array = []
+        consumed_history = ''
+
+        nickname = nickname if nickname else nick_of_anonymous_user
+        db_user = nickname if isinstance(nickname, User) else DBDiscussionSession.query(User).filter_by(
+            nickname=nickname).first()
+
+        for index, step in enumerate(self.get_session_history_as_list()):
+            url = '/' + slug + '/' + step
+            if len(consumed_history) != 0:
+                url += '?' + ArgumentationStep.HISTORY.value + '=' + consumed_history
+
+            consumed_history += step if len(consumed_history) == 0 else '-' + step
+            if ArgumentationStep.JUSTIFY.value + '/' in step:
+                _prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url)
+
+            elif ArgumentationStep.REACTION.value + '/' in step:
+                _prepare_reaction_step(bubble_array, index, step, db_user, lang, self.get_session_history_as_list(),
+                                       url)
+
+            elif ArgumentationStep.SUPPORT.value + '/' in step:
+                _prepare_support_step(bubble_array, index, step, db_user, lang)
+
+            else:
+                LOG.debug("%s: unused case -> %s", index, step)
+
+        return bubble_array
+
+
+def cleaned_split_history_step(step):
+    return list(map(lambda x: int(x) if x.isdigit() else x, step.split('/')[1:]))
+
+
+def save_history_to_session_history(request: Request):
+    """
+    Saves the current history from the URL to the history object in the request session
+
+    :param request:
+    :return:
+    """
+    session_history = request.session.get('session_history')
+    if session_history is not None:
+        session_history.append_action(request)
+        request.session.update({'session_history': session_history})
 
 
 def save_issue_uid(issue_uid: int, db_user: User) -> None:
@@ -72,51 +185,8 @@ def get_seen_statements_from(path: str) -> set:
     return set([int(s) for s in replace_multiple_chars(path, ['/', '-', '?'], ' ').split() if s.isdigit()])
 
 
-def create_bubbles(history: str, nickname: str = '', lang: str = '', slug: str = '') -> List[dict]:
-    """
-    Creates the bubbles for every history step
-
-    :param history: String
-    :param nickname: User.nickname
-    :param lang: ui_locales
-    :param slug: String
-    :return: Array
-    """
-    if len(history) == 0:
-        return []
-
-    LOG.debug("nickname: %s, history: %s", nickname, history)
-    splitted_history = split(history)
-
-    bubble_array = []
-    consumed_history = ''
-
-    nickname = nickname if nickname else nick_of_anonymous_user
-    db_user = nickname if isinstance(nickname, User) else DBDiscussionSession.query(User).filter_by(
-        nickname=nickname).first()
-
-    for index, step in enumerate(splitted_history):
-        url = '/' + slug + '/' + step
-        if len(consumed_history) != 0:
-            url += '?history=' + consumed_history
-        consumed_history += step if len(consumed_history) == 0 else '-' + step
-        if 'justify/' in step:
-            __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url)
-
-        elif 'reaction/' in step:
-            __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_history, url)
-
-        elif 'support/' in step:
-            __prepare_support_step(bubble_array, index, step, db_user, lang)
-
-        else:
-            LOG.debug("%s: unused case -> %s", index, step)
-
-    return bubble_array
-
-
-def __prepare_justify_statement_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
-                                     url: str) -> None:
+def _prepare_justify_statement_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
+                                    url: str) -> None:
     """
     Preparation for creating the justification bubbles
 
@@ -129,25 +199,29 @@ def __prepare_justify_statement_step(bubble_array: List[dict], index: int, step:
     :return: None
     """
     LOG.debug("%s: justify case -> %s", index, step)
-    steps = step.split('/')
-    if len(steps) < 3:
+    single_split_history_step = cleaned_split_history_step(step)
+    LOG.debug(single_split_history_step)
+    if len(single_split_history_step) < 3:
         return
-    mode = steps[2]
-    relation = steps[3] if len(steps) > 3 else ''
+    single_split_history_step_enum = wrap_history_onto_enum(single_split_history_step)
+    mode = single_split_history_step_enum.ATTITUDE_TYPE
+    relation = single_split_history_step_enum.ATTITUDE_TYPE if len(single_split_history_step) > 3 else ''
+
+    LOG.debug(mode)
 
     if [c for c in (Attitudes.AGREE.value, Attitudes.DISAGREE.value) if c in mode] and relation == '':
-        bubble = __get_bubble_from_justify_statement_step(step, db_user, lang, url)
+        bubble = _get_bubble_from_justify_statement_step(step, db_user, lang, url)
         if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
             bubble_array += bubble
 
     elif Attitudes.DONT_KNOW.value in mode and relation == '':
-        bubbles = __get_bubble_from_dont_know_step(step, db_user, lang)
+        bubbles = _get_bubble_from_dont_know_step(step, db_user, lang)
         if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
             bubble_array += bubbles
 
 
-def __prepare_reaction_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
-                            splitted_history: list, url: str) -> None:
+def _prepare_reaction_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str,
+                           split_history: list, url: str) -> None:
     """
     Preparation for creating the reaction bubbles
 
@@ -156,17 +230,17 @@ def __prepare_reaction_step(bubble_array: List[dict], index: int, step: str, db_
     :param step: String
     :param db_user: User
     :param lang: Language.ui_locales
-    :param splitted_history:
+    :param split_history:
     :param url: String
     :return: None
     """
     LOG.debug("%s: reaction case -> %s", index, step)
-    bubbles = get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url)
+    bubbles = get_bubble_from_reaction_step(step, db_user, lang, split_history, url)
     if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
 
 
-def __prepare_support_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str) -> None:
+def _prepare_support_step(bubble_array: List[dict], index: int, step: str, db_user: User, lang: str) -> None:
     """
     Preparation for creating the support bubbles
 
@@ -178,18 +252,19 @@ def __prepare_support_step(bubble_array: List[dict], index: int, step: str, db_u
     :return: None
     """
     LOG.debug("%s: support case -> %s", index, step)
-    steps = step.split('/')
-    if len(steps) < 3:
+    single_split_history_step = cleaned_split_history_step(step)
+    if len(single_split_history_step) < 3:
         return
-    user_uid = int(steps[1])
-    system_uid = int(steps[2])
+    single_split_history_step_enum = wrap_history_onto_enum(single_split_history_step)
+    user_uid = single_split_history_step_enum.UID
+    system_uid = single_split_history_step_enum.ATTITUDE_TYPE
 
-    bubble = __get_bubble_from_support_step(user_uid, system_uid, db_user, lang)
+    bubble = _get_bubble_from_support_step(user_uid, system_uid, db_user, lang)
     if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
         bubble_array += bubble
 
 
-def __get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str, url: str) -> List[dict]:
+def _get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str, url: str) -> List[dict]:
     """
     Creates bubbles for the justify-keyword for an statement.
 
@@ -199,12 +274,13 @@ def __get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str
     :param url: String
     :return: [dict()]
     """
-    steps = step.split('/')
-    uid = int(steps[1])
-    is_supportive = steps[2] == Attitudes.AGREE.value or steps[2] == Attitudes.DONT_KNOW.value
+    single_split_history_step = wrap_history_onto_enum(cleaned_split_history_step(step))
+    uid = single_split_history_step.UID
+    is_supportive = single_split_history_step.ATTITUDE_TYPE == Attitudes.AGREE.value or single_split_history_step.ATTITUDE_TYPE == Attitudes.DONT_KNOW.value
 
     _tn = Translator(lang)
-    msg, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
+    statement = DBDiscussionSession.query(Statement).get(uid)
+    msg, tmp = get_user_bubble_text_for_justify_statement(statement, db_user, is_supportive, _tn)
 
     bubble_user = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=msg, omit_bubble_url=False,
                                            statement_uid=uid, is_supportive=is_supportive, db_user=db_user,
@@ -212,7 +288,7 @@ def __get_bubble_from_justify_statement_step(step: str, db_user: User, lang: str
     return [bubble_user]
 
 
-def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) \
+def _get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: User, lang: str) \
         -> Optional[List[list]]:
     """
     Creates bubbles for the support-keyword for an statement.
@@ -235,10 +311,7 @@ def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: 
                                            db_user=db_user, lang=lang)
 
     argument_text = get_text_for_argument_uid(uid_system, colored_position=True, with_html_tag=True, attack_type='jump')
-    offset = len('</' + tag_type + '>') if argument_text.endswith('</' + tag_type + '>') else 1
-
-    while argument_text[:-offset].endswith(('.', '?', '!')):
-        argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
+    argument_text = remove_punctuation(argument_text)
 
     text = get_text_for_support(db_arg_system, argument_text, db_user.nickname, Translator(lang))
     db_other_author = DBDiscussionSession.query(User).get(db_arg_system.author_uid)
@@ -248,7 +321,7 @@ def __get_bubble_from_support_step(arg_uid_user: int, uid_system: int, db_user: 
     return [bubble_user, bubble_system]
 
 
-def __get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> List[dict]:
+def _get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> List[dict]:
     """
     Creates bubbles for the don't-know-reaction for a statement.
 
@@ -257,8 +330,8 @@ def __get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> Lis
     :param lang: ui_locales
     :return: [dict()]
     """
-    steps = step.split('/')
-    uid = int(steps[1])
+    single_split_history_step = wrap_history_onto_enum(cleaned_split_history_step(step))
+    uid = single_split_history_step.UID
 
     text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=False,
                                      start_with_intro=True)
@@ -299,37 +372,41 @@ def get_bubble_from_reaction_step(step: str, db_user: User, lang: str, split_his
     :return: [dict()]
     """
     LOG.debug("def: %s, %s", step, split_history)
-    steps = step.split('/')
-    uid = int(steps[1])
 
-    if 'reaction' in step:
-        additional_uid = int(steps[3])
-        attack = relation_mapper[steps[2]]
-    else:
-        attack = Relations.SUPPORT
-        additional_uid = int(steps[2])
+    cleaned_split_history = cleaned_split_history_step(step)
+    if cleaned_split_history[0] == ArgumentationStep.REACTION.value:
+        cleaned_split_history = cleaned_split_history[1:]
+
+    single_split_history_step = wrap_history_onto_enum(cleaned_split_history,
+                                                       ArgumentationStep.REACTION.value in step)
+    uid = single_split_history_step.UID
+
+    LOG.debug(step)
+
+    additional_uid = single_split_history_step.ADDITIONAL_UID
+    attack = relation_mapper[single_split_history_step.RELATION]
 
     if not check_reaction(uid, additional_uid, attack):
         LOG.debug("Wrong reaction")
         return None
 
-    return __create_reaction_history_bubbles(step, db_user, lang, split_history, url, color_steps, uid,
-                                             additional_uid, attack)
+    return _create_reaction_history_bubbles(step, db_user, lang, split_history, url, color_steps, uid,
+                                            additional_uid, attack)
 
 
-def __create_reaction_history_bubbles(step: str, db_user: User, lang: str, split_history: list, url: str,
-                                      color_steps: bool, uid: int, additional_uid: int,
-                                      attack) -> list:
+def _create_reaction_history_bubbles(step: str, db_user: User, lang: str, split_history: list, url: str,
+                                     color_steps: bool, uid: int, additional_uid: int,
+                                     attack) -> list:
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
     last_relation = get_last_relation(split_history)
 
-    user_changed_opinion = len(split_history) > 1 and '/undercut/' in split_history[-2]
+    user_changed_opinion = len(split_history) > 1 and '/' + Relations.UNDERCUT.value + '/' in split_history[-2]
     support_counter_argument = False
 
     if step in split_history:
         index = split_history.index(step)
         try:
-            support_counter_argument = 'reaction' in split_history[index - 1]
+            support_counter_argument = ArgumentationStep.REACTION.value in split_history[index - 1]
         except IndexError:
             support_counter_argument = False
 
@@ -416,10 +493,9 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
         path = '/{}/{}'.format(slug, path)
 
     if len(history) > 0:
-        history = '?history=' + history
+        history = '?{}={}'.format(ArgumentationStep.HISTORY.value, history)
 
     LOG.debug("Saving %s%s", path, history)
-
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
     DBDiscussionSession.flush()
 
@@ -462,7 +538,9 @@ def save_and_set_cookie(request: Request, db_user: User, issue: Issue) -> str:
     :rtype: str
     :return: current user's history
     """
-    history = request.params.get('history', '')
+    history = request.params.get(ArgumentationStep.HISTORY.value, '')
+    save_history_to_session_history(request)
+
     if db_user and db_user.nickname != nick_of_anonymous_user:
         save_database(db_user, issue.slug, request.path, history)
         save_issue_uid(issue.uid, db_user)

@@ -5,10 +5,11 @@ from pyramid.response import Response
 from pyramid.view import view_config
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement
-from dbas.handler import history as history_handler, user, issue as issue_handler
+from dbas.database.discussion_model import Statement, Issue
+from dbas.handler import history as history_handler, user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement
-from dbas.handler.issue import set_discussions_properties
+from dbas.handler.history import SessionHistory
+from dbas.handler.issue import set_discussions_properties, get_issue_dict_for
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.statements import set_position, set_positions_premise, set_correction_of_statement, \
     set_seen_statements, get_logfile_for_statements
@@ -193,13 +194,14 @@ def set_new_start_argument(request: Request):
     reponse: Response = request.response
     if not prepared_dict_pos['errors']:
         LOG.debug("Set premise/reason")
+        session_history = SessionHistory(request.cookies.get('_HISTORY_'))
         prepared_dict_pos = set_positions_premise(request.validated['issue'],
                                                   request.validated['user'],
                                                   DBDiscussionSession.query(Statement).get(
                                                       prepared_dict_pos['statement_uids'][0]),
                                                   [[reason]],
                                                   True,
-                                                  request.cookies.get('_HISTORY_'),
+                                                  session_history,
                                                   request.mailer)
     else:
         reponse.status_code = 400
@@ -221,12 +223,13 @@ def set_new_start_premise(request):
     :return: json-dict()
     """
     LOG.debug("Set new premise for start: %s", request.json_body)
+    session_history = SessionHistory(request.cookies.get('_HISTORY_'))
     prepared_dict = set_positions_premise(request.validated['issue'],
                                           request.validated['user'],
                                           request.validated['conclusion'],
                                           request.validated['premisegroups'],
                                           request.validated['supportive'],
-                                          request.cookies.get('_HISTORY_'),
+                                          session_history,
                                           request.mailer)
     __modifiy_discussion_url(prepared_dict)
     return prepared_dict
@@ -243,12 +246,13 @@ def set_new_premises_for_argument(request):
     :return: json-dict()
     """
     LOG.debug("Set new premise for an argument. %s", request.json_body)
+    session_history = SessionHistory(request.cookies.get('_HISTORY_'))
     prepared_dict = set_arguments_premises(request.validated['issue'],
                                            request.validated['user'],
                                            request.validated['argument'],
                                            request.validated['premisegroups'],
                                            relation_mapper[request.validated['attack_type']],
-                                           request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
+                                           session_history,
                                            request.mailer)
     __modifiy_discussion_url(prepared_dict)
     return prepared_dict
@@ -271,16 +275,18 @@ def set_correction_of_some_statements(request):
     return set_correction_of_statement(elements, db_user, _tn)
 
 
-def create_issue_after_validation(request):
+def create_issue_after_validation(request: Request):
     LOG.debug("Set a new issue: %s", request.json_body)
-    info = escape_string(request.validated['info'])
-    long_info = escape_string(request.validated['long_info'])
-    title = escape_string(request.validated['title'])
-    lang = request.validated['lang']
-    is_public = request.validated['is_public']
-    is_read_only = request.validated['is_read_only']
 
-    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only)
+    db_issue = Issue(title=escape_string(request.validated['title']),
+                     info=escape_string(request.validated['info']),
+                     long_info=escape_string(request.validated['long_info']),
+                     author_uid=request.validated['user'].uid,
+                     is_read_only=request.validated['is_read_only'],
+                     is_private=not request.validated['is_public'],
+                     lang_uid=request.validated['lang'].uid)
+    DBDiscussionSession.add(db_issue)
+    return {'issue': get_issue_dict_for(db_issue, 0, request.validated['lang'].ui_locales)}
 
 
 @view_config(route_name='set_new_issue', renderer='json')

@@ -107,6 +107,8 @@ class Issue(DiscussionBase):
         self.is_read_only = is_read_only
         self.date = get_now()
         self.is_featured = is_featured
+        author = DBDiscussionSession.query(User).get(self.author_uid)
+        self.participating_users = [author, ]
 
     def __repr__(self):
         return f"<Issue {self.uid}: {self.slug}>"
@@ -240,8 +242,8 @@ class User(DiscussionBase):
     clicked_statements: List['ClickedStatement'] = relationship('ClickedStatement', back_populates='user')
     clicked_arguments: List['ClickedArgument'] = relationship('ClickedArgument', back_populates='user')
 
-    def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, oauth_provider='',
-                 oauth_provider_id=''):
+    def __init__(self, firstname: str, surname: str, nickname: str, email: str, password: str, gender: str,
+                 group_uid: int, oauth_provider: Optional[str] = None, oauth_provider_id: Optional[str] = None):
         """
         Initializes a row in current user-table
 
@@ -1788,6 +1790,11 @@ class ReviewOptimization(AbstractReviewCase):
             return [self.argument.issue]
         return self.statement.issues
 
+    def is_locked(self) -> bool:
+        lock = DBDiscussionSession.query(OptimizationReviewLocks).filter(
+            OptimizationReviewLocks.review_optimization_uid == self.uid).one_or_none()
+        return lock is not None
+
 
 class ReviewDuplicate(AbstractReviewCase):
     """
@@ -2296,7 +2303,7 @@ class OptimizationReviewLocks(DiscussionBase):
     review_optimization_uid: int = Column(Integer, ForeignKey('review_optimizations.uid'))
     locked_since = Column(ArrowType, default=get_now(), nullable=True)
 
-    authors: User = relationship('User', foreign_keys=[author_uid])
+    author: User = relationship('User', foreign_keys=[author_uid])
     review_optimization: ReviewOptimization = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
 
     def __init__(self, author, review_optimization):

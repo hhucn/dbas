@@ -5,7 +5,7 @@ import logging
 import random
 import uuid
 from datetime import date, timedelta
-from typing import Tuple, List, Dict, Union, Any
+from typing import Tuple, List, Dict, Union, Any, Optional
 
 import arrow
 from arrow.arrow import Arrow
@@ -702,8 +702,8 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     return message, success
 
 
-def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider: str = '',
-                      oauth_provider_id: str = '') -> Tuple[str, str, User]:
+def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider: Optional[str] = None,
+                      oauth_provider_id: Optional[str] = None) -> Tuple[str, str, User]:
     """
     Create a new user.
 

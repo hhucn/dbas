@@ -178,7 +178,7 @@ def get_path_of_user(base_url, path, db_issue):
 
     tlist = []
     for h in history:
-        steps = __get_statements_of_path_step(h)
+        steps = _get_statements_of_path_step(h)
         if steps:
             tlist += steps
 
@@ -192,7 +192,7 @@ def get_path_of_user(base_url, path, db_issue):
     return ret_list
 
 
-def __get_statements_of_path_step(step):
+def _get_statements_of_path_step(step):
     """
 
     :param step:
@@ -232,7 +232,7 @@ def __get_statements_of_path_step(step):
     return statements if len(statements) > 0 else None
 
 
-def __prepare_statements_for_d3_data(db_statements: List[Statement], edge_type):
+def _prepare_statements_for_d3_data(db_statements: List[Statement], edge_type):
     """
 
     :param db_statements:
@@ -246,27 +246,27 @@ def __prepare_statements_for_d3_data(db_statements: List[Statement], edge_type):
     extras = {}
     for statement in db_statements:
         text = statement.get_text()
-        node_dict = __get_node_dict(uid='statement_' + str(statement.uid),
-                                    label=text,
-                                    node_type='position' if statement.is_position else 'statement',
-                                    author=__get_author_of_statement(statement.uid),
-                                    editor=__get_editor_of_statement(statement.uid),
-                                    timestamp=statement.get_first_timestamp().timestamp)
+        node_dict = _get_node_dict(uid='statement_' + str(statement.uid),
+                                   label=text,
+                                   node_type='position' if statement.is_position else 'statement',
+                                   author=_get_author_of_statement(statement.uid),
+                                   editor=_get_editor_of_statement(statement.uid),
+                                   timestamp=statement.get_first_timestamp().timestamp)
         extras[node_dict['id']] = node_dict
         all_ids.append('statement_' + str(statement.uid))
         nodes.append(node_dict)
         if statement.is_position:
-            edge_dict = __get_edge_dict(uid='edge_' + str(statement.uid) + '_issue',
-                                        source='statement_' + str(statement.uid),
-                                        target='issue',
-                                        color='grey',
-                                        edge_type=edge_type)
+            edge_dict = _get_edge_dict(uid='edge_' + str(statement.uid) + '_issue',
+                                       source='statement_' + str(statement.uid),
+                                       target='issue',
+                                       color='grey',
+                                       edge_type=edge_type)
             edges.append(edge_dict)
 
     return all_ids, nodes, edges, extras
 
 
-def __prepare_arguments_for_d3_data(db_arguments, edge_type):
+def _prepare_arguments_for_d3_data(db_arguments, edge_type):
     """
 
     :param db_arguments:
@@ -295,53 +295,53 @@ def __prepare_arguments_for_d3_data(db_arguments, edge_type):
             target = 'statement_' + str(argument.conclusion_uid)
 
         if len(db_premises) == 1 and len(db_undercuts) == 0:
-            __add_edge_to_dict(edges, argument, counter, db_premises[0], target, edge_type)
+            _add_edge_to_dict(edges, argument, counter, db_premises[0], target, edge_type)
         else:
-            __add_edge_and_node_to_dict(edges, nodes, all_ids, argument, counter, db_premises, target, edge_type)
+            _add_edge_and_node_to_dict(edges, nodes, all_ids, argument, counter, db_premises, target, edge_type)
 
     return all_ids, nodes, edges, extras
 
 
-def __add_edge_to_dict(edges, argument, counter, premise, target, edge_type):
-    edges.append(__get_edge_dict(uid='edge_' + str(argument.uid) + '_' + str(counter),
-                                 source='statement_' + str(premise.statement_uid),
-                                 target=target,
-                                 color='green' if argument.is_supportive else 'red',
-                                 edge_type=edge_type))
+def _add_edge_to_dict(edges, argument, counter, premise, target, edge_type):
+    edges.append(_get_edge_dict(uid='edge_' + str(argument.uid) + '_' + str(counter),
+                                source='statement_' + str(premise.statement_uid),
+                                target=target,
+                                color='green' if argument.is_supportive else 'red',
+                                edge_type=edge_type))
 
 
-def __add_edge_and_node_to_dict(edges, nodes, all_ids, argument, counter, db_premises, target, edge_type):
+def _add_edge_and_node_to_dict(edges, nodes, all_ids, argument, counter, db_premises, target, edge_type):
     edge_source = []
     # edge from premisegroup to the middle point
     for premise in db_premises:
-        edge_dict = __get_edge_dict(uid='edge_' + str(argument.uid) + '_' + str(counter),
-                                    source='statement_' + str(premise.statement_uid),
-                                    target='argument_' + str(argument.uid),
-                                    color='green' if argument.is_supportive else 'red',
-                                    edge_type='')
+        edge_dict = _get_edge_dict(uid='edge_' + str(argument.uid) + '_' + str(counter),
+                                   source='statement_' + str(premise.statement_uid),
+                                   target='argument_' + str(argument.uid),
+                                   color='green' if argument.is_supportive else 'red',
+                                   edge_type='')
         edges.append(edge_dict)
         edge_source.append('statement_' + str(premise.statement_uid))
         counter += 1
 
     # edge from the middle point to the conclusion/argument
-    edge_dict = __get_edge_dict(uid='edge_' + str(argument.uid) + '_0',
-                                source='argument_' + str(argument.uid),
-                                target=target,
-                                color='green' if argument.is_supportive else 'red',
-                                edge_type=edge_type)
+    edge_dict = _get_edge_dict(uid='edge_' + str(argument.uid) + '_0',
+                               source='argument_' + str(argument.uid),
+                               target=target,
+                               color='green' if argument.is_supportive else 'red',
+                               edge_type=edge_type)
     edges.append(edge_dict)
 
     # add invisible point in the middle of the edge (to enable pgroups and undercuts)
-    node_dict = __get_node_dict(uid='argument_' + str(argument.uid),
-                                label='',
-                                edge_source=edge_source,
-                                edge_target=target,
-                                timestamp=argument.timestamp.timestamp)
+    node_dict = _get_node_dict(uid='argument_' + str(argument.uid),
+                               label='',
+                               edge_source=edge_source,
+                               edge_target=target,
+                               timestamp=argument.timestamp.timestamp)
     nodes.append(node_dict)
     all_ids.append('argument_' + str(argument.uid))
 
 
-def __sanity_check_of_d3_data(all_node_ids, edges_array):
+def _sanity_check_of_d3_data(all_node_ids, edges_array):
     """
 
     :param all_node_ids:
@@ -366,7 +366,7 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
         return False
 
 
-def __get_author_of_statement(uid):
+def _get_author_of_statement(uid):
     """
 
     :param uid:
@@ -380,7 +380,7 @@ def __get_author_of_statement(uid):
     return {'name': name, 'gravatar_url': gravatar}
 
 
-def __get_editor_of_statement(uid):
+def _get_editor_of_statement(uid):
     """
 
     :param uid:
@@ -394,8 +394,8 @@ def __get_editor_of_statement(uid):
     return {'name': name, 'gravatar': gravatar}
 
 
-def __get_node_dict(uid, label, node_type='', author=None, editor=None, edge_source=None, edge_target=None,
-                    timestamp=''):
+def _get_node_dict(uid, label, node_type='', author=None, editor=None, edge_source=None, edge_target=None,
+                   timestamp=''):
     """
     Create node dict for D3
 
@@ -427,7 +427,7 @@ def __get_node_dict(uid, label, node_type='', author=None, editor=None, edge_sou
     }
 
 
-def __get_edge_dict(uid, source, target, color, edge_type):
+def _get_edge_dict(uid, source, target, color, edge_type):
     """
     Create dictionary for edges
 

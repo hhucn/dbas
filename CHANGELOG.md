@@ -1,3 +1,61 @@
+### 1.24.0 (2020-01-31)
+
+#### Fixes
+* Fix D-BAS Build
+  [!803](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/803)
+  [!802](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/802)
+* Fix problem when creating new issues
+  [!797](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/797)
+* Fix GraphQL
+  [!795](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/795)
+* Do not crash if elastic search returns with error
+  [!801](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/801)
+* Clarify that web make has to be executed while the container is running
+  [!799](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/799)
+* Display cursor as pointer when hovering login/logout menu item
+  [!785](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/785)
+* Fix race condition, which seems to brake some tests on certain machines
+  [!783](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/783)
+* Fix changing password for new local user not possible
+  [!784](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/784)
+
+#### Additions
+* Add cypress frontend tests
+  [!805](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/805)
+* Add statistics script via CLI
+  [!794](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/794)
+* Add documentation for `whoami`-Route
+  [!800](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/800)
+* Add documentation for the guest-user :books:
+  [!780](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/780)
+* Add correct URL to HHU's Identity Management System
+  [!779](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/779)
+
+##### API
+* Add `is_supportive` to ArgumentDTO via API
+  [!806](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/806)
+* Enable user registration via API
+  [!791](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/791)
+
+#### Changes
+* Replace pip with poetry
+  [!796](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/796)
+* User creating an issue automatically participate in it
+  [!781](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/781)
+* Use `ilike` to query case-insensitive nicknames
+  [!804](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/804)
+
+#### Refactoring #sadtember
+* Rename private methods and refactor duplicate code blocks
+  [!786](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/786)
+* Rework History
+  [!788](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/788)
+  [!790](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/790)
+  [!798](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/798)
+  [!789](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/789)
+* Refactor JavaScript to make min-length and max-length for text-input global
+  [!793](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/793)
+
 ### 1.23.0 (2019-09-18)
 - Resolve "Warn user if input is probably not a single statement" [!766](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/766)
 - Add variables for automatic deployment with multiple yml files [!768](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/768)

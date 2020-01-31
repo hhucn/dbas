@@ -12,7 +12,7 @@ from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
 from random import randint
-from typing import List, Optional
+from typing import List, Optional, Union, Tuple
 from urllib import parse
 from uuid import uuid4
 
@@ -61,6 +61,13 @@ class Relations(Enum):
         return str(self.value)
 
 
+class ArgumentationStep(Enum):
+    HISTORY = 'history'
+    JUSTIFY = 'justify'
+    REACTION = 'reaction'
+    SUPPORT = 'support'
+
+
 class Attitudes(Enum):
     AGREE = 'agree'
     DISAGREE = 'disagree'
@@ -72,6 +79,41 @@ class Attitudes(Enum):
 
 relation_mapper = {relation.value: relation for relation in Relations}
 attitude_mapper = {attitude.value: attitude for attitude in Attitudes}
+
+
+def enum(**named_value):
+    """
+    This method creates a enum with parameters.
+
+    :param named_value: Values of the Enum
+    :return: Enum with parameters defined in named_value
+    """
+    return type('Enum', (), named_value)
+
+
+def wrap_history_onto_enum(history: list, reaction_step: bool = False) -> enum:
+    """
+    This method wraps the history onto an enum while considering
+    the specific use case in which the history object is used.
+
+    :param history: The history as a list
+    :param reaction_step: Is the current step a reaction step.
+    :return: Enum of the history considering the specific use-case.
+    """
+    if not reaction_step:
+        history = history[1:]
+
+    if reaction_step:
+        return enum(
+            UID=history[0],
+            RELATION=history[1],
+            ADDITIONAL_UID=history[2]
+        )
+    return enum(
+        UID=history[0],
+        ATTITUDE_TYPE=history[1],
+        RELATION=history[2] if len(history) >= 4 else ""
+    )
 
 
 def get_global_url():
@@ -208,7 +250,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False) -> Opt
     :return: [Arguments]
     """
     LOG.debug("Retrieving all arguments by statement-uid: %s, include_disabled %s", statement_uid, include_disabled)
-    db_arguments = __get_arguments_of_conclusion(statement_uid, include_disabled)
+    db_arguments = _get_arguments_of_conclusion(statement_uid, include_disabled)
     arg_array = [arg for arg in db_arguments] if db_arguments else []
 
     premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement_uid)
@@ -217,15 +259,15 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False) -> Opt
     premises = premises.all()
 
     for premise in premises:
-        arg_array += __get_argument_of_premisegroup(premise.premisegroup_uid, include_disabled)
+        arg_array += _get_argument_of_premisegroup(premise.premisegroup_uid, include_disabled)
 
     db_undercuts = []
     for arg in arg_array:
-        db_undercuts += __get_undercuts_of_argument(arg.uid, include_disabled)
+        db_undercuts += _get_undercuts_of_argument(arg.uid, include_disabled)
 
     db_undercutted_undercuts = []
     for arg in db_undercuts:
-        db_undercutted_undercuts += __get_undercuts_of_argument(arg.uid, include_disabled)
+        db_undercutted_undercuts += _get_undercuts_of_argument(arg.uid, include_disabled)
 
     arg_array = list(set(arg_array + db_undercuts + db_undercutted_undercuts))
 
@@ -233,7 +275,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False) -> Opt
     return arg_array if len(arg_array) > 0 else None
 
 
-def __get_argument_of_premisegroup(premisegroup_uid, include_disabled):
+def _get_argument_of_premisegroup(premisegroup_uid, include_disabled):
     """
     Returns all arguments with the given premisegroup
 
@@ -247,7 +289,7 @@ def __get_argument_of_premisegroup(premisegroup_uid, include_disabled):
     return db_arguments.all() if db_arguments else []
 
 
-def __get_undercuts_of_argument(argument_uid, include_disabled):
+def _get_undercuts_of_argument(argument_uid, include_disabled):
     """
     Returns all undercuts fo the given argument
 
@@ -261,7 +303,7 @@ def __get_undercuts_of_argument(argument_uid, include_disabled):
     return db_undercuts.all() if db_undercuts else []
 
 
-def __get_arguments_of_conclusion(statement_uid, include_disabled):
+def _get_arguments_of_conclusion(statement_uid, include_disabled):
     """
     Returns all arguments, where the statement is set as conclusion
 
@@ -290,6 +332,7 @@ def get_all_arguments_with_text_by_statement_id(statement_uid: int) -> List[dict
     if arguments:
         return [{
             'uid': arg.uid,
+            'is_supportive': arg.is_supportive,
             'texts': {
                 'display': get_text_for_argument_uid(arg.uid),
                 'conclusion': arg.get_conclusion_text(),
@@ -345,7 +388,7 @@ def get_all_arguments_with_text_and_url_by_statement(db_statement: Statement, ur
     return results
 
 
-def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: bool = False,
+def get_text_for_argument_uid(argument_or_uid: Union[Argument, int], nickname: str = None, with_html_tag: bool = False,
                               start_with_intro: bool = False, first_arg_by_user: bool = False,
                               user_changed_opinion: bool = False, rearrange_intro: bool = False,
                               colored_position: bool = False, attack_type: str = None,
@@ -354,7 +397,7 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
-    :param uid: Integer
+    :param argument_or_uid: Integer
     :param nickname: String
     :param with_html_tag: Boolean
     :param start_with_intro: Boolean
@@ -369,10 +412,14 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
     :param is_users_opinion: Boolean
     :return: String
     """
-    LOG.debug("Constructing text for argument with uid %s", uid)
-    db_argument: Argument = DBDiscussionSession.query(Argument).get(uid)
+    if isinstance(argument_or_uid, int):
+        db_argument: Argument = DBDiscussionSession.query(Argument).get(argument_or_uid)
+    else:
+        db_argument = argument_or_uid
     if not db_argument:
         return None
+
+    LOG.debug("Constructing text for argument with uid %s", argument_or_uid)
 
     lang = db_argument.lang
     _t = Translator(lang)
@@ -384,29 +431,29 @@ def get_text_for_argument_uid(uid: int, nickname: str = None, with_html_tag: boo
         author_uid = db_user.uid
         pgroup: PremiseGroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisegroup_uid)
         marked_argument: MarkedArgument = DBDiscussionSession.query(MarkedArgument).filter_by(
-            argument_uid=uid,
+            argument_uid=argument_or_uid,
             author_uid=db_user.uid).first()
         premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None
 
-    arguments = __get_chain_of_attacking_arguments(db_argument)
+    arguments = _get_chain_of_attacking_arguments(db_argument)
 
     if attack_type == 'jump':
-        return __build_argument_for_jump(arguments, with_html_tag)
+        return _build_argument_for_jump(arguments, with_html_tag)
 
     if len(arguments) == 1:
         # build one argument only
-        return __build_single_argument(arguments[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
-                                       start_with_intro, is_users_opinion, anonymous_style, support_counter_argument,
-                                       author_uid)
+        return _build_single_argument(arguments[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
+                                      start_with_intro, is_users_opinion, anonymous_style, support_counter_argument,
+                                      author_uid)
 
     else:
         # get all pgroups and at last, the conclusion
-        return __build_nested_argument(arguments, first_arg_by_user, user_changed_opinion, with_html_tag,
-                                       start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user,
-                                       _t)
+        return _build_nested_argument(arguments, first_arg_by_user, user_changed_opinion, with_html_tag,
+                                      start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user,
+                                      _t)
 
 
-def __get_chain_of_attacking_arguments(argument: Argument) -> List[Argument]:
+def _get_chain_of_attacking_arguments(argument: Argument) -> List[Argument]:
     """
     Traverse through all arguments which might be connected to our starting argument and collect them all.
 
@@ -420,7 +467,7 @@ def __get_chain_of_attacking_arguments(argument: Argument) -> List[Argument]:
     return arguments
 
 
-def __build_argument_for_jump(arg_array: List[Argument], with_html_tag: bool) -> str:
+def _build_argument_for_jump(arg_array: List[Argument], with_html_tag: bool) -> str:
     """
     Build text for an argument, if we jump to this argument
 
@@ -435,18 +482,18 @@ def __build_argument_for_jump(arg_array: List[Argument], with_html_tag: bool) ->
     _t = Translator(arg_array[0].lang)
 
     if len(arg_array) == 1:
-        ret_value = __build_val_for_jump(arg_array[0], tag_premise, tag_conclusion, tag_end, _t)
+        ret_value = _build_val_for_jump(arg_array[0], tag_premise, tag_conclusion, tag_end, _t)
     elif len(arg_array) == 2:
-        ret_value = __build_val_for_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t)
+        ret_value = _build_val_for_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t)
     else:
-        ret_value = __build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t)
+        ret_value = _build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t)
 
     ret_value = unhtmlify(ret_value) if not with_html_tag else ret_value
 
     return ret_value.replace('  ', ' ')
 
 
-def __build_val_for_jump(db_argument: Argument, tag_premise, tag_conclusion, tag_end, _t) -> str:
+def _build_val_for_jump(db_argument: Argument, tag_premise, tag_conclusion, tag_end, _t) -> str:
     premises = db_argument.get_premisegroup_text()
     if premises[-1] != '.':
         premises += '.'
@@ -467,7 +514,7 @@ def __build_val_for_jump(db_argument: Argument, tag_premise, tag_conclusion, tag
     return ret_value
 
 
-def __build_val_for_undercut(arg_array: List[Argument], tag_premise, tag_conclusion, tag_end, _t):
+def _build_val_for_undercut(arg_array: List[Argument], tag_premise, tag_conclusion, tag_end, _t):
     db_undercut = arg_array[0]
     db_conclusion_argument = arg_array[1]
     premise = db_undercut.get_premisegroup_text()
@@ -486,7 +533,7 @@ def __build_val_for_undercut(arg_array: List[Argument], tag_premise, tag_conclus
     return ret_value
 
 
-def __build_val_for_undercutted_undercut(arg_array: List[Argument], tag_premise, tag_conclusion, tag_end, _t):
+def _build_val_for_undercutted_undercut(arg_array: List[Argument], tag_premise, tag_conclusion, tag_end, _t):
     premise1 = arg_array[0].get_premisegroup_text()
     premise2 = arg_array[1].get_premisegroup_text()
     premise3 = arg_array[2].get_premisegroup_text()
@@ -506,9 +553,9 @@ def __build_val_for_undercutted_undercut(arg_array: List[Argument], tag_premise,
     return ret_value
 
 
-def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_html_tag: bool, colored_position: bool,
-                            attack_type: str, _t: Translator, start_with_intro: bool, is_users_opinion: bool,
-                            anonymous_style: bool, support_counter_argument: bool = False, author_uid=None):
+def _build_single_argument(db_argument: Argument, rearrange_intro: bool, with_html_tag: bool, colored_position: bool,
+                           attack_type: str, _t: Translator, start_with_intro: bool, is_users_opinion: bool,
+                           anonymous_style: bool, support_counter_argument: bool = False, author_uid=None):
     """
     Build up argument text for a single argument
 
@@ -533,8 +580,8 @@ def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_h
     if lang != 'de':
         premises_text = start_with_small(premises_text)
 
-    tag_dict = __get_tags_for_building_single_argument(with_html_tag, attack_type, colored_position, premises_text,
-                                                       conclusion_text)
+    tag_dict = _get_tags_for_building_single_argument(with_html_tag, attack_type, colored_position, premises_text,
+                                                      conclusion_text)
     premises_text = tag_dict['premise']
     conclusion_text = tag_dict['conclusion']
     sb = tag_dict['tag_begin']
@@ -550,27 +597,27 @@ def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_h
     you_have_the_opinion_that = _t.get(_.youHaveTheOpinionThat).format('').strip()
 
     if lang == 'de':
-        text = __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro,
-                                              anonymous_style, rearrange_intro, db_argument, attack_type, sb_none,
-                                              marked_element, premises_text, conclusion_text,
-                                              is_users_opinion,
-                                              support_counter_argument)
+        text = _build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro,
+                                             anonymous_style, rearrange_intro, db_argument, attack_type, sb_none,
+                                             marked_element, premises_text, conclusion_text,
+                                             is_users_opinion,
+                                             support_counter_argument)
     else:
-        text = __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element,
-                                              conclusion_text,
-                                              premises_text, db_argument)
+        text = _build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element,
+                                             conclusion_text,
+                                             premises_text, db_argument)
     return text.replace('  ', ' ')
 
 
-def __get_tags_for_building_single_argument(with_html_tag, attack_type, colored_position, premises, conclusion):
+def _get_tags_for_building_single_argument(with_html_tag, attack_type, colored_position, premises, conclusion):
     if attack_type in ['dont_know', 'jump']:
-        return __get_tags_for_building_single_unknown_argument(with_html_tag, premises, conclusion)
+        return _get_tags_for_building_single_unknown_argument(with_html_tag, premises, conclusion)
     else:
         return __get_tags_for_building_single_user_argument(with_html_tag, premises, conclusion, colored_position,
                                                             attack_type)
 
 
-def __get_tags_for_building_single_unknown_argument(with_html_tag, premises, conclusion):
+def _get_tags_for_building_single_unknown_argument(with_html_tag, premises, conclusion):
     sb = start_argument if with_html_tag else ''
     sb_tmp = start_attack if with_html_tag else ''
     sb_none = start_tag if with_html_tag else ''
@@ -608,10 +655,10 @@ def __get_tags_for_building_single_user_argument(with_html_tag, premises, conclu
     }
 
 
-def __build_single_argument_for_de(_t: Translator, sb: str, se: str, you_have_the_opinion_that: str,
-                                   start_with_intro: bool, anonymous_style: bool, rearrange_intro: bool,
-                                   db_argument: Argument, attack_type: str, sb_none: str, marked_element, premises: str,
-                                   conclusion: str, is_users_opinion: bool, support_counter_argument) -> str:
+def _build_single_argument_for_de(_t: Translator, sb: str, se: str, you_have_the_opinion_that: str,
+                                  start_with_intro: bool, anonymous_style: bool, rearrange_intro: bool,
+                                  db_argument: Argument, attack_type: str, sb_none: str, marked_element, premises: str,
+                                  conclusion: str, is_users_opinion: bool, support_counter_argument) -> str:
     if start_with_intro and not anonymous_style:
         intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
         if rearrange_intro:
@@ -637,8 +684,8 @@ def __build_single_argument_for_de(_t: Translator, sb: str, se: str, you_have_th
     return text
 
 
-def __build_single_argument_for_en(_t: Translator, sb: str, se: str, you_have_the_opinion_that: str, marked_element,
-                                   conclusion: str, premises: str, argument: Argument):
+def _build_single_argument_for_en(_t: Translator, sb: str, se: str, you_have_the_opinion_that: str, marked_element,
+                                  conclusion: str, premises: str, argument: Argument):
     tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
     text = (you_have_the_opinion_that + ' ' if marked_element else '') + conclusion + ' '
     text += _t.get(_.because).lower() if argument.is_supportive else tmp
@@ -646,8 +693,8 @@ def __build_single_argument_for_en(_t: Translator, sb: str, se: str, you_have_th
     return text
 
 
-def __build_nested_argument(arg_array: List[Argument], first_arg_by_user, user_changed_opinion, with_html_tag,
-                            start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user, _t):
+def _build_nested_argument(arg_array: List[Argument], first_arg_by_user, user_changed_opinion, with_html_tag,
+                           start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user, _t):
     """
 
     :param arg_array:
@@ -840,7 +887,7 @@ def get_user_by_case_insensitive_nickname(nickname):
     :param nickname: String
     :return: User or None
     """
-    return DBDiscussionSession.query(User).filter(func.lower(User.nickname) == func.lower(nickname)).first()
+    return DBDiscussionSession.query(User).filter(User.nickname.ilike(nickname)).first()
 
 
 def get_user_by_case_insensitive_public_nickname(public_nickname):
@@ -967,16 +1014,16 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
         }
     }
 
-    votecount_keys = __get_text_for_click_and_mark_count(db_user, bubble_type is BubbleTypes.USER, argument_uid,
-                                                         statement_uid, speech, lang)
+    votecount_keys = _get_text_for_click_and_mark_count(db_user, bubble_type is BubbleTypes.USER, argument_uid,
+                                                        statement_uid, speech, lang)
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
 
     return speech
 
 
-def __get_text_for_click_and_mark_count(db_user: User, is_user: bool, argument_uid: int, statement_uid: int,
-                                        speech: dict, lang: str):
+def _get_text_for_click_and_mark_count(db_user: User, is_user: bool, argument_uid: int, statement_uid: int,
+                                       speech: dict, lang: str):
     """
     Build text for a bubble, how many other participants have the same interest?
 
@@ -990,7 +1037,7 @@ def __get_text_for_click_and_mark_count(db_user: User, is_user: bool, argument_u
     """
     if not db_user:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-    db_clicks, db_marks = __get_clicks_and_marks(argument_uid, statement_uid, db_user)
+    db_clicks, db_marks = _get_clicks_and_marks(argument_uid, statement_uid, db_user)
 
     _t = Translator(lang)
     speech['votecounts'] = len(db_clicks) if db_clicks else 0
@@ -1012,7 +1059,7 @@ def __get_text_for_click_and_mark_count(db_user: User, is_user: bool, argument_u
     return votecount_keys
 
 
-def __get_clicks_and_marks(argument_uid, statement_uid, db_user):
+def _get_clicks_and_marks(argument_uid, statement_uid, db_user):
     db_clicks = None
     db_marks = None
     if argument_uid:
@@ -1052,7 +1099,7 @@ def is_argument_disabled_due_to_disabled_statements(argument):
         if conclusion.is_disabled:
             return True
         # check premisegroup of given arguments conclusion
-        premises = __get_all_premises_of_argument(db_argument)
+        premises = _get_all_premises_of_argument(db_argument)
         for premise in premises:
             if premise.statement.is_disabled:
                 return True
@@ -1063,7 +1110,7 @@ def is_argument_disabled_due_to_disabled_statements(argument):
             return True
 
     # check premisegroup of given argument
-    premises = __get_all_premises_of_argument(argument)
+    premises = _get_all_premises_of_argument(argument)
     for premise in premises:
         if premise.statement.is_disabled:
             return True
@@ -1106,7 +1153,7 @@ def is_author_of_argument(db_user: User, argument_uid: int) -> bool:
     return True if db_argument else False
 
 
-def __get_all_premises_of_argument(argument):
+def _get_all_premises_of_argument(argument):
     """
     Returns list with all premises of the argument.
 
@@ -1141,35 +1188,32 @@ def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: boo
     return gravatar_url
 
 
-def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=True, profile_picture_size=20):
+def get_author_data(user: User, gravatar_on_right_side=True, linked_with_users_page=True, profile_picture_size=20) \
+        -> Tuple[User, str, bool]:
     """
     Returns a-tag with gravatar of current author and users page as href
 
-    :param uid: Uid of the author
+    :param user: The author herself
     :param gravatar_on_right_side: True, if the gravatar is on the right of authors name
     :param linked_with_users_page: True, if the text is a link to the authors site
     :param profile_picture_size: Integer
     :return: HTML-String
     """
-    db_user = DBDiscussionSession.query(User).get(int(uid))
-    if not db_user:
-        return None, 'Missing author with uid ' + str(uid), False
-
-    nick = db_user.global_nickname
-    img_src = get_profile_picture(db_user, profile_picture_size)
+    nickname = user.global_nickname
+    img_src = get_profile_picture(user, profile_picture_size)
     link_begin = ''
     link_end = ''
     if linked_with_users_page:
-        link_begin = '<a href="/user/{}" title="{}">'.format(db_user.uid, nick)
+        link_begin = '<a href="/user/{}" title="{}">'.format(user.uid, nickname)
         link_end = '</a>'
 
     side = 'left' if gravatar_on_right_side else 'right'
     img = '<img class="img-circle" src="{}" style="padding-{}: 0.3em">'.format(img_src, side)
 
     if gravatar_on_right_side:
-        return db_user, '{}{}{}{}'.format(link_begin, nick, img, link_end), True
+        return user, '{}{}{}{}'.format(link_begin, nickname, img, link_end), True
     else:
-        return db_user, '{}{}{}{}'.format(link_begin, img, nick, link_end), True
+        return user, '{}{}{}{}'.format(link_begin, img, nickname, link_end), True
 
 
 def bubbles_already_last_in_list(bubble_list, bubbles):

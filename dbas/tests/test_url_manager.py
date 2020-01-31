@@ -1,3 +1,4 @@
+from dbas.handler.history import SessionHistory
 from dbas.lib import Relations, Attitudes
 from dbas.tests.utils import TestCaseWithConfig
 
@@ -12,8 +13,8 @@ class UrlManagerTests(TestCaseWithConfig):
         return self.__get_target_class()(*args, **kw)
 
     def test_init(self):
-        url1 = self.__make_one(slug='', history='')
-        url2 = self.__make_one(slug='cat-or-dog', history='attitude/35')
+        url1 = self.__make_one(slug='', history=SessionHistory(''))
+        url2 = self.__make_one(slug='cat-or-dog', history=SessionHistory('attitude/35'))
         # Test empty string.
         self.assertEqual(url1.slug, '')
         # Test string.
@@ -96,6 +97,6 @@ class UrlManagerTests(TestCaseWithConfig):
         self.assertEqual(response_true, '/cat-or-dog/choose/1/2/3')
 
     def test_get_url_for_new_argument(self):
-        url = self.__make_one(slug='cat-or-dog', history='attitude/4')
+        url = self.__make_one(slug='cat-or-dog', history=SessionHistory('attitude/4'))
         res = '/cat-or-dog/finish/10?history=attitude/4'
         self.assertEqual(res, url.get_url_for_new_argument([10]))

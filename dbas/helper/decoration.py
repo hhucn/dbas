@@ -1,5 +1,6 @@
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
+from dbas.handler.history import SessionHistory
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
 
@@ -17,4 +18,6 @@ def prep_extras_dict(request):
                                                                                    request.path,
                                                                                    db_user)
     setattr(request, 'decorated', {})
+    request.session.update({'session_history': SessionHistory()})
+
     request.decorated['extras'] = extras_dict

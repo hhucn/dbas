@@ -122,7 +122,7 @@ def __get_text_for_justification_or_reaction_bubble(stmt_or_arg: Union[Statement
         bubbles = get_bubble_from_reaction_step(step, db_user, _tn.get_lang(), splitted_history, '', color_steps=True)
         text = bubbles[0]['message'] if bubbles else ''
     else:
-        text, tmp = get_user_bubble_text_for_justify_statement(stmt_or_arg.uid, db_user, is_supportive, _tn)
+        text, tmp = get_user_bubble_text_for_justify_statement(stmt_or_arg, db_user, is_supportive, _tn)
         text = pretty_print_options(text)
 
     return text

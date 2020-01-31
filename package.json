@@ -1,6 +1,6 @@
 {
   "name": "D-BAS",
-  "version": "1.23.0",
+  "version": "1.24.0",
   "description": "system for dialog-based online argumentation",
   "main": "app.js",
   "repository": "git@github.com:hhucn/dbas",
@@ -23,5 +23,8 @@
     "js-cookie": "^2.2.0",
     "popper.js": "^1.14.7",
     "socket.io-client": "^2.1.0"
+  },
+  "devDependencies": {
+    "cypress": "^3.6.0"
   }
 }

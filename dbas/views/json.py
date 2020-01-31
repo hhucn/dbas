@@ -136,7 +136,7 @@ def get_reference(request):
           has_keywords_in_json_path(('text', str), ('ref_source', str)))
 def set_references(request):
     """
-    Sets a reference for a statement or an arguments
+    Sets a reference for a statement or an argument
 
     :param request: current request of the server
     :return: json-dict()

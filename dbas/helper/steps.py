@@ -2,10 +2,11 @@
 Helper for D-BAS Views
 """
 import logging
-from typing import Tuple, Union
+from typing import Tuple, Dict
 
 import dbas.handler.voting as voting_helper
 from dbas.database.discussion_model import Statement, Issue, User, Argument
+from dbas.handler.history import SessionHistory
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.lib import Attitudes
@@ -17,7 +18,8 @@ from websocket.lib import send_request_for_info_popup_to_socketio
 LOG = logging.getLogger(__name__)
 
 
-def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
+def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str,
+                                   history: SessionHistory,
                                    path):
     """
 
@@ -36,24 +38,24 @@ def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_ar
     return item_dict, discussion_dict
 
 
-def handle_justification_dontknow(db_issue: Issue, db_user: User, db_stmt_or_arg: Union[Argument, Statement], history,
-                                  path) -> Tuple[dict, dict]:
+def handle_justification_dontknow(db_issue: Issue, db_user: User, argument: Argument, history: SessionHistory, path) \
+        -> Tuple[Dict, Dict]:
     """
 
     :param db_issue: Current issue
     :param db_user: User
-    :param db_stmt_or_arg: Statement
+    :param argument: Statement
     :param history:
     :param path:
     :return:
     """
-    LOG.debug("Do not know for %s", db_stmt_or_arg.uid)
-    item_dict, discussion_dict = __preparation_for_dont_know_statement(db_issue, db_user, db_stmt_or_arg, history, path)
+    LOG.debug("Do not know for %s", argument)
+    item_dict, discussion_dict = __preparation_for_dont_know_statement(db_issue, db_user, argument, history, path)
     return item_dict, discussion_dict
 
 
 def handle_justification_argument(db_issue: Issue, db_user: User, db_argument: Argument, attitude: str,
-                                  relation: str, history, path) -> Tuple[dict, dict]:
+                                  relation: str, history: SessionHistory, path) -> Tuple[dict, dict]:
     """
 
     :param db_issue:
@@ -106,37 +108,36 @@ def preparation_for_justify_statement(history, db_user: User, path, db_issue: Is
 
     item_dict = _idh.get_array_for_justify_statement(db_statement, db_user, supportive, history)
     discussion_dict = _ddh.get_dict_for_justify_statement(db_statement, slug, supportive,
-                                                          len(item_dict['elements']), db_user)
+                                                          len(item_dict['elements']) == 1, db_user)
     return item_dict, discussion_dict
 
 
-def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, history, path) -> \
+def __preparation_for_dont_know_statement(db_issue: Issue, user: User, argument: Argument, history, path) -> \
         Tuple[dict, dict]:
     """
     Prepares some parameter for the "don't know" step
 
     :param db_issue: Current issue
-    :param db_user: User
-    :param db_stmt_or_arg: Statement
+    :param user: User
+    :param argument: Statement
     :param history:
     :param path: request.path
     :return: dict(), dict(), dict()
     """
     LOG.debug("Entering __preparation_for_dont_know_statement")
-    nickname = db_user.nickname
     slug = db_issue.slug
 
     disc_ui_locales = db_issue.lang
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, user.nickname, history=history, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
-    discussion_dict = _ddh.get_dict_for_dont_know_reaction(db_stmt_or_arg.uid, nickname)
-    item_dict = _idh.get_array_for_dont_know_reaction(db_stmt_or_arg.uid, db_user, discussion_dict['gender'])
+    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument, user)
+    item_dict = _idh.get_array_for_dont_know_reaction(argument.uid, user, discussion_dict['gender'])
     return item_dict, discussion_dict
 
 
 def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, relation: str,
-                                     supportive: bool, history, path):
+                                     supportive: bool, history: SessionHistory, path):
     """
     Prepares some parameter for the justification step for an argument
 
@@ -154,11 +155,11 @@ def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument
     slug = db_issue.slug
 
     disc_ui_locales = db_issue.lang
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history=history, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
     # justifying argument
     item_dict = _idh.get_array_for_justify_argument(db_argument.uid, relation, db_user, history)
-    discussion_dict = _ddh.get_dict_for_justify_argument(db_argument.uid, supportive, relation)
+    discussion_dict = _ddh.get_dict_for_justify_argument(db_argument, supportive, relation)
 
     return item_dict, discussion_dict

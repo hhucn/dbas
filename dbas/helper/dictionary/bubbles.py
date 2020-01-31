@@ -1,25 +1,29 @@
 import logging
+from typing import Tuple
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import MarkedStatement, Statement
+from dbas.database.discussion_model import MarkedStatement, Statement, User
+from dbas.helper.html_tags import wrap_in_tag
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital
+from dbas.strings.text_generator import tag_type
+from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
 
 
-def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive, _tn):
+def get_user_bubble_text_for_justify_statement(statement: Statement, user: User, is_supportive: bool,
+                                               _tn: Translator) -> Tuple[str, str]:
     """
     Returns user text for a bubble when the user has to justify a statement and text for the add-position-container
 
-    :param stmt_uid: Statement.uid
-    :param db_user: User
-    :param is_supportive: Boolean
-    :param _tn: Translator
-    :return: String, String
+    :param statement: The statement that shall be justified
+    :param user: The user concerned
+    :param is_supportive: Indicates whether the justification is too be supportive
+    :param _tn: The default Translator
+    :return: The bubble text to be shown as well as the text for the corresponding premise
     """
-    LOG.debug("%s is supportive? %s", stmt_uid, is_supportive)
-    statement = DBDiscussionSession.query(Statement).get(stmt_uid)
+    LOG.debug("%s is supportive? %s", statement, is_supportive)
     text = statement.get_text()
 
     if _tn.get_lang() == 'de':
@@ -31,10 +35,10 @@ def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive,
     add_premise_text += ', ...'
 
     is_users_opinion = False
-    if db_user:
+    if user:
         db_marked_statement = DBDiscussionSession.query(MarkedStatement).filter(
-            MarkedStatement.statement_uid == stmt_uid,
-            MarkedStatement.author_uid == db_user.uid
+            MarkedStatement.statement_uid == statement.uid,
+            MarkedStatement.author_uid == user.uid
         ).first()
         is_users_opinion = db_marked_statement is not None
 
@@ -54,16 +58,16 @@ def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive,
     return text, add_premise_text
 
 
-def get_system_bubble_text_for_justify_statement(is_supportive, _tn, tag_start, text, tag_end):
+def get_system_bubble_text_for_justify_statement(is_supportive: bool, _tn: Translator, text: str,
+                                                 additional_display_attributes: str) -> str:
     """
-    Returns system text for a bubble when the user has to justify a statement and text for the add-position-container
+    Build system text for a bubble when the user has to justify a statement and text for the add-position-container
 
-    :param is_supportive: Boolean
-    :param _tn: Translator
-    :param tag_start: String
-    :param text: String
-    :param tag_end: String
-    :return: String
+    :param is_supportive: Indicates whether the user was supportive in regards to the discussed statement
+    :param _tn: The default translator
+    :param text: The text that shall be displayed
+    :param additional_display_attributes: HTML-Attributes to be added to the starting tag
+    :return: The readily build system text in form of a question
     """
     if _tn.get_lang() == 'de':
         if is_supportive:
@@ -73,7 +77,7 @@ def get_system_bubble_text_for_justify_statement(is_supportive, _tn, tag_start, 
     else:
         question = _tn.get(_.whatIsYourMostImportantReasonWhyFor)
 
-    question += ' ' + tag_start + text + tag_end
+    question += wrap_in_tag(tag_type, text, additional_display_attributes)
 
     if _tn.get_lang() != 'de':
         question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)

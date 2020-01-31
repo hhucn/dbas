@@ -5,7 +5,7 @@ admin_min_js = admin.min.js
 dbas: python clean-js js sass i18n
 
 python:
-	python3 setup.py --quiet develop
+	poetry run python3 setup.py --quiet develop
 
 install-js:
 	yarn install

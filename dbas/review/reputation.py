@@ -167,11 +167,11 @@ def has_access_to_review_system(db_user: User):
 
     db_points = DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(
         ReputationReason).all()
-    points = __collect_points(db_points)
+    points = _collect_points(db_points)
     return points >= smallest_border
 
 
-def __collect_points(reputation_history):
+def _collect_points(reputation_history):
     """
     Sums up the points
 

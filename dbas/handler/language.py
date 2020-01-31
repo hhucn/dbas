@@ -24,7 +24,6 @@ def set_language(request, db_lang) -> str:
     request.response.set_cookie('_LOCALE_', str(db_lang.ui_locales))
     request.cookies['_LOCALE_'] = db_lang.ui_locales
     # we have to set 'ui_locales = get_language_from_cookie(request)' in each view again, because D-BAS is no object
-    LOG.debug("Switched to %s", db_lang.ui_locales)
 
     return db_lang.ui_locales
 

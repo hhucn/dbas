@@ -171,14 +171,7 @@ class TestAuthorship(TestCaseWithConfig):
 
 class TestGravatar(TestCaseWithConfig):
     def test_get_profile_picture(self):
-        user = DBDiscussionSession.query(User).get(1)
-        self.assertIn('gravatar.com', lib.get_profile_picture(user))
-        self.assertIn('80', lib.get_profile_picture(user))
-        self.assertIn('gravatar.com', lib.get_profile_picture(user, size=120))
-        self.assertIn('120', lib.get_profile_picture(user, size=120))
-
-    def test_get_public_profile_picture(self):
-        user = DBDiscussionSession.query(User).get(1)
+        user = self.user_anonymous
         self.assertIn('gravatar.com', lib.get_profile_picture(user))
         self.assertIn('80', lib.get_profile_picture(user))
         self.assertIn('gravatar.com', lib.get_profile_picture(user, size=120))
@@ -187,19 +180,14 @@ class TestGravatar(TestCaseWithConfig):
 
 class TestAuthorData(TestCaseWithConfig):
     def test_get_author_data(self):
-        db_user, author_string, some_boolean = lib.get_author_data(0)
-        self.assertFalse(some_boolean)
-        self.assertIsNone(db_user)
-
-        user = DBDiscussionSession.query(User).get(1)
-        _, author_string, some_boolean = lib.get_author_data(1, gravatar_on_right_side=False)
+        _, author_string, some_boolean = lib.get_author_data(self.user_anonymous, gravatar_on_right_side=False)
         self.assertTrue(some_boolean)
-        self.assertIn('{}'.format(user.nickname), author_string)
+        self.assertIn('{}'.format(self.user_anonymous.nickname), author_string)
         self.assertIn('right', author_string)
 
-        _, author_string, some_boolean = lib.get_author_data(1, gravatar_on_right_side=True)
+        _, author_string, some_boolean = lib.get_author_data(self.user_anonymous, gravatar_on_right_side=True)
         self.assertTrue(some_boolean)
-        self.assertIn('{}'.format(user.nickname), author_string)
+        self.assertIn('{}'.format(self.user_anonymous.nickname), author_string)
         self.assertIn('left', author_string)
 
 

@@ -3,10 +3,38 @@ servers:
   - url: 'http://localhost:4284/api'
   - url: 'https://dbas.cs.uni-duesseldorf.de/api'
 info:
-  version: "1.23.0"
+  version: "1.24.0"
   title: D-BAS
 
 paths:
+  /whoami:
+    post:
+      summary: Validate token
+      description: >-
+        Validate a login token and get a greeting message on success.
+      tags:
+        - user-management
+      parameters:
+        - $ref: '#/components/parameters/authentication-token'
+      responses:
+        200:
+          description: The token is valid and the user exists
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    nickname:
+                      type: string
+                    status:
+                      type: string
+                    message:
+                      type: string
+        401:
+          description: An error like 'Token expired'
+      security:
+        - token: []
+
   /login:
     post:
       summary: Login and get a token
@@ -128,6 +156,29 @@ paths:
                 $ref: '#/components/schemas/user'
         404:
           description: This user-id does not exist.
+
+  /user:
+    post:
+      summary: Add a new D-BAS user
+      description: >-
+        Add a new D-BAS user. Requires an API-Token!
+      tags:
+        - user-management
+      parameters:
+        - $ref: '#/components/parameters/authentication-token'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/local_user'
+      responses:
+        201:
+          description: The user was created
+        400:
+          description: An error like 'Nickname taken'
+      security:
+        - token: []
 
   /issue:
     post:
@@ -852,6 +903,34 @@ components:
           type: string
         description:
           type: string
+
+    local_user:
+      type: object
+      properties:
+        firstname:
+          type: string
+          example: Jimmy
+        lastname:
+          type: string
+          example: McJimbo
+        nickname:
+          type: string
+          example: TheGreatJimbo
+        lang:
+          type: string
+          example: de
+        email:
+          type: string
+          example: jim@bo.com
+        gender:
+          type: string
+          example: m w n
+        id:
+          type: integer
+          example: 12345678247354
+        password:
+          type: string
+          example: 123456
 
     oauth_user:
       type: object

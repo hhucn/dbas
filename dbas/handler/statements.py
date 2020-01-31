@@ -10,6 +10,7 @@ from dbas.database.discussion_model import Issue, User, Statement, TextVersion, 
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement, StatementToIssue
 from dbas.decidotron.lib import add_associated_cost
 from dbas.handler import notification as nh
+from dbas.handler.history import SessionHistory
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
     set_new_rebut
@@ -84,7 +85,7 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str, feature_da
 
 
 def set_positions_premise(db_issue: Issue, db_user: User, db_conclusion: Statement, premisegroups: List[List[str]],
-                          supportive: bool, history: str, mailer) -> dict:
+                          supportive: bool, history: SessionHistory, mailer) -> dict:
     """
     Set new premise for a given position and returns dictionary with url for the next step of the discussion
 
@@ -103,7 +104,8 @@ def set_positions_premise(db_issue: Issue, db_user: User, db_conclusion: Stateme
     if prepared_dict['error']:
         return prepared_dict
 
-    __set_url_of_start_premises(prepared_dict, db_conclusion, supportive, db_issue, db_user, history, mailer)
+    __set_url_of_start_premises(prepared_dict, db_conclusion, supportive, db_issue, db_user,
+                                history, mailer)
     __add_reputation(db_user, db_issue, prepared_dict['url'], prepared_dict)
 
     return prepared_dict
@@ -429,12 +431,13 @@ def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, s
 
 
 def __set_url_of_start_premises(prepared_dict: dict, db_conclusion: Statement, supportive: bool, db_issue: Issue,
-                                db_user: User, history, mailer):
+                                db_user: User, history: SessionHistory, mailer):
     LOG.debug("Entering __set_url_of_start_premises")
 
     # arguments=0: empty input
     # arguments=1: deliver new url
     # arguments>1: deliver url where the user has to choose between her inputs
+
     _um = UrlManager(db_issue.slug, history)
     _main_um = UrlManager(db_issue.slug, history=history)
     new_argument_uids = prepared_dict['argument_uids']

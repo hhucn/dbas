@@ -2,11 +2,6 @@
 Database
 ========
 
-The database has its `own repository on GitHub <https://github.com/hhucn/dbas-database>`_. The default structure of
-the database is provided via this repository and all modifications to it are applied via our migration engine.
-
-You can find the pre-built image on DockerHub: https://hub.docker.com/r/hhucn/dbas-database/
-
 
 General
 =======
@@ -21,6 +16,47 @@ edited values **now**.
 Normally this behaviour is not needed but since we are editing arguments/statements/... and want to get their text at
 another places of the program, we have to force transactions sometimes.
 
+Guest-User
+==========
+
++-------------------+-------------------+------------------------+-------------------+
+|**Mode**           | **Name**          | **Password**           | **Permission**    |
++-------------------+-------------------+------------------------+-------------------+
+| development       | guest             | guest                  | read-only         |
++-------------------+-------------------+------------------------+-------------------+
+| production        | guest             | Ask: ``dbas@cs.hhu.de``| read-only         |
++-------------------+-------------------+------------------------+-------------------+
+
+The D-BAS database has one guest user.
+The name of the guest user is ``guest``.
+The live database can be accessed from the university network.
+In order to access the live data, a password for the guest user must be requested.
+The password can be requested under ``dbas@cs.hhu.de``.
+
+For local development the password for the guest user is: ``guest``.
+
+The guest user has the exclusive right to ``SELECT`` the essential database tables. This includes:
+
++--------------------+
+|issues              |
++--------------------+
+|languages           |
++--------------------+
+|premisegroups       |
++--------------------+
+|premises            |
++--------------------+
+|statement_to_issue  |
++--------------------+
+|statements          |
++--------------------+
+|textversions        |
++--------------------+
+
+The guest user may also access the ``View`` ``public_nicknames``.
+This view includes the ``uid`` of the users and their ``public_nickname``.
+If the real-time data is required, it can be requested remotely with the guest user.
+The database can be accessed under ``dbas.cs.uni-duesseldorf.de`` or ``dbas.hhu.de`` via port ``5432``.
 
 Dump a database
 ===============

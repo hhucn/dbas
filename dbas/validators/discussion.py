@@ -605,6 +605,20 @@ def valid_reason_and_position_not_equal(request) -> bool:
     return True
 
 
+def valid_history_object(request) -> bool:
+    """
+    Checks if history object is provided
+
+    :param request:
+    :return:
+    """
+    session_history = request.session.get('session_history')
+    if session_history is None:
+        return False
+    request.validated['session_history'] = session_history
+    return True
+
+
 # -----------------------------------------------------------------------------
 # Helper functions
 

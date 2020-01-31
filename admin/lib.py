@@ -87,62 +87,62 @@ def get_overview(page):
 
     # all tables for the 'general' group
     general = list()
-    general.append(__get_dash_dict('Issue', page + 'Issue'))
-    general.append(__get_dash_dict('Language', page + 'Language'))
-    general.append(__get_dash_dict('History', page + 'History'))
+    general.append(_get_dash_dict('Issue', page + 'Issue'))
+    general.append(_get_dash_dict('Language', page + 'Language'))
+    general.append(_get_dash_dict('History', page + 'History'))
 
     # all tables for the 'users' group
     users = list()
-    users.append(__get_dash_dict('Group', page + 'Group'))
-    users.append(__get_dash_dict('User', page + 'User'))
-    users.append(__get_dash_dict('Settings', page + 'Settings'))
-    users.append(__get_dash_dict('Message', page + 'Message'))
+    users.append(_get_dash_dict('Group', page + 'Group'))
+    users.append(_get_dash_dict('User', page + 'User'))
+    users.append(_get_dash_dict('Settings', page + 'Settings'))
+    users.append(_get_dash_dict('Message', page + 'Message'))
 
     # all tables for the 'content' group
     content = list()
-    content.append(__get_dash_dict('Statement', page + 'Statement'))
-    content.append(__get_dash_dict('StatementOrigins', page + 'StatementOrigins'))
-    content.append(__get_dash_dict('StatementToIssue', page + 'StatementToIssue'))
-    content.append(__get_dash_dict('TextVersion', page + 'TextVersion'))
-    content.append(__get_dash_dict('StatementReference', page + 'StatementReference'))
-    content.append(__get_dash_dict('PremiseGroup', page + 'PremiseGroup'))
-    content.append(__get_dash_dict('Premise', page + 'Premise'))
-    content.append(__get_dash_dict('Argument', page + 'Argument'))
+    content.append(_get_dash_dict('Statement', page + 'Statement'))
+    content.append(_get_dash_dict('StatementOrigins', page + 'StatementOrigins'))
+    content.append(_get_dash_dict('StatementToIssue', page + 'StatementToIssue'))
+    content.append(_get_dash_dict('TextVersion', page + 'TextVersion'))
+    content.append(_get_dash_dict('StatementReference', page + 'StatementReference'))
+    content.append(_get_dash_dict('PremiseGroup', page + 'PremiseGroup'))
+    content.append(_get_dash_dict('Premise', page + 'Premise'))
+    content.append(_get_dash_dict('Argument', page + 'Argument'))
 
     # all tables for the 'voting' group
     voting = list()
-    voting.append(__get_dash_dict('ClickedArgument', page + 'ClickedArgument'))
-    voting.append(__get_dash_dict('ClickedStatement', page + 'ClickedStatement'))
-    voting.append(__get_dash_dict('MarkedArgument', page + 'MarkedArgument'))
-    voting.append(__get_dash_dict('MarkedStatement', page + 'MarkedStatement'))
-    voting.append(__get_dash_dict('SeenArgument', page + 'SeenArgument'))
-    voting.append(__get_dash_dict('SeenStatement', page + 'SeenStatement'))
+    voting.append(_get_dash_dict('ClickedArgument', page + 'ClickedArgument'))
+    voting.append(_get_dash_dict('ClickedStatement', page + 'ClickedStatement'))
+    voting.append(_get_dash_dict('MarkedArgument', page + 'MarkedArgument'))
+    voting.append(_get_dash_dict('MarkedStatement', page + 'MarkedStatement'))
+    voting.append(_get_dash_dict('SeenArgument', page + 'SeenArgument'))
+    voting.append(_get_dash_dict('SeenStatement', page + 'SeenStatement'))
 
     # all tables for the 'reviews' group
     reviews = list()
-    reviews.append(__get_dash_dict('ReviewDelete', page + 'ReviewDelete'))
-    reviews.append(__get_dash_dict('ReviewEdit', page + 'ReviewEdit'))
-    reviews.append(__get_dash_dict('ReviewEditValue', page + 'ReviewEditValue'))
-    reviews.append(__get_dash_dict('ReviewOptimization', page + 'ReviewOptimization'))
-    reviews.append(__get_dash_dict('ReviewDeleteReason', page + 'ReviewDeleteReason'))
-    reviews.append(__get_dash_dict('ReviewDuplicate', page + 'ReviewDuplicate'))
+    reviews.append(_get_dash_dict('ReviewDelete', page + 'ReviewDelete'))
+    reviews.append(_get_dash_dict('ReviewEdit', page + 'ReviewEdit'))
+    reviews.append(_get_dash_dict('ReviewEditValue', page + 'ReviewEditValue'))
+    reviews.append(_get_dash_dict('ReviewOptimization', page + 'ReviewOptimization'))
+    reviews.append(_get_dash_dict('ReviewDeleteReason', page + 'ReviewDeleteReason'))
+    reviews.append(_get_dash_dict('ReviewDuplicate', page + 'ReviewDuplicate'))
 
     # all tables for the 'reviewer' group
     reviewer = list()
-    reviewer.append(__get_dash_dict('LastReviewerDelete', page + 'LastReviewerDelete'))
-    reviewer.append(__get_dash_dict('LastReviewerEdit', page + 'LastReviewerEdit'))
-    reviewer.append(__get_dash_dict('LastReviewerOptimization', page + 'LastReviewerOptimization'))
-    reviewer.append(__get_dash_dict('LastReviewerDuplicate', page + 'LastReviewerDuplicate'))
+    reviewer.append(_get_dash_dict('LastReviewerDelete', page + 'LastReviewerDelete'))
+    reviewer.append(_get_dash_dict('LastReviewerEdit', page + 'LastReviewerEdit'))
+    reviewer.append(_get_dash_dict('LastReviewerOptimization', page + 'LastReviewerOptimization'))
+    reviewer.append(_get_dash_dict('LastReviewerDuplicate', page + 'LastReviewerDuplicate'))
 
     # all tables for the 'reputation' group
     reputation = list()
-    reputation.append(__get_dash_dict('ReputationHistory', page + 'ReputationHistory'))
-    reputation.append(__get_dash_dict('ReputationReason', page + 'ReputationReason'))
-    reputation.append(__get_dash_dict('OptimizationReviewLocks', page + 'OptimizationReviewLocks'))
-    reputation.append(__get_dash_dict('ReviewCanceled', page + 'ReviewCanceled'))
-    reputation.append(__get_dash_dict('RevokedContent', page + 'RevokedContent'))
-    reputation.append(__get_dash_dict('RevokedContentHistory', page + 'RevokedContentHistory'))
-    reputation.append(__get_dash_dict('RevokedDuplicate', page + 'RevokedDuplicate'))
+    reputation.append(_get_dash_dict('ReputationHistory', page + 'ReputationHistory'))
+    reputation.append(_get_dash_dict('ReputationReason', page + 'ReputationReason'))
+    reputation.append(_get_dash_dict('OptimizationReviewLocks', page + 'OptimizationReviewLocks'))
+    reputation.append(_get_dash_dict('ReviewCanceled', page + 'ReviewCanceled'))
+    reputation.append(_get_dash_dict('RevokedContent', page + 'RevokedContent'))
+    reputation.append(_get_dash_dict('RevokedContentHistory', page + 'RevokedContentHistory'))
+    reputation.append(_get_dash_dict('RevokedDuplicate', page + 'RevokedDuplicate'))
 
     # first row
     return_list.append([{'name': 'General', 'content': general},
@@ -201,7 +201,7 @@ def get_table_dict(table_name, main_page):
     }
 
 
-def __get_language(uid, query):
+def _get_language(uid, query):
     """
     Returns ui_locales of a language
 
@@ -212,7 +212,7 @@ def __get_language(uid, query):
     return query.get(uid).ui_locales
 
 
-def __get_author_data(uid, query, main_page):
+def _get_author_data(uid, query, main_page):
     """
     Returns a-tag with gravatar of current author and users page as href
 
@@ -230,7 +230,7 @@ def __get_author_data(uid, query, main_page):
                                                         db_user.uid), True
 
 
-def __get_dash_dict(name, href):
+def _get_dash_dict(name, href):
     """
     Returns dictionary with all attributes
 
@@ -262,24 +262,24 @@ def get_rows_of(columns, db_elements, main_page):
         tmp = []
         for column in columns:
             attribute = getattr(row, column)
-            __resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp)
+            _resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp)
         data.append(tmp)
     return data
 
 
-def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp):
-    user_columns = {col: __resolve_user_attribute for col in _user_columns}
-    statement_columns = {col: __resolve_statement_attribute for col in _statement_columns}
-    arrow_columns = {col: __resolve_arrow_attribute for col in _arrow_columns}
+def _resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp):
+    user_columns = {col: _resolve_user_attribute for col in _user_columns}
+    statement_columns = {col: _resolve_statement_attribute for col in _statement_columns}
+    arrow_columns = {col: _resolve_arrow_attribute for col in _arrow_columns}
 
     column_matcher = {
-        'lang_uid': __resolve_lang_attribute,
-        'password': __resolve_password_attribute,
-        'premisegroup_uid': __resolve_premisesgroup_attribute,
-        'argument_uid': __resolve_argument_attribute,
-        'textversion_uid': __resolve_textversion_attribute,
-        'path': __resolve_path_attribute,
-        'email': __resolve_email_attribute,
+        'lang_uid': _resolve_lang_attribute,
+        'password': _resolve_password_attribute,
+        'premisegroup_uid': _resolve_premisesgroup_attribute,
+        'argument_uid': _resolve_argument_attribute,
+        'textversion_uid': _resolve_textversion_attribute,
+        'path': _resolve_path_attribute,
+        'email': _resolve_email_attribute,
     }
     column_matcher.update(user_columns)
     column_matcher.update(statement_columns)
@@ -291,30 +291,30 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         tmp.append(str(attribute))
 
 
-def __resolve_user_attribute(attribute, main_page, db_languages, db_users, tmp):
-    text, success = __get_author_data(attribute, db_users, main_page)
+def _resolve_user_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text, success = _get_author_data(attribute, db_users, main_page)
     text = str(text) if success else ''
     tmp.append(text)
 
 
-def __resolve_statement_attribute(attribute, main_page, db_languages, db_users, tmp):
+def _resolve_statement_attribute(attribute, main_page, db_languages, db_users, tmp):
     text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
     tmp.append(str(attribute) + ' - ' + str(text))
 
 
-def __resolve_arrow_attribute(attribute, main_page, db_languages, db_users, tmp):
+def _resolve_arrow_attribute(attribute, main_page, db_languages, db_users, tmp):
     tmp.append(attribute.format('YYYY-MM-DD HH:mm:ss'))
 
 
-def __resolve_lang_attribute(attribute, main_page, db_languages, db_users, tmp):
-    tmp.append(__get_language(attribute, db_languages))
+def _resolve_lang_attribute(attribute, main_page, db_languages, db_users, tmp):
+    tmp.append(_get_language(attribute, db_languages))
 
 
-def __resolve_password_attribute(attribute, main_page, db_languages, db_users, tmp):
+def _resolve_password_attribute(attribute, main_page, db_languages, db_users, tmp):
     tmp.append(str(attribute)[:5] + '...')
 
 
-def __resolve_premisesgroup_attribute(attribute, main_page, db_languages, db_users, tmp):
+def _resolve_premisesgroup_attribute(attribute, main_page, db_languages, db_users, tmp):
     text = ''
     uids = []
     if attribute is not None:
@@ -324,12 +324,12 @@ def __resolve_premisesgroup_attribute(attribute, main_page, db_languages, db_use
     tmp.append('{} - {} {}'.format(attribute, text, uids))
 
 
-def __resolve_argument_attribute(attribute, main_page, db_languages, db_users, tmp):
+def _resolve_argument_attribute(attribute, main_page, db_languages, db_users, tmp):
     text = get_text_for_argument_uid(attribute) if attribute is not None else 'None'
     tmp.append('{} - {}'.format(attribute, text))
 
 
-def __resolve_textversion_attribute(attribute, main_page, db_languages, db_users, tmp):
+def _resolve_textversion_attribute(attribute, main_page, db_languages, db_users, tmp):
     text = 'None'
     if attribute is not None:
         db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
@@ -337,11 +337,11 @@ def __resolve_textversion_attribute(attribute, main_page, db_languages, db_users
     tmp.append('{} - {}'.format(attribute, text))
 
 
-def __resolve_path_attribute(attribute, main_page, db_languages, db_users, tmp):
+def _resolve_path_attribute(attribute, main_page, db_languages, db_users, tmp):
     tmp.append('<a href="{}/{}{}" target="_blank">{}</a>'.format(main_page, 'discuss', attribute, attribute))
 
 
-def __resolve_email_attribute(attribute, main_page, db_languages, db_users, tmp):
+def _resolve_email_attribute(attribute, main_page, db_languages, db_users, tmp):
     db_user = DBDiscussionSession.query(User).filter_by(email=str(attribute)).first()
     img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 25))
     tmp.append('{} {}'.format(img, attribute))
@@ -360,13 +360,13 @@ def update_row(table_name, uids, keys, values):
     table = table_mapper[table_name.lower()]['table']
     _tn = Translator('en')
     try:
-        update_dict = __update_row_dict(table, values, keys, _tn)
+        update_dict = _update_row_dict(table, values, keys, _tn)
     except ProgrammingError as e:
         LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     try:
-        __update_row(table, table_name, uids, update_dict)
+        _update_row(table, table_name, uids, update_dict)
     except IntegrityError as e:
         LOG.error("%s", e)
         return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
@@ -455,7 +455,7 @@ def update_badge():
     return ret_array
 
 
-def __update_row_dict(table, values, keys, _tn):
+def _update_row_dict(table, values, keys, _tn):
     """
     Create a dictionary out of values and keys with data, which is compatible with the table
 
@@ -467,23 +467,20 @@ def __update_row_dict(table, values, keys, _tn):
     """
     update_dict = dict()
     for index, key in enumerate(keys):
-        value_type = str(__find_type(table, key))
+        value_type = str(_find_type(table, key))
         # if current type is int
         if value_type == 'INTEGER':
-            tmp_key, tmp_val, success = __get_int_data(key, values[index], _tn)
+            tmp_key, tmp_val, success = _get_int_data(key, values[index], _tn)
             if not success:
                 raise ProgrammingError
             update_dict[tmp_key] = tmp_val
 
-        # if current type is bolean
         elif value_type == 'BOOLEAN':
             update_dict[key] = values[index].lower() == 'true'
 
-        # if current type is text
         elif value_type == 'TEXT':
             update_dict[key] = str(values[index])
 
-        # if current type is date
         elif value_type == 'ARROWTYPE':
             update_dict[key] = arrow.get(str(values[index]))
 
@@ -493,7 +490,7 @@ def __update_row_dict(table, values, keys, _tn):
     return update_dict
 
 
-def __get_int_data(key, val, _tn):
+def _get_int_data(key, val, _tn):
     # check for foreign key of author or language
     if key in _user_columns:
         # clear key / cut "(uid)"
@@ -513,7 +510,7 @@ def __get_int_data(key, val, _tn):
         return key, int(val), False
 
 
-def __update_row(table, table_name, uids, update_dict):
+def _update_row(table, table_name, uids, update_dict):
     """
     Updates the row
 
@@ -533,7 +530,7 @@ def __update_row(table, table_name, uids, update_dict):
         DBDiscussionSession.query(table).filter_by(uid=uids[0]).update(update_dict)
 
 
-def __find_type(table, col_name):
+def _find_type(table, col_name):
     """
     Returns type of tables column
 
@@ -544,7 +541,7 @@ def __find_type(table, col_name):
     if hasattr(table, '__table__') and col_name in table.__table__.c:
         return table.__table__.c[col_name].type
     for base in table.__bases__:
-        return __find_type(base, col_name)
+        return _find_type(base, col_name)
     raise NameError(col_name)
 
 
@@ -582,7 +579,7 @@ def generate_application_token(owner: str) -> str:
 
     token = hashlib.sha256(''.join([str(time.time()), owner, str(os.urandom(256))]).encode()).hexdigest()
 
-    hashed_token = __hash_token_with_owner(owner, token)
+    hashed_token = _hash_token_with_owner(owner, token)
 
     new_row = APIToken(current_time, hashed_token, owner)
 
@@ -593,7 +590,7 @@ def generate_application_token(owner: str) -> str:
     return hashed_token[:5] + ":" + token
 
 
-def __hash_token_with_owner(owner, token):
+def _hash_token_with_owner(owner, token):
     return hashlib.sha256((owner + token).encode()).hexdigest()
 
 
@@ -623,6 +620,6 @@ def check_api_token(token: str) -> bool:
                     APIToken.disabled == False)
 
         for api_token in api_tokens:
-            return __hash_token_with_owner(api_token.owner, auth_token) == api_token.token
+            return _hash_token_with_owner(api_token.owner, auth_token) == api_token.token
 
     return False
