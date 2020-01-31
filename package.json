@@ -23,5 +23,8 @@
     "js-cookie": "^2.2.0",
     "popper.js": "^1.14.7",
     "socket.io-client": "^2.1.0"
+  },
+  "devDependencies": {
+    "cypress": "^3.6.0"
   }
 }
