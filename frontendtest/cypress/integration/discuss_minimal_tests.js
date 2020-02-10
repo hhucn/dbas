@@ -1,5 +1,4 @@
 const url = 'http://' + Cypress.env('WEB_HOST') + ':4284';
-//const url = 'localhost:4284';
 const valid_user = 'Bob';
 const valid_pw = 'iamatestuser2016';
 

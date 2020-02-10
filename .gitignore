@@ -20,7 +20,6 @@ nosetests.xml
 coverage.xml
 .hypothesis/
 cover/
-cypress.env.json
 frontendtest/cypress/screenshots/
 frontendtest/cypress/videos/
 
