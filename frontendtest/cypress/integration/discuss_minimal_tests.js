@@ -63,8 +63,7 @@ describe('Add Issue Test', function () {
         cy.get('#popup-add-topic-info-input').type('Should we use frontendtesting?');
         cy.get('#popup-add-topic-long-info-input').type('Should we use frontendtesting?');
         cy.get('#popup-add-topic-accept-btn').click();
-        cy.visit(url + '/discuss/');
-        cy.contains('frontendtesting').should('exist');
+        cy.get('#popup-add-topic-error').should('not.visible');
     });
 });
 
