@@ -89,8 +89,6 @@
       </div>
     </div>
 
-    <span id="hidden-chart-data" class="hidden">${data}</span>
-
     <span tal:condition="extras.logged_in" class="icon-badge blue-btn bottom-right" id="add-topic">+</span>
   </tal:block>
 </tal:block>

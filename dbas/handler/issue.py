@@ -260,7 +260,6 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     """
     db_issues: List[Issue] = db_user.accessible_issues
     db_issues.sort(key=lambda issue: issue.uid)
-    date_dict = {}
     readable = []
     writable = []
     featured = []
@@ -295,20 +294,19 @@ def get_issues_overview_on_start(db_user: User) -> dict:
             featured_issue_dict['info'] = db_issue.info
             featured.append(featured_issue_dict)
 
-        # key needs to be a str to be parsed in the frontend as json
-        date_dict[str(db_issue.uid)] = __get_dict_for_charts(db_issue, arg_stat_mapper)
     return {
         'issues': {
             'readable': readable,
             'writable': writable,
             'featured': featured
-        },
-        'data': date_dict
+        }
     }
 
 
 def __get_dict_for_charts(db_issue: Issue, arg_stat_mapper: dict) -> dict:
     """
+
+    THIS IS VERY SLOW
 
     :param db_issue:
     :return:
