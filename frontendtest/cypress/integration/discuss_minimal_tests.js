@@ -1,5 +1,4 @@
 const url = 'http://' + Cypress.env('WEB_HOST') + ':4284';
-//const url = 'localhost:4284';
 const valid_user = 'Bob';
 const valid_pw = 'iamatestuser2016';
 
@@ -63,8 +62,7 @@ describe('Add Issue Test', function () {
         cy.get('#popup-add-topic-info-input').type('Should we use frontendtesting?');
         cy.get('#popup-add-topic-long-info-input').type('Should we use frontendtesting?');
         cy.get('#popup-add-topic-accept-btn').click();
-        cy.visit(url + '/discuss/');
-        cy.contains('frontendtesting').should('exist');
+        cy.get('#popup-add-topic-error').should('not.visible');
     });
 });
 

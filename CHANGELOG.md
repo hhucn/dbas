@@ -1,3 +1,11 @@
+### 1.24.1 (2020-02-11)
+
+#### Fixes
+* Security Update for our dependencies
+  [!812](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/812)
+* Make frontend tests more stable
+  [!809](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/809)
+
 ### 1.24.0 (2020-01-31)
 
 #### Fixes
