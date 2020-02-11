@@ -2,7 +2,6 @@
 Provides helping function for issues.
 """
 import copy
-from datetime import date, timedelta
 from json import JSONDecodeError
 from math import ceil
 from typing import Optional, List, Collection, Dict
@@ -13,13 +12,12 @@ from slugify import slugify
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
-    ClickedStatement, StatementToIssue, ClickedArgument, Statement, TextVersion
+    ClickedStatement, StatementToIssue, Statement, TextVersion
 from dbas.handler.arguments import get_all_statements_for_args
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import generate_short_url
 from dbas.helper.url import UrlManager
-from dbas.lib import get_enabled_issues_as_query, nick_of_anonymous_user, pretty_print_timestamp, \
-    get_enabled_statement_as_query
+from dbas.lib import get_enabled_issues_as_query, nick_of_anonymous_user, get_enabled_statement_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -260,7 +258,6 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     """
     db_issues: List[Issue] = db_user.accessible_issues
     db_issues.sort(key=lambda issue: issue.uid)
-    date_dict = {}
     readable = []
     writable = []
     featured = []
@@ -295,50 +292,12 @@ def get_issues_overview_on_start(db_user: User) -> dict:
             featured_issue_dict['info'] = db_issue.info
             featured.append(featured_issue_dict)
 
-        # key needs to be a str to be parsed in the frontend as json
-        date_dict[str(db_issue.uid)] = __get_dict_for_charts(db_issue, arg_stat_mapper)
     return {
         'issues': {
             'readable': readable,
             'writable': writable,
             'featured': featured
-        },
-        'data': date_dict
-    }
-
-
-def __get_dict_for_charts(db_issue: Issue, arg_stat_mapper: dict) -> dict:
-    """
-
-    :param db_issue:
-    :return:
-    """
-    days_since_start = min((arrow.utcnow() - db_issue.date).days, 14)
-    label, data = [], []
-    today = date.today()
-
-    db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=db_issue.uid).all()
-    arguments_uids = [db_arg.uid for db_arg in db_arguments]
-    statement_uids = []
-    for arg_uid in arguments_uids:
-        statement_uids += arg_stat_mapper[arg_uid]
-    db_clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.uid.in_(arguments_uids))
-    db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.uid.in_(statement_uids))
-
-    for days_diff in range(days_since_start, -1, -1):
-        date_begin = today - timedelta(days=days_diff)
-        date_end = today - timedelta(days=days_diff - 1)
-
-        label.append(pretty_print_timestamp(date_begin, db_issue.lang))
-        clicked_arguments = db_clicked_arguments.filter(ClickedArgument.timestamp >= arrow.get(date_begin),
-                                                        ClickedArgument.timestamp < arrow.get(date_end)).count()
-        clicked_statements = db_clicked_statements.filter(ClickedStatement.timestamp >= arrow.get(date_begin),
-                                                          ClickedStatement.timestamp < arrow.get(date_end)).count()
-        data.append(clicked_arguments + clicked_statements)
-
-    return {
-        'data': data,
-        'label': label
+        }
     }
 
 
