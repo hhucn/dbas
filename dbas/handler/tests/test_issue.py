@@ -83,7 +83,6 @@ class IssueHandlerTests(TestCaseWithConfig):
         self.assertIn('issues', response)
         self.assertIn('readable', response['issues'])
         self.assertIn('writable', response['issues'])
-        self.assertIn('data', response)
 
     def test_set_discussions_properties(self):
         db_walter = DBDiscussionSession.query(User).filter_by(nickname='Walter').one_or_none()
