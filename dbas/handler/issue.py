@@ -13,7 +13,6 @@ from slugify import slugify
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
     ClickedStatement, StatementToIssue, Statement, TextVersion
-from dbas.handler.arguments import get_all_statements_for_args
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import generate_short_url
 from dbas.helper.url import UrlManager
@@ -261,12 +260,6 @@ def get_issues_overview_on_start(db_user: User) -> dict:
     readable = []
     writable = []
     featured = []
-
-    # arg.uid to list of used statements fo speed up the __get_dict_for_charts(..)
-    arg_stat_mapper = {}
-    db_arguments = DBDiscussionSession.query(Argument).filter(Argument.issue_uid.in_(i.uid for i in db_issues)).all()
-    for db_arg in db_arguments:
-        arg_stat_mapper[db_arg.uid] = get_all_statements_for_args([db_arg])
 
     for index, db_issue in enumerate(db_issues):
         issue_dict = {
