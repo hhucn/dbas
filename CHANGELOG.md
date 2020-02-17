@@ -1,3 +1,18 @@
+### 1.25.1 (2020-02-17)
+
+* Speed improvements
+  [!817](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/817)
+  [!816](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/816)
+* Pass correct env vars to database and simplify cypress tests in CI
+  [!818](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/818)
+
+### 1.25.0 (2020-02-11)
+
+* Increase loading speed of index page
+  [!814](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/814)
+* Update JS Dependencies
+  [!813](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/merge_requests/813)
+
 ### 1.24.1 (2020-02-11)
 
 #### Fixes

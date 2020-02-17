@@ -37,3 +37,8 @@ sass:
 i18n:
 	cd dbas && ./i18n.sh
 	cd admin && ./i18n.sh
+
+dev-server:
+	./wait-for-it.sh -t 0 -h db -p 5432
+	alembic upgrade head
+	pserve development.ini --reload
