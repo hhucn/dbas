@@ -690,8 +690,8 @@ class ItemDictHelper(object):
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     def __get_choose_array_for_pgroup(self, is_argument: bool, is_supportive: bool, conclusion_uid: int,
-                                      argument_uid: int, db_user: User, group_id: int, _um: UrlManager, session_history:
-            SessionHistory):
+                                      argument_uid: int, db_user: User, group_id: int, _um: UrlManager,
+                                      session_history: SessionHistory):
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=group_id).all()
         premise_array = []
         for premise in db_premises:
