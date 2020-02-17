@@ -49,7 +49,6 @@ class HistoryHandlerTests(TestCaseWithConfig):
         self.first_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
         self.last_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).order_by(
             Issue.uid.desc()).first()
-        # self.history = '/attitude/2-/justify/2/t-/reaction/12/undercut/13'
         self.history = '/attitude/3-/justify/4/dontknow'
         self.session_history = SessionHistory(self.history)
         settings = self.user_tobi.settings
