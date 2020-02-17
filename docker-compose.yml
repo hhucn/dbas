@@ -12,9 +12,9 @@ services:
 
   web:
     build: .
-    command: bash -c "./wait-for-it.sh -t 0 -h db -p 5432 && alembic upgrade head && pserve development.ini --reload"
+    command: make dev-server
     volumes:
-    - .:/dbas:delegated
+      - .:/dbas:delegated
     ports:
       - "4284:4284"
     environment:
