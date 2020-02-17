@@ -5,6 +5,7 @@ import transaction
 from dbas import lib
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, Issue, Premise
+from dbas.handler.history import SessionHistory
 from dbas.helper.url import UrlManager
 from dbas.lib import get_enabled_issues_as_query, get_enabled_statement_as_query, get_enabled_arguments_as_query, \
     get_enabled_premises_as_query
@@ -95,8 +96,8 @@ class LibTests(TestCaseWithConfig):
 
     def test_get_all_attacking_arg_uids_from_history(self):
         none_history = None
-        correct_history = "/attitude/60-/justify/60/agree-/reaction/52/rebut/53"
-        broken_history = "/attitude/60/justify/60/agree/broooken/52/rebut/53"
+        correct_history = SessionHistory("/attitude/60-/justify/60/agree-/reaction/52/rebut/53")
+        broken_history = SessionHistory("/attitude/60/justify/60/agree/broooken/52/rebut/53")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(correct_history), ['53'], "Missing element")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(broken_history), [], "Should match nothing")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [],
