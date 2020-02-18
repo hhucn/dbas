@@ -305,8 +305,7 @@ class ItemDictHelper(object):
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 
     def __get_statement_array_for_justify_argument(self, argument_uid, attack_type, db_user, session_history, argument,
-                                                   uids,
-                                                   _um):
+                                                   uids, _um):
         if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
             add_seen_argument(argument_uid, db_user)
         # get all premises in this group
