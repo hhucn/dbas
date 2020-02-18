@@ -834,12 +834,12 @@ def get_all_attacking_arg_uids_from_history(history):
     """
     Returns all arguments of the history, which attacked the user
 
-    :param history: String
+    :param history: SessionHistory
     :return: [Arguments.uid]
     :rtype: list
     """
     try:
-        splitted_history = history.split('-')
+        splitted_history = history.get_session_history_as_list()
         uids = []
         for part in splitted_history:
             if 'reaction' in part:
