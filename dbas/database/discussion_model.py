@@ -523,6 +523,11 @@ class GraphNode(ABC):
         """Returns a set of all GraphNodes which are one level deeper"""
         pass
 
+    @abstractmethod
+    def aif_node(self) -> Dict[str, str]:
+        """Returns a dictionary in the form of an AIF node"""
+        pass
+
     @property
     @abstractmethod
     def is_disabled(self) -> bool:
@@ -720,6 +725,14 @@ class Statement(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
 
     def get_sub_nodes(self):
         return set([argument for argument in self.arguments if not argument.is_disabled])
+
+    def aif_node(self):
+        return {
+            "nodeID": f"statement_{self.uid}",
+            "text": self.get_text(),
+            "type": "I",
+            "timestamp": str(self.get_timestamp())
+        }
 
 
 class StatementReference(DiscussionBase):
@@ -1247,6 +1260,13 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
             [premise.statement for premise in self.premises if not premise.is_disabled])
 
         return nodes.union(set(self.attacked_by))
+
+    def aif_node(self):
+        return {
+            "nodeID": f"argument_{self.uid}",
+            "type": "RA" if self.is_supportive else "CA",
+            "timestamp": str(self.timestamp)
+        }
 
 
 class History(DiscussionBase):

@@ -7,6 +7,7 @@ from pyramid.config import Configurator
 def init(config):
     config.include("cornice")
     config.scan("api.views")
+    config.scan("api.exports")
 
 
 def main(global_config, **settings):
