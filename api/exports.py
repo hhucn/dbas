@@ -55,7 +55,7 @@ def aif_export_dict(nodes: Set[GraphNode]) -> Dict[str, List[Dict[str, str]]]:
 class AIF():
     def __init__(self, request, context=None):
         valid_issue_by_slug(request)
-        self.issue: Issue = self.request.validated['issue']
+        self.issue: Issue = request.validated['issue']
         self.request: Request = request
 
     def get(self):
@@ -65,9 +65,6 @@ class AIF():
 
 
 def dot_export_string(nodes: Set[GraphNode]) -> str:
-    statements = filter(lambda n: isinstance(n, Statement), nodes)
-    arguments = filter(lambda n: isinstance(n, Argument), nodes)
-
     return "\n".join(
         [statement_node_to_dot(node) for node in nodes if isinstance(node, Statement)] +
         [argument_node_to_dot(node) for node in nodes if isinstance(node, Argument)] +
@@ -80,7 +77,7 @@ def dot_export_string(nodes: Set[GraphNode]) -> str:
 class Dot():
     def __init__(self, request, context=None):
         valid_issue_by_slug(request)
-        self.issue: Issue = self.request.validated['issue']
+        self.issue: Issue = request.validated['issue']
         self.request: Request = request
 
     def get(self):
