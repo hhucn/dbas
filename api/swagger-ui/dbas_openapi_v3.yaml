@@ -19,17 +19,17 @@ paths:
       responses:
         200:
           description: The token is valid and the user exists
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    nickname:
-                      type: string
-                    status:
-                      type: string
-                    message:
-                      type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nickname:
+                    type: string
+                  status:
+                    type: string
+                  message:
+                    type: string
         401:
           description: An error like 'Token expired'
       security:
