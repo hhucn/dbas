@@ -1,15 +1,18 @@
 """
 Namespace to re-use commonly used components for testing.
 """
+import os
 import unittest
 from typing import Dict, Any
 
 import transaction
+import webtest
 from cornice import Errors
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid_mailer.mailer import DummyMailer
 
+import dbas
 from dbas import get_key_pair
 from dbas.database import DBDiscussionSession, get_dbas_db_configuration
 from dbas.database.discussion_model import Issue, Statement, Argument, User, StatementReference
@@ -98,3 +101,9 @@ def construct_dummy_request(validated: Dict = None, json_body: Dict = None, cook
         dummy_request.registry.settings = _settings_dict_for_tests()
 
     return dummy_request
+
+
+def test_app():
+    settings = add_settings_to_appconfig()
+    __file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'development.ini'))
+    return webtest.TestApp(dbas.main({'__file__': __file}, **settings))

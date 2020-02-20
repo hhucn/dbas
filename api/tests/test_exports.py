@@ -1,12 +1,11 @@
 from webtest.response import TestResponse
 
-from dbas.tests import app
-from dbas.tests.utils import TestCaseWithConfig
+from dbas.tests.utils import TestCaseWithConfig, test_app
 
 
 class SaneAIF(TestCaseWithConfig):
     def test_cat_or_dog_aif(self):
-        response: TestResponse = app.get("/api/cat-or-dog/aif")
+        response: TestResponse = test_app().get("/api/cat-or-dog/aif")
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("nodes", response.json_body)
@@ -27,7 +26,7 @@ class SaneAIF(TestCaseWithConfig):
 
 class SaneDot(TestCaseWithConfig):
     def test_cat_or_dog_aif(self):
-        response: TestResponse = app.get("/api/cat-or-dog/dot")
+        response: TestResponse = test_app().get("/api/cat-or-dog/dot")
 
         self.assertEqual(200, response.status_code)
         self.assertIsInstance(response.body, bytes)

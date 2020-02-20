@@ -4,17 +4,15 @@ import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
-from dbas.tests import app
-
-
 # copy/paste from https://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/tests.html
+from dbas.tests.utils import test_app
 
 
 class RoutingTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.testapp = app
+        self.testapp = test_app()
 
         for db_arg in DBDiscussionSession.query(Argument).filter(Argument.uid != 1,
                                                                  Argument.is_disabled == True).all():
