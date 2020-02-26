@@ -106,7 +106,7 @@ Cite this software with the BibTeX Scheme:
 
 ## License
 
-Copyright (c) 2016 - 2018 Tobias Schröder (neé Krauthoff), Christian Meter  
+Copyright (c) 2016 - 2018 Tobias Schröder (né Krauthoff), Christian Meter  
 Copyright (c) 2018 - today hhucn
 
 Distributed under the [MIT License](LICENSE).
