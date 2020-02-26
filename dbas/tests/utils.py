@@ -15,7 +15,7 @@ from pyramid_mailer.mailer import DummyMailer
 import dbas
 from dbas import get_key_pair
 from dbas.database import DBDiscussionSession, get_dbas_db_configuration
-from dbas.database.discussion_model import Issue, Statement, Argument, User, StatementReference
+from dbas.database.discussion_model import Issue, Statement, Argument, User, StatementReference, Group
 from dbas.helper.test import add_settings_to_appconfig
 
 
@@ -55,7 +55,7 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         self.user_torben: User = DBDiscussionSession.query(User).get(9)
         self.user_antonia: User = DBDiscussionSession.query(User).get(28)
         self.statement_reference: StatementReference = DBDiscussionSession.query(StatementReference).get(2)
-
+        self.user_group: Group = DBDiscussionSession.query(Group).filter_by(name='users').first()
         DBDiscussionSession.query(Argument).get(1).set_disabled(True)
 
     def tearDown(self):

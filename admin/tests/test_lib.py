@@ -8,18 +8,20 @@ from dbas.database.discussion_model import User, APIToken
 from dbas.lib import nick_of_anonymous_user
 from dbas.tests.utils import TestCaseWithConfig
 
-new_user = {
-    'firstname': 'new',
-    'surname': 'one',
-    'nickname': 'TheOne',
-    'email': 'someNewUser@gmail.com',
-    'password': 'asdfghjkl',
-    'gender': 'm',
-    'group_uid': '3',
-}
-
 
 class AdminTest(TestCaseWithConfig):
+    def setUp(self):
+        super().setUp()
+        self.new_user = {
+            'firstname': 'new',
+            'surname': 'one',
+            'nickname': 'TheOne',
+            'email': 'someNewUser@gmail.com',
+            'password': 'asdfghjkl',
+            'gender': 'm',
+            'group': self.user_group
+        }
+
     def test_get_overview(self):
         dict_return = admin.get_overview('some_main_page')
         for row in dict_return:
@@ -37,10 +39,10 @@ class AdminTest(TestCaseWithConfig):
             self.assertNotIn('token_timestamp', return_dict)
 
     def test_add_row(self):
-        return_val = admin.add_row('User', new_user)
+        return_val = admin.add_row('User', self.new_user)
         self.assertTrue(return_val)
 
-        db_new_user = DBDiscussionSession.query(User).filter_by(nickname=new_user['nickname']).all()
+        db_new_user = DBDiscussionSession.query(User).filter_by(nickname=self.new_user['nickname']).all()
         self.assertEqual(len(db_new_user), 1)
 
     def test_update_row(self):
@@ -48,7 +50,7 @@ class AdminTest(TestCaseWithConfig):
         values = ['TheRenamedOne']
         db_old_user = DBDiscussionSession.query(User).order_by(User.uid.asc()).first()
         return_val = admin.update_row('User', [db_old_user.uid], keys, values)
-        db_old_user = DBDiscussionSession.query(User).filter_by(nickname=new_user['nickname']).all()
+        db_old_user = DBDiscussionSession.query(User).filter_by(nickname=self.new_user['nickname']).all()
         db_new_user = DBDiscussionSession.query(User).filter_by(nickname=values[0]).all()
         self.assertTrue(return_val)
         self.assertEqual(len(db_old_user), 0)
@@ -58,14 +60,14 @@ class AdminTest(TestCaseWithConfig):
         self.assertTrue(db_reset)
 
     def test_delete_row(self):
-        db_new_user = DBDiscussionSession.query(User).filter(User.firstname == new_user['firstname'],
-                                                             User.surname == new_user['surname']).all()
+        db_new_user = DBDiscussionSession.query(User).filter(User.firstname == self.new_user['firstname'],
+                                                             User.surname == self.new_user['surname']).all()
         self.assertEqual(len(db_new_user), 1)
 
         return_val = admin.delete_row('user', [db_new_user[0].uid])
         self.assertTrue(return_val)
-        db_new_user = DBDiscussionSession.query(User).filter(User.firstname == new_user['firstname'],
-                                                             User.surname == new_user['surname']).all()
+        db_new_user = DBDiscussionSession.query(User).filter(User.firstname == self.new_user['firstname'],
+                                                             User.surname == self.new_user['surname']).all()
         self.assertEqual(len(db_new_user), 0)
 
 
