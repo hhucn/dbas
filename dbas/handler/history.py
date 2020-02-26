@@ -135,17 +135,15 @@ def save_history_to_session_history(request: Request):
         request.session.update({'session_history': session_history})
 
 
-def save_issue(issue: Issue, db_user: User) -> None:
+def save_issue(issue: Issue, user: User) -> None:
     """
     Saves the Issue.uid for an user
 
     :param issue: Issue.uid
-    :param db_user: User
+    :param user: User
     :return: Boolean
     """
-    db_settings = db_user.settings
-    db_settings.last_topic = issue
-    DBDiscussionSession.add(db_settings)
+    user.settings.last_topic = issue
 
 
 def get_last_issue_of(db_user: User) -> Optional[Issue]:
@@ -545,6 +543,7 @@ def save_and_set_cookie(request: Request, db_user: User, issue: Issue) -> str:
 
     if db_user and db_user.nickname != nick_of_anonymous_user:
         save_database(db_user, issue.slug, request.path, history)
+        db_user.settings.last_topic = issue
         save_issue(issue, db_user)
 
     if request.path.startswith('/discuss/'):

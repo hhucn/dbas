@@ -60,6 +60,7 @@ class HistoryHandlerTests(TestCaseWithConfig):
         settings = self.user_tobi.settings
         self.assertNotEqual(self.last_issue.uid, settings.last_topic_uid)
         history.save_issue(self.last_issue, self.user_tobi)
+        DBDiscussionSession.flush()
         settings = self.user_tobi.settings
         self.assertEqual(self.last_issue.uid, settings.last_topic_uid)
 
