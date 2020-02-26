@@ -1,2 +1,2 @@
 [bandit]
-exclude: tests, initializedb.py
+exclude: tests
