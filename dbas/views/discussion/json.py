@@ -284,7 +284,7 @@ def create_issue_after_validation(request: Request):
                      author=request.validated['user'],
                      is_read_only=request.validated['is_read_only'],
                      is_private=not request.validated['is_public'],
-                     lang_uid=request.validated['lang'].uid)
+                     language=request.validated['lang'])
     DBDiscussionSession.add(db_issue)
     return {'issue': get_issue_dict_for(db_issue, 0, request.validated['lang'].ui_locales)}
 
