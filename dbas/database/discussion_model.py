@@ -91,7 +91,7 @@ class Issue(DiscussionBase):
     decision_process: Optional['DecisionProcess'] = relationship('DecisionProcess', back_populates='issue',
                                                                  uselist=False)
 
-    def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
+    def __init__(self, title, info, long_info, author: 'User', lang_uid, is_disabled=False, is_private=False,
                  is_read_only=False, is_featured=False, slug: str = None):
         """
         Initializes a row in current position-table
@@ -100,14 +100,13 @@ class Issue(DiscussionBase):
         self.slug = slug if slug else slugify(title)
         self.info = info
         self.long_info = long_info
-        self.author_uid = author_uid
         self.lang_uid = lang_uid
         self.is_disabled = is_disabled
         self.is_private = is_private
         self.is_read_only = is_read_only
         self.date = get_now()
         self.is_featured = is_featured
-        author = DBDiscussionSession.query(User).get(self.author_uid)
+        self.author = author
         self.participating_users = [author, ]
 
     def __repr__(self):
