@@ -77,7 +77,7 @@ def prepare_request_dict(request: Request):
     slug = __get_slug(request.matchdict)
     db_issue = __get_issue(request, slug, db_last_topic)
 
-    issue_handler.save_issue_id_in_session(db_issue.uid, request)
+    issue_handler.save_issue_in_session(db_issue, request)
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     set_language_for_visit(request)
 

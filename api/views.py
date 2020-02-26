@@ -22,7 +22,7 @@ from api.models import DataItem, DataBubble, DataReference, DataOrigin
 from api.origins import add_origin_for_list_of_statements
 from dbas.auth.login import register_user_with_json_data
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementToIssue, StatementReference
+from dbas.database.discussion_model import Issue, Statement, User, Argument, StatementReference
 from dbas.events import UserStatementAttitude
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
@@ -237,14 +237,8 @@ def discussion_init(request):
                                  lang=db_issue.lang)
     ]
 
-    issues_statements = [el.statement_uid for el in
-                         DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
-    db_positions = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
-                                                               Statement.uid.in_(issues_statements),
-                                                               Statement.is_position == True).all()
-
-    positions = [DataItem([pos.get_textversion().content], "/{}/attitude/{}".format(db_issue.slug, pos.uid))
-                 for pos in db_positions]
+    positions = [DataItem([position.get_text()], "/{}/attitude/{}".format(db_issue.slug, position.uid))
+                 for position in db_issue.positions]
 
     return {
         'bubbles': [DataBubble(bubble) for bubble in bubbles],

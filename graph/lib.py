@@ -6,7 +6,7 @@ from typing import List, Dict, Set
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
-    SeenStatement, StatementToIssue, GraphNode
+    SeenStatement, GraphNode
 from dbas.lib import get_profile_picture
 
 LOG = logging.getLogger(__name__)
@@ -135,13 +135,10 @@ def get_opinion_data(db_issue: Issue) -> dict:
     :param db_issue:
     :return:
     """
-    statements = [el.statement_uid for el in
-                  DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
-    db_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(statements)).all()
     db_all_seen = DBDiscussionSession.query(SeenStatement)
     db_all_votes = DBDiscussionSession.query(ClickedStatement)
     ret_dict = dict()
-    for statement in db_statements:
+    for statement in db_issue.statements:
         db_seen = db_all_seen.filter_by(statement_uid=statement.uid).count()
         db_votes = db_all_votes.filter(ClickedStatement.statement_uid == statement.uid,
                                        ClickedStatement.is_up_vote == True,

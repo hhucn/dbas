@@ -21,15 +21,15 @@ class IssueHandlerTests(TestCaseWithConfig):
         self.assertGreater(len(response), 0)
 
     def test_get_number_of_arguments(self):
-        response = ih.get_number_of_arguments(0)
+        response = len(DBDiscussionSession.query(Issue).get(0).all_arguments)
         self.assertEqual(response, 0)
-        response = ih.get_number_of_arguments(1)
+        response = len(DBDiscussionSession.query(Issue).get(1).all_arguments)
         self.assertGreater(response, 0)
 
     def test_get_number_of_statements(self):
-        response = ih.get_number_of_statements(0)
+        response = len(DBDiscussionSession.query(Issue).get(0).statements)
         self.assertEqual(response, 0)
-        response = ih.get_number_of_statements(1)
+        response = len(DBDiscussionSession.query(Issue).get(1).statements)
         self.assertGreater(response, 0)
 
     def test_get_number_of_active_participation_users(self):

@@ -11,7 +11,7 @@ from pyramid.request import Request
 from slugify import slugify
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue, Language, sql_timestamp_pretty_print, \
+from dbas.database.discussion_model import User, Issue, Language, sql_timestamp_pretty_print, \
     ClickedStatement, StatementToIssue, Statement, TextVersion
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import generate_short_url
@@ -33,7 +33,7 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> Dict:
     title = db_issue.title
     info = db_issue.info
     long_info = db_issue.long_info
-    stat_count = get_number_of_statements(db_issue.uid)
+    stat_count = len(db_issue.statements)
     lang = db_issue.lang
     date_pretty = sql_timestamp_pretty_print(db_issue.date, lang)
     duration = (arrow.utcnow() - db_issue.date)
@@ -72,26 +72,6 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> Dict:
     }
 
 
-def get_number_of_arguments(issue_uid: int) -> int:
-    """
-    Returns number of arguments for the issue
-
-    :param issue_uid: Issue Issue.uid
-    :return: Integer
-    """
-    return DBDiscussionSession.query(Argument).filter_by(issue_uid=issue_uid).count()
-
-
-def get_number_of_statements(issue_uid: int) -> int:
-    """
-    Returns number of statements for the issue
-
-    :param issue_uid: Issue Issue.uid
-    :return: Integer
-    """
-    return DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=issue_uid).count()
-
-
 def get_number_of_authors(issue_uid: int) -> int:
     """
     Returns number of active users for the issue
@@ -127,7 +107,7 @@ def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict:
         'url': '/' + db_issue.slug,
         'review_url': _um.get_review_url() if str(uid) != str(db_issue.uid) else '',
         'info': db_issue.info,
-        'stat_count': get_number_of_statements(db_issue.uid),
+        'stat_count': len(db_issue.statements),
         'date': sql_timestamp_pretty_print(db_issue.date, lang),
         'author': db_issue.author.public_nickname,
         'error': '',
@@ -147,14 +127,14 @@ def get_id_of_slug(slug: str) -> Issue:
     return get_enabled_issues_as_query().filter_by(slug=slug).first()
 
 
-def save_issue_id_in_session(issue_uid: int, request: Request):
+def save_issue_in_session(issue: Issue, request: Request):
     """
 
-    :param issue_uid:
+    :param issue:
     :param request:
     :return:
     """
-    request.session['issue'] = issue_uid
+    request.session['issue'] = issue.uid
 
 
 def get_issue_id(request) -> Optional[int]:
@@ -265,7 +245,7 @@ def get_issues_overview_on_start(db_user: User) -> dict:
         issue_dict = {
             'uid': db_issue.uid,
             'url': '/discuss/' + db_issue.slug,
-            'statements': get_number_of_statements(db_issue.uid),
+            'statements': len(db_issue.statements),
             'active_users': get_number_of_authors(db_issue.uid),
             'title': db_issue.title,
             'date': db_issue.date.format('DD.MM.YY HH:mm'),

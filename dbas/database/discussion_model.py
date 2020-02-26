@@ -483,14 +483,14 @@ class Settings(DiscussionBase):
         """
         self.should_show_public_nickname = should_show_public_nickname
 
-    def set_last_topic_uid(self, uid):
+    def set_last_topic_uid(self, issue: Issue):
         """
         Updates last used topic of user
 
-        :param uid: issue.uid
+        :param issue:
         :return: None
         """
-        self.last_topic_uid = uid
+        self.last_topic_uid = issue.uid
 
     def set_lang_uid(self, lang_uid):
         """
