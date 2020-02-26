@@ -22,7 +22,7 @@ class HistoryBubblesTests(TestCaseWithConfig):
         self.session_history_disagree = SessionHistory(self.history_disagree)
         self.session_history_agree = SessionHistory(self.history_agree)
         settings = self.user_tobi.settings
-        settings.set_last_topic_uid(self.first_issue.uid)
+        settings.set_last_topic(self.first_issue)
         DBDiscussionSession.add(settings)
         DBDiscussionSession.flush()
 
@@ -52,7 +52,7 @@ class HistoryHandlerTests(TestCaseWithConfig):
         self.history = '/attitude/3-/justify/4/dontknow'
         self.session_history = SessionHistory(self.history)
         settings = self.user_tobi.settings
-        settings.set_last_topic_uid(self.first_issue.uid)
+        settings.set_last_topic(self.first_issue)
         DBDiscussionSession.add(settings)
         DBDiscussionSession.flush()
 

@@ -483,7 +483,7 @@ class Settings(DiscussionBase):
         """
         self.should_show_public_nickname = should_show_public_nickname
 
-    def set_last_topic_uid(self, issue: Issue):
+    def set_last_topic(self, issue: Issue):
         """
         Updates last used topic of user
 
