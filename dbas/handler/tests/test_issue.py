@@ -20,18 +20,6 @@ class IssueHandlerTests(TestCaseWithConfig):
         response = ih.prepare_json_of_issue(self.issue_town, self.user_anonymous)
         self.assertGreater(len(response), 0)
 
-    def test_get_number_of_arguments(self):
-        response = len(DBDiscussionSession.query(Issue).get(0).all_arguments)
-        self.assertEqual(response, 0)
-        response = len(DBDiscussionSession.query(Issue).get(1).all_arguments)
-        self.assertGreater(response, 0)
-
-    def test_get_number_of_statements(self):
-        response = len(DBDiscussionSession.query(Issue).get(0).statements)
-        self.assertEqual(response, 0)
-        response = len(DBDiscussionSession.query(Issue).get(1).statements)
-        self.assertGreater(response, 0)
-
     def test_get_number_of_active_participation_users(self):
         response = ih.get_number_of_authors(8)
         self.assertEqual(response, 0)
