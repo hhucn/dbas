@@ -72,7 +72,7 @@ class IssueHandlerTests(TestCaseWithConfig):
         self.assertGreater(len(response['user']), 0)
         self.assertEqual(len(response['other']), 0)
 
-        response = ih.get_issues_overview_for(self.user_christian, 'http://test.url')
+        response = ih.get_issues_overview_for(self.user_pascal, 'http://test.url')
         self.assertIn('user', response)
         self.assertIn('other', response)
         self.assertEqual(len(response['user']), 0)
