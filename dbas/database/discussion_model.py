@@ -85,14 +85,19 @@ class Issue(DiscussionBase):
     statements = relationship('Statement', secondary='statement_to_issue')
     all_arguments = relationship('Argument', back_populates='issue')
 
-    positions = relationship('Statement', secondary='statement_to_issue', viewonly=True,
-                             secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
+    positions: List['Statement'] = relationship('Statement', secondary='statement_to_issue', viewonly=True,
+                                                secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
 
     decision_process: Optional['DecisionProcess'] = relationship('DecisionProcess', back_populates='issue',
                                                                  uselist=False)
 
-    def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
-                 is_read_only=False, is_featured=False, slug: str = None):
+    def __init__(self, title: str, info: str, long_info: str, author: 'User', language: 'Language',
+                 is_disabled: bool = False,
+                 is_private: bool = False,
+                 is_read_only: bool = False,
+                 is_featured: bool = False,
+                 slug: str = None,
+                 date: datetime = None):
         """
         Initializes a row in current position-table
         """
@@ -100,14 +105,13 @@ class Issue(DiscussionBase):
         self.slug = slug if slug else slugify(title)
         self.info = info
         self.long_info = long_info
-        self.author_uid = author_uid
-        self.lang_uid = lang_uid
+        self.author = author
+        self.language = language
         self.is_disabled = is_disabled
         self.is_private = is_private
         self.is_read_only = is_read_only
-        self.date = get_now()
+        self.date = date if date else get_now()
         self.is_featured = is_featured
-        author = DBDiscussionSession.query(User).get(self.author_uid)
         self.participating_users = [author, ]
 
     def __repr__(self):
