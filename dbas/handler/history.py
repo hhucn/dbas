@@ -144,7 +144,7 @@ def save_issue(issue: Issue, db_user: User) -> None:
     :return: Boolean
     """
     db_settings = db_user.settings
-    db_settings.set_last_topic(issue)
+    db_settings.last_topic = issue
     DBDiscussionSession.add(db_settings)
 
 
