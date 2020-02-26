@@ -214,12 +214,11 @@ def get_issues_overview_for(db_user: User, app_url: str) -> Dict[str, Collection
         }
 
     if db_user.is_admin():
-        db_issues_other_users = DBDiscussionSession.query(Issue).filter(Issue.author_uid != db_user.uid).all()
+        db_issues_other_users = DBDiscussionSession.query(Issue).filter(Issue.author != db_user).all()
     else:
-        db_issues_other_users = [issue for issue in db_user.accessible_issues if
-                                 issue.author_uid != db_user.uid]
+        db_issues_other_users = [issue for issue in db_user.accessible_issues if issue.author != db_user]
 
-    db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).order_by(
+    db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author=db_user).order_by(
         Issue.uid.asc()).all()
 
     return {
