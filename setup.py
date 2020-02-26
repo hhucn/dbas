@@ -36,14 +36,7 @@ setup(name='dbas',
       [paste.app_factory]
       main = dbas:main
       [console_scripts]
-      init_discussion_sql = dbas.database.initializedb:main_discussion
-      init_field_test_sql = dbas.database.initializedb:main_field_test
-      init_news_sql = dbas.database.initializedb:main_news
-      init_empty_sql = dbas.database.initializedb:blank_file
-      init_drop_sql = dbas.database.initializedb:drop_it
-      init_dummy_votes = dbas.database.initializedb:init_dummy_votes
       promote_to_admin = dbas.console_scripts:promote_user
       demote_to_user = dbas.console_scripts:demote_user
-      setup_decidotron = dbas.database.initializedb:init_budget_discussion
       """,
       )

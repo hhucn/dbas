@@ -16,47 +16,6 @@ edited values **now**.
 Normally this behaviour is not needed but since we are editing arguments/statements/... and want to get their text at
 another places of the program, we have to force transactions sometimes.
 
-Guest-User
-==========
-
-+-------------------+-------------------+------------------------+-------------------+
-|**Mode**           | **Name**          | **Password**           | **Permission**    |
-+-------------------+-------------------+------------------------+-------------------+
-| development       | guest             | guest                  | read-only         |
-+-------------------+-------------------+------------------------+-------------------+
-| production        | guest             | Ask: ``dbas@cs.hhu.de``| read-only         |
-+-------------------+-------------------+------------------------+-------------------+
-
-The D-BAS database has one guest user.
-The name of the guest user is ``guest``.
-The live database can be accessed from the university network.
-In order to access the live data, a password for the guest user must be requested.
-The password can be requested under ``dbas@cs.hhu.de``.
-
-For local development the password for the guest user is: ``guest``.
-
-The guest user has the exclusive right to ``SELECT`` the essential database tables. This includes:
-
-+--------------------+
-|issues              |
-+--------------------+
-|languages           |
-+--------------------+
-|premisegroups       |
-+--------------------+
-|premises            |
-+--------------------+
-|statement_to_issue  |
-+--------------------+
-|statements          |
-+--------------------+
-|textversions        |
-+--------------------+
-
-The guest user may also access the ``View`` ``public_nicknames``.
-This view includes the ``uid`` of the users and their ``public_nickname``.
-If the real-time data is required, it can be requested remotely with the guest user.
-The database can be accessed under ``dbas.cs.uni-duesseldorf.de`` or ``dbas.hhu.de`` via port ``5432``.
 
 Dump a database
 ===============
@@ -143,33 +102,14 @@ Steps for creating a new database
 2. Remove the `.bak` ending of the `001_init`-script in `docker/db`. This will create a fresh and empty database.
 3. Be sure, that you deleted your old `dbas_db_1`-container.
 4. Run `docker-compose up`.
-5. Execute some initialization methods which are already given, like creating an English and German discussion as well as news::
 
-    $ docker exec dbas_web_1 init_field_test_sql development.ini
-    $ docker exec dbas_web_1 init_news_sql development.ini
-    $ docker exec dbas_web_1 init_dummyvotes_sql development.ini
-
-At this point you have created the same data like in `002_development_seed.sql`. If needed, you can just add you own
-settings in `database/initializedb.py`.
+At this point you have created the same data like in `002_development_seed.sql`.
 
 
 .. deprecated:: 1.3.1
    This comes from the good ol' times where we manually set up a database. We are now using Docker and its entrypoint
    scripts simplify the seeding process.
 
-1. Add a console script under console_scripts in setup.py.
-2. Specify path for the database in development.ini and production.ini.
-3. Load database in dbas/__init__.py.
-4. Add session, engine and methods in dbas/database/__init__.py.
-5. Define a new model <new_model>.py in dbas/database/.
-6. Define a function for creation in dbas/database/initializedb.py. Name of the method is the same as in the console script
-7. Optional: add dummy data in dbas/database/initializedb.py.
-8. Call
-
-.. code-block:: console
-
-    $ python setup.py develop
-    $ <console_script_name> development.ini
 
 ======================
 Source-Code Docstrings
@@ -186,11 +126,4 @@ Discussion Model
 ================
 
 .. automodule:: dbas.database.discussion_model
-    :members:
-
-
-Initialize Dummy DB
-===================
-
-.. automodule:: dbas.database.initializedb
     :members:
