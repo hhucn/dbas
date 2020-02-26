@@ -80,7 +80,7 @@ Thanks to all former contributors! In order of appearance:
 
 Thanks for maintaining the project and for your work! We appreciate your efforts :tada: In order of appearance:
 
-* [Tobias Schröder (neé Krauthoff)](mailto:tobias.krauthoff@hhu.de)
+* [Tobias Schröder (né Krauthoff)](mailto:tobias.krauthoff@hhu.de)
 
 ## Scientific Background
 
