@@ -304,7 +304,7 @@ def set_statement(text: str, db_user: User, is_position: bool, db_issue: Issue) 
         return db_dupl, True
 
     db_statement = __add_statement(is_position)
-    __add_textversion(text, db_user.uid, db_statement.uid)
+    __add_textversion(text, db_user, db_statement)
     __add_statement2issue(db_statement.uid, db_issue.uid)
 
     return db_statement, False
@@ -347,16 +347,16 @@ def __add_statement(is_position: bool) -> Statement:
     return db_statement
 
 
-def __add_textversion(text: str, user_uid: int, statement_uid: int) -> TextVersion:
+def __add_textversion(text: str, author: User, statement: Statement) -> TextVersion:
     """
     Adds a new statement to the database
 
     :param text: content of the textversion
-    :param user_uid: uid of the author
-    :param statement_uid: id of the related statement
+    :param author:  the author
+    :param statement: id of the related statement
     :return: New textversion object
     """
-    db_textversion = TextVersion(content=text, author=user_uid, statement_uid=statement_uid)
+    db_textversion = TextVersion(content=text, author=author, statement=statement)
     DBDiscussionSession.add(db_textversion)
     DBDiscussionSession.flush()
     return db_textversion

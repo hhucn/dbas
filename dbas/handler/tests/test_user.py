@@ -1,6 +1,7 @@
+from datetime import date, timedelta
+
 import arrow
 import transaction
-from datetime import date, timedelta
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, ClickedArgument, ClickedStatement, ReviewEdit, \
@@ -69,7 +70,7 @@ class UserHandlerTests(TestCaseWithConfig):
         DBDiscussionSession.add(db_st)
         DBDiscussionSession.flush()
         transaction.commit()
-        db_tv = TextVersion('hello, here i am', engelbert.uid, db_st.uid)
+        db_tv = TextVersion('hello, here i am', engelbert, db_st)
         DBDiscussionSession.add(db_tv)
         DBDiscussionSession.flush()
         transaction.commit()
@@ -93,7 +94,7 @@ class UserHandlerTests(TestCaseWithConfig):
 
         # add edit
         db_st = DBDiscussionSession.query(Statement).get(1)
-        db_tv = TextVersion('hello, here i am again', engelbert.uid, db_st.uid)
+        db_tv = TextVersion('hello, here i am again', engelbert, db_st)
         DBDiscussionSession.add(db_tv)
         DBDiscussionSession.flush()
         transaction.commit()
