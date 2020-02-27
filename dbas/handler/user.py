@@ -726,7 +726,7 @@ def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider
                     nickname=user_info['nickname'],
                     password=hashed_password,
                     gender=user_info['gender'],
-                    group_uid=user_info['db_group_uid'],
+                    group=user_info['db_group'],
                     oauth_provider=oauth_provider,
                     oauth_provider_id=oauth_provider_id)
     DBDiscussionSession.add(new_user)
@@ -772,7 +772,7 @@ def set_new_user(mailer: Mailer, user_data: Dict[str, Any], password: str, _tn: 
         return {'success': False, 'error': _tn.get(Keywords.nickIsTaken), 'user': None}
 
     temporary_user['password'] = password
-    temporary_user['db_group_uid'] = db_group.uid
+    temporary_user['db_group'] = db_group
 
     success, info, db_new_user = __create_new_user(temporary_user, _tn.get_lang())
 
@@ -829,7 +829,7 @@ def set_new_oauth_user(user_data: Dict[str, Any], oauth_id: str, provider: str, 
         return {'success': False, 'error': _tn.get(Keywords.nickIsTaken), 'user': None}
 
     temporary_user['password'] = str(uuid.uuid4().hex)
-    temporary_user['db_group_uid'] = db_group.uid
+    temporary_user['db_group'] = db_group
 
     success, info, db_new_user = __create_new_user(temporary_user, _tn.get_lang(), oauth_provider=provider,
                                                    oauth_provider_id=oauth_id)

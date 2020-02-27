@@ -247,7 +247,7 @@ class User(DiscussionBase):
     clicked_arguments: List['ClickedArgument'] = relationship('ClickedArgument', back_populates='user')
 
     def __init__(self, firstname: str, surname: str, nickname: str, email: str, password: str, gender: str,
-                 group_uid: int, oauth_provider: Optional[str] = None, oauth_provider_id: Optional[str] = None):
+                 group: 'Group', oauth_provider: Optional[str] = None, oauth_provider_id: Optional[str] = None):
         """
         Initializes a row in current user-table
 
@@ -266,7 +266,7 @@ class User(DiscussionBase):
         self.email = email
         self.gender = gender
         self.password = password
-        self.group_uid = group_uid
+        self.group = group
         self.last_action = get_now()
         self.last_login = get_now()
         self.registered = get_now()
