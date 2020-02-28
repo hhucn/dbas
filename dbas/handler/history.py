@@ -494,7 +494,7 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
         history = '?{}={}'.format(ArgumentationStep.HISTORY.value, history)
 
     LOG.debug("Saving %s%s", path, history)
-    DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
+    DBDiscussionSession.add(History(author=db_user, path=path + history))
     DBDiscussionSession.flush()
 
 
