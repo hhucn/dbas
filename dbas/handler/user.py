@@ -716,7 +716,8 @@ def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider
     success = ''
     info = ''
 
-    _t = Translator(ui_locales)
+    _tn = Translator(ui_locales)
+    language = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
     # creating a new user_info with hashed password
     LOG.debug("Adding user_info for %s", user_info['nickname'])
     hashed_password = password_handler.get_hashed_password(user_info['password'])
@@ -733,15 +734,16 @@ def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider
     settings = Settings(user=new_user,
                         send_mails=False,
                         send_notifications=True,
-                        should_show_public_nickname=True)
+                        should_show_public_nickname=True,
+                        language=language)
     DBDiscussionSession.add(settings)
 
     if new_user:
         LOG.debug("New data was added with uid %s", new_user.uid)
-        success = _t.get(Keywords.accountWasAdded).format(user_info['nickname'])
+        success = _tn.get(Keywords.accountWasAdded).format(user_info['nickname'])
     else:
         LOG.debug("New data was not added")
-        info = _t.get(Keywords.accoutErrorTryLateOrContant)
+        info = _tn.get(Keywords.accoutErrorTryLateOrContant)
 
     return success, info, new_user
 
