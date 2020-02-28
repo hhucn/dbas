@@ -19,8 +19,8 @@ from uuid import uuid4
 from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, Settings, \
-    ClickedArgument, ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup
+from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, ClickedArgument, \
+    ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup, Settings
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.translator import Translator
@@ -851,25 +851,28 @@ def get_all_attacking_arg_uids_from_history(history):
         return []
 
 
-def get_user_by_private_or_public_nickname(nickname):
+def get_user_by_private_or_public_nickname(nickname: str) -> Optional[User]:
     """
     Gets the user by his (public) nickname, based on the option, whether his nickname is public or not
 
     :param nickname: Nickname of the user
     :return: Current user or None
     """
-    db_user = get_user_by_case_insensitive_nickname(nickname)
-    db_public_user = get_user_by_case_insensitive_public_nickname(nickname)
+    user: User = get_user_by_case_insensitive_nickname(nickname)
+    public_user: User = get_user_by_case_insensitive_public_nickname(nickname)
 
-    db_settings = DBDiscussionSession.query(Settings).filter_by(user=db_user).first()
-
-    if not db_settings:
+    if not user or not public_user:
         return None
 
-    if db_settings.should_show_public_nickname and db_user:
-        return db_user
-    elif not db_settings.should_show_public_nickname and db_public_user:
-        return db_public_user
+    settings: Settings = user.settings
+
+    if not settings:
+        return None
+
+    if settings.should_show_public_nickname and user:
+        return user
+    elif not settings.should_show_public_nickname and public_user:
+        return public_user
 
     return None
 
