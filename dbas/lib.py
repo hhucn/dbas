@@ -860,14 +860,8 @@ def get_user_by_private_or_public_nickname(nickname):
     """
     db_user = get_user_by_case_insensitive_nickname(nickname)
     db_public_user = get_user_by_case_insensitive_public_nickname(nickname)
-    uid = 0
 
-    if db_user:
-        uid = db_user.uid
-    elif db_public_user:
-        uid = db_public_user.uid
-
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=uid).first()
+    db_settings = DBDiscussionSession.query(Settings).filter_by(user=db_user).first()
 
     if not db_settings:
         return None

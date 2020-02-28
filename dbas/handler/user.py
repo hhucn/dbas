@@ -730,8 +730,7 @@ def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider
                     oauth_provider=oauth_provider,
                     oauth_provider_id=oauth_provider_id)
     DBDiscussionSession.add(new_user)
-    DBDiscussionSession.flush()
-    settings = Settings(author_uid=new_user.uid,
+    settings = Settings(user=new_user,
                         send_mails=False,
                         send_notifications=True,
                         should_show_public_nickname=True)
@@ -934,7 +933,7 @@ def delete(db_user: User) -> None:
     DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
     DBDiscussionSession.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
     DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(Settings).filter_by(user=db_user).delete()
     DBDiscussionSession.query(StatementReference).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
