@@ -1277,7 +1277,7 @@ class History(DiscussionBase):
 
     author: User = relationship('User', foreign_keys=[author_uid], back_populates='history')
 
-    def __init__(self, author_uid, path):
+    def __init__(self, author: User, path):
         """
         Inits a row in current history table
 
@@ -1285,7 +1285,7 @@ class History(DiscussionBase):
         :param path: String
         :return: None
         """
-        self.author_uid = author_uid
+        self.author_uid = author.uid
         self.path = path
         self.timestamp = get_now()
 
