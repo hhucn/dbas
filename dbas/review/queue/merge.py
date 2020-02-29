@@ -42,7 +42,8 @@ class MergeQueue(QueueABC):
         else:
             self.key = key
 
-    def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator) -> dict:
+    def get_queue_information(self, db_user: User, session: Session, application_url: str,
+                              translator: Translator) -> dict:
         """
         Setup the subpage for the merge queue
 
@@ -336,7 +337,7 @@ class MergeQueue(QueueABC):
         DBDiscussionSession.flush()
 
         # new premise
-        db_new_premise = Premise(db_new_premisegroup.uid, new_statement.uid, False, db_user.uid, db_issue.uid)
+        db_new_premise = Premise(db_new_premisegroup, new_statement, False, db_user, db_issue)
         DBDiscussionSession.add(db_new_premise)
         DBDiscussionSession.flush()
         LOG.debug("Added new premise %s with pgroup %s", db_new_premise.uid, db_new_premisegroup.uid)

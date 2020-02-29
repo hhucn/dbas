@@ -537,8 +537,8 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
 
     premise_list = []
     for statement in statements:
-        premise = Premise(premisesgroup=premise_group.uid, statement=statement.uid, is_negated=False,
-                          author=db_user.uid, issue=db_issue.uid)
+        premise = Premise(premisesgroup=premise_group, statement=statement, is_negated=False,
+                          author=db_user, issue=db_issue)
         premise_list.append(premise)
 
     DBDiscussionSession.add_all(premise_list)

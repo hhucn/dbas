@@ -978,27 +978,28 @@ class Premise(DiscussionBase):
     author: User = relationship(User, foreign_keys=[author_uid])
     issue: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates="premises")
 
-    def __init__(self, premisesgroup, statement, is_negated, author, issue, is_disabled=False):
+    def __init__(self, premisesgroup: "PremiseGroup", statement: Statement, is_negated: Boolean, author: User,
+                 issue: Issue, is_disabled=False):
         """
         Initializes a row in current premises-table
 
-        :param premisesgroup: PremiseGroup.uid
-        :param statement: Statement.uid
+        :param premisesgroup_uid: PremiseGroup.uid
+        :param statement_uid: Statement.uid
         :param is_negated: Boolean
-        :param author: User.uid
-        :param issue: Issue.uid
+        :param author_uid: User.uid
+        :param issue_uid: Issue.uid
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisegroup_uid = premisesgroup
-        self.statement_uid = statement
+        self.premisegroup_uid = premisesgroup.uid
+        self.statement_uid = statement.uid
         self.is_negated = is_negated
-        self.author_uid = author
+        self.author_uid = author.uid
         self.timestamp = get_now()
-        self.issue_uid = issue
+        self.issue_uid = issue.uid
         self.is_disabled = is_disabled
 
-    def set_disabled(self, is_disabled):
+    def set_disabled(self, is_disabled: Boolean):
         """
         Disables current premise
 

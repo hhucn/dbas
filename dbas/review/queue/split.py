@@ -1,9 +1,10 @@
 # Adaptee for the split queue.
 import logging
 import random
+from typing import Tuple, Optional
+
 import transaction
 from beaker.session import Session
-from typing import Tuple, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerSplit, ReviewSplit, ReviewSplitValues, Premise, Issue, \
@@ -336,7 +337,7 @@ class SplitQueue(QueueABC):
             DBDiscussionSession.flush()
             new_premisegroup_ids.append(db_new_premisegroup.uid)
 
-            db_new_premise = Premise(db_new_premisegroup.uid, statement.uid, False, db_user.uid, db_issue.uid)
+            db_new_premise = Premise(db_new_premisegroup, statement, False, db_user, db_issue)
             DBDiscussionSession.add(db_new_premise)
             DBDiscussionSession.flush()
             new_premise_ids.append(db_new_premise.uid)
