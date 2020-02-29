@@ -983,20 +983,20 @@ class Premise(DiscussionBase):
         """
         Initializes a row in current premises-table
 
-        :param premisesgroup_uid: PremiseGroup.uid
-        :param statement_uid: Statement.uid
+        :param premisesgroup: PremiseGroup
+        :param statement: Statement
         :param is_negated: Boolean
-        :param author_uid: User.uid
-        :param issue_uid: Issue.uid
+        :param author: User
+        :param issue: Issue
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisegroup_uid = premisesgroup.uid
-        self.statement_uid = statement.uid
+        self.premisegroup = premisesgroup
+        self.statement = statement
         self.is_negated = is_negated
-        self.author_uid = author.uid
+        self.author = author
         self.timestamp = get_now()
-        self.issue_uid = issue.uid
+        self.issue = issue
         self.is_disabled = is_disabled
 
     def set_disabled(self, is_disabled: Boolean):
@@ -1046,12 +1046,12 @@ class Premise(DiscussionBase):
         :return: dict()
         """
         return {
-            'premisegroup_uid': self.premisegroup_uid,
-            'statement_uid': self.statement_uid,
+            'premisegroup_uid': self.premisegroup.uid,
+            'statement_uid': self.statement.uid,
             'is_negated': self.is_negated,
-            'author_uid': self.author_uid,
+            'author_uid': self.author.uid,
             'timestamp': sql_timestamp_pretty_print(self.timestamp),
-            'issue_uid': self.issue_uid,
+            'issue_uid': self.issue.uid,
             'is_disabled': self.is_disabled
         }
 
@@ -1073,10 +1073,10 @@ class PremiseGroup(DiscussionBase):
         """
         Initializes a row in current premisesGroup-table
 
-        :param author: User.id
+        :param author: User
         :return: None
         """
-        self.author_uid = author.uid
+        self.author = author
 
     def get_text(self):
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()
