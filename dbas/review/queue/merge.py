@@ -332,7 +332,7 @@ class MergeQueue(QueueABC):
         new_statement, tmp = set_statement(new_text, db_user, db_first_old_statement.is_position, db_issue)
 
         # new premisegroup for the statement
-        db_new_premisegroup = PremiseGroup(author=db_user.uid)
+        db_new_premisegroup = PremiseGroup(author=db_user)
         DBDiscussionSession.add(db_new_premisegroup)
         DBDiscussionSession.flush()
 

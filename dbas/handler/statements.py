@@ -531,7 +531,7 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
     if existing_premisegroup is not None:
         return existing_premisegroup
 
-    premise_group = PremiseGroup(author=db_user.uid)
+    premise_group = PremiseGroup(author=db_user)
     DBDiscussionSession.add(premise_group)
     DBDiscussionSession.flush()
 

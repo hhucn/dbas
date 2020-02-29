@@ -1069,14 +1069,14 @@ class PremiseGroup(DiscussionBase):
     premises: List[Premise] = relationship(Premise, back_populates='premisegroup')
     arguments: List['Argument'] = relationship('Argument', back_populates='premisegroup')
 
-    def __init__(self, author: int):
+    def __init__(self, author: User):
         """
         Initializes a row in current premisesGroup-table
 
         :param author: User.id
         :return: None
         """
-        self.author_uid = author
+        self.author_uid = author.uid
 
     def get_text(self):
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()
