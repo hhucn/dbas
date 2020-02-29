@@ -1008,7 +1008,7 @@ class Premise(DiscussionBase):
         """
         self.is_disabled = is_disabled
 
-    def set_statement(self, statement):
+    def set_statement(self, statement: Statement):
         """
         Sets statement fot his Premise
 
@@ -1017,7 +1017,7 @@ class Premise(DiscussionBase):
         """
         self.statement_uid = statement
 
-    def set_premisegroup(self, premisegroup):
+    def set_premisegroup(self, premisegroup: "PremiseGroup"):
         """
         Set premisegroup for this premise
 
