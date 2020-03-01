@@ -29,7 +29,7 @@ def store_reference(reference: str, host: str, path: str, user: User, statement:
     """
     reference_text = escape_string(reference)
     log.debug("New Reference for Statement.uid {}: {}".format(statement.uid, reference_text))
-    db_ref: StatementReference = StatementReference(escape_string(reference_text), host, path, user.uid,
+    db_ref: StatementReference = StatementReference(escape_string(reference_text), host, path, user,
                                                     statement.uid, issue.uid)
     DBDiscussionSession.add(db_ref)
     DBDiscussionSession.flush()

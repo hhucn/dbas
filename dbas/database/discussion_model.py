@@ -748,14 +748,14 @@ class StatementReference(DiscussionBase):
     author: User = relationship('User')
     issue: Issue = relationship('Issue')
 
-    def __init__(self, text: str, host: str, path: str, author_uid: int, statement_uid: int, issue_uid: int):
+    def __init__(self, text: str, host: str, path: str, author: 'User', statement_uid: int, issue_uid: int):
         """
         Store a real-world text-reference.
 
         :param text: String
         :param host: Host of URL
         :param path: Path of URL
-        :param author_uid: User.uid
+        :param author: User who referenced a statement
         :param statement_uid: Statement.uid
         :param issue_uid: Issue.uid
         :return: None
@@ -763,7 +763,7 @@ class StatementReference(DiscussionBase):
         self.text = text
         self.host = host
         self.path = path
-        self.author_uid = author_uid
+        self.author = author
         self.statement_uid = statement_uid
         self.issue_uid = issue_uid
 
