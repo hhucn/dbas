@@ -1114,10 +1114,10 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
 
     # these are only for legacy support. use attacked_by and author instead
     issues: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
-    arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
+    arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid, uselist=True)
     users: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, premisegroup: int, is_supportive: bool, author: int, issue: int, conclusion: int = None,
+    def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: int, issue: int, conclusion: int = None,
                  argument: int = None,
                  is_disabled: bool = False):
         """
@@ -1132,7 +1132,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisegroup_uid = premisegroup
+        self.premisegroup = premisegroup
         self.conclusion_uid = None if conclusion == 0 else conclusion
         self.argument_uid = None if argument == 0 else argument
         self.is_supportive = is_supportive
@@ -2484,7 +2484,7 @@ class PremiseGroupSplitted(DiscussionBase):
     old_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
     new_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
-    def __init__(self, review, old_premisegroup, new_premisegroup):
+    def __init__(self, review, old_premisegroup, new_premisegroup: PremiseGroup):
         """
         Inits a row in current table
 
@@ -2494,7 +2494,7 @@ class PremiseGroupSplitted(DiscussionBase):
         """
         self.review_uid = review
         self.old_premisegroup_uid = old_premisegroup
-        self.new_premisegroup_uid = new_premisegroup
+        self.new_premisegroup = new_premisegroup
         self.timestamp = get_now()
 
 
