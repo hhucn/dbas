@@ -557,6 +557,10 @@ class Statement(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     arguments: List['Argument'] = relationship('Argument', back_populates='conclusion')
     premises: List['Premise'] = relationship('Premise', back_populates='statement')
     references: List['StatementReference'] = relationship('StatementReference', back_populates='statement')
+    all_textversions: List['TextVersion'] = relationship('TextVersion',
+                                                         back_populates='statement',
+                                                         cascade="all",
+                                                         order_by="TextVersion.timestamp")
 
     clicks = relationship('ClickedStatement')
 
@@ -902,10 +906,10 @@ class TextVersion(DiscussionBase):
     timestamp = Column(ArrowType, default=get_now())
     is_disabled: bool = Column(Boolean, nullable=False)
 
-    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid], back_populates='all_textversions')
     author: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, content, author, statement_uid=None, is_disabled=False):
+    def __init__(self, content, author: User, statement: Statement, is_disabled=False, date: datetime = None):
         """
         Initializes a row in current text versions-table
 
@@ -914,19 +918,10 @@ class TextVersion(DiscussionBase):
         :return: None
         """
         self.content = content
-        self.author_uid = author
-        self.timestamp = get_now()
-        self.statement_uid = statement_uid
+        self.author = author
+        self.timestamp = date or get_now()
+        self.statement = statement
         self.is_disabled = is_disabled
-
-    def set_statement(self, statement_uid):
-        """
-        Set the statement of the textversion
-
-        :param statement_uid: Statement.uid
-        :return: None
-        """
-        self.statement_uid = statement_uid
 
     def set_disabled(self, is_disabled):
         """
@@ -1119,10 +1114,10 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
 
     # these are only for legacy support. use attacked_by and author instead
     issues: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
-    arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
+    arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid, uselist=True)
     users: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, premisegroup: int, is_supportive: bool, author: int, issue: int, conclusion: int = None,
+    def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: int, issue: int, conclusion: int = None,
                  argument: int = None,
                  is_disabled: bool = False):
         """
@@ -1137,7 +1132,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisegroup_uid = premisegroup
+        self.premisegroup = premisegroup
         self.conclusion_uid = None if conclusion == 0 else conclusion
         self.argument_uid = None if argument == 0 else argument
         self.is_supportive = is_supportive
@@ -1723,7 +1718,7 @@ class ReviewEditValue(DiscussionBase):
     content: str = Column(Text, nullable=False)
 
     review: ReviewEdit = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
-    statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
     def __init__(self, review_edit, statement, typeof, content):
         """
@@ -2489,7 +2484,7 @@ class PremiseGroupSplitted(DiscussionBase):
     old_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
     new_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
-    def __init__(self, review, old_premisegroup, new_premisegroup):
+    def __init__(self, review, old_premisegroup, new_premisegroup: PremiseGroup):
         """
         Inits a row in current table
 
@@ -2499,7 +2494,7 @@ class PremiseGroupSplitted(DiscussionBase):
         """
         self.review_uid = review
         self.old_premisegroup_uid = old_premisegroup
-        self.new_premisegroup_uid = new_premisegroup
+        self.new_premisegroup = new_premisegroup
         self.timestamp = get_now()
 
 
