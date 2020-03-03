@@ -110,14 +110,14 @@ def __get_values_of_reference(reference: StatementReference, main_page):
             'statement_text': reference.get_statement_text()}
 
 
-def set_reference(text, url, user, db_statement, issue_uid):
+def set_reference(text: str, url: str, user: User, statement: Statement, issue_uid):
     """
     Creates a new reference
 
     :param text: Text of the reference
     :param url: The url for the reference
-    :param db_user: User
-    :param db_statement: Statement
+    :param user: User
+    :param statement: Statement
     :param issue_uid: current issue uid
     :return: Boolean
     """
@@ -125,7 +125,7 @@ def set_reference(text, url, user, db_statement, issue_uid):
     host = '{}://{}'.format(parsed_url.scheme, parsed_url.netloc)
     path = '{}?{}'.format(parsed_url.path, parsed_url.query)
 
-    DBDiscussionSession.add(StatementReference(text, host, path, user, db_statement.uid, issue_uid))
+    DBDiscussionSession.add(StatementReference(text, host, path, user, statement, issue_uid))
     DBDiscussionSession.flush()
 
     return True
