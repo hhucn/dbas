@@ -1120,7 +1120,8 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
 
     def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: int, issue: int, conclusion: int = None,
                  argument: int = None,
-                 is_disabled: bool = False):
+                 is_disabled: bool = False,
+                 timestamp: datetime = None):
         """
         Initializes a row in current argument-table
 
@@ -1141,7 +1142,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         self.argument_uid = argument
         self.issue_uid = issue
         self.is_disabled = is_disabled
-        self.timestamp = get_now()
+        self.timestamp = arrow.get(timestamp) or get_now()
 
     def __repr__(self):
         return f"<Argument: {self.uid} {'support' if self.is_supportive else 'attack'}>"
