@@ -1118,7 +1118,8 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid, uselist=True)
     users: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: int, issue: int, conclusion: int = None,
+    def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: User, issue: int,
+                 conclusion: int = None,
                  argument: int = None,
                  is_disabled: bool = False,
                  timestamp: datetime = None):
@@ -1138,7 +1139,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         self.conclusion_uid = None if conclusion == 0 else conclusion
         self.argument_uid = None if argument == 0 else argument
         self.is_supportive = is_supportive
-        self.author_uid = author
+        self.author = author
         self.argument_uid = argument
         self.issue_uid = issue
         self.is_disabled = is_disabled

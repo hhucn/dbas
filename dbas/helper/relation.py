@@ -188,7 +188,7 @@ def set_new_undermine_or_support_for_pgroup(premisegroup: PremiseGroup, current_
             return False
 
         new_arguments.append(
-            Argument(premisegroup=premisegroup, is_supportive=is_supportive, author=db_user.uid, issue=db_issue.uid,
+            Argument(premisegroup=premisegroup, is_supportive=is_supportive, author=db_user, issue=db_issue.uid,
                      conclusion=premise.statement_uid))
 
         if len(new_arguments) > 0:
@@ -222,7 +222,7 @@ def set_new_undercut(premisegroup: PremiseGroup, current_argument: Argument, db_
     else:
         new_argument = Argument(premisegroup=premisegroup,
                                 is_supportive=False,
-                                author=db_user.uid,
+                                author=db_user,
                                 issue=issue.uid)
         new_argument.set_conclusions_argument(current_argument.uid)
         DBDiscussionSession.add(new_argument)
@@ -272,7 +272,7 @@ def __set_rebut_or_support(premisegroup: PremiseGroup, current_argument: Argumen
             return False, False
         new_argument = Argument(premisegroup=premisegroup,
                                 is_supportive=is_supportive,
-                                author=db_user.uid,
+                                author=db_user,
                                 issue=db_issue.uid,
                                 conclusion=current_argument.conclusion_uid)
         DBDiscussionSession.add(new_argument)

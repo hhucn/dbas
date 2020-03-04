@@ -76,25 +76,20 @@ class LibTests(TestCaseWithConfig):
         self.assertIsNone(lib.get_text_for_statement_uid(uid=-30))
 
     def test_get_text_for_conclusion(self):
-        argument1 = Argument(premisegroup=DBDiscussionSession.query(PremiseGroup).get(4), is_supportive=True, author=1,
+        argument1 = Argument(premisegroup=DBDiscussionSession.query(PremiseGroup).get(4), is_supportive=True,
+                             author=self.user_anonymous,
                              issue=1, conclusion=3)
         # 'argument' is an argument
         self.assertEqual(lib.get_text_for_conclusion(argument=argument1,
                                                      start_with_intro=False,
                                                      rearrange_intro=False), 'we should get a dog')
 
-        argument2 = Argument(premisegroup=DBDiscussionSession.query(PremiseGroup).get(1), is_supportive=False, author=1,
+        argument2 = Argument(premisegroup=DBDiscussionSession.query(PremiseGroup).get(1), is_supportive=False,
+                             author=self.user_anonymous,
                              issue=1)
         # 'argument' is a statement
         self.assertEqual(lib.get_text_for_conclusion(argument=argument2,
                                                      start_with_intro=True,
-                                                     rearrange_intro=True), '')
-
-        # unknown conclusion id
-        argument3 = Argument(premisegroup=DBDiscussionSession.query(PremiseGroup).get(0), is_supportive=True, author=0,
-                             issue=0, conclusion=0)
-        self.assertEqual(lib.get_text_for_conclusion(argument=argument3,
-                                                     start_with_intro=False,
                                                      rearrange_intro=True), '')
 
     def test_get_all_attacking_arg_uids_from_history(self):
