@@ -85,7 +85,7 @@ def __get_references_for_statement(uid, main_page):
     return {uid: references_array}
 
 
-def __get_values_of_reference(reference: StatementReference, main_page):
+def __get_values_of_reference(reference: StatementReference, main_page) -> dict:
     """
     Creates dictionary with all values of the column
 
@@ -93,17 +93,17 @@ def __get_values_of_reference(reference: StatementReference, main_page):
     :param main_page: current overview page
     :return: Dictionary with all columns
     """
-    db_user = DBDiscussionSession.query(User).get(int(reference.author_uid))
+    user: User = DBDiscussionSession.query(User).get(int(reference.author_uid))
 
-    img = get_profile_picture(db_user, 20, True)
-    name = db_user.global_nickname
-    link = main_page + '/user/' + str(db_user.uid)
+    img_path: str = get_profile_picture(user, 20, True)
+    name: str = user.global_nickname
+    link: str = main_page + '/user/' + str(user.uid)
 
     return {'uid': reference.uid,
             'reference': reference.text,
             'host': reference.host,
             'path': reference.path,
-            'author': {'img': img,
+            'author': {'img': img_path,
                        'name': name,
                        'link': link},
             'created': str(reference.created.humanize),

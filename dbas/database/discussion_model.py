@@ -778,8 +778,7 @@ class StatementReference(DiscussionBase):
         :param html: If True, returns a html span for coloring.
         :return:
         """
-        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
-        return db_statement.get_text(html)
+        return self.statement.get_text(html)
 
     def __json__(self, _request=None):
         return {
@@ -787,7 +786,7 @@ class StatementReference(DiscussionBase):
             "title": self.text,
             "host": self.host,
             "path": self.path,
-            "statement-uid": self.statement_uid,
+            "statement-uid": self.statement.uid,
             "author": self.author
         }
 
