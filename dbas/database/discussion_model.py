@@ -1277,7 +1277,7 @@ class History(DiscussionBase):
         """
         Inits a row in current history table
 
-        :param author_uid: User.uid
+        :param author: User.uid
         :param path: String
         :return: None
         """
