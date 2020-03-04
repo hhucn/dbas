@@ -973,27 +973,28 @@ class Premise(DiscussionBase):
     author: User = relationship(User, foreign_keys=[author_uid])
     issue: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates="premises")
 
-    def __init__(self, premisesgroup, statement, is_negated, author, issue, is_disabled=False):
+    def __init__(self, premisesgroup: "PremiseGroup", statement: Statement, is_negated: Boolean, author: User,
+                 issue: Issue, is_disabled=False):
         """
         Initializes a row in current premises-table
 
-        :param premisesgroup: PremiseGroup.uid
-        :param statement: Statement.uid
+        :param premisesgroup: PremiseGroup
+        :param statement: Statement
         :param is_negated: Boolean
-        :param author: User.uid
-        :param issue: Issue.uid
+        :param author: User
+        :param issue: Issue
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisegroup_uid = premisesgroup
-        self.statement_uid = statement
+        self.premisegroup = premisesgroup
+        self.statement = statement
         self.is_negated = is_negated
-        self.author_uid = author
+        self.author = author
         self.timestamp = get_now()
-        self.issue_uid = issue
+        self.issue = issue
         self.is_disabled = is_disabled
 
-    def set_disabled(self, is_disabled):
+    def set_disabled(self, is_disabled: Boolean):
         """
         Disables current premise
 
@@ -1002,7 +1003,7 @@ class Premise(DiscussionBase):
         """
         self.is_disabled = is_disabled
 
-    def set_statement(self, statement):
+    def set_statement(self, statement: Statement):
         """
         Sets statement fot his Premise
 
@@ -1011,7 +1012,7 @@ class Premise(DiscussionBase):
         """
         self.statement_uid = statement
 
-    def set_premisegroup(self, premisegroup):
+    def set_premisegroup(self, premisegroup: "PremiseGroup"):
         """
         Set premisegroup for this premise
 
@@ -1040,12 +1041,12 @@ class Premise(DiscussionBase):
         :return: dict()
         """
         return {
-            'premisegroup_uid': self.premisegroup_uid,
-            'statement_uid': self.statement_uid,
+            'premisegroup_uid': self.premisegroup.uid,
+            'statement_uid': self.statement.uid,
             'is_negated': self.is_negated,
-            'author_uid': self.author_uid,
+            'author_uid': self.author.uid,
             'timestamp': sql_timestamp_pretty_print(self.timestamp),
-            'issue_uid': self.issue_uid,
+            'issue_uid': self.issue.uid,
             'is_disabled': self.is_disabled
         }
 
@@ -1063,14 +1064,14 @@ class PremiseGroup(DiscussionBase):
     premises: List[Premise] = relationship(Premise, back_populates='premisegroup')
     arguments: List['Argument'] = relationship('Argument', back_populates='premisegroup')
 
-    def __init__(self, author: int):
+    def __init__(self, author: User):
         """
         Initializes a row in current premisesGroup-table
 
-        :param author: User.id
+        :param author: User
         :return: None
         """
-        self.author_uid = author
+        self.author = author
 
     def get_text(self):
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()

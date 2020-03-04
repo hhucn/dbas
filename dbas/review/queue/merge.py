@@ -42,18 +42,19 @@ class MergeQueue(QueueABC):
         else:
             self.key = key
 
-    def get_queue_information(self, db_user: User, session: Session, application_url: str, translator: Translator) -> dict:
+    def get_queue_information(self, user: User, session: Session, application_url: str,
+                              translator: Translator) -> dict:
         """
         Setup the subpage for the merge queue
 
-        :param db_user: User
+        :param user: User
         :param session: session of current webserver request
         :param application_url: current url of the app
         :param translator: Translator
         :return: dict()
         """
         LOG.debug("Setting up the subpage for merge queue")
-        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', db_user, ReviewMerge,
+        all_rev_dict = get_all_allowed_reviews_for_user(session, f'already_seen_{self.key}', user, ReviewMerge,
                                                         LastReviewerMerge)
 
         extra_info = ''
@@ -63,7 +64,7 @@ class MergeQueue(QueueABC):
             all_rev_dict['already_seen_reviews'] = list()
             extra_info = 'already_seen' if not all_rev_dict['first_time'] else ''
             db_reviews = DBDiscussionSession.query(ReviewMerge).filter(ReviewMerge.is_executed == False,
-                                                                       ReviewMerge.detector_uid != db_user.uid)
+                                                                       ReviewMerge.detector_uid != user.uid)
             if len(all_rev_dict['already_voted_reviews']) > 0:
                 LOG.debug("Every review-case was seen")
                 db_reviews = db_reviews.filter(~ReviewMerge.uid.in_(all_rev_dict['already_voted_reviews']))
@@ -331,12 +332,12 @@ class MergeQueue(QueueABC):
         new_statement, tmp = set_statement(new_text, db_user, db_first_old_statement.is_position, db_issue)
 
         # new premisegroup for the statement
-        db_new_premisegroup = PremiseGroup(author=db_user.uid)
+        db_new_premisegroup = PremiseGroup(author=db_user)
         DBDiscussionSession.add(db_new_premisegroup)
         DBDiscussionSession.flush()
 
         # new premise
-        db_new_premise = Premise(db_new_premisegroup.uid, new_statement.uid, False, db_user.uid, db_issue.uid)
+        db_new_premise = Premise(db_new_premisegroup, new_statement, False, db_user, db_issue)
         DBDiscussionSession.add(db_new_premise)
         DBDiscussionSession.flush()
         LOG.debug("Added new premise %s with pgroup %s", db_new_premise.uid, db_new_premisegroup.uid)

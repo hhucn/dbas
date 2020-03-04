@@ -332,12 +332,12 @@ class SplitQueue(QueueABC):
         new_premisegroup: List[PremiseGroup] = []
         new_premise_ids = []
         for statement in db_statements:
-            db_new_premisegroup = PremiseGroup(author=db_user.uid)
+            db_new_premisegroup = PremiseGroup(author=db_user)
             DBDiscussionSession.add(db_new_premisegroup)
             DBDiscussionSession.flush()
             new_premisegroup.append(db_new_premisegroup)
 
-            db_new_premise = Premise(db_new_premisegroup.uid, statement.uid, False, db_user.uid, db_issue.uid)
+            db_new_premise = Premise(db_new_premisegroup, statement, False, db_user, db_issue)
             DBDiscussionSession.add(db_new_premise)
             DBDiscussionSession.flush()
             new_premise_ids.append(db_new_premise.uid)
