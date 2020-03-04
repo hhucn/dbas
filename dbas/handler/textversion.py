@@ -1,38 +1,37 @@
 import logging
+from typing import Dict
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement, TextVersion
+from dbas.database.discussion_model import TextVersion, Statement, User
 
 LOG = logging.getLogger(__name__)
 
 
-def propose_new_textversion_for_statement(db_user, uid, corrected_text):
+def propose_new_textversion_for_statement(user: User, statement: Statement, corrected_text: str) -> Dict[str, any]:
     """
     Corrects a statement
 
-    :param db_user: User requesting user
-    :param uid: requested statement uid
+    :param user: User requesting user
+    :param statement: requested statement
     :param corrected_text: new text
     :return: dict()
     """
-    LOG.debug("Entering propose_new_textversion_for_statement with uid: %s", uid)
+    LOG.debug("Entering propose_new_textversion_for_statement with uid: %s", statement.uid)
 
     while corrected_text.endswith(('.', '?', '!')):
         corrected_text = corrected_text[:-1]
 
     # duplicate check
-    return_dict = dict()
-    db_statement = DBDiscussionSession.query(Statement).get(uid)
     db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(
         TextVersion.uid.desc()).all()
 
     # not a duplicate?
     if not db_textversion:
-        textversion = TextVersion(content=corrected_text, author=db_user.uid)
-        textversion.set_statement(db_statement.uid)
+        textversion = TextVersion(content=corrected_text, author=user, statement=statement)
         DBDiscussionSession.add(textversion)
         DBDiscussionSession.flush()
 
-    return_dict['uid'] = uid
-    return_dict['text'] = corrected_text
-    return return_dict
+    return {
+        'uid': statement.uid,
+        'text': corrected_text
+    }

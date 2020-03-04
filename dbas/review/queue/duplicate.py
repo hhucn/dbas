@@ -1,7 +1,7 @@
 # Adaptee for the duplicate queue.
 import logging
 import random
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 
 import transaction
 from beaker.session import Session
@@ -319,7 +319,8 @@ class DuplicateQueue(QueueABC):
                 used = True
 
             # recalibrate premises
-            db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=argument.premisegroup_uid).all()
+            db_premises: List[Premise] = DBDiscussionSession.query(Premise).filter_by(
+                premisegroup_uid=argument.premisegroup_uid).all()
             for premise in db_premises:
                 if premise.statement_uid == db_review.duplicate_statement_uid:
                     LOG.debug("%s, bend premise %s from %s to %s", text, premise.uid, premise.statement_uid,
