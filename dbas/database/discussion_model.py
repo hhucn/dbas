@@ -435,12 +435,12 @@ class Settings(DiscussionBase):
     last_topic: Issue = relationship('Issue')
     language: Language = relationship('Language')
 
-    def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=2,
-                 keep_logged_in=False):
+    def __init__(self, user: 'User', send_mails, send_notifications, should_show_public_nickname=True,
+                 language: 'Language' = None, keep_logged_in=False):
         """
         Initializes a row in current settings-table
 
-        :param author_uid:
+        :param user:
         :param send_mails:
         :param send_notifications:
         :param should_show_public_nickname:
@@ -448,12 +448,12 @@ class Settings(DiscussionBase):
         :param keep_logged_in:
         """
         issue = DBDiscussionSession.query(Issue).first()
-        self.author_uid = author_uid
+        self.user = user
         self.should_send_mails = send_mails
         self.should_send_notifications = send_notifications
         self.should_show_public_nickname = should_show_public_nickname
         self.last_topic_uid = issue.uid if issue else 1
-        self.lang_uid = lang_uid
+        self.language = language
         self.keep_logged_in = keep_logged_in
 
     def set_send_mails(self, send_mails):

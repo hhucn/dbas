@@ -716,7 +716,8 @@ def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider
     success = ''
     info = ''
 
-    _t = Translator(ui_locales)
+    _tn = Translator(ui_locales)
+    language = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
     # creating a new user_info with hashed password
     LOG.debug("Adding user_info for %s", user_info['nickname'])
     hashed_password = password_handler.get_hashed_password(user_info['password'])
@@ -730,19 +731,19 @@ def __create_new_user(user_info: Dict[str, Any], ui_locales: str, oauth_provider
                     oauth_provider=oauth_provider,
                     oauth_provider_id=oauth_provider_id)
     DBDiscussionSession.add(new_user)
-    DBDiscussionSession.flush()
-    settings = Settings(author_uid=new_user.uid,
+    settings = Settings(user=new_user,
                         send_mails=False,
                         send_notifications=True,
-                        should_show_public_nickname=True)
+                        should_show_public_nickname=True,
+                        language=language)
     DBDiscussionSession.add(settings)
 
     if new_user:
         LOG.debug("New data was added with uid %s", new_user.uid)
-        success = _t.get(Keywords.accountWasAdded).format(user_info['nickname'])
+        success = _tn.get(Keywords.accountWasAdded).format(user_info['nickname'])
     else:
         LOG.debug("New data was not added")
-        info = _t.get(Keywords.accoutErrorTryLateOrContant)
+        info = _tn.get(Keywords.accoutErrorTryLateOrContant)
 
     return success, info, new_user
 
@@ -880,7 +881,7 @@ def get_users_with_same_opinion(uids: List[int], app_url: str, path: str, db_use
     return prepared_dict
 
 
-def delete(db_user: User) -> None:
+def delete(user: User) -> None:
     """
     Delete the user and all data connected to them.
 
@@ -890,59 +891,59 @@ def delete(db_user: User) -> None:
     anonym_uid = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first().uid
 
     # authors
-    db_authors = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).all()
-    db_authors += DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
-    db_authors += DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).all()
-    db_authors += DBDiscussionSession.query(Premise).filter_by(author_uid=db_user.uid).all()
-    db_authors += DBDiscussionSession.query(Argument).filter_by(author_uid=db_user.uid).all()
-    db_authors += DBDiscussionSession.query(ReviewCanceled).filter_by(author_uid=db_user.uid).all()
-    db_authors += DBDiscussionSession.query(RevokedContent).filter_by(author_uid=db_user.uid).all()
-    for element in db_authors:
+    authors = DBDiscussionSession.query(Issue).filter_by(author_uid=user.uid).all()
+    authors += DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid).all()
+    authors += DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=user.uid).all()
+    authors += DBDiscussionSession.query(Premise).filter_by(author_uid=user.uid).all()
+    authors += DBDiscussionSession.query(Argument).filter_by(author_uid=user.uid).all()
+    authors += DBDiscussionSession.query(ReviewCanceled).filter_by(author_uid=user.uid).all()
+    authors += DBDiscussionSession.query(RevokedContent).filter_by(author_uid=user.uid).all()
+    for element in authors:
         element.author_uid = anonym_uid
 
     # reviews without ReviewSplitValues and ReviewMergeValues
-    db_review_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=db_user.uid).all()
-    db_review_edit_value = DBDiscussionSession.query(ReviewEditValue).filter(
-        ReviewEditValue.review_edit_uid.in_([r.uid for r in db_review_edit])).all()
-    db_reviews = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=db_user.uid).all()
-    db_reviews += DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=db_user.uid).all()
-    db_reviews += DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=db_user.uid).all()
-    db_reviews += DBDiscussionSession.query(ReviewMerge).filter_by(detector_uid=db_user.uid).all()
-    db_reviews += DBDiscussionSession.query(ReviewSplit).filter_by(detector_uid=db_user.uid).all()
-    for element in db_reviews + db_review_edit + db_review_edit_value:
+    review_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=user.uid).all()
+    review_edit_value = DBDiscussionSession.query(ReviewEditValue).filter(
+        ReviewEditValue.review_edit_uid.in_([r.uid for r in review_edit])).all()
+    reviews = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=user.uid).all()
+    reviews += DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=user.uid).all()
+    reviews += DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=user.uid).all()
+    reviews += DBDiscussionSession.query(ReviewMerge).filter_by(detector_uid=user.uid).all()
+    reviews += DBDiscussionSession.query(ReviewSplit).filter_by(detector_uid=user.uid).all()
+    for element in reviews + review_edit + review_edit_value:
         element.detector_uid = anonym_uid
 
     # last reviewed elements
-    db_last_reviewers = DBDiscussionSession.query(LastReviewerDelete).filter_by(reviewer_uid=db_user.uid).all()
-    db_last_reviewers += DBDiscussionSession.query(LastReviewerDuplicate).filter_by(reviewer_uid=db_user.uid).all()
-    db_last_reviewers += DBDiscussionSession.query(LastReviewerEdit).filter_by(reviewer_uid=db_user.uid).all()
-    db_last_reviewers += DBDiscussionSession.query(LastReviewerOptimization).filter_by(reviewer_uid=db_user.uid).all()
-    db_last_reviewers += DBDiscussionSession.query(LastReviewerSplit).filter_by(reviewer_uid=db_user.uid).all()
-    db_last_reviewers += DBDiscussionSession.query(LastReviewerMerge).filter_by(reviewer_uid=db_user.uid).all()
-    for element in db_last_reviewers:
+    last_reviewers = DBDiscussionSession.query(LastReviewerDelete).filter_by(reviewer_uid=user.uid).all()
+    last_reviewers += DBDiscussionSession.query(LastReviewerDuplicate).filter_by(reviewer_uid=user.uid).all()
+    last_reviewers += DBDiscussionSession.query(LastReviewerEdit).filter_by(reviewer_uid=user.uid).all()
+    last_reviewers += DBDiscussionSession.query(LastReviewerOptimization).filter_by(reviewer_uid=user.uid).all()
+    last_reviewers += DBDiscussionSession.query(LastReviewerSplit).filter_by(reviewer_uid=user.uid).all()
+    last_reviewers += DBDiscussionSession.query(LastReviewerMerge).filter_by(reviewer_uid=user.uid).all()
+    for element in last_reviewers:
         element.reviewer_uid = anonym_uid
 
     # revoked content
-    db_rev_cntnt_hisy_old = DBDiscussionSession.query(RevokedContentHistory).filter_by(old_author_uid=db_user.uid).all()
-    db_rev_cntnt_hisy_new = DBDiscussionSession.query(RevokedContentHistory).filter_by(new_author_uid=db_user.uid).all()
-    for element in db_rev_cntnt_hisy_old:
+    rev_cntnt_hisy_old = DBDiscussionSession.query(RevokedContentHistory).filter_by(old_author_uid=user.uid).all()
+    rev_cntnt_hisy_new = DBDiscussionSession.query(RevokedContentHistory).filter_by(new_author_uid=user.uid).all()
+    for element in rev_cntnt_hisy_old:
         element.old_author_uid = anonym_uid
-    for element in db_rev_cntnt_hisy_new:
+    for element in rev_cntnt_hisy_new:
         element.new_author_uid = anonym_uid
 
-    DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
-    DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
-    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
-    DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(StatementReference).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(Message).filter_by(from_author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(Message).filter_by(to_author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(User).filter_by(uid=db_user.uid).delete()
+    DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=user.uid).delete()
+    DBDiscussionSession.query(SeenStatement).filter_by(user_uid=user.uid).delete()
+    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user.uid).delete()
+    DBDiscussionSession.query(History).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(Settings).filter_by(user=user).delete()
+    DBDiscussionSession.query(StatementReference).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(Message).filter_by(from_author_uid=user.uid).delete()
+    DBDiscussionSession.query(Message).filter_by(to_author_uid=user.uid).delete()
+    DBDiscussionSession.query(User).filter_by(uid=user.uid).delete()
 
 
 def get_list_of_admins() -> List[User]:
