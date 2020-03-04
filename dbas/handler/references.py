@@ -2,7 +2,7 @@ import logging
 from urllib.parse import urlparse
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReference, User, Statement
+from dbas.database.discussion_model import StatementReference, User, Statement, Issue
 from dbas.input_validator import is_integer
 from dbas.lib import get_profile_picture, get_enabled_arguments_as_query, \
     get_enabled_premises_as_query
@@ -110,22 +110,22 @@ def __get_values_of_reference(reference: StatementReference, main_page):
             'statement_text': reference.get_statement_text()}
 
 
-def set_reference(text: str, url: str, user: User, statement: Statement, issue_uid):
+def set_reference(text: str, url: str, user: User, statement: Statement, issue: Issue) -> bool:
     """
-    Creates a new reference
+    Creates a new reference for a statement.
 
-    :param text: Text of the reference
-    :param url: The url for the reference
-    :param user: User
-    :param statement: Statement
-    :param issue_uid: current issue uid
+    :param issue: The issue of the referenced statement.
+    :param text: Text of the reference.
+    :param url: The url for the reference.
+    :param user: User who referenced the statement.
+    :param statement: Statement which should be referenced.
     :return: Boolean
     """
-    parsed_url = urlparse(url)
-    host = '{}://{}'.format(parsed_url.scheme, parsed_url.netloc)
-    path = '{}?{}'.format(parsed_url.path, parsed_url.query)
+    parsed_url: url = urlparse(url)
+    host: str = '{}://{}'.format(parsed_url.scheme, parsed_url.netloc)
+    path: str = '{}?{}'.format(parsed_url.path, parsed_url.query)
 
-    DBDiscussionSession.add(StatementReference(text, host, path, user, statement, issue_uid))
+    DBDiscussionSession.add(StatementReference(text, host, path, user, statement, issue))
     DBDiscussionSession.flush()
 
     return True
