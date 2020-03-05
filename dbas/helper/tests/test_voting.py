@@ -182,7 +182,7 @@ class VotingHelperTest(TestCaseWithConfig):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 0, 0)
 
-    def check_tables_of_user_for_n_rows(self, user, count_of_vote_statement, count_of_vote_argument,
+    def check_tables_of_user_for_n_rows(self, user: User, count_of_vote_statement, count_of_vote_argument,
                                         count_of_seen_statements, count_of_seen_arguments):
         """
 
@@ -195,7 +195,7 @@ class VotingHelperTest(TestCaseWithConfig):
         """
         db_vote_argument = DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user.uid).all()
         db_vote_statement = DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user.uid).all()
-        db_seen_statements = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=user.uid).all()
+        db_seen_statements = DBDiscussionSession.query(SeenStatement).filter_by(user=user).all()
         db_seen_arguments = DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user.uid).all()
         self.assertEquals(len(db_vote_statement), count_of_vote_statement)
         self.assertEquals(len(db_vote_argument), count_of_vote_argument)

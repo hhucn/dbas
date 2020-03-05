@@ -30,8 +30,8 @@ class DiscussionInitViewTests(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
         # check count of seen by statements
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
+        user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user=user).count()
 
         request = construct_dummy_request(matchdict={'slug': 'cat-or-dog'})
         response = init(request)
@@ -40,27 +40,27 @@ class DiscussionInitViewTests(unittest.TestCase):
         # elements, which were seen
         self.assertIn('elements', response['items'])
         el_count = len(response['items']['elements']) - 1  # -1 for login / add
-        len_db_seen2 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
+        len_db_seen2 = DBDiscussionSession.query(SeenStatement).filter_by(user=user).count()
         self.assertEqual(len_db_seen1 + el_count, len_db_seen2)
 
     def test_page_logged_in_again(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
         # check count of seen by statements
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
+        user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user=user).count()
 
         request = construct_dummy_request(matchdict={'slug': 'cat-or-dog'})
         response = init(request)
         verify_dictionary_of_view(response)
 
         # elements, which were seen are now equals the first, cause we have seen them already
-        len_db_seen2 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
+        len_db_seen2 = DBDiscussionSession.query(SeenStatement).filter_by(user=user).count()
         self.assertEqual(len_db_seen1, len_db_seen2)
 
         # remove seen statements
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
+        user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        DBDiscussionSession.query(SeenStatement).filter_by(user=user).delete()
 
 
 class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):

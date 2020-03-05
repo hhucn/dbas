@@ -858,15 +858,15 @@ class SeenStatement(DiscussionBase):
 
     user: User = relationship('User')
 
-    def __init__(self, statement_uid, user_uid):
+    def __init__(self, statement_uid, user: 'User'):
         """
         Inits a row in current statement seen by table
 
         :param statement_uid: Statement.uid
-        :param user_uid: User.uid
+        :param user: User who has seen the statement.
         """
         self.statement_uid = statement_uid
-        self.user_uid = user_uid
+        self.user = user
 
 
 class SeenArgument(DiscussionBase):

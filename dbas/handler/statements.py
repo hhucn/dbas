@@ -186,13 +186,13 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     }
 
 
-def set_seen_statements(uids, path, db_user) -> dict:
+def set_seen_statements(uids, path, user: User) -> dict:
     """
     Marks several statements as already seen.
 
     :param uids: Uids of statements which should be marked as seen
     :param path: Current path of the user
-    :param db_user: User
+    :param user: User
     :rtype: dict
     :return: Dictionary with an error field
     """
@@ -200,12 +200,12 @@ def set_seen_statements(uids, path, db_user) -> dict:
     if 'justify' in path:
         url = path[path.index('justify/') + len('justify/'):]
         additional_argument = int(url[:url.index('/')])
-        add_seen_argument(additional_argument, db_user)
+        add_seen_argument(additional_argument, user)
 
     for uid in uids:
         # we get the premise group id's only
         if is_integer(uid):
-            add_seen_statement(uid, db_user)
+            add_seen_statement(uid, user)
     return {'status': 'success'}
 
 
@@ -258,21 +258,21 @@ def __get_logfile_dict(textversion: TextVersion, main_page: str, lang: str) -> D
     return corr_dict
 
 
-def insert_as_statement(text: str, db_user: User, db_issue: Issue, is_start=False) -> Statement:
+def insert_as_statement(text: str, user: User, db_issue: Issue, is_start=False) -> Statement:
     """
     Inserts the given text as statement and returns the uid
 
     :param text: String
-    :param db_user: User
+    :param user: User
     :param db_issue: Issue
     :param is_start: Boolean
     :return: Statement
     """
-    new_statement, is_duplicate = set_statement(text, db_user, is_start, db_issue)
+    new_statement, is_duplicate = set_statement(text, user, is_start, db_issue)
 
     # add marked statement
-    DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
-    DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
+    DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=user.uid))
+    DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user=user))
 
     return new_statement
 

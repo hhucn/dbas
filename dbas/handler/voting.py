@@ -122,90 +122,90 @@ def __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_us
     __argument_seen_by_user(db_user, db_undercuted_arg_step_2.uid)
 
 
-def add_click_for_statement(stmt_or_arg: Statement, db_user: User, supportive: bool):
+def add_click_for_statement(stmt_or_arg: Statement, user: User, supportive: bool):
     """
     Adds a clicks for the given statement.
 
-    :param db_user: User
-    :param stmt_or_arg: Statement
+    :param user: User who clicked a statement.
+    :param stmt_or_arg: Statement which was clicked by a user.
     :param supportive: boolean
     :return: Boolean
     """
 
     LOG.debug("Increasing %s vote for statement %s", 'up' if supportive else 'down', stmt_or_arg.uid)
 
-    if db_user.nickname == nick_of_anonymous_user:
+    if user.nickname == nick_of_anonymous_user:
         return False
 
-    __click_statement(stmt_or_arg, db_user, supportive)
-    __statement_seen_by_user(db_user, stmt_or_arg.uid)
+    __click_statement(stmt_or_arg, user, supportive)
+    __statement_seen_by_user(user, stmt_or_arg.uid)
     transaction.commit()
     return True
 
 
-def add_seen_statement(statement_uid: int, db_user: User):
+def add_seen_statement(statement_uid: int, user: User):
     """
     Adds the uid of the statement into the seen_by list, mapped with the given user uid
 
-    :param db_user:current user
+    :param user:current user
     :param statement_uid: uid of the statement
     :return: undefined
     """
-    if not is_integer(statement_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
+    if not is_integer(statement_uid) or not isinstance(user, User) or user.nickname == nick_of_anonymous_user:
         return False
-    LOG.debug("Statement %s, for user %s", statement_uid, db_user.uid)
+    LOG.debug("Statement %s, for user %s", statement_uid, user.uid)
 
-    val = __statement_seen_by_user(db_user, statement_uid)
+    val = __statement_seen_by_user(user, statement_uid)
     # if val:
     #    transaction.commit()
 
     return val
 
 
-def add_seen_argument(argument_uid, db_user):
+def add_seen_argument(argument_uid, user: User):
     """
     Adds the uid of the argument into the seen_by list as well as all included statements, mapped with the given user
     uid
 
-    :param db_user: current user
+    :param user: current user
     :param argument_uid: uid of the argument
     :return: undefined
     """
-    if not is_integer(argument_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
+    if not is_integer(argument_uid) or not isinstance(user, User) or user.nickname == nick_of_anonymous_user:
         return False
-    LOG.debug("Argument %s, for user %s", argument_uid, db_user.uid)
+    LOG.debug("Argument %s, for user %s", argument_uid, user.uid)
 
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
-    __argument_seen_by_user(db_user, argument_uid)
+    __argument_seen_by_user(user, argument_uid)
 
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
     for p in db_premises:
-        __statement_seen_by_user(db_user, p.statement_uid)
+        __statement_seen_by_user(user, p.statement_uid)
 
     # find the conclusion and mark all arguments on the way
     while db_argument.conclusion_uid is None:
         db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
-        __argument_seen_by_user(db_user, argument_uid)
+        __argument_seen_by_user(user, argument_uid)
 
-    __statement_seen_by_user(db_user, db_argument.conclusion_uid)
+    __statement_seen_by_user(user, db_argument.conclusion_uid)
     transaction.commit()
 
     return True
 
 
-def clear_vote_and_seen_values_of_user(db_user):
+def clear_vote_and_seen_values_of_user(user: User):
     """
     Delete all votes/clicks/mards
 
-    :param db_user: User
+    :param user: User
     :return: Boolean
     """
-    DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
-    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
-    DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(SeenStatement).filter_by(user=user).delete()
+    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user.uid).delete()
+    DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user.uid).delete()
 
     DBDiscussionSession.flush()
     # transaction.commit()
@@ -347,7 +347,7 @@ def __argument_seen_by_user(db_user, argument_uid):
     return False
 
 
-def __statement_seen_by_user(db_user, statement_uid):
+def __statement_seen_by_user(user: User, statement_uid):
     """
     Adds a reference for a seen statement
 
@@ -356,9 +356,9 @@ def __statement_seen_by_user(db_user, statement_uid):
     :return: True if the statement was not seen by the user (until now), false otherwise
     """
     db_seen_by = DBDiscussionSession.query(SeenStatement).filter(SeenStatement.statement_uid == statement_uid,
-                                                                 SeenStatement.user_uid == db_user.uid).first()
+                                                                 SeenStatement.user_uid == user.uid).first()
     if not db_seen_by:
-        DBDiscussionSession.add(SeenStatement(statement_uid=statement_uid, user_uid=db_user.uid))
+        DBDiscussionSession.add(SeenStatement(statement_uid=statement_uid, user=user))
         DBDiscussionSession.flush()
         return True
 

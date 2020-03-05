@@ -8,8 +8,8 @@ from nose.tools import assert_in
 from paste.deploy import appconfig
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User, \
-    ReputationHistory
+from dbas.database.discussion_model import ClickedStatement, SeenArgument, ClickedArgument, User, \
+    ReputationHistory, SeenStatement
 
 
 def path_to_settings(ini_file):
@@ -69,9 +69,9 @@ def clear_seen_by_of(nickname):
     :param nickname: User.nickname
     :return: None
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
-    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
+    user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    DBDiscussionSession.query(SeenStatement).filter_by(user=user).delete()
+    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user.uid).delete()
     transaction.commit()
 
 
