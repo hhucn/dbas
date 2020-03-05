@@ -51,7 +51,7 @@ class AjaxReferencesTest(unittest.TestCase):
 
     def test_set_references(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        statement: Statement = DBDiscussionSession.query(Statement).filter_by(uid=17).first()
+        statement: Statement = DBDiscussionSession.query(Statement).get(17)
         request = construct_dummy_request(json_body={
             'statement_id': statement.uid,
             'issue': statement.issues[0].uid,
