@@ -78,7 +78,7 @@ class LibTests(TestCaseWithConfig):
     def test_get_text_for_conclusion(self):
         argument1 = Argument(premisegroup=DBDiscussionSession.query(PremiseGroup).get(4), is_supportive=True,
                              author=self.user_anonymous,
-                             issue=1, conclusion=3)
+                             issue=self.issue_town, conclusion=3)
         # 'argument' is an argument
         self.assertEqual(lib.get_text_for_conclusion(argument=argument1,
                                                      start_with_intro=False,
@@ -86,7 +86,7 @@ class LibTests(TestCaseWithConfig):
 
         argument2 = Argument(premisegroup=DBDiscussionSession.query(PremiseGroup).get(1), is_supportive=False,
                              author=self.user_anonymous,
-                             issue=1)
+                             issue=self.issue_town)
         # 'argument' is a statement
         self.assertEqual(lib.get_text_for_conclusion(argument=argument2,
                                                      start_with_intro=True,
