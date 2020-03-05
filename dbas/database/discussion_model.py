@@ -10,7 +10,7 @@ from typing import List, Set, Optional, Dict, Any
 import arrow
 import bcrypt
 from slugify import slugify
-from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
+from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String, CheckConstraint
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -1087,6 +1087,8 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     Additionally there is a relation, timestamp, author, ...
     """
     __tablename__ = 'arguments'
+    __table_args__ = (CheckConstraint("ck_arguments_must-have-descendent",
+                                      '(argument_uid is not null) != (conclusion_uid is not null)'),)
     uid: int = Column(Integer, primary_key=True)
     premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'), nullable=False)
     conclusion_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=True)
