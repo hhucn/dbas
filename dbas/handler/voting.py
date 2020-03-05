@@ -363,17 +363,3 @@ def __statement_seen_by_user(user: User, statement_uid):
         return True
 
     return False
-
-
-def __premisegroup_seen_by_user(db_user, premisegroup_uid):
-    """
-    Adds a reference for a seen premisesgroup
-
-    :param db_user: current user
-    :param premisegroup_uid: uid of the premisesgroup
-    :return: True if the statement was not seen by the user (until now), false otherwise
-    """
-    LOG.debug("Check premises of group %s", premisegroup_uid)
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
-    for premise in db_premises:
-        __statement_seen_by_user(db_user, premise.statement_uid)
