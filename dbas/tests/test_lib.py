@@ -83,20 +83,6 @@ class LibTests(TestCaseWithConfig):
                                                      start_with_intro=False,
                                                      rearrange_intro=False), 'we should get a dog')
 
-        argument2 = Argument(premisegroup=DBDiscussionSession.query(PremiseGroup).get(1), is_supportive=False, author=1,
-                             issue=1)
-        # 'argument' is a statement
-        self.assertEqual(lib.get_text_for_conclusion(argument=argument2,
-                                                     start_with_intro=True,
-                                                     rearrange_intro=True), '')
-
-        # unknown conclusion id
-        argument3 = Argument(premisegroup=DBDiscussionSession.query(PremiseGroup).get(0), is_supportive=True, author=0,
-                             issue=0, conclusion=0)
-        self.assertEqual(lib.get_text_for_conclusion(argument=argument3,
-                                                     start_with_intro=False,
-                                                     rearrange_intro=True), '')
-
     def test_get_all_attacking_arg_uids_from_history(self):
         none_history = None
         correct_history = SessionHistory("/attitude/60-/justify/60/agree-/reaction/52/rebut/53")
