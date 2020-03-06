@@ -84,14 +84,6 @@ class LibTests(TestCaseWithConfig):
                                                      start_with_intro=False,
                                                      rearrange_intro=False), 'we should get a dog')
 
-        argument2 = Argument(premisegroup=DBDiscussionSession.query(PremiseGroup).get(1), is_supportive=False,
-                             author=self.user_anonymous,
-                             issue=self.issue_town)
-        # 'argument' is a statement
-        self.assertEqual(lib.get_text_for_conclusion(argument=argument2,
-                                                     start_with_intro=True,
-                                                     rearrange_intro=True), '')
-
     def test_get_all_attacking_arg_uids_from_history(self):
         none_history = None
         correct_history = SessionHistory("/attitude/60-/justify/60/agree-/reaction/52/rebut/53")

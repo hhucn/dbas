@@ -10,7 +10,7 @@ from typing import List, Set, Optional, Dict, Any
 import arrow
 import bcrypt
 from slugify import slugify
-from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
+from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String, CheckConstraint
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -752,24 +752,24 @@ class StatementReference(DiscussionBase):
     author: User = relationship('User')
     issue: Issue = relationship('Issue')
 
-    def __init__(self, text: str, host: str, path: str, author_uid: int, statement_uid: int, issue_uid: int):
+    def __init__(self, text: str, host: str, path: str, author: 'User', statement: 'Statement', issue: 'Issue'):
         """
         Store a real-world text-reference.
 
-        :param text: String
-        :param host: Host of URL
-        :param path: Path of URL
-        :param author_uid: User.uid
-        :param statement_uid: Statement.uid
-        :param issue_uid: Issue.uid
+        :param text: Text of the reference.
+        :param host: Host of URL for the reference.
+        :param path: Path of URL for the reference.
+        :param author: User who referenced a statement
+        :param statement: Statement which is referenced.
+        :param issue: The issue of the referenced statement.
         :return: None
         """
         self.text = text
         self.host = host
         self.path = path
-        self.author_uid = author_uid
-        self.statement_uid = statement_uid
-        self.issue_uid = issue_uid
+        self.author = author
+        self.statement = statement
+        self.issue = issue
 
     def get_statement_text(self, html: bool = False) -> str:
         """
@@ -778,8 +778,7 @@ class StatementReference(DiscussionBase):
         :param html: If True, returns a html span for coloring.
         :return:
         """
-        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
-        return db_statement.get_text(html)
+        return self.statement.get_text(html)
 
     def __json__(self, _request=None):
         return {
@@ -787,7 +786,7 @@ class StatementReference(DiscussionBase):
             "title": self.text,
             "host": self.host,
             "path": self.path,
-            "statement-uid": self.statement_uid,
+            "statement-uid": self.statement.uid,
             "author": self.author
         }
 
@@ -1087,6 +1086,8 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     Additionally there is a relation, timestamp, author, ...
     """
     __tablename__ = 'arguments'
+    __table_args__ = (CheckConstraint("ck_arguments_must-have-descendent",
+                                      '(argument_uid is not null) != (conclusion_uid is not null)'),)
     uid: int = Column(Integer, primary_key=True)
     premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'), nullable=False)
     conclusion_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=True)
