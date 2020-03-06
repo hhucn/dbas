@@ -1121,7 +1121,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
 
     def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: User, issue: Issue,
                  conclusion: Statement = None,
-                 argument: int = None,
+                 argument: 'Argument' = None,
                  is_disabled: bool = False,
                  timestamp: datetime = None):
         """
@@ -1136,12 +1136,12 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param is_disabled: Boolean
         :return: None
         """
+        LOG.debug(f"NEW ARGUMENT WITH {conclusion} : {argument}")
         self.premisegroup = premisegroup
         self.conclusion = conclusion
-        self.argument_uid = None if argument == 0 else argument
+        self.attacks = argument
         self.is_supportive = is_supportive
         self.author = author
-        self.argument_uid = argument
         self.issue = issue
         self.is_disabled = is_disabled
         self.timestamp = arrow.get(timestamp) or get_now()

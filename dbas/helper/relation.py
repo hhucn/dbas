@@ -223,11 +223,10 @@ def set_new_undercut(premisegroup: PremiseGroup, current_argument: Argument, db_
         new_argument = Argument(premisegroup=premisegroup,
                                 is_supportive=False,
                                 author=db_user,
-                                issue=issue)
-        new_argument.set_conclusions_argument(current_argument.uid)
+                                issue=issue,
+                                argument=current_argument)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
-        transaction.commit()
         return new_argument, False
 
 

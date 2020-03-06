@@ -354,25 +354,25 @@ class SplitQueue(QueueABC):
 
             for premisegroup in new_premisegroup[1:]:
                 argument = Argument(premisegroup, argument.is_supportive, argument.author, argument.issue,
-                                    argument.conclusion, argument.argument_uid, argument.is_disabled)
+                                    argument.conclusion, argument.attacks, argument.is_disabled)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.flush()
                 DBDiscussionSession.add(ArgumentsAddedByPremiseGroupSplit(db_review.uid, argument.uid))
 
         # swap the conclusion in every argument
-        new_statements_uids = [s.uid for s in db_statements]
         for old_statement_uid in db_old_statement_ids:
-            db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=old_statement_uid).all()
+            db_arguments: List[Argument] = DBDiscussionSession.query(Argument).filter_by(
+                conclusion_uid=old_statement_uid).all()
             for argument in db_arguments:
                 argument.set_conclusion(db_statements[0].uid)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.add(
-                    StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, new_statements_uids[0]))
+                    StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, db_statements[0].uid))
                 DBDiscussionSession.flush()
 
                 for statement in db_statements[1:]:
-                    db_argument = Argument(argument.premisegroup_uid, argument.is_supportive, argument.author,
-                                           argument.issue, statement, argument.argument_uid,
+                    db_argument = Argument(argument.premisegroup, argument.is_supportive, argument.author,
+                                           argument.issue, statement, argument.attacks,
                                            argument.is_disabled)
                     DBDiscussionSession.add(db_argument)
                     DBDiscussionSession.add(
