@@ -224,7 +224,7 @@ def set_new_undercut(premisegroup: PremiseGroup, current_argument: Argument, db_
                                 is_supportive=False,
                                 author=db_user,
                                 issue=issue,
-                                argument=current_argument)
+                                conclusion=current_argument)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
         return new_argument, False
@@ -276,7 +276,6 @@ def __set_rebut_or_support(premisegroup: PremiseGroup, current_argument: Argumen
                                 conclusion=current_argument.conclusion)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
-        transaction.commit()
         return new_argument, False
 
 

@@ -5,7 +5,7 @@ import logging
 import warnings
 from abc import abstractmethod, ABC, ABCMeta
 from datetime import datetime
-from typing import List, Set, Optional, Dict, Any
+from typing import List, Set, Optional, Dict, Any, Union
 
 import arrow
 import bcrypt
@@ -1120,8 +1120,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     users: User = relationship('User', foreign_keys=[author_uid])
 
     def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: User, issue: Issue,
-                 conclusion: Statement = None,
-                 argument: 'Argument' = None,
+                 conclusion: Union[Statement, 'Argument'],
                  is_disabled: bool = False,
                  timestamp: datetime = None):
         """
@@ -1132,14 +1131,13 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param author: User.uid
         :param issue: Issue.uid
         :param conclusion: Default 0, which will be None
-        :param argument: Default 0, which will be None
         :param is_disabled: Boolean
         :return: None
         """
-        LOG.debug(f"NEW ARGUMENT WITH {conclusion} : {argument}")
+        LOG.debug(f"NEW ARGUMENT WITH {conclusion}")
         self.premisegroup = premisegroup
-        self.conclusion = conclusion
-        self.attacks = argument
+        self.conclusion = conclusion if isinstance(conclusion, Statement) else None
+        self.attacks = conclusion if isinstance(conclusion, Argument) else None
         self.is_supportive = is_supportive
         self.author = author
         self.issue = issue

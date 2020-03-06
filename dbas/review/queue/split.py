@@ -354,7 +354,8 @@ class SplitQueue(QueueABC):
 
             for premisegroup in new_premisegroup[1:]:
                 argument = Argument(premisegroup, argument.is_supportive, argument.author, argument.issue,
-                                    argument.conclusion, argument.attacks, argument.is_disabled)
+                                    conclusion=argument.conclusion or argument.attacks,
+                                    is_disabled=argument.is_disabled)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.flush()
                 DBDiscussionSession.add(ArgumentsAddedByPremiseGroupSplit(db_review.uid, argument.uid))
@@ -372,8 +373,8 @@ class SplitQueue(QueueABC):
 
                 for statement in db_statements[1:]:
                     db_argument = Argument(argument.premisegroup, argument.is_supportive, argument.author,
-                                           argument.issue, statement, argument.attacks,
-                                           argument.is_disabled)
+                                           argument.issue, conclusion=statement or argument.attacks,
+                                           is_disabled=argument.is_disabled)
                     DBDiscussionSession.add(db_argument)
                     DBDiscussionSession.add(
                         StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, statement.uid))
