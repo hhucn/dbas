@@ -1,5 +1,5 @@
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementReference, User, Statement, StatementToIssue
+from dbas.database.discussion_model import StatementReference, User, Statement, Issue
 from dbas.handler.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.lib import get_text_for_statement_uid
 from dbas.tests.utils import TestCaseWithConfig
@@ -41,11 +41,10 @@ class ReferenceHelperTest(TestCaseWithConfig):
         self.__validate_reference_data([14, 15, 16], val_data)
 
     def test_set_reference(self):
-        db_user = DBDiscussionSession.query(User).get(2)
-        db_statement = DBDiscussionSession.query(Statement).get(3)
-        db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter_by(statement_uid=3).first()
-        val = set_reference('some_reference#42', 'http://www.fortschrittskolleg.de/', db_user, db_statement,
-                            db_statement2issue.issue_uid)
+        user: User = DBDiscussionSession.query(User).get(2)
+        statement: Statement = DBDiscussionSession.query(Statement).get(3)
+        issue: Issue = statement.issues[0]
+        val: bool = set_reference('some_reference#42', 'http://www.fortschrittskolleg.de/', user, statement, issue)
         self.assertTrue(val)
 
         DBDiscussionSession.query(StatementReference).filter_by(text='some_reference#42').delete()
