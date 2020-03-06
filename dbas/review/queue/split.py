@@ -354,7 +354,7 @@ class SplitQueue(QueueABC):
 
             for premisegroup in new_premisegroup[1:]:
                 argument = Argument(premisegroup, argument.is_supportive, argument.author, argument.issue,
-                                    argument.conclusion_uid, argument.argument_uid, argument.is_disabled)
+                                    argument.conclusion, argument.argument_uid, argument.is_disabled)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.flush()
                 DBDiscussionSession.add(ArgumentsAddedByPremiseGroupSplit(db_review.uid, argument.uid))
@@ -364,19 +364,19 @@ class SplitQueue(QueueABC):
         for old_statement_uid in db_old_statement_ids:
             db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=old_statement_uid).all()
             for argument in db_arguments:
-                argument.set_conclusion(new_statements_uids[0])
+                argument.set_conclusion(db_statements[0].uid)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.add(
                     StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, new_statements_uids[0]))
                 DBDiscussionSession.flush()
 
-                for statement_uid in new_statements_uids[1:]:
+                for statement in db_statements[1:]:
                     db_argument = Argument(argument.premisegroup_uid, argument.is_supportive, argument.author,
-                                           argument.issue, statement_uid, argument.argument_uid,
+                                           argument.issue, statement, argument.argument_uid,
                                            argument.is_disabled)
                     DBDiscussionSession.add(db_argument)
                     DBDiscussionSession.add(
-                        StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, statement_uid))
+                        StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, statement.uid))
                     DBDiscussionSession.flush()
 
         # finish

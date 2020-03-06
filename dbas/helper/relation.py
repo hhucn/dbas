@@ -189,7 +189,7 @@ def set_new_undermine_or_support_for_pgroup(premisegroup: PremiseGroup, current_
 
         new_arguments.append(
             Argument(premisegroup=premisegroup, is_supportive=is_supportive, author=db_user, issue=db_issue,
-                     conclusion=premise.statement_uid))
+                     conclusion=premise.statement))
 
         if len(new_arguments) > 0:
             DBDiscussionSession.add_all(new_arguments)
@@ -274,7 +274,7 @@ def __set_rebut_or_support(premisegroup: PremiseGroup, current_argument: Argumen
                                 is_supportive=is_supportive,
                                 author=db_user,
                                 issue=db_issue,
-                                conclusion=current_argument.conclusion_uid)
+                                conclusion=current_argument.conclusion)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
         transaction.commit()

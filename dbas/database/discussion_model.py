@@ -1119,7 +1119,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     users: User = relationship('User', foreign_keys=[author_uid])
 
     def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: User, issue: Issue,
-                 conclusion: int = None,
+                 conclusion: Statement = None,
                  argument: int = None,
                  is_disabled: bool = False,
                  timestamp: datetime = None):
@@ -1136,7 +1136,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :return: None
         """
         self.premisegroup = premisegroup
-        self.conclusion_uid = None if conclusion == 0 else conclusion
+        self.conclusion = conclusion
         self.argument_uid = None if argument == 0 else argument
         self.is_supportive = is_supportive
         self.author = author
@@ -1200,10 +1200,9 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param html: If True, returns a html span for coloring.
         :return:
         """
-        if not self.conclusion_uid:
+        if not self.conclusion:
             return ''
-        db_statement = DBDiscussionSession.query(Statement).get(self.conclusion_uid)
-        return db_statement.get_text(html)
+        return self.conclusion.get_text(html)
 
     def get_premisegroup_text(self) -> str:
         db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisegroup_uid)
