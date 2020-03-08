@@ -824,7 +824,8 @@ def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=Fa
     :return: String
     """
     if argument.argument_uid:
-        return get_text_for_argument_uid(argument.argument_uid, start_with_intro, rearrange_intro=rearrange_intro,
+        return get_text_for_argument_uid(argument.argument_uid, start_with_intro=start_with_intro,
+                                         rearrange_intro=rearrange_intro,
                                          is_users_opinion=is_users_opinion)
     else:
         return argument.get_conclusion_text()

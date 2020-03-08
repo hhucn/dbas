@@ -5,7 +5,7 @@ import logging
 import warnings
 from abc import abstractmethod, ABC, ABCMeta
 from datetime import datetime
-from typing import List, Set, Optional, Dict, Any
+from typing import List, Set, Optional, Dict, Any, Union
 
 import arrow
 import bcrypt
@@ -1119,9 +1119,10 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid, uselist=True)
     users: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: int, issue: int, conclusion: int = None,
-                 argument: int = None,
-                 is_disabled: bool = False):
+    def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: User, issue: Issue,
+                 conclusion: Union[Statement, 'Argument'],
+                 is_disabled: bool = False,
+                 timestamp: datetime = None):
         """
         Initializes a row in current argument-table
 
@@ -1130,19 +1131,18 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param author: User.uid
         :param issue: Issue.uid
         :param conclusion: Default 0, which will be None
-        :param argument: Default 0, which will be None
         :param is_disabled: Boolean
         :return: None
         """
+        LOG.debug(f"NEW ARGUMENT WITH {conclusion}")
         self.premisegroup = premisegroup
-        self.conclusion_uid = None if conclusion == 0 else conclusion
-        self.argument_uid = None if argument == 0 else argument
+        self.conclusion = conclusion if isinstance(conclusion, Statement) else None
+        self.attacks = conclusion if isinstance(conclusion, Argument) else None
         self.is_supportive = is_supportive
-        self.author_uid = author
-        self.argument_uid = argument
-        self.issue_uid = issue
+        self.author = author
+        self.issue = issue
         self.is_disabled = is_disabled
-        self.timestamp = get_now()
+        self.timestamp = arrow.get(timestamp) or get_now()
 
     def __repr__(self):
         return f"<Argument: {self.uid} {'support' if self.is_supportive else 'attack'}>"
@@ -1199,10 +1199,9 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param html: If True, returns a html span for coloring.
         :return:
         """
-        if not self.conclusion_uid:
+        if not self.conclusion:
             return ''
-        db_statement = DBDiscussionSession.query(Statement).get(self.conclusion_uid)
-        return db_statement.get_text(html)
+        return self.conclusion.get_text(html)
 
     def get_premisegroup_text(self) -> str:
         db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisegroup_uid)

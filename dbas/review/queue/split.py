@@ -353,30 +353,31 @@ class SplitQueue(QueueABC):
             DBDiscussionSession.add(argument)
 
             for premisegroup in new_premisegroup[1:]:
-                argument = Argument(premisegroup, argument.is_supportive, argument.author_uid, argument.issue_uid,
-                                    argument.conclusion_uid, argument.argument_uid, argument.is_disabled)
+                argument = Argument(premisegroup, argument.is_supportive, argument.author, argument.issue,
+                                    conclusion=argument.conclusion or argument.attacks,
+                                    is_disabled=argument.is_disabled)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.flush()
                 DBDiscussionSession.add(ArgumentsAddedByPremiseGroupSplit(db_review.uid, argument.uid))
 
         # swap the conclusion in every argument
-        new_statements_uids = [s.uid for s in db_statements]
         for old_statement_uid in db_old_statement_ids:
-            db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=old_statement_uid).all()
+            db_arguments: List[Argument] = DBDiscussionSession.query(Argument).filter_by(
+                conclusion_uid=old_statement_uid).all()
             for argument in db_arguments:
-                argument.set_conclusion(new_statements_uids[0])
+                argument.set_conclusion(db_statements[0].uid)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.add(
-                    StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, new_statements_uids[0]))
+                    StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, db_statements[0].uid))
                 DBDiscussionSession.flush()
 
-                for statement_uid in new_statements_uids[1:]:
-                    db_argument = Argument(argument.premisegroup_uid, argument.is_supportive, argument.author_uid,
-                                           argument.issue_uid, statement_uid, argument.argument_uid,
-                                           argument.is_disabled)
+                for statement in db_statements[1:]:
+                    db_argument = Argument(argument.premisegroup, argument.is_supportive, argument.author,
+                                           argument.issue, conclusion=statement or argument.attacks,
+                                           is_disabled=argument.is_disabled)
                     DBDiscussionSession.add(db_argument)
                     DBDiscussionSession.add(
-                        StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, statement_uid))
+                        StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, statement.uid))
                     DBDiscussionSession.flush()
 
         # finish

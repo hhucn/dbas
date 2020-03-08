@@ -209,7 +209,6 @@ class DiscussionDictHelper:
             premise = premise[:-1]
         while conclusion.endswith(('.', '?', '!')):
             conclusion = premise[:-1]
-
         redirect_from_jump = 'jump/' in self.session_history.get_nth_last_action(1)
         user_msg, sys_msg = get_header_for_users_confrontation_response(argument, self.lang, premise, relation,
                                                                         conclusion, False, is_supportive, self.nickname,
@@ -647,20 +646,28 @@ class DiscussionDictHelper:
                   argument.argument_uid, len(argument.premises))
 
         for premise in argument.premises:
-            statement_list.append({'text': premise.get_text(),
-                                   'uid': premise.statement_uid})
+            statement_list.append({
+                'text': premise.get_text(),
+                'uid': premise.statement_uid
+            })
 
         if argument.conclusion_uid is not None:
-            statement_list.append({'text': argument.get_conclusion_text(),
-                                   'uid': argument.conclusion_uid})
+            statement_list.append({
+                'text': argument.get_conclusion_text(),
+                'uid': argument.conclusion_uid
+            })
 
         else:
             for conclusion_premise in argument.attacks.premises:
-                statement_list.append({'text': conclusion_premise.get_text(),
-                                       'uid': conclusion_premise.statement_uid})
+                statement_list.append({
+                    'text': conclusion_premise.get_text(),
+                    'uid': conclusion_premise.statement_uid
+                })
 
-            statement_list.append({'text': argument.attacks.get_conclusion_text(),
-                                   'uid': argument.attacks.conclusion_uid})
+            statement_list.append({
+                'text': argument.attacks.get_conclusion_text(),
+                'uid': argument.attacks.conclusion_uid
+            })
 
         return statement_list
 
