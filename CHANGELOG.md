@@ -1,3 +1,12 @@
+### 1.26.0 (2020-03-09)
+* Export endpoint to AIF and DOT, import from AIF 
+[!822](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/822) 
+[!841](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/842)
+* Add database constraint to prevent arguments without conclusion 
+[!836](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/839)
+* A lot of refactoring for more ORM usage and less database commits. [Too many MR]
+
+
 ### 1.25.1 (2020-02-17)
 
 * Speed improvements
