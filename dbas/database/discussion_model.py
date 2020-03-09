@@ -1013,7 +1013,7 @@ class Premise(DiscussionBase):
         :param statement: Statement.uid
         :return: None
         """
-        self.statement = statement
+        self.statement_uid = statement
 
     def set_premisegroup(self, premisegroup: "PremiseGroup"):
         """
@@ -1022,7 +1022,7 @@ class Premise(DiscussionBase):
         :param premisegroup: Premisegroup.uid
         :return: None
         """
-        self.premisegroup = premisegroup
+        self.premisegroup_uid = premisegroup
 
     def get_text(self, html: bool = False) -> str:
         """
