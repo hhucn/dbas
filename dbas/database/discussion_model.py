@@ -115,7 +115,7 @@ class Issue(DiscussionBase):
         self.participating_users = [author, ]
 
     def __repr__(self):
-        return f"<Issue {self.uid}: {self.slug}>"
+        return f"<Issue {self.uid or 'no uid'}: {self.slug}>"
 
     @hybrid_property
     def participating_authors(self) -> Set['User']:
@@ -157,9 +157,9 @@ class Issue(DiscussionBase):
         """
         self.is_read_only = is_read_only
 
-    @staticmethod
-    def by_slug(slug: str) -> 'Issue':
-        return DBDiscussionSession.query(Issue).filter(Issue.slug == slug).one()
+    @classmethod
+    def by_slug(cls, slug: str) -> Optional['Issue']:
+        return DBDiscussionSession.query(cls).filter(cls.slug == slug).one_or_none()
 
     def __json__(self, _request):
         return {
@@ -192,6 +192,10 @@ class Language(DiscussionBase):
         """
         self.name = name
         self.ui_locales = ui_locales
+
+    @classmethod
+    def by_locale(cls, lang: str) -> 'Language':
+        return DBDiscussionSession.query(cls).filter(cls.ui_locales == lang).one()
 
 
 class Group(DiscussionBase):
@@ -404,9 +408,9 @@ class User(DiscussionBase):
             "nickname": self.public_nickname
         }
 
-    @staticmethod
-    def by_nickname(nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
-        return DBDiscussionSession.query(User).filter_by(nickname=nickname).one()
+    @classmethod
+    def by_nickname(cls, nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
+        return DBDiscussionSession.query(cls).filter_by(nickname=nickname).one()
 
 
 class UserParticipation(DiscussionBase):
@@ -972,7 +976,7 @@ class Premise(DiscussionBase):
     author: User = relationship(User, foreign_keys=[author_uid])
     issue: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates="premises")
 
-    def __init__(self, premisesgroup: "PremiseGroup", statement: Statement, is_negated: Boolean, author: User,
+    def __init__(self, premisesgroup: "PremiseGroup", statement: Statement, is_negated: bool, author: User,
                  issue: Issue, is_disabled=False):
         """
         Initializes a row in current premises-table
@@ -1009,7 +1013,7 @@ class Premise(DiscussionBase):
         :param statement: Statement.uid
         :return: None
         """
-        self.statement_uid = statement
+        self.statement = statement
 
     def set_premisegroup(self, premisegroup: "PremiseGroup"):
         """
@@ -1018,7 +1022,7 @@ class Premise(DiscussionBase):
         :param premisegroup: Premisegroup.uid
         :return: None
         """
-        self.premisegroup_uid = premisegroup
+        self.premisegroup = premisegroup
 
     def get_text(self, html: bool = False) -> str:
         """
@@ -1134,7 +1138,6 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param is_disabled: Boolean
         :return: None
         """
-        LOG.debug(f"NEW ARGUMENT WITH {conclusion}")
         self.premisegroup = premisegroup
         self.conclusion = conclusion if isinstance(conclusion, Statement) else None
         self.attacks = conclusion if isinstance(conclusion, Argument) else None
