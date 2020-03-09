@@ -281,10 +281,10 @@ def create_issue_after_validation(request: Request):
     db_issue = Issue(title=escape_string(request.validated['title']),
                      info=escape_string(request.validated['info']),
                      long_info=escape_string(request.validated['long_info']),
-                     author_uid=request.validated['user'].uid,
+                     author=request.validated['user'],
                      is_read_only=request.validated['is_read_only'],
                      is_private=not request.validated['is_public'],
-                     lang_uid=request.validated['lang'].uid)
+                     language=request.validated['lang'])
     DBDiscussionSession.add(db_issue)
     return {'issue': get_issue_dict_for(db_issue, 0, request.validated['lang'].ui_locales)}
 

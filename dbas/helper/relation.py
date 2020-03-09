@@ -157,12 +157,13 @@ def get_supports_for_argument_uid(argument_uid):
     return [] if len(return_array) == 0 else return_array
 
 
-def set_new_undermine_or_support_for_pgroup(premisegroup_uid: int, current_argument: Argument, is_supportive: bool,
+def set_new_undermine_or_support_for_pgroup(premisegroup: PremiseGroup, current_argument: Argument,
+                                            is_supportive: bool,
                                             db_user: User, db_issue: Issue):
     """
     Inserts a new undermine or support with the given parameters.
 
-    :param premisegroup_uid: premisegroup_uid
+    :param premisegroup: premisegroup
     :param current_argument: Argument
     :param is_supportive: Boolean
     :param db_user: User
@@ -176,19 +177,19 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid: int, current_argum
     for premise in db_premises:
         new_arguments = []
         db_arguments = get_enabled_arguments_as_query()
-        db_argument = db_arguments.filter(Argument.premisegroup_uid == premisegroup_uid,
+        db_argument = db_arguments.filter(Argument.premisegroup_uid == premisegroup.uid,
                                           Argument.is_supportive == True,
                                           Argument.conclusion_uid == premise.statement_uid).first()
         if db_argument:
             continue
 
-        db_tmp = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
+        db_tmp = premisegroup.premises
         if any([p.statement_uid == premise.statement_uid for p in db_tmp]):
             return False
 
         new_arguments.append(
-            Argument(premisegroup=premisegroup_uid, is_supportive=is_supportive, author=db_user.uid, issue=db_issue.uid,
-                     conclusion=premise.statement_uid))
+            Argument(premisegroup=premisegroup, is_supportive=is_supportive, author=db_user, issue=db_issue,
+                     conclusion=premise.statement))
 
         if len(new_arguments) > 0:
             DBDiscussionSession.add_all(new_arguments)
@@ -201,82 +202,80 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid: int, current_argum
     return already_in[rnd]
 
 
-def set_new_undercut(premisegroup_uid, current_argument: Argument, db_user: User, issue: Issue) \
+def set_new_undercut(premisegroup: PremiseGroup, current_argument: Argument, db_user: User, issue: Issue) \
         -> Tuple[Argument, bool]:
     """
     Inserts a new undercut with the given parameters.
 
-    :param premisegroup_uid: premisegroup_uid
+    :param premisegroup: premisegroup
     :param current_argument: Argument
     :param db_user: User
     :param issue: Issue.uid
     :return: Argument, Boolean if the argument is a duplicate
     """
     # duplicate?
-    db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == premisegroup_uid,
+    db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == premisegroup.uid,
                                                              Argument.is_supportive == False,
                                                              Argument.argument_uid == current_argument.uid).first()
     if db_argument:
         return db_argument, True
     else:
-        new_argument = Argument(premisegroup=premisegroup_uid,
+        new_argument = Argument(premisegroup=premisegroup,
                                 is_supportive=False,
-                                author=db_user.uid,
-                                issue=issue.uid)
-        new_argument.set_conclusions_argument(current_argument.uid)
+                                author=db_user,
+                                issue=issue,
+                                conclusion=current_argument)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
-        transaction.commit()
         return new_argument, False
 
 
-def set_new_rebut(premisegroup_uid, current_argument: Argument, db_user: User, db_issue: Issue) \
+def set_new_rebut(premisegroup: PremiseGroup, current_argument: Argument, db_user: User, db_issue: Issue) \
         -> Tuple[Union[Argument, bool], bool]:
     """
     Inserts a new rebut with the given parameters.
 
-    :param premisegroup_uid: premisegroup_uid
+    :param premisegroup: premisegroup
     :param current_argument: Argument
     :param db_user: User
     :return: Argument, Boolean if the argument is a duplicate
     """
-    return __set_rebut_or_support(premisegroup_uid, current_argument, db_user, db_issue, False)
+    return __set_rebut_or_support(premisegroup, current_argument, db_user, db_issue, False)
 
 
-def set_new_support(premisegroup_uid: int, current_argument: Argument, db_user: User, db_issue: Issue) \
+def set_new_support(premisegroup: PremiseGroup, current_argument: Argument, db_user: User, db_issue: Issue) \
         -> Tuple[Union[Argument, bool], bool]:
     """
     Inserts a new support with the given parameters.
 
-    :param premisegroup_uid: premisegroup_uid
+    :param premisegroup: premisegroup
     :param current_argument: Argument
     :param db_user: User
     :param db_issue: Issue
     :return: Argument, Boolean if the argument is a duplicate
     """
-    return __set_rebut_or_support(premisegroup_uid, current_argument, db_user, db_issue, True)
+    return __set_rebut_or_support(premisegroup, current_argument, db_user, db_issue, True)
 
 
-def __set_rebut_or_support(premisegroup_uid: int, current_argument: Argument, db_user: User, db_issue: Issue,
+def __set_rebut_or_support(premisegroup: PremiseGroup, current_argument: Argument, db_user: User, db_issue: Issue,
                            is_supportive: bool) -> Tuple[Union[Argument, bool], bool]:
     db_arguments = get_enabled_arguments_as_query()
-    db_argument = db_arguments.filter(Argument.premisegroup_uid == premisegroup_uid,
+    db_argument = db_arguments.filter(Argument.premisegroup_uid == premisegroup.uid,
                                       Argument.is_supportive == True,
                                       Argument.conclusion_uid == current_argument.conclusion_uid).first()
     if db_argument:
         return db_argument, True
     else:
-        db_tmp = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
+        db_tmp = premisegroup.premises
         if any([p.statement_uid == current_argument.conclusion_uid for p in db_tmp]):
             return False, False
-        new_argument = Argument(premisegroup=premisegroup_uid,
+        new_argument = Argument(premisegroup=premisegroup,
                                 is_supportive=is_supportive,
-                                author=db_user.uid,
-                                issue=db_issue.uid,
-                                conclusion=current_argument.conclusion_uid)
+                                author=db_user,
+                                issue=db_issue,
+                                conclusion=current_argument.conclusion)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
-        transaction.commit()
         return new_argument, False
 
 

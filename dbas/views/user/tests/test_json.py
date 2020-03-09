@@ -9,6 +9,7 @@ from dbas.database.discussion_model import User
 from dbas.handler.password import get_hashed_password
 from dbas.tests.utils import construct_dummy_request
 from dbas.views import user_password_request
+from dbas.views.user.json import user_delete
 
 
 class AjaxTest(unittest.TestCase):
@@ -187,3 +188,13 @@ class AjaxTest(unittest.TestCase):
         self.assertTrue(response['public_nick'] != '')
         self.assertTrue(response['public_page_url'] != '')
         self.assertTrue(response['gravatar_url'] != '')
+
+    def test_user_delete(self):
+        self.config.testing_securitypolicy(userid='Bob', permissive=True)
+        user_bob: User = DBDiscussionSession.query(User).get(6)
+        request = construct_dummy_request(json_body={
+            'user': user_bob,
+        })
+        user_delete(request)
+        user_bob_after_delete: User = DBDiscussionSession.query(User).get(6)
+        self.assertIsNone(user_bob_after_delete, "Bob is still there but should be deleted")

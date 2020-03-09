@@ -135,17 +135,15 @@ def save_history_to_session_history(request: Request):
         request.session.update({'session_history': session_history})
 
 
-def save_issue_uid(issue_uid: int, db_user: User) -> None:
+def save_issue(issue: Issue, user: User) -> None:
     """
     Saves the Issue.uid for an user
 
-    :param issue_uid: Issue.uid
-    :param db_user: User
+    :param issue: Issue.uid
+    :param user: User
     :return: Boolean
     """
-    db_settings = db_user.settings
-    db_settings.set_last_topic_uid(issue_uid)
-    DBDiscussionSession.add(db_settings)
+    user.settings.last_topic = issue
 
 
 def get_last_issue_of(db_user: User) -> Optional[Issue]:
@@ -496,7 +494,7 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
         history = '?{}={}'.format(ArgumentationStep.HISTORY.value, history)
 
     LOG.debug("Saving %s%s", path, history)
-    DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
+    DBDiscussionSession.add(History(author=db_user, path=path + history))
     DBDiscussionSession.flush()
 
 
@@ -511,8 +509,10 @@ def get_from_database(db_user: User, lang: str) -> List[dict]:
     db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
     return_array = []
     for history in db_history:
-        return_array.append({'path': history.path,
-                             'timestamp': sql_timestamp_pretty_print(history.timestamp, lang, False, True) + ' GMT'})
+        return_array.append({
+            'path': history.path,
+            'timestamp': sql_timestamp_pretty_print(history.timestamp, lang, False, True) + ' GMT'
+        })
 
     return return_array
 
@@ -543,7 +543,8 @@ def save_and_set_cookie(request: Request, db_user: User, issue: Issue) -> str:
 
     if db_user and db_user.nickname != nick_of_anonymous_user:
         save_database(db_user, issue.slug, request.path, history)
-        save_issue_uid(issue.uid, db_user)
+        db_user.settings.last_topic = issue
+        save_issue(issue, db_user)
 
     if request.path.startswith('/discuss/'):
         path = request.path[len('/discuss/'):]

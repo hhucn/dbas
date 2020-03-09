@@ -80,7 +80,7 @@ Thanks to all former contributors! In order of appearance:
 
 Thanks for maintaining the project and for your work! We appreciate your efforts :tada: In order of appearance:
 
-* [Tobias Schröder (neé Krauthoff)](mailto:tobias.krauthoff@hhu.de)
+* [Tobias Schröder (né Krauthoff)](mailto:tobias.krauthoff@hhu.de)
 
 ## Scientific Background
 
@@ -106,7 +106,7 @@ Cite this software with the BibTeX Scheme:
 
 ## License
 
-Copyright (c) 2016 - 2018 Tobias Schröder (neé Krauthoff), Christian Meter  
+Copyright (c) 2016 - 2018 Tobias Schröder (né Krauthoff), Christian Meter  
 Copyright (c) 2018 - today hhucn
 
 Distributed under the [MIT License](LICENSE).

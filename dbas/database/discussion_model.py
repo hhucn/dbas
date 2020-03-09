@@ -5,12 +5,12 @@ import logging
 import warnings
 from abc import abstractmethod, ABC, ABCMeta
 from datetime import datetime
-from typing import List, Set, Optional, Dict, Any
+from typing import List, Set, Optional, Dict, Any, Union
 
 import arrow
 import bcrypt
 from slugify import slugify
-from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
+from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String, CheckConstraint
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -85,14 +85,19 @@ class Issue(DiscussionBase):
     statements = relationship('Statement', secondary='statement_to_issue')
     all_arguments = relationship('Argument', back_populates='issue')
 
-    positions = relationship('Statement', secondary='statement_to_issue', viewonly=True,
-                             secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
+    positions: List['Statement'] = relationship('Statement', secondary='statement_to_issue', viewonly=True,
+                                                secondaryjoin="and_(Statement.is_position == True, Statement.uid == StatementToIssue.statement_uid)")
 
     decision_process: Optional['DecisionProcess'] = relationship('DecisionProcess', back_populates='issue',
                                                                  uselist=False)
 
-    def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False, is_private=False,
-                 is_read_only=False, is_featured=False, slug: str = None):
+    def __init__(self, title: str, info: str, long_info: str, author: 'User', language: 'Language',
+                 is_disabled: bool = False,
+                 is_private: bool = False,
+                 is_read_only: bool = False,
+                 is_featured: bool = False,
+                 slug: str = None,
+                 date: datetime = None):
         """
         Initializes a row in current position-table
         """
@@ -100,18 +105,17 @@ class Issue(DiscussionBase):
         self.slug = slug if slug else slugify(title)
         self.info = info
         self.long_info = long_info
-        self.author_uid = author_uid
-        self.lang_uid = lang_uid
+        self.author = author
+        self.language = language
         self.is_disabled = is_disabled
         self.is_private = is_private
         self.is_read_only = is_read_only
-        self.date = get_now()
+        self.date = date if date else get_now()
         self.is_featured = is_featured
-        author = DBDiscussionSession.query(User).get(self.author_uid)
         self.participating_users = [author, ]
 
     def __repr__(self):
-        return f"<Issue {self.uid}: {self.slug}>"
+        return f"<Issue {self.uid or 'no uid'}: {self.slug}>"
 
     @hybrid_property
     def participating_authors(self) -> Set['User']:
@@ -153,9 +157,9 @@ class Issue(DiscussionBase):
         """
         self.is_read_only = is_read_only
 
-    @staticmethod
-    def by_slug(slug: str) -> 'Issue':
-        return DBDiscussionSession.query(Issue).filter(Issue.slug == slug).one()
+    @classmethod
+    def by_slug(cls, slug: str) -> Optional['Issue']:
+        return DBDiscussionSession.query(cls).filter(cls.slug == slug).one_or_none()
 
     def __json__(self, _request):
         return {
@@ -188,6 +192,10 @@ class Language(DiscussionBase):
         """
         self.name = name
         self.ui_locales = ui_locales
+
+    @classmethod
+    def by_locale(cls, lang: str) -> 'Language':
+        return DBDiscussionSession.query(cls).filter(cls.ui_locales == lang).one()
 
 
 class Group(DiscussionBase):
@@ -243,7 +251,7 @@ class User(DiscussionBase):
     clicked_arguments: List['ClickedArgument'] = relationship('ClickedArgument', back_populates='user')
 
     def __init__(self, firstname: str, surname: str, nickname: str, email: str, password: str, gender: str,
-                 group_uid: int, oauth_provider: Optional[str] = None, oauth_provider_id: Optional[str] = None):
+                 group: 'Group', oauth_provider: Optional[str] = None, oauth_provider_id: Optional[str] = None):
         """
         Initializes a row in current user-table
 
@@ -262,7 +270,7 @@ class User(DiscussionBase):
         self.email = email
         self.gender = gender
         self.password = password
-        self.group_uid = group_uid
+        self.group = group
         self.last_action = get_now()
         self.last_login = get_now()
         self.registered = get_now()
@@ -400,9 +408,9 @@ class User(DiscussionBase):
             "nickname": self.public_nickname
         }
 
-    @staticmethod
-    def by_nickname(nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
-        return DBDiscussionSession.query(User).filter_by(nickname=nickname).one()
+    @classmethod
+    def by_nickname(cls, nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
+        return DBDiscussionSession.query(cls).filter_by(nickname=nickname).one()
 
 
 class UserParticipation(DiscussionBase):
@@ -431,12 +439,12 @@ class Settings(DiscussionBase):
     last_topic: Issue = relationship('Issue')
     language: Language = relationship('Language')
 
-    def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=2,
-                 keep_logged_in=False):
+    def __init__(self, user: 'User', send_mails, send_notifications, should_show_public_nickname=True,
+                 language: 'Language' = None, keep_logged_in=False):
         """
         Initializes a row in current settings-table
 
-        :param author_uid:
+        :param user:
         :param send_mails:
         :param send_notifications:
         :param should_show_public_nickname:
@@ -444,12 +452,12 @@ class Settings(DiscussionBase):
         :param keep_logged_in:
         """
         issue = DBDiscussionSession.query(Issue).first()
-        self.author_uid = author_uid
+        self.user = user
         self.should_send_mails = send_mails
         self.should_send_notifications = send_notifications
         self.should_show_public_nickname = should_show_public_nickname
         self.last_topic_uid = issue.uid if issue else 1
-        self.lang_uid = lang_uid
+        self.language = language
         self.keep_logged_in = keep_logged_in
 
     def set_send_mails(self, send_mails):
@@ -478,15 +486,6 @@ class Settings(DiscussionBase):
         :return: None
         """
         self.should_show_public_nickname = should_show_public_nickname
-
-    def set_last_topic_uid(self, uid):
-        """
-        Updates last used topic of user
-
-        :param uid: issue.uid
-        :return: None
-        """
-        self.last_topic_uid = uid
 
     def set_lang_uid(self, lang_uid):
         """
@@ -523,6 +522,11 @@ class GraphNode(ABC):
         """Returns a set of all GraphNodes which are one level deeper"""
         pass
 
+    @abstractmethod
+    def aif_node(self) -> Dict[str, str]:
+        """Returns a dictionary in the form of an AIF node"""
+        pass
+
     @property
     @abstractmethod
     def is_disabled(self) -> bool:
@@ -557,6 +561,10 @@ class Statement(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     arguments: List['Argument'] = relationship('Argument', back_populates='conclusion')
     premises: List['Premise'] = relationship('Premise', back_populates='statement')
     references: List['StatementReference'] = relationship('StatementReference', back_populates='statement')
+    all_textversions: List['TextVersion'] = relationship('TextVersion',
+                                                         back_populates='statement',
+                                                         cascade="all",
+                                                         order_by="TextVersion.timestamp")
 
     clicks = relationship('ClickedStatement')
 
@@ -721,6 +729,14 @@ class Statement(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     def get_sub_nodes(self):
         return set([argument for argument in self.arguments if not argument.is_disabled])
 
+    def aif_node(self):
+        return {
+            "nodeID": f"statement_{self.uid}",
+            "text": self.get_text(),
+            "type": "I",
+            "timestamp": str(self.get_timestamp())
+        }
+
 
 class StatementReference(DiscussionBase):
     """
@@ -740,24 +756,24 @@ class StatementReference(DiscussionBase):
     author: User = relationship('User')
     issue: Issue = relationship('Issue')
 
-    def __init__(self, text: str, host: str, path: str, author_uid: int, statement_uid: int, issue_uid: int):
+    def __init__(self, text: str, host: str, path: str, author: 'User', statement: 'Statement', issue: 'Issue'):
         """
         Store a real-world text-reference.
 
-        :param text: String
-        :param host: Host of URL
-        :param path: Path of URL
-        :param author_uid: User.uid
-        :param statement_uid: Statement.uid
-        :param issue_uid: Issue.uid
+        :param text: Text of the reference.
+        :param host: Host of URL for the reference.
+        :param path: Path of URL for the reference.
+        :param author: User who referenced a statement
+        :param statement: Statement which is referenced.
+        :param issue: The issue of the referenced statement.
         :return: None
         """
         self.text = text
         self.host = host
         self.path = path
-        self.author_uid = author_uid
-        self.statement_uid = statement_uid
-        self.issue_uid = issue_uid
+        self.author = author
+        self.statement = statement
+        self.issue = issue
 
     def get_statement_text(self, html: bool = False) -> str:
         """
@@ -766,8 +782,7 @@ class StatementReference(DiscussionBase):
         :param html: If True, returns a html span for coloring.
         :return:
         """
-        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
-        return db_statement.get_text(html)
+        return self.statement.get_text(html)
 
     def __json__(self, _request=None):
         return {
@@ -775,7 +790,7 @@ class StatementReference(DiscussionBase):
             "title": self.text,
             "host": self.host,
             "path": self.path,
-            "statement-uid": self.statement_uid,
+            "statement-uid": self.statement.uid,
             "author": self.author
         }
 
@@ -894,10 +909,10 @@ class TextVersion(DiscussionBase):
     timestamp = Column(ArrowType, default=get_now())
     is_disabled: bool = Column(Boolean, nullable=False)
 
-    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid], back_populates='all_textversions')
     author: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, content, author, statement_uid=None, is_disabled=False):
+    def __init__(self, content, author: User, statement: Statement, is_disabled=False, date: datetime = None):
         """
         Initializes a row in current text versions-table
 
@@ -906,19 +921,10 @@ class TextVersion(DiscussionBase):
         :return: None
         """
         self.content = content
-        self.author_uid = author
-        self.timestamp = get_now()
-        self.statement_uid = statement_uid
+        self.author = author
+        self.timestamp = date or get_now()
+        self.statement = statement
         self.is_disabled = is_disabled
-
-    def set_statement(self, statement_uid):
-        """
-        Set the statement of the textversion
-
-        :param statement_uid: Statement.uid
-        :return: None
-        """
-        self.statement_uid = statement_uid
 
     def set_disabled(self, is_disabled):
         """
@@ -970,27 +976,28 @@ class Premise(DiscussionBase):
     author: User = relationship(User, foreign_keys=[author_uid])
     issue: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates="premises")
 
-    def __init__(self, premisesgroup, statement, is_negated, author, issue, is_disabled=False):
+    def __init__(self, premisesgroup: "PremiseGroup", statement: Statement, is_negated: bool, author: User,
+                 issue: Issue, is_disabled=False):
         """
         Initializes a row in current premises-table
 
-        :param premisesgroup: PremiseGroup.uid
-        :param statement: Statement.uid
+        :param premisesgroup: PremiseGroup
+        :param statement: Statement
         :param is_negated: Boolean
-        :param author: User.uid
-        :param issue: Issue.uid
+        :param author: User
+        :param issue: Issue
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisegroup_uid = premisesgroup
-        self.statement_uid = statement
+        self.premisegroup = premisesgroup
+        self.statement = statement
         self.is_negated = is_negated
-        self.author_uid = author
+        self.author = author
         self.timestamp = get_now()
-        self.issue_uid = issue
+        self.issue = issue
         self.is_disabled = is_disabled
 
-    def set_disabled(self, is_disabled):
+    def set_disabled(self, is_disabled: Boolean):
         """
         Disables current premise
 
@@ -999,7 +1006,7 @@ class Premise(DiscussionBase):
         """
         self.is_disabled = is_disabled
 
-    def set_statement(self, statement):
+    def set_statement(self, statement: Statement):
         """
         Sets statement fot his Premise
 
@@ -1008,7 +1015,7 @@ class Premise(DiscussionBase):
         """
         self.statement_uid = statement
 
-    def set_premisegroup(self, premisegroup):
+    def set_premisegroup(self, premisegroup: "PremiseGroup"):
         """
         Set premisegroup for this premise
 
@@ -1037,12 +1044,12 @@ class Premise(DiscussionBase):
         :return: dict()
         """
         return {
-            'premisegroup_uid': self.premisegroup_uid,
-            'statement_uid': self.statement_uid,
+            'premisegroup_uid': self.premisegroup.uid,
+            'statement_uid': self.statement.uid,
             'is_negated': self.is_negated,
-            'author_uid': self.author_uid,
+            'author_uid': self.author.uid,
             'timestamp': sql_timestamp_pretty_print(self.timestamp),
-            'issue_uid': self.issue_uid,
+            'issue_uid': self.issue.uid,
             'is_disabled': self.is_disabled
         }
 
@@ -1060,14 +1067,14 @@ class PremiseGroup(DiscussionBase):
     premises: List[Premise] = relationship(Premise, back_populates='premisegroup')
     arguments: List['Argument'] = relationship('Argument', back_populates='premisegroup')
 
-    def __init__(self, author: int):
+    def __init__(self, author: User):
         """
         Initializes a row in current premisesGroup-table
 
-        :param author: User.id
+        :param author: User
         :return: None
         """
-        self.author_uid = author
+        self.author = author
 
     def get_text(self):
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=self.uid).join(Statement).all()
@@ -1083,6 +1090,8 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     Additionally there is a relation, timestamp, author, ...
     """
     __tablename__ = 'arguments'
+    __table_args__ = (CheckConstraint("ck_arguments_must-have-descendent",
+                                      '(argument_uid is not null) != (conclusion_uid is not null)'),)
     uid: int = Column(Integer, primary_key=True)
     premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'), nullable=False)
     conclusion_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=True)
@@ -1111,12 +1120,13 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
 
     # these are only for legacy support. use attacked_by and author instead
     issues: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
-    arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
+    arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid, uselist=True)
     users: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, premisegroup: int, is_supportive: bool, author: int, issue: int, conclusion: int = None,
-                 argument: int = None,
-                 is_disabled: bool = False):
+    def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: User, issue: Issue,
+                 conclusion: Union[Statement, 'Argument'],
+                 is_disabled: bool = False,
+                 timestamp: datetime = None):
         """
         Initializes a row in current argument-table
 
@@ -1125,19 +1135,17 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param author: User.uid
         :param issue: Issue.uid
         :param conclusion: Default 0, which will be None
-        :param argument: Default 0, which will be None
         :param is_disabled: Boolean
         :return: None
         """
-        self.premisegroup_uid = premisegroup
-        self.conclusion_uid = None if conclusion == 0 else conclusion
-        self.argument_uid = None if argument == 0 else argument
+        self.premisegroup = premisegroup
+        self.conclusion = conclusion if isinstance(conclusion, Statement) else None
+        self.attacks = conclusion if isinstance(conclusion, Argument) else None
         self.is_supportive = is_supportive
-        self.author_uid = author
-        self.argument_uid = argument
-        self.issue_uid = issue
+        self.author = author
+        self.issue = issue
         self.is_disabled = is_disabled
-        self.timestamp = get_now()
+        self.timestamp = arrow.get(timestamp) or get_now()
 
     def __repr__(self):
         return f"<Argument: {self.uid} {'support' if self.is_supportive else 'attack'}>"
@@ -1194,10 +1202,9 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param html: If True, returns a html span for coloring.
         :return:
         """
-        if not self.conclusion_uid:
+        if not self.conclusion:
             return ''
-        db_statement = DBDiscussionSession.query(Statement).get(self.conclusion_uid)
-        return db_statement.get_text(html)
+        return self.conclusion.get_text(html)
 
     def get_premisegroup_text(self) -> str:
         db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisegroup_uid)
@@ -1248,6 +1255,13 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
 
         return nodes.union(set(self.attacked_by))
 
+    def aif_node(self):
+        return {
+            "nodeID": f"argument_{self.uid}",
+            "type": "RA" if self.is_supportive else "CA",
+            "timestamp": str(self.timestamp)
+        }
+
 
 class History(DiscussionBase):
     """
@@ -1262,15 +1276,15 @@ class History(DiscussionBase):
 
     author: User = relationship('User', foreign_keys=[author_uid], back_populates='history')
 
-    def __init__(self, author_uid, path):
+    def __init__(self, author: User, path):
         """
         Inits a row in current history table
 
-        :param author_uid: User.uid
+        :param author: User.uid
         :param path: String
         :return: None
         """
-        self.author_uid = author_uid
+        self.author_uid = author.uid
         self.path = path
         self.timestamp = get_now()
 
@@ -1708,7 +1722,7 @@ class ReviewEditValue(DiscussionBase):
     content: str = Column(Text, nullable=False)
 
     review: ReviewEdit = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
-    statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
     def __init__(self, review_edit, statement, typeof, content):
         """
@@ -2474,7 +2488,7 @@ class PremiseGroupSplitted(DiscussionBase):
     old_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
     new_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
-    def __init__(self, review, old_premisegroup, new_premisegroup):
+    def __init__(self, review, old_premisegroup, new_premisegroup: PremiseGroup):
         """
         Inits a row in current table
 
@@ -2484,7 +2498,7 @@ class PremiseGroupSplitted(DiscussionBase):
         """
         self.review_uid = review
         self.old_premisegroup_uid = old_premisegroup
-        self.new_premisegroup_uid = new_premisegroup
+        self.new_premisegroup = new_premisegroup
         self.timestamp = get_now()
 
 

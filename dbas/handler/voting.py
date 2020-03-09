@@ -188,7 +188,6 @@ def add_seen_argument(argument_uid, db_user):
         __argument_seen_by_user(db_user, argument_uid)
 
     __statement_seen_by_user(db_user, db_argument.conclusion_uid)
-    transaction.commit()
 
     return True
 

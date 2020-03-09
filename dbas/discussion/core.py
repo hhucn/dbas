@@ -162,8 +162,7 @@ def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, user
 
 
 def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, relation: Relations,
-             history: SessionHistory,
-             path) -> dict:
+             session_history: SessionHistory, path) -> dict:
     """
     Initialize the reaction step for a position in a discussion. Creates helper and returns a dictionary containing
     different feedback options for the confrontation with an argument in a discussion.
@@ -173,7 +172,7 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
     :param db_arg_user:
     :param db_arg_sys:
     :param relation:
-    :param history:
+    :param session_history:
     :param path:
     :return:
     """
@@ -183,13 +182,13 @@ def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: 
 
     add_click_for_argument(db_arg_user, db_user)
 
-    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history=history,
+    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history=session_history,
                                 slug=db_issue.slug, broke_limit=broke_limit)
-    _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=history)
+    _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=session_history)
     discussion_dict = _ddh.get_dict_for_argumentation(db_arg_user, db_arg_sys.uid, relation,
                                                       db_user)
     item_dict = _idh.get_array_for_reaction(db_arg_sys.uid, db_arg_user.uid, db_arg_user.is_supportive, relation,
-                                            discussion_dict['gender'])
+                                            discussion_dict['gender'], session_history)
 
     return {
         'issues': issue_helper.prepare_json_of_issue(db_issue, db_user),
@@ -231,7 +230,7 @@ def support(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: A
     }
 
 
-def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: SessionHistory, path: str) -> dict:
+def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], session_history: SessionHistory, path: str) -> dict:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
     containing several feedback options regarding this argument.
@@ -239,7 +238,7 @@ def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: SessionHi
     :param db_issue:
     :param db_user:
     :param pgroup_ids:
-    :param history:
+    :param session_history:
     :param path:
     :return:
     """
@@ -256,12 +255,12 @@ def choose(db_issue: Issue, db_user: User, pgroup_ids: [int], history: SessionHi
     else:
         conclusion = created_argument.conclusion
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history=history,
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history=session_history,
                                 slug=db_issue.slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=session_history)
     discussion_dict = _ddh.get_dict_for_choosing(conclusion, conclusion_is_argument, is_supportive)
     item_dict = _idh.get_array_for_choosing(conclusion.uid, pgroup_ids, conclusion_is_argument, is_supportive,
-                                            db_user.nickname)
+                                            db_user.nickname, session_history)
 
     return {
         'issues': issue_dict,

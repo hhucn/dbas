@@ -1,9 +1,9 @@
-openapi: 3.0.0
+openapi: 3.0.2
 servers:
   - url: 'http://localhost:4284/api'
   - url: 'https://dbas.cs.uni-duesseldorf.de/api'
 info:
-  version: "1.25.1"
+  version: "1.26.0"
   title: D-BAS
 
 paths:
@@ -19,17 +19,17 @@ paths:
       responses:
         200:
           description: The token is valid and the user exists
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    nickname:
-                      type: string
-                    status:
-                      type: string
-                    message:
-                      type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nickname:
+                    type: string
+                  status:
+                    type: string
+                  message:
+                    type: string
         401:
           description: An error like 'Token expired'
       security:
@@ -304,6 +304,77 @@ paths:
       security:
         - token: []
 
+  /{slug}/aif:
+    get:
+      summary: Get the issue as in a json-aif format
+      tags:
+        - export
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              $ref: '#/components/schemas/json-aif-format'
+
+    post:
+      summary: Import a json-aif format argumentation. Only admins are allowed to do this.
+      tags:
+        - export
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+        - name: title
+          description: The title for the new issue.
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: lang
+          description: The language for the new issue.
+          in: path
+          required: true
+          schema:
+            type: string
+            example: en
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/json-aif-format'
+      responses:
+        201:
+          description: The issue was successfully imported.
+        401:
+          description: You are unauthorized. (You need to be an admin)
+        409:
+          description: The slug you choose is already in use.
+      security:
+        - token: []
+
+  /{slug}/dot:
+    get:
+      summary: Get the issue as in the dot format
+      tags:
+        - export
+      parameters:
+        - $ref: '#/components/parameters/slug-param'
+      responses:
+        200:
+          description: OK
+          content:
+            text/vnd.graphviz:
+              schema:
+                type: string
+                example: >-
+                  digraph G {
+                     statement_2 [label="we should get a cat"];
+                     statement_5 [label="cats are very independent"];
+                     argument_2 [shape=diamond,color="green"];
+                     argument_2 -> statement_2;
+                     statement_5 -> argument_2;
+                  }
 
 
   /{slug}/positions:
@@ -1028,6 +1099,37 @@ components:
           type: string
         version:
           type: integer
+
+
+    json-aif-format:
+      type: object
+      properties:
+        nodes:
+          type: array
+          items:
+            type: object
+            properties:
+              nodeID:
+                type: string
+              type:
+                type: string
+              text:
+                type: string
+                optional: true
+              timestamp:
+                type: string
+                format: date-time
+        edges:
+          type: array
+          items:
+            type: object
+            properties:
+              edgeID:
+                type: string
+              toID:
+                type: string
+              fromID:
+                type: string
 
       ##########################################
 

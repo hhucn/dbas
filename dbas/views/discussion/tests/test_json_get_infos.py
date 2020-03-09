@@ -1,7 +1,7 @@
 import transaction
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import History, StatementToIssue
+from dbas.database.discussion_model import History, StatementToIssue, User
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
@@ -143,7 +143,9 @@ class TestGetUserInformation(TestCaseWithConfig):
 class TestHistoryModifcations(TestCaseWithConfig):
     def test_get_user_history(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        DBDiscussionSession.add(History(author_uid=3, path='http://localhost:4284/discuss/cat-or-dog'))
+        user: User = self.user_christian
+        DBDiscussionSession.add(
+            History(author=user, path='http://localhost:4284/discuss/cat-or-dog'))
         transaction.commit()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = construct_dummy_request()
@@ -159,7 +161,9 @@ class TestHistoryModifcations(TestCaseWithConfig):
 
     def test_delete_user_history(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        DBDiscussionSession.add(History(author_uid=3, path='http://localhost:4284/discuss/cat-or-dog'))
+        user: User = self.user_christian
+        DBDiscussionSession.add(
+            History(author=user, path='http://localhost:4284/discuss/cat-or-dog'))
         transaction.commit()
         request = construct_dummy_request()
         response = delete_user_history(request)

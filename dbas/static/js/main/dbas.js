@@ -39,13 +39,15 @@ function addBorderToActiveNavbar() {
 /**
  * add the cookie consent popup for new users
  */
-function addCookieConsent() {
+function addCookieConsentToast() {
     'use strict';
 
     if (!Cookies.get('EU_COOKIE_LAW_CONSENT')) {
         $('#cookie-toast')
             .toast("show")
             .on('hide.bs.toast', () => Cookies.set('EU_COOKIE_LAW_CONSENT', true, {expires: 180}));
+    } else {
+        $('#cookie-toast').addClass("hide");
     }
 }
 
@@ -360,7 +362,7 @@ $(document).ready(function () {
     var path = window.location.href;
     var lang = $('#hidden_language').val();
 
-    addCookieConsent();
+    addCookieConsentToast();
     setAnalyticsOptOutLink(lang);
     setGravatarFallback();
     setScrollTrigger();

@@ -14,7 +14,7 @@ from dbas.lib import usage_of_modern_bubbles, nick_of_anonymous_user, Attitudes
 
 LOG = logging.getLogger(__name__)
 name = 'D-BAS'
-version = '1.25.1'
+version = '1.26.0'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -77,7 +77,7 @@ def prepare_request_dict(request: Request):
     slug = __get_slug(request.matchdict)
     db_issue = __get_issue(request, slug, db_last_topic)
 
-    issue_handler.save_issue_id_in_session(db_issue.uid, request)
+    issue_handler.save_issue_in_session(db_issue, request)
     history = history_handler.save_and_set_cookie(request, db_user, db_issue)
     set_language_for_visit(request)
 

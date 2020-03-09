@@ -22,7 +22,7 @@ class HistoryBubblesTests(TestCaseWithConfig):
         self.session_history_disagree = SessionHistory(self.history_disagree)
         self.session_history_agree = SessionHistory(self.history_agree)
         settings = self.user_tobi.settings
-        settings.set_last_topic_uid(self.first_issue.uid)
+        settings.last_topic = self.first_issue
         DBDiscussionSession.add(settings)
         DBDiscussionSession.flush()
 
@@ -49,18 +49,18 @@ class HistoryHandlerTests(TestCaseWithConfig):
         self.first_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
         self.last_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).order_by(
             Issue.uid.desc()).first()
-        # self.history = '/attitude/2-/justify/2/t-/reaction/12/undercut/13'
         self.history = '/attitude/3-/justify/4/dontknow'
         self.session_history = SessionHistory(self.history)
         settings = self.user_tobi.settings
-        settings.set_last_topic_uid(self.first_issue.uid)
+        settings.last_topic = self.first_issue
         DBDiscussionSession.add(settings)
         DBDiscussionSession.flush()
 
-    def test_save_issue_uid(self):
+    def test_save_issue(self):
         settings = self.user_tobi.settings
         self.assertNotEqual(self.last_issue.uid, settings.last_topic_uid)
-        history.save_issue_uid(self.last_issue.uid, self.user_tobi)
+        history.save_issue(self.last_issue, self.user_tobi)
+        DBDiscussionSession.flush()
         settings = self.user_tobi.settings
         self.assertEqual(self.last_issue.uid, settings.last_topic_uid)
 

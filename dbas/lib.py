@@ -19,8 +19,8 @@ from uuid import uuid4
 from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, Settings, \
-    ClickedArgument, ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup
+from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, ClickedArgument, \
+    ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup, Settings
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small
 from dbas.strings.translator import Translator
@@ -824,7 +824,8 @@ def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=Fa
     :return: String
     """
     if argument.argument_uid:
-        return get_text_for_argument_uid(argument.argument_uid, start_with_intro, rearrange_intro=rearrange_intro,
+        return get_text_for_argument_uid(argument.argument_uid, start_with_intro=start_with_intro,
+                                         rearrange_intro=rearrange_intro,
                                          is_users_opinion=is_users_opinion)
     else:
         return argument.get_conclusion_text()
@@ -834,12 +835,12 @@ def get_all_attacking_arg_uids_from_history(history):
     """
     Returns all arguments of the history, which attacked the user
 
-    :param history: String
+    :param history: SessionHistory
     :return: [Arguments.uid]
     :rtype: list
     """
     try:
-        splitted_history = history.split('-')
+        splitted_history = history.get_session_history_as_list()
         uids = []
         for part in splitted_history:
             if 'reaction' in part:
@@ -851,31 +852,28 @@ def get_all_attacking_arg_uids_from_history(history):
         return []
 
 
-def get_user_by_private_or_public_nickname(nickname):
+def get_user_by_private_or_public_nickname(nickname: str) -> Optional[User]:
     """
     Gets the user by his (public) nickname, based on the option, whether his nickname is public or not
 
     :param nickname: Nickname of the user
     :return: Current user or None
     """
-    db_user = get_user_by_case_insensitive_nickname(nickname)
-    db_public_user = get_user_by_case_insensitive_public_nickname(nickname)
-    uid = 0
+    user: User = get_user_by_case_insensitive_nickname(nickname)
+    public_user: User = get_user_by_case_insensitive_public_nickname(nickname)
 
-    if db_user:
-        uid = db_user.uid
-    elif db_public_user:
-        uid = db_public_user.uid
-
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=uid).first()
-
-    if not db_settings:
+    if not user or not public_user:
         return None
 
-    if db_settings.should_show_public_nickname and db_user:
-        return db_user
-    elif not db_settings.should_show_public_nickname and db_public_user:
-        return db_public_user
+    settings: Settings = user.settings
+
+    if not settings:
+        return None
+
+    if settings.should_show_public_nickname and user:
+        return user
+    elif not settings.should_show_public_nickname and public_user:
+        return public_user
 
     return None
 

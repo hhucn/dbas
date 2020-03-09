@@ -2,19 +2,19 @@
 Initialize the engine and session of D-BAS database.
 """
 import os
+from typing import Union
 
-from sqlalchemy import engine_from_config, MetaData
+from sqlalchemy import engine_from_config
 from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker, scoped_session, Session
 from zope.sqlalchemy import ZopeTransactionExtension
 
 # the concept of “session scopes” was introduced, with an emphasis on web applications
 # and the practice of linking the scope of a Session with that of a web request
-DBDiscussionSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(), expire_on_commit=False))
+session_factory = sessionmaker(extension=ZopeTransactionExtension(), expire_on_commit=False)
+DBDiscussionSession: Union[Session, scoped_session] = scoped_session(session_factory)  # aka thread local session
 DiscussionBase = declarative_base()
-NewsBase = declarative_base(metadata=MetaData(schema='news'))
-DBEngine = None
 
 
 def load_discussion_database(engine: Engine):

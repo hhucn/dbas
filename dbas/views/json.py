@@ -9,6 +9,7 @@ from pyramid.view import view_config
 
 import dbas.handler.news as news_handler
 import dbas.strings.matcher as fuzzy_string_matcher
+from dbas.database.discussion_model import User, Issue
 from dbas.handler import user
 from dbas.handler.language import set_language, get_language_from_cookie
 from dbas.handler.references import set_reference, get_references
@@ -134,7 +135,7 @@ def get_reference(request):
 @view_config(route_name='set_references', renderer='json')
 @validate(valid_user, valid_any_issue_by_id, valid_statement('json_body'),
           has_keywords_in_json_path(('text', str), ('ref_source', str)))
-def set_references(request):
+def set_references(request) -> bool:
     """
     Sets a reference for a statement or an argument
 
@@ -143,11 +144,11 @@ def set_references(request):
     """
     LOG.debug("Set a reference for a statement or an argument. Request: %s", request.json_body)
     db_statement = request.validated['statement']
-    text = escape_string(request.validated['text'])
-    source = escape_string(request.validated['ref_source'])
-    db_user = request.validated['user']
-    db_issue = request.validated['issue']
-    return set_reference(text, source, db_user, db_statement, db_issue.uid)
+    text: str = escape_string(request.validated['text'])
+    source: str = escape_string(request.validated['ref_source'])
+    user: User = request.validated['user']
+    issue: Issue = request.validated['issue']
+    return set_reference(text, source, user, db_statement, issue)
 
 
 # -----------------------------------------------------------------------------

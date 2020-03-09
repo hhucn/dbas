@@ -244,7 +244,8 @@ class ItemDictHelper(object):
             url = _um.get_url_for_reaction_on_argument(argument.uid, attack.value, arg_id_sys)
         else:  # if there is no attack, search for an argument to ask the user about
             if history is not None:
-                new_arg = get_another_argument_with_same_conclusion(argument.uid, history.get_session_history_as_string())
+                new_arg = get_another_argument_with_same_conclusion(argument.uid,
+                                                                    history.get_session_history_as_string())
             else:
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, "")
 
@@ -303,8 +304,8 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 
-    def __get_statement_array_for_justify_argument(self, argument_uid, attack_type, db_user, history, argument, uids,
-                                                   _um):
+    def __get_statement_array_for_justify_argument(self, argument_uid, attack_type, db_user, session_history, argument,
+                                                   uids, _um):
         if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
             add_seen_argument(argument_uid, db_user)
         # get all premises in this group
@@ -320,7 +321,7 @@ class ItemDictHelper(object):
 
         # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
         is_undermine = Relations.UNDERMINE if attack_type == Relations.UNDERMINE else None
-        attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+        attacking_arg_uids = get_all_attacking_arg_uids_from_history(session_history)
 
         arg_id_sys, attack = attacks.get_attack_for_argument(argument.uid, last_attack=is_undermine,
                                                              restrictive_arg_uids=attacking_arg_uids,
@@ -330,8 +331,9 @@ class ItemDictHelper(object):
 
         # with a chance of 50% or at the end we will seed the new "support step"
         if not attack:
-            if history is not None:
-                new_arg = get_another_argument_with_same_conclusion(argument.uid, history.get_session_history_as_string())
+            if session_history is not None:
+                new_arg = get_another_argument_with_same_conclusion(argument.uid,
+                                                                    session_history.get_session_history_as_string())
             else:
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, "")
             the_other_one = new_arg is None
@@ -375,9 +377,10 @@ class ItemDictHelper(object):
                                                             Argument.issue_uid == self.db_issue.uid).all()
 
         elif attack_type == Relations.REBUT:
+            contra_opinion = not db_argument.is_supportive
             db_arguments = db_arguments_not_disabled.filter(Argument.conclusion_uid == db_argument.conclusion_uid,
                                                             Argument.argument_uid == db_argument.argument_uid,
-                                                            Argument.is_supportive == False,
+                                                            Argument.is_supportive == contra_opinion,
                                                             Argument.issue_uid == self.db_issue.uid).all()
 
         elif attack_type == Relations.SUPPORT:
@@ -501,7 +504,8 @@ class ItemDictHelper(object):
             url = _um.get_url_for_choosing_premisegroup([db_argument.premisegroup_uid])
         return url
 
-    def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack, gender):
+    def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack, gender,
+                               session_history: SessionHistory):
         """
         Prepares the dict with all items for the argumentation window.
 
@@ -527,13 +531,14 @@ class ItemDictHelper(object):
 
         relations = [relation for relation in Relations]
         for relation in relations:
-            url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument)
+            url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument,
+                                                   session_history)
             d = {'title': rel_dict[relation.value + '_text'], 'id': relation.value}
             tmp = self.__create_answer_dict(relation.value, [d], relation.value, url)
             statements_array.append(tmp)
 
         # last item is the change attack button or step back, if we have bno other attack
-        attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+        attacking_arg_uids = get_all_attacking_arg_uids_from_history(session_history)
         attacking_arg_uids.append(argument_uid_sys)
         arg_id_sys, new_attack = attacks.get_attack_for_argument(argument_uid_user,
                                                                  restrictive_arg_uids=attacking_arg_uids,
@@ -551,7 +556,8 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def __get_url_based_on_relation(self, relation, attack, _um, mode, db_user_argument, db_sys_argument):
+    def __get_url_based_on_relation(self, relation, attack, _um, mode, db_user_argument, db_sys_argument,
+                                    session_history: SessionHistory()):
         """
         Returns a url based on the given relation
 
@@ -565,7 +571,8 @@ class ItemDictHelper(object):
         """
         # special case, when the user selects the support, because this does not need to be justified!
         if relation == Relations.SUPPORT:
-            return self.__get_url_for_support(attack, _um, db_user_argument, db_sys_argument)
+            return self.__get_url_for_support(attack, _um, db_user_argument, db_sys_argument,
+                                              session_history=session_history)
         elif relation == Relations.UNDERMINE or relation == Relations.UNDERCUT:  # easy cases
             return self.__get_url_for_undermine(relation, _um, db_sys_argument.uid, mode)
         elif relation == Relations.REBUT:  # if we are having an rebut, everything seems different
@@ -573,7 +580,7 @@ class ItemDictHelper(object):
         else:  # undercut
             return _um.get_url_for_justifying_argument(db_sys_argument.uid, mode, relation)
 
-    def __get_url_for_support(self, attack, _um, db_user_argument, db_sys_argument):
+    def __get_url_for_support(self, attack, _um, db_user_argument, db_sys_argument, session_history: SessionHistory):
         """
         Returns url to support an argument
 
@@ -583,7 +590,7 @@ class ItemDictHelper(object):
         :param db_sys_argument: Argument
         :return: String
         """
-        attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+        attacking_arg_uids = get_all_attacking_arg_uids_from_history(session_history)
         restriction_on_attacks = Relations.REBUT if attack == Relations.UNDERCUT else None
         # if the user did rebutted A with B, the system shall not rebut B with A
         history = '{}/rebut/{}'.format(db_sys_argument.uid, db_user_argument.uid) if attack == Relations.REBUT else ''
@@ -652,7 +659,8 @@ class ItemDictHelper(object):
             url = _um.get_url_for_justifying_statement(uid, mode)
         return url
 
-    def get_array_for_choosing(self, argument_or_statement_id, pgroup_ids, is_argument, is_supportive, nickname):
+    def get_array_for_choosing(self, argument_or_statement_id, pgroup_ids, is_argument, is_supportive, nickname,
+                               session_history: SessionHistory):
         """
         Prepares the dict with all items for the choosing an premise, when the user inserted more than one new premise.
 
@@ -666,14 +674,14 @@ class ItemDictHelper(object):
         LOG.debug("Entering get_array_for_choosing")
         statements_array = []
         slug = self.db_issue.slug
-        _um = UrlManager(slug, history=SessionHistory(self.path))
+        _um = UrlManager(slug, history=session_history)
         conclusion_uid = argument_or_statement_id if not is_argument else None
         argument_uid = argument_or_statement_id if is_argument else None
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for group_id in pgroup_ids:
             sarray = self.__get_choose_array_for_pgroup(is_argument, is_supportive, conclusion_uid, argument_uid,
-                                                        db_user, group_id, _um)
+                                                        db_user, group_id, _um, session_history)
             if not sarray:
                 return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
@@ -682,7 +690,8 @@ class ItemDictHelper(object):
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     def __get_choose_array_for_pgroup(self, is_argument: bool, is_supportive: bool, conclusion_uid: int,
-                                      argument_uid: int, db_user: User, group_id: int, _um: UrlManager):
+                                      argument_uid: int, db_user: User, group_id: int, _um: UrlManager,
+                                      session_history: SessionHistory):
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=group_id).all()
         premise_array = []
         for premise in db_premises:
@@ -702,7 +711,7 @@ class ItemDictHelper(object):
         if not db_argument:
             return None
 
-        attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+        attacking_arg_uids = get_all_attacking_arg_uids_from_history(session_history)
         arg_id_sys, attack = attacks.get_attack_for_argument(db_argument.uid,
                                                              restrictive_arg_uids=attacking_arg_uids)
         url = _um.get_url_for_reaction_on_argument(db_argument.uid, attack, arg_id_sys)

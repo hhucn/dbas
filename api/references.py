@@ -17,7 +17,7 @@ log = logger()
 def store_reference(reference: str, host: str, path: str, user: User, statement: Statement,
                     issue: Issue) -> StatementReference:
     """
-    Store reference to database.
+    Write reference of a statement to database.
 
     :param reference: String from external website
     :param user: user which adds the reference
@@ -27,10 +27,9 @@ def store_reference(reference: str, host: str, path: str, user: User, statement:
     :param issue: assign issue to reference
     :return: newly stored reference
     """
-    reference_text = escape_string(reference)
+    reference_text: str = escape_string(reference)
     log.debug("New Reference for Statement.uid {}: {}".format(statement.uid, reference_text))
-    db_ref: StatementReference = StatementReference(escape_string(reference_text), host, path, user.uid,
-                                                    statement.uid, issue.uid)
+    db_ref: StatementReference = StatementReference(escape_string(reference_text), host, path, user, statement, issue)
     DBDiscussionSession.add(db_ref)
     DBDiscussionSession.flush()
     transaction.commit()

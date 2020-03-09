@@ -426,4 +426,4 @@ class EditQueue(QueueABC):
         db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_review.uid).all()
         db_user = DBDiscussionSession.query(User).get(db_review.detector_uid)
         for value in db_values:
-            propose_new_textversion_for_statement(db_user, value.statement_uid, value.content)
+            propose_new_textversion_for_statement(db_user, value.statement, value.content)
