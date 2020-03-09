@@ -5,7 +5,9 @@
 * Add database constraint to prevent arguments without conclusion 
 [!836](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/839)
 * A lot of refactoring for more ORM usage and less database commits. [Too many MR]
-
+* Remove the `initializedb.py` file [!823](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/823)
+* Fix wrong opinion on rebut [!845](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/845)
+* Fix for poetry using a virtualenv inside docker container [!844](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/844)
 
 ### 1.25.1 (2020-02-17)
 
