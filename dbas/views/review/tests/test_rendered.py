@@ -7,7 +7,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, get_now
 from dbas.helper.test import verify_dictionary_of_view, clear_clicks_of, clear_seen_by_of
 from dbas.review.queue import review_queues
-from dbas.tests.utils import construct_dummy_request
+from dbas.review.reputation import get_reputation_of
+from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 from dbas.views.review.rendered import index, reputation, ongoing, history, queue_details
 
 
@@ -22,18 +23,14 @@ class MainReviewViewTestsNotLoggedIn(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-class MainReviewViewTestsLoggedIn(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-
+class MainReviewViewTestsLoggedIn(TestCaseWithConfig):
     def test_page_not_logged_in(self):
         request = construct_dummy_request()
         response = index(request)
         self.assertEqual(response.status_code, 400)
 
     def test_page(self):
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        self.config.testing_securitypolicy(userid=self.user_tobi.nickname, permissive=True)
         request = construct_dummy_request()
         response = index(request)
         verify_dictionary_of_view(response)
@@ -43,14 +40,10 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
         self.assertIn('reputation_list', response)
         self.assertIn('reputation', response)
         self.assertTrue(response['reputation']['has_all_rights'])
-        self.assertEqual(15, response['reputation']['count'])
+        self.assertEqual(get_reputation_of(self.user_tobi)[0], response['reputation']['count'])
 
 
-class ReviewReputationViewTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-
+class ReviewReputationViewTests(TestCaseWithConfig):
     def test_page_not_logged_in(self):
         request = construct_dummy_request()
         response = reputation(request)

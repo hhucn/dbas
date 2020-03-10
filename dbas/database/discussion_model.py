@@ -5,12 +5,12 @@ import logging
 import warnings
 from abc import abstractmethod, ABC, ABCMeta
 from datetime import datetime
-from typing import List, Set, Optional, Dict, Any
+from typing import List, Set, Optional, Dict, Any, Union
 
 import arrow
 import bcrypt
 from slugify import slugify
-from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String
+from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String, CheckConstraint
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -115,7 +115,7 @@ class Issue(DiscussionBase):
         self.participating_users = [author, ]
 
     def __repr__(self):
-        return f"<Issue {self.uid}: {self.slug}>"
+        return f"<Issue {self.uid or 'no uid'}: {self.slug}>"
 
     @hybrid_property
     def participating_authors(self) -> Set['User']:
@@ -157,9 +157,9 @@ class Issue(DiscussionBase):
         """
         self.is_read_only = is_read_only
 
-    @staticmethod
-    def by_slug(slug: str) -> 'Issue':
-        return DBDiscussionSession.query(Issue).filter(Issue.slug == slug).one()
+    @classmethod
+    def by_slug(cls, slug: str) -> Optional['Issue']:
+        return DBDiscussionSession.query(cls).filter(cls.slug == slug).one_or_none()
 
     def __json__(self, _request):
         return {
@@ -192,6 +192,10 @@ class Language(DiscussionBase):
         """
         self.name = name
         self.ui_locales = ui_locales
+
+    @classmethod
+    def by_locale(cls, lang: str) -> 'Language':
+        return DBDiscussionSession.query(cls).filter(cls.ui_locales == lang).one()
 
 
 class Group(DiscussionBase):
@@ -404,9 +408,9 @@ class User(DiscussionBase):
             "nickname": self.public_nickname
         }
 
-    @staticmethod
-    def by_nickname(nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
-        return DBDiscussionSession.query(User).filter_by(nickname=nickname).one()
+    @classmethod
+    def by_nickname(cls, nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
+        return DBDiscussionSession.query(cls).filter_by(nickname=nickname).one()
 
 
 class UserParticipation(DiscussionBase):
@@ -752,24 +756,24 @@ class StatementReference(DiscussionBase):
     author: User = relationship('User')
     issue: Issue = relationship('Issue')
 
-    def __init__(self, text: str, host: str, path: str, author_uid: int, statement_uid: int, issue_uid: int):
+    def __init__(self, text: str, host: str, path: str, author: 'User', statement: 'Statement', issue: 'Issue'):
         """
         Store a real-world text-reference.
 
-        :param text: String
-        :param host: Host of URL
-        :param path: Path of URL
-        :param author_uid: User.uid
-        :param statement_uid: Statement.uid
-        :param issue_uid: Issue.uid
+        :param text: Text of the reference.
+        :param host: Host of URL for the reference.
+        :param path: Path of URL for the reference.
+        :param author: User who referenced a statement
+        :param statement: Statement which is referenced.
+        :param issue: The issue of the referenced statement.
         :return: None
         """
         self.text = text
         self.host = host
         self.path = path
-        self.author_uid = author_uid
-        self.statement_uid = statement_uid
-        self.issue_uid = issue_uid
+        self.author = author
+        self.statement = statement
+        self.issue = issue
 
     def get_statement_text(self, html: bool = False) -> str:
         """
@@ -778,8 +782,7 @@ class StatementReference(DiscussionBase):
         :param html: If True, returns a html span for coloring.
         :return:
         """
-        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
-        return db_statement.get_text(html)
+        return self.statement.get_text(html)
 
     def __json__(self, _request=None):
         return {
@@ -787,7 +790,7 @@ class StatementReference(DiscussionBase):
             "title": self.text,
             "host": self.host,
             "path": self.path,
-            "statement-uid": self.statement_uid,
+            "statement-uid": self.statement.uid,
             "author": self.author
         }
 
@@ -973,7 +976,7 @@ class Premise(DiscussionBase):
     author: User = relationship(User, foreign_keys=[author_uid])
     issue: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates="premises")
 
-    def __init__(self, premisesgroup: "PremiseGroup", statement: Statement, is_negated: Boolean, author: User,
+    def __init__(self, premisesgroup: "PremiseGroup", statement: Statement, is_negated: bool, author: User,
                  issue: Issue, is_disabled=False):
         """
         Initializes a row in current premises-table
@@ -1087,6 +1090,8 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     Additionally there is a relation, timestamp, author, ...
     """
     __tablename__ = 'arguments'
+    __table_args__ = (CheckConstraint("ck_arguments_must-have-descendent",
+                                      '(argument_uid is not null) != (conclusion_uid is not null)'),)
     uid: int = Column(Integer, primary_key=True)
     premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'), nullable=False)
     conclusion_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=True)
@@ -1118,9 +1123,10 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid, uselist=True)
     users: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: int, issue: int, conclusion: int = None,
-                 argument: int = None,
-                 is_disabled: bool = False):
+    def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: User, issue: Issue,
+                 conclusion: Union[Statement, 'Argument'],
+                 is_disabled: bool = False,
+                 timestamp: datetime = None):
         """
         Initializes a row in current argument-table
 
@@ -1129,19 +1135,17 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param author: User.uid
         :param issue: Issue.uid
         :param conclusion: Default 0, which will be None
-        :param argument: Default 0, which will be None
         :param is_disabled: Boolean
         :return: None
         """
         self.premisegroup = premisegroup
-        self.conclusion_uid = None if conclusion == 0 else conclusion
-        self.argument_uid = None if argument == 0 else argument
+        self.conclusion = conclusion if isinstance(conclusion, Statement) else None
+        self.attacks = conclusion if isinstance(conclusion, Argument) else None
         self.is_supportive = is_supportive
-        self.author_uid = author
-        self.argument_uid = argument
-        self.issue_uid = issue
+        self.author = author
+        self.issue = issue
         self.is_disabled = is_disabled
-        self.timestamp = get_now()
+        self.timestamp = arrow.get(timestamp) or get_now()
 
     def __repr__(self):
         return f"<Argument: {self.uid} {'support' if self.is_supportive else 'attack'}>"
@@ -1198,10 +1202,9 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param html: If True, returns a html span for coloring.
         :return:
         """
-        if not self.conclusion_uid:
+        if not self.conclusion:
             return ''
-        db_statement = DBDiscussionSession.query(Statement).get(self.conclusion_uid)
-        return db_statement.get_text(html)
+        return self.conclusion.get_text(html)
 
     def get_premisegroup_text(self) -> str:
         db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisegroup_uid)

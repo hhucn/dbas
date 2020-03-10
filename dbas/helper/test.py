@@ -3,13 +3,12 @@ Utility functions for testing.
 """
 import os
 
-import transaction
 from nose.tools import assert_in
 from paste.deploy import appconfig
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ClickedStatement, SeenArgument, ClickedArgument, User, \
-    ReputationHistory, SeenStatement
+from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User, \
+    ReputationHistory
 
 
 def path_to_settings(ini_file):
@@ -57,8 +56,6 @@ def refresh_user(nickname):
     db_user.update_last_login()
     db_user.update_last_action()
     DBDiscussionSession.add(db_user)
-    DBDiscussionSession.flush()
-    transaction.commit()
     return db_user
 
 
@@ -69,10 +66,9 @@ def clear_seen_by_of(nickname):
     :param nickname: User.nickname
     :return: None
     """
-    user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    DBDiscussionSession.query(SeenStatement).filter_by(user=user).delete()
-    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user.uid).delete()
-    transaction.commit()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
+    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
 
 
 def clear_clicks_of(nickname):
@@ -85,7 +81,6 @@ def clear_clicks_of(nickname):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
-    transaction.commit()
 
 
 def clear_reputation_of_user(db_user: User) -> None:
@@ -96,4 +91,3 @@ def clear_reputation_of_user(db_user: User) -> None:
     :return:
     """
     DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
-    transaction.commit()

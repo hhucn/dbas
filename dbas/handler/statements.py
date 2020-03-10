@@ -577,15 +577,13 @@ def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclu
     LOG.debug("New pgroup %s", new_premisegroup.uid)
 
     # third, insert the argument
-    new_argument = __create_argument_by_uids(db_user, new_premisegroup, db_conclusion, None, is_supportive,
-                                             db_issue)
+    new_argument = __create_argument_by_uids(db_user, new_premisegroup, db_conclusion, is_supportive, db_issue)
     transaction.commit()
 
     return new_argument, [s.uid for s in new_statements]
 
 
-def __create_argument_by_uids(db_user: User, premisegroup: PremiseGroup, conclusion: Statement, argument_uid,
-                              is_supportive,
+def __create_argument_by_uids(db_user: User, premisegroup: PremiseGroup, conclusion: Statement, is_supportive,
                               db_issue: Issue) -> Optional[Argument]:
     """
     Connects the given id's to a new argument
@@ -593,37 +591,23 @@ def __create_argument_by_uids(db_user: User, premisegroup: PremiseGroup, conclus
     :param db_user: User.nickname
     :param premisegroup: PremiseGroup
     :param conclusion: Statement.uid
-    :param argument_uid: Argument.uid
     :param is_supportive: Boolean
     :param db_issue: Issue
     :return:
     """
     LOG.debug("Entering __create_argument_by_uids with user: %s, premisegroup_uid: %s, conclusion_uid :%s, "
-              "argument_uid: %s, is_supportive: %s, issue: %s",
-              db_user.nickname, premisegroup.uid, conclusion.uid, argument_uid, is_supportive, db_issue.uid)
+              " is_supportive: %s, issue: %s",
+              db_user.nickname, premisegroup.uid, conclusion.uid, is_supportive, db_issue.uid)
 
     new_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == premisegroup.uid,
                                                               Argument.is_supportive == is_supportive,
                                                               Argument.conclusion_uid == conclusion.uid,
                                                               Argument.issue_uid == db_issue.uid).first()
     if not new_argument:
-        new_argument = Argument(premisegroup=premisegroup, is_supportive=is_supportive, author=db_user.uid,
-                                issue=db_issue.uid, conclusion=conclusion.uid)
-        new_argument.set_conclusions_argument(argument_uid)
+        new_argument = Argument(premisegroup=premisegroup, is_supportive=is_supportive, author=db_user,
+                                issue=db_issue, conclusion=conclusion)
 
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
 
-        new_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == premisegroup.uid,
-                                                                  Argument.is_supportive == is_supportive,
-                                                                  Argument.author_uid == db_user.uid,
-                                                                  Argument.conclusion_uid == conclusion.uid,
-                                                                  Argument.argument_uid == argument_uid,
-                                                                  Argument.issue_uid == db_issue.uid).first()
-    transaction.commit()
-    if new_argument:
-        LOG.debug("Argument was inserted")
-        return new_argument
-    else:
-        LOG.debug("Argument was not inserted")
-        return None
+    return new_argument

@@ -885,7 +885,7 @@ def delete(user: User) -> None:
     """
     Delete the user and all data connected to them.
 
-    :param db_user: The user which gets deleted.
+    :param user: The user which gets deleted.
     :return: Returns nothing, this function is one big side-effect.
     """
     anonym_uid = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first().uid
@@ -936,7 +936,7 @@ def delete(user: User) -> None:
     DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user.uid).delete()
     DBDiscussionSession.query(History).filter_by(author_uid=user.uid).delete()
     DBDiscussionSession.query(Settings).filter_by(user=user).delete()
-    DBDiscussionSession.query(StatementReference).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(StatementReference).filter_by(author=user).delete()
     DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user.uid).delete()
     DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user.uid).delete()
     DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=user.uid).delete()

@@ -377,9 +377,10 @@ class ItemDictHelper(object):
                                                             Argument.issue_uid == self.db_issue.uid).all()
 
         elif attack_type == Relations.REBUT:
+            contra_opinion = not db_argument.is_supportive
             db_arguments = db_arguments_not_disabled.filter(Argument.conclusion_uid == db_argument.conclusion_uid,
                                                             Argument.argument_uid == db_argument.argument_uid,
-                                                            Argument.is_supportive == False,
+                                                            Argument.is_supportive == contra_opinion,
                                                             Argument.issue_uid == self.db_issue.uid).all()
 
         elif attack_type == Relations.SUPPORT:
