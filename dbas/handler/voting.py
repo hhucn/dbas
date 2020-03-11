@@ -357,7 +357,7 @@ def __statement_seen_by_user(user: User, statement: Statement):
     db_seen_by = DBDiscussionSession.query(SeenStatement).filter(SeenStatement.statement_uid == statement.uid,
                                                                  SeenStatement.user_uid == user.uid).first()
     if not db_seen_by:
-        DBDiscussionSession.add(SeenStatement(statement_uid=statement.uid, user=user))
+        DBDiscussionSession.add(SeenStatement(statement=statement, user=user))
         DBDiscussionSession.flush()
         return True
 

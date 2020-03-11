@@ -273,7 +273,7 @@ def insert_as_statement(text: str, user: User, db_issue: Issue, is_start=False) 
 
     # add marked statement
     DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=user.uid))
-    DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user=user))
+    DBDiscussionSession.add(SeenStatement(statement=new_statement, user=user))
 
     return new_statement
 
