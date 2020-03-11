@@ -91,7 +91,7 @@ class ItemDictHelper(object):
         ed = EditQueue()
         for statement in db_statements:
             if statement.uid in uids:  # add seen by if the statement is visible
-                add_seen_statement(statement.uid, db_user)
+                add_seen_statement(statement, db_user)
 
             position_dict = self.__create_answer_dict(statement.uid,
                                                       [{
@@ -698,7 +698,7 @@ class ItemDictHelper(object):
             text = premise.get_text()
             premise_array.append({'title': text, 'id': premise.statement_uid})
             if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
-                add_seen_statement(premise.statement_uid, db_user)
+                add_seen_statement(premise.statement, db_user)
 
         # get attack for each premise, so the urls will be unique
         db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == group_id,

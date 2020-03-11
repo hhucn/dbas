@@ -66,15 +66,15 @@ class VotingHelperTest(TestCaseWithConfig):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 0, 0)
 
-        val = add_seen_statement(1, self.user_christian)
+        val = add_seen_statement(self.first_position_cat_or_dog, self.user_christian)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 1, 0)
 
-        val = add_seen_statement(2, self.user_christian)
+        val = add_seen_statement(self.second_position_cat_or_dog, self.user_christian)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 2, 0)
 
-        val = add_seen_statement(2, self.user_christian)
+        val = add_seen_statement(self.second_position_cat_or_dog, self.user_christian)
         self.assertFalse(val)
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 2, 0)
 

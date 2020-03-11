@@ -205,7 +205,8 @@ def set_seen_statements(uids, path, user: User) -> dict:
     for uid in uids:
         # we get the premise group id's only
         if is_integer(uid):
-            add_seen_statement(uid, user)
+            statement = DBDiscussionSession.query(Statement).get(uid)  # todo: move this where the request is made
+            add_seen_statement(statement, user)
     return {'status': 'success'}
 
 
