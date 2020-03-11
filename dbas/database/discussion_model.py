@@ -857,7 +857,7 @@ class SeenStatement(DiscussionBase):
     statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
     user_uid: int = Column(Integer, ForeignKey('users.uid'))
 
-    statement: Statement = relationship('Statement')
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
     user: User = relationship('User')
 
@@ -868,8 +868,8 @@ class SeenStatement(DiscussionBase):
         :param statement_uid: Statement.uid
         :param user: User who has seen the statement.
         """
-        self.statement_uid = statement.uid
-        self.user = user
+        self.statement: Statement = statement
+        self.user: User = user
 
 
 class SeenArgument(DiscussionBase):
