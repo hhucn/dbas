@@ -15,7 +15,6 @@ from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
     set_new_rebut
 from dbas.helper.url import UrlManager
-from dbas.input_validator import is_integer
 from dbas.lib import get_profile_picture, escape_string, Relations, Attitudes
 from dbas.review.queue import Code
 from dbas.review.queue.edit import EditQueue
@@ -186,11 +185,11 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     }
 
 
-def set_seen_statements(uids, path, user: User) -> dict:
+def set_seen_statements(statements: List[Statement], path: str, user: User) -> dict:
     """
     Marks several statements as already seen.
 
-    :param uids: Uids of statements which should be marked as seen
+    :param statements: Statements which should be marked as seen
     :param path: Current path of the user
     :param user: User
     :rtype: dict
@@ -202,11 +201,8 @@ def set_seen_statements(uids, path, user: User) -> dict:
         additional_argument = int(url[:url.index('/')])
         add_seen_argument(additional_argument, user)
 
-    for uid in uids:
-        # we get the premise group id's only
-        if is_integer(uid):
-            statement = DBDiscussionSession.query(Statement).get(uid)  # todo: move this where the request is made
-            add_seen_statement(statement, user)
+    for statement in statements:
+        add_seen_statement(statement, user)
     return {'status': 'success'}
 
 

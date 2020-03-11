@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 from pyramid.request import Request
 from pyramid.response import Response
@@ -311,8 +312,8 @@ def set_statements_as_seen(request):
     :return: json
     """
     LOG.debug("Set statement as seen. %s", request.json_body)
-    uids = request.validated['uids']
-    return set_seen_statements(uids, request.path, request.validated['user'])
+    statements: List[Statement] = [DBDiscussionSession.query(Statement).get(uid) for uid in request.validated['uids']]
+    return set_seen_statements(statements, request.path, request.validated['user'])
 
 
 @view_config(route_name='mark_statement_or_argument', renderer='json')
