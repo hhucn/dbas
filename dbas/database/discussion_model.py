@@ -1013,7 +1013,7 @@ class Premise(DiscussionBase):
         :param statement: Statement.uid
         :return: None
         """
-        self.statement_uid = statement
+        self.statement_uid = statement.uid
 
     def set_premisegroup(self, premisegroup: "PremiseGroup"):
         """
