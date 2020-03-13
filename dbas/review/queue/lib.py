@@ -1,12 +1,12 @@
 import logging
 import random
-from typing import List, Type, Optional
+from typing import List, Type
 
 import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Issue, Statement, StatementToIssue, sql_timestamp_pretty_print, \
-    Premise, User, AbstractReviewCase, AbstractLastReviewerCase, PremiseGroupMerged, PremiseGroupSplitted
+    Premise, User, AbstractReviewCase, AbstractLastReviewerCase
 from dbas.lib import get_text_for_argument_uid, get_profile_picture
 from dbas.review.mapper import get_review_modal_mapping, get_last_reviewer_by_key
 from dbas.review.reputation import get_reputation_of, reputation_borders
@@ -218,7 +218,7 @@ def __set_able_of_reviews_argument(review, is_disabled):
     transaction.commit()
 
 
-def undo_premisegroups(pgroups_splitted_or_merged: Optional[PremiseGroupMerged, PremiseGroupSplitted], replacements):
+def undo_premisegroups(pgroups_splitted_or_merged, replacements):
     """
 
     :param pgroups_splitted_or_merged:
