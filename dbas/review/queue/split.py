@@ -218,7 +218,8 @@ class SplitQueue(QueueABC):
         """
         db_review = DBDiscussionSession.query(ReviewSplit).get(db_review.uid)
         db_review.set_revoked(True)
-        db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).all()
+        db_pgroup_splitted: List[PremiseGroupSplitted] = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(
+            review_uid=db_review.uid).all()
         replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(
             review_uid=db_review.uid).all()
         disable_args = [arg.uid for arg in DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(

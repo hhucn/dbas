@@ -1,7 +1,7 @@
 # Adaptee for the merge queue
 import logging
 import random
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 
 import transaction
 from beaker.session import Session
@@ -223,10 +223,13 @@ class MergeQueue(QueueABC):
         """
         db_review = DBDiscussionSession.query(ReviewMerge).get(db_review.uid)
         db_review.set_revoked(True)
-        db_pgroup_merged = DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review.uid).all()
+        db_pgroup_merged: List[PremiseGroupMerged] = DBDiscussionSession.query(PremiseGroupMerged).filter_by(
+            review_uid=db_review.uid).all()
         replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(
             review_uid=db_review.uid).all()
+
         undo_premisegroups(db_pgroup_merged, replacements)
+
         DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
         DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).delete()
         DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(review_uid=db_review.uid).delete()
