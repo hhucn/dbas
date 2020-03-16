@@ -511,7 +511,7 @@ class TestValidPosition(TestCaseWithConfig):
     def test_position_and_issue_are_correct_should_return_true(self):
         request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
-            'position_id': self.position_cat_or_dog.uid
+            'position_id': self.second_position_cat_or_dog.uid
         })
         response = discussion.valid_position(request)
         self.assertTrue(response)

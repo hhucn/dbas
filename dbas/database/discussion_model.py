@@ -1022,7 +1022,7 @@ class Premise(DiscussionBase):
         :param premisegroup: Premisegroup.uid
         :return: None
         """
-        self.premisegroup_uid = premisegroup.uid # todo: this does not crash the tests ...
+        self.premisegroup_uid = premisegroup.uid  # todo: this does not crash the tests ...
 
     def get_text(self, html: bool = False) -> str:
         """
@@ -1827,8 +1827,8 @@ class ReviewDuplicate(AbstractReviewCase):
     duplicate_statement: Statement = relationship('Statement', foreign_keys=[duplicate_statement_uid])
     original_statement: Statement = relationship('Statement', foreign_keys=[original_statement_uid])
 
-    def __init__(self, detector, duplicate_statement=None, original_statement=None, is_executed=False,
-                 is_revoked=False):
+    def __init__(self, detector, duplicate_statement=None, original_statement: 'Statement' = None,
+                 is_executed: bool = False, is_revoked: bool = False):
         """
         Inits a row in current review duplicate table
 
@@ -1840,7 +1840,7 @@ class ReviewDuplicate(AbstractReviewCase):
         """
         self.detector_uid = detector
         self.duplicate_statement_uid = duplicate_statement
-        self.original_statement_uid = original_statement
+        self.original_statement = original_statement  # of interest
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked
