@@ -332,8 +332,6 @@ def add_vote_for(db_user: User, db_review: AbstractReviewCase, is_okay: bool,
     LOG.debug("Vote Added")
     db_new_review = db_reviewer_type(db_user.uid, db_review.uid, is_okay)
     DBDiscussionSession.add(db_new_review)
-    DBDiscussionSession.flush()
-    transaction.commit()
     return True
 
 

@@ -124,7 +124,7 @@ class DuplicateQueue(QueueABC):
         rep_reason = None
 
         # add new vote
-        add_vote_for(db_user, db_review, is_okay, LastReviewerDuplicate)  # Wrong
+        add_vote_for(db_user, db_review, is_okay, LastReviewerDuplicate)
 
         # get all keep and delete votes
         count_of_reset, count_of_keep = self.get_review_count(db_review.uid)
@@ -281,7 +281,7 @@ class DuplicateQueue(QueueABC):
         return pro_list, con_list
 
     @staticmethod
-    def __bend_objects_of_review(db_review):
+    def __bend_objects_of_review(db_review: ReviewDuplicate):
         """
         If an argument is a duplicate, we have to bend the objects of argument, which are no duplicates
 
@@ -325,9 +325,7 @@ class DuplicateQueue(QueueABC):
                 if premise.statement_uid == db_review.duplicate_statement_uid:
                     LOG.debug("%s, bend premise %s from %s to %s", text, premise.uid, premise.statement_uid,
                               db_review.original_statement_uid)
-                    review_original_statement = DBDiscussionSession.query(Statement).get(
-                        db_review.original_statement_uid)  # todo: Refactor db_review to use instances
-                    premise.set_statement(review_original_statement)
+                    premise.set_statement(db_review.original_statement)
 
                     DBDiscussionSession.add(premise)
                     DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, premise=premise.uid))
