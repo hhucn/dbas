@@ -4,7 +4,7 @@ import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
+from dbas.database.discussion_model import Issue, Statement
 from dbas.database.discussion_model import User, ReviewCanceled, ReviewEditValue, PremiseGroupSplitted, \
     PremiseGroupMerged
 from dbas.review.mapper import get_queue_by_key, get_review_model_by_key, get_last_reviewer_by_key
@@ -81,7 +81,8 @@ class QueueTest(unittest.TestCase):
         if key in [key_merge, key_split]:
             db_new_review = review_table(detector=4, premisegroup=5)
         elif key is key_duplicate:
-            db_new_review = review_table(detector=4, duplicate_statement=5, original_statement=4)
+            original_statement = DBDiscussionSession.query(Statement).get(4)
+            db_new_review = review_table(detector=4, duplicate_statement=5, original_statement=original_statement)
         else:
             db_new_review = review_table(detector=4)
 
