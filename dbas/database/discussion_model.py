@@ -1118,11 +1118,6 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
 
     clicks = relationship('ClickedArgument')
 
-    # these are only for legacy support. use attacked_by and author instead
-    issues: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
-    arguments: Optional['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
-    users: User = relationship('User', foreign_keys=[author_uid])
-
     def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: User, issue: Issue,
                  conclusion: Union[Statement, 'Argument'],
                  is_disabled: bool = False,

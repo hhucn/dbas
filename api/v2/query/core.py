@@ -68,6 +68,20 @@ class ArgumentGraph(SQLAlchemyObjectType):
         return graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean(),
                              is_disabled=graphene.Boolean())
 
+    # for legacy support
+    users = graphene.Dynamic(lambda: graphene.Field(UserGraph, deprecation_reason="Use `author` instead"))
+    issues = graphene.Dynamic(lambda: graphene.Field(IssueGraph, deprecation_reason="Use `issue` instead"))
+    arguments = graphene.Dynamic(lambda: graphene.Field(ArgumentGraph, deprecation_reason="Use `attacks` instead"))
+
+    def resolve_users(self: StatementReference, info):
+        return resolve_field_query({"uid": self.author_uid}, info, UserGraph)
+
+    def resolve_issues(self: StatementReference, info):
+        return resolve_field_query({"uid": self.issue_uid}, info, IssueGraph)
+
+    def resolve_arguments(self: Argument, info):
+        return resolve_field_query({"uid": self.argument_uid}, info, ArgumentGraph)
+
 
 class StatementGraph(SQLAlchemyObjectType):
     class Meta:
