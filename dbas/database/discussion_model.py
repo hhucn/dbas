@@ -1120,7 +1120,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
 
     # these are only for legacy support. use attacked_by and author instead
     issues: Issue = relationship(Issue, foreign_keys=[issue_uid], back_populates='all_arguments')
-    arguments: List['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid, uselist=True)
+    arguments: Optional['Argument'] = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
     users: User = relationship('User', foreign_keys=[author_uid])
 
     def __init__(self, premisegroup: PremiseGroup, is_supportive: bool, author: User, issue: Issue,
@@ -1193,7 +1193,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
 
         :return: String
         """
-        return self.issues.lang
+        return self.issue.lang
 
     def get_conclusion_text(self, html: bool = False) -> str:
         """

@@ -98,11 +98,11 @@ class RelationHelperTest(TestCaseWithConfig):
     def test_set_new_undercut(self):
         db_argument: Argument = DBDiscussionSession.query(Argument).get(1)
 
-        before = db_argument.arguments
+        before = len(db_argument.attacked_by)
         set_new_undercut(DBDiscussionSession.query(PremiseGroup).get(1), db_argument, self.user_christian,
                          self.issue_cat_or_dog)
         after = DBDiscussionSession.query(Argument).filter_by(argument_uid=1).all()
-        self.assertLess(len(before), len(after))
+        self.assertLess(before, len(after))
 
     def test_set_new_rebut(self):
         db_argument = DBDiscussionSession.query(Argument).get(1)
