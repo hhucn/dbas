@@ -228,13 +228,14 @@ def undo_premisegroups(pgroups_splitted_or_merged, replacements):
     LOG.debug("Got %s merge/split pgroups and %s replacements", len(pgroups_splitted_or_merged), len(replacements))
 
     for element in pgroups_splitted_or_merged:
-        old_pgroup = element.old_premisegroup_uid
-        new_pgroup = element.new_premisegroup_uid
+        old_premisgroup = element.old_premisegroup
+        new_premisgroup = element.new_premisegroup
 
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=new_pgroup).all()
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=new_premisgroup.uid).all()
         for argument in db_arguments:
-            LOG.debug("Reset arguments %s pgroup from %s back to %s", argument.uid, new_pgroup, old_pgroup)
-            argument.set_premisegroup(old_pgroup)
+            LOG.debug("Reset arguments %s pgroup from %s back to %s", argument.uid, new_premisgroup.uid,
+                      old_premisgroup.uid)
+            argument.set_premisegroup(old_premisgroup)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.flush()
 

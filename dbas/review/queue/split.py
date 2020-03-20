@@ -345,7 +345,7 @@ class SplitQueue(QueueABC):
 
             # note new added pgroup
             DBDiscussionSession.add(
-                PremiseGroupSplitted(db_review.uid, db_review.premisegroup_uid, db_new_premisegroup))
+                PremiseGroupSplitted(db_review.uid, db_review.premisegroup, db_new_premisegroup))
 
         # swap the premisegroup occurence in every argument and add new arguments for the new premises
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=db_review.premisegroup_uid).all()

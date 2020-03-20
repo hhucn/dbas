@@ -1175,7 +1175,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param premisegroup: PremiseGroup.uid
         :return: None
         """
-        self.premisegroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup.uid
 
     def set_disabled(self, is_disabled):
         """
@@ -2488,7 +2488,7 @@ class PremiseGroupSplitted(DiscussionBase):
     old_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
     new_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
-    def __init__(self, review, old_premisegroup, new_premisegroup: PremiseGroup):
+    def __init__(self, review, old_premisegroup: PremiseGroup, new_premisegroup: PremiseGroup):
         """
         Inits a row in current table
 
@@ -2497,7 +2497,8 @@ class PremiseGroupSplitted(DiscussionBase):
         :param new_premisegroup: PremiseGroup.uid
         """
         self.review_uid = review
-        self.old_premisegroup_uid = old_premisegroup
+        self.old_premisegroup_uid = old_premisegroup.uid
+        self.old_premisegroup = old_premisegroup
         self.new_premisegroup = new_premisegroup
         self.timestamp = get_now()
 
@@ -2517,17 +2518,17 @@ class PremiseGroupMerged(DiscussionBase):
     old_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
     new_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
-    def __init__(self, review, old_premisegroup, new_premisegroup):
+    def __init__(self, review, old_premisegroup: PremiseGroup, new_premisegroup: PremiseGroup):
         """
         Inits a row in current statement splitted table
 
         :param review: ReviewMerge.uid
-        :param old_premisegroup: PremiseGroup.uid
-        :param new_premisegroup: PremiseGroup.uid
+        :param old_premisegroup: PremiseGroup
+        :param new_premisegroup: PremiseGroup
         """
         self.review_uid = review
-        self.old_premisegroup_uid = old_premisegroup
-        self.new_premisegroup_uid = new_premisegroup
+        self.old_premisegroup = old_premisegroup
+        self.new_premisegroup = new_premisegroup
         self.timestamp = get_now()
 
 
