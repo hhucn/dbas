@@ -6,7 +6,6 @@ We are not deleting opposite votes for detecting opinion changes!
 """
 
 import logging
-from typing import List
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, ClickedArgument, ClickedStatement, User, \
@@ -174,11 +173,8 @@ def add_seen_argument(argument_uid, db_user):
 
     db_argument: Argument = DBDiscussionSession.query(Argument).get(argument_uid)
     __argument_seen_by_user(db_user, argument_uid)
-
-    db_premises: List[Premise] = DBDiscussionSession.query(Premise).filter_by(
-        premisegroup_uid=db_argument.premisegroup_uid).all()
-    for p in db_premises:
-        __statement_seen_by_user(db_user, p.statement)
+    for premise in db_argument.premisegroup.premises:
+        __statement_seen_by_user(db_user, premise.statement)
 
     # find the conclusion and mark all arguments on the way
     while db_argument.conclusion_uid is None:
