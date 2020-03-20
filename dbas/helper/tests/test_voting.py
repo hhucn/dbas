@@ -36,19 +36,21 @@ class VotingHelperTest(TestCaseWithConfig):
         val = add_seen_argument(0, 1)
         self.assertFalse(val)
 
-        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 0, 0)
+        val = add_seen_argument(18, self.user_christian)
+        self.assertTrue(val)
+        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 1, 2)
 
         val = add_seen_argument(1, self.user_christian)
         self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 2, 1)
+        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 3, 3)
 
         val = add_seen_argument(2, self.user_christian)
         self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 3, 2)
+        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 4, 3)
 
         val = add_seen_argument(2, self.user_christian)
         self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 3, 2)
+        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 4, 3)
 
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 0, 0)

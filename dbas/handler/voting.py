@@ -158,30 +158,30 @@ def add_seen_statement(statement: Statement, db_user: User):
     return val
 
 
-def add_seen_argument(argument_uid, db_user):
+def add_seen_argument(argument_uid: int, user: User):
     """
     Adds the uid of the argument into the seen_by list as well as all included statements, mapped with the given user
     uid
 
-    :param db_user: current user
+    :param user: current user
     :param argument_uid: uid of the argument
     :return: undefined
     """
-    if not is_integer(argument_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
+    if not is_integer(argument_uid) or not isinstance(user, User) or user.nickname == nick_of_anonymous_user:
         return False
-    LOG.debug("Argument %s, for user %s", argument_uid, db_user.uid)
+    LOG.debug("Argument %s, for user %s", argument_uid, user.uid)
 
     db_argument: Argument = DBDiscussionSession.query(Argument).get(argument_uid)
-    __argument_seen_by_user(db_user, argument_uid)
-    for premise in db_argument.premisegroup.premises:
-        __statement_seen_by_user(db_user, premise.statement)
 
-    # find the conclusion and mark all arguments on the way
-    while db_argument.conclusion_uid is None:
-        db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
-        __argument_seen_by_user(db_user, argument_uid)
-
-    __statement_seen_by_user(db_user, db_argument.conclusion)
+    __argument_seen_by_user(user, argument_uid)
+    if db_argument.premisegroup is not None:
+        for premise in db_argument.premisegroup.premises:
+            __statement_seen_by_user(user, premise.statement)
+    if db_argument.conclusion is not None:
+        __statement_seen_by_user(user, db_argument.conclusion)
+    else:
+        for argument in db_argument.arguments:
+            __argument_seen_by_user(user, argument.uid)
 
     return True
 
@@ -321,19 +321,19 @@ def __vote_premisesgroup(premisegroup_uid, user, is_up_vote):
         __click_statement(db_statement, user, is_up_vote)
 
 
-def __argument_seen_by_user(db_user, argument_uid):
+def __argument_seen_by_user(user: User, argument_uid):
     """
     Adds a reference for a seen argument
 
-    :param db_user: current user
+    :param user: current user
     :param argument_uid: uid of the argument
     :return: True if the argument was not seen by the user (until now), false otherwise
     """
 
     db_seen_by = DBDiscussionSession.query(SeenArgument).filter(SeenArgument.argument_uid == argument_uid,
-                                                                SeenArgument.user_uid == db_user.uid).first()
+                                                                SeenArgument.user_uid == user.uid).first()
     if not db_seen_by:
-        DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user_uid=db_user.uid))
+        DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user_uid=user.uid))
         DBDiscussionSession.flush()
         return True
 
