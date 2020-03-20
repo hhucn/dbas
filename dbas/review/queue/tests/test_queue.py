@@ -82,7 +82,9 @@ class QueueTest(unittest.TestCase):
             db_new_review = review_table(detector=4, premisegroup=5)
         elif key is key_duplicate:
             original_statement = DBDiscussionSession.query(Statement).get(4)
-            db_new_review = review_table(detector=4, duplicate_statement=5, original_statement=original_statement)
+            duplicate_statement = DBDiscussionSession.query(Statement).get(5)
+            db_new_review = review_table(detector=4, duplicate_statement=duplicate_statement,
+                                         original_statement=original_statement)
         else:
             db_new_review = review_table(detector=4)
 
