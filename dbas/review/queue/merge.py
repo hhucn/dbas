@@ -350,12 +350,12 @@ class MergeQueue(QueueABC):
         for argument in db_arguments:
             LOG.debug("Reset argument %s from pgroup %s to new pgroup %s", argument.uid, argument.premisegroup_uid,
                       db_new_premisegroup.uid)
-            argument.set_premisegroup(db_new_premisegroup.uid)
+            argument.set_premisegroup(db_new_premisegroup)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.flush()
 
         # add swap to database
-        DBDiscussionSession.add(PremiseGroupMerged(db_review.uid, db_review.premisegroup_uid, db_new_premisegroup.uid))
+        DBDiscussionSession.add(PremiseGroupMerged(db_review.uid, db_review.premisegroup, db_new_premisegroup))
 
         # swap the conclusion in every argument
         old_statement_ids = [p.statement_uid for p in db_old_premises]
