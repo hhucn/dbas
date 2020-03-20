@@ -155,8 +155,6 @@ def add_seen_statement(statement: Statement, db_user: User):
     LOG.debug("Statement %s, for user %s", statement, db_user.uid)
 
     val = __statement_seen_by_user(db_user, statement)
-    # if val:
-    #    transaction.commit()
 
     return val
 
