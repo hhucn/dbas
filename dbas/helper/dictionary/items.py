@@ -200,7 +200,7 @@ class ItemDictHelper(object):
         shuffle_list_by_user(user, statements_array)
 
         if not self.issue_read_only:
-            if user and user.nickname != nick_of_anonymous_user:
+            if user and not user.is_anonymous():
                 statements_array.append(self.__create_answer_dict('start_premise',
                                                                   [{
                                                                       'title': _tn.get(_.newPremiseRadioButtonText),
