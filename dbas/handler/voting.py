@@ -148,8 +148,7 @@ def add_seen_statement(statement: Statement, db_user: User):
     :param statement: Statement which was seen by the user.
     :return: undefined
     """
-    if not isinstance(statement, Statement) or not isinstance(db_user,
-                                                              User) or db_user.nickname == nick_of_anonymous_user:
+    if not isinstance(statement, Statement) or not isinstance(db_user, User) or db_user.is_anonymous():
         return False
     LOG.debug("Statement %s, for user %s", statement, db_user.uid)
 
