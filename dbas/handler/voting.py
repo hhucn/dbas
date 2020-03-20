@@ -140,19 +140,19 @@ def add_click_for_statement(stmt_or_arg: Statement, db_user: User, supportive: b
     return True
 
 
-def add_seen_statement(statement: Statement, db_user: User):
+def add_seen_statement(statement: Statement, user: User):
     """
     Adds the uid of the statement into the seen_by list, mapped with the given user uid
 
-    :param db_user:current user
+    :param user:current user
     :param statement: Statement which was seen by the user.
     :return: undefined
     """
-    if not isinstance(statement, Statement) or not isinstance(db_user, User) or db_user.is_anonymous():
+    if not isinstance(statement, Statement) or not isinstance(user, User) or user.is_anonymous():
         return False
-    LOG.debug("Statement %s, for user %s", statement, db_user.uid)
+    LOG.debug("Statement %s, for user %s", statement, user.uid)
 
-    val = __statement_seen_by_user(db_user, statement)
+    val = __statement_seen_by_user(user, statement)
 
     return val
 
@@ -166,7 +166,7 @@ def add_seen_argument(argument_uid: int, user: User):
     :param argument_uid: uid of the argument
     :return: undefined
     """
-    if not is_integer(argument_uid) or not isinstance(user, User) or user.nickname == nick_of_anonymous_user:
+    if not is_integer(argument_uid) or not isinstance(user, User) or user.is_anonymous():
         return False
     LOG.debug("Argument %s, for user %s", argument_uid, user.uid)
 
