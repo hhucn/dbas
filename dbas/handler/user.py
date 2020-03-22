@@ -430,7 +430,7 @@ def get_click_count_of(user: User, only_today: bool = False) -> Tuple[int, int]:
     if not user:
         return 0, 0
 
-    clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user.uid)
+    clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.user == user)
     clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
 
     if only_today:

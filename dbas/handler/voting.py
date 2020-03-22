@@ -245,7 +245,7 @@ def __click_argument(argument, user, is_up_vote):
     db_new_vote = None
     if not db_current_vote:
         LOG.debug("Add vote for argument %s", argument.uid)
-        db_new_vote = ClickedArgument(argument=argument, author_uid=user.uid, is_up_vote=is_up_vote,
+        db_new_vote = ClickedArgument(argument=argument, user=user, is_up_vote=is_up_vote,
                                       is_valid=True)
         DBDiscussionSession.add(db_new_vote)
         DBDiscussionSession.flush()
