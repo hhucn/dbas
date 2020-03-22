@@ -1271,17 +1271,17 @@ class History(DiscussionBase):
 
     author: User = relationship('User', foreign_keys=[author_uid], back_populates='history')
 
-    def __init__(self, author: User, path):
+    def __init__(self, author: User, path: str):
         """
         Inits a row in current history table
 
-        :param author: User.uid
+        :param author: User
         :param path: String
         :return: None
         """
-        self.author_uid = author.uid
-        self.path = path
-        self.timestamp = get_now()
+        self.author: User = author
+        self.path: str = path
+        self.timestamp: ArrowType = get_now()
 
 
 class ClickedArgument(DiscussionBase):

@@ -87,6 +87,7 @@ class HistoryHandlerTests(TestCaseWithConfig):
 
     def test_delete_history_in_database(self):
         self.assertTrue(history.delete_in_database(self.user_tobi))
+        self.assertIsNone(DBDiscussionSession.query(History).filter_by(author=self.user_tobi).one_or_none())
 
 
 class GetLastRelationTest(unittest.TestCase):
