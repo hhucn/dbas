@@ -45,6 +45,7 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         self.statement_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(5)
         self.statement_town: Statement = DBDiscussionSession.query(Statement).get(40)
         self.statement_argument_town: Statement = DBDiscussionSession.query(Statement).get(39)
+        self.first_argument: Argument = DBDiscussionSession.query(Argument).get(1)
         self.argument_town: Argument = DBDiscussionSession.query(Argument).get(34)
         self.argument_cat_or_dog: Argument = DBDiscussionSession.query(Argument).get(2)
         self.user_anonymous: User = DBDiscussionSession.query(User).get(1)
