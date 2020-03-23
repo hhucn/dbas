@@ -169,7 +169,7 @@ class TestHistoryModifcations(TestCaseWithConfig):
         response = delete_user_history(request)
         transaction.commit()
         self.assertTrue(response)
-        db_his = DBDiscussionSession.query(History).filter_by(author_uid=2).count()
+        db_his = DBDiscussionSession.query(History).filter_by(author_uid=self.user_tobi.uid).count()
         self.assertEqual(db_his, 0)
 
 

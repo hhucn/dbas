@@ -469,11 +469,11 @@ def get_last_relation(split_history):
     return split_last_history_item[2]
 
 
-def save_database(db_user: User, slug: str, path: str, history: str = '') -> None:
+def save_database(user: User, slug: str, path: str, history: str = '') -> None:
     """
     Saves a path into the database
 
-    :param db_user: User
+    :param user: User
     :param slug: Issue.slug
     :param path: String
     :param history: String
@@ -494,21 +494,20 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
         history = '?{}={}'.format(ArgumentationStep.HISTORY.value, history)
 
     LOG.debug("Saving %s%s", path, history)
-    DBDiscussionSession.add(History(author=db_user, path=path + history))
+    DBDiscussionSession.add(History(author=user, path=path + history))
     DBDiscussionSession.flush()
 
 
-def get_from_database(db_user: User, lang: str) -> List[dict]:
+def get_from_database(user: User, lang: str) -> List[dict]:
     """
     Returns history from database
 
-    :param db_user: User
+    :param user: User
     :param lang: ui_locales
     :return: [String]
     """
-    db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
     return_array = []
-    for history in db_history:
+    for history in user.history:
         return_array.append({
             'path': history.path,
             'timestamp': sql_timestamp_pretty_print(history.timestamp, lang, False, True) + ' GMT'
@@ -517,14 +516,14 @@ def get_from_database(db_user: User, lang: str) -> List[dict]:
     return return_array
 
 
-def delete_in_database(db_user: User) -> True:
+def delete_in_database(user: User) -> True:
     """
     Deletes history from database
 
-    :param db_user: User
+    :param user: User
     :return: [String]
     """
-    DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(History).filter_by(author_uid=user.uid).delete()
     DBDiscussionSession.flush()
     return True
 

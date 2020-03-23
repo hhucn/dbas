@@ -5,7 +5,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement, Issue
+from dbas.database.discussion_model import Statement, Issue, User
 from dbas.handler import history as history_handler, user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement
 from dbas.handler.history import SessionHistory
@@ -37,9 +37,9 @@ def get_user_history(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    ui_locales = get_language_from_cookie(request)
-    db_user = request.validated['user']
-    return history_handler.get_from_database(db_user, ui_locales)
+    ui_locales: str = get_language_from_cookie(request)
+    user: User = request.validated['user']
+    return history_handler.get_from_database(user, ui_locales)
 
 
 @view_config(route_name='get_all_posted_statements', renderer='json')
