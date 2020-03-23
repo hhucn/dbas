@@ -1063,8 +1063,8 @@ class PremiseGroup(DiscussionBase):
     uid: int = Column(Integer, primary_key=True)
     author_uid: int = Column(Integer, ForeignKey('users.uid'))
 
-    author: List[User] = relationship(User, foreign_keys=[author_uid])
-    premises: List[Premise] = relationship(Premise, back_populates='premisegroup')
+    author: 'User' = relationship(User, foreign_keys=[author_uid])
+    premises: List['Premise'] = relationship(Premise, back_populates='premisegroup')
     arguments: List['Argument'] = relationship('Argument', back_populates='premisegroup')
 
     def __init__(self, author: User):
