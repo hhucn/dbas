@@ -857,19 +857,19 @@ class SeenStatement(DiscussionBase):
     statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
     user_uid: int = Column(Integer, ForeignKey('users.uid'))
 
-    statement: Statement = relationship('Statement')
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
     user: User = relationship('User')
 
-    def __init__(self, statement_uid, user_uid):
+    def __init__(self, statement: 'Statement', user: 'User'):
         """
         Inits a row in current statement seen by table
 
         :param statement_uid: Statement.uid
-        :param user_uid: User.uid
+        :param user: User who has seen the statement.
         """
-        self.statement_uid = statement_uid
-        self.user_uid = user_uid
+        self.statement: Statement = statement
+        self.user: User = user
 
 
 class SeenArgument(DiscussionBase):
@@ -1063,8 +1063,8 @@ class PremiseGroup(DiscussionBase):
     uid: int = Column(Integer, primary_key=True)
     author_uid: int = Column(Integer, ForeignKey('users.uid'))
 
-    author: List[User] = relationship(User, foreign_keys=[author_uid])
-    premises: List[Premise] = relationship(Premise, back_populates='premisegroup')
+    author: 'User' = relationship(User, foreign_keys=[author_uid])
+    premises: List['Premise'] = relationship(Premise, back_populates='premisegroup')
     arguments: List['Argument'] = relationship('Argument', back_populates='premisegroup')
 
     def __init__(self, author: User):
@@ -1271,17 +1271,17 @@ class History(DiscussionBase):
 
     author: User = relationship('User', foreign_keys=[author_uid], back_populates='history')
 
-    def __init__(self, author: User, path):
+    def __init__(self, author: User, path: str):
         """
         Inits a row in current history table
 
-        :param author: User.uid
+        :param author: User
         :param path: String
         :return: None
         """
-        self.author_uid = author.uid
-        self.path = path
-        self.timestamp = get_now()
+        self.author: User = author
+        self.path: str = path
+        self.timestamp: ArrowType = get_now()
 
 
 class ClickedArgument(DiscussionBase):

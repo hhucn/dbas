@@ -136,13 +136,13 @@ def __preparation_for_dont_know_statement(db_issue: Issue, user: User, argument:
     return item_dict, discussion_dict
 
 
-def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, relation: str,
+def preparation_for_justify_argument(db_issue: Issue, user: User, db_argument: Argument, relation: str,
                                      supportive: bool, history: SessionHistory, path):
     """
     Prepares some parameter for the justification step for an argument
 
     :param db_issue:
-    :param db_user:
+    :param user:
     :param db_argument:
     :param relation:
     :param supportive:
@@ -151,7 +151,7 @@ def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument
     :return:
     """
     LOG.debug("Entering preparation_for_justify_argument")
-    nickname = db_user.nickname
+    nickname = user.nickname
     slug = db_issue.slug
 
     disc_ui_locales = db_issue.lang
@@ -159,7 +159,7 @@ def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
     # justifying argument
-    item_dict = _idh.get_array_for_justify_argument(db_argument.uid, relation, db_user, history)
+    item_dict = _idh.get_array_for_justify_argument(db_argument.uid, relation, user, history)
     discussion_dict = _ddh.get_dict_for_justify_argument(db_argument, supportive, relation)
 
     return item_dict, discussion_dict

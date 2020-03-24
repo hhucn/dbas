@@ -173,7 +173,7 @@ class TestDiscussionAttitude(TestCaseWithConfig):
     def test_successful_discussion_attitude(self):
         request = construct_dummy_request(matchdict={
             'slug': self.issue_cat_or_dog.slug,
-            'position_id': self.position_cat_or_dog.uid
+            'position_id': self.second_position_cat_or_dog.uid
         })
         response = apiviews.discussion_attitude(request)
         self.assertTrue(response)
