@@ -170,16 +170,17 @@ def add_seen_argument(argument_uid: int, user: User):
         return False
     LOG.debug("Argument %s, for user %s", argument_uid, user.uid)
 
-    db_argument: Argument = DBDiscussionSession.query(Argument).get(argument_uid)
+    argument: Argument = DBDiscussionSession.query(Argument).get(argument_uid)
 
     __argument_seen_by_user(user, argument_uid)
-    if db_argument.premisegroup is not None:
-        for premise in db_argument.premisegroup.premises:
-            __statement_seen_by_user(user, premise.statement)
-    if db_argument.conclusion is not None:
-        __statement_seen_by_user(user, db_argument.conclusion)
+    for premise in argument.premisegroup.premises:
+        __statement_seen_by_user(user, premise.statement)
+
+    if argument.conclusion:
+        __statement_seen_by_user(user, argument.conclusion)
     else:
-        for argument in db_argument.arguments:
+        while not argument.conclusion:
+            argument = argument.attacks
             __argument_seen_by_user(user, argument.uid)
 
     return True
