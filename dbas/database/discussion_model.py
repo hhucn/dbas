@@ -1300,21 +1300,21 @@ class ClickedArgument(DiscussionBase):
     argument: Argument = relationship('Argument', back_populates='clicks')
     user: User = relationship('User')
 
-    def __init__(self, argument_uid, author_uid, is_up_vote=True, is_valid=True):
+    def __init__(self, argument: 'Argument', user: 'User', is_up_vote: bool = True, is_valid: bool = True):
         """
         Inits a row in current clicked argument table
 
-        :param argument_uid: Argument.uid
-        :param author_uid: User.uid
+        :param argument: Argument
+        :param user: User
         :param is_up_vote: Boolean
         :param is_valid: Boolean
         :return: None
         """
-        self.argument_uid = argument_uid
-        self.author_uid = author_uid
-        self.is_up_vote = is_up_vote
-        self.timestamp = get_now()
-        self.is_valid = is_valid
+        self.argument: 'Argument' = argument
+        self.user: 'User' = user
+        self.is_up_vote: bool = is_up_vote
+        self.timestamp: ArrowType = get_now()
+        self.is_valid: bool = is_valid
 
     def set_up_vote(self, is_up_vote):
         """

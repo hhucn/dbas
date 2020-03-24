@@ -119,7 +119,7 @@ class UserHandlerTests(TestCaseWithConfig):
         self.assertEqual((0, 0), user.get_click_count_of(self.user_tobi, False))
         self.assertEqual((0, 0), user.get_click_count_of(self.user_tobi, True))
 
-        DBDiscussionSession.add(ClickedArgument(1, self.user_tobi.uid))
+        DBDiscussionSession.add(ClickedArgument(self.first_argument, self.user_tobi))
         DBDiscussionSession.add(ClickedStatement(1, self.user_tobi.uid))
         self.assertEqual((1, 1), user.get_click_count_of(self.user_tobi, False))
         self.assertEqual((1, 1), user.get_click_count_of(self.user_tobi, True))
