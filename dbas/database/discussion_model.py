@@ -1022,7 +1022,7 @@ class Premise(DiscussionBase):
         :param premisegroup: Premisegroup.uid
         :return: None
         """
-        self.premisegroup_uid = premisegroup.uid  # todo: this does not crash the tests ...
+        self.premisegroup_uid = premisegroup.uid
 
     def get_text(self, html: bool = False) -> str:
         """
