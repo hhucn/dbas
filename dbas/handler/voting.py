@@ -7,8 +7,6 @@ We are not deleting opposite votes for detecting opinion changes!
 
 import logging
 
-import transaction
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, ClickedArgument, ClickedStatement, User, \
     SeenStatement, SeenArgument, MarkedArgument, MarkedStatement
@@ -138,73 +136,68 @@ def add_click_for_statement(stmt_or_arg: Statement, db_user: User, supportive: b
         return False
 
     __click_statement(stmt_or_arg, db_user, supportive)
-    __statement_seen_by_user(db_user, stmt_or_arg.uid)
-    transaction.commit()
+    __statement_seen_by_user(db_user, stmt_or_arg)
     return True
 
 
-def add_seen_statement(statement_uid: int, db_user: User):
+def add_seen_statement(statement: Statement, user: User):
     """
     Adds the uid of the statement into the seen_by list, mapped with the given user uid
 
-    :param db_user:current user
-    :param statement_uid: uid of the statement
+    :param user:current user
+    :param statement: Statement which was seen by the user.
     :return: undefined
     """
-    if not is_integer(statement_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
+    if not isinstance(statement, Statement) or not isinstance(user, User) or user.is_anonymous():
         return False
-    LOG.debug("Statement %s, for user %s", statement_uid, db_user.uid)
+    LOG.debug("Statement %s, for user %s", statement, user.uid)
 
-    val = __statement_seen_by_user(db_user, statement_uid)
-    # if val:
-    #    transaction.commit()
+    val = __statement_seen_by_user(user, statement)
 
     return val
 
 
-def add_seen_argument(argument_uid, db_user):
+def add_seen_argument(argument_uid: int, user: User):
     """
     Adds the uid of the argument into the seen_by list as well as all included statements, mapped with the given user
     uid
 
-    :param db_user: current user
+    :param user: current user
     :param argument_uid: uid of the argument
     :return: undefined
     """
-    if not is_integer(argument_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
+    if not is_integer(argument_uid) or not isinstance(user, User) or user.is_anonymous():
         return False
-    LOG.debug("Argument %s, for user %s", argument_uid, db_user.uid)
+    LOG.debug("Argument %s, for user %s", argument_uid, user.uid)
 
-    db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
-    __argument_seen_by_user(db_user, argument_uid)
+    db_argument: Argument = DBDiscussionSession.query(Argument).get(argument_uid)
 
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_argument.premisegroup_uid).all()
-    for p in db_premises:
-        __statement_seen_by_user(db_user, p.statement_uid)
-
-    # find the conclusion and mark all arguments on the way
-    while db_argument.conclusion_uid is None:
-        db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
-        __argument_seen_by_user(db_user, argument_uid)
-
-    __statement_seen_by_user(db_user, db_argument.conclusion_uid)
+    __argument_seen_by_user(user, argument_uid)
+    if db_argument.premisegroup is not None:
+        for premise in db_argument.premisegroup.premises:
+            __statement_seen_by_user(user, premise.statement)
+    if db_argument.conclusion is not None:
+        __statement_seen_by_user(user, db_argument.conclusion)
+    else:
+        for argument in db_argument.arguments:
+            __argument_seen_by_user(user, argument.uid)
 
     return True
 
 
-def clear_vote_and_seen_values_of_user(db_user):
+def clear_vote_and_seen_values_of_user(user: User):
     """
     Delete all votes/clicks/mards
 
-    :param db_user: User
+    :param user: User
     :return: Boolean
     """
-    DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
-    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
-    DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
-    DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(SeenStatement).filter_by(user=user).delete()
+    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user.uid).delete()
+    DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user.uid).delete()
+    DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user.uid).delete()
 
     DBDiscussionSession.flush()
     # transaction.commit()
@@ -327,52 +320,38 @@ def __vote_premisesgroup(premisegroup_uid, user, is_up_vote):
         __click_statement(db_statement, user, is_up_vote)
 
 
-def __argument_seen_by_user(db_user, argument_uid):
+def __argument_seen_by_user(user: User, argument_uid):
     """
     Adds a reference for a seen argument
 
-    :param db_user: current user
+    :param user: current user
     :param argument_uid: uid of the argument
     :return: True if the argument was not seen by the user (until now), false otherwise
     """
 
     db_seen_by = DBDiscussionSession.query(SeenArgument).filter(SeenArgument.argument_uid == argument_uid,
-                                                                SeenArgument.user_uid == db_user.uid).first()
+                                                                SeenArgument.user_uid == user.uid).first()
     if not db_seen_by:
-        DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user_uid=db_user.uid))
+        DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user_uid=user.uid))
         DBDiscussionSession.flush()
         return True
 
     return False
 
 
-def __statement_seen_by_user(db_user, statement_uid):
+def __statement_seen_by_user(user: User, statement: Statement):
     """
     Adds a reference for a seen statement
 
     :param db_user: current user
-    :param statement_uid: uid of the statement
+    :param statement: uid of the statement
     :return: True if the statement was not seen by the user (until now), false otherwise
     """
-    db_seen_by = DBDiscussionSession.query(SeenStatement).filter(SeenStatement.statement_uid == statement_uid,
-                                                                 SeenStatement.user_uid == db_user.uid).first()
+    db_seen_by = DBDiscussionSession.query(SeenStatement).filter(SeenStatement.statement_uid == statement.uid,
+                                                                 SeenStatement.user_uid == user.uid).first()
     if not db_seen_by:
-        DBDiscussionSession.add(SeenStatement(statement_uid=statement_uid, user_uid=db_user.uid))
+        DBDiscussionSession.add(SeenStatement(statement=statement, user=user))
         DBDiscussionSession.flush()
         return True
 
     return False
-
-
-def __premisegroup_seen_by_user(db_user, premisegroup_uid):
-    """
-    Adds a reference for a seen premisesgroup
-
-    :param db_user: current user
-    :param premisegroup_uid: uid of the premisesgroup
-    :return: True if the statement was not seen by the user (until now), false otherwise
-    """
-    LOG.debug("Check premises of group %s", premisegroup_uid)
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=premisegroup_uid).all()
-    for premise in db_premises:
-        __statement_seen_by_user(db_user, premise.statement_uid)

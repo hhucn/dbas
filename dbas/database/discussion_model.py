@@ -857,19 +857,19 @@ class SeenStatement(DiscussionBase):
     statement_uid: int = Column(Integer, ForeignKey('statements.uid'))
     user_uid: int = Column(Integer, ForeignKey('users.uid'))
 
-    statement: Statement = relationship('Statement')
+    statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
     user: User = relationship('User')
 
-    def __init__(self, statement_uid, user_uid):
+    def __init__(self, statement: 'Statement', user: 'User'):
         """
         Inits a row in current statement seen by table
 
         :param statement_uid: Statement.uid
-        :param user_uid: User.uid
+        :param user: User who has seen the statement.
         """
-        self.statement_uid = statement_uid
-        self.user_uid = user_uid
+        self.statement: Statement = statement
+        self.user: User = user
 
 
 class SeenArgument(DiscussionBase):

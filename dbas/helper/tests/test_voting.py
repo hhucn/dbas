@@ -36,19 +36,21 @@ class VotingHelperTest(TestCaseWithConfig):
         val = add_seen_argument(0, 1)
         self.assertFalse(val)
 
-        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 0, 0)
+        val = add_seen_argument(18, self.user_christian)
+        self.assertTrue(val)
+        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 1, 2)
 
         val = add_seen_argument(1, self.user_christian)
         self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 2, 1)
+        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 3, 3)
 
         val = add_seen_argument(2, self.user_christian)
         self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 3, 2)
+        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 4, 3)
 
         val = add_seen_argument(2, self.user_christian)
         self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 3, 2)
+        self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 4, 3)
 
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 0, 0)
@@ -66,15 +68,15 @@ class VotingHelperTest(TestCaseWithConfig):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 0, 0)
 
-        val = add_seen_statement(1, self.user_christian)
+        val = add_seen_statement(self.first_position_cat_or_dog, self.user_christian)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 1, 0)
 
-        val = add_seen_statement(2, self.user_christian)
+        val = add_seen_statement(self.second_position_cat_or_dog, self.user_christian)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 2, 0)
 
-        val = add_seen_statement(2, self.user_christian)
+        val = add_seen_statement(self.second_position_cat_or_dog, self.user_christian)
         self.assertFalse(val)
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 2, 0)
 
@@ -182,7 +184,7 @@ class VotingHelperTest(TestCaseWithConfig):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user_christian, 0, 0, 0, 0)
 
-    def check_tables_of_user_for_n_rows(self, user, count_of_vote_statement, count_of_vote_argument,
+    def check_tables_of_user_for_n_rows(self, user: User, count_of_vote_statement, count_of_vote_argument,
                                         count_of_seen_statements, count_of_seen_arguments):
         """
 
@@ -195,7 +197,7 @@ class VotingHelperTest(TestCaseWithConfig):
         """
         db_vote_argument = DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user.uid).all()
         db_vote_statement = DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user.uid).all()
-        db_seen_statements = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=user.uid).all()
+        db_seen_statements = DBDiscussionSession.query(SeenStatement).filter_by(user=user).all()
         db_seen_arguments = DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user.uid).all()
         self.assertEquals(len(db_vote_statement), count_of_vote_statement)
         self.assertEquals(len(db_vote_argument), count_of_vote_argument)
