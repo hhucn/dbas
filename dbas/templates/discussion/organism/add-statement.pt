@@ -94,15 +94,17 @@
             </div>
             <br>
             <div class="form-group" tal:condition="issues.decidotron_budget">
-              <label for="add-statement-container-cost" class="col-lg-3 col-md-5 col-sm-6 control-label"
-                     style="color: #666; font-size: 17px; margin-top: 0.4em;" i18n:translate="decidotron_cost_of_position">
-                It has an estimated cost of </label>
-              <div class="input-group col-lg-9 col-md-7 col-sm-6">
-                <span class="input-group-addon">${issues.decidotron_budget.currency_symbol}</span>
+              <h5><label for="add-statement-container-cost"
+                         class="control-label" i18n:translate="decidotron_cost_of_position">
+                It has an estimated cost of </label></h5>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">${issues.decidotron_budget.currency_symbol}</span>
+                </div>
                 <input id="add-statement-container-cost" data-key="decidotron_cost" placeholder="2000" type="number"
                        min="${issues.decidotron_budget.min_position_cost}"
                        step=50 max="${issues.decidotron_budget.max_position_cost}"
-                       class="form-control" style="width: 100%" required
+                       class="form-control" required
                        oninput="cost_field = $(this);
                       parent_form_group = cost_field.closest('div.form-group');
                          costs = parseFloat(cost_field.val());
@@ -115,7 +117,7 @@
                          parent_form_group.removeClass('has-error');
                          }">
               </div>
-              <span class="help-block">
+              <span class="help-block text-info">
                 Bitte gib die geschätzte Kosten zwischen ${int(issues.decidotron_budget.min_position_cost)} ${issues.decidotron_budget.currency_symbol}
                 und ${int(issues.decidotron_budget.max_position_cost)} ${issues.decidotron_budget.currency_symbol} an.
               </span>
