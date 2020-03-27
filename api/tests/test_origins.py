@@ -11,10 +11,13 @@ class TestAssignmentOfOriginsToStatements(TestCaseWithConfig):
                         author=DataAuthor(nickname="anonymous", is_dgep_native=True, uid=1))
 
     def test_single_statement_and_origin_are_fine(self):
-        statementorigins: List[StatementOrigins] = add_origin_for_list_of_statements(self.origin, [1])
+        statementorigins: List[StatementOrigins] = add_origin_for_list_of_statements(self.origin,
+                                                                                     [self.first_position_cat_or_dog])
         self.assertIsInstance(statementorigins, list)
 
     def test_add_origin_for_multiple_statements(self):
-        statementorigins: List[StatementOrigins] = add_origin_for_list_of_statements(self.origin, [1, 2])
+        statementorigins: List[StatementOrigins] = add_origin_for_list_of_statements(self.origin,
+                                                                                     [self.first_position_cat_or_dog,
+                                                                                      self.second_position_cat_or_dog])
         self.assertIsInstance(statementorigins, list)
         self.assertEqual(len(statementorigins), 2)

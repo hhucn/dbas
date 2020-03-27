@@ -621,17 +621,17 @@ def _http_see_other_with_cors_header(location: str) -> HTTPSeeOther:
 
 
 def _store_origin_and_reference(db_issue: Issue, db_user: User, origin: DataOrigin, host: str, path: str,
-                                reference_text: str, statement_uids: List[int]):
+                                reference_text: str, statements: List[Statement]):
     """
     Takes all newly created statements and stores the reference and origin for it, if provided.
     """
+
     if reference_text:
-        for statement_uid in statement_uids:
-            LOG.info("Assigning reference to statement_uid %s", statement_uid)
-            db_new_statement: Statement = DBDiscussionSession.query(Statement).get(statement_uid)
-            store_reference(reference_text, host, path, db_user, db_new_statement, db_issue)
+        for statement in statements:
+            LOG.info("Assigning reference to statement_uid %s", statement.uid)
+            store_reference(reference_text, host, path, db_user, statement, db_issue)
     if origin:
-        add_origin_for_list_of_statements(origin, statement_uids)
+        add_origin_for_list_of_statements(origin, statements)
 
 
 # -----------------------------------------------------------------------------
@@ -667,12 +667,18 @@ def add_position_with_premise(request):
         return HTTPBadRequest(pd["error"])
 
     statement_uids: List[int] = flatten(pd['statement_uids'])
+    statements: List[Statement] = [DBDiscussionSession.query(Statement).get(statement_uid) for statement_uid in
+                                   statement_uids]
     LOG.info("Created %d statements: %s", len(statement_uids), statement_uids)
-    _store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, statement_uids)
+    _store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, statements)
 
     if origin:
-        add_origin_for_list_of_statements(origin, new_position['statement_uids'])
-        add_origin_for_list_of_statements(origin, flatten(pd['statement_uids']))
+        new_positions = [DBDiscussionSession.query(Statement).get(statement_uid) for statement_uid in
+                         new_position['statement_uids']]
+        add_origin_for_list_of_statements(origin, new_positions)
+        pd_statements = [DBDiscussionSession.query(Statement).get(statement_uid) for statement_uid in
+                         flatten(pd['statement_uids'])]
+        add_origin_for_list_of_statements(origin, pd_statements)
 
     return _http_see_other_with_cors_header('/api' + pd['url'])
 
@@ -695,7 +701,9 @@ def add_premise_to_statement(request: IRequest):
     pd = set_positions_premise(db_issue, db_user, db_statement, [[request.validated['reason-text']]], is_supportive,
                                session_history, request.mailer)
 
-    _store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, flatten(pd['statement_uids']))
+    statements = [DBDiscussionSession.query(Statement).get(statement_uid) for statement_uid in
+                  flatten(pd['statement_uids'])]
+    _store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, statements)
 
     return _http_see_other_with_cors_header('/api' + pd['url'])
 
@@ -722,7 +730,8 @@ def add_premise_to_argument(request):
     pd = set_arguments_premises(db_issue, db_user, db_argument, [[request.validated['reason-text']]], relation,
                                 session_history, request.mailer)
 
-    _store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, pd['statement_uids'])
+    statements = [DBDiscussionSession.query(Statement).get(statement_uid) for statement_uid in pd['statement_uids']]
+    _store_origin_and_reference(db_issue, db_user, origin, host, path, reference_text, statements)
 
     return _http_see_other_with_cors_header('/api' + pd['url'])
 
