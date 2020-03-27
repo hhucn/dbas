@@ -810,7 +810,7 @@ class StatementOrigins(DiscussionBase):
 
     statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, entity_id: str, aggregate_id: str, version: int, author: str, statement_uid: int):
+    def __init__(self, entity_id: str, aggregate_id: str, version: int, author: str, statement: Statement):
         """
         Initialize the origin.
 
@@ -824,7 +824,7 @@ class StatementOrigins(DiscussionBase):
         self.aggregate_id = aggregate_id
         self.author = author
         self.version = version
-        self.statement_uid = statement_uid
+        self.statement = statement
 
 
 class StatementToIssue(DiscussionBase):
