@@ -47,15 +47,15 @@ class TestFlagElement(TestCaseWithConfig):
         self.assertEqual(self.tn.get(_.alreadyFlaggedByOthers), return_dict['info'])
 
     def test_flag_element_for_duplicates(self):
-        return_dict = flag_element(5, key_duplicate, self.user_tobi, False, 'en', 1)
+        return_dict = flag_element(5, key_duplicate, self.user_tobi, False, 'en', self.first_position_cat_or_dog)
         self.assertEqual(self.tn.get(_.thxForFlagText), return_dict['success'])
         self.assertEqual('', return_dict['info'])
 
-        return_dict = flag_element(5, key_duplicate, self.user_tobi, False, 'en', 1)
+        return_dict = flag_element(5, key_duplicate, self.user_tobi, False, 'en', self.first_position_cat_or_dog)
         self.assertEqual('', return_dict['success'])
         self.assertEqual(self.tn.get(_.alreadyFlaggedByYou), return_dict['info'])
 
-        return_dict = flag_element(5, key_duplicate, self.user_christian, False, 'en', 1)
+        return_dict = flag_element(5, key_duplicate, self.user_christian, False, 'en', self.first_position_cat_or_dog)
         self.assertEqual('', return_dict['success'])
         self.assertEqual(self.tn.get(_.alreadyFlaggedByOthers), return_dict['info'])
 

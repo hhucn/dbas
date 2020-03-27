@@ -49,7 +49,10 @@ def flag_argument_or_statement(request):
     extra_uid = request.validated['extra_uid']
     is_argument = request.validated['is_argument']
     db_user = request.validated['user']
-    return flag_element(uid, reason, db_user, is_argument, ui_locales, extra_uid)
+    extra_statement = None
+    if extra_uid is not None:
+        extra_statement = DBDiscussionSession.query(Statement).get(extra_uid)
+    return flag_element(uid, reason, db_user, is_argument, ui_locales, extra_statement)
 
 
 @view_config(route_name='split_or_merge_statement', renderer='json')
@@ -66,7 +69,8 @@ def split_or_merge_statement(request):
     _tn = Translator(ui_locales)
     db_user = request.validated['user']
     statement: Statement = request.validated['statement']
-    pgroup: PremiseGroup = DBDiscussionSession.query(Premise).filter(Premise.statement_uid == statement.uid).one().premisegroup
+    pgroup: PremiseGroup = DBDiscussionSession.query(Premise).filter(
+        Premise.statement_uid == statement.uid).one().premisegroup
     key = request.validated['key']
     tvalues = request.validated['text_values']
 

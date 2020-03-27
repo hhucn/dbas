@@ -10,7 +10,7 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
     User, ReviewDuplicate, ReviewSplit, ReviewMerge, ReviewMergeValues, ReviewSplitValues, \
-    PremiseGroup
+    PremiseGroup, Statement
 from dbas.review import FlaggedBy, ReviewDeleteReasons
 from dbas.review.queue import key_merge, key_split, key_duplicate, key_optimization
 from dbas.review.queue.adapter import QueueAdapter
@@ -21,7 +21,7 @@ LOG = logging.getLogger(__name__)
 
 
 def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], db_user: User,
-                 is_argument: bool, ui_locales: str, extra_uid=None) -> dict:
+                 is_argument: bool, ui_locales: str, extra_uid: Statement = None) -> dict:
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
@@ -39,6 +39,10 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
     argument_uid = uid if is_argument else None
     statement_uid = uid if not is_argument else None
 
+    statement = None
+    if statement_uid is not None:
+        statement = DBDiscussionSession.query(Statement).get(statement_uid)
+
     # was this already flagged?
     flag_status = QueueAdapter(db_user=db_user).element_in_queue(argument_uid=argument_uid,
                                                                  statement_uid=statement_uid,
@@ -51,11 +55,11 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
             info = tn.get(_.alreadyFlaggedByOthers)
         return {'success': '', 'info': info}
 
-    return _add_flag(reason, argument_uid, statement_uid, extra_uid, db_user, tn)
+    return _add_flag(reason, argument_uid, statement, extra_uid, db_user, tn)
 
 
 def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument_uid: Union[int, None],
-              statement_uid: Optional[int], extra_uid: Optional[int], db_user: User, tn: Translator) -> dict:
+              statement: Optional[Statement], extra_uid: Optional[Statement], db_user: User, tn: Translator) -> dict:
     """
 
     :param reason:
@@ -68,6 +72,11 @@ def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons
     """
     reason_val = reason.value if isinstance(reason, ReviewDeleteReasons) else reason
     db_del_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason_val).first()
+
+    statement_uid = None
+    if statement is not None:
+        statement_uid = statement.uid
+
     if db_del_reason:
         _add_delete_review(argument_uid, statement_uid, db_user.uid, db_del_reason.uid)
 
@@ -75,10 +84,10 @@ def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons
         _add_optimization_review(argument_uid, statement_uid, db_user.uid)
 
     elif reason_val == key_duplicate:
-        if statement_uid == extra_uid:
+        if statement.uid == extra_uid.uid:
             LOG.debug("uid Error")
             return {'success': '', 'info': tn.get(_.internalKeyError)}
-        _add_duplication_review(statement_uid, extra_uid, db_user.uid)
+        _add_duplication_review(statement, extra_uid, db_user.uid)
 
     return {'success': tn.get(_.thxForFlagText), 'info': ''}
 
@@ -166,22 +175,22 @@ def _add_optimization_review(argument_uid, statement_uid, user_uid):
     transaction.commit()
 
 
-def _add_duplication_review(duplicate_statement_uid, original_statement_uid, user_uid):
+def _add_duplication_review(duplicate_statement: Statement, original_statement: Statement, user_uid):
     """
     Adds a ReviewDuplicate row
 
-    :param duplicate_statement_uid: Statement.uid
-    :param original_statement_uid: Statement.uid
+    :param duplicate_statement: Statement
+    :param original_statement: Statement
     :param user_uid: User.uid
     :return: None
     """
-    LOG.debug("Flag statement %s by user %s as duplicate of %s", duplicate_statement_uid, user_uid,
-              original_statement_uid)
-    review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement_uid,
-                                         original_statement=original_statement_uid)
+    LOG.debug("Flag statement %s by user %s as duplicate of %s", duplicate_statement, user_uid,
+              original_statement)
+    review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement,
+                                         original_statement=original_statement)
     DBDiscussionSession.add(review_duplication)
-    DBDiscussionSession.flush()
-    transaction.commit()
+    DBDiscussionSession.flush()  # vorsicht
+    transaction.commit()  # vorsicht
 
 
 def _add_split_review(pgroup_uid, user_uid, text_values):

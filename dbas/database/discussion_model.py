@@ -1010,19 +1010,19 @@ class Premise(DiscussionBase):
         """
         Sets statement fot his Premise
 
-        :param statement: Statement.uid
+        :param statement: Statement
         :return: None
         """
-        self.statement_uid = statement
+        self.statement = statement
 
     def set_premisegroup(self, premisegroup: "PremiseGroup"):
         """
         Set premisegroup for this premise
 
-        :param premisegroup: Premisegroup.uid
+        :param premisegroup: Premisegroup
         :return: None
         """
-        self.premisegroup_uid = premisegroup
+        self.premisegroup = premisegroup
 
     def get_text(self, html: bool = False) -> str:
         """
@@ -1063,8 +1063,8 @@ class PremiseGroup(DiscussionBase):
     uid: int = Column(Integer, primary_key=True)
     author_uid: int = Column(Integer, ForeignKey('users.uid'))
 
-    author: 'User' = relationship(User, foreign_keys=[author_uid])
-    premises: List['Premise'] = relationship(Premise, back_populates='premisegroup')
+    author: User = relationship(User, foreign_keys=[author_uid])
+    premises: List[Premise] = relationship(Premise, back_populates='premisegroup')
     arguments: List['Argument'] = relationship('Argument', back_populates='premisegroup')
 
     def __init__(self, author: User):
@@ -1170,7 +1170,7 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
         :param premisegroup: PremiseGroup.uid
         :return: None
         """
-        self.premisegroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup.uid
 
     def set_disabled(self, is_disabled):
         """
@@ -1822,8 +1822,8 @@ class ReviewDuplicate(AbstractReviewCase):
     duplicate_statement: Statement = relationship('Statement', foreign_keys=[duplicate_statement_uid])
     original_statement: Statement = relationship('Statement', foreign_keys=[original_statement_uid])
 
-    def __init__(self, detector, duplicate_statement=None, original_statement=None, is_executed=False,
-                 is_revoked=False):
+    def __init__(self, detector, duplicate_statement: Statement = None, original_statement: 'Statement' = None,
+                 is_executed: bool = False, is_revoked: bool = False):
         """
         Inits a row in current review duplicate table
 
@@ -1834,13 +1834,13 @@ class ReviewDuplicate(AbstractReviewCase):
         :param is_revoked: Boolean
         """
         self.detector_uid = detector
-        self.duplicate_statement_uid = duplicate_statement
-        self.original_statement_uid = original_statement
+        self.duplicate_statement = duplicate_statement
+        self.original_statement = original_statement
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked
 
-    def set_executed(self, is_executed):
+    def set_executed(self, is_executed: bool):
         """
         Sets current review as executed
 
@@ -1849,7 +1849,7 @@ class ReviewDuplicate(AbstractReviewCase):
         """
         self.is_executed = is_executed
 
-    def set_revoked(self, is_revoked):
+    def set_revoked(self, is_revoked: bool):
         """
         Sets current review as revoked
 
@@ -2483,7 +2483,7 @@ class PremiseGroupSplitted(DiscussionBase):
     old_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
     new_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
-    def __init__(self, review, old_premisegroup, new_premisegroup: PremiseGroup):
+    def __init__(self, review, old_premisegroup: PremiseGroup, new_premisegroup: PremiseGroup):
         """
         Inits a row in current table
 
@@ -2492,7 +2492,8 @@ class PremiseGroupSplitted(DiscussionBase):
         :param new_premisegroup: PremiseGroup.uid
         """
         self.review_uid = review
-        self.old_premisegroup_uid = old_premisegroup
+        self.old_premisegroup_uid = old_premisegroup.uid
+        self.old_premisegroup = old_premisegroup
         self.new_premisegroup = new_premisegroup
         self.timestamp = get_now()
 
@@ -2512,17 +2513,17 @@ class PremiseGroupMerged(DiscussionBase):
     old_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
     new_premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
-    def __init__(self, review, old_premisegroup, new_premisegroup):
+    def __init__(self, review, old_premisegroup: PremiseGroup, new_premisegroup: PremiseGroup):
         """
         Inits a row in current statement splitted table
 
         :param review: ReviewMerge.uid
-        :param old_premisegroup: PremiseGroup.uid
-        :param new_premisegroup: PremiseGroup.uid
+        :param old_premisegroup: PremiseGroup
+        :param new_premisegroup: PremiseGroup
         """
         self.review_uid = review
-        self.old_premisegroup_uid = old_premisegroup
-        self.new_premisegroup_uid = new_premisegroup
+        self.old_premisegroup = old_premisegroup
+        self.new_premisegroup = new_premisegroup
         self.timestamp = get_now()
 
 
