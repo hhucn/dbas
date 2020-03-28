@@ -34,5 +34,5 @@ def add_origin_for_list_of_statements(origin: DataOrigin, list_of_statements: Li
     :param list_of_statements: List of statement_uids containing newly created statements
     :return:
     """
-    newly_added_statement_uids: Set[Statement] = set(list_of_statements)
-    return [_store_origin(origin, statement_uid) for statement_uid in newly_added_statement_uids]
+    newly_added_statement: Set[Statement] = set(list_of_statements)
+    return [_store_origin(origin, statement) for statement in newly_added_statement]
