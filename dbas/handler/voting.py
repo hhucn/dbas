@@ -33,7 +33,7 @@ def add_click_for_argument(argument: Argument, user: User) -> bool:
         LOG.debug("Undercut depth 0")
         __add_click_for_argument(user, argument)
     else:
-        db_undercuted_arg_step_1: Argument = DBDiscussionSession.query(Argument).get(argument.argument_uid)
+        db_undercuted_arg_step_1: Argument = argument.attacks
 
         if db_undercuted_arg_step_1.argument_uid is None:
             LOG.debug("Undercut depth 1")
@@ -102,7 +102,7 @@ def __add_click_for_undercut_step_2(argument: Argument, undercuted_arg_step_1: A
     """
 
     # we are undercutting an undercut
-    undercuted_arg_step_2: Argument = DBDiscussionSession.query(Argument).get(undercuted_arg_step_1.argument_uid)
+    undercuted_arg_step_2: Argument = undercuted_arg_step_1.attacks
 
     # vote for the current argument
     __vote_premisesgroup(argument.premisegroup_uid, user, True)
