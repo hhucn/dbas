@@ -74,8 +74,7 @@ def __add_click_for_undercut_step_1(argument: Argument, undercuted_arg_step_1: A
     :return: None
     """
 
-    undercuted_arg_step_1_concl: Statement = DBDiscussionSession.query(Statement).get(
-        undercuted_arg_step_1.conclusion_uid)
+    undercuted_arg_step_1_concl: Statement = undercuted_arg_step_1.conclusion
 
     # vote for the current argument
     __click_argument(argument, user, True)
