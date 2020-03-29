@@ -333,7 +333,7 @@ def __argument_seen_by_user(user: User, argument_uid):
     db_seen_by = DBDiscussionSession.query(SeenArgument).filter(SeenArgument.argument_uid == argument_uid,
                                                                 SeenArgument.user_uid == user.uid).first()
     if not db_seen_by:
-        DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user_uid=user.uid))
+        DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user=user))
         DBDiscussionSession.flush()
         return True
 
