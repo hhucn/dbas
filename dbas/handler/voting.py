@@ -53,12 +53,12 @@ def __add_click_for_argument(user: User, argument: Argument):
     :param argument: Argument
     :return: None
     """
-    db_conclusion = DBDiscussionSession.query(Statement).get(argument.conclusion_uid)
+    conclusion = argument.conclusion
 
     # set vote for the argument (relation), its premisegroup and conclusion
     __click_argument(argument, user, True)
     __vote_premisesgroup(argument.premisegroup_uid, user, True)
-    __click_statement(db_conclusion, user, argument.is_supportive)
+    __click_statement(conclusion, user, argument.is_supportive)
 
     # add seen values
     __argument_seen_by_user(user, argument)
