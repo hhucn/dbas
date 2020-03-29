@@ -1,7 +1,7 @@
 """
 Receive and store statement origins.
 """
-from typing import Optional, List, Set
+from typing import Optional, List
 
 from api.models import DataOrigin
 from dbas.database import DBDiscussionSession
