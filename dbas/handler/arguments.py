@@ -207,7 +207,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
     # send notifications and mails
     if len(new_argument_uids) > 0:
         # add marked arguments
-        DBDiscussionSession.add_all([MarkedArgument(argument=uid, user=db_user.uid) for uid in new_argument_uids])
+        DBDiscussionSession.add_all([MarkedArgument(argument=uid, user=db_user) for uid in new_argument_uids])
         DBDiscussionSession.flush()
         transaction.commit()
 
