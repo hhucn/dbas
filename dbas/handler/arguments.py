@@ -163,6 +163,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
     # insert all premise groups into our database
     # all new arguments are collected in a list
     new_argument_uids = []
+    new_arguments: List[Argument] = []
     for premisegroup in premisegroups:  # premise groups is a list of lists
         new_argument = insert_new_premises_for_argument(premisegroup, attack_type, arg_id, db_issue, db_user)
         if not isinstance(new_argument, Argument):  # break on error
@@ -177,6 +178,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
             return None, None, error
 
         new_argument_uids.append(new_argument.uid)
+        new_arguments.append(new_argument)
 
     statement_uids = []
     # @OPTIMIZE
@@ -207,7 +209,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
     # send notifications and mails
     if len(new_argument_uids) > 0:
         # add marked arguments
-        DBDiscussionSession.add_all([MarkedArgument(argument=uid, user=db_user) for uid in new_argument_uids])
+        DBDiscussionSession.add_all([MarkedArgument(argument=argument, user=db_user) for argument in new_arguments])
         DBDiscussionSession.flush()
         transaction.commit()
 
