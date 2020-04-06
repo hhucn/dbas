@@ -294,7 +294,7 @@ def __click_statement(statement, db_user, is_up_vote):
 
     if not db_current_vote:
         LOG.debug("Add vote for statement %s", statement.uid)
-        db_new_vote = ClickedStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=is_up_vote,
+        db_new_vote = ClickedStatement(statement=statement, author_uid=db_user.uid, is_up_vote=is_up_vote,
                                        is_valid=True)
         DBDiscussionSession.add(db_new_vote)
         DBDiscussionSession.flush()
