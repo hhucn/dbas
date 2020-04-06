@@ -1360,7 +1360,7 @@ class ClickedStatement(DiscussionBase):
     statement: Statement = relationship('Statement', back_populates='clicks')
     user: User = relationship('User', foreign_keys=[author_uid], back_populates='clicked_statements')
 
-    def __init__(self, statement: Statement, author_uid, is_up_vote=True, is_valid=True):
+    def __init__(self, statement: Statement, user: 'User', is_up_vote=True, is_valid=True):
         """
         Inits a row in current clicked statement table
 
@@ -1371,7 +1371,7 @@ class ClickedStatement(DiscussionBase):
         :return: None
         """
         self.statement = statement
-        self.author_uid = author_uid
+        self.user = user
         self.is_up_vote = is_up_vote
         self.timestamp = get_now()
         self.is_valid = is_valid
