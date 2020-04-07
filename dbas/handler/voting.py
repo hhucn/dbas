@@ -260,13 +260,13 @@ def __click_argument(argument, user, is_up_vote):
     DBDiscussionSession.flush()
 
 
-def __click_statement(statement, db_user, is_up_vote):
+def __click_statement(statement: Statement, user: User, is_up_vote: bool):
     """
     Check if there is a vote for the statement. If not, we will create a new one, otherwise the current one will be
     invalid and we will create a new entry.
 
     :param statement: Statement
-    :param db_user: User
+    :param user: User
     :param is_up_vote: Boolean
     :return: None
     """
@@ -274,11 +274,11 @@ def __click_statement(statement, db_user, is_up_vote):
         LOG.debug("Statement is None")
         return
 
-    LOG.debug("Statement %s, db_user %s", statement.uid, db_user.nickname)
+    LOG.debug("Statement %s, db_user %s", statement.uid, user.nickname)
 
     db_all_valid_votes = DBDiscussionSession.query(ClickedStatement).filter(
         ClickedStatement.statement_uid == statement.uid,
-        ClickedStatement.author_uid == db_user.uid,
+        ClickedStatement.author_uid == user.uid,
         ClickedStatement.is_valid == True)
     db_current_vote = db_all_valid_votes.filter_by(is_up_vote=is_up_vote).first()
     db_old_votes = db_all_valid_votes.all()
@@ -294,7 +294,7 @@ def __click_statement(statement, db_user, is_up_vote):
 
     if not db_current_vote:
         LOG.debug("Add vote for statement %s", statement.uid)
-        db_new_vote = ClickedStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=is_up_vote,
+        db_new_vote = ClickedStatement(statement=statement, user=user, is_up_vote=is_up_vote,
                                        is_valid=True)
         DBDiscussionSession.add(db_new_vote)
         DBDiscussionSession.flush()

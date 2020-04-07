@@ -431,7 +431,7 @@ def get_click_count_of(user: User, only_today: bool = False) -> Tuple[int, int]:
         return 0, 0
 
     clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.user == user)
-    clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
+    clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.user == user)
 
     if only_today:
         today = arrow.utcnow().format('YYYY-MM-DD')
