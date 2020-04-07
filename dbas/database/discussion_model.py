@@ -1432,15 +1432,15 @@ class MarkedArgument(DiscussionBase):
     argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
     user: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, argument, user):
+    def __init__(self, argument: 'Argument', user: 'User'):
         """
         Inits a row in current statement table
 
         :param argument: Argument.uid
         :param user: User.uid
         """
-        self.argument_uid = argument
-        self.author_uid = user
+        self.argument = argument
+        self.user = user
         self.timestamp = get_now()
 
     def to_dict(self):
