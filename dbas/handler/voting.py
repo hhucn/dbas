@@ -16,108 +16,108 @@ from dbas.lib import nick_of_anonymous_user
 LOG = logging.getLogger(__name__)
 
 
-def add_click_for_argument(db_argument: Argument, db_user: User) -> bool:
+def add_click_for_argument(argument: Argument, user: User) -> bool:
     """
     Increases clicks of a given argument.
 
-    :param db_argument: Argument from User
-    :param db_user: User
+    :param argument: Argument from User
+    :param user: User
     :return:
     """
-    if db_user.nickname == nick_of_anonymous_user:
+    if user.nickname == nick_of_anonymous_user:
         LOG.debug("User is anonymous, not counting clicks")
         return False
-    LOG.debug("Increasing vote for argument %s ", db_argument.uid)
+    LOG.debug("Increasing vote for argument %s ", argument.uid)
 
-    if db_argument.argument_uid is None:
+    if argument.argument_uid is None:
         LOG.debug("Undercut depth 0")
-        __add_click_for_argument(db_user, db_argument)
+        __add_click_for_argument(user, argument)
     else:
-        db_undercuted_arg_step_1 = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
+        db_undercuted_arg_step_1: Argument = argument.attacks
 
         if db_undercuted_arg_step_1.argument_uid is None:
             LOG.debug("Undercut depth 1")
-            __add_click_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_user)
+            __add_click_for_undercut_step_1(argument, db_undercuted_arg_step_1, user)
         else:
             LOG.debug("Undercut depth 2")
-            __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user)
+            __add_click_for_undercut_step_2(argument, db_undercuted_arg_step_1, user)
 
     return True
 
 
-def __add_click_for_argument(db_user, db_argument):
+def __add_click_for_argument(user: User, argument: Argument):
     """
     Add click for a specific argument
 
-    :param db_user: User
-    :param db_argument: Argument
+    :param user: User
+    :param argument: Argument
     :return: None
     """
-    db_conclusion = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
+    conclusion = argument.conclusion
 
     # set vote for the argument (relation), its premisegroup and conclusion
-    __click_argument(db_argument, db_user, True)
-    __vote_premisesgroup(db_argument.premisegroup_uid, db_user, True)
-    __click_statement(db_conclusion, db_user, db_argument.is_supportive)
+    __click_argument(argument, user, True)
+    __vote_premisesgroup(argument.premisegroup_uid, user, True)
+    __click_statement(conclusion, user, argument.is_supportive)
 
     # add seen values
-    __argument_seen_by_user(db_user, db_argument.uid)
+    __argument_seen_by_user(user, argument)
 
 
-def __add_click_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_user):
+def __add_click_for_undercut_step_1(argument: Argument, undercuted_arg_step_1: Argument, user: User):
     """
     Add clicks for an first order undercut
 
-    :param db_argument: Argument
-    :param db_undercuted_arg_step_1: Argument
-    :param db_user: User
+    :param argument: Argument
+    :param undercuted_arg_step_1: Argument
+    :param user: User
     :return: None
     """
 
-    db_undercuted_arg_step_1_concl = DBDiscussionSession.query(Statement).get(db_undercuted_arg_step_1.conclusion_uid)
+    undercuted_arg_step_1_concl: Statement = undercuted_arg_step_1.conclusion
 
     # vote for the current argument
-    __click_argument(db_argument, db_user, True)
-    __vote_premisesgroup(db_argument.premisegroup_uid, db_user, True)
+    __click_argument(argument, user, True)
+    __vote_premisesgroup(argument.premisegroup_uid, user, True)
 
     # vote against the undercutted argument
-    __click_argument(db_undercuted_arg_step_1, db_user, db_argument.is_supportive)
-    __vote_premisesgroup(db_undercuted_arg_step_1.premisegroup_uid, db_user, True)
+    __click_argument(undercuted_arg_step_1, user, argument.is_supportive)
+    __vote_premisesgroup(undercuted_arg_step_1.premisegroup_uid, user, True)
     # if the conclusion of the undercutted argument was supported, we will attack it and vice versa
-    __click_statement(db_undercuted_arg_step_1_concl, db_user, not db_argument.is_supportive)
+    __click_statement(undercuted_arg_step_1_concl, user, not argument.is_supportive)
 
     # add seen values
-    __argument_seen_by_user(db_user, db_argument.uid)
-    __argument_seen_by_user(db_user, db_undercuted_arg_step_1.uid)
+    __argument_seen_by_user(user, argument)
+    __argument_seen_by_user(user, undercuted_arg_step_1)
 
 
-def __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user):
+def __add_click_for_undercut_step_2(argument: Argument, undercuted_arg_step_1: Argument, user: User):
     """
     Add clicks for an second order undercut
 
-    :param db_argument: Argument
-    :param db_undercuted_arg_step_1: Argument
-    :param db_user: User
+    :param argument: Argument
+    :param undercuted_arg_step_1: Argument
+    :param user: User
     :return: None
     """
 
     # we are undercutting an undercut
-    db_undercuted_arg_step_2 = DBDiscussionSession.query(Argument).get(db_undercuted_arg_step_1.argument_uid)
+    undercuted_arg_step_2: Argument = undercuted_arg_step_1.attacks
 
     # vote for the current argument
-    __vote_premisesgroup(db_argument.premisegroup_uid, db_user, True)
-    __click_argument(db_argument, db_user, True)
+    __vote_premisesgroup(argument.premisegroup_uid, user, True)
+    __click_argument(argument, user, True)
 
     # vote against the undercutted argument
-    __click_argument(db_undercuted_arg_step_1, db_user, False)
-    __vote_premisesgroup(db_undercuted_arg_step_1.premisegroup_uid, db_user, False)
+    __click_argument(undercuted_arg_step_1, user, False)
+    __vote_premisesgroup(undercuted_arg_step_1.premisegroup_uid, user, False)
 
     # vote NOT for the undercutted undercut
 
     # add seen values
-    __argument_seen_by_user(db_user, db_argument.uid)
-    __argument_seen_by_user(db_user, db_undercuted_arg_step_1.uid)
-    __argument_seen_by_user(db_user, db_undercuted_arg_step_2.uid)
+    __argument_seen_by_user(user, argument)
+    __argument_seen_by_user(user, undercuted_arg_step_1)
+    __argument_seen_by_user(user, undercuted_arg_step_2)
 
 
 def add_click_for_statement(stmt_or_arg: Statement, db_user: User, supportive: bool):
@@ -172,7 +172,7 @@ def add_seen_argument(argument_uid: int, user: User):
 
     argument: Argument = DBDiscussionSession.query(Argument).get(argument_uid)
 
-    __argument_seen_by_user(user, argument_uid)
+    __argument_seen_by_user(user, argument)
     for premise in argument.premisegroup.premises:
         __statement_seen_by_user(user, premise.statement)
 
@@ -181,7 +181,7 @@ def add_seen_argument(argument_uid: int, user: User):
     else:
         while not argument.conclusion:
             argument = argument.attacks
-            __argument_seen_by_user(user, argument.uid)
+            __argument_seen_by_user(user, argument)
 
     return True
 
@@ -321,19 +321,19 @@ def __vote_premisesgroup(premisegroup_uid, user, is_up_vote):
         __click_statement(db_statement, user, is_up_vote)
 
 
-def __argument_seen_by_user(user: User, argument_uid):
+def __argument_seen_by_user(user: User, argument: Argument):
     """
     Adds a reference for a seen argument
 
     :param user: current user
-    :param argument_uid: uid of the argument
+    :param argument: uid of the argument
     :return: True if the argument was not seen by the user (until now), false otherwise
     """
 
-    db_seen_by = DBDiscussionSession.query(SeenArgument).filter(SeenArgument.argument_uid == argument_uid,
+    db_seen_by = DBDiscussionSession.query(SeenArgument).filter(SeenArgument.argument_uid == argument.uid,
                                                                 SeenArgument.user_uid == user.uid).first()
     if not db_seen_by:
-        DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user_uid=user.uid))
+        DBDiscussionSession.add(SeenArgument(argument=argument, user=user))
         DBDiscussionSession.flush()
         return True
 

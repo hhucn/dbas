@@ -885,15 +885,15 @@ class SeenArgument(DiscussionBase):
     argument: 'Argument' = relationship('Argument', foreign_keys=[argument_uid])
     user: User = relationship('User', foreign_keys=[user_uid])
 
-    def __init__(self, argument_uid, user_uid):
+    def __init__(self, argument: 'Argument', user: 'User'):
         """
         Inits a row in current argument seen by table
 
-        :param argument_uid: Argument.uid
-        :param user_uid: User.uid
+        :param argument: Argument.uid
+        :param user: User.uid
         """
-        self.argument_uid = argument_uid
-        self.user_uid = user_uid
+        self.argument: Argument = argument
+        self.user: User = user
 
 
 class TextVersion(DiscussionBase):
