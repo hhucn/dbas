@@ -783,7 +783,7 @@ def set_new_user(mailer: Mailer, user_data: Dict[str, Any], password: str, _tn: 
         body = _tn.get(Keywords.accountWasRegistered).format(temporary_user['firstname'], temporary_user['lastname'],
                                                              temporary_user['email'])
         send_mail(mailer, subject, body, temporary_user['email'], _tn.get_lang())
-        send_welcome_notification(db_new_user.uid, _tn)
+        send_welcome_notification(db_new_user, _tn)
 
         LOG.debug("Set new user in db")
         return {'success': success, 'error': '', 'user': db_new_user}

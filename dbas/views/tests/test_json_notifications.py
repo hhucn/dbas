@@ -19,13 +19,13 @@ class AjaxNotificationTest(unittest.TestCase):
 
     def add_messages(self):
         DBDiscussionSession.add(Message(sender=self.user_anonymous,
-                                        to_author_uid=self.test_author_uid,
+                                        receiver=self.user_tobi,
                                         topic='Hey you',
                                         content='wanne buy some galsses?',
                                         is_inbox=True,
                                         read=False))
         DBDiscussionSession.add(Message(sender=self.user_tobi,
-                                        to_author_uid=1,
+                                        receiver=self.user_anonymous,
                                         topic='Hey you',
                                         content='wanne buy some galsses?',
                                         is_inbox=False,
