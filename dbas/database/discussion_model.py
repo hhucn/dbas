@@ -1463,7 +1463,7 @@ class MarkedStatement(DiscussionBase):
     statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
     user: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, statement: 'Statement', user):
+    def __init__(self, statement: 'Statement', user: 'User'):
         """
         Inits a row in current marked statement table
 
@@ -1471,7 +1471,7 @@ class MarkedStatement(DiscussionBase):
         :param user: User.uid
         """
         self.statement: Statement = statement
-        self.author_uid = user
+        self.user: User = user
         self.timestamp = get_now()
 
     def to_dict(self):
