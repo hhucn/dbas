@@ -15,7 +15,7 @@ from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
 
 
-def send_users_notification(author, recipient, title, text, ui_locales) -> dict:
+def send_users_notification(author: User, recipient, title, text, ui_locales) -> dict:
     """
     Send a notification from user a to user b
 
@@ -47,6 +47,7 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
     :return: None
     """
     # getting all text versions, the overview author, last editor and settings ob both authors as well as their languages
+    # Todo: das ist unnötig
     db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()
     db_root_author = DBDiscussionSession.query(User).get(db_textversions[0].author_uid)
     db_last_editor = DBDiscussionSession.query(User).get(db_textversions[-1].author_uid)
@@ -87,14 +88,15 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
     topic2 = _t_editor.get(_.statementAdded)
     content2 = get_text_for_message(db_last_editor.firstname, editor_lang, url, _.statementAddedMessageContent, True)
 
+    anonymous_user = DBDiscussionSession.query(User).get(1)  # should be default
     if db_root_author != db_user:
-        DBDiscussionSession.add(Message(from_author_uid=1,
+        DBDiscussionSession.add(Message(sender=anonymous_user,
                                         to_author_uid=db_root_author.uid,
                                         topic=topic1,
                                         content=content1,
                                         is_inbox=True))
     if db_root_author != db_last_editor and db_user != db_last_editor:
-        DBDiscussionSession.add(Message(from_author_uid=1,
+        DBDiscussionSession.add(Message(sender=anonymous_user,
                                         to_author_uid=db_last_editor.uid,
                                         topic=topic2,
                                         content=content2,
@@ -136,7 +138,8 @@ def send_add_argument_notification(url, attacked_argument_uid, user, mailer):
     content = get_text_for_message(db_author.firstname, user_lang, url, _.argumentAddedMessageContent, True)
 
     # Send with System User.
-    DBDiscussionSession.add(Message(from_author_uid=1,
+    anonymous_user = DBDiscussionSession.query(User).get(1)  # should be default
+    DBDiscussionSession.add(Message(sender=anonymous_user,
                                     to_author_uid=db_author.uid,
                                     topic=topic,
                                     content=content,
@@ -154,13 +157,14 @@ def send_welcome_notification(user, translator):
     """
     topic = translator.get(_.welcome)
     content = translator.get(_.welcomeMessage)
-    notification = Message(from_author_uid=1, to_author_uid=user, topic=topic, content=content, is_inbox=True)
+    anonymous_user = DBDiscussionSession.query(User).get(1)  # should be default
+    notification = Message(sender=anonymous_user, to_author_uid=user, topic=topic, content=content, is_inbox=True)
     DBDiscussionSession.add(notification)
     DBDiscussionSession.flush()
     transaction.commit()
 
 
-def send_notification(from_user, to_user, topic, content, mainpage):
+def send_notification(from_user: User, to_user, topic, content, mainpage):
     """
     Sends message to an user and places a copy in the outbox of current user. Returns the uid and timestamp
 
@@ -172,9 +176,9 @@ def send_notification(from_user, to_user, topic, content, mainpage):
     :return:
     """
     content = escape_string(content)
-    notification_in = Message(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content,
+    notification_in = Message(sender=from_user, to_author_uid=to_user.uid, topic=topic, content=content,
                               is_inbox=True)
-    notification_out = Message(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content,
+    notification_out = Message(sender=from_user, to_author_uid=to_user.uid, topic=topic, content=content,
                                is_inbox=False, read=True)
     DBDiscussionSession.add_all([notification_in, notification_out])
     DBDiscussionSession.flush()

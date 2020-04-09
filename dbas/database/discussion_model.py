@@ -1504,18 +1504,18 @@ class Message(DiscussionBase):
     sender: User = relationship('User', foreign_keys=[from_author_uid])
     receiver: User = relationship('User', foreign_keys=[to_author_uid])
 
-    def __init__(self, from_author_uid, to_author_uid, topic, content, is_inbox=True, read=False):
+    def __init__(self, sender: 'User', to_author_uid, topic, content, is_inbox=True, read=False):
         """
         Inits a row in current message table
 
-        :param from_author_uid: user.uid
+        :param sender: user.uid
         :param to_author_uid: user.uid
         :param topic: String
         :param content: String
         :param is_inbox: Boolean
         :param read: Boolean
         """
-        self.from_author_uid = from_author_uid
+        self.sender: 'User' = sender  # change to anonymous user as default
         self.to_author_uid = to_author_uid
         self.topic = topic
         self.content = content

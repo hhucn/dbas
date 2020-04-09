@@ -4,7 +4,7 @@ import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Message
+from dbas.database.discussion_model import Message, User
 from dbas.tests.utils import construct_dummy_request
 
 
@@ -14,15 +14,17 @@ class AjaxNotificationTest(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         self.test_author_uid = 2
+        self.user_anonymous: User = DBDiscussionSession.query(User).get(1)
+        self.user_tobi: User = DBDiscussionSession.query(User).get(self.test_author_uid)
 
     def add_messages(self):
-        DBDiscussionSession.add(Message(from_author_uid=1,
+        DBDiscussionSession.add(Message(sender=self.user_anonymous,
                                         to_author_uid=self.test_author_uid,
                                         topic='Hey you',
                                         content='wanne buy some galsses?',
                                         is_inbox=True,
                                         read=False))
-        DBDiscussionSession.add(Message(from_author_uid=self.test_author_uid,
+        DBDiscussionSession.add(Message(sender=self.user_tobi,
                                         to_author_uid=1,
                                         topic='Hey you',
                                         content='wanne buy some galsses?',
