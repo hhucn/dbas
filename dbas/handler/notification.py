@@ -88,7 +88,7 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
     topic2 = _t_editor.get(_.statementAdded)
     content2 = get_text_for_message(db_last_editor.firstname, editor_lang, url, _.statementAddedMessageContent, True)
 
-    anonymous_user = DBDiscussionSession.query(User).get(1)  # should be default
+    anonymous_user = DBDiscussionSession.query(User).get(1)
     if db_root_author != db_user:
         DBDiscussionSession.add(Message(sender=anonymous_user,
                                         receiver=db_root_author,
@@ -138,7 +138,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, mailer):
     content = get_text_for_message(db_author.firstname, user_lang, url, _.argumentAddedMessageContent, True)
 
     # Send with System User.
-    anonymous_user = DBDiscussionSession.query(User).get(1)  # should be default
+    anonymous_user = DBDiscussionSession.query(User).get(1)
     DBDiscussionSession.add(Message(sender=anonymous_user,
                                     receiver=db_author,
                                     topic=topic,
@@ -157,7 +157,7 @@ def send_welcome_notification(user: User, translator):
     """
     topic = translator.get(_.welcome)
     content = translator.get(_.welcomeMessage)
-    anonymous_user = DBDiscussionSession.query(User).get(1)  # should be default
+    anonymous_user = DBDiscussionSession.query(User).get(1)
     notification = Message(sender=anonymous_user, receiver=user, topic=topic, content=content, is_inbox=True)
     DBDiscussionSession.add(notification)
     DBDiscussionSession.flush()

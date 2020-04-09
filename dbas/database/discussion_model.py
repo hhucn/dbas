@@ -1504,7 +1504,8 @@ class Message(DiscussionBase):
     sender: User = relationship('User', foreign_keys=[from_author_uid])
     receiver: User = relationship('User', foreign_keys=[to_author_uid])
 
-    def __init__(self, sender: 'User', receiver: 'User', topic, content, is_inbox=True, read=False):
+    def __init__(self, sender: 'User', receiver: 'User', topic: str, content: str, is_inbox: bool = True,
+                 read: bool = False):
         """
         Inits a row in current message table
 
@@ -1515,13 +1516,13 @@ class Message(DiscussionBase):
         :param is_inbox: Boolean
         :param read: Boolean
         """
-        self.sender: 'User' = sender  # change to anonymous user as default
+        self.sender: 'User' = sender
         self.receiver: 'User' = receiver
-        self.topic = topic
-        self.content = content
-        self.timestamp = get_now()
-        self.read = read
-        self.is_inbox = is_inbox
+        self.topic: str = topic
+        self.content: str = content
+        self.timestamp: ArrowType = get_now()
+        self.read: bool = read
+        self.is_inbox: bool = is_inbox
 
     def set_read(self, was_read):
         """
