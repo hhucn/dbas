@@ -361,13 +361,14 @@ class MergeQueue(QueueABC):
         old_statement_ids = [p.statement_uid for p in db_old_premises]
         for old_statement_id in old_statement_ids:
             db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=old_statement_id).all()
+            old_statement = DBDiscussionSession.query(Statement).get(old_statement_id)
             for argument in db_arguments:
                 LOG.debug("Reset arguments %s from conclusions %s to new merges statement %s", argument.uid,
                           argument.conclusion_uid, new_statement.uid)
                 argument.set_conclusion(new_statement.uid)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.add(
-                    StatementReplacementsByPremiseGroupMerge(db_review.uid, old_statement_id, new_statement.uid))
+                    StatementReplacementsByPremiseGroupMerge(db_review, old_statement, new_statement))
                 DBDiscussionSession.flush()
 
         # finish
