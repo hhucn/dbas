@@ -70,10 +70,6 @@ class PremiseTests(TestCaseWithConfig):
         premise: Premise = DBDiscussionSession.query(Premise).get(1)
         self.assertEqual(premise.statement.get_text(), premise.get_text())
 
-    def test_get_text_with_html_set_true(self):
-        premise: Premise = DBDiscussionSession.query(Premise).get(1)
-        self.assertEqual(premise.statement.get_text(html=True), premise.get_text(html=True))
-
     def test_to_dict(self):
         premise: Premise = DBDiscussionSession.query(Premise).get(1)
 
