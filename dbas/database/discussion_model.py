@@ -885,15 +885,15 @@ class SeenArgument(DiscussionBase):
     argument: 'Argument' = relationship('Argument', foreign_keys=[argument_uid])
     user: User = relationship('User', foreign_keys=[user_uid])
 
-    def __init__(self, argument_uid, user_uid):
+    def __init__(self, argument: 'Argument', user: 'User'):
         """
         Inits a row in current argument seen by table
 
-        :param argument_uid: Argument.uid
-        :param user_uid: User.uid
+        :param argument: Argument.uid
+        :param user: User.uid
         """
-        self.argument_uid = argument_uid
-        self.user_uid = user_uid
+        self.argument: Argument = argument
+        self.user: User = user
 
 
 class TextVersion(DiscussionBase):
@@ -1355,7 +1355,7 @@ class ClickedStatement(DiscussionBase):
     statement: Statement = relationship('Statement', back_populates='clicks')
     user: User = relationship('User', foreign_keys=[author_uid], back_populates='clicked_statements')
 
-    def __init__(self, statement_uid, author_uid, is_up_vote=True, is_valid=True):
+    def __init__(self, statement: Statement, user: 'User', is_up_vote=True, is_valid=True):
         """
         Inits a row in current clicked statement table
 
@@ -1365,8 +1365,8 @@ class ClickedStatement(DiscussionBase):
         :param is_valid: Boolean
         :return: None
         """
-        self.statement_uid = statement_uid
-        self.author_uid = author_uid
+        self.statement = statement
+        self.user = user
         self.is_up_vote = is_up_vote
         self.timestamp = get_now()
         self.is_valid = is_valid
@@ -1427,15 +1427,15 @@ class MarkedArgument(DiscussionBase):
     argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
     user: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, argument, user):
+    def __init__(self, argument: 'Argument', user: 'User'):
         """
         Inits a row in current statement table
 
         :param argument: Argument.uid
         :param user: User.uid
         """
-        self.argument_uid = argument
-        self.author_uid = user
+        self.argument = argument
+        self.user = user
         self.timestamp = get_now()
 
     def to_dict(self):

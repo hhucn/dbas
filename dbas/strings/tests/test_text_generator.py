@@ -274,12 +274,12 @@ class TestTextGenerator(TestCaseWithConfig):
 
         self.assertIsNone(tg.get_author_or_first_supporter_of_element(arg, user1, True))
 
-        DBDiscussionSession.add(MarkedArgument(argument=arg, user=user1))
+        DBDiscussionSession.add(MarkedArgument(argument=self.first_argument, user=self.user_tobi))
         transaction.commit()
         self.assertIsNone(tg.get_author_or_first_supporter_of_element(arg, user1, True))
         self.assertIsNotNone(tg.get_author_or_first_supporter_of_element(arg, user2, True))
 
-        DBDiscussionSession.add(MarkedArgument(argument=arg, user=user2))
+        DBDiscussionSession.add(MarkedArgument(argument=self.first_argument, user=self.user_christian))
         transaction.commit()
         self.assertIsNotNone(tg.get_author_or_first_supporter_of_element(arg, user1, True))
         self.assertIsNotNone(tg.get_author_or_first_supporter_of_element(arg, user2, True))
