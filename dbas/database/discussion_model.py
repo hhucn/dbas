@@ -1590,7 +1590,7 @@ class ReviewDelete(AbstractReviewCase):
     statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
     reason: 'ReviewDeleteReason' = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
 
-    def __init__(self, detector, argument=None, statement=None, reason=None, is_executed=False, is_revoked=False):
+    def __init__(self, detector: User, argument=None, statement=None, reason=None, is_executed=False, is_revoked=False):
         """
         Inits a row in current review delete table
 
@@ -1599,7 +1599,7 @@ class ReviewDelete(AbstractReviewCase):
         :param reason: ReviewDeleteReason.uid
         :param is_executed: Boolean
         """
-        self.detector_uid = detector
+        self.detector: User = detector
         self.argument_uid = argument
         self.statement_uid = statement
         self.reason_uid = reason

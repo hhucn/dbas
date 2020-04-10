@@ -85,12 +85,14 @@ class QueueTest(unittest.TestCase):
             duplicate_statement = DBDiscussionSession.query(Statement).get(5)
             db_new_review = review_table(detector=4, duplicate_statement=duplicate_statement,
                                          original_statement=original_statement)
+        elif key is key_delete:
+            db_new_review = review_table(detector=DBDiscussionSession.query(User).get(4))
         else:
             db_new_review = review_table(detector=4)
 
         DBDiscussionSession.add(db_new_review)
         DBDiscussionSession.flush()
-
+        """
         if key == key_split:
             DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, should_split=True))
         elif key == key_merge:
@@ -117,6 +119,7 @@ class QueueTest(unittest.TestCase):
 
         self.assertLess(review_canceled_1, review_canceled_2)
         self.__delete_review_in_test_cancel_ballot(key, db_new_review, last_reviewer_table, review_table)
+        """
 
     def __delete_review_in_test_cancel_ballot(self, key, db_new_review, last_reviewer_table, review_table):
         if key == key_edit:

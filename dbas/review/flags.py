@@ -78,7 +78,7 @@ def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons
         statement_uid = statement.uid
 
     if db_del_reason:
-        _add_delete_review(argument_uid, statement_uid, db_user.uid, db_del_reason.uid)
+        _add_delete_review(argument_uid, statement_uid, db_user, db_del_reason.uid)
 
     elif reason_val == key_optimization:
         _add_optimization_review(argument_uid, statement_uid, db_user.uid)
@@ -142,18 +142,18 @@ def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User
     return flag_statement_for_merge_or_split(key, pgroup, [], db_user, tn)
 
 
-def _add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
+def _add_delete_review(argument_uid, statement_uid, user: User, reason_uid):
     """
     Adds a ReviewDelete row
 
     :param argument_uid: Argument.uid
     :param statement_uid: Statement.uid
-    :param user_uid: User.uid
+    :param user: User.uid
     :param reason_uid: ReviewDeleteReason.uid
     :return: None
     """
-    LOG.debug("Flag argument/statement %s/%s by user %s for delete", argument_uid, statement_uid, user_uid)
-    review_delete = ReviewDelete(detector=user_uid, argument=argument_uid, statement=statement_uid, reason=reason_uid)
+    LOG.debug("Flag argument/statement %s/%s by user %s for delete", argument_uid, statement_uid, user)
+    review_delete = ReviewDelete(detector=user, argument=argument_uid, statement=statement_uid, reason=reason_uid)
     DBDiscussionSession.add(review_delete)
     DBDiscussionSession.flush()
     transaction.commit()
