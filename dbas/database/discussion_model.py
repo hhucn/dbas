@@ -2542,13 +2542,13 @@ class StatementReplacementsByPremiseGroupSplit(DiscussionBase):
     old_statement: Statement = relationship('Statement', foreign_keys=[old_statement_uid])
     new_statement: Statement = relationship('Statement', foreign_keys=[new_statement_uid])
 
-    def __init__(self, review, old_statement, new_statement):
+    def __init__(self, review: ReviewSplit, old_statement: Statement, new_statement: Statement):
         """
         Inits a row in current table
 
-        :param review: ReviewSplit.uid
-        :param old_statement: Statement.uid
-        :param new_statement: Statement.uid
+        :param review: ReviewSplit
+        :param old_statement: Statement
+        :param new_statement: Statement
         """
         self.review_uid = review
         self.old_statement_uid = old_statement
