@@ -68,8 +68,8 @@ def __mark_or_unmark_it(stmt_or_arg: Union[Statement, Argument], should_mark, db
         if not db_el:
             LOG.debug("Element is not present")
             new_el = MarkedArgument(argument=stmt_or_arg, user=db_user) if is_argument else MarkedStatement(
-                statement=stmt_or_arg.uid,
-                user=db_user.uid)
+                statement=stmt_or_arg,
+                user=db_user)
             DBDiscussionSession.add(new_el)
     else:
         LOG.debug("ELement is deleted")
