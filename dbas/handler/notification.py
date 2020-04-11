@@ -1,6 +1,7 @@
 """
 Provides functions for te internal messaging system
 """
+from typing import List
 
 import transaction
 
@@ -48,13 +49,14 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
     """
     # getting all text versions, the overview author, last editor and settings ob both authors as well as their languages
     # Todo: das ist unnötig
-    db_textversions: TextVersion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()
-    db_root_author: User = DBDiscussionSession.query(User).get(db_textversions[0].author_uid)
-    db_last_editor: User = DBDiscussionSession.query(User).get(db_textversions[-1].author_uid)
+    db_textversions: List[TextVersion] = DBDiscussionSession.query(TextVersion).filter_by(
+        statement_uid=conclusion_id).all()
+    db_root_author: User = db_textversions[0].author
+    db_last_editor: User = db_textversions[-1].author
     db_root_author_settings: Settings = db_root_author.settings
     db_last_editor_settings: Settings = db_last_editor.settings
-    root_lang: str = DBDiscussionSession.query(Language).get(db_root_author_settings.lang_uid).ui_locales
-    editor_lang: str = DBDiscussionSession.query(Language).get(db_last_editor_settings.lang_uid).ui_locales
+    root_lang: str = db_root_author_settings.language.ui_locales
+    editor_lang: str = db_last_editor_settings.language.ui_locales
     _t_editor = Translator(editor_lang)
     _t_root = Translator(root_lang)
 
@@ -101,8 +103,6 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
                                         topic=topic2,
                                         content=content2,
                                         is_inbox=True))
-    DBDiscussionSession.flush()
-    transaction.commit()
 
 
 def send_add_argument_notification(url, attacked_argument_uid, user, mailer):
