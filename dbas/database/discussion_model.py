@@ -1084,8 +1084,8 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     Additionally there is a relation, timestamp, author, ...
     """
     __tablename__ = 'arguments'
-    __table_args__ = (CheckConstraint("ck_arguments_must-have-descendent",
-                                      '(argument_uid is not null) != (conclusion_uid is not null)'),)
+    __table_args__ = (CheckConstraint('(argument_uid is not null) != (conclusion_uid is not null)',
+                                      "ck_arguments_must-have-descendent"),)
     uid: int = Column(Integer, primary_key=True)
     premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'), nullable=False)
     conclusion_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=True)
