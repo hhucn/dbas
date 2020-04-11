@@ -2455,11 +2455,11 @@ class RevokedDuplicate(DiscussionBase):
         """
         Inits a row in current revoked duplicate table
 
-        :param review: ReviewDuplicate.uid
+        :param review: ReviewDuplicate
         :param bend_position: Boolean
-        :param statement: Statement.uid
-        :param conclusion_of_argument: Argument.uid
-        :param premise: Premise.uid
+        :param statement: Statement
+        :param conclusion_of_argumnt: Argument
+        :param premise: Premise
         """
         self.review = review
         self.bend_position = bend_position
