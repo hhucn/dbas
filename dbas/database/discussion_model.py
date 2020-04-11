@@ -1024,13 +1024,12 @@ class Premise(DiscussionBase):
         """
         self.premisegroup = premisegroup
 
-    def get_text(self) -> str:
+    def get_text(self) -> Optional[str]:
         """
         Gets the current premise text from the statement, without trailing punctuation.
         :return:
         """
-        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
-        return db_statement.get_text()
+        return self.statement.get_text()
 
     def to_dict(self):
         """
