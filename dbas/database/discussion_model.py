@@ -2692,7 +2692,7 @@ class DecisionProcess(DiscussionBase):
     issue = relationship(Issue,
                          back_populates='decision_process')  # backref=backref('decision_process', cascade="all, delete-orphan"))
 
-    def __init__(self, issue_id: int, budget: int, host: str, currency_symbol="€",
+    def __init__(self, issue: Issue, budget: int, host: str, currency_symbol="€",
                  positions_end: datetime = None,
                  votes_start: datetime = None,
                  votes_end: datetime = None,
@@ -2700,7 +2700,7 @@ class DecisionProcess(DiscussionBase):
                  min_position_cost: int = 0):
         if budget <= 0:
             raise ValueError("The budget has to be greater than 0!")
-        self.issue_id = issue_id
+        self.issue = issue
         self.budget = budget
         self.host = host
         self.currency_symbol = currency_symbol
