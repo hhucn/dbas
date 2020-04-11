@@ -997,7 +997,7 @@ class Premise(DiscussionBase):
         self.issue = issue
         self.is_disabled = is_disabled
 
-    def set_disabled(self, is_disabled: Boolean):
+    def set_disabled(self, is_disabled: bool):
         """
         Disables current premise
 
@@ -1024,18 +1024,12 @@ class Premise(DiscussionBase):
         """
         self.premisegroup = premisegroup
 
-    def get_text(self, html: bool = False) -> str:
+    def get_text(self) -> Optional[str]:
         """
         Gets the current premise text from the statement, without trailing punctuation.
-
-        :param html: If True, returns a html span for coloring.
         :return:
         """
-        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
-        return db_statement.get_text(html)
-
-    def get_html(self) -> str:
-        return self.get_text(html=True)
+        return self.statement.get_text()
 
     def to_dict(self):
         """
