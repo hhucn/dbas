@@ -2443,23 +2443,24 @@ class RevokedDuplicate(DiscussionBase):
     review: ReviewDuplicate = relationship('ReviewDuplicate', foreign_keys=[review_uid])
     argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
     statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
-    premises: Premise = relationship('Premise', foreign_keys=[premise_uid])
+    premise: Premise = relationship('Premise', foreign_keys=[premise_uid])
 
-    def __init__(self, review, bend_position=False, statement=None, conclusion_of_argument=None, premise=None):
+    def __init__(self, review: ReviewMerge, bend_position: bool = False, statement: Statement = None,
+                 conclusion_of_argument: Argument = None, premise: Premise = None):
         """
         Inits a row in current revoked duplicate table
 
-        :param review: ReviewDuplicate.uid
+        :param review: ReviewDuplicate
         :param bend_position: Boolean
-        :param statement: Statement.uid
-        :param conclusion_of_argument: Argument.uid
-        :param premise: Premise.uid
+        :param statement: Statement
+        :param conclusion_of_argumnt: Argument
+        :param premise: Premise
         """
-        self.review_uid = review
+        self.review = review
         self.bend_position = bend_position
-        self.statement_uid = statement
-        self.argument_uid = conclusion_of_argument
-        self.premise_uid = premise
+        self.statement = statement
+        self.argument = conclusion_of_argument
+        self.premise = premise
         self.timestamp = get_now()
 
 
