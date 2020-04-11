@@ -40,7 +40,7 @@ cache:
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_ID               # Execute jobs in merge request context
-    - if: $CI_COMMIT_BRANCH == 'master'      # Execute jobs when a new commit is pushed to master branch
+    - if: $CI_COMMIT_BRANCH                  # Execute jobs when a new commit is pushed to a branch
 
 build_test_image:
   stage: build
