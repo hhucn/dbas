@@ -1,6 +1,7 @@
 """
 D-BAS database Model
 """
+import enum
 import logging
 import warnings
 from abc import abstractmethod, ABC, ABCMeta
@@ -10,7 +11,7 @@ from typing import List, Set, Optional, Dict, Any, Union
 import arrow
 import bcrypt
 from slugify import slugify
-from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String, CheckConstraint
+from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String, CheckConstraint, Enum
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -21,6 +22,13 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
+
+
+class Group(enum.Enum):
+    ADMIN = 1
+    AUTHOR = 2
+    USER = 3
+    SPECIAL = 4
 
 
 def sql_timestamp_pretty_print(ts, lang: str = 'en', humanize: bool = True, with_exact_time: bool = False):
@@ -198,27 +206,6 @@ class Language(DiscussionBase):
         return DBDiscussionSession.query(cls).filter(cls.ui_locales == lang).one()
 
 
-class Group(DiscussionBase):
-    """
-    group-table with several columns.
-    Each group has a name
-    """
-    __tablename__ = 'groups'
-    uid: int = Column(Integer, primary_key=True)
-    name: str = Column(Text, nullable=False, unique=True)
-
-    def __init__(self, name):
-        """
-        Initializes a row in current group-table
-        """
-        self.name = name
-
-    @classmethod
-    def by_name(cls):
-        """Return a query of positions sorted by text."""
-        return DBDiscussionSession.query(Group).order_by(Group.name)
-
-
 class User(DiscussionBase):
     """
     User-table with several columns.
@@ -232,14 +219,14 @@ class User(DiscussionBase):
     email: str = Column(Text, nullable=False)
     gender: str = Column(Text, nullable=False)
     password: str = Column(Text, nullable=False)
-    group_uid: int = Column(Integer, ForeignKey('groups.uid'))
+    group = Column(Enum(Group), nullable=False, default=Group.USER)
     last_action = Column(ArrowType, default=get_now())
     last_login = Column(ArrowType, default=get_now())
     registered = Column(ArrowType, default=get_now())
     oauth_provider: str = Column(Text, nullable=True)
     oauth_provider_id: str = Column(Text, nullable=True)
 
-    group: 'Group' = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
+    # group: 'Group' = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
     history: List['History'] = relationship('History', back_populates='author', order_by='History.timestamp')
     participates_in: List['Issue'] = relationship('Issue', secondary='user_participation',
                                                   back_populates='participating_users')
@@ -251,7 +238,9 @@ class User(DiscussionBase):
     clicked_arguments: List['ClickedArgument'] = relationship('ClickedArgument', back_populates='user')
 
     def __init__(self, firstname: str, surname: str, nickname: str, email: str, password: str, gender: str,
-                 group: 'Group', oauth_provider: Optional[str] = None, oauth_provider_id: Optional[str] = None):
+                 group: Group = Group.USER,
+                 oauth_provider: Optional[str] = None,
+                 oauth_provider_id: Optional[str] = None):
         """
         Initializes a row in current user-table
 
@@ -351,29 +340,21 @@ class User(DiscussionBase):
 
         :return: True, if the user is member of the admin group
         """
-        return DBDiscussionSession.query(Group).filter_by(name='admins').first().uid == self.group_uid
-
-    def set_group(self, group_name: str):
-        """
-        Sets the group of a user based of the name for the group.
-        :param group_name:
-        :return:
-        """
-        self.group = DBDiscussionSession.query(Group).filter_by(name=group_name).one()
+        return self.group == Group.ADMIN
 
     def promote_to_admin(self):
         """
         Promotes the user to an admin. WOW
         :return:
         """
-        self.set_group("admins")
+        self.group = Group.ADMIN
 
     def demote_to_user(self):
         """
         Demotes the user to a regular user.
         :return:
         """
-        self.set_group("users")
+        self.group = Group.USER
 
     def is_special(self):
         """
@@ -381,7 +362,7 @@ class User(DiscussionBase):
 
         :return: True, if the user is member of the admin group
         """
-        return DBDiscussionSession.query(Group).filter_by(name='specials').first().uid == self.group_uid
+        return self.group == Group.SPECIAL
 
     def is_author(self):
         """
@@ -389,7 +370,7 @@ class User(DiscussionBase):
 
         :return: True, if the user is member of the authors group
         """
-        return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
+        return self.group == Group.AUTHOR
 
     @hybrid_property
     def accessible_issues(self) -> List['Issue']:
