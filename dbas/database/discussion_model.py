@@ -2382,17 +2382,17 @@ class RevokedContent(DiscussionBase):
     argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
     statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, author, argument=None, statement=None):
+    def __init__(self, author: User, argument: Argument = None, statement: Statement = None):
         """
         Inits a row in current revoked content table
 
-        :param author: User.uid
-        :param argument: Argument.uid
-        :param statement: Statement.uid
+        :param author: User
+        :param argument: Argument
+        :param statement: Statement
         """
-        self.author_uid = author
-        self.argument_uid = argument
-        self.statement_uid = statement
+        self.author = author
+        self.argument = argument
+        self.statement = statement
         self.timestamp = get_now()
 
 

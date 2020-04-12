@@ -167,7 +167,7 @@ def revoke_author_of_statement_content(db_statement: Statement, db_user: User):
 
     # get element, which should be revoked
     db_element = __revoke_statement(db_statement, db_user)
-    DBDiscussionSession.add(RevokedContent(db_user.uid, statement=db_element.uid))
+    DBDiscussionSession.add(RevokedContent(db_user, statement=db_element))
     DBDiscussionSession.flush()
     return True
 
@@ -184,7 +184,7 @@ def revoke_author_of_argument_content(db_argument: Argument, db_user: User):
 
     # get element, which should be revoked
     db_element = __revoke_argument(db_argument, db_user)
-    DBDiscussionSession.add(RevokedContent(db_user.uid, argument=db_element.uid))
+    DBDiscussionSession.add(RevokedContent(db_user, argument=db_element))
     DBDiscussionSession.flush()
     return True
 
