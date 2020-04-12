@@ -204,7 +204,7 @@ def __revoke_statement(db_statement: Statement, db_user: User):
     LOG.debug("Statement %s will get a new author %s (old author: %s)", db_statement.uid, db_anonymous.uid, db_user.uid)
 
     db_statement.author_uid = db_anonymous.uid
-    __transfer_textversion_to_new_author(db_statement.uid, db_user.uid, db_anonymous.uid)
+    __transfer_textversion_to_new_author(db_statement, db_user, db_anonymous)
 
     DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
@@ -259,7 +259,7 @@ def __disable_textversions(statement_uid, author_uid):
     DBDiscussionSession.flush()
 
 
-def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_author_uid):
+def __transfer_textversion_to_new_author(statement: Statement, old_author: User, new_author: User):
     """
     Sets a new author for the given textversion and creates a row in RevokedContentHistory
 
@@ -268,16 +268,16 @@ def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_auth
     :param new_author_uid: User.uid
     :return: Boolean
     """
-    LOG.debug("Textversion of %s will change author from %s to %s", statement_uid, old_author_uid, new_author_uid)
-    db_textversion = DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == statement_uid,
-                                                                   TextVersion.author_uid == old_author_uid).all()
+    LOG.debug("Textversion of %s will change author from %s to %s", statement.uid, old_author.uid, new_author.uid)
+    db_textversion = DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == statement.uid,
+                                                                   TextVersion.author_uid == old_author.uid).all()
     if not db_textversion:
         return False
 
     for textversion in db_textversion:
-        textversion.author_uid = new_author_uid
+        textversion.author_uid = new_author.uid
         DBDiscussionSession.add(textversion)
-        DBDiscussionSession.add(RevokedContentHistory(old_author_uid, new_author_uid, textversion_uid=textversion.uid))
+        DBDiscussionSession.add(RevokedContentHistory(old_author, new_author, textversion=textversion))
         DBDiscussionSession.flush()
 
     return True
