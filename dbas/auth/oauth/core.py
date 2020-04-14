@@ -1,18 +1,15 @@
-from time import sleep
-
 import logging
+from time import sleep
+from typing import Dict, Any
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid.request import Request
 from pyramid.view import view_config
-from typing import Dict, Any
 
 from dbas.auth.login import __refresh_headers_and_url
 from dbas.auth.oauth import facebook
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Group
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
-from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
@@ -49,11 +46,6 @@ def set_oauth_user(user_data, service, ui_locales) -> Dict[str, Any]:
     :return: A Dictionary with a status an error and an user object
     """
     _tn = Translator(ui_locales)
-
-    db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
-    if not db_group:
-        LOG.debug("Error occured: No db_group for users during `set_oauth_user`")
-        return {'error': _tn.get(_.errorTryLateOrContant)}
 
     ret_dict = user.set_new_oauth_user(user_data, user_data['id'], service, _tn)
 
