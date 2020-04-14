@@ -2382,17 +2382,17 @@ class RevokedContent(DiscussionBase):
     argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
     statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, author, argument=None, statement=None):
+    def __init__(self, author: User, argument: Argument = None, statement: Statement = None):
         """
         Inits a row in current revoked content table
 
-        :param author: User.uid
-        :param argument: Argument.uid
-        :param statement: Statement.uid
+        :param author: User
+        :param argument: Argument
+        :param statement: Statement
         """
-        self.author_uid = author
-        self.argument_uid = argument
-        self.statement_uid = statement
+        self.author = author
+        self.argument = argument
+        self.statement = statement
         self.timestamp = get_now()
 
 
@@ -2412,19 +2412,19 @@ class RevokedContentHistory(DiscussionBase):
     textversion: TextVersion = relationship('TextVersion', foreign_keys=[textversion_uid])
     argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
 
-    def __init__(self, old_author_uid, new_author_uid, textversion_uid=None, argument_uid=None):
+    def __init__(self, old_author: User, new_author: User, textversion: TextVersion = None, argument: Argument = None):
         """
         Inits a row in current revoked content history table
 
-        :param old_author_uid: User.uid
-        :param new_author_uid: User.uid
-        :param textversion_uid: TextVersion.uid
-        :param argument_uid: Argument.uid
+        :param old_author: User
+        :param new_author: User
+        :param textversion: TextVersion
+        :param argument: Argument
         """
-        self.old_author_uid = old_author_uid
-        self.new_author_uid = new_author_uid
-        self.textversion_uid = textversion_uid
-        self.argument_uid = argument_uid
+        self.old_author = old_author
+        self.new_author = new_author
+        self.textversion = textversion
+        self.argument = argument
 
 
 class RevokedDuplicate(DiscussionBase):
