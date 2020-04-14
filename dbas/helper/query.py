@@ -268,7 +268,7 @@ def __transfer_textversion_to_new_author(statement: Statement, old_author: User,
     :param new_author_uid: User.uid
     :return: Boolean
     """
-    LOG.debug("Textversion of %s will change author from %s to %s", statement.uid, old_author.uid, new_author.uid)
+    LOG.debug(f"Textversion of {statement.uid} will change author from {old_author.uid} to {new_author.uid}")
     db_textversion = DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == statement.uid,
                                                                    TextVersion.author_uid == old_author.uid).all()
     if not db_textversion:
