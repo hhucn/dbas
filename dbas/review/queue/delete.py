@@ -1,8 +1,9 @@
 # Adaptee for the delete queue. Every deleted statement will just be disabled.
 import logging
+from typing import Tuple, Optional
+
 import transaction
 from beaker.session import Session
-from typing import Tuple, Optional
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerDelete, ReviewDelete, ReviewDeleteReason, ReviewCanceled, \
@@ -239,7 +240,7 @@ class DeleteQueue(QueueABC):
         :return:
         """
         if db_review.statement_uid is None:
-            return get_text_for_argument_uid(db_review.argument_uid)
+            return get_text_for_argument_uid(db_review.argument.uid)
         else:
             return DBDiscussionSession.query(Statement).get(db_review.statement_uid).get_text()
 

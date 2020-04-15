@@ -10,7 +10,7 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
     User, ReviewDuplicate, ReviewSplit, ReviewMerge, ReviewMergeValues, ReviewSplitValues, \
-    PremiseGroup, Statement
+    PremiseGroup, Statement, Argument
 from dbas.review import FlaggedBy, ReviewDeleteReasons
 from dbas.review.queue import key_merge, key_split, key_duplicate, key_optimization
 from dbas.review.queue.adapter import QueueAdapter
@@ -78,7 +78,12 @@ def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons
         statement_uid = statement.uid
 
     if db_del_reason:
-        _add_delete_review(argument_uid, statement_uid, db_user, db_del_reason.uid)
+        aid = None
+        if argument_uid:
+            argument: Argument = DBDiscussionSession.query(Argument).get(argument_uid)
+            aid = argument.argument_uid
+
+        _add_delete_review(aid, statement_uid, db_user, db_del_reason.uid)
 
     elif reason_val == key_optimization:
         _add_optimization_review(argument_uid, statement_uid, db_user.uid)
