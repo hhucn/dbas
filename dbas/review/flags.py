@@ -69,10 +69,10 @@ def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons
     :return:
     """
     reason_val = reason.value if isinstance(reason, ReviewDeleteReasons) else reason
-    db_del_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason_val).first()
+    del_reason: ReviewDeleteReasons = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason_val).first()
 
-    if db_del_reason:
-        _add_delete_review(argument if argument else None, statement if statement else None, user, db_del_reason.uid)
+    if del_reason:
+        _add_delete_review(argument if argument else None, statement if statement else None, user, del_reason)
 
     elif reason_val == key_optimization:
         _add_optimization_review(argument.argument_uid if argument else None, statement.uid if statement else None,
@@ -137,19 +137,20 @@ def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User
     return flag_statement_for_merge_or_split(key, pgroup, [], db_user, tn)
 
 
-def _add_delete_review(argument: Optional[Argument], statement: Optional[Statement], user: User, reason_uid):
+def _add_delete_review(argument: Optional[Argument], statement: Optional[Statement], user: User,
+                       reason: Optional[ReviewDeleteReasons]):
     """
     Adds a ReviewDelete row
 
     :param argument: Argument.uid
     :param statement_uid: Statement.uid
     :param user: User.uid
-    :param reason_uid: ReviewDeleteReason.uid
+    :param reason: ReviewDeleteReason.uid
     :return: None
     """
     LOG.debug("Flag argument/statement %s/%s by user %s for delete", argument.argument_uid if argument else None,
               statement.uid if statement else None, user)
-    review_delete = ReviewDelete(detector=user, argument=argument, statement=statement, reason=reason_uid)
+    review_delete = ReviewDelete(detector=user, argument=argument, statement=statement, reason=reason)
     DBDiscussionSession.add(review_delete)
     DBDiscussionSession.flush()
     transaction.commit()
