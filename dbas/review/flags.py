@@ -36,17 +36,19 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
     """
     tn = Translator(ui_locales)
 
-    argument_uid = uid if is_argument else None
-    statement_uid = uid if not is_argument else None
+    argument: Optional[Argument] = None
+    if is_argument:
+        argument: Argument = DBDiscussionSession.query(Argument).get(uid)
 
-    statement = None
-    if statement_uid is not None:
-        statement = DBDiscussionSession.query(Statement).get(statement_uid)
+    statement: Optional[Statement] = None
+    if not is_argument:
+        statement: Statement = DBDiscussionSession.query(Statement).get(uid)
 
     # was this already flagged?
-    flag_status = QueueAdapter(db_user=db_user).element_in_queue(argument_uid=argument_uid,
-                                                                 statement_uid=statement_uid,
-                                                                 premisegroup_uid=None)
+    flag_status = QueueAdapter(db_user=db_user).element_in_queue(
+        argument_uid=argument.argument_uid if argument else None,
+        statement_uid=statement.uid if statement else None,
+        premisegroup_uid=None)
     if flag_status:
         LOG.debug("Already flagged by %s", flag_status)
         if flag_status == FlaggedBy.user:
@@ -55,16 +57,16 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
             info = tn.get(_.alreadyFlaggedByOthers)
         return {'success': '', 'info': info}
 
-    return _add_flag(reason, argument_uid, statement, extra_uid, db_user, tn)
+    return _add_flag(reason, argument, statement, extra_uid, db_user, tn)
 
 
-def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument_uid: Union[int, None],
+def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument: Optional[Argument],
               statement: Optional[Statement], extra_uid: Optional[Statement], db_user: User, tn: Translator) -> dict:
     """
 
     :param reason:
-    :param argument_uid:
-    :param statement_uid:
+    :param argument:
+    :param statement:
     :param extra_uid:
     :param db_user:
     :param tn:
@@ -73,20 +75,13 @@ def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons
     reason_val = reason.value if isinstance(reason, ReviewDeleteReasons) else reason
     db_del_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason_val).first()
 
-    statement_uid = None
-    if statement is not None:
-        statement_uid = statement.uid
-
     if db_del_reason:
-        aid = None
-        if argument_uid:
-            argument: Argument = DBDiscussionSession.query(Argument).get(argument_uid)
-            aid = argument.argument_uid
-
-        _add_delete_review(aid, statement_uid, db_user, db_del_reason.uid)
+        _add_delete_review(argument.argument_uid if argument else None, statement.uid if statement else None, db_user,
+                           db_del_reason.uid)
 
     elif reason_val == key_optimization:
-        _add_optimization_review(argument_uid, statement_uid, db_user.uid)
+        _add_optimization_review(argument.argument_uid if argument else None, statement.uid if statement else None,
+                                 db_user.uid)
 
     elif reason_val == key_duplicate:
         if statement.uid == extra_uid.uid:
