@@ -239,7 +239,7 @@ class DeleteQueue(QueueABC):
         :param db_review: current review element
         :return:
         """
-        if db_review.statement_uid is None:
+        if db_review.statement is None:
             return get_text_for_argument_uid(db_review.argument.uid)
         else:
             return DBDiscussionSession.query(Statement).get(db_review.statement_uid).get_text()
