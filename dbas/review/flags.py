@@ -142,7 +142,7 @@ def _add_delete_review(argument: Optional[Argument], statement_uid, user: User, 
     """
     Adds a ReviewDelete row
 
-    :param argument_uid: Argument.uid
+    :param argument: Argument.uid
     :param statement_uid: Statement.uid
     :param user: User.uid
     :param reason_uid: ReviewDeleteReason.uid

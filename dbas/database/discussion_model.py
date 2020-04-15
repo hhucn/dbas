@@ -1577,7 +1577,7 @@ class ReviewDelete(AbstractReviewCase):
         :param is_executed: Boolean
         """
         self.detector: User = detector
-        self.argument = argument
+        self.argument: Optional[Argument] = argument
         self.statement_uid = statement
         self.reason_uid = reason
         self.timestamp = get_now()
