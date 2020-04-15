@@ -12,7 +12,7 @@ from pyramid.registry import Registry
 
 from dbas.auth.login import PW_FOR_LDAP_USER
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Language, Group, Issue, Argument
+from dbas.database.discussion_model import User, Language, Issue, Argument
 from dbas.handler import user
 from dbas.handler.notification import count_of_new_notifications, get_box_for
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode, \
@@ -193,7 +193,8 @@ class DictionaryHelper():
 
         return return_dict
 
-    def prepare_settings_dict(self, pw_change_success, old_pw, new_pw, confirm_pw, pw_change_error, message, db_user,
+    def prepare_settings_dict(self, pw_change_success, old_pw, new_pw, confirm_pw, pw_change_error, message,
+                              db_user: User,
                               main_page, use_with_ldap):
         """
         Prepares the dictionary for settings.ow
@@ -216,7 +217,7 @@ class DictionaryHelper():
         arg_vote, stat_vote = user.get_mark_count_of(db_user)
         arg_clicks, stat_clicks = user.get_click_count_of(db_user)
         public_nick = db_user.global_nickname
-        db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
+        db_group = db_user.group
         db_settings = db_user.settings
         db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 

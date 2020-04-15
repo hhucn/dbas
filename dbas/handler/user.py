@@ -553,12 +553,14 @@ def _clicked_argument_to_dict(clicked_argument: ClickedArgument, lang: str) -> D
     :return: A dictionary representing `clicked_argument`.
     """
 
-    return {'uid': clicked_argument.uid,
-            'timestamp': sql_timestamp_pretty_print(clicked_argument.timestamp, lang),
-            'is_up_vote': clicked_argument.is_up_vote,
-            'is_valid': clicked_argument.is_valid,
-            'argument_uid': clicked_argument.argument_uid,
-            'content': get_text_for_argument_uid(clicked_argument.argument_uid, lang)}
+    return {
+        'uid': clicked_argument.uid,
+        'timestamp': sql_timestamp_pretty_print(clicked_argument.timestamp, lang),
+        'is_up_vote': clicked_argument.is_up_vote,
+        'is_valid': clicked_argument.is_valid,
+        'argument_uid': clicked_argument.argument_uid,
+        'content': get_text_for_argument_uid(clicked_argument.argument_uid, lang)
+    }
 
 
 def get_information_of(user: User, lang: str) -> Dict[str, Any]:
@@ -761,19 +763,13 @@ def set_new_user(mailer: Mailer, user_data: Dict[str, Any], password: str, _tn: 
     """
     # copy the dict to not change the mutable structure
     temporary_user = dict(user_data)
-    db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
-
-    # does the group exists?
-    if not db_group:
-        LOG.debug("Internal error occurred")
-        return {'success': False, 'error': _tn.get(Keywords.errorTryLateOrContant), 'user': None}
 
     if DBDiscussionSession.query(User).filter(User.nickname == temporary_user['nickname']).first():
         LOG.debug("User already exists")
         return {'success': False, 'error': _tn.get(Keywords.nickIsTaken), 'user': None}
 
     temporary_user['password'] = password
-    temporary_user['db_group'] = db_group
+    temporary_user['db_group'] = Group.USER
 
     success, info, db_new_user = __create_new_user(temporary_user, _tn.get_lang())
 
@@ -783,7 +779,7 @@ def set_new_user(mailer: Mailer, user_data: Dict[str, Any], password: str, _tn: 
         body = _tn.get(Keywords.accountWasRegistered).format(temporary_user['firstname'], temporary_user['lastname'],
                                                              temporary_user['email'])
         send_mail(mailer, subject, body, temporary_user['email'], _tn.get_lang())
-        send_welcome_notification(db_new_user.uid, _tn)
+        send_welcome_notification(db_new_user, _tn)
 
         LOG.debug("Set new user in db")
         return {'success': success, 'error': '', 'user': db_new_user}
@@ -808,12 +804,6 @@ def set_new_oauth_user(user_data: Dict[str, Any], oauth_id: str, provider: str, 
         created user if the transaction was successful.
     """
     temporary_user = dict(user_data)
-    db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
-
-    # does the group exists?
-    if not db_group:
-        LOG.debug("Internal error occurred")
-        return {'success': False, 'error': _tn.get(Keywords.errorTryLateOrContant), 'user': None}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter(User.oauth_provider == str(provider),
@@ -830,7 +820,7 @@ def set_new_oauth_user(user_data: Dict[str, Any], oauth_id: str, provider: str, 
         return {'success': False, 'error': _tn.get(Keywords.nickIsTaken), 'user': None}
 
     temporary_user['password'] = str(uuid.uuid4().hex)
-    temporary_user['db_group'] = db_group
+    temporary_user['db_group'] = Group.USER
 
     success, info, db_new_user = __create_new_user(temporary_user, _tn.get_lang(), oauth_provider=provider,
                                                    oauth_provider_id=oauth_id)
@@ -952,6 +942,4 @@ def get_list_of_admins() -> List[User]:
 
     :return: A List of Users. Every user belongs to the 'admin' group.
     """
-    db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
-    db_admins = DBDiscussionSession.query(User).filter_by(group_uid=db_admin_group.uid).all()
-    return db_admins
+    return DBDiscussionSession.query(User).filter(User.group == Group.ADMIN).all()

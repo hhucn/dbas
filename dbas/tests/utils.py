@@ -58,7 +58,7 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         self.user_torben: User = DBDiscussionSession.query(User).get(9)
         self.user_antonia: User = DBDiscussionSession.query(User).get(28)
         self.statement_reference: StatementReference = DBDiscussionSession.query(StatementReference).get(2)
-        self.user_group: Group = DBDiscussionSession.query(Group).filter_by(name='users').first()
+        self.user_group: Group = Group.USER
         DBDiscussionSession.query(Argument).get(1).set_disabled(True)
 
     def tearDown(self):

@@ -268,7 +268,7 @@ def insert_as_statement(text: str, user: User, db_issue: Issue, is_start=False) 
     new_statement, is_duplicate = set_statement(text, user, is_start, db_issue)
 
     # add marked statement
-    DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=user.uid))
+    DBDiscussionSession.add(MarkedStatement(statement=new_statement, user=user))
     DBDiscussionSession.add(SeenStatement(statement=new_statement, user=user))
 
     return new_statement

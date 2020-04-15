@@ -1,6 +1,7 @@
 """
 D-BAS database Model
 """
+import enum
 import logging
 import warnings
 from abc import abstractmethod, ABC, ABCMeta
@@ -10,7 +11,7 @@ from typing import List, Set, Optional, Dict, Any, Union
 import arrow
 import bcrypt
 from slugify import slugify
-from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String, CheckConstraint
+from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey, DateTime, String, CheckConstraint, Enum
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -21,6 +22,13 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
+
+
+class Group(enum.Enum):
+    ADMIN = 1
+    AUTHOR = 2
+    USER = 3
+    SPECIAL = 4
 
 
 def sql_timestamp_pretty_print(ts, lang: str = 'en', humanize: bool = True, with_exact_time: bool = False):
@@ -198,27 +206,6 @@ class Language(DiscussionBase):
         return DBDiscussionSession.query(cls).filter(cls.ui_locales == lang).one()
 
 
-class Group(DiscussionBase):
-    """
-    group-table with several columns.
-    Each group has a name
-    """
-    __tablename__ = 'groups'
-    uid: int = Column(Integer, primary_key=True)
-    name: str = Column(Text, nullable=False, unique=True)
-
-    def __init__(self, name):
-        """
-        Initializes a row in current group-table
-        """
-        self.name = name
-
-    @classmethod
-    def by_name(cls):
-        """Return a query of positions sorted by text."""
-        return DBDiscussionSession.query(Group).order_by(Group.name)
-
-
 class User(DiscussionBase):
     """
     User-table with several columns.
@@ -232,14 +219,14 @@ class User(DiscussionBase):
     email: str = Column(Text, nullable=False)
     gender: str = Column(Text, nullable=False)
     password: str = Column(Text, nullable=False)
-    group_uid: int = Column(Integer, ForeignKey('groups.uid'))
+    group = Column(Enum(Group), nullable=False, default=Group.USER)
     last_action = Column(ArrowType, default=get_now())
     last_login = Column(ArrowType, default=get_now())
     registered = Column(ArrowType, default=get_now())
     oauth_provider: str = Column(Text, nullable=True)
     oauth_provider_id: str = Column(Text, nullable=True)
 
-    group: 'Group' = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
+    # group: 'Group' = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
     history: List['History'] = relationship('History', back_populates='author', order_by='History.timestamp')
     participates_in: List['Issue'] = relationship('Issue', secondary='user_participation',
                                                   back_populates='participating_users')
@@ -251,7 +238,9 @@ class User(DiscussionBase):
     clicked_arguments: List['ClickedArgument'] = relationship('ClickedArgument', back_populates='user')
 
     def __init__(self, firstname: str, surname: str, nickname: str, email: str, password: str, gender: str,
-                 group: 'Group', oauth_provider: Optional[str] = None, oauth_provider_id: Optional[str] = None):
+                 group: Group = Group.USER,
+                 oauth_provider: Optional[str] = None,
+                 oauth_provider_id: Optional[str] = None):
         """
         Initializes a row in current user-table
 
@@ -351,29 +340,21 @@ class User(DiscussionBase):
 
         :return: True, if the user is member of the admin group
         """
-        return DBDiscussionSession.query(Group).filter_by(name='admins').first().uid == self.group_uid
-
-    def set_group(self, group_name: str):
-        """
-        Sets the group of a user based of the name for the group.
-        :param group_name:
-        :return:
-        """
-        self.group = DBDiscussionSession.query(Group).filter_by(name=group_name).one()
+        return self.group == Group.ADMIN
 
     def promote_to_admin(self):
         """
         Promotes the user to an admin. WOW
         :return:
         """
-        self.set_group("admins")
+        self.group = Group.ADMIN
 
     def demote_to_user(self):
         """
         Demotes the user to a regular user.
         :return:
         """
-        self.set_group("users")
+        self.group = Group.USER
 
     def is_special(self):
         """
@@ -381,7 +362,7 @@ class User(DiscussionBase):
 
         :return: True, if the user is member of the admin group
         """
-        return DBDiscussionSession.query(Group).filter_by(name='specials').first().uid == self.group_uid
+        return self.group == Group.SPECIAL
 
     def is_author(self):
         """
@@ -389,7 +370,7 @@ class User(DiscussionBase):
 
         :return: True, if the user is member of the authors group
         """
-        return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
+        return self.group == Group.AUTHOR
 
     @hybrid_property
     def accessible_issues(self) -> List['Issue']:
@@ -997,7 +978,7 @@ class Premise(DiscussionBase):
         self.issue = issue
         self.is_disabled = is_disabled
 
-    def set_disabled(self, is_disabled: Boolean):
+    def set_disabled(self, is_disabled: bool):
         """
         Disables current premise
 
@@ -1024,18 +1005,12 @@ class Premise(DiscussionBase):
         """
         self.premisegroup = premisegroup
 
-    def get_text(self, html: bool = False) -> str:
+    def get_text(self) -> Optional[str]:
         """
         Gets the current premise text from the statement, without trailing punctuation.
-
-        :param html: If True, returns a html span for coloring.
         :return:
         """
-        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
-        return db_statement.get_text(html)
-
-    def get_html(self) -> str:
-        return self.get_text(html=True)
+        return self.statement.get_text()
 
     def to_dict(self):
         """
@@ -1090,8 +1065,8 @@ class Argument(DiscussionBase, GraphNode, metaclass=GraphNodeMeta):
     Additionally there is a relation, timestamp, author, ...
     """
     __tablename__ = 'arguments'
-    __table_args__ = (CheckConstraint("ck_arguments_must-have-descendent",
-                                      '(argument_uid is not null) != (conclusion_uid is not null)'),)
+    __table_args__ = (CheckConstraint('(argument_uid is not null) != (conclusion_uid is not null)',
+                                      "ck_arguments_must-have-descendent"),)
     uid: int = Column(Integer, primary_key=True)
     premisegroup_uid: int = Column(Integer, ForeignKey('premisegroups.uid'), nullable=False)
     conclusion_uid: int = Column(Integer, ForeignKey('statements.uid'), nullable=True)
@@ -1469,15 +1444,15 @@ class MarkedStatement(DiscussionBase):
     statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
     user: User = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, statement, user):
+    def __init__(self, statement: 'Statement', user: 'User'):
         """
         Inits a row in current marked statement table
 
         :param statement: Statement.uid
         :param user: User.uid
         """
-        self.statement_uid = statement
-        self.author_uid = user
+        self.statement: Statement = statement
+        self.user: User = user
         self.timestamp = get_now()
 
     def to_dict(self):
@@ -1510,24 +1485,25 @@ class Message(DiscussionBase):
     sender: User = relationship('User', foreign_keys=[from_author_uid])
     receiver: User = relationship('User', foreign_keys=[to_author_uid])
 
-    def __init__(self, from_author_uid, to_author_uid, topic, content, is_inbox=True, read=False):
+    def __init__(self, sender: 'User', receiver: 'User', topic: str, content: str, is_inbox: bool = True,
+                 read: bool = False):
         """
         Inits a row in current message table
 
-        :param from_author_uid: user.uid
-        :param to_author_uid: user.uid
+        :param sender: user.uid
+        :param receiver: user.uid
         :param topic: String
         :param content: String
         :param is_inbox: Boolean
         :param read: Boolean
         """
-        self.from_author_uid = from_author_uid
-        self.to_author_uid = to_author_uid
-        self.topic = topic
-        self.content = content
-        self.timestamp = get_now()
-        self.read = read
-        self.is_inbox = is_inbox
+        self.sender: 'User' = sender
+        self.receiver: 'User' = receiver
+        self.topic: str = topic
+        self.content: str = content
+        self.timestamp: ArrowType = get_now()
+        self.read: bool = read
+        self.is_inbox: bool = is_inbox
 
     def set_read(self, was_read):
         """
@@ -2388,17 +2364,17 @@ class RevokedContent(DiscussionBase):
     argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
     statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, author, argument=None, statement=None):
+    def __init__(self, author: User, argument: Argument = None, statement: Statement = None):
         """
         Inits a row in current revoked content table
 
-        :param author: User.uid
-        :param argument: Argument.uid
-        :param statement: Statement.uid
+        :param author: User
+        :param argument: Argument
+        :param statement: Statement
         """
-        self.author_uid = author
-        self.argument_uid = argument
-        self.statement_uid = statement
+        self.author = author
+        self.argument = argument
+        self.statement = statement
         self.timestamp = get_now()
 
 
@@ -2418,19 +2394,19 @@ class RevokedContentHistory(DiscussionBase):
     textversion: TextVersion = relationship('TextVersion', foreign_keys=[textversion_uid])
     argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
 
-    def __init__(self, old_author_uid, new_author_uid, textversion_uid=None, argument_uid=None):
+    def __init__(self, old_author: User, new_author: User, textversion: TextVersion = None, argument: Argument = None):
         """
         Inits a row in current revoked content history table
 
-        :param old_author_uid: User.uid
-        :param new_author_uid: User.uid
-        :param textversion_uid: TextVersion.uid
-        :param argument_uid: Argument.uid
+        :param old_author: User
+        :param new_author: User
+        :param textversion: TextVersion
+        :param argument: Argument
         """
-        self.old_author_uid = old_author_uid
-        self.new_author_uid = new_author_uid
-        self.textversion_uid = textversion_uid
-        self.argument_uid = argument_uid
+        self.old_author = old_author
+        self.new_author = new_author
+        self.textversion = textversion
+        self.argument = argument
 
 
 class RevokedDuplicate(DiscussionBase):
@@ -2449,23 +2425,24 @@ class RevokedDuplicate(DiscussionBase):
     review: ReviewDuplicate = relationship('ReviewDuplicate', foreign_keys=[review_uid])
     argument: Argument = relationship('Argument', foreign_keys=[argument_uid])
     statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
-    premises: Premise = relationship('Premise', foreign_keys=[premise_uid])
+    premise: Premise = relationship('Premise', foreign_keys=[premise_uid])
 
-    def __init__(self, review, bend_position=False, statement=None, conclusion_of_argument=None, premise=None):
+    def __init__(self, review: ReviewMerge, bend_position: bool = False, statement: Statement = None,
+                 conclusion_of_argument: Argument = None, premise: Premise = None):
         """
         Inits a row in current revoked duplicate table
 
-        :param review: ReviewDuplicate.uid
+        :param review: ReviewDuplicate
         :param bend_position: Boolean
-        :param statement: Statement.uid
-        :param conclusion_of_argument: Argument.uid
-        :param premise: Premise.uid
+        :param statement: Statement
+        :param conclusion_of_argumnt: Argument
+        :param premise: Premise
         """
-        self.review_uid = review
+        self.review = review
         self.bend_position = bend_position
-        self.statement_uid = statement
-        self.argument_uid = conclusion_of_argument
-        self.premise_uid = premise
+        self.statement = statement
+        self.argument = conclusion_of_argument
+        self.premise = premise
         self.timestamp = get_now()
 
 
@@ -2543,13 +2520,13 @@ class StatementReplacementsByPremiseGroupSplit(DiscussionBase):
     old_statement: Statement = relationship('Statement', foreign_keys=[old_statement_uid])
     new_statement: Statement = relationship('Statement', foreign_keys=[new_statement_uid])
 
-    def __init__(self, review, old_statement, new_statement):
+    def __init__(self, review: ReviewSplit, old_statement: Statement, new_statement: Statement):
         """
         Inits a row in current table
 
-        :param review: ReviewSplit.uid
-        :param old_statement: Statement.uid
-        :param new_statement: Statement.uid
+        :param review: ReviewSplit
+        :param old_statement: Statement
+        :param new_statement: Statement
         """
         self.review_uid = review
         self.old_statement_uid = old_statement
@@ -2572,17 +2549,17 @@ class StatementReplacementsByPremiseGroupMerge(DiscussionBase):
     old_statement: Statement = relationship('Statement', foreign_keys=[old_statement_uid])
     new_statement: Statement = relationship('Statement', foreign_keys=[new_statement_uid])
 
-    def __init__(self, review, old_statement, new_statement):
+    def __init__(self, review: ReviewMerge, old_statement: Statement, new_statement: Statement):
         """
         Inits a row in current table
 
-        :param review: ReviewMerge.uid
-        :param old_statement: Statement.uid
-        :param new_statement: Statement.uid
+        :param review: ReviewMerge
+        :param old_statement: Statement
+        :param new_statement: Statement
         """
-        self.review_uid = review
-        self.old_statement_uid = old_statement
-        self.new_statement_uid = new_statement
+        self.review = review
+        self.old_statement = old_statement
+        self.new_statement = new_statement
         self.timestamp = get_now()
 
 
@@ -2698,7 +2675,7 @@ class DecisionProcess(DiscussionBase):
     issue = relationship(Issue,
                          back_populates='decision_process')  # backref=backref('decision_process', cascade="all, delete-orphan"))
 
-    def __init__(self, issue_id: int, budget: int, host: str, currency_symbol="€",
+    def __init__(self, issue: Issue, budget: int, host: str, currency_symbol="€",
                  positions_end: datetime = None,
                  votes_start: datetime = None,
                  votes_end: datetime = None,
@@ -2706,7 +2683,7 @@ class DecisionProcess(DiscussionBase):
                  min_position_cost: int = 0):
         if budget <= 0:
             raise ValueError("The budget has to be greater than 0!")
-        self.issue_id = issue_id
+        self.issue = issue
         self.budget = budget
         self.host = host
         self.currency_symbol = currency_symbol
