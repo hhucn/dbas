@@ -20,13 +20,14 @@ from dbas.strings.translator import Translator
 LOG = logging.getLogger(__name__)
 
 
-def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], db_user: User,
+def flag_element(argument_or_statement: Union[Argument, Statement],
+                 reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], db_user: User,
                  is_argument: bool, ui_locales: str, extra_uid: Statement = None) -> dict:
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
 
-    :param uid: Uid of the argument/statement, which should be flagged
+    :param argument_or_statement: argument/statement, which should be flagged
     :param reason: String which describes the reason
     :param db_user: User
     :param is_argument: Boolean
@@ -36,18 +37,10 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
     """
     tn = Translator(ui_locales)
 
-    argument: Optional[Argument] = None
-    if is_argument:
-        argument: Argument = DBDiscussionSession.query(Argument).get(uid)
-
-    statement: Optional[Statement] = None
-    if not is_argument:
-        statement: Statement = DBDiscussionSession.query(Statement).get(uid)
-
     # was this already flagged?
     flag_status = QueueAdapter(db_user=db_user).element_in_queue(
-        argument_uid=argument.argument_uid if argument else None,
-        statement_uid=statement.uid if statement else None,
+        argument_uid=argument_or_statement.argument_uid if is_argument else None,  # is argument
+        statement_uid=argument_or_statement.uid if not is_argument else None,  # not is_argument
         premisegroup_uid=None)
     if flag_status:
         LOG.debug("Already flagged by %s", flag_status)
@@ -57,7 +50,8 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
             info = tn.get(_.alreadyFlaggedByOthers)
         return {'success': '', 'info': info}
 
-    return _add_flag(reason, argument, statement, extra_uid, db_user, tn)
+    return _add_flag(reason, argument_or_statement if is_argument else None,
+                     argument_or_statement if not is_argument else None, extra_uid, db_user, tn)
 
 
 def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument: Optional[Argument],
