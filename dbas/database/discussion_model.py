@@ -2254,7 +2254,7 @@ class ReputationHistory(DiscussionBase):
         :param reputator: User
         :param reputation: ReputationReason
         """
-        self.reputator_uid = reputator.uid
+        self.user = reputator
         self.reputation_uid = reputation.uid
         self.timestamp = get_now()
 
