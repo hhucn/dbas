@@ -149,7 +149,7 @@ def add_reputation_for(db_user: User, db_reason: ReputationReason):
             return False
 
     LOG.debug("Add %s for %s", db_reason.reason, db_user.nickname)
-    new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
+    new_rep = ReputationHistory(reputator=db_user, reputation=db_reason)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()
     return True
