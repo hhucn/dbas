@@ -2247,15 +2247,15 @@ class ReputationHistory(DiscussionBase):
     reputations: 'ReputationReason' = relationship('ReputationReason', foreign_keys=[reputation_uid])  # deprecated
     reason_for_reputation: 'ReputationReason' = relationship('ReputationReason', foreign_keys=[reputation_uid])
 
-    def __init__(self, reputator, reputation):
+    def __init__(self, reputator: User, reputation: 'ReputationReason'):
         """
         Inits a row in current reputation history table
 
-        :param reputator: User.uid
-        :param reputation: ReputationReason.uid
+        :param reputator: User
+        :param reputation: ReputationReason
         """
-        self.reputator_uid = reputator
-        self.reputation_uid = reputation
+        self.user = reputator
+        self.reputation_uid = reputation.uid
         self.timestamp = get_now()
 
 

@@ -32,7 +32,7 @@ class TestReviewReputationHelper(TestCaseWithConfig):
         self.assertTrue(has_all_rights)
 
     def test_add_reputation_for(self):
-        DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=9).delete()
+        DBDiscussionSession.query(ReputationHistory).filter_by(user=self.user_torben).delete()
 
         for reason in ReputationReasons:
             db_reason = get_reason_by_action(reason)
@@ -41,7 +41,7 @@ class TestReviewReputationHelper(TestCaseWithConfig):
         db_reason = get_reason_by_action(ReputationReasons.first_argument_click)
         self.assertFalse(add_reputation_for(self.user_torben, db_reason))
 
-        DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=9).delete()
+        DBDiscussionSession.query(ReputationHistory).filter_by(user=self.user_torben).delete()
         DBDiscussionSession.flush()
         transaction.commit()
 
@@ -61,7 +61,7 @@ class TestReviewReputationHelper(TestCaseWithConfig):
         db_reason = get_reason_by_action(ReputationReasons.success_flag)
         self.assertFalse(add_reputation_and_send_popup(self.user_torben, db_reason, 'asd', Translator('en')))
 
-        DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=9).delete()
+        DBDiscussionSession.query(ReputationHistory).filter_by(user=self.user_torben).delete()
         DBDiscussionSession.flush()
         transaction.commit()
 
@@ -86,7 +86,7 @@ class TestReviewReputationHelper(TestCaseWithConfig):
 
         # now we have access
         self.assertTrue(has_access_to_review_system(self.user_tobi))
-        db_last = DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=2).order_by(
+        db_last = DBDiscussionSession.query(ReputationHistory).filter_by(user=self.user_tobi).order_by(
             ReputationHistory.uid.asc()).first()
         DBDiscussionSession.query(ReputationHistory).filter_by(uid=db_last.uid).delete()
 
