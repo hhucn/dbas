@@ -2291,15 +2291,15 @@ class OptimizationReviewLocks(DiscussionBase):
     author: User = relationship('User', foreign_keys=[author_uid])
     review_optimization: ReviewOptimization = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
 
-    def __init__(self, author, review_optimization):
+    def __init__(self, author: User, review_optimization: ReviewOptimization):
         """
         Inits a row in current optimization review locks table
 
-        :param author: User.uid
-        :param review_optimization: ReviewOptimization.uid
+        :param author: User
+        :param review_optimization: ReviewOptimization
         """
-        self.author_uid = author
-        self.review_optimization_uid = review_optimization
+        self.author = author
+        self.review_optimization = review_optimization
         self.timestamp = get_now()
 
 
