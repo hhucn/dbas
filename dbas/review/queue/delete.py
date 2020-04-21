@@ -232,17 +232,17 @@ class DeleteQueue(QueueABC):
         entry['reason'] = db_reason.reason
         return entry
 
-    def get_text_of_element(self, db_review: ReviewDelete) -> str:
+    def get_text_of_element(self, review: ReviewDelete) -> str:
         """
         Returns full text of the given element
 
-        :param db_review: current review element
+        :param review: current review element
         :return:
         """
-        if db_review.statement is None:
-            return get_text_for_argument_uid(db_review.argument.uid)
+        if review.statement is None:
+            return get_text_for_argument_uid(review.argument.uid)
         else:
-            return DBDiscussionSession.query(Statement).get(db_review.statement_uid).get_text()
+            return DBDiscussionSession.query(Statement).get(review.statement_uid).get_text()
 
     def get_all_votes_for(self, db_review: ReviewDelete, application_url: str) -> Tuple[list, list]:
         """

@@ -1571,10 +1571,11 @@ class ReviewDelete(AbstractReviewCase):
         """
         Inits a row in current review delete table
 
-        :param detector: User.uid
-        :param argument: Argument.uid
-        :param reason: ReviewDeleteReason.uid
-        :param is_executed: Boolean
+        :param detector: User who detected the review
+        :param argument: Argument which should be deleted
+        :param statement: Statement which should be deleted
+        :param reason: ReviewDeleteReason why the argument should be deleted
+        :param is_executed: Is the delete executed
         """
         self.detector: User = detector
         self.argument: Optional[Argument] = argument

@@ -142,10 +142,10 @@ def _add_delete_review(argument: Optional[Argument], statement: Optional[Stateme
     """
     Adds a ReviewDelete row
 
-    :param argument: Argument.uid
-    :param statement_uid: Statement.uid
-    :param user: User.uid
-    :param reason: ReviewDeleteReason.uid
+    :param argument: Argument to be deleted
+    :param statement: Statement to be deleted
+    :param user: User who wants to delete the argument or statement
+    :param reason: The reason for the deletion
     :return: None
     """
     LOG.debug("Flag argument/statement %s/%s by user %s for delete", argument.argument_uid if argument else None,
