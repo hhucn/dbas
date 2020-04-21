@@ -921,7 +921,7 @@ def delete(user: User) -> None:
     for element in rev_cntnt_hisy_new:
         element.new_author_uid = anonym_uid
 
-    DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=user.uid).delete()
+    DBDiscussionSession.query(ReputationHistory).filter_by(user=user).delete()
     DBDiscussionSession.query(SeenStatement).filter_by(user=user).delete()
     DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user.uid).delete()
     DBDiscussionSession.query(History).filter_by(author_uid=user.uid).delete()

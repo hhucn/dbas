@@ -291,7 +291,7 @@ class OptimizationQueue(QueueABC):
                 'is_locked': True
             }
 
-        DBDiscussionSession.add(OptimizationReviewLocks(user.uid, review.uid))
+        DBDiscussionSession.add(OptimizationReviewLocks(user, review))
         transaction.commit()
 
         LOG.debug("Locking review %s".format(review))

@@ -115,7 +115,7 @@ def get_reputation_of(db_user: User, only_today=False):
         today = arrow.utcnow().to('Europe/Berlin')
         db_reputation = db_reputation.filter(ReputationHistory.timestamp >= today)
 
-    db_reputation = db_reputation.filter_by(reputator_uid=db_user.uid) \
+    db_reputation = db_reputation.filter_by(user=db_user) \
         .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
         .all()
 
@@ -143,13 +143,13 @@ def add_reputation_for(db_user: User, db_reason: ReputationReason):
     if '_first_' in db_reason.reason:
         db_already_farmed = DBDiscussionSession.query(ReputationHistory).filter(
             ReputationHistory.reputation_uid == db_reason.uid,
-            ReputationHistory.reputator_uid == db_user.uid).first()
+            ReputationHistory.user == db_user).first()
         if db_already_farmed:
             LOG.debug("Karma already farmed")
             return False
 
     LOG.debug("Add %s for %s", db_reason.reason, db_user.nickname)
-    new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
+    new_rep = ReputationHistory(reputator=db_user, reputation=db_reason)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()
     return True
@@ -165,7 +165,7 @@ def has_access_to_review_system(db_user: User):
     if db_user.nickname == nick_of_anonymous_user:
         return False
 
-    db_points = DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(
+    db_points = DBDiscussionSession.query(ReputationHistory).filter_by(user=db_user).join(
         ReputationReason).all()
     points = _collect_points(db_points)
     return points >= smallest_border
@@ -214,7 +214,7 @@ def get_history_of(db_user: User, translator: Translator):
     """
 
     db_reputation = DBDiscussionSession.query(ReputationHistory) \
-        .filter_by(reputator_uid=db_user.uid) \
+        .filter_by(user=db_user) \
         .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
         .order_by(ReputationHistory.uid.asc()) \
         .all()
