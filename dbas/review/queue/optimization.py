@@ -443,7 +443,8 @@ class OptimizationQueue(QueueABC):
         # add reviews
         new_edits = list()
         for argument_uid in argument_dict:
-            DBDiscussionSession.add(ReviewEdit(detector=user, argument=argument_uid))
+            argument: Argument = DBDiscussionSession.query(Argument).get(argument_uid)
+            DBDiscussionSession.add(ReviewEdit(detector=user, argument=argument))
             DBDiscussionSession.flush()
             transaction.commit()
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(

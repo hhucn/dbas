@@ -1634,18 +1634,19 @@ class ReviewEdit(AbstractReviewCase):
     argument: Optional[Argument] = relationship('Argument', foreign_keys=[argument_uid])
     statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, detector: 'User', argument=None, statement=None, is_executed=False, is_revoked=False):
+    def __init__(self, detector: 'User', argument: Optional['Argument'] = None, statement=None, is_executed=False,
+                 is_revoked=False):
         """
         Inits a row in current review edit table
 
-        :param detector: User.uid
-        :param argument: Argument.uid
+        :param detector: User who made a ReviewEdit
+        :param argument: Argument to be edited
         :param statement: Statement.uid
         :param is_executed: Boolean
         :param is_revoked: Boolean
         """
         self.detector: 'User' = detector
-        self.argument_uid = argument
+        self.argument: Optional['Argument'] = argument
         self.statement_uid = statement
         self.timestamp = get_now()
         self.is_executed = is_executed
