@@ -1564,26 +1564,28 @@ class ReviewDelete(AbstractReviewCase):
     detector: User = relationship('User', foreign_keys=[detector_uid])
     argument: Optional[Argument] = relationship('Argument', foreign_keys=[argument_uid])
     statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
-    reason: 'ReviewDeleteReason' = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
+    reason: Optional['ReviewDeleteReason'] = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
 
-    def __init__(self, detector, argument=None, statement=None, reason=None, is_executed=False, is_revoked=False):
+    def __init__(self, detector: User, argument: Optional[Argument] = None, statement: Optional[Statement] = None,
+                 reason: Optional['ReviewDeleteReason'] = None, is_executed: bool = False, is_revoked: bool = False):
         """
         Inits a row in current review delete table
 
-        :param detector: User.uid
-        :param argument: Argument.uid
-        :param reason: ReviewDeleteReason.uid
-        :param is_executed: Boolean
+        :param detector: User who detected the review
+        :param argument: Argument which should be deleted
+        :param statement: Statement which should be deleted
+        :param reason: ReviewDeleteReason why the argument should be deleted
+        :param is_executed: Is the delete executed
         """
-        self.detector_uid = detector
-        self.argument_uid = argument
-        self.statement_uid = statement
-        self.reason_uid = reason
-        self.timestamp = get_now()
-        self.is_executed = is_executed
-        self.is_revoked = is_revoked
+        self.detector: User = detector
+        self.argument: Optional[Argument] = argument
+        self.statement: Optional[Statement] = statement
+        self.reason: Optional['ReviewDeleteReason'] = reason
+        self.timestamp: ArrowType = get_now()
+        self.is_executed: bool = is_executed
+        self.is_revoked: bool = is_revoked
 
-    def set_executed(self, is_executed):
+    def set_executed(self, is_executed: bool):
         """
         Set this review as executed
 
@@ -1592,7 +1594,7 @@ class ReviewDelete(AbstractReviewCase):
         """
         self.is_executed = is_executed
 
-    def set_revoked(self, is_revoked):
+    def set_revoked(self, is_revoked: bool):
         """
         Set this review as revoked
 

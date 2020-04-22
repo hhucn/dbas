@@ -10,7 +10,7 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
     User, ReviewDuplicate, ReviewSplit, ReviewMerge, ReviewMergeValues, ReviewSplitValues, \
-    PremiseGroup, Statement
+    PremiseGroup, Statement, Argument
 from dbas.review import FlaggedBy, ReviewDeleteReasons
 from dbas.review.queue import key_merge, key_split, key_duplicate, key_optimization
 from dbas.review.queue.adapter import QueueAdapter
@@ -20,15 +20,16 @@ from dbas.strings.translator import Translator
 LOG = logging.getLogger(__name__)
 
 
-def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], db_user: User,
+def flag_element(argument_or_statement: Union[Argument, Statement],
+                 reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], user: User,
                  is_argument: bool, ui_locales: str, extra_uid: Statement = None) -> dict:
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
 
-    :param uid: Uid of the argument/statement, which should be flagged
+    :param argument_or_statement: argument/statement, which should be flagged
     :param reason: String which describes the reason
-    :param db_user: User
+    :param user: User
     :param is_argument: Boolean
     :param ui_locales: ui_locales
     :param extra_uid: Uid of the argument/statement, which should be flagged
@@ -36,17 +37,11 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
     """
     tn = Translator(ui_locales)
 
-    argument_uid = uid if is_argument else None
-    statement_uid = uid if not is_argument else None
-
-    statement = None
-    if statement_uid is not None:
-        statement = DBDiscussionSession.query(Statement).get(statement_uid)
-
     # was this already flagged?
-    flag_status = QueueAdapter(db_user=db_user).element_in_queue(argument_uid=argument_uid,
-                                                                 statement_uid=statement_uid,
-                                                                 premisegroup_uid=None)
+    flag_status = QueueAdapter(db_user=user).element_in_queue(
+        argument_uid=argument_or_statement.argument_uid if is_argument else None,
+        statement_uid=argument_or_statement.uid if not is_argument else None,
+        premisegroup_uid=None)
     if flag_status:
         LOG.debug("Already flagged by %s", flag_status)
         if flag_status == FlaggedBy.user:
@@ -55,39 +50,39 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
             info = tn.get(_.alreadyFlaggedByOthers)
         return {'success': '', 'info': info}
 
-    return _add_flag(reason, argument_uid, statement, extra_uid, db_user, tn)
+    if is_argument:
+        return _add_flag(reason, argument_or_statement, None, extra_uid, user, tn)
+
+    return _add_flag(reason, None, argument_or_statement, extra_uid, user, tn)
 
 
-def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument_uid: Union[int, None],
-              statement: Optional[Statement], extra_uid: Optional[Statement], db_user: User, tn: Translator) -> dict:
+def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument: Optional[Argument],
+              statement: Optional[Statement], extra_uid: Optional[Statement], user: User, tn: Translator) -> dict:
     """
 
     :param reason:
-    :param argument_uid:
-    :param statement_uid:
+    :param argument:
+    :param statement:
     :param extra_uid:
-    :param db_user:
+    :param user:
     :param tn:
     :return:
     """
     reason_val = reason.value if isinstance(reason, ReviewDeleteReasons) else reason
-    db_del_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason_val).first()
+    del_reason: ReviewDeleteReasons = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason_val).first()
 
-    statement_uid = None
-    if statement is not None:
-        statement_uid = statement.uid
-
-    if db_del_reason:
-        _add_delete_review(argument_uid, statement_uid, db_user.uid, db_del_reason.uid)
+    if del_reason:
+        _add_delete_review(argument if argument else None, statement if statement else None, user, del_reason)
 
     elif reason_val == key_optimization:
-        _add_optimization_review(argument_uid, statement_uid, db_user.uid)
+        _add_optimization_review(argument.argument_uid if argument else None, statement.uid if statement else None,
+                                 user.uid)
 
     elif reason_val == key_duplicate:
         if statement.uid == extra_uid.uid:
             LOG.debug("uid Error")
             return {'success': '', 'info': tn.get(_.internalKeyError)}
-        _add_duplication_review(statement, extra_uid, db_user.uid)
+        _add_duplication_review(statement, extra_uid, user.uid)
 
     return {'success': tn.get(_.thxForFlagText), 'info': ''}
 
@@ -142,18 +137,20 @@ def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User
     return flag_statement_for_merge_or_split(key, pgroup, [], db_user, tn)
 
 
-def _add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
+def _add_delete_review(argument: Optional[Argument], statement: Optional[Statement], user: User,
+                       reason: Optional[ReviewDeleteReasons]):
     """
     Adds a ReviewDelete row
 
-    :param argument_uid: Argument.uid
-    :param statement_uid: Statement.uid
-    :param user_uid: User.uid
-    :param reason_uid: ReviewDeleteReason.uid
+    :param argument: Argument to be deleted
+    :param statement: Statement to be deleted
+    :param user: User who wants to delete the argument or statement
+    :param reason: The reason for the deletion
     :return: None
     """
-    LOG.debug("Flag argument/statement %s/%s by user %s for delete", argument_uid, statement_uid, user_uid)
-    review_delete = ReviewDelete(detector=user_uid, argument=argument_uid, statement=statement_uid, reason=reason_uid)
+    LOG.debug("Flag argument/statement %s/%s by user %s for delete", argument.argument_uid if argument else None,
+              statement.uid if statement else None, user)
+    review_delete = ReviewDelete(detector=user, argument=argument, statement=statement, reason=reason)
     DBDiscussionSession.add(review_delete)
     DBDiscussionSession.flush()
     transaction.commit()
