@@ -426,28 +426,28 @@ class OptimizationQueue(QueueABC):
             DBDiscussionSession.flush()
             transaction.commit()
 
-    def __proposal_for_the_element(self, db_review: ReviewOptimization, data: dict, db_user: User):
+    def __proposal_for_the_element(self, db_review: ReviewOptimization, data: dict, user: User):
         """
         Adds proposal for the ReviewEdit
 
         :param db_review: ReviewEdit
         :param data: dict
-        :param db_user: User
+        :param user: User
         :return: None
         """
         # sort the new edits by argument uid
         argument_dict, statement_dict = self.__prepare_dicts_for_proposals(data)
 
-        LOG.debug("Detector %s, statements %s, arguments %s", db_user.uid, statement_dict, argument_dict)
+        LOG.debug("Detector %s, statements %s, arguments %s", user.uid, statement_dict, argument_dict)
 
         # add reviews
         new_edits = list()
         for argument_uid in argument_dict:
-            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, argument=argument_uid))
+            DBDiscussionSession.add(ReviewEdit(detector=user, argument=argument_uid))
             DBDiscussionSession.flush()
             transaction.commit()
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
-                ReviewEdit.detector_uid == db_user.uid,
+                ReviewEdit.detector_uid == user.uid,
                 ReviewEdit.argument_uid == argument_uid).order_by(ReviewEdit.uid.desc()).first()
             LOG.debug("New ReviewEdit with uid %s (argument)", db_review_edit.uid)
 
@@ -458,11 +458,11 @@ class OptimizationQueue(QueueABC):
                                                  content=edit['val']))
 
         for statement_uid in statement_dict:
-            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=statement_uid))
+            DBDiscussionSession.add(ReviewEdit(detector=user, statement=statement_uid))
             DBDiscussionSession.flush()
             transaction.commit()
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
-                ReviewEdit.detector_uid == db_user.uid,
+                ReviewEdit.detector_uid == user.uid,
                 ReviewEdit.statement_uid == statement_uid).order_by(ReviewEdit.uid.desc()).first()
             LOG.debug("New ReviewEdit with uid %s (statement)", db_review_edit.uid)
 
