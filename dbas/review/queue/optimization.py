@@ -459,7 +459,8 @@ class OptimizationQueue(QueueABC):
                                                  content=edit['val']))
 
         for statement_uid in statement_dict:
-            DBDiscussionSession.add(ReviewEdit(detector=user, statement=statement_uid))
+            statement: Statement = DBDiscussionSession.query(Statement).get(statement_uid)
+            DBDiscussionSession.add(ReviewEdit(detector=user, statement=statement))
             DBDiscussionSession.flush()
             transaction.commit()
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(

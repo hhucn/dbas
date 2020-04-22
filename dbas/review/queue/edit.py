@@ -311,8 +311,8 @@ class EditQueue(QueueABC):
         :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success,
         0 otherwise
         """
-        db_statement = DBDiscussionSession.query(Statement).get(uid)
-        if not db_statement:
+        statement: Statement = DBDiscussionSession.query(Statement).get(uid)
+        if not statement:
             LOG.warning("Statement %s not found (return %s)", uid, Code.DOESNT_EXISTS)
             return Code.DOESNT_EXISTS
 
@@ -322,10 +322,10 @@ class EditQueue(QueueABC):
             return Code.DUPLICATE
 
         # is text different?
-        db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+        db_tv = statement.textversion
         if len(text) > 0 and db_tv.content.lower().strip() != text.lower().strip():
             LOG.debug("Added review element for %s. (return %s)", uid, Code.SUCCESS)
-            DBDiscussionSession.add(ReviewEdit(detector=user, statement=uid))
+            DBDiscussionSession.add(ReviewEdit(detector=user, statement=statement))
             return Code.SUCCESS
 
         LOG.debug("No case for %s (return %s)", uid, Code.ERROR)

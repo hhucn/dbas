@@ -50,7 +50,7 @@ class UserHandlerTests(TestCaseWithConfig):
         engelbert = DBDiscussionSession.query(User).filter_by(nickname='Engelbert').first()
         self.assertGreaterEqual(user.number_of_reviews(engelbert, True), 0)
         self.assertGreaterEqual(user.number_of_reviews(engelbert, False), 0)
-        rv = ReviewEdit(self.user_tobi, self.first_argument, 1)
+        rv = ReviewEdit(self.user_tobi, self.first_argument, self.first_position_cat_or_dog)
         yesterday = date.today() - timedelta(1)
         rv.timestamp = arrow.get(yesterday.strftime('%Y-%m-%d'))
         DBDiscussionSession.add(rv)
