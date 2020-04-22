@@ -1,7 +1,7 @@
 # Adaptee for the edit queue. Every edit results in a new textversion of a statement.
 import difflib
 import logging
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 
 import transaction
 from beaker.session import Session
@@ -322,8 +322,8 @@ class EditQueue(QueueABC):
             return Code.DUPLICATE
 
         # is text different?
-        db_tv = statement.textversion
-        if len(text) > 0 and db_tv.content.lower().strip() != text.lower().strip():
+        textversion: TextVersion = statement.textversion
+        if len(text) > 0 and textversion.content.lower().strip() != text.lower().strip():
             LOG.debug("Added review element for %s. (return %s)", uid, Code.SUCCESS)
             DBDiscussionSession.add(ReviewEdit(detector=user, statement=statement))
             return Code.SUCCESS
@@ -341,14 +341,14 @@ class EditQueue(QueueABC):
         :param text: New content for statement
         :return: 1 on success, 0 otherwise
         """
-        db_statement = DBDiscussionSession.query(Statement).get(uid)
-        if not db_statement:
+        statement: Statement = DBDiscussionSession.query(Statement).get(uid)
+        if not statement:
             LOG.debug("ID %s not found while setting up ReviewEditValue", uid)
             return Code.ERROR
 
-        db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+        textversion: TextVersion = statement.textversion
 
-        if len(text) > 0 and db_textversion.content.lower().strip() != text.lower().strip():
+        if len(text) > 0 and textversion.content.lower().strip() != text.lower().strip():
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
                                                                           ReviewEdit.statement_uid == uid).order_by(
                 ReviewEdit.uid.desc()).first()
