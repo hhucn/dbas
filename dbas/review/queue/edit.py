@@ -1,7 +1,7 @@
 # Adaptee for the edit queue. Every edit results in a new textversion of a statement.
 import difflib
 import logging
-from typing import List, Tuple, Optional, Dict
+from typing import List, Tuple, Optional
 
 import transaction
 from beaker.session import Session
