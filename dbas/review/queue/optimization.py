@@ -453,8 +453,9 @@ class OptimizationQueue(QueueABC):
             LOG.debug("New ReviewEdit with uid %s (argument)", db_review_edit.uid)
 
             for edit in argument_dict[argument_uid]:
+                statement: Statement = DBDiscussionSession.query(Statement).get(edit['uid'])
                 new_edits.append(ReviewEditValue(review=db_review_edit,
-                                                 statement=edit['uid'],
+                                                 statement=statement,
                                                  typeof=edit['type'],
                                                  content=edit['val']))
 
@@ -470,7 +471,7 @@ class OptimizationQueue(QueueABC):
 
             for edit in statement_dict[statement_uid]:
                 new_edits.append(ReviewEditValue(review=db_review_edit,
-                                                 statement=statement_uid,
+                                                 statement=statement,
                                                  typeof=edit['type'],
                                                  content=edit['val']))
 

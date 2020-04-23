@@ -353,7 +353,7 @@ class EditQueue(QueueABC):
                 ReviewEdit.detector_uid == db_user.uid,
                 ReviewEdit.statement_uid == uid).order_by(
                 ReviewEdit.uid.desc()).first()
-            DBDiscussionSession.add(ReviewEditValue(db_review_edit, uid, 'statement', text))
+            DBDiscussionSession.add(ReviewEditValue(db_review_edit, statement, 'statement', text))
             LOG.debug("%s - '%s' accepted", uid, text)
             return Code.SUCCESS
 
