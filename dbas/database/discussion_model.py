@@ -1698,16 +1698,16 @@ class ReviewEditValue(DiscussionBase):
     review: ReviewEdit = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
     statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, review_edit, statement, typeof, content):
+    def __init__(self, review: 'ReviewEdit', statement, typeof, content):
         """
         Inits a row in current review edit value table
 
-        :param review_edit: ReviewEdit.uid
+        :param review: Corresponding ReviewEdit
         :param statement: Statement.uid
         :param typeof: String
         :param content: String
         """
-        self.review_edit_uid = review_edit
+        self.review = review
         self.statement_uid = statement
         self.typeof = typeof
         self.content = content
