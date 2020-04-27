@@ -2062,7 +2062,7 @@ class LastReviewerDelete(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewDelete = relationship('ReviewDelete', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer: User, review, is_okay):
         """
         Inits a row in current last reviewer delete table
 
@@ -2070,7 +2070,7 @@ class LastReviewerDelete(AbstractLastReviewerCase):
         :param review: ReviewDelete.uid
         :param is_okay: Boolean
         """
-        self.reviewer_uid = reviewer
+        self.reviewer_uid = reviewer.uid
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
@@ -2093,7 +2093,7 @@ class LastReviewerDuplicate(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewDuplicate = relationship('ReviewDuplicate', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer: User, review, is_okay):
         """
         Inits a row in current last reviewer duplicate table
 
@@ -2101,7 +2101,7 @@ class LastReviewerDuplicate(AbstractLastReviewerCase):
         :param review: ReviewDuplicate.uid
         :param is_okay: Boolean
         """
-        self.reviewer_uid = reviewer
+        self.reviewer_uid = reviewer.uid
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
@@ -2124,14 +2124,14 @@ class LastReviewerEdit(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewEdit = relationship('ReviewEdit', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer: User, review, is_okay):
         """
 
         :param reviewer: User.uid
         :param review: ReviewEdit.uid
         :param is_okay: Boolean
         """
-        self.reviewer_uid = reviewer
+        self.reviewer_uid = reviewer.uid
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
@@ -2154,7 +2154,7 @@ class LastReviewerOptimization(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewOptimization = relationship('ReviewOptimization', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer: User, review, is_okay):
         """
         Inits a row in current last reviewer optimization  table
 
@@ -2162,7 +2162,7 @@ class LastReviewerOptimization(AbstractLastReviewerCase):
         :param review: ReviewOptimization.uid
         :param is_okay: boolean
         """
-        self.reviewer_uid = reviewer
+        self.reviewer_uid = reviewer.uid
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
@@ -2185,7 +2185,7 @@ class LastReviewerSplit(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewSplit = relationship('ReviewSplit', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, should_split):
+    def __init__(self, reviewer: User, review, should_split):
         """
         Inits a row in current last reviewer Split  table
 
@@ -2193,7 +2193,7 @@ class LastReviewerSplit(AbstractLastReviewerCase):
         :param review: ReviewSplit.uid
         :param should_split: boolean
         """
-        self.reviewer_uid = reviewer
+        self.reviewer_uid = reviewer.uid
         self.review_uid = review
         self.should_split = should_split
         self.timestamp = get_now()
@@ -2216,7 +2216,7 @@ class LastReviewerMerge(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewMerge = relationship('ReviewMerge', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, should_merge):
+    def __init__(self, reviewer: User, review, should_merge):
         """
         Inits a row in current last reviewer merge  table
 
@@ -2224,7 +2224,7 @@ class LastReviewerMerge(AbstractLastReviewerCase):
         :param review: ReviewMerge.uid
         :param should_merge: boolean
         """
-        self.reviewer_uid = reviewer
+        self.reviewer_uid = reviewer.uid
         self.review_uid = review
         self.should_merge = should_merge
         self.timestamp = get_now()
