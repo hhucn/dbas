@@ -94,12 +94,12 @@ class QueueTest(unittest.TestCase):
         test_user = DBDiscussionSession.query(User).get(3)
         if key == key_split:
             DBDiscussionSession.add(
-                last_reviewer_table(reviewer=test_user, review=db_new_review.uid, should_split=True))
+                last_reviewer_table(reviewer=test_user, review=db_new_review, should_split=True))
         elif key == key_merge:
             DBDiscussionSession.add(
-                last_reviewer_table(reviewer=test_user, review=db_new_review.uid, should_merge=True))
+                last_reviewer_table(reviewer=test_user, review=db_new_review, should_merge=True))
         else:
-            DBDiscussionSession.add(last_reviewer_table(reviewer=test_user, review=db_new_review.uid, is_okay=True))
+            DBDiscussionSession.add(last_reviewer_table(reviewer=test_user, review=db_new_review, is_okay=True))
 
         DBDiscussionSession.flush()
 
