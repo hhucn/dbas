@@ -2062,7 +2062,7 @@ class LastReviewerDelete(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewDelete = relationship('ReviewDelete', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer: User, review: ReviewDelete, is_okay):
+    def __init__(self, reviewer: User, review: ReviewDelete, is_okay: bool):
         """
         Inits a row in current last reviewer delete table
 
@@ -2093,7 +2093,7 @@ class LastReviewerDuplicate(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewDuplicate = relationship('ReviewDuplicate', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer: User, review: ReviewDuplicate, is_okay):
+    def __init__(self, reviewer: User, review: ReviewDuplicate, is_okay: bool):
         """
         Inits a row in current last reviewer duplicate table
 
@@ -2124,7 +2124,7 @@ class LastReviewerEdit(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewEdit = relationship('ReviewEdit', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer: User, review: ReviewEdit, is_okay):
+    def __init__(self, reviewer: User, review: ReviewEdit, is_okay: bool):
         """
 
         :param reviewer: User
@@ -2154,7 +2154,7 @@ class LastReviewerOptimization(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewOptimization = relationship('ReviewOptimization', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer: User, review: ReviewOptimization, is_okay):
+    def __init__(self, reviewer: User, review: ReviewOptimization, is_okay: bool):
         """
         Inits a row in current last reviewer optimization  table
 
@@ -2185,7 +2185,7 @@ class LastReviewerSplit(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewSplit = relationship('ReviewSplit', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer: User, review: ReviewSplit, should_split):
+    def __init__(self, reviewer: User, review: ReviewSplit, should_split: bool):
         """
         Inits a row in current last reviewer Split  table
 
@@ -2216,7 +2216,7 @@ class LastReviewerMerge(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewMerge = relationship('ReviewMerge', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer: User, review: ReviewMerge, should_merge):
+    def __init__(self, reviewer: User, review: ReviewMerge, should_merge: bool):
         """
         Inits a row in current last reviewer merge  table
 
