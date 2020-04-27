@@ -2066,11 +2066,11 @@ class LastReviewerDelete(AbstractLastReviewerCase):
         """
         Inits a row in current last reviewer delete table
 
-        :param reviewer: User.uid
+        :param reviewer: User
         :param review: ReviewDelete.uid
         :param is_okay: Boolean
         """
-        self.reviewer_uid = reviewer.uid
+        self.reviewer = reviewer
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
@@ -2097,11 +2097,11 @@ class LastReviewerDuplicate(AbstractLastReviewerCase):
         """
         Inits a row in current last reviewer duplicate table
 
-        :param reviewer: User.uid
+        :param reviewer: User
         :param review: ReviewDuplicate.uid
         :param is_okay: Boolean
         """
-        self.reviewer_uid = reviewer.uid
+        self.reviewer = reviewer
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
@@ -2127,11 +2127,11 @@ class LastReviewerEdit(AbstractLastReviewerCase):
     def __init__(self, reviewer: User, review, is_okay):
         """
 
-        :param reviewer: User.uid
+        :param reviewer: User
         :param review: ReviewEdit.uid
         :param is_okay: Boolean
         """
-        self.reviewer_uid = reviewer.uid
+        self.reviewer = reviewer
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
@@ -2158,11 +2158,11 @@ class LastReviewerOptimization(AbstractLastReviewerCase):
         """
         Inits a row in current last reviewer optimization  table
 
-        :param reviewer: User.uid
+        :param reviewer: User
         :param review: ReviewOptimization.uid
         :param is_okay: boolean
         """
-        self.reviewer_uid = reviewer.uid
+        self.reviewer = reviewer
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
@@ -2189,11 +2189,11 @@ class LastReviewerSplit(AbstractLastReviewerCase):
         """
         Inits a row in current last reviewer Split  table
 
-        :param reviewer: User.uid
+        :param reviewer: User
         :param review: ReviewSplit.uid
         :param should_split: boolean
         """
-        self.reviewer_uid = reviewer.uid
+        self.reviewer = reviewer
         self.review_uid = review
         self.should_split = should_split
         self.timestamp = get_now()
@@ -2220,11 +2220,11 @@ class LastReviewerMerge(AbstractLastReviewerCase):
         """
         Inits a row in current last reviewer merge  table
 
-        :param reviewer: User.uid
+        :param reviewer: User
         :param review: ReviewMerge.uid
         :param should_merge: boolean
         """
-        self.reviewer_uid = reviewer.uid
+        self.reviewer = reviewer
         self.review_uid = review
         self.should_merge = should_merge
         self.timestamp = get_now()
