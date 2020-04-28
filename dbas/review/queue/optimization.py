@@ -132,7 +132,7 @@ class OptimizationQueue(QueueABC):
         """
         LOG.debug("Add a vote for optimization")
         # add new review
-        db_new_review = LastReviewerOptimization(db_user.uid, db_review.uid, not is_okay)
+        db_new_review = LastReviewerOptimization(db_user, db_review, not is_okay)
         DBDiscussionSession.add(db_new_review)
         DBDiscussionSession.flush()
         transaction.commit()

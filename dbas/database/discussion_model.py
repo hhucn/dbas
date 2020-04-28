@@ -2064,16 +2064,16 @@ class LastReviewerDelete(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewDelete = relationship('ReviewDelete', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer: User, review: ReviewDelete, is_okay: bool):
         """
         Inits a row in current last reviewer delete table
 
-        :param reviewer: User.uid
-        :param review: ReviewDelete.uid
+        :param reviewer: User
+        :param review: ReviewDelete
         :param is_okay: Boolean
         """
-        self.reviewer_uid = reviewer
-        self.review_uid = review
+        self.reviewer = reviewer
+        self.review = review
         self.is_okay = is_okay
         self.timestamp = get_now()
 
@@ -2095,16 +2095,16 @@ class LastReviewerDuplicate(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewDuplicate = relationship('ReviewDuplicate', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer: User, review: ReviewDuplicate, is_okay: bool):
         """
         Inits a row in current last reviewer duplicate table
 
-        :param reviewer: User.uid
-        :param review: ReviewDuplicate.uid
+        :param reviewer: User
+        :param review: ReviewDuplicate
         :param is_okay: Boolean
         """
-        self.reviewer_uid = reviewer
-        self.review_uid = review
+        self.reviewer = reviewer
+        self.review = review
         self.is_okay = is_okay
         self.timestamp = get_now()
 
@@ -2126,15 +2126,15 @@ class LastReviewerEdit(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewEdit = relationship('ReviewEdit', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer: User, review: ReviewEdit, is_okay: bool):
         """
 
-        :param reviewer: User.uid
-        :param review: ReviewEdit.uid
+        :param reviewer: User
+        :param review: ReviewEdit
         :param is_okay: Boolean
         """
-        self.reviewer_uid = reviewer
-        self.review_uid = review
+        self.reviewer = reviewer
+        self.review = review
         self.is_okay = is_okay
         self.timestamp = get_now()
 
@@ -2156,16 +2156,16 @@ class LastReviewerOptimization(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewOptimization = relationship('ReviewOptimization', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer: User, review: ReviewOptimization, is_okay: bool):
         """
         Inits a row in current last reviewer optimization  table
 
-        :param reviewer: User.uid
-        :param review: ReviewOptimization.uid
+        :param reviewer: User
+        :param review: ReviewOptimization
         :param is_okay: boolean
         """
-        self.reviewer_uid = reviewer
-        self.review_uid = review
+        self.reviewer = reviewer
+        self.review = review
         self.is_okay = is_okay
         self.timestamp = get_now()
 
@@ -2187,16 +2187,16 @@ class LastReviewerSplit(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewSplit = relationship('ReviewSplit', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, should_split):
+    def __init__(self, reviewer: User, review: ReviewSplit, should_split: bool):
         """
         Inits a row in current last reviewer Split  table
 
-        :param reviewer: User.uid
-        :param review: ReviewSplit.uid
+        :param reviewer: User
+        :param review: ReviewSplit
         :param should_split: boolean
         """
-        self.reviewer_uid = reviewer
-        self.review_uid = review
+        self.reviewer = reviewer
+        self.review = review
         self.should_split = should_split
         self.timestamp = get_now()
 
@@ -2218,16 +2218,16 @@ class LastReviewerMerge(AbstractLastReviewerCase):
     reviewer: User = relationship('User', foreign_keys=[reviewer_uid])
     review: ReviewMerge = relationship('ReviewMerge', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, should_merge):
+    def __init__(self, reviewer: User, review: ReviewMerge, should_merge: bool):
         """
         Inits a row in current last reviewer merge  table
 
-        :param reviewer: User.uid
-        :param review: ReviewMerge.uid
+        :param reviewer: User
+        :param review: ReviewMerge
         :param should_merge: boolean
         """
-        self.reviewer_uid = reviewer
-        self.review_uid = review
+        self.reviewer = reviewer
+        self.review = review
         self.should_merge = should_merge
         self.timestamp = get_now()
 
