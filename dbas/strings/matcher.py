@@ -285,9 +285,9 @@ def get_strings_for_search(search_value: str) -> dict:
     db_statements = get_enabled_statement_as_query().join(TextVersion,
                                                           Statement.textversion_uid == TextVersion.uid).all()
     for stat in db_statements:
-        if search_value.lower() in stat.textversions.content.lower():
+        if search_value.lower() in stat.textversion.content.lower():
             # get distance between input value and saved value
-            rd = __get_fuzzy_string_dict(current_text=search_value, return_text=stat.textversions.content, uid=stat.uid)
+            rd = __get_fuzzy_string_dict(current_text=search_value, return_text=stat.textversion.content, uid=stat.uid)
             tmp_dict[str(stat.uid)] = rd
 
     tmp_dict = __sort_dict(tmp_dict)

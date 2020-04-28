@@ -301,18 +301,18 @@ class EditQueue(QueueABC):
 
         return pro_list, con_list
 
-    def add_edit_reviews(self, db_user: User, uid: int, text: str):
+    def add_edit_reviews(self, user: User, uid: int, text: str):
         """
         Setup a new ReviewEdit row
 
-        :param db_user: User
+        :param user: User who want to add a edit_review
         :param uid: Statement.uid
         :param text: New content for statement
         :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success,
         0 otherwise
         """
-        db_statement = DBDiscussionSession.query(Statement).get(uid)
-        if not db_statement:
+        statement: Statement = DBDiscussionSession.query(Statement).get(uid)
+        if not statement:
             LOG.warning("Statement %s not found (return %s)", uid, Code.DOESNT_EXISTS)
             return Code.DOESNT_EXISTS
 
@@ -322,10 +322,10 @@ class EditQueue(QueueABC):
             return Code.DUPLICATE
 
         # is text different?
-        db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-        if len(text) > 0 and db_tv.content.lower().strip() != text.lower().strip():
+        textversion: TextVersion = statement.textversion
+        if len(text) > 0 and textversion.content.lower().strip() != text.lower().strip():
             LOG.debug("Added review element for %s. (return %s)", uid, Code.SUCCESS)
-            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=uid))
+            DBDiscussionSession.add(ReviewEdit(detector=user, statement=statement))
             return Code.SUCCESS
 
         LOG.debug("No case for %s (return %s)", uid, Code.ERROR)
@@ -341,18 +341,19 @@ class EditQueue(QueueABC):
         :param text: New content for statement
         :return: 1 on success, 0 otherwise
         """
-        db_statement = DBDiscussionSession.query(Statement).get(uid)
-        if not db_statement:
+        statement: Statement = DBDiscussionSession.query(Statement).get(uid)
+        if not statement:
             LOG.debug("ID %s not found while setting up ReviewEditValue", uid)
             return Code.ERROR
 
-        db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+        textversion: TextVersion = statement.textversion
 
-        if len(text) > 0 and db_textversion.content.lower().strip() != text.lower().strip():
-            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
-                                                                          ReviewEdit.statement_uid == uid).order_by(
+        if len(text) > 0 and textversion.content.lower().strip() != text.lower().strip():
+            db_review_edit: ReviewEdit = DBDiscussionSession.query(ReviewEdit).filter(
+                ReviewEdit.detector_uid == db_user.uid,
+                ReviewEdit.statement_uid == uid).order_by(
                 ReviewEdit.uid.desc()).first()
-            DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, uid, 'statement', text))
+            DBDiscussionSession.add(ReviewEditValue(db_review_edit, statement, 'statement', text))
             LOG.debug("%s - '%s' accepted", uid, text)
             return Code.SUCCESS
 
