@@ -447,14 +447,15 @@ class OptimizationQueue(QueueABC):
             DBDiscussionSession.add(ReviewEdit(detector=user, argument=argument))
             DBDiscussionSession.flush()
             transaction.commit()
-            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
+            db_review_edit: ReviewEdit = DBDiscussionSession.query(ReviewEdit).filter(
                 ReviewEdit.detector_uid == user.uid,
                 ReviewEdit.argument_uid == argument_uid).order_by(ReviewEdit.uid.desc()).first()
             LOG.debug("New ReviewEdit with uid %s (argument)", db_review_edit.uid)
 
             for edit in argument_dict[argument_uid]:
-                new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid,
-                                                 statement=edit['uid'],
+                statement: Statement = DBDiscussionSession.query(Statement).get(edit['uid'])
+                new_edits.append(ReviewEditValue(review=db_review_edit,
+                                                 statement=statement,
                                                  typeof=edit['type'],
                                                  content=edit['val']))
 
@@ -463,14 +464,14 @@ class OptimizationQueue(QueueABC):
             DBDiscussionSession.add(ReviewEdit(detector=user, statement=statement))
             DBDiscussionSession.flush()
             transaction.commit()
-            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
+            db_review_edit: ReviewEdit = DBDiscussionSession.query(ReviewEdit).filter(
                 ReviewEdit.detector_uid == user.uid,
                 ReviewEdit.statement_uid == statement_uid).order_by(ReviewEdit.uid.desc()).first()
             LOG.debug("New ReviewEdit with uid %s (statement)", db_review_edit.uid)
 
             for edit in statement_dict[statement_uid]:
-                new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid,
-                                                 statement=statement_uid,
+                new_edits.append(ReviewEditValue(review=db_review_edit,
+                                                 statement=statement,
                                                  typeof=edit['type'],
                                                  content=edit['val']))
 

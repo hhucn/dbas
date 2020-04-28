@@ -349,10 +349,11 @@ class EditQueue(QueueABC):
         textversion: TextVersion = statement.textversion
 
         if len(text) > 0 and textversion.content.lower().strip() != text.lower().strip():
-            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
-                                                                          ReviewEdit.statement_uid == uid).order_by(
+            db_review_edit: ReviewEdit = DBDiscussionSession.query(ReviewEdit).filter(
+                ReviewEdit.detector_uid == db_user.uid,
+                ReviewEdit.statement_uid == uid).order_by(
                 ReviewEdit.uid.desc()).first()
-            DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, uid, 'statement', text))
+            DBDiscussionSession.add(ReviewEditValue(db_review_edit, statement, 'statement', text))
             LOG.debug("%s - '%s' accepted", uid, text)
             return Code.SUCCESS
 

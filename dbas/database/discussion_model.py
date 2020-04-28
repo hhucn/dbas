@@ -1698,19 +1698,19 @@ class ReviewEditValue(DiscussionBase):
     review: ReviewEdit = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
     statement: Statement = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, review_edit, statement, typeof, content):
+    def __init__(self, review: 'ReviewEdit', statement: 'Statement', typeof: str, content: str):
         """
         Inits a row in current review edit value table
 
-        :param review_edit: ReviewEdit.uid
-        :param statement: Statement.uid
-        :param typeof: String
-        :param content: String
+        :param review: Corresponding ReviewEdit
+        :param statement: Corresponding Statement to ReviewEdit
+        :param typeof: Type of the "thing" to be edited
+        :param content: Correction
         """
-        self.review_edit_uid = review_edit
-        self.statement_uid = statement
-        self.typeof = typeof
-        self.content = content
+        self.review: 'ReviewEdit' = review
+        self.statement: 'Statement' = statement
+        self.typeof: str = typeof
+        self.content: str = content
 
 
 class ReviewOptimization(AbstractReviewCase):
