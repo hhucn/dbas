@@ -82,7 +82,7 @@ def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons
         if statement.uid == extra_uid.uid:
             LOG.debug("uid Error")
             return {'success': '', 'info': tn.get(_.internalKeyError)}
-        _add_duplication_review(statement, extra_uid, user.uid)
+        _add_duplication_review(statement, extra_uid, user)
 
     return {'success': tn.get(_.thxForFlagText), 'info': ''}
 
@@ -172,18 +172,17 @@ def _add_optimization_review(argument_uid, statement_uid, user_uid):
     transaction.commit()
 
 
-def _add_duplication_review(duplicate_statement: Statement, original_statement: Statement, user_uid):
+def _add_duplication_review(duplicate_statement: Statement, original_statement: Statement, user: User):
     """
     Adds a ReviewDuplicate row
 
     :param duplicate_statement: Statement
     :param original_statement: Statement
-    :param user_uid: User.uid
+    :param user: User.uid
     :return: None
     """
-    LOG.debug("Flag statement %s by user %s as duplicate of %s", duplicate_statement, user_uid,
-              original_statement)
-    review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement,
+    LOG.debug("Flag statement %s by user %s as duplicate of %s", duplicate_statement, user.uid, original_statement)
+    review_duplication = ReviewDuplicate(detector=user, duplicate_statement=duplicate_statement,
                                          original_statement=original_statement)
     DBDiscussionSession.add(review_duplication)
     DBDiscussionSession.flush()  # vorsicht
