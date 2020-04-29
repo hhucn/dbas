@@ -51,7 +51,6 @@ def flag_element(argument_or_statement: Union[Argument, Statement],
         return {'success': '', 'info': info}
 
     if is_argument:
-        print("ICH BIN HIER")
         return _add_flag(reason, argument_or_statement, None, extra_uid, user, tn)
 
     return _add_flag(reason, None, argument_or_statement, extra_uid, user, tn)
@@ -76,7 +75,6 @@ def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons
         _add_delete_review(argument if argument else None, statement if statement else None, user, del_reason)
 
     elif reason_val == key_optimization:
-        print("Ich bin jetzt hier")
         _add_optimization_review(argument if argument else None, statement if statement else None, user)
 
     elif reason_val == key_duplicate:
