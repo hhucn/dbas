@@ -1864,7 +1864,7 @@ class ReviewMerge(AbstractReviewCase):
     detector: User = relationship('User', foreign_keys=[detector_uid])
     premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
-    def __init__(self, detector: User, premisegroup, is_executed=False, is_revoked=False):
+    def __init__(self, detector: User, premisegroup: PremiseGroup, is_executed: bool = False, is_revoked: bool = False):
         """
         Inits a row in current review merge table
 
@@ -1874,7 +1874,7 @@ class ReviewMerge(AbstractReviewCase):
         :param is_revoked: Boolean
         """
         self.detector_uid = detector.uid
-        self.premisegroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup.uid
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked
@@ -1924,7 +1924,7 @@ class ReviewSplit(AbstractReviewCase):
     detector: User = relationship('User', foreign_keys=[detector_uid])
     premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
-    def __init__(self, detector: User, premisegroup, is_executed=False, is_revoked=False):
+    def __init__(self, detector: User, premisegroup: PremiseGroup, is_executed: bool = False, is_revoked: bool = False):
         """
         Inits a row in current review split table
 
@@ -1934,7 +1934,7 @@ class ReviewSplit(AbstractReviewCase):
         :param is_revoked: Boolean
         """
         self.detector_uid = detector.uid
-        self.premisegroup_uid = premisegroup
+        self.premisegroup_uid = premisegroup.uid
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked

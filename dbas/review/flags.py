@@ -201,7 +201,8 @@ def _add_split_review(pgroup_uid, user_uid, text_values):
     """
     LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
     detector = DBDiscussionSession.query(User).get(user_uid)
-    review_split = ReviewSplit(detector=detector, premisegroup=pgroup_uid)
+    premisegroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid)
+    review_split = ReviewSplit(detector=detector, premisegroup=premisegroup)
     DBDiscussionSession.add(review_split)
     DBDiscussionSession.flush()
 
@@ -224,7 +225,8 @@ def _add_merge_review(pgroup_uid, user_uid, text_values):
     """
     LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
     detector = DBDiscussionSession.query(User).get(user_uid)
-    review_merge = ReviewMerge(detector=detector, premisegroup=pgroup_uid)
+    premisegroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid)
+    review_merge = ReviewMerge(detector=detector, premisegroup=premisegroup)
     DBDiscussionSession.add(review_merge)
     DBDiscussionSession.flush()
 
