@@ -1731,7 +1731,7 @@ class ReviewOptimization(AbstractReviewCase):
     statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
 
     def __init__(self, detector: 'User', argument: Optional['Argument'] = None, statement: Optional['Statement'] = None,
-                 is_executed=False, is_revoked=False):
+                 is_executed: bool = False, is_revoked: bool = False):
         """
         Inits a row in current review optimization table
 
@@ -1744,9 +1744,9 @@ class ReviewOptimization(AbstractReviewCase):
         self.detector: 'User' = detector
         self.argument: Optional['Argument'] = argument
         self.statement: Optional['Statement'] = statement
-        self.timestamp = get_now()
-        self.is_executed = is_executed
-        self.is_revoked = is_revoked
+        self.timestamp: ArrowType = get_now()
+        self.is_executed: bool = is_executed
+        self.is_revoked: bool = is_revoked
 
     def set_executed(self, is_executed):
         """
