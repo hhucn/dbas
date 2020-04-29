@@ -26,7 +26,8 @@ class AjaxReviewTest(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         user: User = DBDiscussionSession.query(User).get(2)
-        DBDiscussionSession.add(ReviewOptimization(detector=user, statement=10))
+        statement: Statement = DBDiscussionSession.query(Statement).get(10)
+        DBDiscussionSession.add(ReviewOptimization(detector=user, statement=statement))
         DBDiscussionSession.flush()
         # test every ajax method, which is not used in other classes
 
