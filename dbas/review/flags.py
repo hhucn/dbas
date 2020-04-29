@@ -114,7 +114,7 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
         return {'success': '', 'info': info}
 
     if key == key_merge:
-        _add_merge_review(pgroup.uid, db_user.uid, text_values)
+        _add_merge_review(pgroup, db_user, text_values)
     elif key == key_split:
         _add_split_review(pgroup, db_user, text_values)
 
@@ -213,18 +213,17 @@ def _add_split_review(premisegroup: PremiseGroup, detector: User, text_values):
     transaction.commit()
 
 
-def _add_merge_review(pgroup_uid, user_uid, text_values):
+def _add_merge_review(premisegroup: PremiseGroup, detector: User, text_values):
     """
     Adds a row in the ReviewMerge table as well as the values, if not none
 
-    :param pgroup_uid: ID of the selected PremiseGroup
-    :param user_uid: ID of the user
+    :param premisegroup: Selected PremiseGroup
+    :param detector: User object
     :param text_values: text values or None, if you want to merge the premisegroup itself
     :return: None
     """
-    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
-    detector = DBDiscussionSession.query(User).get(user_uid)
-    premisegroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid)
+    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", premisegroup.uid, detector.uid,
+              text_values)
     review_merge = ReviewMerge(detector=detector, premisegroup=premisegroup)
     DBDiscussionSession.add(review_merge)
     DBDiscussionSession.flush()
