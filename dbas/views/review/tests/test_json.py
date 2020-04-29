@@ -8,7 +8,7 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
     LastReviewerMerge, Argument, PremiseGroupSplitted, ReviewSplitValues, LastReviewerSplit, ReviewMergeValues, \
     PremiseGroupMerged, ArgumentsAddedByPremiseGroupSplit, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReviewCanceled, ReviewDelete, ReviewDuplicate, \
-    ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
+    ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement, User
 from dbas.lib import get_text_for_argument_uid, nick_of_anonymous_user
 from dbas.review import ReviewDeleteReasons
 from dbas.review.queue import key_delete, key_duplicate, key_merge, key_split
@@ -25,7 +25,8 @@ class AjaxReviewTest(unittest.TestCase):
         super().setUp()
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        DBDiscussionSession.add(ReviewOptimization(detector=2, statement=10))
+        user: User = DBDiscussionSession.query(User).get(2)
+        DBDiscussionSession.add(ReviewOptimization(detector=user, statement=10))
         DBDiscussionSession.flush()
         # test every ajax method, which is not used in other classes
 

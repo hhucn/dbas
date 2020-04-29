@@ -76,7 +76,7 @@ def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons
 
     elif reason_val == key_optimization:
         _add_optimization_review(argument.argument_uid if argument else None, statement.uid if statement else None,
-                                 user.uid)
+                                 user)
 
     elif reason_val == key_duplicate:
         if statement.uid == extra_uid.uid:
@@ -156,7 +156,7 @@ def _add_delete_review(argument: Optional[Argument], statement: Optional[Stateme
     transaction.commit()
 
 
-def _add_optimization_review(argument_uid, statement_uid, user_uid):
+def _add_optimization_review(argument_uid, statement_uid, user: User):
     """
     Adds a ReviewOptimization row
 
@@ -165,8 +165,8 @@ def _add_optimization_review(argument_uid, statement_uid, user_uid):
     :param user_uid: User.uid
     :return: None
     """
-    LOG.debug("Flag argument/statement %s/%s by user %s for optimization", argument_uid, statement_uid, user_uid)
-    review_optimization = ReviewOptimization(detector=user_uid, argument=argument_uid, statement=statement_uid)
+    LOG.debug("Flag argument/statement %s/%s by user %s for optimization", argument_uid, statement_uid, user.uid)
+    review_optimization = ReviewOptimization(detector=user, argument=argument_uid, statement=statement_uid)
     DBDiscussionSession.add(review_optimization)
     DBDiscussionSession.flush()
     transaction.commit()

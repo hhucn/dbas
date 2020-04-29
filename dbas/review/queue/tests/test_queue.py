@@ -85,7 +85,7 @@ class QueueTest(unittest.TestCase):
             duplicate_statement = DBDiscussionSession.query(Statement).get(5)
             db_new_review = review_table(detector=4, duplicate_statement=duplicate_statement,
                                          original_statement=original_statement)
-        elif key is key_delete:
+        elif key is key_delete or key is key_optimization: # todo: wait for merge
             db_new_review = review_table(detector=DBDiscussionSession.query(User).get(4))
         else:
             db_new_review = review_table(detector=4)
