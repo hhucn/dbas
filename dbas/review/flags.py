@@ -190,12 +190,12 @@ def _add_duplication_review(duplicate_statement: Statement, original_statement: 
     transaction.commit()  # vorsicht
 
 
-def _add_split_review(premisegroup: PremiseGroup, detector: User, text_values):
+def _add_split_review(premisegroup: PremiseGroup, detector: User, text_values: list):
     """
     Adds a row in the ReviewSplit table as well as the values, if not none
 
-    :param pgroup_uid: ID of the selected PremiseGroup
-    :param user_uid: ID of the user
+    :param premisegroup: Selected PremiseGroup
+    :param detector: User object
     :param text_values: text values or None, if you want to split the premisegroup itself
     :return: None
     """
@@ -213,7 +213,7 @@ def _add_split_review(premisegroup: PremiseGroup, detector: User, text_values):
     transaction.commit()
 
 
-def _add_merge_review(premisegroup: PremiseGroup, detector: User, text_values):
+def _add_merge_review(premisegroup: PremiseGroup, detector: User, text_values: list):
     """
     Adds a row in the ReviewMerge table as well as the values, if not none
 
