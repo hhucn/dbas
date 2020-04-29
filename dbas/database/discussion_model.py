@@ -1980,14 +1980,14 @@ class ReviewSplitValues(DiscussionBase):
 
     review: ReviewSplit = relationship('ReviewSplit', foreign_keys=[review_uid])
 
-    def __init__(self, review, content):
+    def __init__(self, review: ReviewSplit, content: str):
         """
         Inits a row in current review merge value table
 
-        :param review: ReviewSplit.uid
+        :param review: ReviewSplit
         :param content: String
         """
-        self.review_uid = review
+        self.review = review
         self.content = content
 
 
