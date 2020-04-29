@@ -200,7 +200,8 @@ def _add_split_review(pgroup_uid, user_uid, text_values):
     :return: None
     """
     LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
-    review_split = ReviewSplit(detector=user_uid, premisegroup=pgroup_uid)
+    detector = DBDiscussionSession.query(User).get(user_uid)
+    review_split = ReviewSplit(detector=detector, premisegroup=pgroup_uid)
     DBDiscussionSession.add(review_split)
     DBDiscussionSession.flush()
 
@@ -222,7 +223,8 @@ def _add_merge_review(pgroup_uid, user_uid, text_values):
     :return: None
     """
     LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
-    review_merge = ReviewMerge(detector=user_uid, premisegroup=pgroup_uid)
+    detector = DBDiscussionSession.query(User).get(user_uid)
+    review_merge = ReviewMerge(detector=detector, premisegroup=pgroup_uid)
     DBDiscussionSession.add(review_merge)
     DBDiscussionSession.flush()
 

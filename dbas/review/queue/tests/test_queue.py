@@ -79,7 +79,8 @@ class QueueTest(unittest.TestCase):
 
         # add things which we can cancel
         if key in [key_merge, key_split]:
-            db_new_review = review_table(detector=4, premisegroup=5)
+            test_user = DBDiscussionSession.query(User).get(4)
+            db_new_review = review_table(detector=test_user, premisegroup=5)
         elif key is key_duplicate:
             original_statement = DBDiscussionSession.query(Statement).get(4)
             duplicate_statement = DBDiscussionSession.query(Statement).get(5)
