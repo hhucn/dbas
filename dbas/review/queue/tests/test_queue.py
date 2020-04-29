@@ -85,7 +85,7 @@ class QueueTest(unittest.TestCase):
             duplicate_statement = DBDiscussionSession.query(Statement).get(5)
             db_new_review = review_table(detector=4, duplicate_statement=duplicate_statement,
                                          original_statement=original_statement)
-        elif key is key_delete or key is key_optimization: # todo: wait for merge
+        elif key in [key_delete, key_edit]:
             db_new_review = review_table(detector=DBDiscussionSession.query(User).get(4))
         else:
             db_new_review = review_table(detector=4)
@@ -93,12 +93,15 @@ class QueueTest(unittest.TestCase):
         DBDiscussionSession.add(db_new_review)
         DBDiscussionSession.flush()
 
+        test_user = DBDiscussionSession.query(User).get(3)
         if key == key_split:
-            DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, should_split=True))
+            DBDiscussionSession.add(
+                last_reviewer_table(reviewer=test_user, review=db_new_review, should_split=True))
         elif key == key_merge:
-            DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, should_merge=True))
+            DBDiscussionSession.add(
+                last_reviewer_table(reviewer=test_user, review=db_new_review, should_merge=True))
         else:
-            DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, is_okay=True))
+            DBDiscussionSession.add(last_reviewer_table(reviewer=test_user, review=db_new_review, is_okay=True))
 
         DBDiscussionSession.flush()
 

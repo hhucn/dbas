@@ -132,7 +132,7 @@ class OptimizationQueue(QueueABC):
         """
         LOG.debug("Add a vote for optimization")
         # add new review
-        db_new_review = LastReviewerOptimization(db_user.uid, db_review.uid, not is_okay)
+        db_new_review = LastReviewerOptimization(db_user, db_review, not is_okay)
         DBDiscussionSession.add(db_new_review)
         DBDiscussionSession.flush()
         transaction.commit()
@@ -426,49 +426,52 @@ class OptimizationQueue(QueueABC):
             DBDiscussionSession.flush()
             transaction.commit()
 
-    def __proposal_for_the_element(self, db_review: ReviewOptimization, data: dict, db_user: User):
+    def __proposal_for_the_element(self, db_review: ReviewOptimization, data: dict, user: User):
         """
         Adds proposal for the ReviewEdit
 
         :param db_review: ReviewEdit
         :param data: dict
-        :param db_user: User
+        :param user: User
         :return: None
         """
         # sort the new edits by argument uid
         argument_dict, statement_dict = self.__prepare_dicts_for_proposals(data)
 
-        LOG.debug("Detector %s, statements %s, arguments %s", db_user.uid, statement_dict, argument_dict)
+        LOG.debug("Detector %s, statements %s, arguments %s", user.uid, statement_dict, argument_dict)
 
         # add reviews
         new_edits = list()
         for argument_uid in argument_dict:
-            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, argument=argument_uid))
+            argument: Argument = DBDiscussionSession.query(Argument).get(argument_uid)
+            DBDiscussionSession.add(ReviewEdit(detector=user, argument=argument))
             DBDiscussionSession.flush()
             transaction.commit()
-            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
-                ReviewEdit.detector_uid == db_user.uid,
+            db_review_edit: ReviewEdit = DBDiscussionSession.query(ReviewEdit).filter(
+                ReviewEdit.detector_uid == user.uid,
                 ReviewEdit.argument_uid == argument_uid).order_by(ReviewEdit.uid.desc()).first()
             LOG.debug("New ReviewEdit with uid %s (argument)", db_review_edit.uid)
 
             for edit in argument_dict[argument_uid]:
-                new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid,
-                                                 statement=edit['uid'],
+                statement: Statement = DBDiscussionSession.query(Statement).get(edit['uid'])
+                new_edits.append(ReviewEditValue(review=db_review_edit,
+                                                 statement=statement,
                                                  typeof=edit['type'],
                                                  content=edit['val']))
 
         for statement_uid in statement_dict:
-            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=statement_uid))
+            statement: Statement = DBDiscussionSession.query(Statement).get(statement_uid)
+            DBDiscussionSession.add(ReviewEdit(detector=user, statement=statement))
             DBDiscussionSession.flush()
             transaction.commit()
-            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
-                ReviewEdit.detector_uid == db_user.uid,
+            db_review_edit: ReviewEdit = DBDiscussionSession.query(ReviewEdit).filter(
+                ReviewEdit.detector_uid == user.uid,
                 ReviewEdit.statement_uid == statement_uid).order_by(ReviewEdit.uid.desc()).first()
             LOG.debug("New ReviewEdit with uid %s (statement)", db_review_edit.uid)
 
             for edit in statement_dict[statement_uid]:
-                new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid,
-                                                 statement=statement_uid,
+                new_edits.append(ReviewEditValue(review=db_review_edit,
+                                                 statement=statement,
                                                  typeof=edit['type'],
                                                  content=edit['val']))
 

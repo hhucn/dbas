@@ -270,10 +270,10 @@ def set_correction_of_some_statements(request):
     """
     LOG.debug("Set textvalue for a statement: %s", request.json_body)
     ui_locales = get_language_from_cookie(request)
-    elements = request.validated['elements']
+    corrections = request.validated['elements']
     db_user = request.validated['user']
     _tn = Translator(ui_locales)
-    return set_correction_of_statement(elements, db_user, _tn)
+    return set_correction_of_statement(corrections, db_user, _tn)
 
 
 def create_issue_after_validation(request: Request):

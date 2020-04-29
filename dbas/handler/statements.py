@@ -130,19 +130,20 @@ def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: di
         prepared_dict['url'] = '{}{}'.format(url, '#access-review')
 
 
-def set_correction_of_statement(elements, db_user, translator) -> dict:
+def set_correction_of_statement(corrections: List[Dict], db_user, translator) -> dict:
     """
     Adds a proposal for a statements correction and returns info if the proposal could be set
 
-    :param elements: List of dicts with text and uids for proposals of edits for new statements
+    :param corrections: List of dicts with text and uids for proposals of edits for new statements
     :param db_user: User
     :param translator: Translator
     :rtype: dict
     :return: Dictionary with info and/or error
     """
 
-    review_count = len(elements)
-    added_reviews = [EditQueue().add_edit_reviews(db_user, el['uid'], el['text']) for el in elements]
+    review_count = len(corrections)
+    added_reviews = [EditQueue().add_edit_reviews(db_user, correction['uid'], correction['text']) for correction in
+                     corrections]
 
     if added_reviews.count(Code.SUCCESS) == 0:  # no edits set
         if added_reviews.count(Code.DOESNT_EXISTS) > 0:
@@ -166,7 +167,8 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     DBDiscussionSession.flush()
     transaction.commit()
 
-    added_values = [EditQueue().add_edit_values_review(db_user, el['uid'], el['text']) for el in elements]
+    added_values = [EditQueue().add_edit_values_review(db_user, correction['uid'], correction['text']) for correction in
+                    corrections]
     if Code.SUCCESS not in added_values:
         return {
             'info': translator.get(_.alreadyEditProposals),
