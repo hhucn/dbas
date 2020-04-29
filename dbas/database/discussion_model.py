@@ -1873,13 +1873,13 @@ class ReviewMerge(AbstractReviewCase):
         :param is_executed: Boolean
         :param is_revoked: Boolean
         """
-        self.detector_uid = detector.uid
-        self.premisegroup_uid = premisegroup.uid
+        self.detector = detector
+        self.premisegroup = premisegroup
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked
 
-    def set_executed(self, is_executed):
+    def set_executed(self, is_executed: bool):
         """
         Sets current review as executed
 
@@ -1888,7 +1888,7 @@ class ReviewMerge(AbstractReviewCase):
         """
         self.is_executed = is_executed
 
-    def set_revoked(self, is_revoked):
+    def set_revoked(self, is_revoked: bool):
         """
         Sets current review as revoked
 
@@ -1933,13 +1933,13 @@ class ReviewSplit(AbstractReviewCase):
         :param is_executed: Boolean
         :param is_revoked: Boolean
         """
-        self.detector_uid = detector.uid
-        self.premisegroup_uid = premisegroup.uid
+        self.detector = detector
+        self.premisegroup = premisegroup
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked
 
-    def set_executed(self, is_executed):
+    def set_executed(self, is_executed: bool):
         """
         Sets current review as executed
 
@@ -1948,7 +1948,7 @@ class ReviewSplit(AbstractReviewCase):
         """
         self.is_executed = is_executed
 
-    def set_revoked(self, is_revoked):
+    def set_revoked(self, is_revoked: bool):
         """
         Sets current review as revoked
 
