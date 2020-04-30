@@ -206,7 +206,7 @@ def _add_split_review(pgroup_uid, user_uid, text_values):
 
     if text_values:
         DBDiscussionSession.add_all(
-            [ReviewSplitValues(review=review_split.uid, content=value) for value in text_values])
+            [ReviewSplitValues(review=review_split, content=value) for value in text_values])
         DBDiscussionSession.flush()
 
     transaction.commit()
@@ -228,7 +228,7 @@ def _add_merge_review(pgroup_uid, user_uid, text_values):
 
     if text_values:
         DBDiscussionSession.add_all(
-            [ReviewMergeValues(review=review_merge.uid, content=value) for value in text_values])
+            [ReviewMergeValues(review=review_merge, content=value) for value in text_values])
         DBDiscussionSession.flush()
 
     transaction.commit()
