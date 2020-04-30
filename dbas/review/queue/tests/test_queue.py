@@ -41,6 +41,7 @@ class QueueTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.user = DBDiscussionSession.query(User).get(1)
+        self.other_user = DBDiscussionSession.query(User).get(4)
         self.tn = Translator('en')
 
     def tearDown(self):
@@ -83,7 +84,7 @@ class QueueTest(unittest.TestCase):
         elif key is key_duplicate:
             original_statement = DBDiscussionSession.query(Statement).get(4)
             duplicate_statement = DBDiscussionSession.query(Statement).get(5)
-            db_new_review = review_table(detector=4, duplicate_statement=duplicate_statement,
+            db_new_review = review_table(detector=self.other_user, duplicate_statement=duplicate_statement,
                                          original_statement=original_statement)
         elif key in [key_delete, key_edit, key_optimization]:
             db_new_review = review_table(detector=DBDiscussionSession.query(User).get(4))

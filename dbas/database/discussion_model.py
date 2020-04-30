@@ -1802,7 +1802,7 @@ class ReviewDuplicate(AbstractReviewCase):
     duplicate_statement: Statement = relationship('Statement', foreign_keys=[duplicate_statement_uid])
     original_statement: Statement = relationship('Statement', foreign_keys=[original_statement_uid])
 
-    def __init__(self, detector, duplicate_statement: Statement = None, original_statement: 'Statement' = None,
+    def __init__(self, detector: User, duplicate_statement: Statement = None, original_statement: Statement = None,
                  is_executed: bool = False, is_revoked: bool = False):
         """
         Inits a row in current review duplicate table
@@ -1813,12 +1813,12 @@ class ReviewDuplicate(AbstractReviewCase):
         :param is_executed: Boolean
         :param is_revoked: Boolean
         """
-        self.detector_uid = detector
-        self.duplicate_statement = duplicate_statement
-        self.original_statement = original_statement
-        self.timestamp = get_now()
-        self.is_executed = is_executed
-        self.is_revoked = is_revoked
+        self.detector: User = detector
+        self.duplicate_statement: Statement = duplicate_statement
+        self.original_statement: Statement = original_statement
+        self.timestamp: ArrowType = get_now()
+        self.is_executed: bool = is_executed
+        self.is_revoked: bool = is_revoked
 
     def set_executed(self, is_executed: bool):
         """
