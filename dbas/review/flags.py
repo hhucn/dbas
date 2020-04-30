@@ -39,7 +39,7 @@ def flag_element(argument_or_statement: Union[Argument, Statement],
 
     # was this already flagged?
     flag_status = QueueAdapter(db_user=user).element_in_queue(
-        argument_uid=argument_or_statement.argument_uid if is_argument else None,
+        argument_uid=argument_or_statement.uid if is_argument else None,
         statement_uid=argument_or_statement.uid if not is_argument else None,
         premisegroup_uid=None)
     if flag_status:
@@ -75,8 +75,7 @@ def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons
         _add_delete_review(argument if argument else None, statement if statement else None, user, del_reason)
 
     elif reason_val == key_optimization:
-        _add_optimization_review(argument.argument_uid if argument else None, statement.uid if statement else None,
-                                 user.uid)
+        _add_optimization_review(argument if argument else None, statement if statement else None, user)
 
     elif reason_val == key_duplicate:
         if statement.uid == extra_uid.uid:
@@ -156,17 +155,17 @@ def _add_delete_review(argument: Optional[Argument], statement: Optional[Stateme
     transaction.commit()
 
 
-def _add_optimization_review(argument_uid, statement_uid, user_uid):
+def _add_optimization_review(argument: Optional[Argument], statement: Optional[Statement], user: User):
     """
     Adds a ReviewOptimization row
 
-    :param argument_uid: Argument.uid
-    :param statement_uid: Statement.uid
+    :param argument: Argument.uid
+    :param statement: Statement.uid
     :param user_uid: User.uid
     :return: None
     """
-    LOG.debug("Flag argument/statement %s/%s by user %s for optimization", argument_uid, statement_uid, user_uid)
-    review_optimization = ReviewOptimization(detector=user_uid, argument=argument_uid, statement=statement_uid)
+    LOG.debug("Flag argument/statement %s/%s by user %s for optimization", argument, statement, user.uid)
+    review_optimization = ReviewOptimization(detector=user, argument=argument, statement=statement)
     DBDiscussionSession.add(review_optimization)
     DBDiscussionSession.flush()
     transaction.commit()

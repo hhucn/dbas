@@ -1730,22 +1730,23 @@ class ReviewOptimization(AbstractReviewCase):
     argument: Optional[Argument] = relationship('Argument', foreign_keys=[argument_uid])
     statement: Optional[Statement] = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, detector, argument=None, statement=None, is_executed=False, is_revoked=False):
+    def __init__(self, detector: 'User', argument: Optional['Argument'] = None, statement: Optional['Statement'] = None,
+                 is_executed: bool = False, is_revoked: bool = False):
         """
         Inits a row in current review optimization table
 
-        :param detector: User.uid
+        :param detector: User who created ReviewOptimization
         :param argument: Argument.uid
         :param statement: Statement.uid
         :param is_executed: Boolean
         :param is_revoked: Boolean
         """
-        self.detector_uid = detector
-        self.argument_uid = argument
-        self.statement_uid = statement
-        self.timestamp = get_now()
-        self.is_executed = is_executed
-        self.is_revoked = is_revoked
+        self.detector: 'User' = detector
+        self.argument: Optional['Argument'] = argument
+        self.statement: Optional['Statement'] = statement
+        self.timestamp: ArrowType = get_now()
+        self.is_executed: bool = is_executed
+        self.is_revoked: bool = is_revoked
 
     def set_executed(self, is_executed):
         """
