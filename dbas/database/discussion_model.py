@@ -1865,22 +1865,22 @@ class ReviewMerge(AbstractReviewCase):
     detector: User = relationship('User', foreign_keys=[detector_uid])
     premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
-    def __init__(self, detector, premisegroup, is_executed=False, is_revoked=False):
+    def __init__(self, detector: User, premisegroup: PremiseGroup, is_executed: bool = False, is_revoked: bool = False):
         """
         Inits a row in current review merge table
 
-        :param detector: User.uid
-        :param premisegroup: PremiseGroup.uid
+        :param detector: User
+        :param premisegroup: PremiseGroup
         :param is_executed: Boolean
         :param is_revoked: Boolean
         """
-        self.detector_uid = detector
-        self.premisegroup_uid = premisegroup
+        self.detector = detector
+        self.premisegroup = premisegroup
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked
 
-    def set_executed(self, is_executed):
+    def set_executed(self, is_executed: bool):
         """
         Sets current review as executed
 
@@ -1889,7 +1889,7 @@ class ReviewMerge(AbstractReviewCase):
         """
         self.is_executed = is_executed
 
-    def set_revoked(self, is_revoked):
+    def set_revoked(self, is_revoked: bool):
         """
         Sets current review as revoked
 
@@ -1925,22 +1925,22 @@ class ReviewSplit(AbstractReviewCase):
     detector: User = relationship('User', foreign_keys=[detector_uid])
     premisegroup: PremiseGroup = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
-    def __init__(self, detector, premisegroup, is_executed=False, is_revoked=False):
+    def __init__(self, detector: User, premisegroup: PremiseGroup, is_executed: bool = False, is_revoked: bool = False):
         """
         Inits a row in current review split table
 
-        :param detector: User.uid
-        :param premisegroup: PremiseGroup.uid
+        :param detector: User
+        :param premisegroup: PremiseGroup
         :param is_executed: Boolean
         :param is_revoked: Boolean
         """
-        self.detector_uid = detector
-        self.premisegroup_uid = premisegroup
+        self.detector = detector
+        self.premisegroup = premisegroup
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked
 
-    def set_executed(self, is_executed):
+    def set_executed(self, is_executed: bool):
         """
         Sets current review as executed
 
@@ -1949,7 +1949,7 @@ class ReviewSplit(AbstractReviewCase):
         """
         self.is_executed = is_executed
 
-    def set_revoked(self, is_revoked):
+    def set_revoked(self, is_revoked: bool):
         """
         Sets current review as revoked
 

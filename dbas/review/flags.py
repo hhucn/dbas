@@ -113,9 +113,9 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
         return {'success': '', 'info': info}
 
     if key == key_merge:
-        _add_merge_review(pgroup.uid, db_user.uid, text_values)
+        _add_merge_review(pgroup, db_user, text_values)
     elif key == key_split:
-        _add_split_review(pgroup.uid, db_user.uid, text_values)
+        _add_split_review(pgroup, db_user, text_values)
 
     success = tn.get(_.thxForFlagText)
     return {'success': success, 'info': ''}
@@ -188,17 +188,18 @@ def _add_duplication_review(duplicate_statement: Statement, original_statement: 
     transaction.commit()  # vorsicht
 
 
-def _add_split_review(pgroup_uid, user_uid, text_values):
+def _add_split_review(premisegroup: PremiseGroup, detector: User, text_values: list):
     """
     Adds a row in the ReviewSplit table as well as the values, if not none
 
-    :param pgroup_uid: ID of the selected PremiseGroup
-    :param user_uid: ID of the user
+    :param premisegroup: Selected PremiseGroup
+    :param detector: User object
     :param text_values: text values or None, if you want to split the premisegroup itself
     :return: None
     """
-    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
-    review_split = ReviewSplit(detector=user_uid, premisegroup=pgroup_uid)
+    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", premisegroup.uid, detector.uid,
+              text_values)
+    review_split = ReviewSplit(detector=detector, premisegroup=premisegroup)
     DBDiscussionSession.add(review_split)
     DBDiscussionSession.flush()
 
@@ -210,17 +211,18 @@ def _add_split_review(pgroup_uid, user_uid, text_values):
     transaction.commit()
 
 
-def _add_merge_review(pgroup_uid, user_uid, text_values):
+def _add_merge_review(premisegroup: PremiseGroup, detector: User, text_values: list):
     """
     Adds a row in the ReviewMerge table as well as the values, if not none
 
-    :param pgroup_uid: ID of the selected PremiseGroup
-    :param user_uid: ID of the user
+    :param premisegroup: Selected PremiseGroup
+    :param detector: User object
     :param text_values: text values or None, if you want to merge the premisegroup itself
     :return: None
     """
-    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
-    review_merge = ReviewMerge(detector=user_uid, premisegroup=pgroup_uid)
+    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", premisegroup.uid, detector.uid,
+              text_values)
+    review_merge = ReviewMerge(detector=detector, premisegroup=premisegroup)
     DBDiscussionSession.add(review_merge)
     DBDiscussionSession.flush()
 
