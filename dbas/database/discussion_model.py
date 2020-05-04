@@ -1869,7 +1869,7 @@ class ReviewMerge(AbstractReviewCase):
         Inits a row in current review merge table
 
         :param detector: User
-        :param premisegroup: PremiseGroup.uid
+        :param premisegroup: PremiseGroup
         :param is_executed: Boolean
         :param is_revoked: Boolean
         """
@@ -1928,8 +1928,8 @@ class ReviewSplit(AbstractReviewCase):
         """
         Inits a row in current review split table
 
-        :param detector: User.uid
-        :param premisegroup: PremiseGroup.uid
+        :param detector: User
+        :param premisegroup: PremiseGroup
         :param is_executed: Boolean
         :param is_revoked: Boolean
         """
