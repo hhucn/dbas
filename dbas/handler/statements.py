@@ -267,7 +267,7 @@ def insert_as_statement(text: str, user: User, db_issue: Issue, is_start=False) 
     :param is_start: Boolean
     :return: Statement
     """
-    new_statement, is_duplicate = set_statement(text, user, is_start, db_issue)
+    new_statement, _ = set_statement(text, user, is_start, db_issue)
 
     # add marked statement
     DBDiscussionSession.add(MarkedStatement(statement=new_statement, user=user))
