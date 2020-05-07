@@ -50,9 +50,9 @@ def get_user_bubble_text_for_justify_statement(statement: Statement, user: User,
         return text, add_premise_text
 
     if is_supportive:
-        intro = _tn.get(_.youAgreeWith) if _tn.get_lang() == 'de' else '{}'
+        intro = _tn.get(_.iAgreeWithX) if _tn.get_lang() == 'de' else '{}'
     else:
-        intro = _tn.get(_.youDisagreeWith)
+        intro = _tn.get(_.iDisagreeWith)
     text = intro.format(text)
 
     return text, add_premise_text

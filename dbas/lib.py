@@ -673,7 +673,7 @@ def _build_single_argument_for_de(_t: Translator, sb: str, se: str, you_have_the
         elif marked_element:
             text += you_have_the_opinion_that
         else:
-            text += _t.get(_.youArgue)
+            text += _t.get(_.iArgue)
         text += se + ' '
     else:
         tmp = _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous)
