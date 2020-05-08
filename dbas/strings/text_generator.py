@@ -458,11 +458,12 @@ def get_text_for_support(db_arg, argument_text, nickname, _t):
     :return: string
     """
     data = get_name_link_of_arguments_author(db_arg, nickname)
-    intro = _t.get(_.goodPointAndOtherParticipantsIsInterestedToo).format(start_tag, end_tag, argument_text)
     if data['is_valid']:
         intro = __get_bubble_author(data["link"])
-        intro += _t.get(_.goodPointAndUserIsInterestedToo)
-        intro = intro.format(start_tag, end_tag, argument_text)
+    else:
+        intro = __get_bubble_author(_t.get(_.anotherParticipant))
+    intro += _t.get(_.goodPointAndUserIsInterestedToo)
+    intro = intro.format(start_tag, end_tag, argument_text)
 
     question = '<br><br>{}?'.format(_t.get(_.whatDoYouThinkAboutThat))
 
@@ -530,9 +531,10 @@ def __get_confrontation_text_for_undermine(nickname: str, premise: str, lang: st
 
     data = get_name_link_of_arguments_author(system_argument, nickname)
     if data['is_valid']:
-        intro = f'{__get_bubble_author(data["link"])} {start_content}{_t.get(_.iThinkThat)}'
+        intro = __get_bubble_author(data["link"])
     else:
-        intro = start_content + _t.get(_.otherParticipantsThinkThat)
+        intro = __get_bubble_author(_t.get(_.anotherParticipant))
+    intro += f' {start_content}{_t.get(_.iThinkThat)}'
 
     pro_con_tag = start_con
     hold_it = _t.get(_.doesNotHold)
@@ -565,11 +567,12 @@ def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, c
     data = get_name_link_of_arguments_author(system_argument, nickname)
 
     if data['is_valid']:
-        intro = __get_bubble_author(data['link']) + ' ' + start_content + _t.get(_.iAgreeThat)
+        intro = __get_bubble_author(data['link'])
         gender_think = _t.get(_.iThink)
     else:
-        intro = start_content + _t.get(_.otherParticipantsDontHaveOpinion)
+        intro = __get_bubble_author(_t.get(_.anotherParticipant))
         gender_think = _t.get(_.theyThinkThat)
+    intro += ' ' + start_content + _t.get(_.iAgreeThat)
 
     if supportive:
         bind = _t.get(_.butTheyDoNotBelieveArgument)
@@ -706,7 +709,8 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
             intro += _t.get(_.strongerStatement)
 
     else:
-        intro = start_content + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. ' + _t.get(_.strongerStatementP)
+        intro = __get_bubble_author(infos["author"]) + ' ' + start_content + _t.get(_.iNoOpinion) + ' {}. ' + _t.get(
+            _.strongerStatement)
 
     tmp = start_argument
     if infos['user_is_attacking']:
