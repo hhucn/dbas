@@ -667,7 +667,6 @@ class Keywords(Enum):
     topicString = 'topicString'
     text = 'text'
     iSay = 'iSay'
-    theyThinkThat = 'theyThinkThat'
     iThink = 'iThink'
     thisIsACopyOfMail = 'thisIsACopyOfMail'
     thisConfrontationIs = 'thisConfrontationIs'

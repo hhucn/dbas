@@ -668,7 +668,6 @@ de_lang = {
     _.topicString: 'Thema',
     _.text: 'Text',
     _.iSay: 'Ich sage, dass',
-    _.theyThinkThat: 'Sie denken, dass',
     _.iThink: 'Ich denke, dass',
     _.thisIsACopyOfMail: 'Dies ist eine Kopie Ihrer Mail',
     _.thisArgument: 'das Argument',

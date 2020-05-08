@@ -571,7 +571,7 @@ def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, c
         gender_think = _t.get(_.iThink)
     else:
         intro = __get_bubble_author(_t.get(_.anotherParticipant))
-        gender_think = _t.get(_.theyThinkThat)
+        gender_think = _t.get(_.iThink)
     intro += ' ' + start_content + _t.get(_.iAgreeThat)
 
     if supportive:
@@ -620,7 +620,7 @@ def __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument, user_
         'db_other_nick': db_other_nick,
     }
 
-    # has the other user any opinion for the users conclusion?
+    # has the other user any opinion for the user's conclusion?
     has_other_user_opinion = False
     if data['is_valid']:
         if user_arg.argument_uid is not None:
@@ -655,7 +655,7 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
     if not user_arg.is_supportive:
         conclusion = sys_conclusion
 
-    if infos['is_okay']:
+    if infos['is_okay'] and infos['author'] != "":
         intro = __get_bubble_author(infos['author']) + ' ' + start_tag
     else:
         intro = __get_bubble_author(_t.get(_.anotherParticipant)) + ' ' + start_tag

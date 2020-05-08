@@ -668,7 +668,6 @@ en_lang = {
     _.topicString: 'Topic',
     _.text: 'Text',
     _.iSay: 'I say',
-    _.theyThinkThat: 'They think that',
     _.iThink: 'I think that',
     _.thisIsACopyOfMail: 'This is a copy of your mail',
     _.thisConfrontationIs: 'This confrontation is a',
