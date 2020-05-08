@@ -669,7 +669,7 @@ def _build_single_argument_for_de(_t: Translator, sb: str, se: str, you_have_the
     elif is_users_opinion and not anonymous_style:
         text = sb_none
         if support_counter_argument:
-            text += _t.get(_.youAgreeWithThecounterargument)
+            text += _t.get(_.iAgreeWithThecounterargument)
         elif marked_element:
             text += you_have_the_opinion_that
         else:
