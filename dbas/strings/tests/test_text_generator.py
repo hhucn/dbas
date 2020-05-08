@@ -1,7 +1,6 @@
 import itertools
 import unittest
 
-import pydevd
 import transaction
 
 from dbas.database import DBDiscussionSession
@@ -13,11 +12,6 @@ from dbas.strings.lib import start_with_capital
 from dbas.strings.text_generator import remove_punctuation
 from dbas.strings.translator import Translator
 from dbas.tests.utils import TestCaseWithConfig
-
-try:
-    pydevd.settrace('192.168.178.95', port=4444, stdoutToServer=True, stderrToServer=True)
-except Exception as e:
-    print(e)
 
 
 class TestTextGenerator(TestCaseWithConfig):
