@@ -243,7 +243,7 @@ class TestTextGenerator(TestCaseWithConfig):
 
         res = tg.get_text_for_support(arg, argument_text, 'Tobias', _t)
         self.assertEqual(res,
-                         '<span class="bubbleauthor">Another Participant</span> <span>This is a good point and I am interested in your conclusion, too. I say that</span> some argument text<br><br>What do you think about that?')
+                         '<span class="bubbleauthor">Another Participant</span><span>This is a good point and I am interested in your conclusion, too. I say that</span> some argument text<br><br>What do you think about that?')
 
     def test_get_name_link_of_arguments_author(self):
         db_arg = DBDiscussionSession.query(Argument).get(2)
@@ -362,19 +362,19 @@ class TestTextGenerator(TestCaseWithConfig):
             if not color_html and not reply_for_argument and not user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, False, False)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, False, False)
-                text += '<span class="triangle-content-text">I do not have any opinion regarding some premise text. But I claim to have a stronger <span data-attitude="con">statement for rejecting </span> some conclusion text. I say: some confrontation text.'
+                text += '<span class="triangle-content-text">I do not have any opinion regarding some premise text. But I claim to have a stronger <span data-attitude="con">statement for rejecting </span> some conclusion text. I say some confrontation text.'
 
             elif not color_html and not reply_for_argument and user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, False, True)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, False, True)
-                text += '<span class="triangle-content-text">I do not have any opinion regarding some premise text. But I claim to have a stronger <span data-attitude="pro">statement for accepting </span> some conclusion text. I say: some confrontation text.'
+                text += '<span class="triangle-content-text">I do not have any opinion regarding some premise text. But I claim to have a stronger <span data-attitude="pro">statement for accepting </span> some conclusion text. I say some confrontation text.'
 
             elif not color_html and reply_for_argument:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, True, False)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, True, True)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, True, False)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, True, True)
-                text += '<span class="triangle-content-text"><span>I claim to have a stronger statement to reject</span> some conclusion text. I say: some confrontation text.'
+                text += '<span class="triangle-content-text"><span>I claim to have a stronger statement to reject</span> some conclusion text. I say some confrontation text.'
 
             elif color_html and not reply_for_argument and not user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, False, False)
