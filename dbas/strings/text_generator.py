@@ -575,10 +575,7 @@ def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, c
     intro += ' ' + start_content + _t.get(_.iAgreeThat)
 
     if supportive:
-        bind = _t.get(_.butTheyDoNotBelieveArgument)
-        if data['is_valid']:
-            bind = __translation_based_on_gender(_t, _.butHeDoesNotBelieveArgument, _.butSheDoesNotBelieveArgument,
-                                                 data['gender'])
+        bind = _t.get(_.butIDoNotBelieveArgument)
     else:
         bind = _t.get(_.butIDoNotBelieveCounter)
 
@@ -734,13 +731,6 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
 
     confrontation_text = f'{intro} {conclusion}. {bind} {confrontation}'
     return confrontation_text
-
-
-def __translation_based_on_gender(_t, keyword_m, keyword_f, gender):
-    if gender == 'm':
-        return _t.get(keyword_m)
-    else:
-        return _t.get(keyword_f)
 
 
 def get_name_link_of_arguments_author(argument: Union[Argument, Statement], nickname: Optional[str],
