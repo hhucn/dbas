@@ -307,7 +307,7 @@ class TestTextGenerator(TestCaseWithConfig):
                                                          'another conclusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        # self.assertEqual(gender, '')
+        self.assertEqual(gender, '')
         self.assertEqual(sys_text, '')
 
     def test_get_text_for_confrontation_with_undermine_for_en(self):
@@ -329,7 +329,7 @@ class TestTextGenerator(TestCaseWithConfig):
                                                              self.confrontation,
                                                              reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                              color_html)
-            # self.assertEqual(gender, '')
+            self.assertEqual(gender, '')
             self.assertEqual(sys_text, text)
 
     def test_get_text_for_confrontation_with_undercut_for_en(self):
@@ -354,7 +354,7 @@ class TestTextGenerator(TestCaseWithConfig):
                                                              'another conclusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
-            # self.assertEqual(gender, '')
+            self.assertEqual(gender, '')
             self.assertEqual(sys_text, text)
 
     def test_get_text_for_confrontation_with_rebut_for_en(self):
@@ -428,7 +428,7 @@ class TestTextGenerator(TestCaseWithConfig):
                                                              self.confrontation,
                                                              reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                              color_html)
-            # self.assertEqual(gender, '')
+            self.assertEqual(gender, '')
             self.assertEqual(sys_text, text)
 
     def test_get_text_for_confrontation_with_undercut_for_de(self):
@@ -454,7 +454,7 @@ class TestTextGenerator(TestCaseWithConfig):
                                                              'another conclusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
-            # self.assertEqual(gender, '')
+            self.assertEqual(gender, '')
             self.assertEqual(sys_text, text)
 
     def test_get_text_for_confrontation_with_rebut_for_de(self):
