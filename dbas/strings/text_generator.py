@@ -656,7 +656,7 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
         conclusion = sys_conclusion
 
     if infos['is_okay']:
-        intro = infos['author'] + ' ' + start_tag
+        intro = __get_bubble_author(infos['author']) + ' ' + start_tag
     else:
         intro = __get_bubble_author(_t.get(_.anotherParticipant)) + ' ' + start_tag
     bind = start_tag + _t.get(_.otherUsersClaimStrongerArgument) + end_tag
