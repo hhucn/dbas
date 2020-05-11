@@ -492,7 +492,7 @@ class TestTextGenerator(TestCaseWithConfig):
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, True, True)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, True, False)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, True, True)
-                text += 'Ich habe eine stärkere Aussage zur <span data-argumentation-type="argument">Ablehnung</span> davon, dass</span> <span data-argumentation-type="argument">some conclusion text</span>. Ich sage, dass <span data-argumentation-type="attack">some confrontation text</span>'
+                text += '<span>Ich habe eine stärkere Aussage zur <span data-argumentation-type="argument">Ablehnung</span> davon, dass</span> <span data-argumentation-type="argument">some conclusion text</span>. Ich sage, dass <span data-argumentation-type="attack">some confrontation text</span>'
 
             text += '.<br><br>Was denken Sie darüber?'
 
