@@ -362,12 +362,12 @@ class TestTextGenerator(TestCaseWithConfig):
             if not color_html and not reply_for_argument and not user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, False, False)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, False, False)
-                text += '<span class="triangle-content-text">I have no opinion regarding some premise text. But I claim to have a stronger <span data-attitude="con">statement for rejecting </span> some conclusion text. I say: some confrontation text.'
+                text += '<span class="triangle-content-text">I have no opinion regarding some premise text. But I claim to have a stronger <span data-attitude="con">statement for rejecting </span> some conclusion text. I say some confrontation text.'
 
             elif not color_html and not reply_for_argument and user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, False, True)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, False, True)
-                text += '<span class="triangle-content-text">I have no opinion regarding some premise text. But I claim to have a stronger <span data-attitude="pro">statement for accepting </span> some conclusion text. I say: some confrontation text.'
+                text += '<span class="triangle-content-text">I have no opinion regarding some premise text. But I claim to have a stronger <span data-attitude="pro">statement for accepting </span> some conclusion text. I say some confrontation text.'
 
             elif not color_html and reply_for_argument:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, True, False)
@@ -384,7 +384,7 @@ class TestTextGenerator(TestCaseWithConfig):
             elif color_html and not reply_for_argument and user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, False, True)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, False, True)
-                text += '<span class="triangle-content-text">I have no opinion regarding some premise text. But I claim to have a stronger <span data-attitude="pro">statement for <span data-argumentation-type="argument">accepting</span> </span> <span data-argumentation-type="argument">some conclusion text</span>. I say: <span data-argumentation-type="attack">some confrontation text</span>.'
+                text += '<span class="triangle-content-text">I have no opinion regarding some premise text. But I claim to have a stronger <span data-attitude="pro">statement for <span data-argumentation-type="argument">accepting</span> </span> <span data-argumentation-type="argument">some conclusion text</span>. I say <span data-argumentation-type="attack">some confrontation text</span>.'
 
             elif color_html and reply_for_argument:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, True, False)
@@ -399,7 +399,7 @@ class TestTextGenerator(TestCaseWithConfig):
                                                              'another conclusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
-            # self.assertEqual(gender, 'n')
+            self.assertEqual(gender, 'n')
             self.assertEqual(sys_text, text)
 
     def test_get_text_for_confrontation_with_undermine_for_de(self):
@@ -492,7 +492,7 @@ class TestTextGenerator(TestCaseWithConfig):
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, True, True)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, True, False)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, True, True)
-                text += '<span>Ich habe eine stärkere Aussage zur <span data-argumentation-type="argument">Ablehnung</span> davon, dass</span> <span data-argumentation-type="argument">some conclusion text</span>. Ich sage, dass <span data-argumentation-type="attack">some confrontation text</span>'
+                text += 'Ich habe eine stärkere Aussage zur <span data-argumentation-type="argument">Ablehnung</span> davon, dass</span> <span data-argumentation-type="argument">some conclusion text</span>. Ich sage, dass <span data-argumentation-type="attack">some confrontation text</span>'
 
             text += '.<br><br>Was denken Sie darüber?'
 
@@ -500,7 +500,7 @@ class TestTextGenerator(TestCaseWithConfig):
                                                              'another conclusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
-            # self.assertEqual(gender, 'n')
+            self.assertEqual(gender, 'n')
             self.assertEqual(sys_text, text)
 
 
