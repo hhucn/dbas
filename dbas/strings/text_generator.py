@@ -704,8 +704,8 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
             intro += _t.get(_.strongerStatement)
 
     else:
-        intro = __get_bubble_author(infos["author"]) + ' ' + start_content + _t.get(_.iNoOpinion) + ' {}. ' + _t.get(
-            _.strongerStatement)
+        intro = __get_bubble_author(_t.get(_.anotherParticipant)) + ' ' + start_content + _t.get(_.iNoOpinion) + \
+                ' {}. ' + _t.get(_.strongerStatement)
 
     tmp = start_argument
     if infos['user_is_attacking']:

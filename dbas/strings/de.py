@@ -398,7 +398,7 @@ de_lang = {
     _.iHaveEvenStrongerArgumentRejecting: 'Ich habe ein stärkeres Argument zum Ablehnen von',
     _.iHaveMuchStrongerArgumentAccepting: 'Ich habe ein viel stärkeres Argument zum Akzeptieren von',
     _.iHaveEvenStrongerArgumentAccepting: 'Ich habe ein stärkeres Argument zum Akzeptieren von',
-    _.iNoOpinion: 'Ich habe keine Meinung bezüglich',
+    _.iNoOpinion: 'Ich habe bisher keine Meinung dazu, dass',
     _.interestingOnDBAS: 'Interessante Diskussion in D-BAS',
     _.informationForStatements: 'Informationen zu den Aussagen',
     _.relativePopularityOfStatements: 'Relative Beliebheit der Aussagen',
