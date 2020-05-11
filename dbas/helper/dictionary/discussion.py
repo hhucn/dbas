@@ -311,7 +311,7 @@ class DiscussionDictHelper:
                 intro = data['link'] + ' ' + wrap_in_tag(tag_type, _tn.get(_.thinksThat))
                 gender = data['gender']
             else:
-                intro = wrap_in_tag(tag_type, _tn.get(_.otherParticipantsThinkThat))
+                intro = wrap_in_tag(tag_type, _tn.get(_.iThinkThat))
             sys_text = intro + ' ' + start_with_small(text) + '. '
             sys_text += '<br><br> ' + wrap_in_tag(tag_type, _tn.get(_.whatDoYouThinkAboutThat) + '?')
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, uid=str(argument.uid),
