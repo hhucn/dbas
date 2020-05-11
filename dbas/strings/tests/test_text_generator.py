@@ -379,7 +379,7 @@ class TestTextGenerator(TestCaseWithConfig):
             elif color_html and not reply_for_argument and not user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, False, False)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, False, False)
-                text += '<span class="triangle-content-text">I have no opinion regarding some premise text. But I claim to have a stronger <span data-attitude="con">statement for <span data-argumentation-type="argument">rejecting</span> </span> <span data-argumentation-type="argument">some conclusion text</span>. I say: <span data-argumentation-type="attack">some confrontation text</span>.'
+                text += '<span class="triangle-content-text">I have no opinion regarding some premise text. But I claim to have a stronger <span data-attitude="con">statement for <span data-argumentation-type="argument">rejecting</span> </span> <span data-argumentation-type="argument">some conclusion text</span>. I say <span data-argumentation-type="attack">some confrontation text</span>.'
 
             elif color_html and not reply_for_argument and user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, False, True)
@@ -480,7 +480,7 @@ class TestTextGenerator(TestCaseWithConfig):
             elif color_html and not reply_for_argument and not user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, False, False)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, False, False)
-                text += 'Ich habe bisher keine Meinung dazu, dass some premise text. Aber ich habe einen <span data-attitude="con">Grund <span data-argumentation-type="argument">dagegen</span>, dass </span> <span data-argumentation-type="argument">some conclusion text</span>. Sie sagen, dass: <span data-argumentation-type="attack">some confrontation text</span>'
+                text += 'Ich habe bisher keine Meinung dazu, dass some premise text. Aber ich habe einen <span data-attitude="con">Grund <span data-argumentation-type="argument">dagegen</span>, dass </span> <span data-argumentation-type="argument">some conclusion text</span>. Sie sagen, dass <span data-argumentation-type="attack">some confrontation text</span>'
 
             elif color_html and not reply_for_argument and user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, False, True)
