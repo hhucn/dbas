@@ -500,8 +500,6 @@ class Keywords(Enum):
     otherParticipantsDontHaveCounterForThat = 'otherParticipantsDontHaveCounterForThat'
     otherParticipantsDontHaveCounter = 'otherParticipantsDontHaveCounter'
     otherUsersClaimStrongerArgument = 'otherUsersClaimStrongerArgument'
-    claimsStrongerArgumentRejecting = 'claimsStrongerArgumentRejecting'
-    claimsStrongerArgumentAccepting = 'claimsStrongerArgumentAccepting'
     otherUsersHaveCounterArgument = 'otherUsersHaveCounterArgument'
     otherUsersSaidThat = 'otherUsersSaidThat'
     thenOtherUsersSaidThat = 'thenOtherUsersSaidThat'

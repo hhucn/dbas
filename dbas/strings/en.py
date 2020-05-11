@@ -506,8 +506,6 @@ en_lang = {
     _.otherParticipantsDontHaveCounterForThat: 'Other participants do not have any counter-argument for that',
     _.otherParticipantsDontHaveCounter: 'Other participants do not have any counter-argument for ',
     _.otherUsersClaimStrongerArgument: 'I claim to have a stronger statement to {}',
-    _.claimsStrongerArgumentRejecting: 'claims to have a stronger statement for reject',
-    _.claimsStrongerArgumentAccepting: 'claims to have a stronger statement for accept',
     _.otherUsersHaveCounterArgument: 'Other participants have the counter-argument that',
     _.otherUsersSaidThat: 'Other participants said that',
     _.thenOtherUsersSaidThat: 'Then other participants said that',

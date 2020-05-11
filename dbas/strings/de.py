@@ -506,8 +506,6 @@ de_lang = {
     _.otherParticipantsDontHaveCounter: 'Andere Teilnehmer haben kein Gegenargument für ',
     _.otherParticipantsDontHaveCounterForThat: 'Andere Teilnehmer haben kein Gegenargument dafür',
     _.otherUsersClaimStrongerArgument: 'Ich habe eine stärkere Aussage zur {} davon, dass',
-    _.claimsStrongerArgumentRejecting: 'hat eine stärkere Aussage zur Ablehnung davon, dass',
-    _.claimsStrongerArgumentAccepting: 'hat eine stärkere Aussage zur Annahme davon, dass',
     _.otherUsersHaveCounterArgument: 'Andere Teilnehmer haben das Gegenargument, dass',
     _.otherUsersSaidThat: 'Andere Teilnehmer haben gesagt, dass',
     _.thenOtherUsersSaidThat: 'Dann haben andere Teilnehmer noch gesagt, dass',
