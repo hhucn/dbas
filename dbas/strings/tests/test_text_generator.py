@@ -243,7 +243,7 @@ class TestTextGenerator(TestCaseWithConfig):
 
         res = tg.get_text_for_support(arg, argument_text, 'Tobias', _t)
         self.assertEqual(res,
-                         '<span class="bubbleauthor">Another Participant</span><span>This is a good point and I am interested in your conclusion, too. I say that</span> some argument text<br><br>What do you think about that?')
+                         '<span>This is a good point and I am interested in your conclusion, too. I say that</span> some argument text<br><br>What do you think about that?')
 
     def test_get_name_link_of_arguments_author(self):
         db_arg = DBDiscussionSession.query(Argument).get(2)
@@ -311,7 +311,7 @@ class TestTextGenerator(TestCaseWithConfig):
 
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
-            text = '<span class="bubbleauthor">Another Participant</span> <span class="triangle-content-text">I think that</span> '
+            text = '<span class="triangle-content-text">I think that</span> '
             if color_html:
                 text += '<span data-argumentation-type="argument">some premise text</span><span data-attitude="con"> <span data-argumentation-type="argument">does not hold</span></span>, because <span data-argumentation-type="attack">some confrontation text</span>'
             else:
@@ -333,7 +333,7 @@ class TestTextGenerator(TestCaseWithConfig):
 
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
-            text = '<span class="bubbleauthor">Another Participant</span> <span class="triangle-content-text">I agree that some premise text. But I do <span data-attitude="con">not</span> believe that this is <span data-argumentation-type="argument">a good '
+            text = '<span class="triangle-content-text">I agree that some premise text. But I do <span data-attitude="con">not</span> believe that this is <span data-argumentation-type="argument">a good '
             if not color_html and not supportive:
                 text += 'counter-argument for</span></span> some conclusion text. I think that some confrontation text.'
             elif not color_html and supportive:
@@ -358,7 +358,7 @@ class TestTextGenerator(TestCaseWithConfig):
 
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
-            text = '<span class="bubbleauthor">Another Participant</span> '
+            text = ''
             if not color_html and not reply_for_argument and not user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, False, False)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, False, False)
@@ -410,7 +410,7 @@ class TestTextGenerator(TestCaseWithConfig):
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
 
-            text = '<span class="bubbleauthor">Jemand anders</span> <span class="triangle-content-text">Ich denke, dass</span> '
+            text = '<span class="triangle-content-text">Ich denke, dass</span> '
             if color_html:
                 text += '<span data-argumentation-type="argument">some premise text</span><span data-attitude="con"> <span data-argumentation-type="argument">keine gute Idee ist</span></span>, weil <span data-argumentation-type="attack">some confrontation text</span>'
             else:
@@ -433,7 +433,7 @@ class TestTextGenerator(TestCaseWithConfig):
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
 
-            text = '<span class="bubbleauthor">Jemand anders</span> <span class="triangle-content-text">Ich stimme zu, dass some premise text. Aber ich glaube, dass es <span data-attitude="con">keine gute Begründung '
+            text = '<span class="triangle-content-text">Ich stimme zu, dass some premise text. Aber ich glaube, dass es <span data-attitude="con">keine gute Begründung '
             if not color_html and not supportive:
                 text += 'dagegen</span> ist, <span data-argumentation-type="argument">dass</span></span> some conclusion text. Ich denke, dass some confrontation text.'
             elif not color_html and supportive:
@@ -459,7 +459,7 @@ class TestTextGenerator(TestCaseWithConfig):
         for combo in list(itertools.product([False, True], repeat=4)):
             color_html, supportive, reply_for_argument, user_is_attacking = combo
 
-            text = '<span class="bubbleauthor">Jemand anders</span> <span class="triangle-content-text">'
+            text = '<span class="triangle-content-text">'
             if not color_html and not reply_for_argument and not user_is_attacking:
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, False, False)
                 # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, False, False)

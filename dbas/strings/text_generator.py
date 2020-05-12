@@ -457,12 +457,7 @@ def get_text_for_support(db_arg, argument_text, nickname, _t):
     :param _t: translator
     :return: string
     """
-    data = get_name_link_of_arguments_author(db_arg, nickname)
-    if data['is_valid']:
-        intro = __get_bubble_author(data["link"])
-    else:
-        intro = __get_bubble_author(_t.get(_.anotherParticipant))
-    intro += _t.get(_.goodPointAndUserIsInterestedToo)
+    intro = _t.get(_.goodPointAndUserIsInterestedToo)
     intro = intro.format(start_tag, end_tag, argument_text)
 
     question = '<br><br>{}?'.format(_t.get(_.whatDoYouThinkAboutThat))
@@ -530,11 +525,7 @@ def __get_confrontation_text_for_undermine(nickname: str, premise: str, lang: st
     _t = Translator(lang)
 
     data = get_name_link_of_arguments_author(system_argument, nickname)
-    if data['is_valid']:
-        intro = __get_bubble_author(data["link"])
-    else:
-        intro = __get_bubble_author(_t.get(_.anotherParticipant))
-    intro += f' {start_content}{_t.get(_.iThinkThat)}'
+    intro = f' {start_content}{_t.get(_.iThinkThat)}'
 
     pro_con_tag = start_con
     hold_it = _t.get(_.doesNotHold)
@@ -567,12 +558,10 @@ def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, c
     data = get_name_link_of_arguments_author(system_argument, nickname)
 
     if data['is_valid']:
-        intro = __get_bubble_author(data['link'])
         gender_think = _t.get(_.iThink)
     else:
-        intro = __get_bubble_author(_t.get(_.anotherParticipant))
         gender_think = _t.get(_.iThink)
-    intro += ' ' + start_content + _t.get(_.iAgreeThat)
+    intro = start_content + _t.get(_.iAgreeThat)
 
     if supportive:
         bind = _t.get(_.butIDoNotBelieveArgument)
@@ -655,10 +644,6 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
     if not user_arg.is_supportive:
         conclusion = sys_conclusion
 
-    if infos['is_okay'] and infos['author'] != "":
-        intro = __get_bubble_author(infos['author']) + ' '
-    else:
-        intro = __get_bubble_author(_t.get(_.anotherParticipant)) + ' '
     bind = start_content + start_tag + _t.get(_.otherUsersClaimStrongerArgument) + end_tag
     say = _t.get(_.iSay)
 
@@ -679,7 +664,7 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
     tmp = '{}{}{}'.format(tmp_start_tag, _t.get(accept if system_argument.is_supportive else reject), tmp_end_tag)
     bind = bind.format(tmp)
 
-    confrontation_text = f'{intro}{bind} {conclusion}. {say}{point} {confrontation}'
+    confrontation_text = f'{bind} {conclusion}. {say}{point} {confrontation}'
 
     return confrontation_text
 
@@ -687,8 +672,7 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
 def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, conclusion, start_argument, infos):
     if infos['is_okay']:
         if infos['has_other_user_opinion']:
-            intro = __get_bubble_author(infos["author"])
-            intro += start_content + _t.get(_.iAgreeThat) + ' {}. '
+            intro = start_content + _t.get(_.iAgreeThat) + ' {}. '
             intro += _t.get(_.strongerStatement)
         elif infos['db_other_nick'] == infos['nickname']:
             intro = infos['author'] + ' ' + start_content
@@ -699,13 +683,12 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
             intro += ' ' + _t.get(
                 _.strongerStatementY)  # But you had a stronger {tag}statement for {tmp}{end_tag}
         else:
-            intro = __get_bubble_author(infos["author"]) + ' ' + start_content
+            intro = start_content
             intro += _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + '. '
             intro += _t.get(_.strongerStatement)
 
     else:
-        intro = __get_bubble_author(_t.get(_.anotherParticipant)) + ' ' + start_content + _t.get(_.iNoOpinion) + \
-            ' {}. ' + _t.get(_.strongerStatement)
+        intro = start_content + _t.get(_.iNoOpinion) + ' {}. ' + _t.get(_.strongerStatement)
 
     tmp = start_argument
     if infos['user_is_attacking']:
@@ -829,4 +812,4 @@ def remove_punctuation(argument_text: str) -> str:
 
 
 def __get_bubble_author(author_html: str) -> str:
-    return f'<span class="bubbleauthor">{author_html}</span>'
+    return f'<span class="sendername">{author_html}</span>'
