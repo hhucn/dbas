@@ -496,7 +496,6 @@ de_lang = {
     _.otherParticipants: 'Andere Teilnehmer',
     _.thinkThat: 'denkst, dass',
     _.agreeThat: 'stimmst zu, dass',
-    _.thinksThat: 'denkt, dass',
     _.iThinkThat: 'Ich denke, dass',
     _.iAgreeThat: 'Ich stimme zu, dass',
     _.that: 'dass',

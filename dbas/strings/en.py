@@ -496,7 +496,6 @@ en_lang = {
     _.otherParticipants: 'Other participants agree that',
     _.thinkThat: 'think that',
     _.agreeThat: 'agree that',
-    _.thinksThat: 'thinks that',
     _.iThinkThat: 'I think that',
     _.iAgreeThat: 'I agree that',
     _.that: 'that',

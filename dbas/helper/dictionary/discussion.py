@@ -307,11 +307,7 @@ class DiscussionDictHelper:
             text = get_text_for_argument_uid(argument, rearrange_intro=True, attack_type='dont_know',
                                              with_html_tag=True, start_with_intro=True)
             data = get_name_link_of_arguments_author(argument, user.nickname)
-            if data['is_valid']:
-                intro = data['link'] + ' ' + wrap_in_tag(tag_type, _tn.get(_.thinksThat))
-                gender = data['gender']
-            else:
-                intro = wrap_in_tag(tag_type, _tn.get(_.iThinkThat))
+            intro = wrap_in_tag(tag_type, _tn.get(_.iThinkThat))
             sys_text = intro + ' ' + start_with_small(text) + '. '
             sys_text += '<br><br> ' + wrap_in_tag(tag_type, _tn.get(_.whatDoYouThinkAboutThat) + '?')
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, is_markable=True, uid=str(argument.uid),

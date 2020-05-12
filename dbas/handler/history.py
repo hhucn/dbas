@@ -341,10 +341,7 @@ def _get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> List
     _tn = Translator(lang)
 
     data = get_name_link_of_arguments_author(db_argument, db_user.nickname, False)
-    if data['is_valid']:
-        intro = data['link'] + ' ' + _tn.get(_.thinksThat)
-    else:
-        intro = _tn.get(_.otherParticipantsThinkThat)
+    intro = _tn.get(_.iThinkThat)
     sys_text = intro + ' ' + start_with_small(text) + '. '
     sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
     sys_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, db_user=db_user,

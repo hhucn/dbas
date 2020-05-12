@@ -490,7 +490,6 @@ class Keywords(Enum):
     otherParticipants = 'otherParticipants'
     thinkThat = 'thinkThat'
     agreeThat = 'agreeThat'
-    thinksThat = 'thinksThat'
     iThinkThat = 'iThinkThat'
     iAgreeThat = 'iAgreeThat'
     that = 'that'
