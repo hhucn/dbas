@@ -810,7 +810,3 @@ def remove_punctuation(argument_text: str) -> str:
     while argument_text[:-offset].endswith(('.', '?', '!')):
         argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
     return argument_text
-
-
-def __get_bubble_author(author_html: str) -> str:
-    return f'<span class="sendername">{author_html}</span>'
