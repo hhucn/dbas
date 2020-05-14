@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from typing import Optional, Union
+from typing import Optional, Union, Dict
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement, \
@@ -715,9 +715,10 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
 
 
 def get_name_link_of_arguments_author(argument: Union[Argument, Statement], nickname: Optional[str],
-                                      with_link: bool = True):
+                                      with_link: bool = True) -> Dict:
     """
-    Will return author of the argument, if the first supporting user
+    Will return author of the argument, if the first supporting user, or the first supporting user
+    None is returned as user if there currently is no supporting user.
 
     :param argument: Argument
     :param nickname: User.nickname

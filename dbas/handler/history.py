@@ -16,7 +16,8 @@ from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_te
     relation_mapper, wrap_history_onto_enum, ArgumentationStep
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small, replace_multiple_chars
-from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support, remove_punctuation
+from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support, remove_punctuation, \
+    get_name_link_of_arguments_author
 from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
@@ -446,14 +447,15 @@ def _create_reaction_history_bubbles(step: str, db_user: User, lang: str, split_
     bubble_user = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=user_text, omit_bubble_url=False,
                                            argument_uid=uid, is_supportive=is_supportive, db_user=db_user,
                                            lang=lang)
-    db_tmp = DBDiscussionSession.query(User).get(db_confrontation.author_uid)
+
+    db_enemy_user = get_name_link_of_arguments_author(db_confrontation, None)['user']
     if not attack:
         bubble_syst = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, omit_bubble_url=True,
-                                               db_user=db_user, lang=lang, other_author=db_tmp)
+                                               db_user=db_user, lang=lang, other_author=db_enemy_user)
     else:
         bubble_syst = create_speechbubble_dict(BubbleTypes.SYSTEM, uid='question-bubble-' + str(additional_uid),
                                                content=sys_text, omit_bubble_url=True, db_user=db_user,
-                                               lang=lang, other_author=db_tmp)
+                                               lang=lang, other_author=db_enemy_user)
     return [bubble_user, bubble_syst]
 
 
