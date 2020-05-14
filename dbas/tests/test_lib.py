@@ -215,7 +215,7 @@ class TestGetTextForEntities(TestCaseWithConfig):
 
         results = {
             47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
-            48: 'It has been said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.',
+            48: 'It has been said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. I do not agree with this because schools need the swimming pools for their sports lessons.',
             49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
         res = lib.get_all_arguments_with_text_by_statement_id(38)
@@ -277,7 +277,7 @@ class TestGetTextForArgumentByUid(TestCaseWithConfig):
         s47 = 'we should close public swimming pools because our swimming pools are very old and it would take a ' \
               'major investment to repair them'
         s48 = 'It has been said that we should close public swimming pools because our swimming pools are ' \
-              'very old and it would take a major investment to repair them. You did not agree with this because ' \
+              'very old and it would take a major investment to repair them. I do not agree with this because ' \
               'schools need the swimming pools for their sports lessons.'
         s49 = 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
 
@@ -306,7 +306,7 @@ class TestGetTextForArgumentByUid(TestCaseWithConfig):
                          'and it would take a major investment to repair them')
         self.assertEqual(lib.get_text_for_argument_uid(48, with_html_tag=True),
                          'It has been said that we should close public swimming pools because our swimming '
-                         'pools are very old and it would take a major investment to repair them. You did not agree '
+                         'pools are very old and it would take a major investment to repair them. I do not agree '
                          'with this because<span data-argumentation-type="position"> schools need the swimming pools '
                          'for their sports lessons.')
         self.assertEqual(lib.get_text_for_argument_uid(49, with_html_tag=True),
