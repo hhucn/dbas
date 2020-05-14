@@ -506,7 +506,7 @@ de_lang = {
     _.otherParticipantsDontHaveCounterForThat: 'Ich habe kein Gegenargument dafür',
     _.otherUsersClaimStrongerArgument: 'Ich habe eine stärkere Aussage zur {} davon, dass',
     _.otherUsersHaveCounterArgument: 'Andere Teilnehmer haben das Gegenargument, dass',
-    _.otherUsersSaidThat: 'Es wurdge gesagt, dass',
+    _.otherUsersSaidThat: 'Es wurde gesagt, dass',
     _.thenOtherUsersSaidThat: 'Dann wurde noch gesagt, dass',
     _.opinionBarometer: 'Stimmungsbarometer',
     _.pleaseAddYourSuggestion: 'Bitte geben Sie Ihren Vorschlag an',
