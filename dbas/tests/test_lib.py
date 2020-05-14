@@ -242,7 +242,7 @@ class TestGetTextForEntities(TestCaseWithConfig):
 
         results = {
             47: '<span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them',
-            48: 'Someone argued that <span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them. Other participants said that schools need the swimming pools for their sports lessons.',
+            48: 'Someone argued that <span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them. It has been said that schools need the swimming pools for their sports lessons.',
             49: '<span data-argumentation-type="position">we should close public swimming pools</span> does not hold, because the rate of non-swimmers is too high'
         }
 
@@ -276,7 +276,7 @@ class TestGetTextForArgumentByUid(TestCaseWithConfig):
     def test_get_text_for_argument_uid(self):
         s47 = 'we should close public swimming pools because our swimming pools are very old and it would take a ' \
               'major investment to repair them'
-        s48 = 'It has been said that that we should close public swimming pools because our swimming pools are ' \
+        s48 = 'It has been said that we should close public swimming pools because our swimming pools are ' \
               'very old and it would take a major investment to repair them. You did not agree with this because ' \
               'schools need the swimming pools for their sports lessons.'
         s49 = 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
