@@ -525,7 +525,7 @@ def __get_confrontation_text_for_undermine(nickname: str, premise: str, lang: st
     _t = Translator(lang)
 
     data = get_name_link_of_arguments_author(system_argument, nickname)
-    intro = f' {start_content}{_t.get(_.iThinkThat)}'
+    intro = f'{start_content}{_t.get(_.iThinkThat)}'
 
     pro_con_tag = start_con
     hold_it = _t.get(_.doesNotHold)
