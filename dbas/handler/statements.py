@@ -600,7 +600,8 @@ def __create_argument_by_uids(db_user: User, premisegroup: PremiseGroup, conclus
 
     new_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == premisegroup.uid,
                                                               Argument.is_supportive == is_supportive,
-                                                              Argument.conclusion_uid == conclusion.uid).first()
+                                                              Argument.conclusion_uid == conclusion.uid,
+                                                              Argument.issue_uid == db_issue.uid).first()
     if not new_argument:
         new_argument = Argument(premisegroup=premisegroup, is_supportive=is_supportive, author=db_user,
                                 issue=db_issue, conclusion=conclusion)
