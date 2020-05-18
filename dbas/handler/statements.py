@@ -318,18 +318,21 @@ def __check_duplicate(db_issue: Issue, text: str) -> Optional[Statement]:
     :param text: the text
     :return:
     """
-    db_tv = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
-    if not db_tv:
+    duplicate_textversions_list = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content)
+                                                                                == text.lower()).all()
+    if len(duplicate_textversions_list) == 0:
         return None
 
-    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
+    duplicate_statements_in_issue_list = [DBDiscussionSession.query(StatementToIssue).filter(
         StatementToIssue.issue_uid == db_issue.uid,
-        StatementToIssue.statement_uid == db_tv.statement_uid).all()
+        StatementToIssue.statement_uid == textversions.statement_uid).first() for textversions
+                                          in duplicate_textversions_list]
 
-    if not db_statement2issue:
-        __add_statement2issue(db_tv.statement_uid, db_issue.uid)
+    if all([element is None for element in duplicate_statements_in_issue_list]):
+        return None
 
-    db_statement = DBDiscussionSession.query(Statement).get(db_tv.statement_uid)
+    statement = list(filter(None, duplicate_statements_in_issue_list))[0]
+    db_statement = DBDiscussionSession.query(Statement).get(statement.statement_uid)
     return db_statement
 
 
