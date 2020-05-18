@@ -47,16 +47,16 @@ def json_to_dict(col):
     return json.loads(col)
 
 
-def flatten(l: List[List[any]]) -> Optional[List[any]]:
+def flatten(list_to_flatten: List[List[any]]) -> Optional[List[any]]:
     """
     Flattens a list.
 
-    :param l: list of lists
+    :param list_to_flatten: list of lists
     :return:
     """
-    if not l:
+    if not list_to_flatten:
         return None
-    return reduce(lambda x, y: x + y, l)
+    return reduce(lambda x, y: x + y, list_to_flatten)
 
 
 def merge_dicts(d1, d2) -> dict:

@@ -25,9 +25,9 @@ from dbas.strings.translator import Translator
 LOG = logging.getLogger(__name__)
 
 
-def shuffle_list_by_user(db_user: User, l: List) -> List:
+def shuffle_list_by_user(db_user: User, list_to_shuffle: List) -> List:
     random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
-    return random.sample(l, len(l))
+    return random.sample(list_to_shuffle, len(list_to_shuffle))
 
 
 class ItemDictHelper(object):

@@ -137,14 +137,14 @@ def get_changelog(no):
     changelog = []
     title = ''
     body = []
-    for l in lines:
-        if l.startswith('#'):
+    for line in lines:
+        if line.startswith('#'):
             if len(title) > 0:
                 changelog.append({'title': title, 'body': body})
                 body = []
-            title = l.replace('### ', '')
+            title = line.replace('### ', '')
         else:
-            body.append(l.replace('- ', ''))
+            body.append(line.replace('- ', ''))
 
     return changelog[0:no]
 
