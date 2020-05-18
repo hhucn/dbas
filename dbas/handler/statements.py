@@ -323,9 +323,12 @@ def __check_duplicate(db_issue: Issue, text: str) -> Optional[Statement]:
     if len(duplicate_textversions_list) == 0:
         return None
 
-    duplicate_statements_in_issue_list = [DBDiscussionSession.query(StatementToIssue).filter(
-        StatementToIssue.issue_uid == db_issue.uid,
-        StatementToIssue.statement_uid == textversions.statement_uid).first()
+    duplicate_statements_in_issue_list = [DBDiscussionSession.query(StatementToIssue).filter(StatementToIssue.issue_uid
+                                                                                             == db_issue.uid,
+                                                                                             StatementToIssue.
+                                                                                             statement_uid ==
+                                                                                             textversions.
+                                                                                             statement_uid).first()
                                           for textversions in duplicate_textversions_list]
 
     if all([element is None for element in duplicate_statements_in_issue_list]):
