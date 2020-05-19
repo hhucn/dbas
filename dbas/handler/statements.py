@@ -334,8 +334,8 @@ def __check_duplicate(db_issue: Issue, text: str) -> Optional[Statement]:
     if all([element is None for element in duplicate_statements_in_issue_list]):
         return None
 
-    statement = list(filter(None, duplicate_statements_in_issue_list))[0]
-    db_statement = DBDiscussionSession.query(Statement).get(statement.statement_uid)
+    duplicate_statement_to_issue = next(filter(None, duplicate_statements_in_issue_list))
+    db_statement = DBDiscussionSession.query(Statement).get(duplicate_statement_to_issue.statement_uid)
     return db_statement
 
 
