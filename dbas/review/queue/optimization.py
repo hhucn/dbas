@@ -294,7 +294,7 @@ class OptimizationQueue(QueueABC):
         DBDiscussionSession.add(OptimizationReviewLocks(user, review))
         transaction.commit()
 
-        LOG.debug("Locking review %s".format(review))
+        LOG.debug(f"Locking review {review}")
         return {
             'success': translator.get(_.dataAlreadyLockedByYou),
             'info': '',

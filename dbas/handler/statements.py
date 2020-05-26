@@ -267,7 +267,7 @@ def insert_as_statement(text: str, user: User, db_issue: Issue, is_start=False) 
     :param is_start: Boolean
     :return: Statement
     """
-    new_statement, is_duplicate = set_statement(text, user, is_start, db_issue)
+    new_statement, _ = set_statement(text, user, is_start, db_issue)
 
     # add marked statement
     DBDiscussionSession.add(MarkedStatement(statement=new_statement, user=user))
@@ -318,18 +318,24 @@ def __check_duplicate(db_issue: Issue, text: str) -> Optional[Statement]:
     :param text: the text
     :return:
     """
-    db_tv = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
-    if not db_tv:
+    duplicate_textversions_list = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content)
+                                                                                == text.lower()).all()
+    if len(duplicate_textversions_list) == 0:
         return None
 
-    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
-        StatementToIssue.issue_uid == db_issue.uid,
-        StatementToIssue.statement_uid == db_tv.statement_uid).all()
+    duplicate_statements_in_issue_list = [DBDiscussionSession.query(StatementToIssue).filter(StatementToIssue.issue_uid
+                                                                                             == db_issue.uid,
+                                                                                             StatementToIssue.
+                                                                                             statement_uid ==
+                                                                                             textversions.
+                                                                                             statement_uid).first()
+                                          for textversions in duplicate_textversions_list]
 
-    if not db_statement2issue:
-        __add_statement2issue(db_tv.statement_uid, db_issue.uid)
+    if all([element is None for element in duplicate_statements_in_issue_list]):
+        return None
 
-    db_statement = DBDiscussionSession.query(Statement).get(db_tv.statement_uid)
+    duplicate_statement_to_issue = next(filter(None, duplicate_statements_in_issue_list))
+    db_statement = DBDiscussionSession.query(Statement).get(duplicate_statement_to_issue.statement_uid)
     return db_statement
 
 

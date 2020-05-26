@@ -490,7 +490,7 @@ def valid_premisegroups(request):
     premisegroups = request.json_body.get('premisegroups')
     if not premisegroups \
             or not isinstance(premisegroups, list) \
-            or not all([isinstance(l, list) for l in premisegroups]):
+            or not all([isinstance(premisegroup, list) for premisegroup in premisegroups]):
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'Invalid conclusion id', _tn.get(_.requestFailed))
         return False
