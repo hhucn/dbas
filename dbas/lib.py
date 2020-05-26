@@ -5,13 +5,13 @@ import hashlib
 import locale
 import logging
 import os
+import random
 import re
 import warnings
 from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
 from html import escape, unescape
-from random import randint
 from typing import List, Optional, Union, Tuple
 from urllib import parse
 from uuid import uuid4
@@ -669,11 +669,11 @@ def _build_single_argument_for_de(_t: Translator, sb: str, se: str, you_have_the
     elif is_users_opinion and not anonymous_style:
         text = sb_none
         if support_counter_argument:
-            text += _t.get(_.youAgreeWithThecounterargument)
+            text += _t.get(_.iAgreeWithThecounterargument)
         elif marked_element:
             text += you_have_the_opinion_that
         else:
-            text += _t.get(_.youArgue)
+            text += _t.get(_.iArgue)
         text += se + ' '
     else:
         tmp = _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous)
@@ -1005,6 +1005,7 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
         'data_statement_uid': statement_uid,
         'data_is_supportive': is_supportive,
         'is_users_opinion': is_users_opinion,
+        'sender': other_author,
         'enemy': {
             'avatar': gravatar_link,
             'profile': profile,
@@ -1179,7 +1180,7 @@ def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: boo
         additional_id = '' if user.settings.should_show_public_nickname or ignore_privacy_settings else 'x'
         email = (user.email + additional_id).encode('utf-8')
     else:
-        email = str(randint(0, 999999)).encode('utf-8')
+        email = str(random.randint(0, 999999)).encode('utf-8')
 
     gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
     gravatar_url += parse.urlencode({'d': 'identicon', 's': str(size)})

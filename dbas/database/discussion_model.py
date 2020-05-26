@@ -2,11 +2,14 @@
 D-BAS database Model
 """
 import enum
+import hashlib
 import logging
+import random
 import warnings
 from abc import abstractmethod, ABC, ABCMeta
 from datetime import datetime
 from typing import List, Set, Optional, Dict, Any, Union
+from urllib import parse
 
 import arrow
 import bcrypt
@@ -392,6 +395,24 @@ class User(DiscussionBase):
     @classmethod
     def by_nickname(cls, nickname: str) -> 'User':  # https://www.python.org/dev/peps/pep-0484/#forward-references
         return DBDiscussionSession.query(cls).filter_by(nickname=nickname).one()
+
+    def profile_picture(self, size: int = 80, ignore_privacy_settings: bool = False) -> str:
+        """
+        Returns the user's profile picture with the specified size.
+
+        :param size: Integer, default 80
+        :param ignore_privacy_settings:
+        :return: String
+        """
+        if self:
+            additional_id = '' if self.settings.should_show_public_nickname or ignore_privacy_settings else 'x'
+            email = (self.email + additional_id).encode('utf-8')
+        else:
+            email = str(random.randint(0, 999999)).encode('utf-8')
+
+        email_hash = hashlib.md5(email.lower()).hexdigest()
+        gravater_payload = parse.urlencode({'d': 'identicon', 's': str(size)})
+        return f"https://secure.gravatar.com/avatar/{email_hash}?{gravater_payload}"
 
 
 class UserParticipation(DiscussionBase):

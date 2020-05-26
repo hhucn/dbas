@@ -16,9 +16,9 @@
              style="display:none;"></i>
         </div>
         <a tal:omit-tag="bubble.omit_bubble_url"
-            href="${('/discuss' if not bubble.bubble_url.startswith('/discuss') else '') + bubble.bubble_url}"
-            title="${extras.buttons.lets_go_back}"
-            data-toggle="tooltip" data-placement="bottom">
+                href="${('/discuss' if not bubble.bubble_url.startswith('/discuss') else '') + bubble.bubble_url}"
+                title="${extras.buttons.lets_go_back}"
+                data-toggle="tooltip" data-placement="bottom">
           <span class="triangle-content">${structure:bubble.message}</span>
         </a>
         <br>
@@ -37,7 +37,20 @@
                                 style="max-width: 25px; margin-top: 0.3em">
         </div>
         <p class="triangle-l" id="${bubble.id}">
-          <span class="triangle-content">${structure:bubble.message}</span>
+          <span class="triangle-content">
+            <a class="sendername" tal:condition="'sender' in bubble and bubble['sender'] and not bubble['sender'].is_anonymous()"
+                     tal:define="sender bubble.sender" href="/user/${sender.uid}">
+              <img src="${sender.profile_picture(size=15)}"
+                   aria-hidden="true"
+                   alt="Profile picture of ${sender.nickname}"
+                   class="inline-avatar" width="15px" height="15px"/>
+              <span>${sender.nickname}</span>
+            </a>
+            <a class="sendername" tal:condition="'sender' not in bubble or not bubble['sender'] or bubble['sender'].is_anonymous()">
+              <span i18n:translate="another_participant">Another Participant</span>
+            </a>
+                  ${structure:bubble.message}
+          </span>
           <br tal:condition="bubble.is_markable and extras.logged_in">
           <span class="triangle-trash pull-right" tal:condition="bubble.is_author and extras.logged_in">
             <i class="fa fa-trash" aria-hidden="true" title="${extras.title.delete_statement}"></i>
