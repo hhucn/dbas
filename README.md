@@ -34,6 +34,12 @@ D-BAS needs some environment variables to be set for running properly.
 By default those variables which are required by D-BAS are stored in `.env`.
 To get further details on which variables are set or how they can be added/changed take a look at the documentation [here](https://dbas.cs.uni-duesseldorf.de/docs/installation.html).
 
+# Compose-Files
+All `docker-compose.<service>.yml`-files had been moved to the `/docker-compose-files` folder.
+Since `development.yml` is now used for production-mode each `docker-compose.<service>.yml`-file must be saved separately.
+To add a service to production-mode the corresponding `docker-compose.<service>.yml`-file must be defined in `/docker-compose-files`.
+Then the code must be added to `docker-compose.yml`. 
+
 ## Run D-BAS
 
 Then follow these steps:
