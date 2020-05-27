@@ -38,15 +38,17 @@ To get further details on which variables are set or how they can be added/chang
 
 Then follow these steps:
 
-    docker-compose up
+If you want to run D-BAS locally in dev-mode:
+
+    docker-compose -f docker-compse.dev.yml up
 
 If you want to include the notification service as well as elastic search:
 
-    docker-compose -f docker-compose.yml -f docker-compose.notifications.yml -f docker-compose.search.yml up
+    docker-compose -f docker-compose.dev.yml -f docker-compose-files/docker-compose.notifications.yml -f docker-compose-files/docker-compose.search.yml up
 
 Production mode:
 
-    docker-compose -f docker-compose.production.yml up --build
+    docker-compose up --build
 
 After this you can hit [http://localhost:4284](http://localhost:4284) for D-BAS.
 
