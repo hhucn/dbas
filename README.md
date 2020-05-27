@@ -35,9 +35,9 @@ By default those variables which are required by D-BAS are stored in `.env`.
 To get further details on which variables are set or how they can be added/changed take a look at the documentation [here](https://dbas.cs.uni-duesseldorf.de/docs/installation.html).
 
 # Compose-Files
-All `docker-compose.<service>.yml`-files had been moved to the `/docker-compose-files` folder.
-Since `development.yml` is now used for production-mode each `docker-compose.<service>.yml`-file must be saved separately.
-To add a service to production-mode the corresponding `docker-compose.<service>.yml`-file must be defined in `/docker-compose-files`.
+All `docker-compose.<service>.yml`-files had been moved to the `/docker/compose` folder.
+Since `development.yml` is now used for production-mode each `<service>.yml`-file must be saved separately.
+To add a service to production-mode the corresponding `<service>.yml`-file must be defined in `/docker/compose`.
 Then the code must be added to `docker-compose.yml`. 
 
 ## Run D-BAS
@@ -46,11 +46,11 @@ Then follow these steps:
 
 If you want to run D-BAS locally in dev-mode:
 
-    docker-compose -f docker-compse.dev.yml up
+    docker-compose -f docker-compose.dev.yml up
 
 If you want to include the notification service as well as elastic search:
 
-    docker-compose -f docker-compose.dev.yml -f docker-compose-files/docker-compose.notifications.yml -f docker-compose-files/docker-compose.search.yml up
+    docker-compose -f docker-compose.dev.yml -f docker/compose/notifications.yml -f docker/compose/search.yml up
 
 Production mode:
 
