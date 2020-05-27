@@ -1,0 +1,29 @@
+version: "3.2"
+services:
+  db:
+    build: docker/db/
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: ${DB_PW}
+    tmpfs: /tmp
+
+  web:
+    build: .
+    command: make dev-server
+    volumes:
+      - .:/dbas:delegated
+    ports:
+      - "4284:4284"
+    environment:
+      AUTHN_SECRET: ${AUTHN_SECRET}
+      DB_PW: ${DB_PW}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      URL: ${URL}
+      KEY_PATH: devkey.pem
+      PUBKEY_PATH: devpublic.pem
+    tmpfs: /tmp
