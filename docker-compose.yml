@@ -1,22 +1,19 @@
 version: "3.2"
 services:
   db:
-    build: docker/db/
+    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas/db
+    restart: unless-stopped
     ports:
       - "5432:5432"
     volumes:
       - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
-    environment:
-      POSTGRES_PASSWORD: ${DB_PW}
+      - ./docker/db/data:/var/lib/postgresql/data
     tmpfs: /tmp
 
   web:
-    build: .
-    command: make dev-server
-    volumes:
-      - .:/dbas:delegated
-    ports:
-      - "4284:4284"
+    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas
+    command: bash -c "./wait-for-it.sh -t 0 -h db -p 5432 && alembic upgrade head && uwsgi --ini-paste production.ini"
+    restart: unless-stopped
     environment:
       AUTHN_SECRET: ${AUTHN_SECRET}
       DB_PW: ${DB_PW}
@@ -24,6 +21,41 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       URL: ${URL}
-      KEY_PATH: devkey.pem
-      PUBKEY_PATH: devpublic.pem
+      KEY_PATH: ${KEY_PATH}
+      PUBKEY_PATH: ${PUBKEY_PATH}
+    # env_file:  # Optional if you want to change passwords
+    #  - production.env
     tmpfs: /tmp
+
+  docs:
+    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas/docs
+    restart: unless-stopped
+
+  proxy:
+    image: nginx:1.15-alpine
+    command: /bin/sh -c "/etc/nginx/init/create_ssl.sh && nginx -g 'daemon off;'"
+    ports:
+      - "443:443"
+    environment:
+      DEPLOY_HOST: ${URL}
+    volumes:
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf/domain.conf:/etc/nginx/domain.conf:ro
+      - ./nginx/init:/etc/nginx/init:ro
+    restart: unless-stopped
+
+  decidotron:
+    image: hhucn/decidotron:latest
+    restart: unless-stopped
+    ports:
+      - "5005:8080"
+    depends_on:
+      - db
+    volumes:
+      - ./docker/decidotron/store:/store
+    environment:
+      DB_PW: ${DB_PW}
+      API_TOKEN: ${DECIDOTRON_API_TOKEN} #"0e9ba:bb3b1ac2c6cee9cb6affb0d803406a6445c0a214a5837d54f3caebfa697fb8c5" # Get a real API-Token first
+      DBAS_URL: ${URL}
+    env_file:
+      - production.env
