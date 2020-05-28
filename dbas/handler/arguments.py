@@ -162,7 +162,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
 
     # insert all premise groups into our database
     # all new arguments are collected in a list
-    new_argument_uids = []
+    new_arguments: List[Argument] = []
     for premisegroup in premisegroups:  # premise groups is a list of lists
         new_argument = insert_new_premises_for_argument(premisegroup, attack_type, arg_id, db_issue, db_user)
         if not isinstance(new_argument, Argument):  # break on error
@@ -176,60 +176,56 @@ def __process_input_premises_for_arguments_and_receive_url(langs: dict, arg_info
                 error = '{} ({}: {} {})'.format(a, b, c, d)
             return None, None, error
 
-        new_argument_uids.append(new_argument.uid)
+        new_arguments.append(new_argument)
 
     statement_uids = []
-    # @OPTIMIZE
-    # Query all recently stored premises (internally: statements) and collect their ids
-    # This is a bad workaround, let's just think about it in future.
-    for uid in new_argument_uids:
-        current_pgroup = DBDiscussionSession.query(Argument).get(uid).premisegroup_uid
-        current_premises = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=current_pgroup).all()
-        for premise in current_premises:
+    for argument in new_arguments:
+        for premise in argument.premises:
             statement_uids.append(premise.statement_uid)
 
     # #arguments=0: empty input
     # #arguments=1: deliver new url
     # #arguments>1: deliver url where the nickname has to choose between her inputs
     _um = url = UrlManager(slug, session_history)
-    if len(new_argument_uids) == 0:
+    if len(new_arguments) == 0:
         a = _tn.get(_.notInsertedErrorBecauseEmpty)
         b = _tn.get(_.minLength)
         c = environ.get('MIN_LENGTH_OF_STATEMENT', 10)
         error = '{} ({}: {})'.format(a, b, c)
 
-    elif len(new_argument_uids) == 1:
-        url = _um.get_url_for_new_argument(new_argument_uids)
+    elif len(new_arguments) == 1:
+        url = _um.get_url_for_new_argument([new_arguments[0].uid])
 
     else:
-        url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, _um)
+        url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_arguments, _um)
 
     # send notifications and mails
-    if len(new_argument_uids) > 0:
+    if len(new_arguments) > 0:
         # add marked arguments
-        DBDiscussionSession.add_all([MarkedArgument(argument=uid, user=db_user.uid) for uid in new_argument_uids])
+        DBDiscussionSession.add_all([MarkedArgument(argument=argument, user=db_user) for argument in new_arguments])
         DBDiscussionSession.flush()
         transaction.commit()
 
-        new_uid = random.choice(new_argument_uids)  # TODO eliminate random
-        attack = get_relation_between_arguments(arg_id, new_uid)
+        new_argument: Argument = random.choice(new_arguments)  # TODO eliminate random
+        attack = get_relation_between_arguments(arg_id, new_argument.uid)
 
-        tmp_url = _um.get_url_for_reaction_on_argument(arg_id, attack, new_uid)
+        tmp_url = _um.get_url_for_reaction_on_argument(arg_id, attack, new_argument.uid)
 
         nh.send_add_argument_notification(tmp_url, arg_id, db_user.nickname, mailer)
 
     return url, statement_uids, error
 
 
-def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, _um) -> str:
+def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_arguments: List[Argument],
+                                                                          _um) -> str:
     """
     Return the 'choose' url, when the user entered more than one premise for an argument
 
-    :param new_argument_uids: [Argument.uid]
+    :param new_arguments: [Argument.uid]
     :param _um: UrlManager
     :return: String
     """
-    pgroups = [DBDiscussionSession.query(Argument).get(uid).premisegroup_uid for uid in new_argument_uids]
+    pgroups = [argument.premisegroup.uid for argument in new_arguments]
     return _um.get_url_for_choosing_premisegroup(pgroups)
 
 

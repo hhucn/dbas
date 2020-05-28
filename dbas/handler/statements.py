@@ -15,7 +15,6 @@ from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
     set_new_rebut
 from dbas.helper.url import UrlManager
-from dbas.input_validator import is_integer
 from dbas.lib import get_profile_picture, escape_string, Relations, Attitudes
 from dbas.review.queue import Code
 from dbas.review.queue.edit import EditQueue
@@ -131,19 +130,20 @@ def __add_reputation(db_user: User, db_issue: Issue, url: str, prepared_dict: di
         prepared_dict['url'] = '{}{}'.format(url, '#access-review')
 
 
-def set_correction_of_statement(elements, db_user, translator) -> dict:
+def set_correction_of_statement(corrections: List[Dict], db_user, translator) -> dict:
     """
     Adds a proposal for a statements correction and returns info if the proposal could be set
 
-    :param elements: List of dicts with text and uids for proposals of edits for new statements
+    :param corrections: List of dicts with text and uids for proposals of edits for new statements
     :param db_user: User
     :param translator: Translator
     :rtype: dict
     :return: Dictionary with info and/or error
     """
 
-    review_count = len(elements)
-    added_reviews = [EditQueue().add_edit_reviews(db_user, el['uid'], el['text']) for el in elements]
+    review_count = len(corrections)
+    added_reviews = [EditQueue().add_edit_reviews(db_user, correction['uid'], correction['text']) for correction in
+                     corrections]
 
     if added_reviews.count(Code.SUCCESS) == 0:  # no edits set
         if added_reviews.count(Code.DOESNT_EXISTS) > 0:
@@ -167,7 +167,8 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     DBDiscussionSession.flush()
     transaction.commit()
 
-    added_values = [EditQueue().add_edit_values_review(db_user, el['uid'], el['text']) for el in elements]
+    added_values = [EditQueue().add_edit_values_review(db_user, correction['uid'], correction['text']) for correction in
+                    corrections]
     if Code.SUCCESS not in added_values:
         return {
             'info': translator.get(_.alreadyEditProposals),
@@ -186,13 +187,13 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     }
 
 
-def set_seen_statements(uids, path, db_user) -> dict:
+def set_seen_statements(statements: List[Statement], path: str, user: User) -> dict:
     """
     Marks several statements as already seen.
 
-    :param uids: Uids of statements which should be marked as seen
+    :param statements: Statements which should be marked as seen
     :param path: Current path of the user
-    :param db_user: User
+    :param user: User
     :rtype: dict
     :return: Dictionary with an error field
     """
@@ -200,12 +201,10 @@ def set_seen_statements(uids, path, db_user) -> dict:
     if 'justify' in path:
         url = path[path.index('justify/') + len('justify/'):]
         additional_argument = int(url[:url.index('/')])
-        add_seen_argument(additional_argument, db_user)
+        add_seen_argument(additional_argument, user)
 
-    for uid in uids:
-        # we get the premise group id's only
-        if is_integer(uid):
-            add_seen_statement(uid, db_user)
+    for statement in statements:
+        add_seen_statement(statement, user)
     return {'status': 'success'}
 
 
@@ -258,21 +257,21 @@ def __get_logfile_dict(textversion: TextVersion, main_page: str, lang: str) -> D
     return corr_dict
 
 
-def insert_as_statement(text: str, db_user: User, db_issue: Issue, is_start=False) -> Statement:
+def insert_as_statement(text: str, user: User, db_issue: Issue, is_start=False) -> Statement:
     """
     Inserts the given text as statement and returns the uid
 
     :param text: String
-    :param db_user: User
+    :param user: User
     :param db_issue: Issue
     :param is_start: Boolean
     :return: Statement
     """
-    new_statement, is_duplicate = set_statement(text, db_user, is_start, db_issue)
+    new_statement, _ = set_statement(text, user, is_start, db_issue)
 
     # add marked statement
-    DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
-    DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
+    DBDiscussionSession.add(MarkedStatement(statement=new_statement, user=user))
+    DBDiscussionSession.add(SeenStatement(statement=new_statement, user=user))
 
     return new_statement
 
@@ -319,18 +318,24 @@ def __check_duplicate(db_issue: Issue, text: str) -> Optional[Statement]:
     :param text: the text
     :return:
     """
-    db_tv = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
-    if not db_tv:
+    duplicate_textversions_list = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content)
+                                                                                == text.lower()).all()
+    if len(duplicate_textversions_list) == 0:
         return None
 
-    db_statement2issue = DBDiscussionSession.query(StatementToIssue).filter(
-        StatementToIssue.issue_uid == db_issue.uid,
-        StatementToIssue.statement_uid == db_tv.statement_uid).all()
+    duplicate_statements_in_issue_list = [DBDiscussionSession.query(StatementToIssue).filter(StatementToIssue.issue_uid
+                                                                                             == db_issue.uid,
+                                                                                             StatementToIssue.
+                                                                                             statement_uid ==
+                                                                                             textversions.
+                                                                                             statement_uid).first()
+                                          for textversions in duplicate_textversions_list]
 
-    if not db_statement2issue:
-        __add_statement2issue(db_tv.statement_uid, db_issue.uid)
+    if all([element is None for element in duplicate_statements_in_issue_list]):
+        return None
 
-    db_statement = DBDiscussionSession.query(Statement).get(db_tv.statement_uid)
+    duplicate_statement_to_issue = next(filter(None, duplicate_statements_in_issue_list))
+    db_statement = DBDiscussionSession.query(Statement).get(duplicate_statement_to_issue.statement_uid)
     return db_statement
 
 

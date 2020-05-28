@@ -1,11 +1,12 @@
 import logging
+from typing import Union
 
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, ReviewEdit, ReviewDuplicate, ReviewOptimization, ReviewSplit, \
-    ReviewMerge, Statement, PremiseGroup, Premise
+    ReviewMerge, Statement, PremiseGroup, Premise, Argument
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.query import revoke_author_of_statement_content, revoke_author_of_argument_content
 from dbas.lib import get_discussion_language
@@ -49,7 +50,15 @@ def flag_argument_or_statement(request):
     extra_uid = request.validated['extra_uid']
     is_argument = request.validated['is_argument']
     db_user = request.validated['user']
-    return flag_element(uid, reason, db_user, is_argument, ui_locales, extra_uid)
+    extra_statement = None
+    if extra_uid is not None:
+        extra_statement = DBDiscussionSession.query(Statement).get(extra_uid)
+
+    argument_or_statement: Union[Argument, Statement] = DBDiscussionSession.query(Argument).get(
+        uid) if is_argument else DBDiscussionSession.query(
+        Statement).get(uid)
+
+    return flag_element(argument_or_statement, reason, db_user, is_argument, ui_locales, extra_statement)
 
 
 @view_config(route_name='split_or_merge_statement', renderer='json')
@@ -66,7 +75,8 @@ def split_or_merge_statement(request):
     _tn = Translator(ui_locales)
     db_user = request.validated['user']
     statement: Statement = request.validated['statement']
-    pgroup: PremiseGroup = DBDiscussionSession.query(Premise).filter(Premise.statement_uid == statement.uid).one().premisegroup
+    pgroup: PremiseGroup = DBDiscussionSession.query(Premise).filter(
+        Premise.statement_uid == statement.uid).one().premisegroup
     key = request.validated['key']
     tvalues = request.validated['text_values']
 

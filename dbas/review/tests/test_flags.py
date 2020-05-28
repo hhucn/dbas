@@ -34,28 +34,31 @@ class TestFlagElement(TestCaseWithConfig):
         super().tearDown()
 
     def test_flag_element_for_optimizations(self):
-        return_dict = flag_element(7, key_optimization, self.user_tobi, True, 'en')
+        return_dict = flag_element(self.seventh_argument, key_optimization, self.user_tobi, True, 'en')
         self.assertEqual(self.tn.get(_.thxForFlagText), return_dict['success'])
         self.assertEqual('', return_dict['info'])
 
-        return_dict = flag_element(7, key_optimization, self.user_tobi, True, 'en')
+        return_dict = flag_element(self.seventh_argument, key_optimization, self.user_tobi, True, 'en')
         self.assertEqual('', return_dict['success'])
         self.assertEqual(self.tn.get(_.alreadyFlaggedByYou), return_dict['info'])
 
-        return_dict = flag_element(7, key_optimization, self.user_christian, True, 'en')
+        return_dict = flag_element(self.seventh_argument, key_optimization, self.user_christian, True, 'en')
         self.assertEqual('', return_dict['success'])
         self.assertEqual(self.tn.get(_.alreadyFlaggedByOthers), return_dict['info'])
 
     def test_flag_element_for_duplicates(self):
-        return_dict = flag_element(5, key_duplicate, self.user_tobi, False, 'en', 1)
+        return_dict = flag_element(self.statement_cat_or_dog, key_duplicate, self.user_tobi, False, 'en',
+                                   self.first_position_cat_or_dog)
         self.assertEqual(self.tn.get(_.thxForFlagText), return_dict['success'])
         self.assertEqual('', return_dict['info'])
 
-        return_dict = flag_element(5, key_duplicate, self.user_tobi, False, 'en', 1)
+        return_dict = flag_element(self.statement_cat_or_dog, key_duplicate, self.user_tobi, False, 'en',
+                                   self.first_position_cat_or_dog)
         self.assertEqual('', return_dict['success'])
         self.assertEqual(self.tn.get(_.alreadyFlaggedByYou), return_dict['info'])
 
-        return_dict = flag_element(5, key_duplicate, self.user_christian, False, 'en', 1)
+        return_dict = flag_element(self.statement_cat_or_dog, key_duplicate, self.user_christian, False, 'en',
+                                   self.first_position_cat_or_dog)
         self.assertEqual('', return_dict['success'])
         self.assertEqual(self.tn.get(_.alreadyFlaggedByOthers), return_dict['info'])
 

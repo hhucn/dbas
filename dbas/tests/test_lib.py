@@ -215,7 +215,7 @@ class TestGetTextForEntities(TestCaseWithConfig):
 
         results = {
             47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
-            48: 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.',
+            48: 'It has been said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. I do not agree with this because schools need the swimming pools for their sports lessons.',
             49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
         res = lib.get_all_arguments_with_text_by_statement_id(38)
@@ -228,7 +228,7 @@ class TestGetTextForEntities(TestCaseWithConfig):
 
         results = {
             47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
-            48: 'Someone argued that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. Other participants said that schools need the swimming pools for their sports lessons.',
+            48: 'Someone argued that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. It has been said that schools need the swimming pools for their sports lessons.',
             49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
         db_statement = DBDiscussionSession.query(Statement).get(38)
@@ -242,7 +242,7 @@ class TestGetTextForEntities(TestCaseWithConfig):
 
         results = {
             47: '<span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them',
-            48: 'Someone argued that <span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them. Other participants said that schools need the swimming pools for their sports lessons.',
+            48: 'Someone argued that <span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them. It has been said that schools need the swimming pools for their sports lessons.',
             49: '<span data-argumentation-type="position">we should close public swimming pools</span> does not hold, because the rate of non-swimmers is too high'
         }
 
@@ -276,8 +276,8 @@ class TestGetTextForArgumentByUid(TestCaseWithConfig):
     def test_get_text_for_argument_uid(self):
         s47 = 'we should close public swimming pools because our swimming pools are very old and it would take a ' \
               'major investment to repair them'
-        s48 = 'Other participants said that we should close public swimming pools because our swimming pools are ' \
-              'very old and it would take a major investment to repair them. You did not agree with this because ' \
+        s48 = 'It has been said that we should close public swimming pools because our swimming pools are ' \
+              'very old and it would take a major investment to repair them. I do not agree with this because ' \
               'schools need the swimming pools for their sports lessons.'
         s49 = 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
 
@@ -305,8 +305,8 @@ class TestGetTextForArgumentByUid(TestCaseWithConfig):
                          '<span>we should close public swimming pools</span> because our swimming pools are very old '
                          'and it would take a major investment to repair them')
         self.assertEqual(lib.get_text_for_argument_uid(48, with_html_tag=True),
-                         'Other participants said that we should close public swimming pools because our swimming '
-                         'pools are very old and it would take a major investment to repair them. You did not agree '
+                         'It has been said that we should close public swimming pools because our swimming '
+                         'pools are very old and it would take a major investment to repair them. I do not agree '
                          'with this because<span data-argumentation-type="position"> schools need the swimming pools '
                          'for their sports lessons.')
         self.assertEqual(lib.get_text_for_argument_uid(49, with_html_tag=True),

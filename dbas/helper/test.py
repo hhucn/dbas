@@ -90,4 +90,4 @@ def clear_reputation_of_user(db_user: User) -> None:
     :param db_user:
     :return:
     """
-    DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
+    DBDiscussionSession.query(ReputationHistory).filter_by(user=db_user).delete()

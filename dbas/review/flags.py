@@ -10,7 +10,7 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
     User, ReviewDuplicate, ReviewSplit, ReviewMerge, ReviewMergeValues, ReviewSplitValues, \
-    PremiseGroup
+    PremiseGroup, Statement, Argument
 from dbas.review import FlaggedBy, ReviewDeleteReasons
 from dbas.review.queue import key_merge, key_split, key_duplicate, key_optimization
 from dbas.review.queue.adapter import QueueAdapter
@@ -20,15 +20,16 @@ from dbas.strings.translator import Translator
 LOG = logging.getLogger(__name__)
 
 
-def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], db_user: User,
-                 is_argument: bool, ui_locales: str, extra_uid=None) -> dict:
+def flag_element(argument_or_statement: Union[Argument, Statement],
+                 reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], user: User,
+                 is_argument: bool, ui_locales: str, extra_uid: Statement = None) -> dict:
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
 
-    :param uid: Uid of the argument/statement, which should be flagged
+    :param argument_or_statement: argument/statement, which should be flagged
     :param reason: String which describes the reason
-    :param db_user: User
+    :param user: User
     :param is_argument: Boolean
     :param ui_locales: ui_locales
     :param extra_uid: Uid of the argument/statement, which should be flagged
@@ -36,13 +37,11 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
     """
     tn = Translator(ui_locales)
 
-    argument_uid = uid if is_argument else None
-    statement_uid = uid if not is_argument else None
-
     # was this already flagged?
-    flag_status = QueueAdapter(db_user=db_user).element_in_queue(argument_uid=argument_uid,
-                                                                 statement_uid=statement_uid,
-                                                                 premisegroup_uid=None)
+    flag_status = QueueAdapter(db_user=user).element_in_queue(
+        argument_uid=argument_or_statement.uid if is_argument else None,
+        statement_uid=argument_or_statement.uid if not is_argument else None,
+        premisegroup_uid=None)
     if flag_status:
         LOG.debug("Already flagged by %s", flag_status)
         if flag_status == FlaggedBy.user:
@@ -51,34 +50,38 @@ def flag_element(uid: int, reason: Union[key_duplicate, key_optimization, Review
             info = tn.get(_.alreadyFlaggedByOthers)
         return {'success': '', 'info': info}
 
-    return _add_flag(reason, argument_uid, statement_uid, extra_uid, db_user, tn)
+    if is_argument:
+        return _add_flag(reason, argument_or_statement, None, extra_uid, user, tn)
+
+    return _add_flag(reason, None, argument_or_statement, extra_uid, user, tn)
 
 
-def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument_uid: Union[int, None],
-              statement_uid: Optional[int], extra_uid: Optional[int], db_user: User, tn: Translator) -> dict:
+def _add_flag(reason: Union[key_duplicate, key_optimization, ReviewDeleteReasons], argument: Optional[Argument],
+              statement: Optional[Statement], extra_uid: Optional[Statement], user: User, tn: Translator) -> dict:
     """
 
     :param reason:
-    :param argument_uid:
-    :param statement_uid:
+    :param argument:
+    :param statement:
     :param extra_uid:
-    :param db_user:
+    :param user:
     :param tn:
     :return:
     """
     reason_val = reason.value if isinstance(reason, ReviewDeleteReasons) else reason
-    db_del_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason_val).first()
-    if db_del_reason:
-        _add_delete_review(argument_uid, statement_uid, db_user.uid, db_del_reason.uid)
+    del_reason: ReviewDeleteReasons = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason_val).first()
+
+    if del_reason:
+        _add_delete_review(argument if argument else None, statement if statement else None, user, del_reason)
 
     elif reason_val == key_optimization:
-        _add_optimization_review(argument_uid, statement_uid, db_user.uid)
+        _add_optimization_review(argument if argument else None, statement if statement else None, user)
 
     elif reason_val == key_duplicate:
-        if statement_uid == extra_uid:
+        if statement.uid == extra_uid.uid:
             LOG.debug("uid Error")
             return {'success': '', 'info': tn.get(_.internalKeyError)}
-        _add_duplication_review(statement_uid, extra_uid, db_user.uid)
+        _add_duplication_review(statement, extra_uid, user)
 
     return {'success': tn.get(_.thxForFlagText), 'info': ''}
 
@@ -110,9 +113,9 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
         return {'success': '', 'info': info}
 
     if key == key_merge:
-        _add_merge_review(pgroup.uid, db_user.uid, text_values)
+        _add_merge_review(pgroup, db_user, text_values)
     elif key == key_split:
-        _add_split_review(pgroup.uid, db_user.uid, text_values)
+        _add_split_review(pgroup, db_user, text_values)
 
     success = tn.get(_.thxForFlagText)
     return {'success': success, 'info': ''}
@@ -133,96 +136,99 @@ def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User
     return flag_statement_for_merge_or_split(key, pgroup, [], db_user, tn)
 
 
-def _add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
+def _add_delete_review(argument: Optional[Argument], statement: Optional[Statement], user: User,
+                       reason: Optional[ReviewDeleteReasons]):
     """
     Adds a ReviewDelete row
 
-    :param argument_uid: Argument.uid
-    :param statement_uid: Statement.uid
-    :param user_uid: User.uid
-    :param reason_uid: ReviewDeleteReason.uid
+    :param argument: Argument to be deleted
+    :param statement: Statement to be deleted
+    :param user: User who wants to delete the argument or statement
+    :param reason: The reason for the deletion
     :return: None
     """
-    LOG.debug("Flag argument/statement %s/%s by user %s for delete", argument_uid, statement_uid, user_uid)
-    review_delete = ReviewDelete(detector=user_uid, argument=argument_uid, statement=statement_uid, reason=reason_uid)
+    LOG.debug("Flag argument/statement %s/%s by user %s for delete", argument.argument_uid if argument else None,
+              statement.uid if statement else None, user)
+    review_delete = ReviewDelete(detector=user, argument=argument, statement=statement, reason=reason)
     DBDiscussionSession.add(review_delete)
     DBDiscussionSession.flush()
     transaction.commit()
 
 
-def _add_optimization_review(argument_uid, statement_uid, user_uid):
+def _add_optimization_review(argument: Optional[Argument], statement: Optional[Statement], user: User):
     """
     Adds a ReviewOptimization row
 
-    :param argument_uid: Argument.uid
-    :param statement_uid: Statement.uid
+    :param argument: Argument.uid
+    :param statement: Statement.uid
     :param user_uid: User.uid
     :return: None
     """
-    LOG.debug("Flag argument/statement %s/%s by user %s for optimization", argument_uid, statement_uid, user_uid)
-    review_optimization = ReviewOptimization(detector=user_uid, argument=argument_uid, statement=statement_uid)
+    LOG.debug("Flag argument/statement %s/%s by user %s for optimization", argument, statement, user.uid)
+    review_optimization = ReviewOptimization(detector=user, argument=argument, statement=statement)
     DBDiscussionSession.add(review_optimization)
     DBDiscussionSession.flush()
     transaction.commit()
 
 
-def _add_duplication_review(duplicate_statement_uid, original_statement_uid, user_uid):
+def _add_duplication_review(duplicate_statement: Statement, original_statement: Statement, user: User):
     """
     Adds a ReviewDuplicate row
 
-    :param duplicate_statement_uid: Statement.uid
-    :param original_statement_uid: Statement.uid
-    :param user_uid: User.uid
+    :param duplicate_statement: Statement
+    :param original_statement: Statement
+    :param user: User.uid
     :return: None
     """
-    LOG.debug("Flag statement %s by user %s as duplicate of %s", duplicate_statement_uid, user_uid,
-              original_statement_uid)
-    review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement_uid,
-                                         original_statement=original_statement_uid)
+    LOG.debug("Flag statement %s by user %s as duplicate of %s", duplicate_statement, user.uid, original_statement)
+    review_duplication = ReviewDuplicate(detector=user, duplicate_statement=duplicate_statement,
+                                         original_statement=original_statement)
     DBDiscussionSession.add(review_duplication)
-    DBDiscussionSession.flush()
-    transaction.commit()
+    DBDiscussionSession.flush()  # vorsicht
+    transaction.commit()  # vorsicht
 
 
-def _add_split_review(pgroup_uid, user_uid, text_values):
+def _add_split_review(premisegroup: PremiseGroup, detector: User, text_values: list):
     """
     Adds a row in the ReviewSplit table as well as the values, if not none
 
-    :param pgroup_uid: ID of the selected PremiseGroup
-    :param user_uid: ID of the user
+    :param premisegroup: Selected PremiseGroup
+    :param detector: User object
     :param text_values: text values or None, if you want to split the premisegroup itself
     :return: None
     """
-    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
-    review_split = ReviewSplit(detector=user_uid, premisegroup=pgroup_uid)
+    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", premisegroup.uid, detector.uid,
+              text_values)
+    review_split = ReviewSplit(detector=detector, premisegroup=premisegroup)
     DBDiscussionSession.add(review_split)
     DBDiscussionSession.flush()
 
     if text_values:
         DBDiscussionSession.add_all(
-            [ReviewSplitValues(review=review_split.uid, content=value) for value in text_values])
+            [ReviewSplitValues(review=review_split, content=value) for value in text_values])
         DBDiscussionSession.flush()
 
     transaction.commit()
 
 
-def _add_merge_review(pgroup_uid, user_uid, text_values):
+def _add_merge_review(premisegroup: PremiseGroup, detector: User, text_values: list):
     """
     Adds a row in the ReviewMerge table as well as the values, if not none
 
-    :param pgroup_uid: ID of the selected PremiseGroup
-    :param user_uid: ID of the user
+    :param premisegroup: Selected PremiseGroup
+    :param detector: User object
     :param text_values: text values or None, if you want to merge the premisegroup itself
     :return: None
     """
-    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", pgroup_uid, user_uid, text_values)
-    review_merge = ReviewMerge(detector=user_uid, premisegroup=pgroup_uid)
+    LOG.debug("Flag pgroup %s by user %s for merging with additional values %s", premisegroup.uid, detector.uid,
+              text_values)
+    review_merge = ReviewMerge(detector=detector, premisegroup=premisegroup)
     DBDiscussionSession.add(review_merge)
     DBDiscussionSession.flush()
 
     if text_values:
         DBDiscussionSession.add_all(
-            [ReviewMergeValues(review=review_merge.uid, content=value) for value in text_values])
+            [ReviewMergeValues(review=review_merge, content=value) for value in text_values])
         DBDiscussionSession.flush()
 
     transaction.commit()

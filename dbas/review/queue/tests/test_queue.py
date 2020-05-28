@@ -4,7 +4,7 @@ import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
+from dbas.database.discussion_model import Issue, Statement, PremiseGroup
 from dbas.database.discussion_model import User, ReviewCanceled, ReviewEditValue, PremiseGroupSplitted, \
     PremiseGroupMerged
 from dbas.review.mapper import get_queue_by_key, get_review_model_by_key, get_last_reviewer_by_key
@@ -41,6 +41,7 @@ class QueueTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.user = DBDiscussionSession.query(User).get(1)
+        self.other_user = DBDiscussionSession.query(User).get(4)
         self.tn = Translator('en')
 
     def tearDown(self):
@@ -79,21 +80,31 @@ class QueueTest(unittest.TestCase):
 
         # add things which we can cancel
         if key in [key_merge, key_split]:
-            db_new_review = review_table(detector=4, premisegroup=5)
+            test_user = DBDiscussionSession.query(User).get(4)
+            test_premisegroup = DBDiscussionSession.query(PremiseGroup).get(5)
+            db_new_review = review_table(detector=test_user, premisegroup=test_premisegroup)
         elif key is key_duplicate:
-            db_new_review = review_table(detector=4, duplicate_statement=5, original_statement=4)
+            original_statement = DBDiscussionSession.query(Statement).get(4)
+            duplicate_statement = DBDiscussionSession.query(Statement).get(5)
+            db_new_review = review_table(detector=self.other_user, duplicate_statement=duplicate_statement,
+                                         original_statement=original_statement)
+        elif key in [key_delete, key_edit, key_optimization]:
+            db_new_review = review_table(detector=DBDiscussionSession.query(User).get(4))
         else:
             db_new_review = review_table(detector=4)
 
         DBDiscussionSession.add(db_new_review)
         DBDiscussionSession.flush()
 
+        test_user = DBDiscussionSession.query(User).get(3)
         if key == key_split:
-            DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, should_split=True))
+            DBDiscussionSession.add(
+                last_reviewer_table(reviewer=test_user, review=db_new_review, should_split=True))
         elif key == key_merge:
-            DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, should_merge=True))
+            DBDiscussionSession.add(
+                last_reviewer_table(reviewer=test_user, review=db_new_review, should_merge=True))
         else:
-            DBDiscussionSession.add(last_reviewer_table(reviewer=3, review=db_new_review.uid, is_okay=True))
+            DBDiscussionSession.add(last_reviewer_table(reviewer=test_user, review=db_new_review, is_okay=True))
 
         DBDiscussionSession.flush()
 

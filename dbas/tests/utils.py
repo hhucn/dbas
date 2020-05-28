@@ -40,11 +40,14 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         self.issue_read_only: Issue = DBDiscussionSession.query(Issue).get(7)
         self.issue_cat_or_dog: Issue = DBDiscussionSession.query(Issue).get(2)
         self.issue_town: Issue = DBDiscussionSession.query(Issue).get(1)
-        self.position_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(2)
+        self.first_position_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(1)
+        self.second_position_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(2)
         self.position_town: Statement = DBDiscussionSession.query(Statement).get(36)
         self.statement_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(5)
         self.statement_town: Statement = DBDiscussionSession.query(Statement).get(40)
         self.statement_argument_town: Statement = DBDiscussionSession.query(Statement).get(39)
+        self.first_argument: Argument = DBDiscussionSession.query(Argument).get(1)
+        self.seventh_argument: Argument = DBDiscussionSession.query(Argument).get(7)
         self.argument_town: Argument = DBDiscussionSession.query(Argument).get(34)
         self.argument_cat_or_dog: Argument = DBDiscussionSession.query(Argument).get(2)
         self.user_anonymous: User = DBDiscussionSession.query(User).get(1)
@@ -55,7 +58,7 @@ class TestCaseWithConfig(TestCaseWithDatabase):
         self.user_torben: User = DBDiscussionSession.query(User).get(9)
         self.user_antonia: User = DBDiscussionSession.query(User).get(28)
         self.statement_reference: StatementReference = DBDiscussionSession.query(StatementReference).get(2)
-        self.user_group: Group = DBDiscussionSession.query(Group).filter_by(name='users').first()
+        self.user_group: Group = Group.USER
         DBDiscussionSession.query(Argument).get(1).set_disabled(True)
 
     def tearDown(self):

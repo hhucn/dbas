@@ -16,7 +16,8 @@ from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_te
     relation_mapper, wrap_history_onto_enum, ArgumentationStep
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.lib import start_with_capital, start_with_small, replace_multiple_chars
-from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support, remove_punctuation
+from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support, remove_punctuation, \
+    get_name_link_of_arguments_author
 from dbas.strings.translator import Translator
 
 LOG = logging.getLogger(__name__)
@@ -341,10 +342,7 @@ def _get_bubble_from_dont_know_step(step: str, db_user: User, lang: str) -> List
     _tn = Translator(lang)
 
     data = get_name_link_of_arguments_author(db_argument, db_user.nickname, False)
-    if data['is_valid']:
-        intro = data['link'] + ' ' + _tn.get(_.thinksThat)
-    else:
-        intro = _tn.get(_.otherParticipantsThinkThat)
+    intro = _tn.get(_.iThinkThat)
     sys_text = intro + ' ' + start_with_small(text) + '. '
     sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
     sys_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, db_user=db_user,
@@ -449,14 +447,15 @@ def _create_reaction_history_bubbles(step: str, db_user: User, lang: str, split_
     bubble_user = create_speechbubble_dict(BubbleTypes.USER, bubble_url=url, content=user_text, omit_bubble_url=False,
                                            argument_uid=uid, is_supportive=is_supportive, db_user=db_user,
                                            lang=lang)
-    db_tmp = DBDiscussionSession.query(User).get(db_confrontation.author_uid)
+
+    db_enemy_user = get_name_link_of_arguments_author(db_confrontation, None)['user']
     if not attack:
         bubble_syst = create_speechbubble_dict(BubbleTypes.SYSTEM, content=sys_text, omit_bubble_url=True,
-                                               db_user=db_user, lang=lang, other_author=db_tmp)
+                                               db_user=db_user, lang=lang, other_author=db_enemy_user)
     else:
         bubble_syst = create_speechbubble_dict(BubbleTypes.SYSTEM, uid='question-bubble-' + str(additional_uid),
                                                content=sys_text, omit_bubble_url=True, db_user=db_user,
-                                               lang=lang, other_author=db_tmp)
+                                               lang=lang, other_author=db_enemy_user)
     return [bubble_user, bubble_syst]
 
 
@@ -469,11 +468,11 @@ def get_last_relation(split_history):
     return split_last_history_item[2]
 
 
-def save_database(db_user: User, slug: str, path: str, history: str = '') -> None:
+def save_database(user: User, slug: str, path: str, history: str = '') -> None:
     """
     Saves a path into the database
 
-    :param db_user: User
+    :param user: User
     :param slug: Issue.slug
     :param path: String
     :param history: String
@@ -494,21 +493,20 @@ def save_database(db_user: User, slug: str, path: str, history: str = '') -> Non
         history = '?{}={}'.format(ArgumentationStep.HISTORY.value, history)
 
     LOG.debug("Saving %s%s", path, history)
-    DBDiscussionSession.add(History(author=db_user, path=path + history))
+    DBDiscussionSession.add(History(author=user, path=path + history))
     DBDiscussionSession.flush()
 
 
-def get_from_database(db_user: User, lang: str) -> List[dict]:
+def get_from_database(user: User, lang: str) -> List[dict]:
     """
     Returns history from database
 
-    :param db_user: User
+    :param user: User
     :param lang: ui_locales
     :return: [String]
     """
-    db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
     return_array = []
-    for history in db_history:
+    for history in user.history:
         return_array.append({
             'path': history.path,
             'timestamp': sql_timestamp_pretty_print(history.timestamp, lang, False, True) + ' GMT'
@@ -517,14 +515,14 @@ def get_from_database(db_user: User, lang: str) -> List[dict]:
     return return_array
 
 
-def delete_in_database(db_user: User) -> True:
+def delete_in_database(user: User) -> True:
     """
     Deletes history from database
 
-    :param db_user: User
+    :param user: User
     :return: [String]
     """
-    DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(History).filter_by(author_uid=user.uid).delete()
     DBDiscussionSession.flush()
     return True
 

@@ -13,7 +13,7 @@ from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group
+from dbas.database.discussion_model import User
 from dbas.handler import user
 from dbas.lib import escape_string, get_user_by_case_insensitive_nickname, \
     get_user_by_case_insensitive_public_nickname
@@ -134,15 +134,6 @@ def register_user_with_json_data(data: dict, lang: str, mailer: Mailer) -> (str,
     msg = __check_login_params(firstname, lastname, nickname, email, password, passwordconfirm)
     if msg:
         return success, _tn.get(msg), db_new_user
-
-    # getting the authors group
-    db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
-
-    # does the group exist?
-    if not db_group:
-        msg = _tn.get(_.errorTryLateOrContant)
-        LOG.debug("Error occurred")
-        return success, msg, db_new_user
 
     user_data = {
         'firstname': firstname,

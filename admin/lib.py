@@ -12,7 +12,7 @@ from pyramid.httpexceptions import exception_response
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReference, \
+from dbas.database.discussion_model import Issue, Language, User, Settings, Statement, StatementReference, \
     SeenStatement, SeenArgument, TextVersion, PremiseGroup, Premise, Argument, ClickedArgument, ClickedStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
@@ -28,7 +28,6 @@ LOG = logging.getLogger(__name__)
 table_mapper = {
     'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
     'Language'.lower(): {'table': Language, 'name': 'Language'},
-    'Group'.lower(): {'table': Group, 'name': 'Group'},
     'User'.lower(): {'table': User, 'name': 'User'},
     'Settings'.lower(): {'table': Settings, 'name': 'Settings'},
     'Statement'.lower(): {'table': Statement, 'name': 'Statement'},
@@ -93,7 +92,6 @@ def get_overview(page):
 
     # all tables for the 'users' group
     users = list()
-    users.append(_get_dash_dict('Group', page + 'Group'))
     users.append(_get_dash_dict('User', page + 'User'))
     users.append(_get_dash_dict('Settings', page + 'Settings'))
     users.append(_get_dash_dict('Message', page + 'Message'))

@@ -8,7 +8,7 @@ from pyramid.security import Allow, Everyone
 from sqlalchemy.exc import InternalError
 
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group
+from .database.discussion_model import User
 
 LOG = logging.getLogger(__name__)
 
@@ -18,10 +18,10 @@ class RootFactory():
     Defines the ACL
     """
     __acl__ = [(Allow, Everyone, 'everybody'),
-               (Allow, 'group:admins', ('admin', 'edit', 'use')),
-               (Allow, 'group:authors', ('edit', 'use')),
-               (Allow, 'group:users', 'use'),
-               (Allow, 'group:special', 'use')]
+               (Allow, 'group:ADMIN', ('admin', 'edit', 'use')),
+               (Allow, 'group:AUTHOR', ('edit', 'use')),
+               (Allow, 'group:USER', 'use'),
+               (Allow, 'group:SPECIAL', 'use')]
 
     def __init__(self, _):
         pass
@@ -42,10 +42,9 @@ def groupfinder(nick, _):
         return []
 
     if user:
-        group = DBDiscussionSession.query(Group).get(user.group_uid)
-        if group:
-            LOG.debug("return [group: %s]", group.name)
-            return ['group:' + group.name]
+        group = user.group
+        LOG.debug("return [group: %s]", group.name)
+        return ['group:' + group.name]
 
     LOG.debug("return []")
     return []

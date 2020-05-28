@@ -74,7 +74,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.assertEquals(len_db_reputation1 + 1, len_db_reputation2)
         self.delete_last_argument_by_conclusion_uid(db_arg.conclusion_uid)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
-        DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
+        DBDiscussionSession.query(ReputationHistory).filter_by(user=db_user).delete()
         transaction.commit()
 
     def test_set_new_start_premise(self):

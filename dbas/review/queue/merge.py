@@ -1,7 +1,7 @@
 # Adaptee for the merge queue
 import logging
 import random
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 
 import transaction
 from beaker.session import Session
@@ -223,10 +223,13 @@ class MergeQueue(QueueABC):
         """
         db_review = DBDiscussionSession.query(ReviewMerge).get(db_review.uid)
         db_review.set_revoked(True)
-        db_pgroup_merged = DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review.uid).all()
+        db_pgroup_merged: List[PremiseGroupMerged] = DBDiscussionSession.query(PremiseGroupMerged).filter_by(
+            review_uid=db_review.uid).all()
         replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(
             review_uid=db_review.uid).all()
+
         undo_premisegroups(db_pgroup_merged, replacements)
+
         DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
         DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).delete()
         DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(review_uid=db_review.uid).delete()
@@ -347,24 +350,25 @@ class MergeQueue(QueueABC):
         for argument in db_arguments:
             LOG.debug("Reset argument %s from pgroup %s to new pgroup %s", argument.uid, argument.premisegroup_uid,
                       db_new_premisegroup.uid)
-            argument.set_premisegroup(db_new_premisegroup.uid)
+            argument.set_premisegroup(db_new_premisegroup)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.flush()
 
         # add swap to database
-        DBDiscussionSession.add(PremiseGroupMerged(db_review.uid, db_review.premisegroup_uid, db_new_premisegroup.uid))
+        DBDiscussionSession.add(PremiseGroupMerged(db_review.uid, db_review.premisegroup, db_new_premisegroup))
 
         # swap the conclusion in every argument
         old_statement_ids = [p.statement_uid for p in db_old_premises]
         for old_statement_id in old_statement_ids:
             db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=old_statement_id).all()
+            old_statement = DBDiscussionSession.query(Statement).get(old_statement_id)
             for argument in db_arguments:
                 LOG.debug("Reset arguments %s from conclusions %s to new merges statement %s", argument.uid,
                           argument.conclusion_uid, new_statement.uid)
                 argument.set_conclusion(new_statement.uid)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.add(
-                    StatementReplacementsByPremiseGroupMerge(db_review.uid, old_statement_id, new_statement.uid))
+                    StatementReplacementsByPremiseGroupMerge(db_review, old_statement, new_statement))
                 DBDiscussionSession.flush()
 
         # finish

@@ -129,6 +129,7 @@ InteractionHandler.prototype.callbackIfDoneForSendNewIssue = function (data) {
         li.insertBefore(divider);
     }
     setGlobalSuccessHandler('Yeah!', _t(dataAdded));
+    location.reload();
 };
 
 /**

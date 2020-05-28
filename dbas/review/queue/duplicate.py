@@ -281,7 +281,7 @@ class DuplicateQueue(QueueABC):
         return pro_list, con_list
 
     @staticmethod
-    def __bend_objects_of_review(db_review):
+    def __bend_objects_of_review(db_review: ReviewDuplicate):
         """
         If an argument is a duplicate, we have to bend the objects of argument, which are no duplicates
 
@@ -300,7 +300,7 @@ class DuplicateQueue(QueueABC):
         if db_dupl_statement.is_position and not db_orig_statement.is_position:
             LOG.debug("Duplicate is startpoint, but original one is not")
             DBDiscussionSession.add(
-                RevokedDuplicate(review=db_review.uid, bend_position=True, statement=db_orig_statement.uid))
+                RevokedDuplicate(review=db_review, bend_position=True, statement=db_orig_statement))
             db_orig_statement.set_position(True)
 
         # getting all argument where the duplicated statement is used
@@ -315,7 +315,7 @@ class DuplicateQueue(QueueABC):
                           db_review.original_statement_uid)
                 argument.set_conclusion(db_review.original_statement_uid)
                 DBDiscussionSession.add(argument)
-                DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, conclusion_of_argument=argument.uid))
+                DBDiscussionSession.add(RevokedDuplicate(review=db_review, conclusion_of_argument=argument))
                 used = True
 
             # recalibrate premises
@@ -325,9 +325,10 @@ class DuplicateQueue(QueueABC):
                 if premise.statement_uid == db_review.duplicate_statement_uid:
                     LOG.debug("%s, bend premise %s from %s to %s", text, premise.uid, premise.statement_uid,
                               db_review.original_statement_uid)
-                    premise.set_statement(db_review.original_statement_uid)
+                    premise.set_statement(db_review.original_statement)
+
                     DBDiscussionSession.add(premise)
-                    DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, premise=premise.uid))
+                    DBDiscussionSession.add(RevokedDuplicate(review=db_review, premise=premise))
                     used = True
 
             if not used:
@@ -353,20 +354,20 @@ class DuplicateQueue(QueueABC):
         db_revoked_elements = DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).all()
         for revoke in db_revoked_elements:
             if revoke.bend_position:
-                db_statement = DBDiscussionSession.query(Statement).get(revoke.statement_uid)
+                db_statement = DBDiscussionSession.query(Statement).get(revoke.statement.uid)
                 db_statement.set_position(False)
                 DBDiscussionSession.add(db_statement)
 
-            if revoke.argument_uid is not None:
-                db_argument = DBDiscussionSession.query(Argument).get(revoke.argument_uid)
-                LOG.debug("Rebend conclusion of argument %s from %s to %s", revoke.argument_uid,
+            if revoke.argument is not None:
+                db_argument = DBDiscussionSession.query(Argument).get(revoke.argument.uid)
+                LOG.debug("Rebend conclusion of argument %s from %s to %s", revoke.argument.uid,
                           db_argument.conclusion_uid, db_review.duplicate_statement_uid)
                 db_argument.conclusion_uid = db_review.duplicate_statement_uid
                 DBDiscussionSession.add(db_argument)
 
-            if revoke.premise_uid is not None:
-                db_premise = DBDiscussionSession.query(Premise).get(revoke.premise_uid)
-                LOG.debug("Rebend premise %s from %s to %s", revoke.premise_uid, db_premise.statement_uid,
+            if revoke.premise is not None:
+                db_premise = DBDiscussionSession.query(Premise).get(revoke.premise.uid)
+                LOG.debug("Rebend premise %s from %s to %s", revoke.premise.uid, db_premise.statement_uid,
                           db_review.duplicate_statement_uid)
                 db_premise.statement_uid = db_review.duplicate_statement_uid
                 DBDiscussionSession.add(db_premise)

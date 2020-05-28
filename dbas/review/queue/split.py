@@ -218,7 +218,8 @@ class SplitQueue(QueueABC):
         """
         db_review = DBDiscussionSession.query(ReviewSplit).get(db_review.uid)
         db_review.set_revoked(True)
-        db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).all()
+        db_pgroup_splitted: List[PremiseGroupSplitted] = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(
+            review_uid=db_review.uid).all()
         replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(
             review_uid=db_review.uid).all()
         disable_args = [arg.uid for arg in DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(
@@ -344,7 +345,7 @@ class SplitQueue(QueueABC):
 
             # note new added pgroup
             DBDiscussionSession.add(
-                PremiseGroupSplitted(db_review.uid, db_review.premisegroup_uid, db_new_premisegroup))
+                PremiseGroupSplitted(db_review.uid, db_review.premisegroup, db_new_premisegroup))
 
         # swap the premisegroup occurence in every argument and add new arguments for the new premises
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisegroup_uid=db_review.premisegroup_uid).all()
@@ -364,12 +365,14 @@ class SplitQueue(QueueABC):
         for old_statement_uid in db_old_statement_ids:
             db_arguments: List[Argument] = DBDiscussionSession.query(Argument).filter_by(
                 conclusion_uid=old_statement_uid).all()
+            old_statement = DBDiscussionSession.query(Statement).get(old_statement_uid)
             for argument in db_arguments:
                 argument.set_conclusion(db_statements[0].uid)
                 DBDiscussionSession.add(argument)
                 DBDiscussionSession.add(
-                    StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, db_statements[0].uid))
+                    StatementReplacementsByPremiseGroupSplit(db_review, old_statement, db_statements[0]))
                 DBDiscussionSession.flush()
+                old_statement = DBDiscussionSession.query(Statement).get(old_statement_uid)
 
                 for statement in db_statements[1:]:
                     db_argument = Argument(argument.premisegroup, argument.is_supportive, argument.author,
@@ -377,7 +380,7 @@ class SplitQueue(QueueABC):
                                            is_disabled=argument.is_disabled)
                     DBDiscussionSession.add(db_argument)
                     DBDiscussionSession.add(
-                        StatementReplacementsByPremiseGroupSplit(db_review.uid, old_statement_uid, statement.uid))
+                        StatementReplacementsByPremiseGroupSplit(db_review, old_statement, statement))
                     DBDiscussionSession.flush()
 
         # finish

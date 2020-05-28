@@ -1,3 +1,9 @@
+### 1.27.0 (2020-05-28)
+* Change look of chat bubbles to look like a real chat. [!888](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/888)
+* Rework, how the docker compose files are structured [!894](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/894)
+* Refactor a lot of code to use the ORM for real (Too many merge requests to list)
+* Replace the `Group` table with an enum [!872](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/872)
+
 ### 1.26.0 (2020-03-09)
 * Export endpoint to AIF and DOT, import from AIF 
 [!822](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/822) 

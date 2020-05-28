@@ -25,9 +25,9 @@ from dbas.strings.translator import Translator
 LOG = logging.getLogger(__name__)
 
 
-def shuffle_list_by_user(db_user: User, l: List) -> List:
+def shuffle_list_by_user(db_user: User, list_to_shuffle: List) -> List:
     random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
-    return random.sample(l, len(l))
+    return random.sample(list_to_shuffle, len(list_to_shuffle))
 
 
 class ItemDictHelper(object):
@@ -91,7 +91,7 @@ class ItemDictHelper(object):
         ed = EditQueue()
         for statement in db_statements:
             if statement.uid in uids:  # add seen by if the statement is visible
-                add_seen_statement(statement.uid, db_user)
+                add_seen_statement(statement, db_user)
 
             position_dict = self.__create_answer_dict(statement.uid,
                                                       [{
@@ -173,12 +173,12 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_justify_statement(self, db_statement: Statement, db_user: User, is_supportive: bool, history):
+    def get_array_for_justify_statement(self, db_statement: Statement, user: User, is_supportive: bool, history):
         """
         Prepares the dict with all items for the third step in discussion, where the user justifies his position.
 
         :param db_statement: Statement
-        :param db_user: User
+        :param user: User
         :param is_supportive: Boolean
         :param history: history
         :return:
@@ -193,14 +193,14 @@ class ItemDictHelper(object):
         _um = UrlManager(slug, history=SessionHistory(self.path))
 
         for argument in db_arguments:
-            sarray = self.__get_statement_array_for_justify_statement(db_user, history, argument, uids, _tn, _um)
+            sarray = self.__get_statement_array_for_justify_statement(user, history, argument, uids, _tn, _um)
 
             statements_array.append(sarray)
 
-        shuffle_list_by_user(db_user, statements_array)
+        shuffle_list_by_user(user, statements_array)
 
         if not self.issue_read_only:
-            if db_user and db_user.nickname != nick_of_anonymous_user:
+            if user and not user.is_anonymous():
                 statements_array.append(self.__create_answer_dict('start_premise',
                                                                   [{
                                                                       'title': _tn.get(_.newPremiseRadioButtonText),
@@ -216,9 +216,9 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 
-    def __get_statement_array_for_justify_statement(self, db_user, history, argument, uids, _tn, _um):
-        if db_user and argument.uid in uids:  # add seen by if the statement is visible
-            add_seen_argument(argument.uid, db_user)
+    def __get_statement_array_for_justify_statement(self, user: User, history, argument, uids, _tn, _um):
+        if user and argument.uid in uids:  # add seen by if the statement is visible
+            add_seen_argument(argument.uid, user)
 
         # get all premises in the premisegroup of this argument
         db_premises = DBDiscussionSession.query(Premise).filter_by(
@@ -257,17 +257,17 @@ class ItemDictHelper(object):
                                          already_used_text=additional_text,
                                          is_editable=not EditQueue().is_arguments_premise_in_edit_queue(argument),
                                          is_markable=True,
-                                         is_author=is_author_of_argument(db_user, argument.uid),
+                                         is_author=is_author_of_argument(user, argument.uid),
                                          is_visible=argument.uid in uids,
                                          attack_url=_um.get_url_for_jump(argument.uid))
 
-    def get_array_for_justify_argument(self, argument_uid, attack_type, db_user, history):
+    def get_array_for_justify_argument(self, argument_uid, attack_type, user: User, history):
         """
         Prepares the dict with all items for a step in discussion, where the user justifies his attack she has done.
 
         :param argument_uid: Argument.uid
         :param attack_type: String
-        :param db_user:
+        :param user:
         :param history:
         :return:
         """
@@ -282,14 +282,14 @@ class ItemDictHelper(object):
         _um = UrlManager(slug, history=SessionHistory(self.path))
 
         for argument in db_arguments:
-            sarray = self.__get_statement_array_for_justify_argument(argument_uid, attack_type, db_user, history,
+            sarray = self.__get_statement_array_for_justify_argument(argument_uid, attack_type, user, history,
                                                                      argument, uids, _um)
             statements_array.append(sarray)
 
-        shuffle_list_by_user(db_user, statements_array)
+        shuffle_list_by_user(user, statements_array)
 
         if not self.issue_read_only:
-            if db_user and db_user.nickname != nick_of_anonymous_user:
+            if user and user.nickname != nick_of_anonymous_user:
                 text = _tn.get(_.newPremiseRadioButtonText)
                 if len(statements_array) == 0:
                     text = _tn.get(_.newPremiseRadioButtonTextAsFirstOne)
@@ -304,10 +304,10 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 
-    def __get_statement_array_for_justify_argument(self, argument_uid, attack_type, db_user, session_history, argument,
-                                                   uids, _um):
-        if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
-            add_seen_argument(argument_uid, db_user)
+    def __get_statement_array_for_justify_argument(self, argument_uid, attack_type, user: User, session_history,
+                                                   argument, uids, _um):
+        if user and user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
+            add_seen_argument(argument_uid, user)
         # get all premises in this group
         db_premises = DBDiscussionSession.query(Premise).filter_by(
             premisegroup_uid=argument.premisegroup_uid).all()
@@ -346,7 +346,7 @@ class ItemDictHelper(object):
         return self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
                                          is_markable=True,
                                          is_editable=not EditQueue().is_arguments_premise_in_edit_queue(argument),
-                                         is_author=is_author_of_argument(db_user, argument.uid),
+                                         is_author=is_author_of_argument(user, argument.uid),
                                          is_visible=argument.uid in uids,
                                          attack_url=_um.get_url_for_jump(argument.uid))
 
@@ -390,12 +390,12 @@ class ItemDictHelper(object):
                                                             Argument.issue_uid == self.db_issue.uid).all()
         return db_arguments
 
-    def get_array_for_dont_know_reaction(self, argument_uid, db_user, gender):
+    def get_array_for_dont_know_reaction(self, argument_uid, user: User, gender):
         """
         Prepares the dict with all items for the third step, where a supportive argument will be presented.
 
         :param argument_uid: Argument.uid
-        :param db_user: User
+        :param user: User
         :param gender: m, f or n
         :return:
         """
@@ -413,8 +413,8 @@ class ItemDictHelper(object):
                                      '/justify/{}/d'.format(argument_uid))
         _um = UrlManager(slug, history=SessionHistory(tmp_path))
 
-        if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
-            add_seen_argument(argument_uid, db_user)
+        if user and user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
+            add_seen_argument(argument_uid, user)
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, False, is_dont_know=True, gender=gender)
 
@@ -698,7 +698,7 @@ class ItemDictHelper(object):
             text = premise.get_text()
             premise_array.append({'title': text, 'id': premise.statement_uid})
             if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
-                add_seen_statement(premise.statement_uid, db_user)
+                add_seen_statement(premise.statement, db_user)
 
         # get attack for each premise, so the urls will be unique
         db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisegroup_uid == group_id,

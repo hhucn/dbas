@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from typing import Optional, Union
+from typing import Optional, Union, Dict
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement, \
@@ -457,13 +457,8 @@ def get_text_for_support(db_arg, argument_text, nickname, _t):
     :param _t: translator
     :return: string
     """
-    data = get_name_link_of_arguments_author(db_arg, nickname)
-    intro = _t.get(_.goodPointAndOtherParticipantsIsInterestedToo).format(start_tag, end_tag, argument_text)
-    if data['is_valid']:
-        intro = _t.get(_.goodPointAndUserIsInterestedTooF)
-        if data['gender'] == 'm':
-            intro = _t.get(_.goodPointAndUserIsInterestedTooM)
-        intro = intro.format(start_tag, end_tag, data['link'], start_tag, end_tag, argument_text)
+    intro = _t.get(_.goodPointAndUserIsInterestedToo)
+    intro = intro.format(start_tag, end_tag, argument_text)
 
     question = '<br><br>{}?'.format(_t.get(_.whatDoYouThinkAboutThat))
 
@@ -530,10 +525,7 @@ def __get_confrontation_text_for_undermine(nickname: str, premise: str, lang: st
     _t = Translator(lang)
 
     data = get_name_link_of_arguments_author(system_argument, nickname)
-    if data['is_valid']:
-        intro = '{} {}{}'.format(data['link'], start_content, _t.get(_.thinksThat))
-    else:
-        intro = start_content + _t.get(_.otherParticipantsThinkThat)
+    intro = f'{start_content}{_t.get(_.iThinkThat)}'
 
     pro_con_tag = start_con
     hold_it = _t.get(_.doesNotHold)
@@ -566,24 +558,15 @@ def __get_confrontation_text_for_undercut(nickname, lang, premise, conclusion, c
     data = get_name_link_of_arguments_author(system_argument, nickname)
 
     if data['is_valid']:
-        intro = data['link'] + ' ' + start_content + _t.get(_.agreesThat)
-        gender_think = _t.get(_.theyThink)
-        if data['is_valid']:
-            gender_think = __translation_based_on_gender(_t, _.heThinks, _.sheThinks, data['gender'])
+        gender_think = _t.get(_.iThink)
     else:
-        intro = start_content + _t.get(_.otherParticipantsDontHaveOpinion)
-        gender_think = _t.get(_.theyThinkThat)
+        gender_think = _t.get(_.iThink)
+    intro = start_content + _t.get(_.iAgreeThat)
 
     if supportive:
-        bind = _t.get(_.butTheyDoNotBelieveArgument)
-        if data['is_valid']:
-            bind = __translation_based_on_gender(_t, _.butHeDoesNotBelieveArgument, _.butSheDoesNotBelieveArgument,
-                                                 data['gender'])
+        bind = _t.get(_.butIDoNotBelieveArgument)
     else:
-        bind = _t.get(_.butTheyDoNotBelieveCounter)
-        if data['is_valid']:
-            bind = __translation_based_on_gender(_t, _.butHeDoesNotBelieveCounter, _.butSheDoesNotBelieveCounter,
-                                                 data['gender'])
+        bind = _t.get(_.butIDoNotBelieveCounter)
 
     bind = bind.format(start_con, end_tag, start_argument, end_tag)
 
@@ -626,7 +609,7 @@ def __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument, user_
         'db_other_nick': db_other_nick,
     }
 
-    # has the other user any opinion for the users conclusion?
+    # has the other user any opinion for the user's conclusion?
     has_other_user_opinion = False
     if data['is_valid']:
         if user_arg.argument_uid is not None:
@@ -661,14 +644,8 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
     if not user_arg.is_supportive:
         conclusion = sys_conclusion
 
-    if infos['is_okay']:
-        intro = infos['author'] + ' ' + start_tag
-        bind = start_content + _t.get(_.otherUsersClaimStrongerArgumentS) + end_tag
-        say = __translation_based_on_gender(_t, _.heSays, _.sheSays, infos['gender'])
-    else:
-        intro = start_content
-        bind = start_tag + _t.get(_.otherUsersClaimStrongerArgumentP) + end_tag
-        say = _t.get(_.theySay)
+    bind = start_content + start_tag + _t.get(_.otherUsersClaimStrongerArgument) + end_tag
+    say = _t.get(_.iSay)
 
     tmp_start_tag = ''
     tmp_end_tag = ''
@@ -687,7 +664,7 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
     tmp = '{}{}{}'.format(tmp_start_tag, _t.get(accept if system_argument.is_supportive else reject), tmp_end_tag)
     bind = bind.format(tmp)
 
-    confrontation_text = f'{intro}{bind} {conclusion}. {say}{point} {confrontation}'
+    confrontation_text = f'{bind} {conclusion}. {say}{point} {confrontation}'
 
     return confrontation_text
 
@@ -695,8 +672,8 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
 def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, conclusion, start_argument, infos):
     if infos['is_okay']:
         if infos['has_other_user_opinion']:
-            intro = infos['author'] + ' ' + start_content + _t.get(_.agreesThat) + ' {}. '
-            intro += __translation_based_on_gender(_t, _.strongerStatementM, _.strongerStatementF, infos['gender'])
+            intro = start_content + _t.get(_.iAgreeThat) + ' {}. '
+            intro += _t.get(_.strongerStatement)
         elif infos['db_other_nick'] == infos['nickname']:
             intro = infos['author'] + ' ' + start_content
             intro += _t.get(
@@ -706,12 +683,12 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
             intro += ' ' + _t.get(
                 _.strongerStatementY)  # But you had a stronger {tag}statement for {tmp}{end_tag}
         else:
-            intro = infos['author'] + ' ' + start_content
-            intro += _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + ' '
-            intro += __translation_based_on_gender(_t, _.strongerStatementM, _.strongerStatementF, infos['gender'])
+            intro = start_content
+            intro += _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + '. '
+            intro += _t.get(_.strongerStatement)
 
     else:
-        intro = start_content + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. ' + _t.get(_.strongerStatementP)
+        intro = start_content + _t.get(_.iNoOpinion) + ' {}. ' + _t.get(_.strongerStatement)
 
     tmp = start_argument
     if infos['user_is_attacking']:
@@ -731,25 +708,17 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
     if infos['db_other_nick'] == infos['nickname']:
         bind = _t.get(_.youSaidThat)
     else:
-        bind = _t.get(_.theySay)
-        if infos['is_okay']:
-            bind = __translation_based_on_gender(_t, _.heSays, _.sheSays, infos['gender'])
+        bind = _t.get(_.iSay)
 
-    confrontation_text = f'{intro} {conclusion}. {bind}: {confrontation}'
+    confrontation_text = f'{intro} {conclusion}. {bind} {confrontation}'
     return confrontation_text
 
 
-def __translation_based_on_gender(_t, keyword_m, keyword_f, gender):
-    if gender == 'm':
-        return _t.get(keyword_m)
-    else:
-        return _t.get(keyword_f)
-
-
 def get_name_link_of_arguments_author(argument: Union[Argument, Statement], nickname: Optional[str],
-                                      with_link: bool = True):
+                                      with_link: bool = True) -> Dict:
     """
-    Will return author of the argument, if the first supporting user
+    Will return author of the argument, if the first supporting user, or the first supporting user
+    None is returned as user if there currently is no supporting user.
 
     :param argument: Argument
     :param nickname: User.nickname
