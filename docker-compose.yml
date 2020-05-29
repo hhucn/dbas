@@ -8,12 +8,22 @@ services:
     volumes:
       - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
       - ./docker/db/data:/var/lib/postgresql/data
+        logging:
+          driver: syslog
+          options:
+            syslog-address: "tcp://docker-int:514"
+            tag: "dbas/db"
     tmpfs: /tmp
 
   web:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas
     command: bash -c "./wait-for-it.sh -t 0 -h db -p 5432 && alembic upgrade head && uwsgi --ini-paste production.ini"
     restart: unless-stopped
+      logging:
+        driver: syslog
+        options:
+          syslog-address: "tcp://docker-int:514"
+          tag: "dbas/web"
     environment:
       AUTHN_SECRET: ${AUTHN_SECRET}
       DB_PW: ${DB_PW}
@@ -41,6 +51,11 @@ services:
       - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf/domain.conf:/etc/nginx/domain.conf:ro
       - ./nginx/init:/etc/nginx/init:ro
+        logging:
+          driver: syslog
+          options:
+            syslog-address: "tcp://docker-int:514"
+            tag: "dbas/proxy"
     restart: unless-stopped
 
   decidotron:
@@ -52,6 +67,11 @@ services:
       - db
     volumes:
       - ./docker/decidotron/store:/store
+        logging:
+          driver: syslog
+          options:
+            syslog-address: "tcp://docker-int:514"
+            tag: "dbas/decidotron"
     environment:
       DB_PW: ${DB_PW}
       API_TOKEN: ${DECIDOTRON_API_TOKEN} #"0e9ba:bb3b1ac2c6cee9cb6affb0d803406a6445c0a214a5837d54f3caebfa697fb8c5" # Get a real API-Token first
