@@ -1,7 +1,6 @@
 # D-BAS
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/hhucn/dbas)
-![Uptime Robot ratio (30 days)](https://img.shields.io/uptimerobot/ratio/m780557188-379000a5b4747f4c9d89e949)
 
 D-BAS is a novel approach to online
 argumentation. It avoids the pitfalls of unstructured systems such as asynchronous threaded discussions and it is
