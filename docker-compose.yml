@@ -8,12 +8,22 @@ services:
     volumes:
       - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
       - ./docker/db/data:/var/lib/postgresql/data
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://docker-int:514"
+        tag: "dbas/db"
     tmpfs: /tmp
 
   web:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas
     command: bash -c "./wait-for-it.sh -t 0 -h db -p 5432 && alembic upgrade head && uwsgi --ini-paste production.ini"
     restart: unless-stopped
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://docker-int:514"
+        tag: "dbas/web"
     environment:
       AUTHN_SECRET: ${AUTHN_SECRET}
       DB_PW: ${DB_PW}
@@ -23,8 +33,8 @@ services:
       URL: ${URL}
       KEY_PATH: ${KEY_PATH}
       PUBKEY_PATH: ${PUBKEY_PATH}
-    # env_file:  # Optional if you want to change passwords
-    #  - production.env
+    env_file:
+      - production.env
     tmpfs: /tmp
 
   docs:
@@ -32,27 +42,38 @@ services:
     restart: unless-stopped
 
   proxy:
-    image: nginx:1.15-alpine
-    command: /bin/sh -c "/etc/nginx/init/create_ssl.sh && nginx -g 'daemon off;'"
+    image: nginx:1.18-alpine
     ports:
-      - "443:443"
+      - "${PROXY_PORT}:80"
     environment:
       DEPLOY_HOST: ${URL}
     volumes:
       - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf/domain.conf:/etc/nginx/domain.conf:ro
       - ./nginx/init:/etc/nginx/init:ro
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://docker-int:514"
+        tag: "dbas/proxy"
     restart: unless-stopped
+    env_file:
+      - production.env
 
   decidotron:
     image: hhucn/decidotron:latest
     restart: unless-stopped
     ports:
-      - "5005:8080"
+      - "${DECIDOTRON_PORT}:8080"
     depends_on:
       - db
     volumes:
       - ./docker/decidotron/store:/store
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://docker-int:514"
+        tag: "dbas/decidotron"
     environment:
       DB_PW: ${DB_PW}
       API_TOKEN: ${DECIDOTRON_API_TOKEN} #"0e9ba:bb3b1ac2c6cee9cb6affb0d803406a6445c0a214a5837d54f3caebfa697fb8c5" # Get a real API-Token first
