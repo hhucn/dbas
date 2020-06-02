@@ -6,7 +6,7 @@
 D-BAS is a novel approach to online
 argumentation. It avoids the pitfalls of unstructured systems such as asynchronous threaded discussions and it is
 usable by any participant without training while still supporting the full complexity  of real-world argumentation.
-The key idea is to let users exchange arguments  with each other in the form of a time-shifted dialog where arguments
+The key idea is to let users exchange arguments with each other in the form of a time-shifted dialog where arguments
 are presented and acted upon one-at-a-time.
 
 Currently, the main development-process happens in our GitLab instance, but you
@@ -34,13 +34,13 @@ D-BAS needs some environment variables to be set for running properly.
 By default those variables which are required by D-BAS are stored in `.env`.
 To get further details on which variables are set or how they can be added/changed take a look at the documentation [here](https://dbas.cs.uni-duesseldorf.de/docs/installation.html).
 
-# Compose-Files
+### Compose-Files
 All `docker-compose.<service>.yml`-files had been moved to the `/docker/compose` folder.
 Since `development.yml` is now used for production-mode each `<service>.yml`-file must be saved separately.
 To add a service to production-mode the corresponding `<service>.yml`-file must be defined in `/docker/compose`.
 Then the code must be added to `docker-compose.yml`. 
 
-## Run D-BAS
+### Run D-BAS
 
 Then follow these steps:
 
@@ -52,17 +52,23 @@ If you want to include the notification service as well as elastic search:
 
     docker-compose -f docker-compose.dev.yml -f docker/compose/notifications.yml -f docker/compose/search.yml up
 
-Production mode:
-
-    docker-compose up --build
-
 After this you can hit [http://localhost:4284](http://localhost:4284) for D-BAS.
 
 If your container stucks during the first start up, please install D-BAS manually (while the container is running) via:
 
-    docker-compose exec web make
+    docker-compose -f docker-compose.dev.yml exec web make
 
 Afterwards everything should be fine.
+
+#### Production Mode
+
+Currently, the default Compose file is being used by us with pre-built images. We are working on this to make it accessible for everyone.
+
+Start it with:
+
+    docker-compose up
+
+Set Ports for your environment in `.env` or provide it during runtime to your CI/CD platform. Find the variables in `.env`.
 
 ## Maintainers
 
@@ -102,7 +108,7 @@ We published several papers on this work and on our software. Here is a selectio
 
 Cite this software with the BibTeX Scheme:
 
-```
+```bibtex
 @inproceedings{hhucn2018,
   title={D-BAS-A Dialog-Based Online Argumentation System.},
   author={Krauthoff, Tobias and Meter, Christian and Baurmann, Michael and Betz, Gregor and Mauve, Martin},
@@ -114,7 +120,7 @@ Cite this software with the BibTeX Scheme:
 
 ## License
 
-Copyright (c) 2016 - 2018 Tobias Schröder (né Krauthoff), Christian Meter  
-Copyright (c) 2018 - today hhucn
+Copyright (c) 2016 – 2018 Tobias Schröder (né Krauthoff), Christian Meter  
+Copyright (c) 2018 – today hhucn
 
-Distributed under the [MIT License](LICENSE).
+Distributed under the [MIT License](LICENSE)
