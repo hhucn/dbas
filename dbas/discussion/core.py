@@ -1,8 +1,9 @@
 import logging
+import random
 
 import dbas.handler.issue as issue_helper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue, Statement
+from dbas.database.discussion_model import Argument, User, Issue, Statement, TextVersion, StatementToIssue
 from dbas.handler import user
 from dbas.handler.history import SessionHistory
 from dbas.handler.voting import add_click_for_argument
@@ -38,11 +39,22 @@ def init(db_issue: Issue, db_user: User) -> dict:
     item_dict = ItemDictHelper(disc_ui_locales, db_issue).get_array_for_start(db_user)
     discussion_dict = _ddh.get_dict_for_start(len(item_dict['elements']) == 1)
 
+    statements = [el.statement_uid for el in
+                  DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
+    db_statements = DBDiscussionSession.query(Statement) \
+        .filter(Statement.is_disabled == False,
+                Statement.is_position == True,
+                Statement.uid.in_(statements)).all()
+
+    positions = [DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).first()
+                 for statement in db_statements]
+
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,
         'items': item_dict,
-        'title': issue_dict['title']
+        'title': issue_dict['title'],
+        'positionslist': positions
     }
 
 
@@ -70,11 +82,16 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
     item_dict = _idh.prepare_item_dict_for_attitude(db_statement.uid)
 
+    arglist = [argument for argument in db_statement.arguments if not argument.is_disabled]
+    random.shuffle(arglist)
+
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,
         'items': item_dict,
-        'title': issue_dict['title']
+        'title': issue_dict['title'],
+        'arglist': arglist,
+        'db_statement': db_statement
     }
 
 
