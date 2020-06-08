@@ -11,7 +11,7 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.steps import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
-from dbas.lib import Relations
+from dbas.lib import Relations, Attitudes
 from dbas.review.reputation import ReputationReasons, add_reputation_and_check_review_access
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -85,12 +85,39 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
     arglist = [argument for argument in db_statement.arguments if not argument.is_disabled]
     random.shuffle(arglist)
 
+    item_dict_justify_step_agree, _ = handle_justification_statement(db_issue, db_user, db_statement, Attitudes.AGREE,
+                                                                     history, path)
+    item_dict_justify_step_disagree, _ = handle_justification_statement(db_issue, db_user, db_statement,
+                                                                        Attitudes.DISAGREE, history, path)
+
+    arglist_ = []
+    for element in item_dict_justify_step_disagree['elements']:
+        if element['premises'][0]['title'] != "If you want to state a new reason, please click here to log in.":
+            arglist_.append(
+                {
+                    'text': element['premises'][0]['title'],
+                    'id': element['premises'][0]['id'],
+                    'url': element['url'],
+                    'isSupportive': False
+                }
+            )
+    for element in item_dict_justify_step_agree['elements']:
+        if element['premises'][0]['title'] != "If you want to state a new reason, please click here to log in.":
+            arglist_.append(
+                {
+                    'text': element['premises'][0]['title'],
+                    'id': element['premises'][0]['id'],
+                    'url': element['url'],
+                    'isSupportive': True
+                }
+            )
+
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,
         'items': item_dict,
         'title': issue_dict['title'],
-        'arglist': arglist,
+        'arglist': arglist_,
         'db_statement': db_statement
     }
 

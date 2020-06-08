@@ -23,7 +23,7 @@
                                 <blockquote class="blockquote">
                                     <div class="center" id="carousel-position-center">
                                         <p>
-                                                ${argument.get_premisegroup_text()}
+                                                ${argument.text}
                                         </p>
                                     </div>
                                 </blockquote>
@@ -36,9 +36,8 @@
                 <ol class="carousel-indicators mb-0" style="bottom: auto;">
                     <li tal:repeat="argument arglist" data-target="#myCarousel"
                                                       data-slide-to="${repeat.argument.index}"
-                                                      data-index="${argument.uid}"
-                                                      data-value="${argument.is_supportive}"
-                                                      class="bg-${'success' if argument.is_supportive else 'danger'}
+                                                      data-value="${argument.url}"
+                                                      class="bg-${'success' if argument.isSupportive else 'danger'}
                                                                 ${'active' if repeat.argument.start else ''}"></li>
                 </ol>
 
@@ -64,29 +63,15 @@
     <script>
         $(document).ready(function () {
             var actives_div = $('#myCarousel .carousel-indicators li.active');
-            var statement_uid = actives_div.data('index');
-            var isSupportive = (actives_div.data('value') === 'True');
-            if (isSupportive) {
-                $("#LikeToTalkAbout").attr("href", "/discuss/${issues.slug}/justify/" + statement_uid
-                        + "/agree/?history=/attitude/" + statement_uid)
-            } else {
-                $("#LikeToTalkAbout").attr("href", "/discuss/${issues.slug}/justify/" + statement_uid
-                        + "/disagree/?history=/attitude/" + statement_uid)
-            }
+            var url = actives_div.data('value');
+            $("#LikeToTalkAbout").attr("href", "http://localhost:4284/discuss" + url)
         });
 
         $(document).ready(function () {
             $('#myCarousel').on('slid.bs.carousel', function () {
                 var actives_div = $('#myCarousel .carousel-indicators li.active');
-                var statement_uid = actives_div.data('index');
-                var isSupportive = (actives_div.data('value') === 'True');
-                if (isSupportive) {
-                    $("#LikeToTalkAbout").attr("href", "/discuss/${issues.slug}/justify/" + statement_uid
-                            + "/agree/?history=/attitude/" + statement_uid)
-                } else {
-                    $("#LikeToTalkAbout").attr("href", "/discuss/${issues.slug}/justify/" + statement_uid
-                            + "/disagree/?history=/attitude/" + statement_uid)
-                }
+                var url = actives_div.data('value');
+                $("#LikeToTalkAbout").attr("href", "http://localhost:4284/discuss" + url)
             });
         });
     </script>
