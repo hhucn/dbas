@@ -39,12 +39,8 @@ def init(db_issue: Issue, db_user: User) -> dict:
     item_dict = ItemDictHelper(disc_ui_locales, db_issue).get_array_for_start(db_user)
     discussion_dict = _ddh.get_dict_for_start(len(item_dict['elements']) == 1)
 
-    statements = [el.statement_uid for el in
-                  DBDiscussionSession.query(StatementToIssue).filter_by(issue_uid=db_issue.uid).all()]
-    db_statements = DBDiscussionSession.query(Statement) \
-        .filter(Statement.is_disabled == False,
-                Statement.is_position == True,
-                Statement.uid.in_(statements)).all()
+    db_statements = [statement for statement in db_issue.statements if not statement.is_disabled
+                     and statement.is_position]
 
     positions = [DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).first()
                  for statement in db_statements]
@@ -82,18 +78,15 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
     item_dict = _idh.prepare_item_dict_for_attitude(db_statement.uid)
 
-    arglist = [argument for argument in db_statement.arguments if not argument.is_disabled]
-    random.shuffle(arglist)
-
     item_dict_justify_step_agree, _ = handle_justification_statement(db_issue, db_user, db_statement, Attitudes.AGREE,
                                                                      history, path)
     item_dict_justify_step_disagree, _ = handle_justification_statement(db_issue, db_user, db_statement,
                                                                         Attitudes.DISAGREE, history, path)
 
-    arglist_ = []
+    arglist = []
     for element in item_dict_justify_step_disagree['elements']:
         if element['premises'][0]['title'] != "If you want to state a new reason, please click here to log in.":
-            arglist_.append(
+            arglist.append(
                 {
                     'text': element['premises'][0]['title'],
                     'id': element['premises'][0]['id'],
@@ -103,7 +96,7 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
             )
     for element in item_dict_justify_step_agree['elements']:
         if element['premises'][0]['title'] != "If you want to state a new reason, please click here to log in.":
-            arglist_.append(
+            arglist.append(
                 {
                     'text': element['premises'][0]['title'],
                     'id': element['premises'][0]['id'],
@@ -117,7 +110,7 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
         'discussion': discussion_dict,
         'items': item_dict,
         'title': issue_dict['title'],
-        'arglist': arglist_,
+        'arglist': arglist,
         'db_statement': db_statement
     }
 

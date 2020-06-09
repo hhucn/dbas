@@ -78,8 +78,8 @@
                     </div>
                 </div>
                 <div class="text-center">
-                    <a href="#" id="LikeToTalkAbout">
-                        Darüber möchte ich reden
+                    <a i18n:translate="LikeToTalkAbout" href="#" id="LikeToTalkAbout">
+                        I would like to talk about that!
                     </a>
                 </div>
                 <ol class="carousel-indicators mb-0" style="top: 0; bottom: auto;">
