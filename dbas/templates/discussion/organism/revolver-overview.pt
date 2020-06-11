@@ -77,11 +77,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center">
-                    <a i18n:translate="LikeToTalkAbout" href="#" id="LikeToTalkAbout">
-                        I would like to talk about that!
-                    </a>
-                </div>
+
                 <ol class="carousel-indicators mb-0" style="top: 0; bottom: auto;">
                     <li tal:repeat="position positionslist" data-target="#myCarousel"
                                                             data-slide-to="${repeat.position.index}"
@@ -102,6 +98,14 @@
                 </a>
             </div>
         </div>
+        <div class="text-center">
+            <a i18n:translate="LikeToTalkAbout" href="#" id="LikeToTalkAbout" class="btn btn-primary btn active"
+                                                role="button" aria-pressed="true">
+                I would like to talk about that!
+            </a>
+            <input id="item_login" class="btn btn-primary" type="button" name="discussion-button-group" data-url="login"
+                   value="If you want to state a new position, please click here to log in.">
+        </div>
     </div>
 
 
@@ -110,13 +114,14 @@
             var actives_div = $('#myCarousel .carousel-indicators li.active');
             var statement_uid = actives_div.data('value');
             $("#LikeToTalkAbout").attr("href", "/discuss/${issues.slug}/attitude/" + statement_uid)
-        });
 
-        $(document).ready(function () {
             $('#myCarousel').on('slid.bs.carousel', function () {
                 var actives_div = $('#myCarousel .carousel-indicators li.active');
                 var statement_uid = actives_div.data('value');
                 $("#LikeToTalkAbout").attr("href", "/discuss/${issues.slug}/attitude/" + statement_uid)
+            });
+            $('#item_login').click(function () {
+                $('#popup-login').modal('show');
             });
         });
     </script>
