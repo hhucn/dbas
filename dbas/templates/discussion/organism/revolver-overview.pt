@@ -104,7 +104,10 @@
                 I would like to talk about that!
             </a>
             <input id="item_login" class="btn btn-primary" type="button" name="discussion-button-group" data-url="login"
-                   value="If you want to state a new position, please click here to log in.">
+                   value="${item.premises[0].title}"
+                   data-value="${add_or_login}"
+                     tal:define="add_or_login [item.url for item in items.elements if item.url in ['login', 'add']][0]"
+                     tal:condition="add_or_login">
         </div>
     </div>
 
@@ -121,7 +124,12 @@
                 $("#LikeToTalkAbout").attr("href", "/discuss/${issues.slug}/attitude/" + statement_uid)
             });
             $('#item_login').click(function () {
-                $('#popup-login').modal('show');
+                var mode = $(this).data('value');
+                if (mode === 'login') {
+                    $('#' + popupLogin).modal('show');
+                } else if (mode === 'add') {
+                    $('#' + addStatementContainerId).show();
+                }
             });
         });
     </script>
