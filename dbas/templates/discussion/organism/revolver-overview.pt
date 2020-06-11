@@ -99,24 +99,23 @@
             </div>
         </div>
         <div class="text-center">
-            <a i18n:translate="LikeToTalkAbout" href="#" id="LikeToTalkAbout" class="btn btn-primary btn active"
-                                                role="button" aria-pressed="true">
-                I would like to talk about that!
-            </a>
+
             <div id="discussions-space">
                 <div id="discussions-space-list">
                     <input id="" type="hidden">
                     <li tal:define="add_or_login [item for item in items.elements if item.url in ['login', 'add']]"
                              tal:condition="add_or_login">
                         <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
-                            <div class="form-check">
-                                <input id="${item.id}" class="form-check-input" type="button"
-                                       name="discussion-button-group"
-                                       data-url="${item.url}">
-                                <label for="${item.id}" class="form-check-label" style="cursor: pointer">
-                                        ${item.premises[0].title}
-                                </label>
-                            </div>
+
+                            <a i18n:translate="LikeToTalkAbout" href="#" id="LikeToTalkAbout"
+                                                                class="btn btn-primary btn active"
+                                                                role="button" aria-pressed="true">
+                                I would like to talk about that!
+                            </a>
+                            <input id="${item.id}" class="btn btn-primary btn active" type="button"
+                                   name="discussion-button-group"
+                                   data-url="${item.url}"
+                                   value="${item.premises[0].title}">
                         </div>
                     </li>
                 </div>
