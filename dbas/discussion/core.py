@@ -85,7 +85,8 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
 
     arglist = []
     for element in item_dict_justify_step_disagree['elements']:
-        if element['premises'][0]['title'] != "If you want to state a new reason, please click here to log in.":
+        if element['premises'][0]['title'] != "If you want to state a new reason, please click here to log in." \
+                and element['premises'][0]['title'] != "None of the above! Let me state my own reason.":
             arglist.append(
                 {
                     'text': element['premises'][0]['title'],
@@ -95,7 +96,8 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
                 }
             )
     for element in item_dict_justify_step_agree['elements']:
-        if element['premises'][0]['title'] != "If you want to state a new reason, please click here to log in.":
+        if element['premises'][0]['title'] != "If you want to state a new reason, please click here to log in." \
+                and element['premises'][0]['title'] != "None of the above! Let me state my own reason.":
             arglist.append(
                 {
                     'text': element['premises'][0]['title'],
