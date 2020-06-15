@@ -6,18 +6,19 @@
                 <p>${db_statement.get_text().capitalize()}</p>
             </blockquote>
         </div>
-        <div>
-            <blockquote class="blockquote text-center col-lg">
-                <p i18n:translate="position_reason">
-                    because
-                </p>
-            </blockquote>
-        </div>
+
         <div class="row">
             <div id="myCarousel" class="carousel slide col-6 center" data-ride="carousel">
                 <div class="carousel-inner">
                     <div tal:repeat="argument arglist"
                             class="carousel-item ${'active' if repeat.argument.start else ''}">
+                        <div>
+                            <blockquote class="blockquote text-center col-lg">
+                                <p i18n:translate="position_reason">
+                                    is <b>${'' if argument.isSupportive else 'not'}</b> a good idea because
+                                </p>
+                            </blockquote>
+                        </div>
                         <div class="d-block w-100 pt-3">
                             <div class="card-body pl-0">
                                 <blockquote class="blockquote">
