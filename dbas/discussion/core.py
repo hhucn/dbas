@@ -110,7 +110,7 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,
-        'items': item_dict,
+        'items': item_dict_justify_step_disagree,
         'title': issue_dict['title'],
         'arglist': arglist,
         'db_statement': db_statement
