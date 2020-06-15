@@ -82,14 +82,14 @@
         $(document).ready(function () {
             var actives_div = $('#myCarousel .carousel-indicators li.active');
             var url = actives_div.data('value');
-            $("#LikeToTalkAbout").attr("href", "http://localhost:4284/discuss" + url)
+            $("#LikeToTalkAbout").attr("href", "/discuss" + url)
         });
 
         $(document).ready(function () {
             $('#myCarousel').on('slid.bs.carousel', function () {
                 var actives_div = $('#myCarousel .carousel-indicators li.active');
                 var url = actives_div.data('value');
-                $("#LikeToTalkAbout").attr("href", "http://localhost:4284/discuss" + url)
+                $("#LikeToTalkAbout").attr("href", "/discuss" + url)
             });
         });
     </script>
