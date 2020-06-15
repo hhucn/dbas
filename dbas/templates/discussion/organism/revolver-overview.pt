@@ -80,14 +80,6 @@
                 var statement_uid = actives_div.data('value');
                 $("#LikeToTalkAbout").attr("href", "/discuss/${issues.slug}/attitude/" + statement_uid)
             });
-            $('#item_login').click(function () {
-                var mode = $(this).data('value');
-                if (mode === 'login') {
-                    $('#' + popupLogin).modal('show');
-                } else if (mode === 'add') {
-                    $('#' + addStatementContainerId).show();
-                }
-            });
         });
     </script>
 </tal:block>
