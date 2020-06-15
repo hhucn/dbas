@@ -15,7 +15,7 @@
                         <div>
                             <blockquote class="blockquote text-center col-lg">
                                 <p i18n:translate="position_reason">
-                                    is <b>${'' if argument.isSupportive else 'not'}</b> a good idea because
+                                    is <b style="color: ${'green' if argument.isSupportive else 'red'}">${'' if argument.isSupportive else 'not'} a good idea </b> because
                                 </p>
                             </blockquote>
                         </div>
