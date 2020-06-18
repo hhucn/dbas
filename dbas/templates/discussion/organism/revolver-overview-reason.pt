@@ -1,5 +1,19 @@
 <!-- TODO: Translate -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
+
+
+    <style>
+        .carousel-control-next{
+            right: 10%;
+        }
+        .carousel-control-prev{
+            left: 10%;
+        }
+        .carousel-item{
+            max-width: 500px;
+            left: 26%;
+        }
+    </style>
     <div class="container">
         <div class="row">
             <blockquote class="blockquote text-center col-lg">
@@ -8,21 +22,23 @@
         </div>
 
         <div class="row">
-            <div id="myCarousel" class="carousel slide col-6 center" data-ride="carousel">
+            <div id="myCarousel" class="carousel slide col-sm center" data-ride="carousel">
                 <div class="carousel-inner">
                     <div tal:repeat="argument arglist"
-                            class="carousel-item ${'active' if repeat.argument.start else ''}">
+                            class="carousel-item ${'active' if repeat.argument.start else ''} centered">
                         <div>
-                            <blockquote class="blockquote text-center col-lg">
+                            <blockquote class="blockquote text-center col-sm">
                                 <p i18n:translate="position_reason">
-                                    is <b style="color: ${'green' if argument.isSupportive else 'red'}">${'' if argument.isSupportive else 'not'} a good idea </b> because
+                                    is <b
+                                        style="color: ${'green' if argument.isSupportive else 'red'}">${'' if argument.isSupportive else 'not'}
+                                    a good idea </b> because
                                 </p>
                             </blockquote>
                         </div>
-                        <div class="d-block w-100 pt-3">
-                            <div class="card-body pl-0">
+                        <div class="d-block pt-3">
+                            <div class="card-body">
                                 <blockquote class="blockquote">
-                                    <div class="center" id="carousel-position-center">
+                                    <div class="content-center-m" id="carousel-position-center">
                                         <p>
                                                 ${argument.text}
                                         </p>
@@ -34,48 +50,48 @@
                 </div>
 
 
-                <ol class="carousel-indicators mb-0" style="bottom: auto;">
+                <ol class="carousel-indicators " style="bottom: auto;">
                     <li tal:repeat="argument arglist" data-target="#myCarousel"
                                                       data-slide-to="${repeat.argument.index}"
                                                       data-value="${argument.url}"
                                                       class="bg-${'success' if argument.isSupportive else 'danger'}
                                                                 ${'active' if repeat.argument.start else ''}"></li>
                 </ol>
-
+                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                    <span class="fa fa-chevron-left text-secondary" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                    <span class="fa fa-chevron-right text-secondary" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
-            <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-                <span class="fa fa-chevron-left text-secondary" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-                <span class="fa fa-chevron-right text-secondary" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
+
 
         </div>
 
     </div>
     <div class="text-center">
-       <div id="discussions-space">
-                <div id="discussions-space-list">
-                    <input id="" type="hidden">
-                    <li tal:define="add_or_login [item for item in items.elements if item.url in ['login', 'add']]"
-                             tal:condition="add_or_login">
-                        <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
+        <div id="discussions-space">
+            <div id="discussions-space-list">
+                <input id="" type="hidden">
+                <li tal:define="add_or_login [item for item in items.elements if item.url in ['login', 'add']]"
+                         tal:condition="add_or_login">
+                    <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
 
-                            <a i18n:translate="LikeToTalkAbout" href="#" id="LikeToTalkAbout"
-                                                                class="btn btn-primary btn active"
-                                                                role="button" aria-pressed="true">
-                                I would like to talk about that!
-                            </a>
-                            <input id="${item.id}" class="btn btn-primary btn active" type="button"
-                                   name="discussion-button-group"
-                                   data-url="${item.url}"
-                                   value="${item.premises[0].title}">
-                        </div>
-                    </li>
-                </div>
+                        <a i18n:translate="LikeToTalkAbout" href="#" id="LikeToTalkAbout"
+                                                            class="btn btn-primary btn active"
+                                                            role="button" aria-pressed="true">
+                            I would like to talk about that!
+                        </a>
+                        <input id="${item.id}" class="btn btn-primary btn active" type="button"
+                               name="discussion-button-group"
+                               data-url="${item.url}"
+                               value="${item.premises[0].title}">
+                    </div>
+                </li>
             </div>
+        </div>
     </div>
 
     <script>
