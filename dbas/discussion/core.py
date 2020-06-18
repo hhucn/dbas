@@ -1,9 +1,8 @@
 import logging
-import random
 
 import dbas.handler.issue as issue_helper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue, Statement, TextVersion, StatementToIssue
+from dbas.database.discussion_model import Argument, User, Issue, Statement, TextVersion
 from dbas.handler import user
 from dbas.handler.history import SessionHistory
 from dbas.handler.voting import add_click_for_argument
@@ -85,8 +84,7 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
 
     arglist = []
     for element in item_dict_justify_step_disagree['elements']:
-        if element['premises'][0]['title'] != "If you want to state a new reason, please click here to log in." \
-                and element['premises'][0]['title'] != "None of the above! Let me state my own reason.":
+        if element['id'] != "item_login" and element['id'] != "item_start_premise":
             arglist.append(
                 {
                     'text': element['premises'][0]['title'],
@@ -96,8 +94,7 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
                 }
             )
     for element in item_dict_justify_step_agree['elements']:
-        if element['premises'][0]['title'] != "If you want to state a new reason, please click here to log in." \
-                and element['premises'][0]['title'] != "None of the above! Let me state my own reason.":
+        if element['id'] != "item_login" and element['id'] != "item_start_premise":
             arglist.append(
                 {
                     'text': element['premises'][0]['title'],
