@@ -74,7 +74,6 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, slug=db_issue.slug)
     discussion_dict = _ddh.get_dict_for_attitude(db_statement)
 
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
     item_dict_justify_step_agree, _ = handle_justification_statement(db_issue, db_user, db_statement, Attitudes.AGREE,
                                                                      history, path)
     item_dict_justify_step_disagree, _ = handle_justification_statement(db_issue, db_user, db_statement,
