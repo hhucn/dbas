@@ -75,14 +75,13 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
     disc_ui_locales = db_issue.lang
     translator = Translator(issue_dict['lang'])
 
-
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, slug=db_issue.slug)
     discussion_dict = _ddh.get_dict_for_attitude(db_statement)
 
     item_dict_justify_step_agree, __ = handle_justification_statement(db_issue, db_user, db_statement, Attitudes.AGREE,
-                                                                     history, path)
+                                                                      history, path)
     item_dict_justify_step_disagree, __ = handle_justification_statement(db_issue, db_user, db_statement,
-                                                                        Attitudes.DISAGREE, history, path)
+                                                                         Attitudes.DISAGREE, history, path)
 
     arglist = []
     for element in item_dict_justify_step_disagree['elements']:
