@@ -1,7 +1,5 @@
 <!-- TODO: Translate -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-
-
     <style>
         .carousel-control-next {
             right: 10%;
@@ -12,8 +10,8 @@
         }
 
         .carousel-item {
-            max-width: 500px;
-            left: 26%;
+            padding-left: 20%;
+            padding-right: 20%;
         }
     </style>
     <div class="container">
@@ -43,34 +41,34 @@
                                     <div class="content-center-m" id="carousel-position-center">
                                         <p>
                                                 ${argument.text}
-                                </p>
+                                        </p>
+                                    </div>
+                                </blockquote>
+                            </div>
                         </div>
-                        </blockquote>
                     </div>
                 </div>
-            </div>
-        </div>
 
 
-        <ol class="carousel-indicators " style="bottom: auto;">
-            <li tal:repeat="argument arglist" data-target="#myCarousel"
-                                              data-slide-to="${repeat.argument.index}"
-                                              data-value="${argument.url}"
-                                              class="bg-${'success' if argument.isSupportive else 'danger'}
+                <ol class="carousel-indicators " style="bottom: auto;">
+                    <li tal:repeat="argument arglist" data-target="#myCarousel"
+                                                      data-slide-to="${repeat.argument.index}"
+                                                      data-value="${argument.url}"
+                                                      class="bg-${'success' if argument.isSupportive else 'danger'}
                                                                 ${'active' if repeat.argument.start else ''}"></li>
-        </ol>
-        <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-            <span class="fa fa-chevron-left text-secondary" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-            <span class="fa fa-chevron-right text-secondary" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
+                </ol>
+                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                    <span class="fa fa-chevron-left text-secondary" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                    <span class="fa fa-chevron-right text-secondary" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
 
 
-    </div>
+        </div>
 
     </div>
     <div class="text-center">

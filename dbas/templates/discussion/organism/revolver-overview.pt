@@ -1,8 +1,14 @@
 <!-- Revolver overview for positions -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-    <div class="mt-4">
+     <style>
+        .carousel-item {
+            padding-left: 20%;
+            padding-right: 20%;
+        }
+    </style>
+    <div class="mt-5">
         <div class="row d-flex align-items-center">
-            <div id="myCarousel" class="carousel slide col-5 pl-0 center" data-interval="false" data-ride="false">
+            <div id="myCarousel" class="carousel slide col-7 pl-0 center" data-interval="false" data-ride="false">
                 <div class="carousel-inner">
                     <div tal:repeat="position positionslist"
                             class="carousel-item ${'active' if repeat.position.start else ''}">
