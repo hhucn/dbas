@@ -774,4 +774,8 @@ de_lang = {
     _.youRejectedThisEarlier: 'Sie haben diese Aussage schon abgelehnt',
     _.youHaveMuchStrongerArgumentForAccepting: 'Sie haben eine viel stärkere Begründung für',
     _.youHaveMuchStrongerArgumentForRejecting: 'Sie haben eine viel stärkere Ablehnung für',
+    _.LikeToTalkAbout: 'Darüber möchte ich gerne sprechen',
+    _.NegationGoodIdea: 'keine',
+    _.GoodIdea: 'eine gute Idee',
+    _.IsGoodIdea: 'ist',
 }

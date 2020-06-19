@@ -1,8 +1,5 @@
-<!-- TODO: Translate -->
+<!-- Revolver overview for positions -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-    <style>
-    </style>
-
     <div class="mt-4">
         <div class="row d-flex align-items-center">
             <div id="myCarousel" class="carousel slide col-5 pl-0 center" data-interval="false" data-ride="false">
@@ -51,10 +48,10 @@
                              tal:condition="add_or_login">
                         <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
 
-                            <a i18n:translate="LikeToTalkAbout" href="#" id="LikeToTalkAbout"
+                            <a href="#" id="LikeToTalkAbout"
                                                                 class="btn btn-primary btn active"
                                                                 role="button" aria-pressed="true">
-                                I would like to talk about that!
+                                ${LikeToTalkAbout}
                             </a>
                             <input id="${item.id}" class="btn btn-primary btn active" type="button"
                                    name="discussion-button-group"

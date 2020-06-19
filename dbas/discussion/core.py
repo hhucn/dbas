@@ -32,6 +32,7 @@ def init(db_issue: Issue, db_user: User) -> dict:
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
+    translator = Translator(disc_ui_locales)
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname=db_user.nickname, slug=slug)
 
@@ -49,7 +50,9 @@ def init(db_issue: Issue, db_user: User) -> dict:
         'discussion': discussion_dict,
         'items': item_dict,
         'title': issue_dict['title'],
-        'positionslist': positions
+        'positionslist': positions,
+        'LikeToTalkAbout': translator.get(_.LikeToTalkAbout),
+
     }
 
 
@@ -70,13 +73,15 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = db_issue.lang
+    translator = Translator(issue_dict['lang'])
+
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, slug=db_issue.slug)
     discussion_dict = _ddh.get_dict_for_attitude(db_statement)
 
-    item_dict_justify_step_agree, _ = handle_justification_statement(db_issue, db_user, db_statement, Attitudes.AGREE,
+    item_dict_justify_step_agree, __ = handle_justification_statement(db_issue, db_user, db_statement, Attitudes.AGREE,
                                                                      history, path)
-    item_dict_justify_step_disagree, _ = handle_justification_statement(db_issue, db_user, db_statement,
+    item_dict_justify_step_disagree, __ = handle_justification_statement(db_issue, db_user, db_statement,
                                                                         Attitudes.DISAGREE, history, path)
 
     arglist = []
@@ -87,7 +92,8 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
                     'text': element['premises'][0]['title'],
                     'id': element['premises'][0]['id'],
                     'url': element['url'],
-                    'isSupportive': False
+                    'isSupportive': False,
+                    'negationIsGoodIdea': translator.get(_.NegationGoodIdea)
                 }
             )
     for element in item_dict_justify_step_agree['elements']:
@@ -97,7 +103,8 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
                     'text': element['premises'][0]['title'],
                     'id': element['premises'][0]['id'],
                     'url': element['url'],
-                    'isSupportive': True
+                    'isSupportive': True,
+                    'negationIsGoodIdea': translator.get(_.NegationGoodIdea)
                 }
             )
 
@@ -107,7 +114,12 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
         'items': item_dict_justify_step_disagree,
         'title': issue_dict['title'],
         'arglist': arglist,
-        'db_statement': db_statement
+        'db_statement': db_statement,
+        'LikeToTalkAbout': translator.get(_.LikeToTalkAbout),
+        'is_good_idea': translator.get(_.IsGoodIdea),
+        'negation_good_idea': translator.get(_.NegationGoodIdea),
+        'because': translator.get(_.because),
+        'good_idea': translator.get(_.GoodIdea)
     }
 
 
