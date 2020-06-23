@@ -16,7 +16,7 @@
     </style>
     <div class="container">
         <div class="row">
-            <blockquote class="blockquote text-center col-lg">
+            <blockquote class="blockquote text-center col-6 center">
                 <p>${db_statement.get_text().capitalize()}</p>
             </blockquote>
         </div>
