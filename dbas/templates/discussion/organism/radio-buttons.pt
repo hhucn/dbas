@@ -59,11 +59,6 @@
                   <i class="fa fa-bomb" aria-hidden="true"></i>
                 </a>
               </span>
-              <span class="item-actions item-reference" title="${extras.title.reference}">
-                <span
-                    style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_markable or item.is_deletable)"></span>
-                <i class="fa fa-link" aria-hidden="true"></i>
-              </span>
             </div>
           </div>
         </div>
