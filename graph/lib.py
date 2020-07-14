@@ -175,6 +175,7 @@ def get_path_of_user(base_url, path, db_issue):
 
     tlist = []
     for h in history:
+        h = h[1:] if h.startswith('/') else h
         steps = _get_statements_of_path_step(h)
         if steps:
             tlist += steps
@@ -199,8 +200,8 @@ def _get_statements_of_path_step(step):
     splitted = step.split('/')
 
     if 'justify' in step and len(splitted) > 2:
-        LOG.debug("Append %s -> issue", splitted[2])
-        statements.append([int(splitted[2]), 'issue'])
+        LOG.debug("Append %s -> issue", splitted[1])
+        statements.append([int(splitted[1]), 'issue'])
 
     # elif 'justify' in step:
     #     if len(splitted) == 4:  # statement
@@ -212,7 +213,7 @@ def _get_statements_of_path_step(step):
 
     elif 'reaction' in step:
         collected_arguments = []
-        db_argument = DBDiscussionSession.query(Argument).get(splitted[2])
+        db_argument = DBDiscussionSession.query(Argument).get(splitted[1])
         collected_arguments.append(db_argument)
         while db_argument.argument_uid is not None:
             db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
