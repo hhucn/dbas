@@ -203,14 +203,6 @@ def _get_statements_of_path_step(step):
         LOG.debug("Append %s -> issue", splitted[1])
         statements.append([int(splitted[1]), 'issue'])
 
-    # elif 'justify' in step:
-    #     if len(splitted) == 4:  # statement
-    #         statements.append([int(splitted[2])])
-    #     else:  # argument
-    #         db_arg = DBDiscussionSession.query(Argument).get(splitted[2])
-    #         db_prems = DBDiscussionSession.query(Premise).filter_by(premisegroup_uid=db_arg.premisegroup_uid)
-    #         statements.append([premise.statement_uid for premise in db_prems])
-
     elif 'reaction' in step:
         collected_arguments = []
         db_argument = DBDiscussionSession.query(Argument).get(splitted[1])
