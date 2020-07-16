@@ -76,7 +76,7 @@ class DiscussionDictHelper:
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_attitude(self, position: Statement) -> Dict[str, Any]:
+    def get_dict_for_attitude(self, position: Statement, user: User=None) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the second step in discussion,
         where the user chooses her attitude.
@@ -94,7 +94,8 @@ class DiscussionDictHelper:
 
         text = _tn.get(_.whatDoYouThinkAbout)
         text += ' ' + statement_text + '?'
-        start_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=text, omit_bubble_url=True, lang=self.lang)
+        start_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, content=text, omit_bubble_url=True, lang=self.lang,
+                                                db_user=user)
 
         return {
             'bubbles': [start_bubble],
