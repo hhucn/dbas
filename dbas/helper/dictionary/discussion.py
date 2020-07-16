@@ -76,11 +76,12 @@ class DiscussionDictHelper:
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_attitude(self, position: Statement, user: User=None) -> Dict[str, Any]:
+    def get_dict_for_attitude(self, position: Statement, user: User = None) -> Dict[str, Any]:
         """
         Prepares the discussion dict with all bubbles for the second step in discussion,
         where the user chooses her attitude.
 
+        :param user: Current user
         :param position: The special statement that should be presented
         :return: A dictionary representing the bubbles needed to show a position
         """
