@@ -2,7 +2,7 @@ import logging
 
 import dbas.handler.issue as issue_helper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue, Statement
+from dbas.database.discussion_model import Argument, User, Issue, Statement, TextVersion
 from dbas.handler import user
 from dbas.handler.history import SessionHistory
 from dbas.handler.voting import add_click_for_argument
@@ -65,7 +65,14 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
     disc_ui_locales = db_issue.lang
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, slug=db_issue.slug)
-    discussion_dict = _ddh.get_dict_for_attitude(db_statement)
+
+    statement_textversion = DBDiscussionSession.query(TextVersion).filter(
+        TextVersion.statement_uid == db_statement.uid).first()
+
+    if db_user.uid == statement_textversion.author_uid:
+        discussion_dict = _ddh.get_dict_for_attitude(db_statement, db_user)
+    else:
+        discussion_dict = _ddh.get_dict_for_attitude(db_statement, user=None)
 
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
     item_dict = _idh.prepare_item_dict_for_attitude(db_statement.uid)
