@@ -280,23 +280,16 @@ def set_correction_of_some_statements(request):
 def create_issue_after_validation(request: Request):
     LOG.debug("Set a new issue: %s", request.json_body)
 
-    if request.validated['is_public']:
-        db_issue = Issue(title=escape_string(request.validated['title']),
-                         info=escape_string(request.validated['info']),
-                         long_info=escape_string(request.validated['long_info']),
-                         author=request.validated['user'],
-                         is_read_only=request.validated['is_read_only'],
-                         is_private=not request.validated['is_public'],
-                         language=request.validated['lang'])
-    else:
-        db_issue = Issue(title=escape_string(request.validated['title']),
-                         info=escape_string(request.validated['info']),
-                         long_info=escape_string(request.validated['long_info']),
-                         author=request.validated['user'],
-                         is_read_only=request.validated['is_read_only'],
-                         is_private=not request.validated['is_public'],
-                         language=request.validated['lang'],
-                         slug=uuid.uuid4().hex)
+    db_issue = Issue(title=escape_string(request.validated['title']),
+                     info=escape_string(request.validated['info']),
+                     long_info=escape_string(request.validated['long_info']),
+                     author=request.validated['user'],
+                     is_read_only=request.validated['is_read_only'],
+                     is_private=not request.validated['is_public'],
+                     language=request.validated['lang'])
+
+    if not request.validated['is_public']:
+        db_issue.slug = uuid.uuid4().hex
 
     DBDiscussionSession.add(db_issue)
 
