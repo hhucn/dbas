@@ -1,4 +1,5 @@
 import logging
+import uuid
 from typing import List
 
 from pyramid.request import Request
@@ -286,7 +287,12 @@ def create_issue_after_validation(request: Request):
                      is_read_only=request.validated['is_read_only'],
                      is_private=not request.validated['is_public'],
                      language=request.validated['lang'])
+
+    if not request.validated['is_public']:
+        db_issue.slug = uuid.uuid4().hex
+
     DBDiscussionSession.add(db_issue)
+
     return {'issue': get_issue_dict_for(db_issue, 0, request.validated['lang'].ui_locales)}
 
 
