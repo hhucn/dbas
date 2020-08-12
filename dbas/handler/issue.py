@@ -33,7 +33,7 @@ def prepare_json_of_issue(db_issue: Issue, db_user: User) -> Dict:
     title = db_issue.title
     info = db_issue.info
     long_info = db_issue.long_info
-    stat_count = len(db_issue.statements)
+    stat_count = len(db_issue.all_arguments)
     lang = db_issue.lang
     date_pretty = sql_timestamp_pretty_print(db_issue.date, lang)
     duration = (arrow.utcnow() - db_issue.date)

@@ -39,8 +39,8 @@ cache:
 
 workflow:
   rules:
-    - if: $CI_MERGE_REQUEST_ID               # Execute jobs in merge request context
-    - if: $CI_COMMIT_BRANCH                  # Execute jobs when a new commit is pushed to a branch
+    - if: $CI_MERGE_REQUEST_ID # Execute jobs in merge request context
+    - if: $CI_COMMIT_BRANCH # Execute jobs when a new commit is pushed to a branch
 
 build_test_image:
   stage: build
@@ -48,7 +48,7 @@ build_test_image:
     - ht
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:experimental --pull .
+    - docker build -t $CI_REGISTRY_IMAGE:experimental --cache-from $CI_REGISTRY_IMAGE:experimental --pull .
     - docker push $CI_REGISTRY_IMAGE:experimental
 
 build_test_db_image:
@@ -57,7 +57,7 @@ build_test_db_image:
     - ht
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/db:testing --pull docker/db
+    - docker build -t $CI_REGISTRY_IMAGE/db:testing --cache-from $CI_REGISTRY_IMAGE/db:testing --pull docker/db
     - docker push $CI_REGISTRY_IMAGE/db:testing
 
 flake8:
@@ -112,17 +112,6 @@ cypress:
     expire_in: 1 day
     when: on_failure
 
-sonar:
-  image: hhucn/sonar-scanner
-  stage: analysis
-  script:
-    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.27.0 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
-  only:
-    - development
-  allow_failure: true
-  when: always
-
-
 include:
   - template: SAST.gitlab-ci.yml
 
@@ -138,10 +127,10 @@ build_production_image:
   stage: build-images
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE .
+    - docker build -t $CI_REGISTRY_IMAGE --cache-from $CI_REGISTRY_IMAGE .
     - docker push $CI_REGISTRY_IMAGE
     # Build production docs for live version
-    - docker build -t $CI_REGISTRY_IMAGE/docs -f Dockerfile.docs --pull .
+    - docker build -t $CI_REGISTRY_IMAGE/docs --cache-from $CI_REGISTRY_IMAGE/docs -f Dockerfile.docs --pull .
     - docker push $CI_REGISTRY_IMAGE/docs
   only:
     - master
@@ -150,7 +139,7 @@ build_production_db_image:
   stage: build-images
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
+    - docker build -t $CI_REGISTRY_IMAGE/db --cache-from $CI_REGISTRY_IMAGE/db --pull docker/db
     - docker push $CI_REGISTRY_IMAGE/db
   only:
     - master
@@ -161,10 +150,10 @@ build_dev_image:
   stage: build-images
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:development .
+    - docker build -t $CI_REGISTRY_IMAGE:development --cache-from $CI_REGISTRY_IMAGE:development .
     - docker push $CI_REGISTRY_IMAGE:development
     # Build docs image for development
-    - docker build -t $CI_REGISTRY_IMAGE/docs:development -f Dockerfile.docs --pull .
+    - docker build -t $CI_REGISTRY_IMAGE/docs:development --cache-from $CI_REGISTRY_IMAGE/docs:development -f Dockerfile.docs --pull .
     - docker push $CI_REGISTRY_IMAGE/docs
   only:
     - development
@@ -172,9 +161,8 @@ build_dev_image:
 build_db_dev_image:
   stage: build-images
   script:
-    # Build and deploy database
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/db:development --pull docker/db
+    - docker build -t $CI_REGISTRY_IMAGE/db:development --cache-from $CI_REGISTRY_IMAGE/db:development --pull docker/db
     - docker push $CI_REGISTRY_IMAGE/db:development
   only:
     - development

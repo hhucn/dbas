@@ -1005,7 +1005,7 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
         'data_statement_uid': statement_uid,
         'data_is_supportive': is_supportive,
         'is_users_opinion': is_users_opinion,
-        'sender': other_author,
+        'sender': db_user,
         'enemy': {
             'avatar': gravatar_link,
             'profile': profile,
@@ -1018,6 +1018,7 @@ def create_speechbubble_dict(bubble_type: BubbleTypes, is_markable: bool = False
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
 
+    LOG.debug(speech)
     return speech
 
 
