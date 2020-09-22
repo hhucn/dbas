@@ -62,32 +62,6 @@
 <div metal:use-macro="load: snippet/footer.pt"></div>
 
 <div metal:use-macro="load: snippet/js-scripts.pt"></div>
-
-<!-- Matomo -->
-<script type="text/javascript" tal:condition="extras.usage_of_matomo">
-  var _paq = _paq || [];
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function () {
-    var u = "//dbas.cs.uni-duesseldorf.de/analytics/";
-    _paq.push(['setTrackerUrl', u + 'piwik.php']);
-    _paq.push(['setSiteId', 1]);
-    var d = document,
-        g = d.createElement('script'),
-        s = d.getElementsByTagName('script')[0];
-    g.type = 'text/javascript';
-    g.async = true;
-    g.defer = true;
-    g.src = u + 'piwik.js';
-    s.parentNode.insertBefore(g, s);
-  })();
-</script>
-<noscript tal:condition="extras.usage_of_matomo">
-  <p>
-    <img src="//dbas.cs.uni-duesseldorf.de/analytics/piwik.php?idsite=1" style="border:0;"/>
-  </p>
-</noscript>
-<!-- End Matomo Code -->
 </body>
 
 </html>

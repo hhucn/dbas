@@ -1,3 +1,7 @@
+### 1.27.2 (2020-09-22)
+* Fix Google Closure Compilation [!911](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/911)
+* Remove dead code
+
 ### 1.27.1 (2020-08-12)
 * Private links get random slug [!908](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/908)
 * Fix missing body of messages [!903](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/-/merge_requests/903)
