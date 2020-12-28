@@ -182,8 +182,8 @@ deploy_production:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - chmod 700 ~/.ssh/
-    - ssh-keyscan -H 'docker-int.cn.uni-duesseldorf.de' > ~/.ssh/known_hosts
+    - ssh-keyscan -H 'discovery.cs.hhu.de' > ~/.ssh/known_hosts
   script:
-    - ssh root@docker-int.cn.uni-duesseldorf.de "$DEPLOY_YMLS"
+    - ssh root@discovery.cs.hhu.de
   only:
     - master
