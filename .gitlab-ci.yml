@@ -154,7 +154,7 @@ build_dev_image:
     - docker push $CI_REGISTRY_IMAGE:development
     # Build docs image for development
     - docker build -t $CI_REGISTRY_IMAGE/docs:development --cache-from $CI_REGISTRY_IMAGE/docs:development -f Dockerfile.docs --pull .
-    - docker push $CI_REGISTRY_IMAGE/docs
+    - docker push $CI_REGISTRY_IMAGE/docs:development
   only:
     - development
 
