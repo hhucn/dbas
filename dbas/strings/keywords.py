@@ -773,6 +773,10 @@ class Keywords(Enum):
     youAreAbleToReviewNow = 'youAreAbleToReviewNow'
     iArgue = 'iArgue'
     iAgreeWithThecounterargument = 'iAgreeWithThecounterargument'
+    LikeToTalkAbout = 'LikeToTalkAbout'
+    NegationGoodIdea = 'NegationGoodIdea',
+    GoodIdea = 'GoodIdea',
+    IsGoodIdea = 'IsGoodIdea',
 
     @staticmethod
     def get_key_by_string(string):

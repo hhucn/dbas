@@ -10,7 +10,7 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.steps import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
-from dbas.lib import Relations
+from dbas.lib import Relations, Attitudes
 from dbas.review.reputation import ReputationReasons, add_reputation_and_check_review_access
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -32,17 +32,27 @@ def init(db_issue: Issue, db_user: User) -> dict:
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = issue_dict['lang']
+    translator = Translator(disc_ui_locales)
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname=db_user.nickname, slug=slug)
 
     item_dict = ItemDictHelper(disc_ui_locales, db_issue).get_array_for_start(db_user)
     discussion_dict = _ddh.get_dict_for_start(len(item_dict['elements']) == 1)
 
+    db_statements = [statement for statement in db_issue.statements if not statement.is_disabled
+                     and statement.is_position]
+
+    positions = [DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).first()
+                 for statement in db_statements]
+
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,
         'items': item_dict,
-        'title': issue_dict['title']
+        'title': issue_dict['title'],
+        'positionslist': positions,
+        'LikeToTalkAbout': translator.get(_.LikeToTalkAbout),
+
     }
 
 
@@ -63,6 +73,7 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
     disc_ui_locales = db_issue.lang
+    translator = Translator(issue_dict['lang'])
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, slug=db_issue.slug)
 
@@ -74,14 +85,47 @@ def attitude(db_issue: Issue, db_user: User, db_statement: Statement, history: S
     else:
         discussion_dict = _ddh.get_dict_for_attitude(db_statement, user=None)
 
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
-    item_dict = _idh.prepare_item_dict_for_attitude(db_statement.uid)
+    item_dict_justify_step_agree, __ = handle_justification_statement(db_issue, db_user, db_statement, Attitudes.AGREE,
+                                                                      history, path)
+    item_dict_justify_step_disagree, __ = handle_justification_statement(db_issue, db_user, db_statement,
+                                                                         Attitudes.DISAGREE, history, path)
+
+    arglist = []
+    for element in item_dict_justify_step_disagree['elements']:
+        if element['id'] != "item_login" and element['id'] != "item_start_premise":
+            arglist.append(
+                {
+                    'text': element['premises'][0]['title'],
+                    'id': element['premises'][0]['id'],
+                    'url': element['url'],
+                    'isSupportive': False,
+                    'negationIsGoodIdea': translator.get(_.NegationGoodIdea)
+                }
+            )
+    for element in item_dict_justify_step_agree['elements']:
+        if element['id'] != "item_login" and element['id'] != "item_start_premise":
+            arglist.append(
+                {
+                    'text': element['premises'][0]['title'],
+                    'id': element['premises'][0]['id'],
+                    'url': element['url'],
+                    'isSupportive': True,
+                    'negationIsGoodIdea': translator.get(_.NegationGoodIdea)
+                }
+            )
 
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,
-        'items': item_dict,
-        'title': issue_dict['title']
+        'items': item_dict_justify_step_disagree,
+        'title': issue_dict['title'],
+        'arglist': arglist,
+        'db_statement': db_statement,
+        'LikeToTalkAbout': translator.get(_.LikeToTalkAbout),
+        'is_good_idea': translator.get(_.IsGoodIdea),
+        'negation_good_idea': translator.get(_.NegationGoodIdea),
+        'because': translator.get(_.because),
+        'good_idea': translator.get(_.GoodIdea)
     }
 
 

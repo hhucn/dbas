@@ -1,0 +1,112 @@
+<!-- TODO: Translate -->
+<tal:block i18n:domain="dbas" metal:define-macro="layout">
+    <style>
+        .carousel-control-next {
+            right: 10%;
+        }
+
+        .carousel-control-prev {
+            left: 10%;
+        }
+
+        .carousel-item {
+            padding-left: 20%;
+            padding-right: 20%;
+        }
+    </style>
+    <div class="container">
+        <div class="row">
+            <blockquote class="blockquote text-center col-6 center">
+                <p>${db_statement.get_text().capitalize()}</p>
+            </blockquote>
+        </div>
+
+        <div class="row">
+            <div id="myCarousel" class="carousel slide col-sm center" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div tal:repeat="argument arglist"
+                            class="carousel-item ${'active' if repeat.argument.start else ''} centered">
+                        <div>
+                            <blockquote class="blockquote text-center col-sm">
+                                <p>
+                                ${is_good_idea} <b
+                                        style="color: ${'green' if argument.isSupportive else 'red'}">${'' if argument.isSupportive else argument.negationIsGoodIdea}
+                                        ${good_idea} </b> ${because.lower()}
+                                </p>
+                            </blockquote>
+                        </div>
+                        <div class="d-block pt-3">
+                            <div class="card-body">
+                                <blockquote class="blockquote">
+                                    <div class="content-center-m" id="carousel-position-center">
+                                        <p>
+                                                ${argument.text}
+                                        </p>
+                                    </div>
+                                </blockquote>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <ol class="carousel-indicators " style="bottom: auto;">
+                    <li tal:repeat="argument arglist" data-target="#myCarousel"
+                                                      data-slide-to="${repeat.argument.index}"
+                                                      data-value="${argument.url}"
+                                                      class="bg-${'success' if argument.isSupportive else 'danger'}
+                                                                ${'active' if repeat.argument.start else ''}"></li>
+                </ol>
+                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                    <span class="fa fa-chevron-left text-secondary" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                    <span class="fa fa-chevron-right text-secondary" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+
+
+        </div>
+
+    </div>
+    <div class="text-center">
+        <div id="discussions-space">
+            <div id="discussions-space-list">
+                <input id="" type="hidden">
+                <li tal:define="add_or_login [item for item in items.elements if item.url in ['login', 'add']]"
+                         tal:condition="add_or_login">
+                    <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
+
+                        <a href="#" id="LikeToTalkAbout"
+                           class="btn btn-primary btn active"
+                           role="button" aria-pressed="true">
+                                ${LikeToTalkAbout}
+                        </a>
+                        <input id="${item.id}" class="btn btn-primary btn active" type="button"
+                               name="discussion-button-group"
+                               data-url="${item.url}"
+                               value="${item.premises[0].title}">
+                    </div>
+                </li>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            var actives_div = $('#myCarousel .carousel-indicators li.active');
+            var url = actives_div.data('value');
+            $("#LikeToTalkAbout").attr("href", "/discuss" + url)
+        });
+
+        $(document).ready(function () {
+            $('#myCarousel').on('slid.bs.carousel', function () {
+                var actives_div = $('#myCarousel .carousel-indicators li.active');
+                var url = actives_div.data('value');
+                $("#LikeToTalkAbout").attr("href", "/discuss" + url)
+            });
+        });
+    </script>
+</tal:block>

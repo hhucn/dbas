@@ -1,0 +1,88 @@
+<!-- Revolver overview for positions -->
+<tal:block i18n:domain="dbas" metal:define-macro="layout">
+     <style>
+        .carousel-item {
+            padding-left: 20%;
+            padding-right: 20%;
+        }
+    </style>
+    <div class="mt-5">
+        <div class="row d-flex align-items-center">
+            <div id="myCarousel" class="carousel slide col-7 pl-0 center" data-interval="false" data-ride="false">
+                <div class="carousel-inner">
+                    <div tal:repeat="position positionslist"
+                            class="carousel-item ${'active' if repeat.position.start else ''}">
+                        <div class="d-block w-100 pt-3">
+                            <blockquote class="blockquote">
+                                <div class="center" id="carousel-position-center">
+                                    <p>
+                                            ${position.content.capitalize()}
+                                    </p>
+                                </div>
+                            </blockquote>
+
+                        </div>
+                    </div>
+                </div>
+
+                <ol class="carousel-indicators mb-0" style="top: 0; bottom: auto;">
+                    <li tal:repeat="position positionslist" data-target="#myCarousel"
+                                                            data-slide-to="${repeat.position.index}"
+                                                            data-value="${position.statement_uid}"
+                                                            class="bg-dark ${'active' if repeat.position.start else ''}"></li>
+                </ol>
+
+
+                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                    <i class="fa fa-chevron-left text-secondary" aria-hidden="true"></i>
+                    <span class="sr-only">Previous</span>
+                </a>
+
+
+                <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                    <i class="fa fa-chevron-right text-secondary" aria-hidden="true"></i>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+        <div class="text-center">
+
+            <div id="discussions-space">
+                <div id="discussions-space-list">
+                    <input id="" type="hidden">
+                    <li tal:define="add_or_login [item for item in items.elements if item.url in ['login', 'add']]"
+                             tal:condition="add_or_login">
+                        <div class="discussion-space-list-row__left-side" tal:define="item add_or_login[0];">
+
+                            <a href="#" id="LikeToTalkAbout"
+                                                                class="btn btn-primary btn active"
+                                                                role="button" aria-pressed="true">
+                                ${LikeToTalkAbout}
+                            </a>
+                            <input id="${item.id}" class="btn btn-primary btn active" type="button"
+                                   name="discussion-button-group"
+                                   data-url="${item.url}"
+                                   value="${item.premises[0].title}">
+                        </div>
+                    </li>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            var actives_div = $('#myCarousel .carousel-indicators li.active');
+            var statement_uid = actives_div.data('value');
+            $("#LikeToTalkAbout").attr("href", "/discuss/${issues.slug}/attitude/" + statement_uid)
+
+            $('#myCarousel').on('slid.bs.carousel', function () {
+                var actives_div = $('#myCarousel .carousel-indicators li.active');
+                var statement_uid = actives_div.data('value');
+                $("#LikeToTalkAbout").attr("href", "/discuss/${issues.slug}/attitude/" + statement_uid)
+            });
+        });
+    </script>
+</tal:block>

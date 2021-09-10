@@ -776,4 +776,8 @@ en_lang = {
     _.youAreAbleToReviewNow: 'You are now able to visit the review section',
     _.iArgue: 'I argue about',
     _.iAgreeWithThecounterargument: 'I agree with the counter-argument which says that',
+    _.LikeToTalkAbout: 'I would like to talk about that',
+    _.NegationGoodIdea: 'not',
+    _.GoodIdea: 'a good idea',
+    _.IsGoodIdea: 'is',
 }

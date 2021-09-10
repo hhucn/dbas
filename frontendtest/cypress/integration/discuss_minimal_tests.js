@@ -87,7 +87,7 @@ describe('Add Position Test', function () {
 });
 
 
-describe('Agree and disagree test', function () {
+describe('Add Reason test', function () {
     var position = "FooBarBaz";
     var reason = "Very good reason!";
     var disagreement = "NegativeFooBarBaz";
@@ -95,50 +95,24 @@ describe('Agree and disagree test', function () {
     beforeEach(function () {
         set_welcome_cookies();
         set_login_cookie();
-        cy.visit(url + '/discuss/frontendtesting');
+        cy.visit(url + '/discuss/frontendtesting/attitude/83');
     });
 
-    it('checks if an user can disagree to new position and tries to send empty reason. It should fail', function () {
-        cy.contains(position).click();
-        cy.get('#item_disagree').click();
-        cy.get('#send-new-position').click();
-        cy.get('#add-premise-error-container').should('visible');
-    });
-
-    it('checks if an user can disagree to new position and sends reason. It should succeed', function () {
-        cy.contains(position).click();
-        cy.get('#item_disagree').click();
-        cy.get('#add-position-container-main-input').type(disagreement);
-        cy.get('#send-new-position').click();
-        cy.get('#add-premise-error-container').should('not.visible');
-    });
-    it('checks if an user can agree to new position and tries to send empty reason. It should fail', function () {
-        cy.contains(position).click();
-        cy.get('#item_agree').click();
+    it('checks if user can send empty reason. It should fail', function () {
         cy.get('#item_start_premise').click();
         cy.get('#send-new-position').click();
         cy.get('#add-premise-error-container').should('visible');
     });
 
-    it('checks if an user can agree to new position and sends reason. It should succeed', function () {
-        cy.contains(position).click();
-        cy.get('#item_agree').click();
+    it('checks if user send reason. It should succeed', function () {
         cy.get('#item_start_premise').click();
         cy.get('#add-position-container-main-input').type(disagreement);
         cy.get('#send-new-position').click();
         cy.get('#add-premise-error-container').should('not.visible');
     });
 
-    it('checks if an user can agree to new position and selects given reason.', function () {
-        cy.contains(position).click();
-        cy.get('#item_agree').click();
-        cy.get('#item_70').click();
-    });
-
-    it('checks if an user can disagree to new position and selects given reason.', function () {
-        cy.contains(position).click();
-        cy.get('#item_disagree').click();
-        cy.get('#item_71').click();
+    it('checks if user can select new position with given reason.', function () {
+        cy.get('#LikeToTalkAbout').click();
     });
 });
 
@@ -148,10 +122,7 @@ describe('Support, undercut and rebut test', function () {
     beforeEach(function () {
         set_welcome_cookies();
         set_login_cookie();
-        cy.visit(url + '/discuss/frontendtesting');
-        cy.contains(position).click();
-        cy.get('#item_agree').click();
-        cy.get('#item_70').click();
+        cy.visit(url + '/discuss/frontendtesting/reaction/71/rebut/70?history=/attitude/83');
     });
 
     it('checks if an user can select undermine', function () {

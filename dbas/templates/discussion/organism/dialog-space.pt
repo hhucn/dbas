@@ -1,35 +1,44 @@
 <!-- tje dialog space itself whoch embedds the bubbles, radio buttons as well as a sidebar -->
 <tal:block i18n:domain="dbas" metal:define-macro="layout">
-  <div class="container colored-container card" id="discussion-container" style="min-height: 200px;">
-    <div id="dialog-wrapper" class="card-body content-wrapper pull-left">
+    <div class="container colored-container card" id="discussion-container" style="min-height: 200px;">
+        <div id="dialog-wrapper" class="card-body content-wrapper pull-left">
 
-      <p id="read-only-banner" class="text-center" tal:condition="issues.read_only">
+            <p id="read-only-banner" class="text-center" tal:condition="issues.read_only">
             <span class="alert alert-warning">
               <span i18n:translate="discussion_is_read_only">Diese Diskussion ist geschlossen und es können keine weiteren Beiträge mehr hinzugefügt werden.</span>
             </span>
-      </p>
+            </p>
 
-      <div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <span id="discussion-error-description"></span>
-      </div>
+            <div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <span id="discussion-error-description"></span>
+            </div>
 
-      <div id="discussion-success-description-space" class="alert alert-success alert-dismissible hidden">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <strong i18n:translate="success">Success</strong>
-        <span id="discussion-success-description"></span>
-      </div>
+            <div id="discussion-success-description-space" class="alert alert-success alert-dismissible hidden">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <strong i18n:translate="success">Success</strong>
+                <span id="discussion-success-description"></span>
+            </div>
 
-      <div metal:use-macro="load: bubbles.pt"></div>
+            <div tal:condition="not:exists: positionslist">
+                <div tal:condition="not:exists: arglist" metal:use-macro="load: bubbles.pt"></div>
+                <div tal:condition="not:exists: arglist" metal:use-macro="load: radio-buttons.pt"></div>
+            </div>
 
-      <div metal:use-macro="load: radio-buttons.pt"></div>
 
+            <div metal:use-macro="load: revolver-overview.pt"
+                     tal:condition="exists: positionslist" ></div>
+
+            <div metal:use-macro="load: revolver-overview-reason.pt"
+                     tal:condition="exists: arglist" ></div>
+
+
+        </div>
+
+        <div metal:use-macro="load: dialog-sidebar.pt"></div>
     </div>
-
-    <div metal:use-macro="load: dialog-sidebar.pt"></div>
-  </div>
 </tal:block>

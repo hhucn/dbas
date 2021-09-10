@@ -590,7 +590,7 @@ Main.prototype.setInputExtraOptions = function (guiHandler, interactionHandler) 
         interactionHandler.sendArgument(position, reason, data);
     };
     var sendStartPremise = function () {
-        conclusion = splits[splits.length - 2];
+        conclusion = splits[splits.length - 1];
         supportive = splits[splits.length - 1] === 'agree';
         textArray = [];
         $('#' + addPositionContainerBodyId + ' input').each(function () {
